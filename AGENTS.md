@@ -309,6 +309,7 @@ Verificado el 01/08/2026 contra los repositorios reales: 503 documentos en Larav
 | Rutas absolutas del sitio oficial | `/docs/{{version}}/container` muerto en local | `RE_HREF_ABS` en `build.py` las traduce a páginas locales |
 | Prefijos numéricos en directorios | Carpetas `02-columns/` en Filament | `target_path` los quita también de los segmentos de directorio |
 | Enlaces resueltos por slug | Enlaces rotos en pnpm (Docusaurus) | Respaldo por nombre de fichero, solo si es inequívoco |
+| Colisión de ruta Apache en Debian (`/javascript`) | Error 404/403 o redirección a `/usr/share/javascript` por el paquete `javascript-common` | La tecnología se nombra canónicamente `js-javascript` en `sources.yaml`, `src/` y `public/` |
 
 Al tocar la fase 4, ten en cuenta que `_toc.json` ya trae el árbol de navegación con secciones, títulos y orden resueltos. No hay que deducirlo del sistema de ficheros.
 

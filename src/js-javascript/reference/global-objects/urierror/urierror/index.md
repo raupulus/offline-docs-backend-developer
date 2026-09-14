@@ -1,0 +1,92 @@
+---
+title: URIError() constructor
+source_repo: mdn/content
+source_ref: main
+source_commit: c9a52b432
+source_path: reference/global_objects/urierror/urierror/index.md
+technology: js-javascript
+version: main
+license: CC-BY-SA-2.5
+retrieved_at: '2026-08-02'
+section: reference
+order: 11800
+---
+
+The **`URIError()`** constructor creates {{jsxref("URIError")}} objects.
+
+## Syntax
+
+```js-nolint
+new URIError()
+new URIError(message)
+new URIError(message, options)
+new URIError(message, fileName)
+new URIError(message, fileName, lineNumber)
+
+URIError()
+URIError(message)
+URIError(message, options)
+URIError(message, fileName)
+URIError(message, fileName, lineNumber)
+```
+
+> [!NOTE]
+> `URIError()` can be called with or without [`new`](/en-US/docs/Web/JavaScript/Reference/Operators/new). Both create a new `URIError` instance.
+
+### Parameters
+
+- `message` {{optional_inline}}
+  - : Human-readable description of the error.
+- `options` {{optional_inline}}
+  - : An object that has the following properties:
+    - `cause` {{optional_inline}}
+      - : A property indicating the specific cause of the error.
+        When catching and re-throwing an error with a more-specific or useful error message, this property can be used to pass the original error.
+- `fileName` {{optional_inline}} {{non-standard_inline}}
+  - : The name of the file containing the code that caused the exception.
+- `lineNumber` {{optional_inline}} {{non-standard_inline}}
+  - : The line number of the code that caused the exception.
+
+## Examples
+
+### Catching a URIError
+
+```js
+try {
+  decodeURIComponent("%");
+} catch (e) {
+  console.log(e instanceof URIError); // true
+  console.log(e.message); // "malformed URI sequence"
+  console.log(e.name); // "URIError"
+  console.log(e.stack); // Stack of the error
+}
+```
+
+### Creating a URIError
+
+```js
+try {
+  throw new URIError("Hello");
+} catch (e) {
+  console.log(e instanceof URIError); // true
+  console.log(e.message); // "Hello"
+  console.log(e.name); // "URIError"
+  console.log(e.stack); // Stack of the error
+}
+```
+
+## Specifications
+
+{{Specifications}}
+
+## Browser compatibility
+
+{{Compat}}
+
+## See also
+
+- {{jsxref("Error")}}
+- {{jsxref("decodeURI()")}}
+- {{jsxref("decodeURIComponent()")}}
+- {{jsxref("encodeURI()")}}
+- {{jsxref("encodeURIComponent()")}}

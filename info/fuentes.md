@@ -52,6 +52,8 @@ Por orden de preferencia:
 
 **Python: texto plano, no HTML.** Se pierde el formato de tablas y los enlaces quedan como texto, pero no hay nada que parsear. Si algún día hace falta más riqueza, se cambia la fuente sin tocar código.
 
+**JavaScript: ruta e identificador `js-javascript` en lugar de `javascript`.** En servidores Linux basados en Debian o Ubuntu con Apache instalado, el paquete del sistema `javascript-common` habilita de forma predeterminada un alias global (`Alias /javascript /usr/share/javascript/`). Para prevenir colisiones en el servidor web que intercepten la ruta y causen errores 403/404 o muestren assets del sistema, la tecnología se identifica canónicamente como `js-javascript`.
+
 ## Fijar versiones
 
 `laravel/docs` mantiene varias ramas activas a la vez. `sources.yaml` fija cuál se usa y `versions.lock.json` guarda el commit exacto de la última descarga. Las URLs de Python y Bash llevan el número de versión dentro: hay que subirlas a mano al cambiar de rama.
