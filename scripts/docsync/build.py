@@ -420,6 +420,44 @@ def build_home(
     Log.ok(f"Portada con {len(technologies)} tecnologías y {total} documentos")
 
 
+def build_standalone_pages(
+    out_dir: Path,
+    env: Environment,
+    built_at: str,
+) -> None:
+    """Compila páginas raíz informativas desde markdown a HTML."""
+    pages = [
+        ("LICENSES.md", "licenses.html", "Licencias y Atribución"),
+        ("LEGAL.md", "legal.html", "Aviso Legal y Privacidad"),
+    ]
+    md = markdown.Markdown(
+        extensions=[
+            "extra",
+            "tables",
+            TocExtension(permalink=True),
+            CodeHiliteExtension(guess_lang=False),
+        ]
+    )
+    template = env.get_template("standalone.html")
+
+    for src_name, dest_name, title in pages:
+        src_path = Path(src_name)
+        if not src_path.is_file():
+            continue
+        raw_md = src_path.read_text(encoding="utf-8")
+        html_body = md.reset().convert(raw_md)
+        (out_dir / dest_name).write_text(
+            template.render(
+                content=Markup(html_body),
+                root=".",
+                page_title=f"{title} · Documentación offline",
+                built_at=built_at,
+            ),
+            encoding="utf-8",
+        )
+        Log.ok(f"Página informativa: {dest_name}")
+
+
 # ── Orquestación ────────────────────────────────────────────────────
 
 def main(argv: list[str] | None = None) -> int:
@@ -509,6 +547,9 @@ def main(argv: list[str] | None = None) -> int:
 
     Log.step("Portada")
     build_home(metas, pending, out_dir, env, built_at)
+
+    Log.step("Páginas informativas")
+    build_standalone_pages(out_dir, env, built_at)
 
     Log.step("Listo")
     Log.info(f"Abre {out_dir}/index.html en el navegador")

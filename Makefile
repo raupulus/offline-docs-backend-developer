@@ -7,7 +7,7 @@
 # Ver AGENTS.md para la arquitectura completa.
 # ═══════════════════════════════════════════════════════════════════
 
-PYTHON      := python3
+PYTHON      ?= $(shell [ -f .venv/bin/python ] && echo .venv/bin/python || echo python3)
 DOCSYNC     := $(PYTHON) -m scripts.docsync
 SRC_DIR     := src
 WORK_DIR    := work
