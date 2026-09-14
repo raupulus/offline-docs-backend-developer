@@ -227,6 +227,45 @@
     input.select();
   });
 
+  /* ── Descargas: asegurar descarga directa con atributo download ─── */
+
+  document.addEventListener('click', function (ev) {
+    var link = ev.target.closest('a[download]');
+    if (!link) return;
+
+    // En servidor (http/https), Blob garantiza que el navegador abra el diálogo de descarga
+    // en lugar de navegar o mostrar el fichero de texto plano en la misma pestaña
+    if (window.location.protocol.indexOf('http') === 0) {
+      var href = link.getAttribute('href');
+      if (!href) return;
+
+      ev.preventDefault();
+      var filename = link.getAttribute('download') || href.split('/').pop() || 'documento.md';
+
+      fetch(href)
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.blob();
+        })
+        .then(function (blob) {
+          var blobUrl = window.URL.createObjectURL(blob);
+          var temp = document.createElement('a');
+          temp.style.display = 'none';
+          temp.href = blobUrl;
+          temp.download = filename;
+          document.body.appendChild(temp);
+          temp.click();
+          setTimeout(function () {
+            window.URL.revokeObjectURL(blobUrl);
+            if (temp.parentNode) temp.parentNode.removeChild(temp);
+          }, 1000);
+        })
+        .catch(function () {
+          window.open(href, '_blank');
+        });
+    }
+  });
+
   /* ── PWA: Service Worker (solo sobre HTTPS o localhost) ────────── */
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
