@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}{{ meta.name }} · Documentación offline{% endblock %}
+
+{% block search_box %}
+<div class="search" data-search data-tech="{{ meta.id }}" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en {{ meta.name }}…"
+         aria-label="Buscar en {{ meta.name }}" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+{% endblock %}
+
+{% block layout %}
+<main id="contenido" class="content content-wide">
+  <header class="tech-header">
+    <h1>{{ meta.name }}</h1>
+    <p class="doc-meta">
+      {% if meta.version %}<span class="badge">{{ meta.version }}</span>{% endif %}
+      <span class="muted">{{ meta.documents }} documentos</span>
+      {% if meta.license %}<span class="muted">Licencia {{ meta.license }}</span>{% endif %}
+      {% if meta.retrieved_at %}<span class="muted">Descargado el {{ meta.retrieved_at }}</span>{% endif %}
+    </p>
+    {% if meta.homepage %}
+      <p><a href="{{ meta.homepage }}" rel="noopener">Documentación oficial en línea</a></p>
+    {% endif %}
+  </header>
+
+  {# Aquí sí va el índice completo: es UNA sola página por tecnología,
+     así que no multiplica el tamaño del sitio. #}
+  {% for section in toc.sections %}
+    <section class="tech-section">
+      {% if toc.sections|length > 1 %}<h2>{{ section.title }}</h2>{% endif %}
+      <ul class="tech-list">
+        {% for entry in section.pages %}
+          <li><a href="./{{ entry.path | to_html }}">{{ entry.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endfor %}
+</main>
+{% endblock %}

@@ -1,0 +1,64 @@
+{# Plantilla base del visor offline.
+
+   Todas las rutas son relativas: el sitio se abre con doble clic desde
+   file:// y no puede haber nada que empiece por /.
+
+   Sin CDN, sin Google Fonts, sin peticiones a internet. Una web pensada
+   para funcionar sin red no debe salir a buscar ni una tipografía.
+#}<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ page_title }}{% endblock %}</title>
+<link rel="stylesheet" href="{{ root }}/_assets/style.css">
+<link rel="stylesheet" href="{{ root }}/_assets/code.css">
+{# El tema se aplica antes de pintar para evitar el parpadeo blanco #}
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="{{ root }}/index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+  {% block topbar_extra %}{% endblock %}
+
+  <div class="topbar-actions">
+    {% block search_box %}{% endblock %}
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+{% block layout %}{% endblock %}
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el {{ built_at }} · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="{{ root }}/_assets/app.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

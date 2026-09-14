@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} · {{ meta.name }}{% endblock %}
+{% block body_class %}has-sidebar{% endblock %}
+
+{% block topbar_extra %}
+<span class="topbar-tech">
+  <a href="{{ tech_root }}/index.html">{{ meta.name }}</a>
+  {% if meta.version %}<span class="badge">{{ meta.version }}</span>{% endif %}
+</span>
+{% endblock %}
+
+{% block search_box %}
+<div class="search" data-search data-tech="{{ meta.id }}" data-index="{{ tech_root }}/_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en {{ meta.name }}…"
+         aria-label="Buscar en {{ meta.name }}" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+{% endblock %}
+
+{% block layout %}
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de {{ meta.name }}
+</button>
+
+<div class="layout">
+  {# El menú va recortado a propósito: emitir el índice completo en cada
+     página hacía crecer el sitio al cuadrado (con PHP, 9,6 GB). No se
+     pierde nada: el índice íntegro está en la portada de la tecnología
+     y en el buscador. #}
+  <nav class="sidebar" data-nav aria-label="Navegación de {{ meta.name }}">
+    {% for section in nav.sections %}
+      <div class="nav-section{% if section.pages %} is-open{% endif %}">
+        {% if nav.sections|length > 1 or nav.truncated %}
+          <h2 class="nav-section-title">
+            {% if section.pages or not section.first %}
+              {{ section.title }}
+            {% else %}
+              <a href="{{ tech_root }}/{{ section.first.path | to_html }}">{{ section.title }}</a>
+            {% endif %}
+          </h2>
+        {% endif %}
+        {% if section.pages %}
+          <ul class="nav-list">
+            {% for entry in section.pages %}
+              <li>
+                <a href="{{ tech_root }}/{{ entry.path | to_html }}"
+                   {% if entry.path == page.path %}class="is-current" aria-current="page"{% endif %}>{{ entry.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    {% if nav.truncated %}
+      <p class="nav-more">
+        <a href="{{ tech_root }}/index.html">Ver los {{ nav.total }} documentos de {{ meta.name }}</a>
+      </p>
+    {% endif %}
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">{{ page.title }}</h1>
+
+      <p class="doc-meta">
+        {% if meta.version %}<span class="badge">{{ meta.version }}</span>{% endif %}
+        {% if page.source_url %}
+          <a href="{{ page.source_url }}" rel="noopener">Ver versión oficial en línea</a>
+        {% elif meta.homepage %}
+          <a href="{{ meta.homepage }}" rel="noopener">Documentación oficial</a>
+        {% endif %}
+        {% if meta.license %}<span class="muted">Licencia {{ meta.license }}</span>{% endif %}
+        {% if page.retrieved_at %}<span class="muted">Descargado el {{ page.retrieved_at }}</span>{% endif %}
+      </p>
+
+      {% if page.headings %}
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+            {% for h in page.headings %}
+              <li class="lvl-{{ h.level }}"><a href="#{{ h.id }}">{{ h.text }}</a></li>
+            {% endfor %}
+          </ul>
+        </details>
+      {% endif %}
+
+      <div class="doc-body">
+        {{ content }}
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+      {% if page.prev %}
+        <a class="pager-prev" href="{{ tech_root }}/{{ page.prev.path | to_html }}">
+          <span class="muted">Anterior</span>{{ page.prev.title }}
+        </a>
+      {% else %}<span></span>{% endif %}
+      {% if page.next %}
+        <a class="pager-next" href="{{ tech_root }}/{{ page.next.path | to_html }}">
+          <span class="muted">Siguiente</span>{{ page.next.title }}
+        </a>
+      {% endif %}
+    </nav>
+  </main>
+</div>
+{% endblock %}
