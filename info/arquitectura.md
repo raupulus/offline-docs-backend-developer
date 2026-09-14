@@ -18,6 +18,7 @@
 |---|---|---|
 | `work/` | No | Siempre |
 | **`src/`** | **Sí** | **No** |
+| `bundles/` | **Sí** | No (generado canónico) |
 | `public/` | No | Sí, se regenera |
 
 Separarlas importa: cambiar el diseño del visor solo requiere `make build`, sin red. Y `git diff src/` enseña exactamente qué cambió en la documentación entre dos actualizaciones.
@@ -40,6 +41,7 @@ scripts/docsync/
   mdsplit.py            trocear documentos largos por secciones
   build.py              src/ → public/
   search.py             índices de búsqueda
+  bundle.py             src/ → bundles/ (markdown consolidado para LLMs)
   check.py              validación
   selftest.py           16 comprobaciones sin red
   adapters/archive.py   descarga y descompresión

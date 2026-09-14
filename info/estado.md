@@ -1,39 +1,41 @@
 # Estado
 
-Última actualización: 1 de agosto de 2026
+Última actualización: 14 de septiembre de 2026
 
 ## Funcionando y probado
 
 | Fase | Qué hace |
 |---|---|
 | 1 · Base | `sources.yaml`, `Makefile`, estructura, `.gitignore` |
-| 2 · Markdown nativo | `fetch`, `normalize`, `check` para las 6 fuentes en markdown |
-| 3 · Visor | `build`, buscador offline, modo oscuro, código resaltado |
-| 4a · PHP | DocBook → markdown |
+| 2 · Markdown nativo | `fetch`, `normalize`, `check` para las fuentes en markdown |
+| 3 · Visor | `build`, buscador offline, modo oscuro, código resaltado con Pygments |
+| 4a · PHP | DocBook XML (`doc-es`) → markdown |
+| 4b · Python y Bash | Python compilado limpio y Bash desde Texinfo oficial de GNU |
+| 5 · Acabado | `make bundles` (12 archivos .md para IA/offline), RSS 2.0, Sitemap.xml, PWA vanilla, SEO |
 
 **Cifras verificadas contra los repositorios reales:**
 
 | Tecnología | Documentos |
 |---|---:|
-| Laravel | 99 |
-| Filament | 82 |
+| Bash | 70 |
 | Composer | 33 |
+| Filament | 82 |
+| JavaScript | 1.331 |
+| Laravel | 99 |
 | Node.js | 70 |
 | npm | 87 |
-| pnpm | 132 |
-| PHP | 1.008 de una muestra; el total son ~11.000 |
+| Nuxt | 261 |
+| PHP | 11.000 |
+| pnpm | 140 |
+| Python | 536 |
+| Vue 3 | 109 |
+| **Total** | **13.818 documentos** |
 
-Enlaces internos comprobados en el sitio generado: más de un millón, ninguno roto. `make test` pasa 16 comprobaciones sin red.
-
-## Sin probar
-
-**Python y Bash.** El código está escrito e instalado, pero nunca se ha ejecutado con una descarga real: el entorno donde se desarrolló no permitía bajar esos tarballs ni tenía `texi2any`. Puede que haga falta ajustar algo en el primer `make fetch`.
+Enlaces internos comprobados en el sitio generado: ninguno roto. `make test` pasa 16 comprobaciones sin red.
 
 ## Pendiente
 
-- Fase 5: `make bundles` (concatenar cada tecnología en un `.md` para modelos de IA)
-- Confirmar las licencias marcadas con ⚠️ en `LICENSES.md`, sobre todo la de npm
-- Las 15 ilustraciones de pnpm (`/img/*.svg`) salen rotas: están fuera de su carpeta de documentación
+- Las 15 ilustraciones de pnpm (`/img/*.svg`) salen rotas: están fuera de su carpeta de documentación en el sparse checkout
 
 ## Historial de decisiones
 

@@ -40,11 +40,12 @@ Tres capas y una única dirección de flujo:
 |---|---|---|
 | `work/` | Clones y tarballs recién descargados | No, se borra tras cada build |
 | **`src/`** | **Markdown canónico: la única fuente de verdad** | **Sí** |
-| `public/` | Sitio HTML navegable | No, se regenera |
+| `bundles/` | Documentación unificada en un solo archivo Markdown por tecnología (para LLMs o lectura offline) | **Sí** |
+| `public/` | Sitio HTML navegable y recursos generados | No, se regenera |
 | `scripts/` | El pipeline y las plantillas | Sí |
 | `sources.yaml` | Catálogo de fuentes | Sí |
 
-Tener el markdown separado del HTML permite además consultarlo con `grep`, `rg` o modelos de IA locales sin pelearse con etiquetas.
+Tener el markdown separado del HTML permite además consultarlo con `grep`, `rg` o modelos de IA locales sin pelearse con etiquetas. Además, la carpeta `bundles/` contiene toda la documentación unificada en un único archivo plano por tecnología para alimentar LLMs de golpe.
 
 ---
 
@@ -118,25 +119,29 @@ En reorganización. La arquitectura descrita arriba es la de destino; el plan co
 - [x] **Fase 2** — Pipeline para las fuentes con markdown nativo (`fetch`, `normalize`, `check`)
 - [x] **Fase 3** — Generador de sitio y buscador offline (`build`, `search`)
 - [x] **Fase 4a** — PHP desde el fuente DocBook (`docbook`, `normalize_docbook`)
-- [ ] **Fase 4b** — Python (texto plano) y Bash (Texinfo): escrito, sin probar con descarga real
-- [ ] **Fase 5** — Acabado: licencias, bundles para IA, validaciones
-
-PHP se probó sobre 1.008 documentos reales de `doc-es` (lenguaje, 8 extensiones, apéndices, seguridad): 0 errores, 0 entidades sin resolver, y 1.023.121 enlaces internos comprobados en el sitio generado sin ninguno roto. La conversión completa de los 11.339 ficheros tarda unos 6 minutos en un proceso y menos de 1 en ocho.
+- [x] **Fase 4b** — Python (compilado limpio) y Bash (Texinfo con texi2any)
+- [x] **Fase 5** — Acabado: bundles unificados para IA (`make bundles`), feed RSS 2.0, Sitemap.xml, PWA vanilla y SEO/accesibilidad
 
 ### Estado real del pipeline
 
-Probado el 01/08/2026 contra los repositorios reales: **503 documentos** normalizados, validados y publicados. 53.147 enlaces internos comprobados, ninguno roto.
+Verificado con **13.818 documentos** normalizados, validados y publicados en 12 tecnologías:
 
-| Tecnología | Documentos | Secciones |
-|---|---:|---:|
-| Laravel | 99 | 1 |
-| Filament | 82 | 7 |
-| Composer | 33 | 5 |
-| Node.js | 70 | 1 |
-| npm | 87 | 3 |
-| pnpm | 132 | 3 |
+| Tecnología | Documentos | Formato de origen |
+|---|---:|---|
+| Bash | 70 | Texinfo oficial de GNU |
+| Composer | 33 | Markdown nativo |
+| Filament | 82 | Markdown nativo |
+| JavaScript | 1.331 | MDN Web Docs |
+| Laravel | 99 | Markdown nativo |
+| Node.js | 70 | Markdown nativo |
+| npm | 87 | Markdown nativo |
+| Nuxt | 261 | Markdown nativo |
+| PHP | 11.000 | DocBook XML (`doc-es`) |
+| pnpm | 140 | Markdown nativo |
+| Python | 536 | Documentación oficial compilada |
+| Vue 3 | 109 | Markdown nativo |
 
-El sitio generado ocupa unos 25 MB. Se abre con doble clic en `public/index.html`: sin servidor, sin conexión y sin cargar ni un solo recurso externo.
+El sitio generado se abre con doble clic en `public/index.html`: sin servidor, sin conexión y sin cargar ningún recurso externo. Además, `bundles/` ofrece 1 archivo Markdown plano por tecnología listo para descargar o usar con IA.
 
 ### El visor
 

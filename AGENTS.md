@@ -98,6 +98,7 @@ Tres capas, tres estados. El flujo va siempre en una dirección:
 │   ├── templates/         ← Jinja2, FUERA del código Python
 │   └── assets/            ← CSS, JS y fuentes locales
 │
+├── bundles/               ← markdown consolidado por tecnología (versionado)
 ├── src/<tecnologia>/      ← markdown canónico
 ├── work/                  ← efímero
 └── public/                ← generado
@@ -293,10 +294,10 @@ make update WORK_DIR=/tmp/docs-work
 | 2 · Markdown nativo | Hecha | `fetch.py`, `normalize.py`, `check.py` |
 | 3 · Generador de sitio | Hecha | `build.py`, `search.py` |
 | 4a · PHP desde DocBook | Hecha | `docbook.py`, `normalize_docbook.py` |
-| 4b · Python (texto) y Bash (Texinfo) | Sin probar con descarga real | `normalize_text.py`, `adapters/archive.py` |
-| 5 · Acabado | Pendiente | `bundle.py` |
+| 4b · Python y Bash | Hecha | `normalize_text.py`, `adapters/archive.py` |
+| 5 · Acabado | Hecha | `bundle.py` (bundles IA, RSS 2.0, PWA vanilla, SEO) |
 
-Verificado el 01/08/2026 contra los repositorios reales: 503 documentos en Laravel, Filament, Composer, Node.js, npm y pnpm. 53.147 enlaces internos comprobados, ninguno roto.
+Verificado: 13.818 documentos en 12 tecnologías (Bash, Composer, Filament, JavaScript, Laravel, Node.js, npm, Nuxt, PHP, pnpm, Python, Vue 3).
 
 `make test` ejecuta 16 comprobaciones del normalizador sin red ni descargas. Ejecútalo siempre antes de dar por buena una modificación de `normalize.py`.
 
