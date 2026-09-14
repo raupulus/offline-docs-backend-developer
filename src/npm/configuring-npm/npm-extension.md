@@ -7,7 +7,7 @@ source_commit: 278df04d3
 source_path: configuring-npm/npm-extension.md
 technology: npm
 version: latest
-license: TODO-VERIFICAR
+license: Artistic-2.0
 retrieved_at: '2026-08-02'
 section: configuring-npm
 order: 730
