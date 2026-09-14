@@ -1,0 +1,233 @@
+# ═══════════════════════════════════════════════════════════════════
+# Catálogo de fuentes de documentación
+#
+# Añadir una tecnología = añadir una entrada aquí. No escribas scripts.
+# Ver AGENTS.md sección 4 para el procedimiento completo.
+#
+# Cifras de "ficheros" y "peso" verificadas el 31/07/2026 clonando cada
+# repositorio. Sirven de referencia: si un fetch devuelve un volumen muy
+# distinto, algo ha cambiado en el origen y hay que revisarlo.
+# ═══════════════════════════════════════════════════════════════════
+
+version: 1
+
+defaults:
+  # Todo clon es superficial y parcial. Nunca clones completos.
+  depth: 1
+  filter: "blob:none"
+  # Idioma preferido cuando la fuente ofrece traducciones
+  language: es
+  fallback_language: en
+
+
+sources:
+
+  # ─────────────────────────────────────────────────────────────────
+  # MARKDOWN NATIVO — sin conversión, coste trivial
+  # ─────────────────────────────────────────────────────────────────
+
+  laravel:
+    name: Laravel
+    adapter: git_markdown
+    repo: https://github.com/laravel/docs.git
+    # Rama fijada a propósito. laravel/docs mantiene 10.x … 13.x activas;
+    # seguir master traería doc de una versión que no uso.
+    ref: "12.x"
+    include: ["*.md"]
+    exclude: ["readme.md", "license.md", "contributions.md", "documentation.md"]
+    license: MIT
+    homepage: https://laravel.com/docs
+    url_template: "https://laravel.com/docs/12.x/{slug}"
+    expect: { files: 103, size_mb: 3.3 }
+
+  filament:
+    name: Filament
+    adapter: git_markdown
+    repo: https://github.com/filamentphp/filament.git
+    ref: "4.x"
+    # CRÍTICO: sin este sparse el clon trae vendor/ y node_modules
+    # (~60.000 ficheros). Con él son 82 .md y 1,5 MB.
+    sparse: ["/packages/*/docs"]
+    sparse_cone: false
+    strip_prefix: "packages"
+    # Los ficheros vienen como 01-installation.md; el prefijo se quita
+    # del nombre y el orden se guarda en _toc.json
+    strip_numeric_prefix: true
+    license: MIT
+    homepage: https://filamentphp.com/docs
+    expect: { files: 82, size_mb: 1.5 }
+
+  composer:
+    name: Composer
+    adapter: git_markdown
+    repo: https://github.com/composer/composer.git
+    ref: main
+    sparse: ["doc"]
+    strip_prefix: "doc"
+    license: MIT
+    homepage: https://getcomposer.org/doc/
+    expect: { files: 33, size_mb: 0.5 }
+
+  nodejs:
+    name: Node.js
+    adapter: git_markdown
+    repo: https://github.com/nodejs/node.git
+    ref: main
+    sparse: ["doc/api"]
+    strip_prefix: "doc/api"
+    license: MIT
+    homepage: https://nodejs.org/api/
+    expect: { files: 70, size_mb: 4.4 }
+
+  npm:
+    name: npm
+    adapter: git_markdown
+    repo: https://github.com/npm/cli.git
+    ref: latest
+    sparse: ["docs/lib/content"]
+    strip_prefix: "docs/lib/content"
+    # Verificar la licencia leyendo el fichero LICENSE del repo antes
+    # de publicar. No darla por supuesta.
+    license: TODO-VERIFICAR
+    homepage: https://docs.npmjs.com/
+    expect: { files: 87, size_mb: 0.6 }
+
+  pnpm:
+    name: pnpm
+    adapter: git_markdown
+    repo: https://github.com/pnpm/pnpm.io.git
+    ref: main
+    sparse: ["docs"]
+    strip_prefix: "docs"
+    # 9 ficheros .mdx con componentes JSX de Docusaurus. El normalizador
+    # debe eliminar los imports y las etiquetas de componente, o el
+    # markdown resultante sale con ruido.
+    include: ["*.md", "*.mdx"]
+    strip_mdx_components: true
+    license: MIT
+    homepage: https://pnpm.io/motivation
+    expect: { files: 132, size_mb: 0.75 }
+
+
+  # ─────────────────────────────────────────────────────────────────
+  # REQUIEREN CONVERSIÓN — pandoc, adaptador html_tarball
+  # ─────────────────────────────────────────────────────────────────
+
+  php:
+    name: PHP
+    adapter: docbook_xml
+    # Se usa el FUENTE en DocBook, no el tarball de HTML de php.net.
+    #
+    # El HTML compilado obliga a recortar navegación, migas de pan, pie
+    # y notas de usuario de cada una de las ~11.700 páginas, y sus
+    # ejemplos de código no van en <pre> sino en <div class="phpcode">
+    # con spans de color, lo que hay que rearmar a mano.
+    #
+    # El XML no tiene nada de eso porque es estructura, no presentación.
+    # Además viene de git: clon superficial, commit registrado y
+    # `git diff` para ver qué cambió entre reconstrucciones.
+    repo: https://github.com/php/doc-es.git
+    ref: master
+    # Las ~1.500 entidades (&reftitle.description; y compañía) se
+    # definen en los .ent del propio repo más los de doc-base.
+    entity_repo: https://github.com/php/doc-base.git
+    entity_sparse: ["entities"]
+    include: ["*.xml"]
+    code_language: php
+    license: CC-BY-3.0
+    homepage: https://www.php.net/manual/es
+    # La traducción al español está incompleta en partes. Cada fichero
+    # anota su estado, y el pipeline lo vuelca al front-matter como
+    # translation_status y translation_reviewed.
+    notes: "Para inglés, cambiar repo a https://github.com/php/doc-en.git"
+    expect: { files: 11339 }
+
+  python:
+    name: Python
+    adapter: plaintext
+    # docs.python.org publica un bundle de TEXTO PLANO junto al de HTML:
+    # es la salida del builder `text` de Sphinx. No hay nada que
+    # parsear, ni HTML que recortar, ni pandoc de por medio.
+    #
+    # NO usar el .rst del repo de CPython: pandoc no entiende las
+    # directivas de Sphinx y las vuelca como HTML crudo. Verificado el
+    # 31/07/2026.
+    # Traducción oficial al español. Para inglés, quitar el /es/ de
+    # ambas URLs. La traducción es parcial: lo no traducido sale en
+    # inglés, que es el comportamiento de docs.python.org.
+    url: https://docs.python.org/es/3/archives/python-3.14-docs-text.tar.bz2
+    exclude: ["_sources", "_static"]
+    license: PSF-2.0
+    homepage: https://docs.python.org/es/3/
+    notes: "Actualizar el número de versión de la URL al subir de rama."
+    expect: { version: "3.14" }
+
+  javascript:
+    name: JavaScript
+    adapter: git_markdown
+    # MDN es la referencia de facto del lenguaje. Solo la sección de
+    # JavaScript: el repo entero pasa de 1 GB.
+    repo: https://github.com/mdn/content.git
+    ref: main
+    sparse: ["files/en-us/web/javascript"]
+    strip_prefix: "files/en-us/web/javascript"
+    license: CC-BY-SA-2.5
+    homepage: https://developer.mozilla.org/es/docs/Web/JavaScript
+    expect: { files: 1331 }
+
+  vue:
+    name: Vue 3
+    adapter: git_markdown
+    repo: https://github.com/vuejs/docs.git
+    ref: main
+    sparse: ["src"]
+    strip_prefix: "src"
+    exclude: ["index.md", "translations"]
+    license: MIT
+    homepage: https://vuejs.org/guide/introduction.html
+    expect: { files: 119 }
+
+  nuxt:
+    name: Nuxt
+    adapter: git_markdown
+    repo: https://github.com/nuxt/nuxt.git
+    ref: main
+    sparse: ["docs"]
+    strip_prefix: "docs"
+    strip_numeric_prefix: true
+    license: MIT
+    homepage: https://nuxt.com/docs
+    expect: { files: 261 }
+
+  bash:
+    name: Bash
+    adapter: texinfo
+    # El fuente del manual es Texinfo y viene dentro del tarball de
+    # bash. texi2any lo pasa a DocBook y de ahí entra por docbook.py,
+    # el mismo camino que PHP. Sin HTML en ningún punto.
+    #
+    # Requiere texi2any:  apt install texinfo  /  brew install texinfo
+    url: https://ftp.gnu.org/gnu/bash/bash-5.3.tar.gz
+    texi_file: "doc/bashref.texi"
+    # bashref.texi hace @include de ficheros de readline que están en
+    # otra carpeta del tarball; sin esta ruta de búsqueda texi2any
+    # falla con 'could not find rluser.texi'.
+    texi_include: ["lib/readline/doc"]
+    split_on: ["h2"]
+    code_language: bash
+    license: GFDL-1.3
+    homepage: https://www.gnu.org/software/bash/manual/
+    notes: "Fijar la versión a mano; ftp.gnu.org no ofrece un enlace 'latest'."
+    expect: { version: "5.3" }
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Candidatas para más adelante — mismo coste que las actuales.
+# Descomenta y verifica la ruta de docs antes de usar.
+# ═══════════════════════════════════════════════════════════════════
+#
+#   livewire, alpinejs, tailwind, vue        → ecosistema web
+#   git, docker, postgresql, mariadb, redis  → sistemas
+#   systemd, nginx                            → servidor
+#   raspberrypi, esp-idf, micropython         → IoT y electrónica
+#   platformio, arduino
