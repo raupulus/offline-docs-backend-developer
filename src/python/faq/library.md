@@ -1,0 +1,653 @@
+---
+title: Preguntas frecuentes sobre bibliotecas y extensiones
+source_url: https://docs.python.org/es/3
+source_path: faq/library.txt
+technology: python
+version: '3.14'
+license: PSF-2.0
+retrieved_at: '2026-08-02'
+section: faq
+order: 1100
+---
+
+# Preguntas frecuentes sobre bibliotecas y extensiones
+
+## Cuestiones generales sobre bibliotecas
+
+### ¿Cómo encuentro un módulo o aplicación para ejecutar la tarea X?
+
+Vea la referencia de bibliotecas para comprobar si existe un módulo
+relevante en la biblioteca estándar. (Eventualmente aprenderá lo que
+hay en la biblioteca estándar y será capaz de saltarse este paso.)
+
+Para paquetes de terceros, busque Python Package Index o pruebe Google
+u otro motor de búsqueda web. La búsqueda de "Python" más una palabra
+clave o dos para su tema de interés generalmente encontrará algo útil.
+
+### ¿Dónde está el fichero fuente *math.py* (*socket.py*, *regex.py*, etc.)?
+
+Si no puede encontrar un fichero fuente para un módulo, puede ser un
+módulo incorporado o cargado dinámicamente implementado en C, C++ u
+otro lenguaje compilado. En este caso puede no disponer del fichero
+fuente o puede ser algo como "mathmodule.c", en algún lugar de un
+directorio fuente C (fuera del Python *Path*).
+
+Hay (al menos) tres tipos de módulos en Python:
+
+1. módulos escritos en Python (.py);
+
+2. módulos escritos en C y cargados dinámicamente (*.dll, .pyd, .so,
+   .sl*, etc.);
+
+3. módulos escritos en C y enlazados con el intérprete; para obtener
+   una lista de estos, escriba:
+
+      import sys
+      print(sys.builtin_module_names)
+
+### ¿Cómo hago ejecutable un script Python en Unix?
+
+Necesita hacer dos cosas: el modo del fichero del script debe ser
+ejecutable y la primera línea debe comenzar con "#!" seguido de la
+ruta al intérprete de Python.
+
+Lo primero se hace ejecutando "chmod +x scriptfile" o bien "chmod 755
+scriptfile".
+
+Lo segundo se puede hacer de distintas maneras. La manera más directa
+es escribir
+
+   #!/usr/local/bin/python
+
+en la primera línea de su fichero, usando la ruta donde está instalado
+el intérprete de Python en su plataforma.
+
+Si quiere que el script sea independiente de donde se ubique el
+intérprete de Python, puede usar el programa **env**. Casi todas las
+variantes de Unix soportan lo siguiente, asumiendo que el intérprete
+de Python está en un directorio del "PATH" de usuario:
+
+   #!/usr/bin/env python
+
+*No* haga esto para scripts CGI. La variable "PATH" para scripts CGI
+es mínima, así que necesita usar la ruta real absoluta al intérprete.
+
+Ocasionalmente, un entorno de usuario está tan lleno que el programa
+**/usr/bin/env** falla; o bien no existe el programa env. En ese caso,
+puede intentar el siguiente truco (gracias a Alex Rezinsky):
+
+   #! /bin/sh
+   """:"
+   exec python $0 ${1+"$@"}
+   """
+
+Una pequeña desventaja es que esto define el *__doc__* del script. Sin
+embargo, puede arreglarlo añadiendo
+
+   __doc__ = """...Whatever..."""
+
+### ¿Hay un paquete curses/termcap para Python?
+
+Para variantes Unix: La distribución estándar de Python viene con un
+módulo curses en el subdirectorio Modules, aunque no está compilado
+por defecto. (Nótese que esto no está disponible en la distribución
+Windows — no hay módulo curses para Windows.)
+
+El módulo "curses" soporta características básicas de cursores así
+como muchas funciones adicionales de ncurses y cursores SYSV como
+color, soporte para conjuntos de caracteres alternativos, pads, y
+soporte para ratón. Esto significa que el módulo no es compatible con
+sistemas operativos que sólo tienen cursores BSD, pero no parece que
+ningún sistema operativo actualmente mantenido caiga dentro de esta
+categoría.
+
+### ¿Hay un equivalente en Python al onexit() de C?
+
+The "atexit" module provides a register function that is similar to
+C's "onexit()".
+
+### ¿Por qué no funcionan mis manejadores de señales?
+
+El problema más común es que el manejador de señales esté declarado
+con la lista incorrecta de argumentos. Se llama como
+
+   handler(signum, frame)
+
+así que debería declararse con dos argumentos:
+
+   def handler(signum, frame):
+       ...
+
+## Tareas comunes
+
+### ¿Cómo pruebo un programa o un componente Python?
+
+Python viene con dos *frameworks* de *testing*. El módulo "doctest"
+encuentra ejemplos en los docstrings para un módulo y los ejecuta,
+comparando la salida con la salida esperada especificada en la cadena
+de documentación.
+
+El módulo "unittest" es un *framework* de *testing* más agradable y
+modelado sobre los *frameworks* de *testing* de Java y Smalltalk.
+
+Para hacer más fácil el *testing*, debería usar un buen diseño modular
+en su programa. Su programa debería tener casi toda la funcionalidad
+encapsulada en funciones o en métodos de clases — y esto algunas veces
+tiene el efecto sorprendente y encantador de que su programa funcione
+más rápido (porque los accesos a las variables locales son más rápidas
+que los accesos a las variables globales). Además el programa debería
+evitar depender de la mutación de variables globales, ya que esto
+dificulta mucho más hacer el *testing*.
+
+La "lógica global principal" de su programa puede ser tan simple como
+
+   if __name__ == "__main__":
+       main_logic()
+
+al final del módulo principal de su programa.
+
+Una vez que su programa esté organizado en una colección manejable de
+funciones y comportamientos de clases, usted debería escribir
+funciones de comprobación que ejerciten los comportamientos. Se puede
+asociar un conjunto de pruebas a cada módulo. Esto suena a mucho
+trabajo, pero gracias a que Python es tan conciso y flexible, se hace
+sorprendentemente fácil. Puede codificar de manera mucho más agradable
+y divertida escribiendo funciones de comprobación en paralelo con el
+"código de producción", ya que esto facilita encontrar antes errores e
+incluso fallos de diseño.
+
+Los "módulos de soporte" que no tienen la intención de estar en el
+módulo principal de un programa pueden incluir un auto *test* del
+módulo.
+
+   if __name__ == "__main__":
+       self_test()
+
+Incluso los programas que interactúan con interfaces externas
+complejas se pueden comprobar cuando las interfaces externas no están
+disponibles usando interfaces "simuladas" implementadas en Python.
+
+### ¿Cómo creo documentación a partir de los docstrings?
+
+El módulo "pydoc" puede crear HTML desde los docstrings existentes en
+su código fuente Python. Una alternativa para crear documentación API
+estrictamente desde docstrings es epydoc.  Sphinx también puede
+incluir contenido docstring.
+
+### ¿Cómo consigo presionar una única tecla cada vez?
+
+Para variantes Unix hay varias soluciones. Lo más directo es hacerlo
+usando cursores, pero curses es un módulo bastante amplio para
+aprenderlo.
+
+## Hilos
+
+### ¿Cómo programo usando hilos?
+
+Asegúrese de usar el módulo "threading" y no el módulo "_thread". El
+módulo "threading" construye abstracciones convenientes sobre las
+primitivas de bajo nivel proporcionadas por el módulo "_thread".
+
+### Ninguno de mis hilos parece funcionar: ¿por qué?
+
+Tan pronto como el hilo principal termine, se matan todos los hilos.
+Su hilo principal está corriendo demasiado rápido, sin dar tiempo a
+los hilos para hacer algún trabajo.
+
+Una solución sencilla es añadir un *sleep* al final del programa que
+sea suficientemente largo para que todos los hilos terminen:
+
+   import threading, time
+
+   def thread_task(name, n):
+       for i in range(n):
+           print(name, i)
+
+   for i in range(10):
+       T = threading.Thread(target=thread_task, args=(str(i), i))
+       T.start()
+
+   time.sleep(10)  # <---------------------------!
+
+Por ahora (en muchas plataformas) los hilos no corren en paralelo,
+sino que parece que corren secuencialmente, ¡uno a la vez! La razón es
+que el planificador de hilos del sistema operativo no inicia un nuevo
+hilo hasta que el hilo anterior está bloqueado.
+
+Una solución sencilla es añadir un pequeño *sleep* al comienzo de la
+función run:
+
+   def thread_task(name, n):
+       time.sleep(0.001)  # <--------------------!
+       for i in range(n):
+           print(name, i)
+
+   for i in range(10):
+       T = threading.Thread(target=thread_task, args=(str(i), i))
+       T.start()
+
+   time.sleep(10)
+
+En vez de intentar adivinar un valor de retardo adecuado para
+"time.sleep()", es mejor usar algún tipo de mecanismo de semáforo. Una
+idea es usar el módulo "queue" para crear un objeto cola, permitiendo
+que cada hilo añada un *token* a la cola cuando termine, y permitiendo
+al hilo principal leer tantos tokens de la cola como hilos haya.
+
+### ¿Cómo puedo dividir trabajo entre un grupo de hilos?
+
+La manera más fácil es usar el nuevo módulo "concurrent.futures",
+especialmente el módulo "ThreadPoolExecutor".
+
+O, si quiere tener un control más preciso sobre el algoritmo de
+despacho, puede escribir su propia lógica manualmente. Use el módulo
+"queue" para crear una cola que contenga una lista de trabajos. La
+clase "Queue" mantiene una lista de objetos y tiene un método
+".put(obj)" que añade elementos a la cola y un método ".get()" que los
+retorna. Esta clase se encargará de los bloqueos necesarios para
+asegurar que cada trabajo se reparte exactamente una vez.
+
+Aquí hay un ejemplo trivial:
+
+   import threading, queue, time
+
+   # The worker thread gets jobs off the queue.  When the queue is empty, it
+   # assumes there will be no more work and exits.
+   # (Realistically workers will run until terminated.)
+   def worker():
+       print('Running worker')
+       time.sleep(0.1)
+       while True:
+           try:
+               arg = q.get(block=False)
+           except queue.Empty:
+               print('Worker', threading.current_thread(), end=' ')
+               print('queue empty')
+               break
+           else:
+               print('Worker', threading.current_thread(), end=' ')
+               print('running with argument', arg)
+               time.sleep(0.5)
+
+   # Create queue
+   q = queue.Queue()
+
+   # Start a pool of 5 workers
+   for i in range(5):
+       t = threading.Thread(target=worker, name='worker %i' % (i+1))
+       t.start()
+
+   # Begin adding work to the queue
+   for i in range(50):
+       q.put(i)
+
+   # Give threads time to run
+   print('Main thread sleeping')
+   time.sleep(5)
+
+Cuando se ejecute, esto producirá la siguiente salida:
+
+   Running worker
+   Running worker
+   Running worker
+   Running worker
+   Running worker
+   Main thread sleeping
+   Worker <Thread(worker 1, started 130283832797456)> running with argument 0
+   Worker <Thread(worker 2, started 130283824404752)> running with argument 1
+   Worker <Thread(worker 3, started 130283816012048)> running with argument 2
+   Worker <Thread(worker 4, started 130283807619344)> running with argument 3
+   Worker <Thread(worker 5, started 130283799226640)> running with argument 4
+   Worker <Thread(worker 1, started 130283832797456)> running with argument 5
+   ...
+
+Consulte la documentación del módulo para más detalles; la clase
+"Queue" proporciona una interfaz llena de características.
+
+### ¿Qué tipos de mutación de valores globales son *thread-safe*?
+
+Un *global interpreter lock* (GIL) se usa internamente para asegurar
+que sólo un hilo corre a la vez en la VM de Python. En general, Python
+ofrece cambiar entre hilos sólo en instrucciones bytecode; la
+frecuencia con la que cambia se puede fijar vía
+"sys.setswitchinterval()". Cada instrucción bytecode y por lo tanto,
+toda la implementación de código C alcanzada por cada instrucción, es
+atómica desde el punto de vista de un programa Python.
+
+En teoría, esto significa que un informe exacto requiere de un
+conocimiento exacto de la implementación en bytecode de la PVM. En la
+práctica, esto significa que las operaciones entre variables
+compartidas de tipos de datos *built-in* (enteros, listas,
+diccionarios, etc.) que "parecen atómicas" realmente lo son.
+
+Por ejemplo, las siguientes operaciones son todas atómicas (L, L1, L2
+son listas, D, D1, D2 son diccionarios, *x, y* son objetos, *i, j* son
+enteros):
+
+   L.append(x)
+   L1.extend(L2)
+   x = L[i]
+   x = L.pop()
+   L1[i:j] = L2
+   L.sort()
+   x = y
+   x.field = y
+   D[x] = y
+   D1.update(D2)
+   D.keys()
+
+Estas no lo son:
+
+   i = i+1
+   L.append(L[-1])
+   L[i] = L[j]
+   D[x] = D[x] + 1
+
+Operations that replace other objects may invoke those other objects'
+"__del__()" method when their reference count reaches zero, and that
+can affect things.  This is especially true for the mass updates to
+dictionaries and lists.  When in doubt, use a mutex!
+
+### ¿Podemos deshacernos del *Global Interpreter Lock*?
+
+El *global interpreter lock* (GIL) se percibe a menudo como un
+obstáculo en el despliegue de Python sobre máquinas servidoras finales
+de múltiples procesadores, porque un programa Python multihilo
+efectivamente sólo usa una CPU, debido a la exigencia de que (casi)
+todo el código Python sólo puede correr mientras el GIL esté activado.
+
+With the approval of **PEP 703** work is now underway to remove the
+GIL from the CPython implementation of Python.  Initially it will be
+implemented as an optional compiler flag when building the
+interpreter, and so separate builds will be available with and without
+the GIL.  Long-term, the hope is to settle on a single build, once the
+performance implications of removing the GIL are fully understood.
+Python 3.13 is likely to be the first release containing this work,
+although it may not be completely functional in this release.
+
+The current work to remove the GIL is based on a fork of Python 3.9
+with the GIL removed by Sam Gross. Prior to that, in the days of
+Python 1.5, Greg Stein actually implemented a comprehensive patch set
+(the "free threading" patches) that removed the GIL and replaced it
+with fine-grained locking.  Adam Olsen did a similar experiment in his
+python-safethread project.  Unfortunately, both of these earlier
+experiments exhibited a sharp drop in single-thread performance (at
+least 30% slower), due to the amount of fine-grained locking necessary
+to compensate for the removal of the GIL.  The Python 3.9 fork is the
+first attempt at removing the GIL with an acceptable performance
+impact.
+
+The presence of the GIL in current Python releases doesn't mean that
+you can't make good use of Python on multi-CPU machines! You just have
+to be creative with dividing the work up between multiple *processes*
+rather than multiple *threads*.  The "ProcessPoolExecutor" class in
+the new "concurrent.futures" module provides an easy way of doing so;
+the "multiprocessing" module provides a lower-level API in case you
+want more control over dispatching of tasks.
+
+El uso sensato de extensiones C también ayudará; si usa una extensión
+C para ejecutar una tarea que consume mucho tiempo, la extensión puede
+liberar al GIL mientras el hilo de ejecución esté en el código C y
+permite a otros hilos hacer trabajo. Algunos módulos de la biblioteca
+estándar tales como "zlib" y "hashlib" ya lo hacen.
+
+An alternative approach to reducing the impact of the GIL is to make
+the GIL a per-interpreter-state lock rather than truly global. This
+was first implemented in Python 3.12 and is available in the C API. A
+Python interface to it is expected in Python 3.13. The main limitation
+to it at the moment is likely to be 3rd party extension modules, since
+these must be written with multiple interpreters in mind in order to
+be usable, so many older extension modules will not be usable.
+
+## Entrada y salida
+
+### ¿Cómo borro un fichero? (Y otras preguntas sobre ficheros...)
+
+Use "os.remove(filename)" o "os.unlink(filename)"; para la
+documentación, vea el módulo "os". Las dos funciones son idénticas;
+"unlink()" es simplemente el nombre de la llamada al sistema UNIX para
+esta función.
+
+Para borrar un directorio, use "os.rmdir()"; use "os.mkdir()" para
+crear uno. "os.makedirs(path)" creará cualquier directorio intermedio
+que no exista en "path". "os.removedirs(path)" borrará los directorios
+intermedios siempre y cuando estén vacíos; si quiere borrar un árbol
+de directorios completo y sus contenidos, use "shutil.rmtree()".
+
+Para renombrar un fichero, use "os.rename(old_path, new_path)".
+
+Para truncar un fichero, ábralo usando "f = open(filename, "rb+")", y
+use "f.truncate(offset)"; el desplazamiento toma por defecto la
+posición actual de búsqueda. También existe "os.ftruncate(fd, offset)"
+para ficheros abiertos con "os.open()",  donde *fd* es el descriptor
+del fichero (un entero pequeño).
+
+El módulo "shutil" también contiene distintas funciones para trabajar
+con ficheros incluyendo "copyfile()", "copytree()" y "rmtree()".
+
+### ¿Cómo copio un fichero?
+
+El módulo "shutil" contiene una función "copyfile()". Nótese que en
+volúmenes de Windows NTFS, no copia los flujos alternativos de datos
+(ADS) ni las bifurcaciones de recursos (resource forks) en los
+volúmenes macOS HFS+, aunque ahora ambos rara vez son utilizados.
+Además tampoco copia los permisos ni metadatos de los archivos, pero
+si se usa "shutil.copy2()" en su lugar, se preservará la mayor parte
+(aunque no todo).
+
+### ¿Cómo leo (o escribo) datos binarios?
+
+Para leer o escribir formatos binarios de datos complejos, es mejor
+usar el módulo "struct". Esto le permite tomar una cadena de texto que
+contiene datos binarios (normalmente números) y convertirla a objetos
+de Python; y viceversa.
+
+Por ejemplo, el siguiente código lee de un fichero dos enteros de
+2-bytes y uno de 4-bytes en formato *big-endian*:
+
+   import struct
+
+   with open(filename, "rb") as f:
+       s = f.read(8)
+       x, y, z = struct.unpack(">hhl", s)
+
+El '>' en la cadena de formato fuerza los datos a *big-endian*; la
+letra 'h' lee un "entero corto" (2 bytes), y 'l' lee un "entero largo"
+(4 bytes) desde la cadena de texto.
+
+Para datos que son más regulares (por ejemplo una lista homogénea de
+enteros o flotantes), puede también usar el módulo "array".
+
+Nota:
+
+  Para leer y escribir datos binarios, es obligatorio abrir el fichero
+  en modo binario (aquí, pasando ""rb"" a "open()"). Si, en cambio,
+  usa ""r"" (por defecto), el fichero se abrirá en modo texto y
+  "f.read()" retornará objetos "str" en vez de objetos "bytes".
+
+### No consigo usar os.read() en un *pipe* creado con os.popen(); ¿por qué?
+
+"os.read()" es una función de bajo nivel que recibe un descriptor de
+fichero, un entero pequeño representando el fichero abierto.
+"os.popen()" crea un objeto fichero de alto nivel, el mismo tipo que
+retorna la función *built-in* "open()". Así, para leer *n* bytes de un
+*pipe* *p* creado con "os.popen()", necesita usar "p.read(n)".
+
+### ¿Cómo accedo al puerto serial (RS232)?
+
+Para Win32, OSX, Linux, BSD, Jython, IronPython:
+
+   pyserial
+
+Para Unix, vea una publicación Usenet de Mitch Chapman:
+
+   https://groups.google.com/groups?selm=34A04430.CF9@ohioee.com
+
+### ¿Por qué al cerrar sys.stdout (stdin, stderr) realmente no se cierran?
+
+Los *objetos de tipo fichero* en Python son una capa de abstracción de
+alto nivel sobre los descriptores de ficheros de bajo nivel de C.
+
+Para la mayoría de objetos de tipo fichero que cree en Python vía la
+función *built-in* "open()", "f.close()" marca el objeto de tipo
+fichero Python como ya cerrado desde el punto de vista de Python, y
+también ordena el cierre del descriptor de fichero subyacente en C.
+Esto además ocurre automáticamente en el destructor de "f", cuando "f"
+se convierte en basura.
+
+Pero *stdin*, *stdout* y *stderr* se tratan de manera especial en
+Python, debido a un estatus especial que también tienen en C.
+Ejecutando "sys.stdout.close()" marca el objeto fichero de nivel
+Python para ser cerrado, pero *no* cierra el descriptor de fichero
+asociado en C.
+
+Para cerrar el descriptor de fichero subyacente en C para uno de estos
+tres casos, debería primero asegurarse de que eso es realmente lo que
+quiere hacer (por ejemplo, puede confundir módulos de extensión
+intentado hacer *I/O*). Si es así, use "os.close()":
+
+   os.close(stdin.fileno())
+   os.close(stdout.fileno())
+   os.close(stderr.fileno())
+
+O puede usar las constantes numéricas 0, 1 y 2, respectivamente.
+
+## Programación de Redes/Internet
+
+### ¿Qué herramientas de Python existen para WWW?
+
+Vea los capítulos titulados Protocolos y soporte de Internet y Manejo
+de datos de internet en el manual de referencia de bibliotecas. Python
+tiene muchos módulos que le ayudarán a construir sistemas web del lado
+del servidor y del lado del cliente.
+
+Paul Boddie mantiene un resumen de los *frameworks* disponibles en
+https://wiki.python.org/moin/WebProgramming.
+
+### ¿Qué modulo debería usar para generación de HTML?
+
+Puede encontrar una colección de enlaces útiles en la página wiki de
+programación web.
+
+### ¿Cómo envío correo desde un script Python?
+
+Use el módulo  "smtplib" de la biblioteca estándar.
+
+Aquí hay un remitente simple interactivo que lo usa. Este método
+trabajará en cualquier máquina que soporte un *listener SMTP*.
+
+   import sys, smtplib
+
+   fromaddr = input("From: ")
+   toaddrs  = input("To: ").split(',')
+   print("Enter message, end with ^D:")
+   msg = ''
+   while True:
+       line = sys.stdin.readline()
+       if not line:
+           break
+       msg += line
+
+   # The actual mail send
+   server = smtplib.SMTP('localhost')
+   server.sendmail(fromaddr, toaddrs, msg)
+   server.quit()
+
+Una alternativa sólo para UNIX es usar *sendmail*. La ubicación del
+programa *sendmail* varía entre sistemas; algunas veces está en
+"/usr/lib/sendmail", otras veces en "/usr/sbin/sendmail". El manual de
+*sendmail* le ayudará. Aquí hay un ejemplo de código:
+
+   import os
+
+   SENDMAIL = "/usr/sbin/sendmail"  # sendmail location
+   p = os.popen("%s -t -i" % SENDMAIL, "w")
+   p.write("To: receiver@example.com\n")
+   p.write("Subject: test\n")
+   p.write("\n")  # blank line separating headers from body
+   p.write("Some text\n")
+   p.write("some more text\n")
+   sts = p.close()
+   if sts != 0:
+       print("Sendmail exit status", sts)
+
+### ¿Cómo evito el bloqueo en el método *connect()* de un *socket*?
+
+El módulo "select" es mayoritariamente usado para ayudar con
+entrada/salida de sockets.
+
+To prevent the TCP connect from blocking, you can set the socket to
+non-blocking mode.  Then when you do the "connect()", you will either
+connect immediately (unlikely) or get an exception that contains the
+error number as ".errno". "errno.EINPROGRESS" indicates that the
+connection is in progress, but hasn't finished yet.  Different OSes
+will return different values, so you're going to have to check what's
+returned on your system.
+
+You can use the "connect_ex()" method to avoid creating an exception.
+It will just return the errno value. To poll, you can call
+"connect_ex()" again later -- "0" or "errno.EISCONN" indicate that
+you're connected -- or you can pass this socket to "select.select()"
+to check if it's writable.
+
+Nota:
+
+  The "asyncio" module provides a general purpose single-threaded and
+  concurrent asynchronous library, which can be used for writing non-
+  blocking network code. The third-party Twisted library is a popular
+  and feature-rich alternative.
+
+## Bases de datos
+
+### ¿Hay paquetes para interfaces a bases de datos en Python?
+
+Sí.
+
+Interfaces a *hashes* basados en disco tales como "DBM" y "GDBM" están
+también incluidas en Python estándar. También hay un módulo "sqlite3",
+que proporciona una base de datos relacional ligera basada en disco.
+
+Está disponible el soporte para la mayoría de bases de datos
+relacionales. Vea la página wiki de Programación de Bases de datos
+para más detalles.
+
+### ¿Cómo implementar objetos persistentes en Python?
+
+El módulo de biblioteca "pickle" soluciona esto de una forma muy
+general (aunque todavía no puede almacenar cosas como ficheros
+abiertos, sockets o ventanas), y el módulo de biblioteca "shelve" usa
+*pickle* y *(g)dbm* para crear mapeos persistentes que contienen
+objetos arbitrarios Python.
+
+## Matemáticas y numérica
+
+### ¿Cómo genero números aleatorios en Python?
+
+El módulo estándar "random" implementa un generador de números
+aleatorios. El uso es simple:
+
+   import random
+   random.random()
+
+This returns a random floating-point number in the range [0, 1).
+
+Hay también muchos otros generadores especializados en este módulo,
+tales como:
+
+* "randrange(a, b)" selecciona un entero en el rango [a, b).
+
+* "uniform(a, b)" chooses a floating-point number in the range [a, b).
+
+* "normalvariate(mean, sdev)" muestrea una distribución normal
+  (*Gausiana*).
+
+Algunas funciones de alto nivel operan directamente sobre secuencias,
+tales como:
+
+* "choice(S)" selecciona un elemento aleatorio de una secuencia dada.
+
+* "shuffle(L)" reorganiza una lista in-situ, es decir, la permuta
+  aleatoriamente.
+
+También hay una clase "Random" que usted puede instanciar para crear
+múltiples generadores independientes de valores aleatorios.

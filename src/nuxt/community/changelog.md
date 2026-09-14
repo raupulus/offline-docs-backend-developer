@@ -1,0 +1,121 @@
+---
+title: Releases
+description: Discover the latest releases of Nuxt & Nuxt official modules.
+source_repo: nuxt/nuxt
+source_ref: main
+source_commit: ec5c55e26
+source_path: 5.community/7.changelog.md
+technology: nuxt
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: community
+order: 7
+---
+
+::card-group
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/nuxt
+  to: https://github.com/nuxt/nuxt/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt framework releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/cli
+  to: https://github.com/nuxt/cli/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt CLI (`@nuxt/cli`) releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/a11y
+  to: https://github.com/nuxt/a11y/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt A11y releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/content
+  to: https://github.com/nuxt/content/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt Content releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/devtools
+  to: https://github.com/nuxt/devtools/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt DevTools releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/fonts
+  to: https://github.com/nuxt/fonts/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt Fonts releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/hints
+  to: https://github.com/nuxt/hints/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt Hints releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/image
+  to: https://github.com/nuxt/image/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt Image releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/scripts
+  to: https://github.com/nuxt/scripts/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt Scripts releases.
+  ::
+  ::card
+  ---
+  icon: i-simple-icons-github
+  title: nuxt/ui
+  to: https://github.com/nuxt/ui/releases
+  target: _blank
+  ui.icon.base: text-black dark:text-white
+  ---
+  Nuxt UI releases.
+  ::
+::
+
+::read-more{icon="i-simple-icons-github" to="https://github.com/nuxt" target="_blank"}
+Discover the `nuxt` organization on GitHub
+::

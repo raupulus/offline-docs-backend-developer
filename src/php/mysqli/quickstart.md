@@ -1,0 +1,1164 @@
+---
+title: Guía de inicio rápido
+source_url: https://www.php.net/manual/es/mysqli.quickstart.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/mysqli/quickstart.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: mysqli
+translation_status: ready
+translation_reviewed: false
+translation_revision: c2088ac3e
+order: 56070
+---
+
+## Guía de inicio rápido
+
+Esta guía de inicio rápido ayudará a familiarizarse con la API PHP MySQL.
+
+Proporciona una visión general de la extensión mysqli. Se proporcionan ejemplos de código para todos los aspectos importantes de la API. Los conceptos básicos de la base de datos se explican con la precisión necesaria para comprender las especificidades de los conceptos de MySQL.
+
+Requisitos: Se debe estar familiarizado con el lenguaje de programación PHP, el lenguaje SQL y tener algunos conocimientos básicos con el servidor MySQL.
+
+## Interfaces procedimentales y orientadas a objetos
+
+La extensión mysqli proporciona 2 interfaces. Soporta la programación procedimental así como la programación orientada a objetos.
+
+Los usuarios migrantes desde la antigua extensión mysql preferirán la interfaz procedimental. Esta interfaz es similar a la utilizada por la antigua extensión mysql. En la mayoría de los casos, los nombres de funciones solo difieren por sus prefijos. Algunas funciones mysqli toman un manejador de conexión como primer argumento, mientras que la función correspondiente de la antigua interfaz mysql lo tomaba como argumento opcional en última posición.
+
+Migración fácil desde la antigua extensión mysql
+
+```php
+<?php
+
+$mysqli = mysqli_connect("example.com", "user", "password", "database");
+$result = mysqli_query($mysqli, "SELECT 'No se debe usar la extensión mysql deprecada para nuevos desarrollos. ' AS _msg FROM DUAL");
+$row = mysqli_fetch_assoc($result);
+echo $row['_msg'];
+
+$mysql = mysql_connect("example.com", "user", "password");
+mysql_select_db("test");
+$result = mysql_query("SELECT 'USE la extensión mysqli en su lugar.' AS _msg FROM DUAL", $mysql);
+$row = mysql_fetch_assoc($result);
+echo $row['_msg'];
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    No se debe usar la extensión mysql deprecada para nuevos desarrollos. USE la extensión mysqli en su lugar.
+
+**La interfaz orientada a objetos**
+
+Además de la interfaz procedimental, los usuarios pueden elegir utilizar la interfaz orientada a objetos. La documentación está organizada utilizando esta interfaz. Muestra las funciones agrupadas por sus propósitos, facilitando el inicio de la programación. La sección de referencia proporciona ejemplos sobre las dos sintaxis.
+
+No hay diferencia significativa en términos de rendimiento entre las dos interfaces. Los usuarios pueden hacer su elección según sus preferencias personales.
+
+Interfaces procedimentales y orientadas a objetos
+
+```php
+<?php
+
+$mysqli = mysqli_connect("example.com", "user", "password", "database");
+$result = mysqli_query($mysqli, "SELECT 'Un mundo lleno de ' AS _msg FROM DUAL");
+$row = mysqli_fetch_assoc($result);
+echo $row['_msg'];
+
+$mysqli = new mysqli("example.com", "user", "password", "database");
+$result = $mysqli->query("SELECT 'opciones para complacer a todos.' AS _msg FROM DUAL");
+$row = $result->fetch_assoc();
+echo $row['_msg'];
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    Un mundo lleno de opciones para complacer a todos.
+
+La interfaz orientada a objetos se utiliza en el inicio rápido de la documentación debido a que la sección de referencia está organizada de esta manera.
+
+**Mezcla de estilos**
+
+Es posible cambiar de un estilo a otro en cualquier momento, aunque no se recomienda por razones de claridad y estilo de codificación.
+
+Malo estilo de codificación
+
+```php
+<?php
+
+$mysqli = new mysqli("example.com", "user", "password", "database");
+$result = mysqli_query($mysqli, "SELECT 'Posible pero mal estilo.' AS _msg FROM DUAL");
+
+if ($row = $result->fetch_assoc()) {
+    echo $row['_msg'];
+}
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    Posible pero mal estilo.
+
+**Ver también**
+
+mysqli::\_\_construct, mysqli::query, mysqli_result::fetch_assoc, [\$mysqli::connect_errno](#mysqli.connect-errno), [\$mysqli::connect_error](#mysqli.connect-error), [\$mysqli::errno](#mysqli.errno), [\$mysqli::error](#mysqli.error), [Resumen de las funciones de la extensión MySQLi](#mysqli.summary)
+
+## Conexiones
+
+El servidor MySQL soporta el uso de diferentes capas de transporte para las conexiones. Las conexiones pueden utilizar TCP/IP, los sockets de dominio Unix o los tubos nombrados de Windows.
+
+El nombre de host `localhost` tiene un significado especial. Está vinculado al uso de los sockets de dominio Unix. Para abrir una conexión TCP/IP en el host local, `127.0.0.1` debe ser utilizado en lugar de `localhost`.
+
+Significado especial de localhost
+
+```php
+<?php
+
+$mysqli = new mysqli("localhost", "user", "password", "database");
+
+echo $mysqli->host_info . "\n";
+
+$mysqli = new mysqli("127.0.0.1", "user", "password", "database", 3306);
+
+echo $mysqli->host_info . "\n";
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    Localhost via UNIX socket
+    127.0.0.1 via TCP/IP
+
+**Parámetros por omisión de una conexión**
+
+Dependiendo de la función de conexión utilizada, algunos parámetros pueden ser omitidos. Si un parámetro no es proporcionado, entonces la extensión intentará utilizar los valores por omisión definidos en el archivo de configuración de PHP.
+
+Parámetros por omisión
+
+```php
+mysqli.default_host=192.168.2.27
+mysqli.default_user=root
+mysqli.default_pw=""
+mysqli.default_port=3306
+mysqli.default_socket=/tmp/mysql.sock
+
+    
+```
+
+Estos valores de parámetros son entonces pasados a la biblioteca cliente utilizada por la extensión. Si la biblioteca cliente detecta un parámetro vacío o no definido, entonces utilizará los valores por omisión internos a la biblioteca.
+
+**Valores por omisión internos a la biblioteca para la conexión**
+
+Si el valor del host no está definido o es vacío, entonces la biblioteca cliente utilizará por omisión una conexión de tipo socket Unix en `localhost`. Si el socket no está definido o es vacío, y se solicita una conexión de tipo socket Unix, entonces se intentará una conexión al socket por omisión `/tmp/mysql.sock`.
+
+En los sistemas Windows, el nombre de host `.` es interpretado por la biblioteca cliente como un intento de abrir un tubo nombrado de Windows para la conexión. En este caso, el parámetro socket es interpretado como un tubo nombrado. Si no es proporcionado o está vacío, entonces el socket (tubo nombrado) valdrá por omisión `\\.\pipe\MySQL`.
+
+Si ni un socket de dominio Unix ni un tubo nombrado de Windows es proporcionado, se establecerá una conexión básica y si el valor del puerto no está definido, la biblioteca utilizará el puerto `3306`.
+
+La biblioteca [mysqlnd](#mysqlnd.overview) y la biblioteca cliente MySQL (libmysqlclient) implementan la misma lógica para determinar los valores por omisión.
+
+**Opciones de conexión**
+
+Las opciones de conexión están disponibles para, por ejemplo, definir comandos de inicialización a ejecutar durante la conexión, o para solicitar el uso de un juego de caracteres específico. Las opciones de conexión deben ser definidas antes de la conexión a la red.
+
+Para definir una opción de conexión, la operación de conexión debe ser realizada en 3 pasos: creación de un manejador de conexión con `mysqli_init` o mysqli::\_\_construct, definición de las opciones solicitadas utilizando mysqli::options, y conexión a la red con mysqli::real_connect.
+
+**Cola de conexión**
+
+La extensión mysqli soporta las conexiones persistentes a la base de datos, que son conexiones especiales. Por omisión, cada conexión a una base de datos abierta por un script es cerrada explícitamente por el usuario durante la ejecución, o liberada automáticamente al final del script. Esto no es el caso de una conexión persistente. En efecto, será colocada en una cola para una reutilización futura, si una conexión al mismo servidor, utilizando el mismo nombre de usuario, la misma contraseña, el mismo socket, el mismo puerto, así como la misma base de datos es abierta. Esta reutilización permite aligerar la carga indebida por las conexiones.
+
+Cada proceso PHP utiliza su propia cola de conexiones mysqli. Dependiendo del modelo de despliegue del servidor web, un proceso PHP puede servir una o varias peticiones. Sin embargo, una conexión en cola puede ser utilizada por uno o varios scripts posteriormente.
+
+**Las conexiones persistentes**
+
+Si una conexión persistente para una combinación de host, nombre de usuario, contraseña, socket, puerto y base de datos no utilizada no puede ser encontrada en la cola de conexión, entonces mysqli abrirá una nueva conexión. El uso de las conexiones persistentes puede ser activado o desactivado utilizando la directiva PHP [mysqli.allow_persistent](#ini.mysqli.allow-persistent). El número total de conexiones abiertas por un script puede ser limitado con la directiva [mysqli.max_links](#ini.mysqli.max-links). El número máximo de conexiones persistentes por proceso PHP puede ser restringido con la directiva [mysqli.max_persistent](#ini.mysqli.max-persistent). Tenga en cuenta que el servidor web puede generar varios procesos PHP.
+
+Una queja común contra las conexiones persistentes es que su estado no es re-initializado antes de la reutilización. Por ejemplo, las transacciones abiertas y no terminadas no son automáticamente anuladas. Además, las modificaciones autorizadas que ocurren entre el momento en que la conexión es colocada en cola y su reutilización no serán tomadas en cuenta. Este comportamiento puede ser visto como un efecto de borde no deseado. Por el contrario, el nombre `persistent` puede ser comprendido como una promesa sobre el hecho de que el estado persiste realmente.
+
+La extensión mysqli soporta dos interpretaciones de una conexión persistente : estado persistente, y un estado re-initializado antes de la reutilización. Por omisión, será re-initializado. Antes de que una conexión persistente sea reutilizada, la extensión mysqli llama implícitamente a la función mysqli::change_user para re-initializar el estado. La conexión persistente aparece al usuario como si acabara de ser abierta. Ninguna traza de un uso anterior será visible.
+
+La función mysqli::change_user es una operación costosa. Para mejores rendimientos, los usuarios pueden querer re-compilar la extensión con el flag de compilación `MYSQLI_NO_CHANGE_USER_ON_PCONNECT`.
+
+Así, se dejará al usuario la elección entre un comportamiento seguro y un rendimiento optimizado. Ambos tienen como objetivo la optimización. Para una utilización más sencilla, el comportamiento seguro ha sido colocado por omisión en detrimento de un rendimiento máximo.
+
+**Ver también**
+
+`mysqli_init`, mysqli::\_\_construct, mysqli::options, mysqli::real_connect, mysqli::change_user, [\$mysqli::host_info](#mysqli.get-host-info), [Las opciones de configuración MySQLi](#mysqli.configuration), [Las conexiones persistentes a las bases de datos](#features.persistent-connections)
+
+## Ejecución de consultas
+
+Las consultas pueden ser ejecutadas con las funciones mysqli::query, mysqli::real_query y mysqli::multi_query. La función mysqli::query es la más común, y combina la ejecución de la consulta con una recuperación de su juego de resultados en memoria tamponada, si lo hay, en una sola llamada. Llamar a la función mysqli::query es idéntico a llamar a la función mysqli::real_query seguida de una llamada a la función mysqli::store_result.
+
+Ejecución de consultas
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+
+    
+```
+
+**Juegos de resultados en memoria tamponada**
+
+Después de la ejecución de la consulta, los resultados pueden ser recuperados completamente de una vez o bien ser leídos línea por línea. La memoria tamponada del juego de resultados del lado-cliente permite al servidor liberar los recursos asociados con el resultado de la consulta tan pronto como sea posible. En general, los clientes son lentos para recorrer los juegos de resultados. Sin embargo, se recomienda utilizar la memoria tamponada de los juegos de resultados. La función mysqli::query combina tanto la ejecución de la consulta como la memoria tamponada del juego de resultados.
+
+Las aplicaciones PHP pueden navegar libremente en los resultados en memoria tamponada. La navegación es rápida ya que los juegos de resultados están almacenados en la memoria del cliente. Tenga en cuenta que a menudo es más sencillo realizar esta operación por el cliente que por el servidor.
+
+Navegación en resultados en memoria tamponada
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+$mysqli->query("INSERT INTO test(id) VALUES (1), (2), (3)");
+
+$result = $mysqli->query("SELECT id FROM test ORDER BY id ASC");
+
+echo "Orden inverso...\n";
+for ($row_no = $result->num_rows - 1; $row_no >= 0; $row_no--) {
+    $result->data_seek($row_no);
+    $row = $result->fetch_assoc();
+    echo " id = " . $row['id'] . "\n";
+}
+
+echo "Orden del juego de resultados...\n";
+foreach ($result as $row) {
+    echo " id = " . $row['id'] . "\n";
+}
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    Orden inverso...
+     id = 3
+     id = 2
+     id = 1
+    Orden del juego de resultados...
+     id = 1
+     id = 2
+     id = 3
+
+**Juegos de resultados no en memoria tamponada**
+
+Si la memoria del cliente es un recurso limitado, y la liberación de los recursos del servidor tan pronto como sea posible para mantener una carga del servidor baja no es necesaria, los resultados no en memoria tamponada pueden ser utilizados. La navegación a través de resultados no en memoria tamponada no es posible hasta que todas las líneas no hayan sido leídas.
+
+Navegación en resultados no en memoria tamponada
+
+```php
+<?php
+
+$mysqli->real_query("SELECT id FROM test ORDER BY id ASC");
+$result = $mysqli->use_result();
+
+echo "Orden del juego de resultados...\n";
+foreach ($result as $row) {
+    echo " id = " . $row['id'] . "\n";
+}
+
+    
+```
+
+**Tipos de datos de los valores del juego de resultados**
+
+Las funciones mysqli::query, mysqli::real_query y mysqli::multi_query se utilizan para ejecutar consultas no preparadas. A nivel del protocolo cliente-servidor MySQL, la orden `COM_QUERY` así como el protocolo texto son utilizados para la ejecución de la consulta. Con el protocolo texto, el servidor MySQL convierte todos los datos de un juego de resultados en cadenas de caracteres antes de enviarlos. La biblioteca cliente mysql recibe todos los valores de las columnas en forma de cadena de caracteres. Ninguna otra conversión del lado-cliente se realiza para recuperar el tipo nativo de las columnas. En su lugar, todas las valores son proporcionados en la forma de cadena de caracteres PHP.
+
+El protocolo texto devuelve cadenas de caracteres por omisión
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label CHAR(1))");
+$mysqli->query("INSERT INTO test(id, label) VALUES (1, 'a')");
+
+$result = $mysqli->query("SELECT id, label FROM test WHERE id = 1");
+$row = $result->fetch_assoc();
+
+printf("id = %s (%s)\n", $row['id'], gettype($row['id']));
+printf("label = %s (%s)\n", $row['label'], gettype($row['label']));
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    id = 1 (string)
+    label = a (string)
+
+Es posible convertir columnas de tipo enteros y números de punto flotante en números PHP definiendo la opción de conexión `MYSQLI_OPT_INT_AND_FLOAT_NATIVE`, si se utiliza la biblioteca mysqlnd. Si está definida, la biblioteca mysqlnd verificará las metadatos de los tipos de las columnas en el juego de resultados y convertirá las columnas SQL numéricas en números PHP, si el valor está dentro del intervalo permitido de PHP. De esta manera, por ejemplo, las columnas SQL INT son devueltas en la forma de entero.
+
+Tipos nativos de datos con mysqlnd y la opción de conexión
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+$mysqli = new mysqli();
+$mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
+$mysqli->real_connect("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label CHAR(1))");
+$mysqli->query("INSERT INTO test(id, label) VALUES (1, 'a')");
+
+$result = $mysqli->query("SELECT id, label FROM test WHERE id = 1");
+$row = $result->fetch_assoc();
+
+printf("id = %s (%s)\n", $row['id'], gettype($row['id']));
+printf("label = %s (%s)\n", $row['label'], gettype($row['label']));
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    id = 1 (integer)
+    label = a (string)
+
+**Ver también**
+
+mysqli::\_\_construct, mysqli::options, mysqli::real_connect, mysqli::query, mysqli::multi_query, mysqli::use_result, mysqli::store_result
+
+## Las consultas preparadas
+
+La base de datos MySQL soporta las consultas preparadas. Una consulta preparada o consulta parametrizable es utilizada para ejecutar la misma consulta varias veces, con gran eficiencia y protege contra las inyecciones SQL.
+
+**Flujo de trabajo básico**
+
+La ejecución de una consulta preparada se realiza en dos pasos : la preparación y la ejecución. Durante la preparación, una plantilla de consulta es enviada al servidor de base de datos. El servidor realiza una verificación de la sintaxis, y inicializa los recursos internos del servidor para un uso posterior.
+
+El servidor MySQL soporta el modo anónimo, con marcadores de posición utilizando el carácter `?`.
+
+La preparación es seguida por la ejecución. Durante la ejecución, el cliente enlaza los valores de los parámetros y los envía al servidor. El servidor ejecuta la instrucción con los valores enlazados utilizando los recursos internos previamente creados.
+
+Primer paso: la preparación
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+// Consulta no preparada
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label TEXT)");
+
+// Consulta preparada, paso 1: preparación
+$stmt = $mysqli->prepare("INSERT INTO test(id, label) VALUES (?, ?)");
+
+// Consulta preparada, paso 2: enlaza los valores y ejecuta la consulta
+$id = 1;
+$label = 'PHP';
+$stmt->bind_param("is", $id, $label); // "is" significa que $id está enlazado como un integer y $label como un string
+
+$stmt->execute();
+
+    
+```
+
+**Ejecución repetida**
+
+Una consulta preparada puede ser ejecutada varias veces. En cada ejecución, el valor actual de la variable enlazada es evaluado, y enviado al servidor. La consulta no es analizada de nuevo. La plantilla de consulta no es enviada nuevamente al servidor.
+
+Consulta de tipo INSERT preparada una sola vez, y ejecutada varias veces
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+// Consulta no preparada
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label TEXT)");
+
+// Consulta preparada, paso 1: la preparación
+if (!($stmt = $mysqli->prepare("INSERT INTO test(id) VALUES (?)"))) {
+     echo "Fallo durante la preparación: (" . $mysqli->errno . ") " . $mysqli->error;
+}
+
+// Consulta preparada, paso 2: enlaza los valores y ejecuta la consulta
+$id = 1;
+$stmt->bind_param("is", $id, $label); // "is" significa que $id está enlazado como un integer y $label como un string
+
+$data = [
+    1 => 'PHP',
+    2 => 'Java',
+    3 => 'C++'
+];
+
+foreach ($data as $id => $label) {
+    $stmt->execute();
+}
+
+$result = $mysqli->query('SELECT id, label FROM test');
+var_dump($result->fetch_all(MYSQLI_ASSOC));
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    array(3) {
+      array(2) {
+        ["id"]=>
+        string(1) "1"
+        ["label"]=>
+        string(3) "PHP"
+      }
+      [1]=>
+      array(2) {
+        ["id"]=>
+        string(1) "2"
+        ["label"]=>
+        string(4) "Java"
+      }
+      [2]=>
+      array(2) {
+        ["id"]=>
+        string(1) "3"
+        ["label"]=>
+        string(3) "C++"
+      }
+    }
+
+Cada consulta preparada ocupa recursos en el servidor. Deben ser cerradas explícitamente inmediatamente después de su uso. Si no lo hace, la consulta será cerrada cuando el manejador de consulta sea liberado por PHP.
+
+El uso de consultas preparadas no siempre es la forma más eficiente de ejecutar una consulta. Una consulta preparada ejecutada una sola vez provoca más idas y vueltas cliente-servidor que una consulta no preparada. Es por eso que la consulta de tipo `SELECT` no es ejecutada como consulta preparada en el ejemplo anterior.
+
+Además, debe tener en cuenta el uso de las sintaxis multi-INSERT MySQL para los INSERTs. Por ejemplo, los multi-INSERTs requieren menos idas y vueltas cliente-servidor que la consulta preparada vista en el ejemplo anterior.
+
+Menos idas y vueltas utilizando los multi-INSERTs SQL
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+
+$values = [1, 2, 3, 4];
+
+$stmt = $mysqli->prepare("INSERT INTO test(id) VALUES (?), (?), (?), (?)");
+$stmt->bind_param('iiii', ...$values);
+$stmt->execute();
+
+    
+```
+
+**Tipos de datos de los valores del juego de resultados**
+
+El protocolo servidor cliente MySQL define un protocolo de transferencia de datos diferente para las consultas preparadas y para las consultas no preparadas. Las consultas preparadas utilizan un protocolo llamado binario. El servidor MySQL envía los datos del juego de resultados "tal cual", en formato binario. Los resultados no son serializados en cadenas de caracteres antes de ser enviados. La biblioteca cliente recibe datos binarios y intenta convertir los valores en un tipo de datos PHP apropiado. Por ejemplo, los resultados desde una columna `INT` SQL serán proporcionados como variables de tipo entero PHP.
+
+Tipos de datos nativos
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+// Consulta no preparada
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label TEXT)");
+$mysqli->query("INSERT INTO test(id, label) VALUES (1, 'PHP')");
+
+$stmt = $mysqli->prepare("SELECT id, label FROM test WHERE id = 1");
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+printf("id = %s (%s)\n", $row['id'], gettype($row['id']));
+printf("label = %s (%s)\n", $row['label'], gettype($row['label']));
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    id = 1 (integer)
+    label = PHP (string)
+
+Este comportamiento difiere para las consultas no preparadas. Por omisión, las consultas no preparadas devuelven todos los resultados en forma de cadenas de caracteres. Este comportamiento por omisión puede ser modificado utilizando una opción durante la conexión. Si esta opción es utilizada, entonces no habrá diferencia entre una consulta preparada y una consulta no preparada.
+
+**Recuperación de los resultados utilizando variables enlazadas**
+
+Los resultados desde las consultas preparadas pueden ser recuperados enlazando las variables de salida, o interrogando el objeto `mysqli_result`.
+
+Las variables de salida deben ser enlazadas después de la ejecución de la consulta. Una variable debe ser enlazada para cada columna del juego de resultados de la consulta.
+
+Enlace de las variables de salida
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+// Consulta no preparada
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label TEXT)");
+$mysqli->query("INSERT INTO test(id, label) VALUES (1, 'PHP')");
+
+$stmt = $mysqli->prepare("SELECT id, label FROM test WHERE id = 1");
+$stmt->execute();
+
+$stmt->bind_result($out_id, $out_label);
+
+$out_id    = NULL;
+$out_label = NULL;
+if (!$stmt->bind_result($out_id, $out_label)) {
+    echo "Fallo durante el enlace de los parámetros de salida: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+while ($stmt->fetch()) {
+    printf("id = %s (%s), label = %s (%s)\n", $out_id, gettype($out_id), $out_label, gettype($out_label));
+}
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    id = 1 (integer), label = a (string)
+
+Las consultas preparadas devuelven juegos de resultados no en memoria tamponada por omisión. Los resultados de la consulta no son recuperados implícitamente y transferidos desde el servidor hacia el cliente para una memoria tamponada del lado-cliente. El juego de resultados ocupa recursos del servidor hasta que todos los resultados no sean recuperados por el cliente. Por lo tanto, es recomendable recuperarlos rápidamente. Si un cliente falla en la recuperación de todos los resultados, o si el cliente cierra la consulta antes de haber recuperado todos los datos, los datos deben ser recuperados implícitamente por `mysqli`.
+
+También es posible poner en memoria tamponada los resultados de una consulta preparada utilizando la función mysqli_stmt::store_result.
+
+**Recuperación de los resultados utilizando la interfaz mysqli_result**
+
+En lugar de utilizar resultados enlazados, los resultados pueden también ser recuperados a través de la interfaz mysqli_result. La función mysqli_stmt::get_result devuelve un juego de resultados en memoria tamponada.
+
+Uso de mysqli_result para recuperar los resultados
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+// Consulta no preparada
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label TEXT)");
+$mysqli->query("INSERT INTO test(id, label) VALUES (1, 'PHP')");
+
+$stmt = $mysqli->prepare("SELECT id, label FROM test WHERE id = 1");
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+var_dump($result->fetch_all(MYSQLI_ASSOC));
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    array(1) {
+      [0]=>
+      array(2) {
+        ["id"]=>
+        int(1)
+        ["label"]=>
+        string(3) "PHP"
+      }
+    }
+
+El uso de la interfaz `mysqli_result` ofrece otras ventajas en términos de flexibilidad en la navegación en el juego de resultados del lado-cliente.
+
+Juego de resultados en memoria tamponada para más flexibilidad en la lectura
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+// Consulta no preparada
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT, label TEXT)");
+$mysqli->query("INSERT INTO test(id, label) VALUES (1, 'PHP'), (2, 'Java'), (3, 'C++')");
+
+$stmt = $mysqli->prepare("SELECT id, label FROM test");
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+for ($row_no = $result->num_rows - 1; $row_no >= 0; $row_no--) {
+    $result->data_seek($row_no);
+    var_dump($result->fetch_assoc());
+}
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    array(2) {
+      ["id"]=>
+      int(3)
+      ["label"]=>
+      string(1) "C++"
+    }
+    array(2) {
+      ["id"]=>
+      int(2)
+      ["label"]=>
+      string(1) "Java"
+    }
+    array(2) {
+      ["id"]=>
+      int(1)
+      ["label"]=>
+      string(1) "PHP"
+    }
+
+**Escape y inyección SQL**
+
+Las variables enlazadas son enviadas al servidor separadamente de la consulta, no pudiendo así interferir con esta. El servidor utiliza estos valores directamente al momento de la ejecución, después de que la plantilla sea analizada. Los parámetros enlazados no necesitan ser escapados ya que nunca son colocados en la cadena de consulta directamente. Una pista debe ser proporcionada al servidor para especificar el tipo de variable enlazada, para realizar la conversión apropiada. Ver la función mysqli_stmt::bind_param para más información.
+
+Tal separación es a menudo considerada como la única funcionalidad para protegerse contra las inyecciones SQL, pero el mismo grado de seguridad puede ser alcanzado con las consultas no preparadas, si todas las valores son correctamente formateadas. Tenga en cuenta que un formateo correcto no es lo mismo que un escape y requiere más lógica que un simple escape. Por lo tanto, las consultas preparadas son simplemente un método más sencillo y menos propenso a errores en cuanto a este enfoque seguro.
+
+**Emulación del lado-cliente de la preparación de una consulta**
+
+La API no incluye una emulación del lado-cliente de la preparación de una consulta.
+
+**Ver también**
+
+mysqli::\_\_construct, mysqli::query, mysqli::prepare, mysqli_stmt::prepare, mysqli_stmt::execute, mysqli_stmt::bind_param, mysqli_stmt::bind_result
+
+## Los procedimientos almacenados
+
+La base de datos MySQL soporta los procedimientos almacenados. Un procedimiento almacenado es una subrutina almacenada en el catálogo de la base de datos. Las aplicaciones pueden llamar y ejecutar un procedimiento almacenado. La consulta SQL `CALL` es utilizada para ejecutar un procedimiento almacenado.
+
+**Parámetro**
+
+Los procedimientos almacenados pueden tener parámetros `IN`, `INOUT` y `OUT`, dependiendo de la versión de MySQL. La interfaz mysqli no tiene una noción específica de los diferentes tipos de parámetros.
+
+**Parámetro IN**
+
+Los parámetros de entrada son proporcionados con la consulta `CALL`. Asegúrese de escapar correctamente los valores.
+
+Llamada a un procedimiento almacenado
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+
+$mysqli->query("DROP PROCEDURE IF EXISTS p");
+$mysqli->query("CREATE PROCEDURE p(IN id_val INT) BEGIN INSERT INTO test(id) VALUES(id_val); END;");
+
+$mysqli->query("CALL p(1)");
+
+$result = $mysqli->query("SELECT id FROM test");
+
+var_dump($result->fetch_assoc());
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    array(1) {
+      ["id"]=>
+      string(1) "1"
+    }
+
+**Parámetro INOUT/OUT**
+
+Los valores de los parámetros `INOUT`/`OUT` son accedidos utilizando las variables de sesión.
+
+Uso de las variables de sesión
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP PROCEDURE IF EXISTS p");
+$mysqli->query('CREATE PROCEDURE p(OUT msg VARCHAR(50)) BEGIN SELECT "Hi!" INTO msg; END;');
+
+$mysqli->query("SET @msg = ''");
+$mysqli->query("CALL p(@msg)");
+
+$result = $mysqli->query("SELECT @msg as _p_out");
+
+$row = $result->fetch_assoc();
+echo $row['_p_out'];
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    Hi!
+
+Los desarrolladores de aplicaciones y de frameworks pueden proporcionar una API más amigable utilizando una mezcla de las variables de sesión y una inspección del catálogo de la base de datos. Sin embargo, tenga en cuenta el impacto en el rendimiento debido a una solución personalizada basada en la inspección del catálogo.
+
+**Gestión de los juegos de resultados**
+
+Los procedimientos almacenados pueden devolver juegos de resultados. Los juegos de resultados devueltos desde un procedimiento almacenado no pueden ser recuperados correctamente utilizando la función mysqli::query. La función mysqli::query combina la ejecución de la consulta y la recuperación del primer juego de resultados en un juego de resultados en memoria tamponada, si lo hay. Sin embargo, existen otros juegos de resultados provenientes del procedimiento almacenado que están ocultos al usuario y que hacen que la función mysqli::query falle al recuperar los juegos de resultados esperados por el usuario.
+
+Los juegos de resultados devueltos desde un procedimiento almacenado son recuperados utilizando la función mysqli::real_query o mysqli::multi_query. Estas dos funciones permiten la recuperación de cualquier número de juegos de resultados devueltos por una consulta, como la consulta `CALL`. Fallar en la recuperación de todos los juegos de resultados devueltos por un procedimiento almacenado causa un error.
+
+Recuperación de los resultados provenientes de un procedimiento almacenado
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+$mysqli->query("INSERT INTO test(id) VALUES (1), (2), (3)");
+
+$mysqli->query("DROP PROCEDURE IF EXISTS p");
+$mysqli->query('CREATE PROCEDURE p() READS SQL DATA BEGIN SELECT id FROM test; SELECT id + 1 FROM test; END;');
+
+$mysqli->multi_query("CALL p()");
+
+do {
+    if ($res = $mysqli->store_result()) {
+        var_dump($result->fetch_all());
+        $result->free();
+    }
+} while ($mysqli->next_result());
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    ---
+    array(3) {
+      [0]=>
+      array(1) {
+        [0]=>
+        string(1) "1"
+      }
+      [1]=>
+      array(1) {
+        [0]=>
+        string(1) "2"
+      }
+      [2]=>
+      array(1) {
+        [0]=>
+        string(1) "3"
+      }
+    }
+    ---
+    array(3) {
+      [0]=>
+      array(1) {
+        [0]=>
+        string(1) "2"
+      }
+      [1]=>
+      array(1) {
+        [0]=>
+        string(1) "3"
+      }
+      [2]=>
+      array(1) {
+        [0]=>
+        string(1) "4"
+      }
+    }
+
+**Uso de las consultas preparadas**
+
+No se requiere una gestión especial al utilizar la interfaz de preparación de consultas para recuperar los resultados desde el mismo procedimiento almacenado que el anterior. Las interfaces de consulta preparada y no preparada son similares. Tenga en cuenta que todas las versiones del servidor MySQL no soportan la preparación de las consultas SQL `CALL`.
+
+Procedimientos almacenados y consulta preparada
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+if ($mysqli->connect_errno) {
+    echo "Fallo durante la conexión a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+}
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+$mysqli->query("INSERT INTO test(id) VALUES (1), (2), (3)");
+
+$mysqli->query("DROP PROCEDURE IF EXISTS p");
+$mysqli->query('CREATE PROCEDURE p() READS SQL DATA BEGIN SELECT id FROM test; SELECT id + 1 FROM test; END;');
+
+$stmt = $mysqli->prepare("CALL p()");
+
+if (!$stmt->execute()) {
+    echo "Fallo durante la ejecución: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+do {
+    if ($result = $stmt->get_result()) {
+        var_dump($result->fetch_all());
+        $result->free();
+    }
+} while ($stmt->next_results());
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    ---
+    array(3) {
+      [0]=>
+      array(1) {
+        [0]=>
+        int(1)
+      }
+      [1]=>
+      array(1) {
+        [0]=>
+        int(2)
+      }
+      [2]=>
+      array(1) {
+        [0]=>
+        int(3)
+      }
+    }
+    ---
+    array(3) {
+      [0]=>
+      array(1) {
+        [0]=>
+        int(2)
+      }
+      [1]=>
+      array(1) {
+        [0]=>
+        int(3)
+      }
+      [2]=>
+      array(1) {
+        [0]=>
+        int(4)
+      }
+    }
+
+Por supuesto, el uso de la API de enlace para la recuperación también es soportado.
+
+Procedimientos almacenados y consulta preparada utilizando la API de enlace
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+$mysqli->query("INSERT INTO test(id) VALUES (1), (2), (3)");
+
+$mysqli->query("DROP PROCEDURE IF EXISTS p");
+$mysqli->query('CREATE PROCEDURE p() READS SQL DATA BEGIN SELECT id FROM test; SELECT id + 1 FROM test; END;');
+
+$stmt = $mysqli->prepare("CALL p()");
+
+$stmt->execute();
+
+do {
+    if ($stmt->store_result()) {
+        $stmt->bind_result($id_out);
+        while ($stmt->fetch()) {
+            echo "id = $id_out\n";
+        }
+    }
+} while ($stmt->next_result());
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    id = 1
+    id = 2
+    id = 3
+    id = 2
+    id = 3
+    id = 4
+
+**Ver también**
+
+mysqli::query, mysqli::multi_query, mysqli::next_result, mysqli::more_results
+
+## Consultas múltiples
+
+MySQL permite opcionalmente tener múltiples consultas en una sola cadena de consulta pero requiere una gestión especial.
+
+Las consultas múltiples o multiconsultas deben ser ejecutadas con la función mysqli::multi_query. Las consultas individuales en la cadena de consulta están separadas por un punto y coma. Luego, todos los juegos de resultados devueltos por la ejecución de las consultas deben ser recuperados.
+
+El servidor MySQL permite tener consultas que devuelven juegos de resultados así como consultas que no devuelven ningún juego de resultados en la misma consulta múltiple.
+
+Consultas múltiples
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$mysqli->query("DROP TABLE IF EXISTS test");
+$mysqli->query("CREATE TABLE test(id INT)");
+
+$sql = "SELECT COUNT(*) AS _num FROM test;
+        INSERT INTO test(id) VALUES (1);
+        SELECT COUNT(*) AS _num FROM test; ";
+
+$mysqli->multi_query($sql);
+
+do {
+    if ($result = $mysqli->store_result()) {
+        var_dump($result->fetch_all(MYSQLI_ASSOC));
+        $result->free();
+    }
+} while ($mysqli->next_result());
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    array(1) {
+      [0]=>
+      array(1) {
+        ["_num"]=>
+        string(1) "0"
+      }
+    }
+    array(1) {
+      [0]=>
+      array(1) {
+        ["_num"]=>
+        string(1) "1"
+      }
+    }
+
+**Desde un punto de vista de seguridad**
+
+Las funciones mysqli::query y mysqli::real_query de la API no definen un flag de conexión necesario para la activación de las multiconsultas en el servidor. Una llamada adicional a la API es utilizada para las multiconsultas para reducir la probabilidad de inyección SQL accidental. Un atacante puede intentar agregar consultas como `; DROP DATABASE mysql` o `; SELECT SLEEP(999)`. Si el atacante logra agregar este tipo de SQL en la cadena de consulta pero que mysqli::multi_query no es utilizado, el servidor solo ejecutará la primera consulta, pero no la segunda que representa la consulta SQL maliciosa.
+
+Inyección SQL
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+$result = $mysqli->query("SELECT 1; DROP TABLE mysql.user");
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax;
+    check the manual that corresponds to your MySQL server version for the right syntax to
+    use near 'DROP TABLE mysql.user' at line 1
+
+**Consultas preparadas**
+
+El uso de consultas múltiples con consultas preparadas no es soportado.
+
+**Ver también**
+
+mysqli::query, mysqli::multi_query, mysqli_result::next-result, mysqli_result::more-results
+
+## Soporte API para las transacciones
+
+El servidor MySQL soporta las transacciones dependiendo del motor de almacenamiento utilizado. Desde MySQL 5.5, el motor de almacenamiento por omisión es InnoDB. InnoDB tiene un soporte completo de las transacciones ACID.
+
+Las transacciones pueden ser controladas utilizando SQL, o mediante llamadas API. Se recomienda utilizar las llamadas API para activar o desactivar el modo `autocommit` y para validar y anular las transacciones.
+
+Definir el modo `autocommit` a través de SQL o a través de la API
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+// Recomendado: uso de la API para controlar la configuración de las transacciones
+$mysqli->autocommit(false);
+
+// No será monitoreado y reconocido por el plugin de replicación y balanceo de carga
+$mysqli->query('SET AUTOCOMMIT = 0');
+
+    
+```
+
+Los paquetes de funcionalidades adicionales, como los plugins de replicación y balanceo de carga pueden monitorear las llamadas API. El plugin de replicación ofrece seguridad sobre las transacciones durante el balanceo de carga, si las transacciones son controladas con llamadas API. La seguridad de las transacciones durante el balanceo de carga no está disponible si las consultas SQL son utilizadas para definir el modo `autocommit`, para validar o anular una transacción.
+
+Validación y anulación de una transacción
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+$mysqli->autocommit(false);
+
+$mysqli->query("INSERT INTO test(id) VALUES (1)");
+$mysqli->rollback();
+
+$mysqli->query("INSERT INTO test(id) VALUES (2)");
+$mysqli->commit();
+
+    
+```
+
+Tenga en cuenta que el servidor MySQL no puede anular todas las consultas. Algunas consultas requieren una validación implícita.
+
+**Ver también**
+
+mysqli::autocommit, mysqli::begin_transaction, mysqli::commit, mysqli::rollback
+
+## Las metadatos
+
+Un juego de resultados MySQL contiene metadatos. Estos describen las columnas encontradas en el juego de resultados. Todos los metadatos enviados por MySQL son accesibles a través de la interfaz `mysqli`. La extensión no realiza ninguna modificación sobre las informaciones que recibe. Las diferencias entre las versiones MySQL no son idénticas.
+
+Los metadatos pueden ser consultados a través de la interfaz `mysqli_result`.
+
+Acceso a los metadatos del juego de resultados
+
+```php
+<?php
+
+$mysqli = new mysqli("example.com", "user", "password", "database");
+if ($mysqli->connect_errno) {
+    echo "Fallo durante la conexión a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+}
+
+$res = $mysqli->query("SELECT 1 AS _one, 'Hello' AS _two FROM DUAL");
+var_dump($res->fetch_fields());
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    array(2) {
+      [0]=>
+      object(stdClass)#3 (13) {
+        ["name"]=>
+        string(4) "_one"
+        ["orgname"]=>
+        string(0) ""
+        ["table"]=>
+        string(0) ""
+        ["orgtable"]=>
+        string(0) ""
+        ["def"]=>
+        string(0) ""
+        ["db"]=>
+        string(0) ""
+        ["catalog"]=>
+        string(3) "def"
+        ["max_length"]=>
+        int(1)
+        ["length"]=>
+        int(1)
+        ["charsetnr"]=>
+        int(63)
+        ["flags"]=>
+        int(32897)
+        ["type"]=>
+        int(8)
+        ["decimals"]=>
+        int(0)
+      }
+      [1]=>
+      object(stdClass)#4 (13) {
+        ["name"]=>
+        string(4) "_two"
+        ["orgname"]=>
+        string(0) ""
+        ["table"]=>
+        string(0) ""
+        ["orgtable"]=>
+        string(0) ""
+        ["def"]=>
+        string(0) ""
+        ["db"]=>
+        string(0) ""
+        ["catalog"]=>
+        string(3) "def"
+        ["max_length"]=>
+        int(5)
+        ["length"]=>
+        int(5)
+        ["charsetnr"]=>
+        int(8)
+        ["flags"]=>
+        int(1)
+        ["type"]=>
+        int(253)
+        ["decimals"]=>
+        int(31)
+      }
+    }
+
+**Consultas preparadas**
+
+Los metadatos de los juegos de resultados creados utilizando consultas preparadas son accesibles de la misma manera. Un manejador `mysqli_result` utilizable es devuelto por la función mysqli_stmt::result_metadata.
+
+Metadatos a través de consultas preparadas
+
+```php
+<?php
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$mysqli = new mysqli("example.com", "user", "password", "database");
+
+$stmt = $mysqli->prepare("SELECT 1 AS _one, 'Hello' AS _two FROM DUAL");
+$stmt->execute();
+
+$result = $stmt->result_metadata();
+var_dump($result->fetch_fields());
+
+    
+```
+
+**Ver también**
+
+mysqli::query, mysqli_result::fetch_fields

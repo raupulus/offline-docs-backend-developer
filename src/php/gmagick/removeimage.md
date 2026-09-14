@@ -1,0 +1,42 @@
+---
+title: Gmagick::removeimage
+description: Elimina una imagen de la lista de imágenes
+source_url: https://www.php.net/manual/es/gmagick.removeimage.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/gmagick/gmagick/removeimage.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: gmagick
+translation_status: ready
+translation_reviewed: false
+translation_revision: 35752f072
+order: 27410
+---
+
+Gmagick::removeimage
+
+Elimina una imagen de la lista de imágenes
+
+## Descripción
+
+```php
+public Gmagick::removeimage(): Gmagick
+```php
+
+Elimina una imagen de la lista de imágenes.
+
+## Parámetros
+
+Esta función no contiene ningún parámetro.
+
+## Valores devueltos
+
+El objeto `Gmagick`.
+
+## Errores/Excepciones
+
+Emite una excepción `GmagickException` en caso de error.

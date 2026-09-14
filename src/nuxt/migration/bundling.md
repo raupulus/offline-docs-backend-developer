@@ -1,0 +1,38 @@
+---
+title: Build Tooling
+description: Learn how to migrate from Nuxt 2 to Nuxt 3 build tooling.
+source_repo: nuxt/nuxt
+source_ref: main
+source_commit: ec5c55e26
+source_path: 7.migration/10.bundling.md
+technology: nuxt
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: migration
+order: 10
+---
+
+We use the following build tools by default:
+
+- [Vite](https://vite.dev) or [webpack](https://webpack.js.org)
+- [Rollup](https://rollupjs.org)
+- [PostCSS](https://postcss.org)
+- [esbuild](https://esbuild.github.io)
+
+For this reason, most of your previous `build` configuration in `nuxt.config` will now be ignored, including any custom babel configuration.
+
+If you need to configure any of Nuxt's build tools, you can do so in your `nuxt.config`, using the new top-level `vite`, `webpack` and `postcss` keys.
+
+In addition, Nuxt ships with TypeScript support.
+
+:read-more{to="/docs/4.x/guide/concepts/typescript"}
+
+## Steps
+
+1. Remove `@nuxt/typescript-build` and `@nuxt/typescript-runtime` from your dependencies and modules.
+2. Remove any unused babel dependencies from your project.
+3. Remove any explicit core-js dependencies.
+4. Migrate `require` to `import`.
+
+<!-- TODO: Enabling webpack builder -->

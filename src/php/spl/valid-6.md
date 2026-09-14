@@ -1,0 +1,41 @@
+---
+title: FilterIterator::valid
+description: Verifica si el elemento actual es válido
+source_url: https://www.php.net/manual/es/filteriterator.valid.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/spl/filteriterator/valid.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: spl
+translation_status: ready
+translation_reviewed: true
+translation_revision: 8230e7092
+order: 82170
+---
+
+FilterIterator::valid
+
+Verifica si el elemento actual es válido
+
+## Descripción
+
+```php
+public FilterIterator::valid(): bool
+```php
+
+Verifica si el elemento actual es válido.
+
+> [!NOTE]
+> La implementación estándar de esta función retornará inicialmente `false` hasta que el iterador interno se avance al primer elemento aceptado.
+
+## Parámetros
+
+Esta función no contiene ningún parámetro.
+
+## Valores devueltos
+
+`true` si el elemento actual es válido, `false` en caso contrario.

@@ -1,0 +1,551 @@
+---
+title: 4. Modelo de ejecución
+source_url: https://docs.python.org/es/3
+source_path: reference/executionmodel.txt
+technology: python
+version: '3.14'
+license: PSF-2.0
+retrieved_at: '2026-08-02'
+section: reference
+order: 4770
+---
+
+# 4. Modelo de ejecución
+
+## 4.1. Estructura de un programa
+
+Un programa de Python se construye a partir de bloques de código. Un
+*block* es una parte del texto del programa Python que se ejecuta como
+una unidad. Los siguientes son bloques: un módulo, un cuerpo de
+función y una definición de clase. Cada comando escrito de forma
+interactiva es un bloque. Un archivo de secuencia de comandos (un
+archivo proporcionado como entrada estándar al intérprete o
+especificado como un argumento de línea de comando para el intérprete)
+es un bloque de código. Un comando de secuencia de comandos (un
+comando especificado en la línea de comandos del intérprete con la
+opción: "-c") es un bloque de código. Un módulo que se ejecuta como un
+script de nivel superior (como módulo "__main__") desde la línea de
+comando usando un argumento "-m" también es un bloque de código. El
+argumento de cadena pasado a las funciones integradas "eval()" y
+"exec()" es un bloque de código.
+
+Un bloque de código se ejecuta en un *execution frame*. Un marco
+contiene alguna información administrativa (que se usa para
+depuración) y determina dónde y cómo continuará la ejecución una vez
+que el bloque de código se haya completado.
+
+## 4.2. Nombres y vínculos
+
+### 4.2.1. Vinculación de nombres
+
+Los *Names* refieren a objetos. Los nombres se introducen por las
+operaciones de vinculación de nombre (*name binding operations*).
+
+Las siguientes construcciones enlazan nombres:
+
+* parámetros formales de las funciones,
+
+* definiciones de clase,
+
+* definiciones de funciones,
+
+* expresiones de asignación,
+
+* targets que son identificadores si aparecen en una asignación:
+
+  * cabecera del bucle "for",
+
+  * después de "as" en una declaración "with", cláusula "except",
+    cláusula "except*", o en el patrón as en la concordancia de
+    patrones estructurales,
+
+  * en un patrón de captura en la concordancia de patrones
+    estructurales
+
+* declaraciones "import".
+
+* declaraciones "type".
+
+* listas tipo de parámetros.
+
+La declaración "import" de la forma "from ... import *" vincula todos
+los nombres definidos en el módulo importado, excepto los que empiezan
+por guión bajo. Esta forma sólo puede utilizarse a nivel de módulo.
+
+Un objetivo que aparece en una sentencia "del" también se considera
+vinculado para este propósito (aunque la semántica real es desvincular
+el nombre).
+
+Cada declaración de asignación o importación ocurre dentro de un
+bloque determinado por una definición de clase o de función, o a nivel
+de módulo (el bloque de código de máximo nivel).
+
+If a name is bound in a block, it is a local variable of that block,
+unless declared as "nonlocal" or "global".  If a name is bound at the
+module level, it is a global variable.  (The variables of the module
+code block are local and global.)  If a variable is used in a code
+block but not defined there, it is a *free variable*.
+
+Cada ocurrencia de un nombre en el texto del programa se refiere al
+*binding* de ese nombre, establecido por las siguientes reglas de
+resolución de nombres.
+
+### 4.2.2. Resolución de nombres
+
+Un *scope* define la visibilidad de un nombre en un bloque. Si una
+variable local se define en un bloque, su ámbito incluye ese bloque.
+Si la definición ocurre en un bloque de función, el ámbito se extiende
+a cualquier bloque contenido en el bloque en donde está la definición,
+a menos que uno de los bloques contenidos introduzca un vínculo
+diferente para el nombre.
+
+Cuando un nombre es utilizado en un bloque de código, se resuelve
+utilizando el ámbito de cierre más cercano. El conjunto de todos esos
+ámbitos visibles para un bloque de código se llama el *environment*
+del bloque.
+
+Cuando un nombre no se encuentra, se lanza una excepción "NameError".
+Si el ámbito actual es una función, y el nombre se refiere a una
+variable local que todavía no ha sido vinculada a un valor en el punto
+en el que nombre es utilizado, se lanza una excepción
+"UnboundLocalError". "UnboundLocalError" es una subclase de
+"NameError".
+
+Si una operación de vinculación de nombre ocurre en cualquier parte
+dentro de un bloque de código, todos los usos del nombre dentro de ese
+bloque son tratados como referencias al bloque actual. Esto puede
+llevar a errores cuando el nombre es utilizado dentro del bloque antes
+de su vinculación. Esta regla es sutil. Python carece de declaraciones
+y permite que las operaciones de vinculación de nombres ocurran en
+cualquier lugar dentro del bloque de código. Las variables locales de
+un bloque de código pueden determinarse buscando operaciones de
+vinculación de nombres en el texto completo del bloque. Ver la entrada
+del FAQ sobre UnboundLocalError para ejemplos.
+
+Si la declaración "global" ocurre dentro de un bloque, todos los usos
+del nombre especificado en la declaración se refieren a la vinculación
+que ese nombre tiene en el espacio de nombres (*namespace*) de nivel
+superior. Los nombres se resuelven en el espacio de nombres de nivel
+superior buscando en el espacio de nombres global, es decir, el
+espacio de nombres del módulo que contiene el bloque de código, y en
+el espacio de nombres incorporado, el *namespace* del módulo
+"builtins". La búsqueda se realiza primero en el espacio de nombres
+global. Si el nombre no se encuentra ahí, se busca en el espacio de
+nombres incorporado (*builtins namespace*) próximamente. Si tampoco se
+encuentran los nombres en el espacio de nombres incorporado, se crean
+variables nuevas en el espacio de nombres global. La declaración
+global debe preceder a todos los usos de los nombres listados.
+
+La declaración "global" tiene el mismo ámbito que una operación de
+vinculación de nombre en el mismo bloque. Si el ámbito de cierre más
+cercano para una variable libre contiene una declaración global, se
+trata a la variable libre como global.
+
+La declaración "nonlocal" causa que los nombre correspondientes se
+refieran a variables previamente vinculadas en el ámbito de la función
+de cierre más cercano. Se lanza un "SyntaxError" en tiempo de
+compilación si el nombre dado no existe en ningún ámbito de las
+funciones dentro de las cuales está. Parámetros de tipo no puede
+recuperarse con la sentencia "nonlocal".
+
+El espacio de nombres (*namespace*) para un módulo se crea
+automáticamente la primera vez que se importa el módulo. El módulo
+principal de un *script* siempre se llama "__main__".
+
+Los bloques de definición de clase y los argumentos para "exec()" y
+"eval()" son especiales en el contexto de la resolución de nombres.
+Una definición de clase es una declaración ejecutable que puede usar y
+definir nombres. Estas referencias siguen las reglas normales para la
+resolución de nombres con la excepción de que se buscan las variables
+locales no vinculadas en el espacio de nombres global. El espacio de
+nombres de la definición de clase se vuelve el diccionario de
+atributos de la clase. El ámbito de nombres definido en un bloque de
+clase está limitado a dicho bloque; no se extiende a los bloques de
+código de los métodos. Esto incluye las comprensiones y las
+expresiones generadoras pero no incluye annotation scopes, que tienen
+acceso a sus ámbitos de clase adjuntos. Esto significa que lo
+siguiente fallará:
+
+   class A:
+       a = 42
+       b = list(a + i for i in range(10))
+
+Sin embargo. lo siguiente tendrá éxito:
+
+   class A:
+       type Alias = Nested
+       class Nested: pass
+
+   print(A.Alias.__value__)  # <type 'A.Nested'>
+
+### 4.2.3. Ámbitos de anotación
+
+*Annotations*, type parameter lists and "type" statements introduce
+*annotation scopes*, which behave mostly like function scopes, but
+with some exceptions discussed below.
+
+Los ámbitos de anotación se utilizan en los siguientes contextos:
+
+* *Function annotations*.
+
+* *Variable annotations*.
+
+* Listas de tipo de parámetros para generic type aliases.
+
+* Escriba listas de parámetros para generic functions. Las anotaciones
+  de una función genérica se ejecutan dentro del alcance de la
+  anotación, pero sus valores predeterminados y decoradores no.
+
+* Tipo de parámetros de listas para generic classes. Las clases base y
+  los argumentos de palabra clave de una clase genérica se ejecutan
+  dentro del ámbito de la anotación, pero sus decoradores no.
+
+* Los límites, restricciones y valores predeterminados para los
+  parámetros de tipo (evaluados de forma diferida).
+
+* El valor de los alias de tipo (lazy evaluated).
+
+Los ámbitos de anotación difieren de los ámbitos de función en lo
+siguiente:
+
+* Los ámbitos de anotación tienen acceso al espacio de nombres de la
+  clase que los rodea. Si un ámbito de anotación está inmediatamente
+  dentro de un ámbito de clase, o dentro de otro ámbito de anotación
+  que está inmediatamente dentro de un ámbito de clase, el código en
+  el ámbito de anotación puede utilizar nombres definidos en el ámbito
+  de clase como si se ejecutara directamente dentro del cuerpo de la
+  clase. Esto contrasta con las funciones normales definidas dentro de
+  las clases, que no pueden acceder a los nombres definidos en el
+  ámbito de la clase.
+
+* Las expresiones en ámbitos de anotación no pueden contener
+  expresiones "yield", "yield from", "await", o ":=". (Estas
+  expresiones están permitidas en otros ámbitos contenidos dentro del
+  ámbito de la anotación).
+
+* Los nombres definidos en ámbitos de anotación no pueden recuperarse
+  con sentencias "nonlocal" en ámbitos internos. Esto incluye sólo
+  parámetros de tipo, ya que ningún otro elemento sintáctico que pueda
+  aparecer dentro de ámbitos de anotación puede introducir nuevos
+  nombres.
+
+* Aunque los ámbitos de anotación tienen un nombre interno, ese nombre
+  no se refleja en el *qualified name* de los objetos definidos dentro
+  del ámbito. En su lugar, el "__qualname__" de dichos objetos es como
+  si el objeto estuviera definido en el ámbito que lo encierra.
+
+Added in version 3.12: Los ámbitos de anotación se introdujeron en
+Python 3.12 como parte de **PEP 695**.
+
+Distinto en la versión 3.13: También se usan ámbitos de anotación para
+parámetros de tipo predeterminados, introducido por **PEP 696**.
+
+Distinto en la versión 3.14: Annotation scopes are now also used for
+annotations, as specified in **PEP 649** and **PEP 749**.
+
+### 4.2.4. Evaluación perezosa
+
+Most annotation scopes are *lazily evaluated*. This includes
+annotations, the values of type aliases created through the "type"
+statement, and the bounds, constraints, and default values of type
+variables created through the type parameter syntax. This means that
+they are not evaluated when the type alias or type variable is
+created, or when the object carrying annotations is created. Instead,
+they are only evaluated when necessary, for example when the
+"__value__" attribute on a type alias is accessed.
+
+Ejemplo:
+
+   >>> type Alias = 1/0
+   >>> Alias.__value__
+   Traceback (most recent call last):
+     ...
+   ZeroDivisionError: division by zero
+   >>> def func[T: 1/0](): pass
+   >>> T = func.__type_params__[0]
+   >>> T.__bound__
+   Traceback (most recent call last):
+     ...
+   ZeroDivisionError: division by zero
+
+Aquí la excepción se lanza sólo cuando se accede al atributo
+"__value__" del alias de tipo o al atributo "__bound__" de la variable
+de tipo.
+
+Este comportamiento es útil principalmente para referencias a tipos
+que aún no se han definido cuando se crea el alias de tipo o la
+variable de tipo. Por ejemplo, la evaluación perezosa permite la
+creación de alias de tipo mutuamente recursivos:
+
+   from typing import Literal
+
+   type SimpleExpr = int | Parenthesized
+   type Parenthesized = tuple[Literal["("], Expr, Literal[")"]]
+   type Expr = SimpleExpr | tuple[SimpleExpr, Literal["+", "-"], Expr]
+
+Los valores evaluados perezosamente se evalúan en annotation scope, lo
+que significa que los nombres que aparecen dentro del valor evaluado
+se buscan como si se utilizaran en el ámbito inmediatamente adyacente.
+
+Added in version 3.12.
+
+### 4.2.5. Integraciones y ejecución restringida
+
+Los usuarios no deberían tocar "__builtins__"; es un detalle de la
+implementación en sentido estricto. Los usuarios que quieran
+sobreescribir valores en los espacios de nombres incorporados deberían
+usar "import" con el módulo "builtins" y modificar sus atributos de un
+modo adecuado.
+
+El espacio de nombres incorporado (*builtin namespace*) asociado a la
+ejecución de un bloque de código es encontrado buscando el nombre
+"__builtins__" en su espacio de nombres global; debería ser un
+diccionario o un módulo (en este último caso, se usa el diccionario
+del módulo). Por defecto, en el módulo "__main__", "__builtins__" es
+el módulo "builtins". En cualquier otro módulo,  "__builtins__" es un
+alias para el diccionario del propio módulo "builtins".
+
+### 4.2.6. Interacción con funcionalidades dinámicas
+
+La resolución de variables libres sucede en tiempo de ejecución, no en
+tiempo de compilación. Esto significa que el siguiente código va a
+mostrar 42:
+
+   i = 10
+   def f():
+       print(i)
+   i = 42
+   f()
+
+Las funciones "eval()" y "exec()" no tienen acceso al entorno completo
+para resolver nombres. Los nombres pueden resolverse en los espacios
+de nombres locales y globales de la persona que llama. Las variables
+libres no se resuelven en el espacio de nombres adjunto más cercano,
+sino en el espacio de nombres global. [1] Las funciones "exec()" y
+"eval()" tienen argumentos opcionales para anular el espacio de
+nombres global y local. Si solo se especifica un espacio de nombres,
+se usa para ambos.
+
+## 4.3. Excepciones
+
+Las excepciones son un medio para salir del flujo de control normal de
+un bloque de código, para gestionar errores u otras condiciones
+excepcionales. Una excepción es *lanzada* (*raised*) en el momento en
+que se detecta el error; puede ser *gestionada* (*handled*) por el
+bloque de código que la rodea o por cualquier bloque de código que
+directa o indirectamente ha invocado al bloque de código en el que
+ocurrió el error.
+
+El intérprete Python lanza una excepción cuando detecta un error en
+tiempo de ejecución (como una división por cero). Un programa Python
+también puede lanzar una excepción explícitamente, con la declaración
+"raise". Los gestores de excepciones se especifican con la declaración
+"try" ... "except". La cláusula "finally" de tales declaraciones puede
+utilizarse para especificar código de limpieza que no es el que
+gestiona la excepción, sino que se ejecutará en cualquier caso, tanto
+cuando la excepción ha ocurrido en el código que la precede, como
+cuando esto no ha sucedido.
+
+Python usa el modelo de gestión de errores de "terminación"
+("*termination*"): un gestor de excepción puede descubrir qué sucedió
+y continuar la ejecución en un nivel exterior, pero no puede reparar
+la causa del error y reintentar la operación que ha fallado (excepto
+que se reingrese al trozo de código fallido desde su inicio).
+
+Cuando una excepción no está gestionada en absoluto, el intérprete
+termina la ejecución del programa, o retorna a su bucle principal
+interactivo. En cualquier caso, imprime un seguimiento de pila,
+excepto cuando la excepción es "SystemExit".
+
+Las excepciones se identifican mediante instancias de clase.  La
+cláusula "except" se selecciona en función de la clase de la
+instancia: debe hacer referencia a la clase de la instancia o a un
+*non-virtual base class* de la misma. La instancia puede ser recibida
+por el manejador y puede llevar información adicional sobre la
+condición excepcional.
+
+Nota:
+
+  Los mensajes de excepción no forman parte de la API Python. Su
+  contenido puede cambiar entre una versión de Python y la siguiente
+  sin ningún tipo de advertencia; el código que corre bajo múltiples
+  versiones del intérprete no debería basarse en estos mensajes.
+
+Mira también la descripción de la declaración "try" en la sección La
+sentencia try, y la declaración "raise" en la sección La declaración
+raise.
+
+## 4.4. Runtime Components
+
+### 4.4.1. General Computing Model
+
+Python's execution model does not operate in a vacuum.  It runs on a
+host machine and through that host's runtime environment, including
+its operating system (OS), if there is one.  When a program runs, the
+conceptual layers of how it runs on the host look something like this:
+
+      **host machine**
+         **process** (global resources)
+            **thread** (runs machine code)
+
+Each process represents a program running on the host.  Think of each
+process itself as the data part of its program.  Think of the process'
+threads as the execution part of the program.  This distinction will
+be important to understand the conceptual Python runtime.
+
+The process, as the data part, is the execution context in which the
+program runs.  It mostly consists of the set of resources assigned to
+the program by the host, including memory, signals, file handles,
+sockets, and environment variables.
+
+Processes are isolated and independent from one another.  (The same is
+true for hosts.)  The host manages the process' access to its assigned
+resources, in addition to coordinating between processes.
+
+Each thread represents the actual execution of the program's machine
+code, running relative to the resources assigned to the program's
+process.  It's strictly up to the host how and when that execution
+takes place.
+
+From the point of view of Python, a program always starts with exactly
+one thread.  However, the program may grow to run in multiple
+simultaneous threads.  Not all hosts support multiple threads per
+process, but most do.  Unlike processes, threads in a process are not
+isolated and independent from one another.  Specifically, all threads
+in a process share all of the process' resources.
+
+The fundamental point of threads is that each one does *run*
+independently, at the same time as the others.  That may be only
+conceptually at the same time ("concurrently") or physically ("in
+parallel").  Either way, the threads effectively run at a non-
+synchronized rate.
+
+Nota:
+
+  That non-synchronized rate means none of the process' memory is
+  guaranteed to stay consistent for the code running in any given
+  thread.  Thus multi-threaded programs must take care to coordinate
+  access to intentionally shared resources.  Likewise, they must take
+  care to be absolutely diligent about not accessing any *other*
+  resources in multiple threads; otherwise two threads running at the
+  same time might accidentally interfere with each other's use of some
+  shared data.  All this is true for both Python programs and the
+  Python runtime.The cost of this broad, unstructured requirement is
+  the tradeoff for the kind of raw concurrency that threads provide.
+  The alternative to the required discipline generally means dealing
+  with non-deterministic bugs and data corruption.
+
+### 4.4.2. Python Runtime Model
+
+The same conceptual layers apply to each Python program, with some
+extra data layers specific to Python:
+
+      **host machine**
+         **process** (global resources)
+            Python global runtime (*state*)
+               Python interpreter (*state*)
+                  **thread** (runs Python bytecode and "C-API")
+                     Python thread *state*
+
+At the conceptual level: when a Python program starts, it looks
+exactly like that diagram, with one of each.  The runtime may grow to
+include multiple interpreters, and each interpreter may grow to
+include multiple thread states.
+
+Nota:
+
+  A Python implementation won't necessarily implement the runtime
+  layers distinctly or even concretely.  The only exception is places
+  where distinct layers are directly specified or exposed to users,
+  like through the "threading" module.
+
+Nota:
+
+  The initial interpreter is typically called the "main" interpreter.
+  Some Python implementations, like CPython, assign special roles to
+  the main interpreter.Likewise, the host thread where the runtime was
+  initialized is known as the "main" thread.  It may be different from
+  the process' initial thread, though they are often the same.  In
+  some cases "main thread" may be even more specific and refer to the
+  initial thread state. A Python runtime might assign specific
+  responsibilities to the main thread, such as handling signals.
+
+As a whole, the Python runtime consists of the global runtime state,
+interpreters, and thread states.  The runtime ensures all that state
+stays consistent over its lifetime, particularly when used with
+multiple host threads.
+
+The global runtime, at the conceptual level, is just a set of
+interpreters.  While those interpreters are otherwise isolated and
+independent from one another, they may share some data or other
+resources.  The runtime is responsible for managing these global
+resources safely.  The actual nature and management of these resources
+is implementation-specific.  Ultimately, the external utility of the
+global runtime is limited to managing interpreters.
+
+In contrast, an "interpreter" is conceptually what we would normally
+think of as the (full-featured) "Python runtime".  When machine code
+executing in a host thread interacts with the Python runtime, it calls
+into Python in the context of a specific interpreter.
+
+Nota:
+
+  The term "interpreter" here is not the same as the "bytecode
+  interpreter", which is what regularly runs in threads, executing
+  compiled Python code.In an ideal world, "Python runtime" would refer
+  to what we currently call "interpreter".  However, it's been called
+  "interpreter" at least since introduced in 1997 (CPython:a027efa5b).
+
+Each interpreter completely encapsulates all of the non-process-
+global, non-thread-specific state needed for the Python runtime to
+work. Notably, the interpreter's state persists between uses.  It
+includes fundamental data like "sys.modules".  The runtime ensures
+multiple threads using the same interpreter will safely share it
+between them.
+
+A Python implementation may support using multiple interpreters at the
+same time in the same process.  They are independent and isolated from
+one another.  For example, each interpreter has its own "sys.modules".
+
+For thread-specific runtime state, each interpreter has a set of
+thread states, which it manages, in the same way the global runtime
+contains a set of interpreters.  It can have thread states for as many
+host threads as it needs.  It may even have multiple thread states for
+the same host thread, though that isn't as common.
+
+Each thread state, conceptually, has all the thread-specific runtime
+data an interpreter needs to operate in one host thread.  The thread
+state includes the current raised exception and the thread's Python
+call stack.  It may include other thread-specific resources.
+
+Nota:
+
+  The term "Python thread" can sometimes refer to a thread state, but
+  normally it means a thread created using the "threading" module.
+
+Each thread state, over its lifetime, is always tied to exactly one
+interpreter and exactly one host thread.  It will only ever be used in
+that thread and with that interpreter.
+
+Multiple thread states may be tied to the same host thread, whether
+for different interpreters or even the same interpreter.  However, for
+any given host thread, only one of the thread states tied to it can be
+used by the thread at a time.
+
+Thread states are isolated and independent from one another and don't
+share any data, except for possibly sharing an interpreter and objects
+or other resources belonging to that interpreter.
+
+Once a program is running, new Python threads can be created using the
+"threading" module (on platforms and Python implementations that
+support threads).  Additional processes can be created using the "os",
+"subprocess", and "multiprocessing" modules. Interpreters can be
+created and used with the "interpreters" module.  Coroutines (async)
+can be run using "asyncio" in each interpreter, typically only in a
+single thread (often the main thread).
+
+-[ Notas al pie ]-
+
+[1] Esta limitación se da porque el código ejecutado por estas
+    operaciones no está disponible en el momento en que se compila el
+    módulo.

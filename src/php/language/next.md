@@ -1,0 +1,37 @@
+---
+title: Generator::next
+description: Continua la ejecución del generador
+source_url: https://www.php.net/manual/es/generator.next.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: language/predefined/generator/next.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: language
+translation_status: ready
+translation_revision: 8fee3ae97
+order: 3580
+---
+
+Generator::next
+
+Continua la ejecución del generador
+
+## Descripción
+
+```php
+public Generator::next(): void
+```php
+
+Llamar a Generator::next tiene el mismo efecto que llamar a Generator::send con `null` como argumento.
+
+## Parámetros
+
+Esta función no contiene ningún parámetro.
+
+## Valores devueltos
+
+No se retorna ningún valor.

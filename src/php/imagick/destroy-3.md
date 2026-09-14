@@ -1,0 +1,37 @@
+---
+title: ImagickPixel::destroy
+description: Libera los recursos asociados con el objeto
+source_url: https://www.php.net/manual/es/imagickpixel.destroy.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/imagick/imagickpixel/destroy.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: imagick
+translation_status: ready
+translation_reviewed: true
+translation_revision: fa0c88f1e
+order: 37520
+---
+
+ImagickPixel::destroy
+
+Libera los recursos asociados con el objeto
+
+## Descripción
+
+```php
+public ImagickPixel::destroy(): bool
+```php
+
+> [!WARNING]
+> Esta función está actualmente no documentada; solo la lista de sus argumentos está disponible.
+
+Libera todos los recursos utilizados por el objeto ImagickPixel y elimina todos los colores asociados. El objeto no debe ser utilizado tras la llamada a esta función.
+
+## Valores devueltos
+
+Devuelve `true` en caso de éxito.

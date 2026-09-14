@@ -1,0 +1,60 @@
+---
+title: La clase MongoDB\Driver\Exception\CommandException
+source_url: https://www.php.net/manual/es/class.mongodb-driver-exception-commandexception.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/mongodb/mongodb/driver/exception/commandexception.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: mongodb
+translation_status: ready
+translation_reviewed: false
+translation_revision: 36c32a2a9
+order: 49540
+---
+
+## Introducción
+
+Lanzada cuando una orden falla.
+
+## Sinopsis de la clase
+
+MongoDB\Driver\Exception\CommandException
+
+MongoDB\Driver\Exception\CommandException
+
+extends
+
+MongoDB\Driver\Exception\ServerException
+
+MongoDB\Driver\Exception\Exception
+
+Propiedades
+
+public
+
+readonly
+
+object
+
+resultDocument
+
+Propiedades heredadas
+
+Métodos
+
+Métodos heredados
+
+## Propiedades
+
+`resultDocument`  
+El resultado del documento asociado a la orden fallida.
+
+## Historial de cambios
+
+| Versión | Descripción |
+|----|----|
+| PECL mongodb 2.3.0 | La propiedad `resultDocument` ahora es public readonly. |

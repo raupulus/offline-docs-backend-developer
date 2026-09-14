@@ -1,0 +1,27 @@
+---
+title: Server
+description: Learn how to migrate from Nuxt 2 to Nuxt 3 server.
+source_repo: nuxt/nuxt
+source_ref: main
+source_commit: ec5c55e26
+source_path: 7.migration/11.server.md
+technology: nuxt
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: migration
+order: 11
+---
+
+In a built Nuxt 3 application, there is no runtime Nuxt dependency. That means your site will be highly performant, and ultra-slim. But it also means you can no longer hook into runtime Nuxt server hooks.
+
+:read-more{to="/docs/4.x/guide/concepts/server-engine"}
+
+## Steps
+
+1. Remove the `render` key in your `nuxt.config`.
+2. Any files in `~~/server/api` and `~~/server/middleware` will be automatically registered; you can remove them from your `serverMiddleware` array.
+3. Update any other items in your `serverMiddleware` array to point to files or npm packages directly, rather than using inline functions.
+
+:read-more{to="/docs/4.x/directory-structure/server"}
+:read-more{to="/docs/4.x/guide/going-further/hooks#server-hooks-runtime"}

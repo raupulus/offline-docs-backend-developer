@@ -1,0 +1,40 @@
+---
+title: SolrQuery::getGroupTruncate
+description: Devuelve el valor de group.truncate
+source_url: https://www.php.net/manual/es/solrquery.getgrouptruncate.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/solr/solrquery/getgrouptruncate.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: solr
+translation_status: ready
+translation_reviewed: true
+translation_revision: 86e7c61ef
+order: 79350
+---
+
+SolrQuery::getGroupTruncate
+
+Devuelve el valor de group.truncate
+
+## Descripción
+
+```php
+public SolrQuery::getGroupTruncate(): bool
+```php
+
+Devuelve el valor de group.truncate.
+
+## Parámetros
+
+Esta función no contiene ningún parámetro.
+
+## Valores devueltos
+
+## Véase también
+
+SolrQuery::setGroupTruncate

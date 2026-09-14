@@ -1,0 +1,231 @@
+---
+title: Ejemplos
+source_url: https://www.php.net/manual/es/stream.examples.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/stream/examples.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: stream
+translation_status: ready
+translation_reviewed: false
+translation_revision: f0e6ac042
+order: 87760
+---
+
+## Ejemplos
+
+Usar `file_get_contents` para recuperar información desde múltiples fuentes
+
+```php
+<?php
+/* Leer un archivo local desde /home/bar */
+$archivolocal = file_get_contents("/home/bar/foo.txt");
+
+/* Igual que arriba, explícitamente nombrando el protocolo FILE */
+$archivolocal = file_get_contents("file:///home/bar/foo.txt");
+
+/* Leer un archivo remoto desde www.example.com usando HTTP */
+$archivohttp  = file_get_contents("http://www.example.com/foo.txt");
+
+/* Leer un archivo remoto desde www.example.com usando HTTPS */
+$archivohttps = file_get_contents("https://www.example.com/foo.txt");
+
+/* Leer un archivo remoto desde ftp.example.com usando FTP */
+$archivoftp   = file_get_contents("ftp://user:pass@ftp.example.com/foo.txt");
+
+/* Leer un archivo remoto desde ftp.example.com usando FTPS */
+$archivoftps  = file_get_contents("ftps://user:pass@ftp.example.com/foo.txt");
+?>
+
+   
+```
+
+Hacer una petición POST a un servidor https
+
+```php
+<?php
+/* Enviar una petición POST a https://secure.example.com/form_action.php
+* Incluir los elementos de formulario llamados "foo" y "bar" con valores sin importancia
+*/
+
+$sock = fsockopen("ssl://secure.example.com", 443, $errno, $errstr, 30);
+if (!$sock) die("$errstr ($errno)\n");
+
+$data = "foo=" . urlencode("Valor para Foo") . "&bar=" . urlencode("Valor para Bar");
+
+fwrite($sock, "POST /form_action.php HTTP/1.0\r\n");
+fwrite($sock, "Host: secure.example.com\r\n");
+fwrite($sock, "Content-type: application/x-www-form-urlencoded\r\n");
+fwrite($sock, "Content-length: " . strlen($data) . "\r\n");
+fwrite($sock, "Accept: */*\r\n");
+fwrite($sock, "\r\n");
+fwrite($sock, $data);
+
+$headers = "";
+while ($str = trim(fgets($sock, 4096)))
+$headers .= "$str\n";
+
+echo "\n";
+
+$body = "";
+while (!feof($sock))
+$body .= fgets($sock, 4096);
+
+fclose($sock);
+?>
+
+   
+```
+
+Escribir información en un archivo compirmido
+
+```php
+<?php
+/* Crear un archivo comprimido que contiene una cadena arbitraria
+* El archivo se puede volver a leer usando el flujo compress.zlib o
+* descomprimiéndolo desde la línea de comandos usando 'gzip -d foo-bar.txt.gz'
+*/
+$fp = fopen("compress.zlib://foo-bar.txt.gz", "wb");
+if (!$fp) die("No se puede crear el archivo.");
+
+fwrite($fp, "Esto es una prueba.\n");
+
+fclose($fp);
+?>
+
+   
+```
+
+## Ejemplo de clase registrada como envoltura de flujo
+
+El ejemplo de abajo implementa un gestor de protocolo var:// que permite el acceso a la lectura/escritura de una variable global nominada usando un flujo de sistema de archivos estándar tal como `fread`. El protocolo var:// implementado abajo, dada la URL "var://foo", leerá/escribirá información hacia/desde \$GLOBALS\["foo"\].
+
+Un Flujo para leer/escribir variables globales
+
+```php
+<?php
+
+class FlujoVariable {
+    var $posición;
+    var $nombre;
+
+    function stream_open($ruta, $modo, $opciones, &$ruta_abierta)
+    {
+        $url = parse_url($ruta);
+        $this->nombre = $url["host"];
+        $this->posición = 0;
+
+        return true;
+    }
+
+    function stream_read($cuenta)
+    {
+        $ret = substr($GLOBALS[$this->nombre], $this->posición, $cuenta);
+        $this->posición += strlen($ret);
+        return $ret;
+    }
+
+    function stream_write($data)
+    {
+        $izquierda = substr($GLOBALS[$this->nombre], 0, $this->posición);
+        $derecha = substr($GLOBALS[$this->nombre], $this->posición + strlen($data));
+        $GLOBALS[$this->nombre] = $izquierda . $data . $derecha;
+        $this->posición += strlen($data);
+        return strlen($data);
+    }
+
+    function stream_tell()
+    {
+        return $this->posición;
+    }
+
+    function stream_eof()
+    {
+        return $this->posición >= strlen($GLOBALS[$this->nombre]);
+    }
+
+    function stream_seek($índice, $dónde)
+    {
+        switch ($dónde) {
+            case SEEK_SET:
+                if ($índice < strlen($GLOBALS[$this->nombre]) && $índice >= 0) {
+                     $this->posición = $índice;
+                     return true;
+                } else {
+                     return false;
+                }
+                break;
+
+            case SEEK_CUR:
+                if ($índice >= 0) {
+                     $this->posición += $índice;
+                     return true;
+                } else {
+                     return false;
+                }
+                break;
+
+            case SEEK_END:
+                if (strlen($GLOBALS[$this->nombre]) + $índice >= 0) {
+                     $this->posición = strlen($GLOBALS[$this->nombre]) + $índice;
+                     return true;
+                } else {
+                     return false;
+                }
+                break;
+
+            default:
+                return false;
+        }
+    }
+
+    function stream_metadata($ruta, $opción, $var)
+    {
+        if($opción== STREAM_META_TOUCH) {
+            $url = parse_url($ruta);
+            $varname = $url["host"];
+            if(!isset($GLOBALS[$varname])) {
+                $GLOBALS[$varname] = '';
+            }
+            return true;
+        }
+        return false;
+    }
+}
+
+stream_wrapper_register("var", "FlujoVariable")
+    or die("Error al registrar el protocolo");
+
+$mivar = "";
+
+$fp = fopen("var://mivar", "r+");
+
+fwrite($fp, "línea1\n");
+fwrite($fp, "línea2\n");
+fwrite($fp, "línea3\n");
+
+rewind($fp);
+while (!feof($fp)) {
+    echo fgets($fp);
+}
+fclose($fp);
+var_dump($mivar);
+
+?>
+
+    
+```
+
+El ejemplo anterior mostrará:
+
+    línea1
+    línea2
+    línea3
+    string(24) "línea1
+    línea2
+    línea3
+    "

@@ -1,0 +1,37 @@
+---
+title: IntlBreakIterator::createSentenceInstance
+description: Crea un iterador para las divisiones de oración
+source_url: https://www.php.net/manual/es/intlbreakiterator.createsentenceinstance.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/intl/intlbreakiterator/createsentenceinstance.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: intl
+translation_status: ready
+translation_reviewed: false
+translation_revision: 1976eae0d
+order: 40010
+---
+
+IntlBreakIterator::createSentenceInstance
+
+Crea un iterador para las divisiones de oración
+
+## Descripción
+
+```php
+public static IntlBreakIterator::createSentenceInstance([string $locale]): IntlBreakIterator
+```php
+
+> [!WARNING]
+> Esta función está actualmente no documentada; solo la lista de sus argumentos está disponible.
+
+## Parámetros
+
+`locale`  
+
+## Valores devueltos

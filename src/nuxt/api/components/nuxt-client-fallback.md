@@ -1,0 +1,89 @@
+---
+title: <NuxtClientFallback>
+description: Nuxt provides the <NuxtClientFallback> component to render its content
+  on the client if any of its children trigger an error in SSR
+source_repo: nuxt/nuxt
+source_ref: main
+source_commit: ec5c55e26
+source_path: 4.api/1.components/1.nuxt-client-fallback.md
+technology: nuxt
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: api
+order: 1
+---
+
+Nuxt provides the `<NuxtClientFallback>` component to render its content on the client if any of its children trigger an error in SSR.
+
+::note{to="/docs/4.x/guide/going-further/experimental-features#clientfallback"}
+This component is experimental and in order to use it you must enable the `experimental.clientFallback` option in your `nuxt.config`.
+::
+
+```vue [app/pages/example.vue]
+<template>
+  <div>
+    <Sidebar />
+    <!-- this component will be rendered on client-side -->
+    <NuxtClientFallback fallback-tag="span">
+      <Comments />
+      <BrokeInSSR />
+    </NuxtClientFallback>
+  </div>
+</template>
+```
+
+## Events
+
+- `@ssr-error`: Event emitted when a child triggers an error in SSR. Note that this will only be triggered on the server.
+
+  ```vue
+  <template>
+    <NuxtClientFallback @ssr-error="logSomeError">
+      <!-- ... -->
+    </NuxtClientFallback>
+  </template>
+  ```
+
+## Props
+
+- `placeholderTag` | `fallbackTag`: Specify a fallback tag to be rendered if the slot fails to render on the server.
+  - **type**: `string`
+  - **default**: `div`
+- `placeholder` | `fallback`: Specify fallback content to be rendered if the slot fails to render.
+  - **type**: `string`
+- `keepFallback`: Keep the fallback content if it failed to render server-side.
+  - **type**: `boolean`
+  - **default**: `false`
+
+::warning{icon="i-ph-warning-duotone"}
+The `placeholder` and `fallback` props render content as raw HTML. Do not pass untrusted user input to these props as it may lead to XSS vulnerabilities. Use the `#fallback` or `#placeholder` slots instead for dynamic content that needs proper escaping.
+::
+
+```vue
+<template>
+  <!-- render <span>Hello world</span> server-side if the default slot fails to render -->
+  <NuxtClientFallback
+    fallback-tag="span"
+    fallback="Hello world"
+  >
+    <BrokeInSSR />
+  </NuxtClientFallback>
+</template>
+```
+
+## Slots
+
+- `#fallback`: specify content to be displayed server-side if the slot fails to render.
+
+```vue
+<template>
+  <NuxtClientFallback>
+    <!-- ... -->
+    <template #fallback>
+      <!-- this will be rendered on server side if the default slot fails to render in ssr -->
+      <p>Hello world</p>
+    </template>
+  </NuxtClientFallback>
+</template>
+```

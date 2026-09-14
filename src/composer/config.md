@@ -1,0 +1,1293 @@
+---
+title: Config
+source_repo: composer/composer
+source_ref: main
+source_commit: b73133523
+source_path: 06-config.md
+technology: composer
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+order: 6
+---
+
+# Config
+
+This chapter will describe the `config` section of the `composer.json`
+[schema](schema.md).
+
+## process-timeout
+
+The timeout in seconds for process executions, defaults to 300 (5mins).
+The duration processes like `git clone`s can run before
+Composer assumes they died out. You may need to make this higher if you have a
+slow connection or huge vendors.
+
+Example:
+
+```json
+{
+    "config": {
+        "process-timeout": 900
+    }
+}
+```
+
+### Disabling timeouts for an individual script command
+
+To disable the process timeout on a custom command under `scripts`, a static
+helper is available:
+
+```json
+{
+    "scripts": {
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpunit"
+        ]
+    }
+}
+```
+
+## allow-plugins
+
+Defaults to `{}` which does not allow any plugins to be loaded.
+
+As of Composer 2.2.0, the `allow-plugins` option adds a layer of security
+allowing you to restrict which Composer plugins are able to execute code during
+a Composer run.
+
+When a new plugin is first activated, which is not yet listed in the config option,
+Composer will print a warning. If you run Composer interactively it will
+prompt you to decide if you want to execute the plugin or not.
+
+Use this setting to allow only packages you trust to execute code. Set it to
+an object with package name patterns as keys. The values are **true** to allow
+and **false** to disallow while suppressing further warnings and prompts.
+
+```json
+{
+    "config": {
+        "allow-plugins": {
+            "third-party/required-plugin": true,
+            "my-organization/*": true,
+            "unnecessary/plugin": false
+        }
+    }
+}
+```
+
+You can also set the config option itself to `false` to disallow all plugins, or `true` to allow all plugins to run (NOT recommended). For example:
+
+```json
+{
+    "config": {
+        "allow-plugins": false
+    }
+}
+```
+
+## use-include-path
+
+Defaults to `false`. If `true`, the Composer autoloader will also look for classes
+in the PHP include path.
+
+## preferred-install
+
+Defaults to `dist` and can be any of `source`, `dist` or `auto`. This option
+allows you to set the install method Composer will prefer to use. Can
+optionally be an object with package name patterns for keys for more granular install preferences.
+
+```json
+{
+    "config": {
+        "preferred-install": {
+            "my-organization/stable-package": "dist",
+            "my-organization/*": "source",
+            "partner-organization/*": "auto",
+            "*": "dist"
+        }
+    }
+}
+```
+
+- `source` means Composer will install packages from their `source` if there
+  is one. This is typically a git clone or equivalent checkout of the version
+  control system the package uses. This is useful if you want to make a bugfix
+  to a project and get a local git clone of the dependency directly.
+- `auto` is the legacy behavior where Composer uses `source` automatically
+  for dev versions, and `dist` otherwise.
+- `dist` (the default as of Composer 2.1) means Composer installs from `dist`,
+  where possible. This is typically a zip file download, which is faster than
+  cloning the entire repository.
+
+> **Note:** Order matters. More specific patterns should be earlier than
+> more relaxed patterns. When mixing the string notation with the hash
+> configuration in global and package configurations the string notation
+> is translated to a `*` package pattern.
+
+> **Tip:** If you want a source checkout for some packages so you can make
+> local edits, but only on your own machine (not in CI), prefer configuring
+> `preferred-install` globally rather than committing it to the project. For
+> example:
+>
+> ```
+> composer config --global preferred-install.my-vendor/* source
+> ```
+>
+> CI then keeps installing from `dist` by default, while your dev machine
+> always pulls those packages from source. This avoids relying on a source
+> install failure to fall back to dist, and saves CI from attempting a clone
+> first, which keep the output leaner and your CI faster.
+
+## source-fallback
+
+> **Deprecated:** This option is deprecated and will be removed in Composer 2.11.
+> Do not set it unless you absolutely need to. It exists as a temporary opt-in
+> while we disable the dist → source fallback for security reasons (silently
+> switching from a dist to a less-trusted or manipulated source checkout has
+> security implications). If you have a legitimate use case for re-enabling
+> the dist → source fallback and do not want us to remove it in 2.11, please
+> open an issue at https://github.com/composer/composer/issues to let us know.
+
+Defaults to `false`. When set to `true`, a failed **dist** install will fall
+back to a **source** checkout. This option only governs the dist → source
+direction; falling back from a failed source checkout to the dist artifact is
+always allowed regardless of this setting.
+
+```json
+{
+    "config": {
+        "source-fallback": true
+    }
+}
+```
+
+> **Note:** With this option at its default (`false`) and a dist download
+> failing, Composer throws an error immediately instead of trying a source
+> checkout. Make sure your preferred installation source (`preferred-install`)
+> is correctly configured.
+
+## policy
+
+Unified dependency policy configuration. Controls Composer behavior for dependencies with security
+advisories, flagged as malware, abandoned packages, and custom dependency policies. Audit reports
+can be generated with `composer audit`; blocking prevents insecure or otherwise flagged package
+versions from being installed during `composer update`, `require`, or `remove` and malware also
+during a `composer install`.
+
+Set to `false` to disable all dependency policy enforcement:
+
+```json
+{
+    "config": {
+        "policy": false
+    }
+}
+```
+
+> **Migrating from `config.audit`?** See
+> [How `config.audit` interacts with `config.policy`](#how-config-audit-interacts-with-config-policy)
+> for how the legacy keys are still honored as a fallback while you migrate.
+
+### advisories
+
+Configuration for packages affected by security advisories.
+
+#### block
+
+Defaults to `true`. When `true`, package versions with active security advisories are blocked and
+cannot be installed during `update`/`require`/`remove` unless the advisory or package is ignored.
+
+```json
+{
+    "config": {
+        "policy": {
+            "advisories": {
+                "block": false
+            }
+        }
+    }
+}
+```
+
+#### audit
+
+Defaults to `fail`. How `composer audit` treats packages with security advisories.
+
+- `ignore` — advisories are not reported
+- `report` — advisories are reported but do not cause a non-zero exit code
+- `fail` — advisories cause `composer audit` to exit with a non-zero code
+
+```json
+{
+    "config": {
+        "policy": {
+            "advisories": {
+                "audit": "report"
+            }
+        }
+    }
+}
+```
+
+#### ignore-id
+
+A list of advisory IDs (CVE, GHSA, PKSA, …) to ignore. Each entry can optionally include a reason
+and scoping (`on-block`/`on-audit`) to limit where the ignore applies.
+
+##### Simple list:
+
+```json
+{
+    "config": {
+        "policy": {
+            "advisories": {
+                "ignore-id": ["CVE-1234", "GHSA-xx"]
+            }
+        }
+    }
+}
+```
+
+##### With reasons:
+
+```json
+{
+    "config": {
+        "policy": {
+            "advisories": {
+                "ignore-id": {
+                    "CVE-1234": "Not affected.",
+                    "GHSA-xx": "Patch applied."
+                }
+            }
+        }
+    }
+}
+```
+
+##### With scoping:
+
+`on-block: false` means the advisory no longer blocks updates but is still reported in audit.
+`on-audit: false` means the advisory still blocks updates but is no longer reported in audit.
+
+```json
+{
+    "config": {
+        "policy": {
+            "advisories": {
+                "ignore-id": {
+                    "CVE-1234": {"on-block": false, "reason": "Patch applied, still want blocking."},
+                    "GHSA-xx":  {"on-audit": false, "reason": "False positive, still report."}
+                }
+            }
+        }
+    }
+}
+```
+
+#### ignore
+
+A list of package names to ignore for security advisory handling. Supports wildcards and optional
+version constraints. See the [ignore format](#ignore-format) for all supported syntax variants.
+
+#### ignore-severity
+
+A list of advisory severity levels to ignore: `low`, `medium`, `high`, `critical`.
+
+##### Simple list:
+
+```json
+{
+    "config": {
+        "policy": {
+            "advisories": {
+                "ignore-severity": ["low", "medium"]
+            }
+        }
+    }
+}
+```
+
+##### With scoping:
+
+```json
+{
+    "config": {
+        "policy": {
+            "advisories": {
+                "ignore-severity": {
+                    "low":    {"on-block": false},
+                    "medium": {"on-audit": false, "reason": "Handled via WAF"}
+                }
+            }
+        }
+    }
+}
+```
+
+### abandoned
+
+Configuration for abandoned packages.
+
+#### block
+
+Defaults to `false`. When `true`, abandoned packages cannot be installed during
+`update`/`require`/`remove`.
+
+```json
+{
+    "config": {
+        "policy": {
+            "abandoned": {
+                "block": true
+            }
+        }
+    }
+}
+```
+
+#### audit
+
+Defaults to `fail`. How `composer audit` treats abandoned packages.
+
+- `ignore` — abandoned packages are not reported
+- `report` — abandoned packages are reported but do not cause a non-zero exit code
+- `fail` — abandoned packages cause `composer audit` to exit with a non-zero code
+
+```json
+{
+    "config": {
+        "policy": {
+            "abandoned": {
+                "audit": "report"
+            }
+        }
+    }
+}
+```
+
+Can be overridden via the [`COMPOSER_AUDIT_ABANDONED`](cli.md#composer-audit-abandoned)
+environment variable or the [`--abandoned`](cli.md#audit) CLI option.
+
+#### ignore
+
+A list of package names (or patterns) to ignore for the abandoned check, regardless of their
+abandoned state. See the [ignore format](#ignore-format) for all supported syntax variants.
+
+```json
+{
+    "config": {
+        "policy": {
+            "abandoned": {
+                "ignore": {
+                    "acme/*": "Scheduled for replacement next quarter.",
+                    "vendor/legacy": {"on-block": false, "reason": "Allow in updates but still report."}
+                }
+            }
+        }
+    }
+}
+```
+
+### malware
+
+Configuration for package versions flagged as containing malware.
+
+#### block
+
+Defaults to `true`. When `true`, package versions flagged as malware are blocked.
+
+#### block-scope
+
+Defaults to `all`. Controls which commands trigger blocking:
+
+- `all` — block during both `update`/`require`/`remove` and `install`
+- `update` — block only during `update`/`require`/`remove`
+- `install` — block only during `install`
+
+```json
+{
+    "config": {
+        "policy": {
+            "malware": {
+                "block-scope": "update"
+            }
+        }
+    }
+}
+```
+
+#### audit
+
+Defaults to `fail`. Same values as [advisories.audit](#audit).
+
+#### ignore
+
+Package names to exclude from malware checks. See the [ignore format](#ignore-format) for all
+supported syntax variants.
+
+#### ignore-source
+
+A list of source names to exclude from malware checks.
+
+```json
+{
+    "config": {
+        "policy": {
+            "malware": {
+                "ignore-source": ["aikido"]
+            }
+        }
+    }
+}
+```
+
+### ignore-unreachable
+
+Defaults to `["update", "install"]`. When the operation is listed here, repositories and policies with URL sources that are unreachable or
+return a non-200 response are silently ignored rather than causing an error. Useful in environments where not all package
+repositories are accessible.
+
+Set to `true` to ignore unreachable repositories and custom dependency policy sources for all operations and to `false` to ignore them
+for no operations. Possible values are: `audit`, `install`, and `update`.
+
+```json
+{
+    "config": {
+        "policy": {
+            "ignore-unreachable": ["install", "update", "audit"]
+        }
+    }
+}
+```
+
+### Custom dependency policies
+
+In addition to the built-in `advisories`, `malware`, and `abandoned` dependency policies, you can
+define named custom dependency policies. A custom dependency policy needs its own set of package
+versions, supplied by one or more sources (advertised by package repositories or set explicitly here).
+
+```json
+{
+    "config": {
+        "policy": {
+            "my-policy": {
+                "block": true,
+                "audit": "fail",
+                "sources": [
+                    {"type": "url", "url": "https://example.org/my-bad-packages-list.json"}
+                ],
+                "ignore": {
+                    "vendor/package": "Assessed and accepted."
+                }
+            }
+        }
+    }
+}
+```
+
+Source URLs must use `https://`. `http://` and other schemes are rejected both at
+schema validation time (`composer validate`) and at config load time.
+
+A `url` source is queried the same way as a repository's [`api-url`](repositories.md#filter):
+Composer sends a POST request with the relevant package PURLs and the custom dependency policy name,
+and expects the matching filter entries back. The request is not cached client-side because each
+request body is different. Implementors should be aware that large amounts (a few hundred would be
+normal) of package names can be submitted. The submitted PURLs are the full set of candidate package
+names gathered *before* dependency resolution, so they identify packages by name only (no version
+constraints yet), and not every submitted package will necessarily be selected by the resolver
+afterwards.
+
+The endpoint receives a JSON body of the form:
+
+```json
+{
+    "packages": ["pkg://composer/vendor/package", "pkg://composer/other/package"],
+    "lists": ["my-policy"]
+}
+```
+
+The request body reuses the wire format of a Composer repository's [`api-url`](repositories.md#filter).
+There, a single endpoint can serve several named filter lists (for example `malware` and
+`typosquatting`), so `lists` is an array naming which of them Composer wants, and the response is a
+`filter` object keyed by list name. A custom dependency policy has no such multiplexing: its `url`
+source exists only to serve that one policy. Composer therefore always sends the policy name as the
+sole element of `lists` (so the array carries exactly one value here), and the endpoint should treat
+any list name it receives as referring to that policy.
+
+The endpoint must return JSON of the form:
+
+```json
+{
+    "filter": [
+        {
+            "package": "vendor/package",
+            "constraint": ">=1.0.0,<1.2.0",
+            "url": "https://example.org/filters/123",
+            "reason": "Assessed and rejected.",
+            "id": "PKFE-xxxx-xxxx-xxxx"
+        }
+    ]
+}
+```
+
+Because the `url` source only ever serves this one policy, the response drops the per-list keying used
+by a repository's `api-url` (where `filter` is an object mapping each requested list name to its
+entries). Here `filter` is instead a flat array of entries that all belong to this policy. The
+`package` and `constraint` fields are required on each entry; `url`, `reason`, and `id` are optional.
+Entries whose package does not match a package in the request are ignored.
+
+Custom dependency policy names must not conflict with the reserved names `advisories`, `malware`, or
+`abandoned`, and must not start with `ignore` (the only `ignore`-prefixed key allowed at this
+level is the documented `ignore-unreachable` setting).
+
+The following names are reserved for future built-in dependency policies and cannot be used as custom
+dependency policy names: `package`, `packages`, `license`, `licence`, `licenses`, `licences`, `support`,
+`maintenance`, `security`, `minimum-release-age`. Composer rejects any colliding key both at
+schema validation time (`composer validate`) and at config load time.
+
+### ignore format
+
+The `ignore` key on every dependency policy accepts package name patterns with optional version constraints
+and per-rule scoping. All formats may be mixed in the same map.
+
+##### Simple list (ignore all versions):
+
+```json
+{
+    "config": {
+        "policy": {
+            "<policy>": {
+                "ignore": ["vendor/package", "acme/*"]
+            }
+        }
+    }
+}
+```
+
+##### With reason:
+
+```json
+{
+    "config": {
+        "policy": {
+            "<policy>": {
+                "ignore": {
+                    "vendor/package": "Assessed, no risk."
+                }
+            }
+        }
+    }
+}
+```
+
+##### With version constraint:
+
+```json
+{
+    "config": {
+        "policy": {
+            "<policy>": {
+                "ignore": {
+                    "vendor/package": {"constraint": "^2.0", "reason": "Only v2 is affected."}
+                }
+            }
+        }
+    }
+}
+```
+
+##### With scoping:
+
+`on-block: false` ignores only for audit (the package is still blocked during updates as on-block ignoring is disabled).
+`on-audit: false` ignores only for blocking (the package is still reported in audit).
+
+```json
+{
+    "config": {
+        "policy": {
+            "<policy>": {
+                "ignore": {
+                    "vendor/package": {"on-audit": false, "reason": "Workaround applied; keep reporting."}
+                }
+            }
+        }
+    }
+}
+```
+
+##### Multiple rules for the same package:
+
+```json
+{
+    "config": {
+        "policy": {
+            "<policy>": {
+                "ignore": {
+                    "vendor/package": [
+                        {"constraint": "^1.0", "on-audit": false},
+                        {"constraint": "^2.0", "reason": "v2 is patched."}
+                    ]
+                }
+            }
+        }
+    }
+}
+```
+
+## audit
+
+> **Deprecated.** Use [`config.policy`](#policy) instead. All `config.audit` keys are still
+> supported for backwards compatibility but will be removed in a future major version.
+
+Security audit and version blocking configuration options. Audit reports can be generated with `composer audit`
+and short format versions are automatically reported at the end of update or require commands. Version blocking
+discards package versions identified as insecure or abandoned, depending on configuration, before resolving
+dependencies, ensuring they cannot be installed.
+
+### How `config.audit` interacts with `config.policy`
+
+The legacy `config.audit` keys are only read as a fallback when the corresponding
+[`config.policy`](#policy) section is **absent**. The fallback is all-or-nothing per built-in dependency policy:
+
+- If [`config.policy.advisories`](#advisories) is set (to any value, including `false`),
+  every advisories-related `audit.*` key ([`audit.block-insecure`](#block-insecure), [`audit.ignore`](#ignore-3),
+  [`audit.ignore-severity`](#ignore-severity-1)) is **ignored entirely** — only
+  [`policy.advisories.block`](#block), [`policy.advisories.ignore`](#ignore), and
+  [`policy.advisories.ignore-severity`](#ignore-severity) are read. Mix-and-matching,
+  e.g. setting `policy.advisories.block` while expecting `audit.ignore-severity` to still
+  apply, is not supported. Migrate all advisories-related settings together.
+- If [`config.policy.abandoned`](#abandoned) is set (to any value, including `false`),
+  every abandoned-related `audit.*` key ([`audit.block-abandoned`](#block-abandoned), [`audit.abandoned`](#abandoned-1),
+  [`audit.ignore-abandoned`](#ignore-abandoned)) is **ignored entirely** — only
+  [`policy.abandoned.block`](#block-1), [`policy.abandoned.audit`](#audit-1), and
+  [`policy.abandoned.ignore`](#ignore-1) are read.
+- The two built-in dependency policies are independent: configuring `policy.advisories` while leaving the
+  abandoned settings under `audit.*` is allowed and vice versa.
+- Setting [`policy.ignore-unreachable`](#ignore-unreachable) supersedes the legacy
+  [`audit.ignore-unreachable`](#ignore-unreachable-1) key.
+
+### ignore
+
+> **Deprecated.** Use [`config.policy.advisories.ignore-id`](#ignore-id) for advisory IDs
+> (CVE, GHSA, PKSA) and [`config.policy.advisories.ignore`](#ignore) for package names instead.
+> Note: the new format uses `on-block`/`on-audit` booleans instead of `"apply": "audit|block|all"`.
+
+A list of advisory ids, remote ids, CVE ids or package names (not recommended) that are ignored in audit reports and/or version blocking.
+
+#### Simple format with reasons:
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore": {
+                "CVE-1234": "The affected component is not in use.",
+                "GHSA-xx": "The security fix was applied as a patch.",
+                "PKSA-yy": "Due to mitigations in place the update can be delayed."
+            }
+        }
+    }
+}
+```
+
+#### Simple format without reasons:
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore": ["CVE-1234", "GHSA-xx", "PKSA-yy"]
+        }
+    }
+}
+```
+
+#### Detailed format with apply scope:
+
+The detailed format allows you to control whether an ignore applies to audit reports only, version blocking only, or both. The `apply` field accepts:
+- `audit` - Only ignore for audit reports (advisory doesn't appear in audit reports, but package is still blocked during updates)
+- `block` - Only ignore for version blocking (package can be used during updates, but advisory still appears in audit reports)
+- `all` - Ignore during audit reports and version blocking (default behavior)
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore": {
+                "CVE-1234": {
+                    "apply": "audit",
+                    "reason": "Not applicable to us, so don't report, but still want to make sure we don't use this version in updates."
+                },
+                "GHSA-xx": {
+                    "apply": "block",
+                    "reason": "Workaround applied, can only fix next week, allow during updates but still report in audits"
+                },
+                "PKSA-yy": {
+                    "apply": "all",
+                    "reason": "False report, Ignore completely in all contexts"
+                }
+            }
+        }
+    }
+}
+```
+
+All formats can be mixed together in the same configuration.
+
+### abandoned
+
+> **Deprecated.** Use [`config.policy.abandoned.audit`](#audit-1) instead.
+
+Defaults to `fail` since Composer 2.7 (defaulted to `report` in Composer 2.6 that added the option). Defines whether and how audit reports should report abandoned packages. There are three possible values:
+
+- `ignore` means audit reports do not consider abandoned packages at all.
+- `report` means abandoned packages are reported as an error but do not cause the composer audit command return a non-zero exit code.
+- `fail` means abandoned packages will cause the audit command to fail with a non-zero exit code.
+
+Note, that this only applies to audit reports, this setting does not impact the blocking of insecure
+package versions. To configure blocking of abandoned packages, see the [`block-abandoned`](#block-abandoned)
+option.
+
+```json
+{
+    "config": {
+        "audit": {
+            "abandoned": "report"
+        }
+    }
+}
+```
+
+Since Composer 2.7, the option can be overridden via the [`COMPOSER_AUDIT_ABANDONED`](cli.md#composer-audit-abandoned) environment variable.
+
+Since Composer 2.8, the option can be overridden via the
+[`--abandoned`](cli.md#audit) command line option, which overrides both the
+config value and the environment variable.
+
+### ignore-abandoned
+
+> **Deprecated.** Use [`config.policy.abandoned.ignore`](#ignore-1) instead.
+> Note: the new format uses `on-block`/`on-audit` booleans instead of `"apply": "audit|block|all"`.
+
+A list of abandoned package names that are ignored for audit reports and/or version blocking. Allows you to select packages that you want to keep
+using despite their abandoned state.
+
+#### Simple format with reasons:
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore-abandoned": {
+                "acme/*": "Work scheduled for removal next month.",
+                "acme/package": "Transitive dependency but unreachable and not in active use within our project context."
+            }
+        }
+    }
+}
+```
+
+#### Simple format without reasons:
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore-abandoned": ["acme/*", "acme/package"]
+        }
+    }
+}
+```
+
+#### Detailed format with apply scope:
+
+The detailed format allows you to control whether an ignore applies to audit reports only, version blocking only, or both. The `apply` field accepts:
+- `audit` - Only ignore for audit reports (package doesn't appear in audit reports, but is still blocked during updates if [`block-abandoned`](#block-abandoned) is enabled)
+- `block` - Only ignore for version blocking (package can be used during updates even if [`block-abandoned`](#block-abandoned) is enabled, but still appears in audit reports)
+- `all` - Ignore for audit reports and version blocking (default behavior)
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore-abandoned": {
+                "acme/package": {
+                    "apply": "block",
+                    "reason": "Allow during updates but still report as abandoned"
+                },
+                "vendor/*": {
+                    "apply": "all",
+                    "reason": "We maintain these packages internally"
+                }
+            }
+        }
+    }
+}
+```
+
+All formats can be mixed together in the same configuration.
+
+### ignore-severity
+
+> **Deprecated.** Use [`config.policy.advisories.ignore-severity`](#ignore-severity) instead.
+> Note: the new format uses `on-block`/`on-audit` booleans instead of `"apply": "audit|block|all"`.
+
+Defaults to `[]`. A list of severity levels that are ignored for audit reports and/or version blocking.
+
+#### Simple format:
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore-severity": ["low", "medium"]
+        }
+    }
+}
+```
+
+#### Detailed format with apply scope:
+
+The detailed format allows you to control whether an ignore applies to audit reports only, version blocking only, or both. The `apply` field accepts:
+- `audit` - Only ignore for audit reports (advisories with this severity don't appear in audit reports, but packages are still blocked during updates)
+- `block` - Only ignore for version blocking (packages can be used during updates, but advisories with this severity still appear in audit reports)
+- `all` - Ignore during both auditing and blocking (default behavior)
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore-severity": {
+                "low": {
+                    "apply": "all"
+                },
+                "medium": {
+                    "apply": "block"
+                }
+            }
+        }
+    }
+}
+```
+
+All formats can be mixed together in the same configuration.
+
+### ignore-unreachable
+
+> **Deprecated.** Use [`config.policy.ignore-unreachable`](#ignore-unreachable) instead.
+
+Defaults to `false`. Should unreachable repositories be ignored during a `composer audit`. This can be helpful if you are running the command
+in an environment from which not all repositories can be accessed. This setting does not apply to version blocking or audit reports generated
+in other places than the `compoder audit` command.
+
+```json
+{
+    "config": {
+        "audit": {
+            "ignore-unreachable": true
+        }
+    }
+}
+```
+
+### block-insecure
+
+> **Deprecated.** Use [`config.policy.advisories.block`](#block) instead.
+
+Defaults to `true`. If `true`, any package versions affected by security advisories will be blocked and cannot be used
+during a composer update/require/delete commands, unless the security advisories are ignored. If [`block-abandoned`](#block-abandoned) is
+enabled, version blocking will also prevent use of abandoned packages.
+
+```json
+{
+    "config": {
+        "audit": {
+            "block-insecure": false
+        }
+    }
+}
+```
+
+### block-abandoned
+
+> **Deprecated.** Use [`config.policy.abandoned.block`](#block-1) instead.
+
+Defaults to `false`. If `true`, any abandoned packages cannot be used during a composer update/required/delete command. Only applies if
+version blocking is not disabled by setting [`block-insecure`](#block-insecure) to false.
+
+
+```json
+{
+    "config": {
+        "audit": {
+            "block-abandoned": true
+        }
+    }
+}
+```
+
+## use-parent-dir
+
+When running Composer in a directory where there is no composer.json, if there
+is one present in a directory above Composer will by default ask you whether
+you want to use that directory's composer.json instead.
+
+If you always want to answer yes to this prompt, you can set this config value
+to `true`. To never be prompted, set it to `false`. The default is `"prompt"`.
+
+> **Note:** This config must be set in your global user-wide config for it
+> to work. Use for example `php composer.phar config --global use-parent-dir true`
+> to set it.
+
+## store-auths
+
+What to do after prompting for authentication, one of: `true` (always store),
+`false` (do not store) and `"prompt"` (ask every time), defaults to `"prompt"`.
+
+## github-protocols
+
+Defaults to `["https", "ssh", "git"]`. A list of protocols to use when cloning
+from github.com, in priority order. By default `git` is present but only if [secure-http](#secure-http)
+is disabled, as the git protocol is not encrypted. If you want your origin remote
+push URLs to be using https and not ssh (`git@github.com:...`), then set the protocol
+list to be only `["https"]` and Composer will stop overwriting the push URL to an ssh
+URL.
+
+## github-oauth
+
+A list of domain names and oauth keys. For example using `{"github.com":
+"oauthtoken"}` as the value of this option will use `oauthtoken` to access
+private repositories on github and to circumvent the low IP-based rate limiting
+of their API. Composer may prompt for credentials when needed, but these can also be
+manually set. Read more on how to get an OAuth token for GitHub and cli syntax
+[here](articles/authentication-for-private-packages.md#github-oauth).
+
+## gitlab-domains
+
+Defaults to `["gitlab.com"]`. A list of domains of GitLab servers.
+This is used if you use the `gitlab` repository type.
+
+## gitlab-oauth
+
+A list of domain names and oauth keys. For example using `{"gitlab.com":
+"oauthtoken"}` as the value of this option will use `oauthtoken` to access
+private repositories on gitlab. Please note: If the package is not hosted at
+gitlab.com the domain names must be also specified with the
+[`gitlab-domains`](config.md#gitlab-domains) option.
+Further info can also be found [here](articles/authentication-for-private-packages.md#gitlab-oauth)
+
+## gitlab-token
+
+A list of domain names and private tokens. Private token can be either simple
+string, or array with username and token. For example using `{"gitlab.com":
+"privatetoken"}` as the value of this option will use `privatetoken` to access
+private repositories on gitlab. Using `{"gitlab.com": {"username": "gitlabuser",
+ "token": "privatetoken"}}` will use both username and token for gitlab deploy
+token functionality (https://docs.gitlab.com/ee/user/project/deploy_tokens/)
+Please note: If the package is not hosted at
+gitlab.com the domain names must be also specified with the
+[`gitlab-domains`](config.md#gitlab-domains) option. The token must have
+`api` or `read_api` scope.
+Further info can also be found [here](articles/authentication-for-private-packages.md#gitlab-token)
+
+## gitlab-protocol
+
+A protocol to force use of when creating a repository URL for the `source`
+value of the package metadata. One of `git` or `http`. (`https` is treated
+as a synonym for `http`.) Helpful when working with projects referencing
+private repositories which will later be cloned in GitLab CI jobs with a
+[GitLab CI_JOB_TOKEN](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#predefined-variables-reference)
+using HTTP basic auth. By default, Composer will generate a git-over-SSH
+URL for private repositories and HTTP(S) only for public.
+
+## forgejo-domains
+
+Defaults to `["codeberg.org"]`. A list of domains of Forgejo servers.
+This is used if you use the `forgejo` repository type.
+
+## forgejo-token
+
+A list of domain names and username/access-tokens to authenticate against them. For
+example using `{"codeberg.org": {"username": "forgejo-user", "token": "access-token"}}` as the
+value of this option will let Composer authenticate against codeberg.org.
+Please note: If the package is not hosted at
+codeberg.org the domain names must be also specified with the
+[`forgejo-domains`](config.md#forgejo-domains) option.
+Further info can also be found [here](articles/authentication-for-private-packages.md#forgejo-token)
+
+
+## disable-tls
+
+Defaults to `false`. If set to true all HTTPS URLs will be tried with HTTP
+instead and no network level encryption is performed. Enabling this is a
+security risk and is NOT recommended. The better way is to enable the
+php_openssl extension in php.ini. Enabling this will implicitly disable the
+`secure-http` option.
+
+## secure-http
+
+Defaults to `true`. If set to true only HTTPS URLs are allowed to be
+downloaded via Composer. If you really absolutely need HTTP access to something
+then you can disable it, but using [Let's Encrypt](https://letsencrypt.org/) to
+get a free SSL certificate is generally a better alternative.
+
+## bitbucket-oauth
+
+A list of domain names and consumers. For example using `{"bitbucket.org":
+{"consumer-key": "myKey", "consumer-secret": "mySecret"}}`.
+Read more [here](articles/authentication-for-private-packages.md#bitbucket-oauth).
+
+## cafile
+
+Location of Certificate Authority file on local filesystem. In PHP 5.6+ you
+should rather set this via openssl.cafile in php.ini, although PHP 5.6+ should
+be able to detect your system CA file automatically.
+
+## capath
+
+If cafile is not specified or if the certificate is not found there, the
+directory pointed to by capath is searched for a suitable certificate.
+capath must be a correctly hashed certificate directory.
+
+## http-basic
+
+A list of domain names and username/passwords to authenticate against them. For
+example using `{"example.org": {"username": "alice", "password": "foo"}}` as the
+value of this option will let Composer authenticate against example.org.
+More info can be found [here](articles/authentication-for-private-packages.md#http-basic).
+
+## bearer
+
+A list of domain names and tokens to authenticate against them. For example using
+`{"example.org": "foo"}` as the value of this option will let Composer authenticate
+against example.org using an `Authorization: Bearer foo` header.
+
+## platform
+
+Lets you fake platform packages (PHP and extensions) so that you can emulate a
+production env or define your target platform in the config. Example: `{"php":
+"7.0.3", "ext-something": "4.0.3"}`.
+
+This will make sure that no package requiring more than PHP 7.0.3 can be installed
+regardless of the actual PHP version you run locally. However it also means
+the dependencies are not checked correctly anymore, if you run PHP 5.6 it will
+install fine as it assumes 7.0.3, but then it will fail at runtime. This also means if
+`{"php":"7.4"}` is specified; no packages will be used that define `7.4.1` as minimum.
+
+Therefore if you use this it is recommended, and safer, to also run the
+[`check-platform-reqs`](cli.md#check-platform-reqs) command as part of your
+deployment strategy.
+
+If a dependency requires some extension that you do not have installed locally
+you may ignore it instead by passing `--ignore-platform-req=ext-foo` to `update`,
+`install` or `require`. In the long run though you should install required
+extensions as if you ignore one now and a new package you add a month later also
+requires it, you may introduce issues in production unknowingly.
+
+If you have an extension installed locally but *not* on production, you may want
+to artificially hide it from Composer using `{"ext-foo": false}`.
+
+## vendor-dir
+
+Defaults to `vendor`. You can install dependencies into a different directory if
+you want to. `$HOME` and `~` will be replaced by your home directory's path in
+vendor-dir and all `*-dir` options below.
+
+## bin-dir
+
+Defaults to `vendor/bin`. If a project includes binaries, they will be symlinked
+into this directory.
+
+## data-dir
+
+Defaults to `C:\Users\<user>\AppData\Roaming\Composer` on Windows,
+`$XDG_DATA_HOME/composer` on unix systems that follow the XDG Base Directory
+Specifications, and `$COMPOSER_HOME` on other unix systems. Right now it is only
+used for storing past composer.phar files to be able to roll back to older
+versions. See also [COMPOSER_HOME](cli.md#composer-home).
+
+Because `self-update --rollback` restores a previously stored `composer.phar` from
+this directory, it must be writable only by the user that owns the Composer
+installation and should be treated as a trusted location. A directory writable by
+other users would let them plant a malicious phar that a privileged rollback would
+install.
+
+## cache-dir
+
+Defaults to `C:\Users\<user>\AppData\Local\Composer` on Windows,
+`/Users/<user>/Library/Caches/composer` on macOS, `$XDG_CACHE_HOME/composer`
+on unix systems that follow the XDG Base Directory Specifications, and
+`$COMPOSER_HOME/cache` on other unix systems. Stores all the caches used by
+Composer. See also [COMPOSER_HOME](cli.md#composer-home).
+
+## cache-files-dir
+
+Defaults to `$cache-dir/files`. Stores the zip archives of packages.
+
+## cache-repo-dir
+
+Defaults to `$cache-dir/repo`. Stores repository metadata for the `composer`
+type and the VCS repos of type `svn`, `fossil`, `github` and `bitbucket`.
+
+## cache-vcs-dir
+
+Defaults to `$cache-dir/vcs`. Stores VCS clones for loading VCS repository
+metadata for the `git`/`hg` types and to speed up installs.
+
+## cache-files-ttl
+
+Defaults to `15552000` (6 months). Composer caches all dist (zip, tar, ...)
+packages that it downloads. Those are purged after six months of being unused by
+default. This option allows you to tweak this duration (in seconds) or disable
+it completely by setting it to 0.
+
+## cache-files-maxsize
+
+Defaults to `300MiB`. Composer caches all dist (zip, tar, ...) packages that it
+downloads. When the garbage collection is periodically ran, this is the maximum
+size the cache will be able to use. Older (less used) files will be removed
+first until the cache fits.
+
+## cache-read-only
+
+Defaults to `false`. Whether to use the Composer cache in read-only mode.
+
+## bin-compat
+
+Defaults to `auto`. Determines the compatibility of the binaries to be installed.
+If it is `auto` then Composer only installs .bat proxy files when on Windows or WSL. If
+set to `full` then both .bat files for Windows and scripts for Unix-based
+operating systems will be installed for each binary. This is mainly useful if you
+run Composer inside a linux VM but still want the `.bat` proxies available for use
+in the Windows host OS. If set to `proxy` Composer will only create bash/Unix-style
+proxy files and no .bat files even on Windows/WSL.
+
+## prepend-autoloader
+
+Defaults to `true`. If `false`, the Composer autoloader will not be prepended to
+existing autoloaders. This is sometimes required to fix interoperability issues
+with other autoloaders.
+
+## autoloader-suffix
+
+Defaults to `null`. When set to a non-empty string, this value will be used as a
+suffix for the generated Composer autoloader. If set to `null`, the
+`content-hash` value from the `composer.lock` file will be used if available;
+otherwise, a random suffix will be generated.
+
+## optimize-autoloader
+
+Defaults to `false`. If `true`, always optimize when dumping the autoloader.
+
+## sort-packages
+
+Defaults to `false`. If `true`, the `require` command keeps packages sorted
+by name in `composer.json` when adding a new package.
+
+## classmap-authoritative
+
+Defaults to `false`. If `true`, the Composer autoloader will only load classes
+from the classmap. Implies `optimize-autoloader`.
+
+## apcu-autoloader
+
+Defaults to `false`. If `true`, the Composer autoloader will check for APCu and
+use it to cache found/not-found classes when the extension is enabled.
+
+## github-domains
+
+Defaults to `["github.com"]`. A list of domains to use in github mode. This is
+used for GitHub Enterprise setups.
+
+## github-expose-hostname
+
+Defaults to `true`. If `false`, the OAuth tokens created to access the
+github API will have a date instead of the machine hostname.
+
+## use-github-api
+
+Defaults to `true`.  Similar to the `no-api` key on a specific repository,
+setting `use-github-api` to `false` will define the global behavior for all
+GitHub repositories to clone the repository as it would with any other git
+repository instead of using the GitHub API. But unlike using the `git`
+driver directly, Composer will still attempt to use GitHub's zip files.
+
+## notify-on-install
+
+Defaults to `true`. Composer allows repositories to define a notification URL,
+so that they get notified whenever a package from that repository is installed.
+This option allows you to disable that behavior.
+
+## discard-changes
+
+Defaults to `false` and can be any of `true`, `false` or `"stash"`. This option
+allows you to set the default style of handling dirty updates when in
+non-interactive mode. `true` will always discard changes in vendors, while
+`"stash"` will try to stash and reapply. Use this for CI servers or deploy
+scripts if you tend to have modified vendors.
+
+## archive-format
+
+Defaults to `tar`. Overrides the default format used by the archive command.
+
+## archive-dir
+
+Defaults to `.`. Default destination for archives created by the archive
+command.
+
+Example:
+
+```json
+{
+    "config": {
+        "archive-dir": "/home/user/.composer/repo"
+    }
+}
+```
+
+## htaccess-protect
+
+Defaults to `true`. If set to `false`, Composer will not create `.htaccess` files
+in the Composer home, cache, and data directories.
+
+## lock
+
+Defaults to `true`. If set to `false`, Composer will not create a `composer.lock`
+file and will ignore it if one is present.
+
+## platform-check
+
+Defaults to `php-only` which only checks the PHP version. Set to `true` to also
+check the presence of extension. If set to `false`, Composer will not create and
+require a `platform_check.php` file as part of the autoloader bootstrap.
+
+## secure-svn-domains
+
+Defaults to `[]`. Lists domains which should be trusted/marked as using a secure
+Subversion/SVN transport. By default svn:// protocol is seen as insecure and will
+throw, but you can set this config option to `["example.org"]` to allow using svn
+URLs on that hostname. This is a better/safer alternative to disabling `secure-http`
+altogether.
+
+## bump-after-update
+
+Defaults to `false` and can be any of `true`, `false`, `"dev"` or `"no-dev"`. If
+set to true, Composer will run the `bump` command after running the `update` command.
+If set to `"dev"` or `"no-dev"` then only the corresponding dependencies will be bumped.
+
+## allow-missing-requirements
+
+Defaults to `false`. Ignores error during `install` if there are any missing
+requirements - the lock file is not up to date with the latest changes in
+`composer.json`.
+
+## update-with-minimal-changes
+
+Defaults to `false`. If set to true, Composer will only perform absolutely necessary
+changes to transitive dependencies during update.
+Can also be set via the `COMPOSER_MINIMAL_CHANGES=1` env var.
+
+&larr; [Repositories](repositories.md)  |  [Runtime](runtime.md) &rarr;

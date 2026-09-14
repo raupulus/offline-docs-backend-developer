@@ -1,0 +1,75 @@
+---
+title: Plugins and Middleware
+description: Learn how to migrate from Nuxt 2 to Nuxt Bridge new plugins and middleware.
+source_repo: nuxt/nuxt
+source_ref: main
+source_commit: ec5c55e26
+source_path: 6.bridge/4.plugins-and-middleware.md
+technology: nuxt
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: bridge
+order: 4
+---
+
+## New Plugins Format
+
+You can now migrate to the Nuxt 3 plugins API, which is slightly different in format from Nuxt 2.
+
+Plugins now take only one argument (`nuxtApp`). You can find out more in [the docs](/docs/4.x/directory-structure/app/plugins).
+
+```ts [app/plugins/hello.ts]
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.provide('injected', () => 'my injected function')
+  // now available on `nuxtApp.$injected`
+})
+```
+
+::note
+If you want to use the new Nuxt composables (such as [`useNuxtApp`](/docs/4.x/api/composables/use-nuxt-app) or `useRuntimeConfig`) within your plugins, you will need to use the `defineNuxtPlugin` helper for those plugins.
+::
+
+::warning
+Although a compatibility interface is provided via `nuxtApp.vueApp` you should avoid registering plugins, directives, mixins or components this way without adding your own logic to ensure they are not installed more than once, or this may cause a memory leak.
+::
+
+## New Middleware Format
+
+You can now migrate to the Nuxt 3 middleware API, which is slightly different in format from Nuxt 2.
+
+Middleware now take only two argument (`to`, `from`). You can find out more in [the docs](/docs/4.x/directory-structure/app/middleware).
+
+```ts twoslash
+export default defineNuxtRouteMiddleware((to) => {
+  if (to.path !== '/') {
+    return navigateTo('/')
+  }
+})
+```
+
+::important
+Use of `defineNuxtRouteMiddleware` is not supported outside of the `app/middleware` directory.
+::
+
+## definePageMeta
+
+You can also use [`definePageMeta`](/docs/4.x/api/utils/define-page-meta) in Nuxt Bridge.
+
+It can be enabled with the `macros.pageMeta` option in your configuration file
+
+```ts [nuxt.config.ts]
+import { defineNuxtConfig } from '@nuxt/bridge'
+
+export default defineNuxtConfig({
+  bridge: {
+    macros: {
+      pageMeta: true,
+    },
+  },
+})
+```
+
+::note
+But only for `middleware` and `layout`.
+::

@@ -1,0 +1,753 @@
+---
+title: Upgrade Guide
+description: Learn how to upgrade to the latest Nuxt version.
+source_repo: nuxt/nuxt
+source_ref: main
+source_commit: ec5c55e26
+source_path: 1.getting-started/18.upgrade.md
+technology: nuxt
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: getting-started
+order: 18
+---
+
+## Upgrading Nuxt
+
+### Latest release
+
+To upgrade Nuxt to the [latest release](https://github.com/nuxt/nuxt/releases), use the `nuxt upgrade` command.
+
+::code-group{sync="pm"}
+
+```bash [npm]
+npx nuxt upgrade
+```
+
+```bash [yarn]
+yarn nuxt upgrade
+```
+
+```bash [pnpm]
+pnpm nuxt upgrade
+```
+
+```bash [bun]
+bun x nuxt upgrade
+```
+
+```bash [deno]
+deno x nuxt upgrade
+```
+
+::
+
+### Nightly Release Channel
+
+To use the latest Nuxt build and test features before their release, read about the [nightly release channel](/docs/4.x/guide/going-further/nightly-release-channel) guide.
+
+## Testing Nuxt 5
+
+Nuxt 5 is **currently in development**. Until the release, it is possible to test many of Nuxt 5's breaking changes from Nuxt version 4.2+.
+
+### Opting in to Nuxt 5
+
+First, upgrade Nuxt to the [latest release](https://github.com/nuxt/nuxt/releases).
+
+Then you can set your `future.compatibilityVersion` to match Nuxt 5 behavior:
+
+```ts twoslash [nuxt.config.ts]
+export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 5,
+  },
+})
+```
+
+When you set your `future.compatibilityVersion` to `5`, defaults throughout your Nuxt configuration will change to opt in to Nuxt v5 behavior, including:
+
+- **Vite Environment API**: Uses the new [Vite Environment API](/docs/4.x/getting-started/upgrade#migration-to-vite-environment-api) for improved build configuration
+- **Case-sensitive routing**: Page routes [match URL casing exactly](/docs/4.x/getting-started/upgrade#case-sensitive-routing), consistent with Nitro
+- **Normalized Page Names**: Page component names will [match their route names](/docs/4.x/getting-started/upgrade#normalized-page-component-names) for consistent `<KeepAlive>` behavior
+- **`clearNuxtState` resets to defaults**: `clearNuxtState` will [reset state to its initial value](/docs/4.x/getting-started/upgrade#respect-defaults-when-clearing-usestate) instead of setting it to `undefined`
+- **Non-async `callHook`**: [`callHook` may return `void`](/docs/4.x/getting-started/upgrade#non-async-callhook) instead of always returning a `Promise`
+- **Comment node placeholders**: Client-only components use [comment nodes instead of `<div>`](/docs/4.x/getting-started/upgrade#client-only-comment-placeholders) as SSR placeholders, fixing a scoped styles hydration issue
+- **Stricter side-effect imports**: The generated `tsconfig.json` enables [`noUncheckedSideEffectImports`](/docs/4.x/getting-started/upgrade#stricter-side-effect-imports) to match the TypeScript 7 default
+- **Vue Options API disabled**: The [Options API is compiled out of the client bundle](/docs/4.x/getting-started/upgrade#vue-options-api-disabled-by-default) to reduce its size
+- **`process.*` type augmentation removed**: TypeScript no longer exposes [deprecated `process.*` flags](/docs/4.x/getting-started/upgrade#process-type-augmentation-removed) on `NodeJS.Process`
+- **Typed pages**: [`experimental.typedPages`](/docs/4.x/getting-started/upgrade#typed-pages-enabled-by-default) is enabled by default for type-checked routing
+- Other Nuxt 5 improvements and changes as they become available
+
+::note
+This section is subject to change until the final release, so please check back here regularly if you are testing Nuxt 5 using `future.compatibilityVersion: 5`.
+::
+
+Breaking or significant changes will be noted below along with migration steps for backward/forward compatibility.
+
+### `process.*` Type Augmentation Removed
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+Nuxt no longer augments `NodeJS.Process` with `browser`, `client`, `dev`, `server`, and `test`. Build-time defines for those flags remain for compatibility, but TypeScript will not treat them as known properties.
+
+Prefer [`import.meta.*`](/docs/4.x/api/advanced/import-meta). Those flags are replaced at build time and stay tree-shakeable.
+
+#### Migration Steps
+
+Replace legacy checks in your app code, modules, and libraries:
+
+```ts
+// Before
+// eslint-disable-next-line nuxt/prefer-import-meta
+if (process.server) {
+  /* ... */
+}
+
+// After
+if (import.meta.server) {
+  /* ... */
+}
+```
+
+The [`nuxt/prefer-import-meta`](https://eslint.nuxt.com/packages/plugin#nuxtprefer-import-meta) ESLint rule flags remaining `process.*` usage.
+
+### Case-Sensitive Routing
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+With `compatibilityVersion: 5`, page routes match URLs case-sensitively, consistent with Nitro. For example, `/About` no longer matches `pages/about.vue`.
+
+#### Migration Steps
+
+Update links to use the same casing as their page routes. To keep case-insensitive matching:
+
+```ts twoslash [nuxt.config.ts]
+export default defineNuxtConfig({
+  router: {
+    options: {
+      sensitive: false,
+    },
+  },
+})
+```
+
+### Migration to Vite Environment API
+
+🚦 **Impact Level**: Medium
+
+#### What Changed
+
+Nuxt 5 migrates to Vite 6's new [Environment API](https://vite.dev/guide/api-environment), which formalizes the concept of environments and provides better control over configuration per environment.
+
+Previously, Nuxt used separate client and server Vite configurations. Now, Nuxt uses a shared Vite configuration with environment-specific plugins that use the `applyToEnvironment()` method to target specific environments.
+
+::note
+The Vite Environment API is always enabled in Nuxt 5. The `experimental.viteEnvironmentApi` option has been removed.
+::
+
+**Key changes:**
+
+1. **Deprecated environment-specific `extendViteConfig()`**: The `server` and `client` options in `extendViteConfig()` are deprecated and will show warnings when used.
+
+2. **Changed plugin registration**: Vite plugins registered with `addVitePlugin()` and only targeting one environment (by passing `server: false` or `client: false`) will not have their `config` or `configResolved` hooks called.
+
+3. **Shared configuration**: The `vite:extendConfig` and `vite:configResolved` hooks now work with a shared configuration rather than separate client/server configs.
+
+#### Reasons for Change
+
+The Vite Environment API provides:
+- Better consistency between development and production builds
+- More granular control over environment-specific configuration
+- Improved performance and plugin architecture
+- Support for custom environments beyond just client and server
+
+#### Migration Steps
+
+##### 1. Migrate to use Vite plugins
+
+We would recommend you use a Vite plugin instead of `extendViteConfig`, `vite:configResolved` and `vite:extendConfig`.
+
+```ts
+// Before
+extendViteConfig((config) => {
+  config.optimizeDeps.include.push('my-package')
+}, { server: false })
+
+nuxt.hook('vite:extendConfig' /* or vite:configResolved */, (config, { isClient }) => {
+  if (isClient) {
+    config.optimizeDeps.include.push('my-package')
+  }
+})
+
+// After
+addVitePlugin(() => ({
+  name: 'my-plugin',
+  config (config) {
+    // you can set global vite configuration here
+  },
+  configResolved (config) {
+    // you can access the fully resolved vite configuration here
+  },
+  configEnvironment (name, config) {
+    // you can set environment-specific vite configuration here
+    if (name === 'client') {
+      config.optimizeDeps ||= {}
+      config.optimizeDeps.include ||= []
+      config.optimizeDeps.include.push('my-package')
+    }
+  },
+  applyToEnvironment (environment) {
+    return environment.name === 'client'
+  },
+}))
+```
+
+##### 2. Migrate Vite plugins to use environments
+
+Instead of using `addVitePlugin` with `server: false` or `client: false`, you can instead use the new `applyToEnvironment` hook within your plugin.
+
+```ts
+// Before
+addVitePlugin(() => ({
+  name: 'my-plugin',
+  config (config) {
+    config.optimizeDeps.include.push('my-package')
+  },
+}), { client: false })
+
+// After
+addVitePlugin(() => ({
+  name: 'my-plugin',
+  config (config) {
+    // you can set global vite configuration here
+  },
+  configResolved (config) {
+    // you can access the fully resolved vite configuration here
+  },
+  configEnvironment (name, config) {
+    // you can set environment-specific vite configuration here
+    if (name === 'client') {
+      config.optimizeDeps ||= {}
+      config.optimizeDeps.include ||= []
+      config.optimizeDeps.include.push('my-package')
+    }
+  },
+  applyToEnvironment (environment) {
+    return environment.name === 'client'
+  },
+}))
+```
+
+::read-more{to="https://vite.dev/guide/api-environment" target="_blank"}
+Learn more about Vite's Environment API
+::
+
+### Migration to Vite 8
+
+🚦 **Impact Level**: Medium
+
+#### What Changed
+
+Nuxt 5 upgrades from Vite 7 to [Vite 8](https://main.vite.dev/guide/migration), which replaces esbuild and Rollup with [Rolldown](https://rolldown.rs) as the underlying bundler. This brings significantly faster builds but includes several breaking changes.
+
+::note
+Unlike the Vite Environment API migration, this change cannot be opted into early with `future.compatibilityVersion: 5`. If you want to test Vite 8 compatibility ahead of time, you can add a `"vite": "^8.0.0-beta.15"` resolution override in your `package.json`.
+::
+
+Most of the migration is handled by Nuxt internally, but there are some user-facing changes to be aware of:
+
+- **`vite.esbuild` and `vite.optimizeDeps.esbuildOptions`** are deprecated in favour of `vite.oxc` and `vite.optimizeDeps.rolldownOptions`. Vite 8 converts these automatically for now, but they will be removed in the future.
+- **`build.rollupOptions`** is deprecated in favour of `build.rolldownOptions`.
+- **CommonJS interop behaviour** has changed. If you import CJS modules, review the [Vite 8 migration guide](https://main.vite.dev/guide/migration#consistent-commonjs-interop) for details.
+
+::read-more{to="https://main.vite.dev/guide/migration" target="_blank"}
+See the full Vite 8 migration guide for all breaking changes and migration steps.
+::
+
+### Migration to Nitro v3
+
+🚦 **Impact Level**: Significant
+
+#### What Changed
+
+Nuxt 5 upgrades to [Nitro v3](https://nitro.build/blog/v3-beta), which is a major rewrite of the server engine. Nitro v3 is built on [srvx](https://srvx.h3.dev) and [h3 v2](https://h3.dev), adopting Web standard `Request`/`Response` APIs throughout. This brings performance improvements and a more consistent API, but includes several breaking changes to server-side code.
+
+::important
+We are still working on Nitro v3 integration so you should expect further changes, as well as additional work to make migration more straightforward.
+::
+
+::read-more{to="https://nitro.build/blog/v3-beta" target="_blank"}
+Read the Nitro v3 beta announcement for a full overview.
+::
+
+::read-more{to="https://nitro.build/docs/migration" target="_blank"}
+See the full Nitro v3 migration guide for all breaking changes.
+::
+
+The sections below highlight changes that are most relevant to Nuxt application developers and module authors.
+
+#### Package and Import Path Changes
+
+The `nitropack` package has been renamed to `nitro`. All import paths have changed:
+
+| Before | After |
+|---|---|
+| `nitropack` | `nitro` |
+| `nitropack/types` | `nitro/types` |
+| `nitropack/runtime` | `nitro` |
+| `h3` (for server utilities) | `nitro/h3` |
+
+Auto-imports within server routes (`defineEventHandler`, `getQuery`, `readBody`, `useRuntimeConfig`, etc.) continue to work without changes.
+
+If you have explicit imports in server code, update them:
+
+```diff
+- import { defineEventHandler, getQuery } from 'h3'
++ import { defineEventHandler, getQuery } from 'nitro/h3'
+```
+
+**For module authors**, type augmentations must target the new module path:
+
+```diff
+- declare module 'nitropack/types' {
++ declare module 'nitro/types' {
+    interface NitroRouteRules {
+      myModule?: { /* ... */ }
+    }
+  }
+```
+
+#### Error Handling: `status`/`statusText` replace `statusCode`/`statusMessage`
+
+h3 v2 renames the error properties to align with Web standards:
+
+```diff
+  createError({
+-   statusCode: 404,
+-   statusMessage: 'Not Found',
++   status: 404,
++   statusText: 'Not Found',
+  })
+```
+
+In server routes, the error class is now `HTTPError` (replacing `createError` from `h3`):
+
+```diff
+- import { createError } from 'h3'
++ import { HTTPError } from 'nitro/h3'
+
+  export default defineEventHandler(() => {
+-   throw createError({ statusCode: 400, statusMessage: 'Bad request' })
++   throw new HTTPError({ status: 400, statusText: 'Bad request' })
+  })
+```
+
+::note
+In the Vue part of your app (the `app/` directory), Nuxt's `createError` composable continues to work and is the recommended way to throw errors.
+::
+
+#### `createError` No Longer Returns an `HTTPError` Instance
+
+`NuxtError` is now its own class rather than a subclass of h3's `HTTPError`, so `instanceof HTTPError` no longer matches an error created with Nuxt's `createError`. Everything else is unchanged: the error keeps the same properties, serialises the same way, and is still mapped to the right HTTP response during SSR.
+
+If you narrow errors by class, use one of the predicates instead:
+
+```diff
+- if (error instanceof HTTPError) {
++ if (HTTPError.isError(error)) {
+    // handles both `new HTTPError()` and Nuxt's `createError()`
+  }
+```
+
+```diff
++ import { isNuxtError } from '#app'
++
++ if (isNuxtError(error)) {
++   // narrows to errors created with Nuxt's `createError`
++ }
+```
+
+#### Server Event API Changes (h3 v2)
+
+The `H3Event` object now uses Web standard APIs:
+
+**Request properties:**
+```diff
+- event.path              // string
++ event.url.pathname      // URL object - use .pathname, .search, .hash
+
+- event.method            // string
++ event.req.method        // via Web Request object
+
+- event.node.req.headers  // Node.js IncomingHttpHeaders
++ event.req.headers       // Web Headers API (.get(), .set(), .has())
+```
+
+**Response properties:**
+```diff
+- event.node.res.statusCode = 200
++ event.res.status = 200
+
+- event.node.res.statusMessage = 'OK'
++ event.res.statusText = 'OK'
+
+- setResponseHeader(event, 'x-custom', 'value')
++ event.res.headers.set('x-custom', 'value')
+
+- appendResponseHeader(event, 'set-cookie', cookie)
++ event.res.headers.append('set-cookie', cookie)
+```
+
+#### `useRuntimeConfig()` No Longer Accepts `event`
+
+In Nitro v3, `useRuntimeConfig()` no longer requires (or accepts) an `event` argument in server routes:
+
+```diff
+  export default defineEventHandler((event) => {
+-   const config = useRuntimeConfig(event)
++   const config = useRuntimeConfig()
+  })
+```
+
+#### Route Rules: `statusCode` Renamed to `status`
+
+If you define redirect route rules, the property name has changed:
+
+```diff
+  export default defineNuxtConfig({
+    routeRules: {
+      '/old-page': {
+-       redirect: { to: '/new-page', statusCode: 302 },
++       redirect: { to: '/new-page', status: 302 },
+      },
+    },
+  })
+```
+
+#### For Module Authors: Additional Changes
+
+- **Nitro plugin imports**: Use `import { definePlugin } from 'nitro'` for explicit imports (auto-imports still work).
+- **Runtime hooks**: `nitroApp.hooks.hook('beforeResponse', ...)` and `nitroApp.hooks.hook('afterResponse', ...)` have been replaced by `nitroApp.hooks.hook('response', ...)`.
+- **`getRouteRules()` from `nitro/app`**: On the server, the Nitro helper changed from `getRouteRules(event)` to `getRouteRules(method, pathname)`, which returns `{ routeRules }`.
+
+### Removal of `experimental.externalVue`
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+The `experimental.externalVue` option has been removed. Vue compiler dependencies (`@babel/parser`, `@vue/compiler-core`, `@vue/compiler-dom`, `@vue/compiler-ssr`, `estree-walker`) are now always replaced with mock proxies in the server bundle when `vue.runtimeCompiler` is not enabled.
+
+#### Reasons for Change
+
+With the migration to Nitro v3, all dependencies are bundled into the server output by default (unlike Nitro v2, which externalized `node_modules`). The `externalVue` option was originally designed to keep Vue as an external dependency, which was needed to avoid multiple copies of Vue from being bundled, but since Nitro v3 bundles everything regardless, the option became a no-op.
+
+Vue's server builds include the full compiler toolchain, pulling `@babel/parser` (465KB) and other compiler packages into the server bundle unnecessarily. These compiler packages are only needed when `vue.runtimeCompiler` is enabled for runtime template compilation.
+
+By always mocking these compiler dependencies, the default server bundle size is reduced by approximately 860KB (~59%).
+
+#### Migration Steps
+
+If you previously set `experimental.externalVue` explicitly, you should now remove it.
+
+```diff
+  export default defineNuxtConfig({
+    experimental: {
+-     externalVue: false,
+    },
+  })
+```
+
+::note
+If you use `vue.runtimeCompiler: true`, the real compiler packages are still included as before.
+::
+
+### `experimental.parseErrorData` Is No Longer Configurable
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+The `experimental.parseErrorData` option is deprecated, and on Nuxt 5 it is forced on. Setting it to `false` logs a warning and is otherwise ignored, so `error.data` on the error page is always the value you passed to `createError`.
+
+On `compatibilityVersion: 4` the option still works and `false` still gives you a stringified `error.data`, so the behaviour only changes when you opt in to Nuxt 5.
+
+#### Reasons for Change
+
+When Nuxt renders an error page it fetches `/__nuxt_error` internally, passing the error along with the request. That used to spread the error across one query parameter per field, and because query values are always strings, `error.data` arrived as a string and had to be parsed back. `parseErrorData` existed to opt out of that parsing.
+
+The error is now sent as a single JSON-encoded parameter, so `error.data` keeps its original shape and is never stringified. Values also keep their types, so `status` is a number and booleans are booleans rather than the strings `'true'` and `'false'`. With nothing stringifying `error.data`, the option only survives to re-stringify it for apps that still expect a string.
+
+#### Migration Steps
+
+Remove the option:
+
+```diff
+  export default defineNuxtConfig({
+    experimental: {
+-     parseErrorData: false,
+    },
+  })
+```
+
+If you set it to `false` in order to keep parsing `error.data` yourself, drop that parsing too, as `error.data` now keeps whatever value you passed to `createError`:
+
+```diff
+  <script setup lang="ts">
+  import type { NuxtError } from '#app'
+
+  const props = defineProps({
+    error: Object as () => NuxtError
+  })
+
+- const data = JSON.parse(props.error.data)
++ const data = props.error.data
+  </script>
+```
+
+### `@vitejs/plugin-vue-jsx` Is Now Optional
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+`@vitejs/plugin-vue-jsx` is no longer installed by default with `@nuxt/vite-builder`. It is now an optional peer dependency that is loaded on demand only when a `.jsx` or `.tsx` file is encountered during the build.
+
+If your project uses JSX/TSX components, Nuxt will automatically detect this and prompt you to install the package.
+
+#### Reasons for Change
+
+The `@vitejs/plugin-vue-jsx` plugin pulls in a significant dependency tree (Babel, `@vue/babel-plugin-jsx`, etc.) that is unnecessary for projects that don't use JSX. Making it optional reduces the default install size and speeds up dependency resolution for the majority of Nuxt projects.
+
+#### Migration Steps
+
+If your project uses `.jsx` or `.tsx` files, add `@vitejs/plugin-vue-jsx` as a dev dependency:
+
+::code-group{sync="pm"}
+
+```bash [npm]
+npm install -D @vitejs/plugin-vue-jsx
+```
+
+```bash [yarn]
+yarn add -D @vitejs/plugin-vue-jsx
+```
+
+```bash [pnpm]
+pnpm add -D @vitejs/plugin-vue-jsx
+```
+
+```bash [bun]
+bun add -D @vitejs/plugin-vue-jsx
+```
+
+::
+
+Alternatively, Nuxt will prompt you to install it automatically the first time a JSX/TSX file is processed during development.
+
+If your project does not use JSX, no changes are needed.
+
+### Removal of Legacy `_renderResponse` Support
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+`ssrContext._renderResponse` is no longer checked as a fallback. Only the internal `ssrContext['~renderResponse']` (set by Nuxt's own router composable) is used.
+
+#### Reasons for Change
+
+The `_renderResponse` property on `ssrContext` was kept as a backward-compatibility fallback after [#33896](https://github.com/nuxt/nuxt/pull/33896) migrated the internal API to `~renderResponse`. The TODO comments indicated it should be removed in Nuxt v5.
+
+#### Migration Steps
+
+If you were setting `ssrContext._renderResponse` directly (which was never a public API), use `ssrContext['~renderResponse']` instead. The Nuxt router composable already uses the new property, so no changes are needed if you're going through `navigateTo` or route middleware.
+
+### Non-Async `callHook`
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+With the upgrade to [hookable v6](https://github.com/unjs/hookable), `callHook` may now return `void` instead of always returning `Promise<void>`. This is a significant performance improvement that avoids unnecessary `Promise` allocations when there are no registered hooks or all hooks are synchronous.
+
+By default (with `compatibilityVersion: 4`), Nuxt wraps `callHook` with `Promise.resolve()` so that existing `.then()` and `.catch()` chaining continues to work. With `compatibilityVersion: 5`, this wrapper is removed.
+
+::tip
+This affects both build-time Nuxt hooks (used by Nuxt modules) and runtime Nuxt hooks (which you might use in your application code).
+::
+
+#### Reasons for Change
+
+Hookable v6's `callHook` is 20-40x faster because it avoids creating a `Promise` when one is not needed. This benefits applications with many hook call sites.
+
+#### Migration Steps
+
+If you or your modules use `callHook` with `.then()` or `.catch()` chaining, switch to `await`:
+
+```diff
+- nuxtApp.callHook('my:hook', data).then(() => { ... })
++ await nuxtApp.callHook('my:hook', data)
+```
+
+```diff
+- nuxtApp.hooks.callHook('my:hook', data).catch(err => { ... })
++ try { await nuxtApp.hooks.callHook('my:hook', data) } catch (err) { ... }
+```
+
+::tip
+You can test this feature early by setting `future.compatibilityVersion: 5` (see [Testing Nuxt 5](/docs/4.x/getting-started/upgrade#testing-nuxt-5)) or by enabling it explicitly with `experimental.asyncCallHook: false`.
+::
+
+Alternatively, you can ensure `callHook` always returns a `Promise` with:
+
+```ts twoslash [nuxt.config.ts]
+export default defineNuxtConfig({
+  experimental: {
+    asyncCallHook: true,
+  },
+})
+```
+
+### Client-Only Comment Placeholders
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+With `compatibilityVersion: 5`, client-only components (`.client.vue` files and `createClientOnly()` wrappers) now render an HTML comment (`<!--placeholder-->`) on the server instead of an empty `<div>` element.
+
+#### Reasons for Change
+
+When the placeholder `<div>` and the actual component root share the same tag name, Vue's runtime skips re-applying `setScopeId` during hydration. This causes scoped styles to be missing after the component mounts. Using a comment node avoids the tag name collision entirely.
+
+#### Migration Steps
+
+If you rely on the placeholder `<div>` to inherit attributes (`class`, `style`, etc.) for layout purposes (e.g., reserving space to prevent layout shift), wrap the component in `<ClientOnly>` with a `#fallback` slot instead:
+
+```diff
+- <MyComponent class="placeholder" style="min-height: 200px" />
++ <ClientOnly>
++   <MyComponent />
++   <template #fallback>
++     <div class="placeholder" style="min-height: 200px"></div>
++   </template>
++ </ClientOnly>
+```
+
+::tip
+You can test this feature early by setting `future.compatibilityVersion: 5` (see [Testing Nuxt 5](/docs/4.x/getting-started/upgrade#testing-nuxt-5)) or by enabling it explicitly with `experimental.clientNodePlaceholder: true`.
+::
+
+Alternatively, you can revert to the previous `<div>` placeholder behavior with:
+
+```ts twoslash [nuxt.config.ts]
+export default defineNuxtConfig({
+  experimental: {
+    clientNodePlaceholder: false,
+  },
+})
+```
+
+### Stricter Side-Effect Imports
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+With `compatibilityVersion: 5`, Nuxt's generated `tsconfig.json` enables [`noUncheckedSideEffectImports`](https://www.typescriptlang.org/tsconfig/#noUncheckedSideEffectImports). This is a default in TypeScript 7, so adopting it early keeps your project aligned ahead of that upgrade.
+
+With this option on, a side-effect-only import (`import './setup'`) that TypeScript cannot resolve to a module is now a type error, whereas it was previously ignored. This only affects type-checking (`nuxt typecheck` and your editor), not runtime behavior.
+
+#### Reasons for Change
+
+Unresolved side-effect imports were silently ignored, so a typo or a deleted file could pass type-checking. Flagging them catches these mistakes and matches the TypeScript 7 default.
+
+#### Migration Steps
+
+If type-checking now errors on a side-effect import of a non-code asset (for example `import '~/assets/styles.css'`), add an ambient module declaration so TypeScript knows the import is valid:
+
+```ts [types.d.ts]
+declare module '*.css' {}
+```
+
+::tip
+You can revert to the previous behavior by disabling the option in your `nuxt.config`:
+
+<!-- @case-police-ignore tsConfig -->
+
+```ts twoslash [nuxt.config.ts]
+export default defineNuxtConfig({
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        noUncheckedSideEffectImports: false,
+      },
+    },
+  },
+})
+```
+::
+
+### Vue Options API Disabled by Default
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+With `compatibilityVersion: 5`, Nuxt sets Vue's [`__VUE_OPTIONS_API__`](https://vuejs.org/api/compile-time-flags#VUE_OPTIONS_API) feature flag to `false`, which compiles Vue's Options API runtime out of the client bundle.
+
+#### Reasons for Change
+
+The Options API runtime ships in every client bundle even though most Nuxt applications are written with the Composition API and `<script setup>`. Dropping it shrinks the client bundle (around 6 kB minified / 2 kB gzipped on a minimal app).
+
+#### Migration Steps
+
+If any of your components (or a dependency's components) use the Options API (`export default { data() {}, methods: {}, ... }`), re-enable it in your `nuxt.config`:
+
+```ts twoslash [nuxt.config.ts]
+export default defineNuxtConfig({
+  vue: {
+    optionsApi: true,
+  },
+})
+```
+
+::note
+`defineNuxtComponent` is unaffected: its `asyncData` and `head` options are handled through `setup()` rather than the Vue Options API, so it works regardless of this flag.
+::
+
+### Typed Pages Enabled by Default
+
+🚦 **Impact Level**: Minimal
+
+#### What Changed
+
+With `compatibilityVersion: 5`, `experimental.typedPages` is enabled by default. Nuxt generates typed route names and paths from your `pages/` directory, so composables like `useRoute`, `navigateTo`, `<NuxtLink>` and `router.push` are type-checked against your actual routes.
+
+#### Reasons for Change
+
+Typed routing catches broken links and stale route names at type-check time rather than at runtime, and it is now native to `vue-router`, so it is a sensible default.
+
+#### Migration Steps
+
+If you reference routes that don't exist (for example a typo in a `to` prop, or a route defined dynamically outside the `pages/` directory), type-checking will now error. Fix the reference, or extend the generated route types for routes you add at runtime.
+
+::tip
+You can test this feature early by setting `future.compatibilityVersion: 5` (see [Testing Nuxt 5](/docs/4.x/getting-started/upgrade#testing-nuxt-5)) or by enabling it explicitly with `experimental.typedPages: true`.
+::
+
+Alternatively, you can opt out and revert to the previous behavior with:
+
+```ts twoslash [nuxt.config.ts]
+export default defineNuxtConfig({
+  experimental: {
+    typedPages: false,
+  },
+})
+```

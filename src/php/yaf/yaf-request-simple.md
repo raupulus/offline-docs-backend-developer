@@ -1,0 +1,85 @@
+---
+title: La clase Yaf_Request_Simple
+source_url: https://www.php.net/manual/es/class.yaf-request-simple.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/yaf/yaf-request-simple.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: yaf
+translation_status: ready
+translation_reviewed: false
+translation_revision: 4d17b7b49
+order: 104750
+---
+
+## Introducción
+
+`Yaf_Request_Simple` se utiliza en particular para propósitos de pruebas. Es decir, simula alguna petición especial bajo el modo CLI.
+
+## Sinopsis de la clase
+
+Yaf_Request_Simple
+
+Yaf_Request_Simple
+
+extends
+
+Yaf_Request_Abstract
+
+Constantes
+
+const
+
+string
+
+Yaf_Request_Simple::SCHEME_HTTP
+
+http
+
+const
+
+string
+
+Yaf_Request_Simple::SCHEME_HTTPS
+
+https
+
+Propiedades
+
+Métodos
+
+Métodos heredados
+
+## Propiedades
+
+`module`  
+
+`controller`  
+
+`action`  
+
+`method`  
+
+`params`  
+
+`language`  
+
+`_exception`  
+
+`_base_uri`  
+
+`uri`  
+
+`dispatched`  
+
+`routed`  
+
+## Constantes predefinidas
+
+`Yaf_Request_Simple::SCHEME_HTTP`  
+
+`Yaf_Request_Simple::SCHEME_HTTPS`

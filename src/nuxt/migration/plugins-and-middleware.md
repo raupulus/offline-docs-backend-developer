@@ -1,0 +1,90 @@
+---
+title: Plugins and Middleware
+description: Learn how to migrate from Nuxt 2 to Nuxt 3 plugins and middleware.
+source_repo: nuxt/nuxt
+source_ref: main
+source_commit: ec5c55e26
+source_path: 7.migration/5.plugins-and-middleware.md
+technology: nuxt
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: migration
+order: 5
+---
+
+## Plugins
+
+Plugins now have a different format, and take only one argument (`nuxtApp`).
+
+::code-group
+
+```ts [Nuxt 2]
+export default (ctx, inject) => {
+  inject('injected', () => 'my injected function')
+}
+```
+
+```ts [Nuxt 3]
+export default defineNuxtPlugin((nuxtApp) => {
+  // now available on `nuxtApp.$injected`
+  nuxtApp.provide('injected', () => 'my injected function')
+
+  // You can alternatively use this format, which comes with automatic type support
+  return {
+    provide: {
+      injected: () => 'my injected function',
+    },
+  }
+})
+```
+
+::
+
+:read-more{to="/docs/4.x/directory-structure/app/plugins"}
+
+::read-more{to="/docs/4.x/api/composables/use-nuxt-app"}
+Read more about the format of `nuxtApp`.
+::
+
+### Migration
+
+1. Migrate your plugins to use the `defineNuxtPlugin` helper function.
+2. Remove any entries in your `nuxt.config` plugins array that are located in your `app/plugins/` folder. All files in this directory at the top level (and any index files in any subdirectories) will be automatically registered. Instead of setting `mode` to `client` or `server`, you can indicate this in the file name. For example, `~/plugins/my-plugin.client.ts` will only be loaded on client-side.
+
+## Route Middleware
+
+Route middleware has a different format.
+
+::code-group
+
+```js [Nuxt 2]
+export default function ({ store, redirect }) {
+  // If the user is not authenticated
+  if (!store.state.authenticated) {
+    return redirect('/login')
+  }
+}
+```
+
+```ts [Nuxt 3]
+export default defineNuxtRouteMiddleware((to, from) => {
+  const auth = useState('auth')
+  if (!auth.value.authenticated) {
+    return navigateTo('/login')
+  }
+})
+```
+
+::
+
+Much like Nuxt 2, route middleware placed in your `~/middleware` folder is automatically registered. You can then specify it by name in a component. However, this is done with `definePageMeta` rather than as a component option.
+
+`navigateTo` is one of a number of route helper functions.
+
+:read-more{to="/docs/4.x/directory-structure/app/middleware"}
+
+### Migration
+
+1. Migrate your route middleware to use the `defineNuxtRouteMiddleware` helper function.
+1. Any global middleware (such as in your `nuxt.config`) can be placed in your `~/middleware` folder with a `.global` extension, for example `~/middleware/auth.global.ts`.

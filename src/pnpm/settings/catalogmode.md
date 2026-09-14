@@ -1,0 +1,26 @@
+---
+title: Catalogmode
+source_repo: pnpm/pnpm.io
+source_ref: main
+source_commit: 92a41bf66
+source_path: settings/_catalogMode.mdx
+technology: pnpm
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: settings
+order: 1150
+---
+
+### catalogMode
+
+Added in: v10.12.1
+
+* Default: **manual**
+* Type: **manual**, **strict**, **prefer**
+
+Controls if and how dependencies are added to the default catalog, when running `pnpm add`. There are three modes:
+
+- **strict** - only allows dependency versions from the catalog. Adding a dependency outside the catalog's version range will cause an error.
+- **prefer** - prefers catalog versions, but will fall back to direct dependencies if no compatible version is found.
+- **manual** (default) - does not automatically add dependencies to the catalog.

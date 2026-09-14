@@ -1,0 +1,31 @@
+---
+title: Representa el diseño del texto
+source_url: https://www.php.net/manual/es/class.ui-draw-text-layout.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/ui/ui.draw.text.layout.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: ui
+translation_status: ready
+translation_reviewed: false
+translation_revision: 4d17b7b49
+order: 98510
+---
+
+## Introducción
+
+Un diseño de texto representa el diseño del texto que dibujará el lápiz.
+
+## Sinopsis de la clase
+
+UI\Draw\Text\Layout
+
+UI\Draw\Text\Layout
+
+Constructor
+
+Métodos

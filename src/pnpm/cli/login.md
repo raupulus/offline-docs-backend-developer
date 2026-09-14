@@ -1,0 +1,39 @@
+---
+title: pnpm login
+source_repo: pnpm/pnpm.io
+source_ref: main
+source_commit: 92a41bf66
+source_path: cli/login.md
+technology: pnpm
+version: main
+license: MIT
+retrieved_at: '2026-08-02'
+section: cli
+order: 410
+---
+
+Added in: v11.0.0
+
+Aliases: `adduser`
+
+Authenticate with an npm registry.
+
+```sh
+pnpm login [--registry <url>] [--scope <scope>]
+```
+
+Supports web-based login with QR code as well as classic username/password authentication.
+
+Since v11.19.0, web-based login no longer requires an interactive terminal: without a TTY, `pnpm login` prints the authentication URL (skipping the QR code and the prompt to open the URL in a browser) and polls the registry until the browser approval completes. Only the classic username/password login still fails with `ERR_PNPM_LOGIN_NON_INTERACTIVE` in a non-interactive terminal.
+
+Auth tokens are written to [`<pnpm config>/auth.ini`](../npmrc.md#auth-file-locations).
+
+## Options
+
+### --registry &lt;url\>
+
+The registry to authenticate with. Defaults to the configured default registry.
+
+### --scope &lt;scope\>
+
+Associate the credentials with the specified scope. The registry for that scope will be used.

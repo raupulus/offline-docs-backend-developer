@@ -1,0 +1,39 @@
+---
+title: SolrQuery::setMltMinTermFrequency
+description: Establece la frecuencia bajo la cual los términos serán ignorados en
+  los documentos fuente
+source_url: https://www.php.net/manual/es/solrquery.setmltmintermfrequency.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/solr/solrquery/setmltmintermfrequency.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: solr
+translation_status: ready
+translation_revision: b6e314781
+order: 80530
+---
+
+SolrQuery::setMltMinTermFrequency
+
+Establece la frecuencia bajo la cual los términos serán ignorados en los documentos fuente
+
+## Descripción
+
+```php
+public SolrQuery::setMltMinTermFrequency(int $minTermFrequency): SolrQuery
+```php
+
+Establece la frecuencia bajo la cual los términos serán ignorados en los documentos fuente
+
+## Parámetros
+
+`minTermFrequency`  
+La frecuencia bajo la cual los términos serán ignorados en los documentos fuente
+
+## Valores devueltos
+
+Devuelve el objeto SolrQuery actual, si se usó el valor de retorno.

@@ -1,0 +1,42 @@
+---
+title: ReflectionClass::getModifiers
+description: Obtiene los modificadores de clase
+source_url: https://www.php.net/manual/es/reflectionclass.getmodifiers.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/reflection/reflectionclass/getmodifiers.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: reflection
+translation_status: ready
+translation_reviewed: true
+translation_revision: ec2fe9a59
+order: 69220
+---
+
+ReflectionClass::getModifiers
+
+Obtiene los modificadores de clase
+
+## Descripción
+
+```php
+public ReflectionClass::getModifiers(): int
+```php
+
+Devuelve un campo de bits de los modificadores de acceso para esta clase.
+
+## Parámetros
+
+Esta función no contiene ningún parámetro.
+
+## Valores devueltos
+
+Devuelve una máscara de bits de las [ constantes de modificadores](#reflectionclass.constants.modifiers).
+
+## Véase también
+
+ReflectionClass::getProperties, Reflection::getModifierNames

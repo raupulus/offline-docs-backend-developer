@@ -1,0 +1,34 @@
+---
+title: UI\Controls\Entry::onChange
+description: Gestor de cambios
+source_url: https://www.php.net/manual/es/ui-controls-entry.onchange.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/ui/ui/controls/entry/onchange.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: ui
+translation_status: ready
+translation_reviewed: false
+translation_revision: 2735ac5fa
+order: 96630
+---
+
+UI\Controls\Entry::onChange
+
+Gestor de cambios
+
+## Descripción
+
+```php
+protected UI\Controls\Entry::onChange()
+```php
+
+Debe ejecutarse cuando cambia el texto de esta entrada
+
+## Parámetros
+
+Esta función no contiene ningún parámetro.

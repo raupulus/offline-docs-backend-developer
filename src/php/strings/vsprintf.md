@@ -1,0 +1,212 @@
+---
+title: vsprintf
+description: Devuelve una string formateada
+source_url: https://www.php.net/manual/es/function.vsprintf.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/strings/functions/vsprintf.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: strings
+translation_status: ready
+translation_reviewed: true
+translation_revision: f13425021
+order: 89620
+---
+
+vsprintf
+
+Devuelve una string formateada
+
+## Descripción
+
+```php
+vsprintf(string $format, array $values): string
+```php
+
+`vsprintf` funciona como `sprintf`, pero acepta un array como argumento, en lugar de una lista de argumentos.
+
+## Parámetros
+
+`format`  
+La cadena de formato está compuesta por cero o más directivas: caracteres ordinarios (excepto `%`) que se copian directamente al resultado y *especificaciones de conversión*, cada una con su propio parámetro.
+
+Una especificación de conversión que sigue este prototipo: `%[argnum$][flags][width][.precision]specifier`.
+
+Argnum
+
+Un `int` seguido de un signo dólar `$`, para especificar qué número de argumento tratar en la conversión.
+
+Banderas
+
+| Bandera | Descripción |
+|----|----|
+| `-` | Justifica el texto a la izquierda dado el ancho del campo; la justificación a la derecha es el comportamiento predeterminado. |
+| `+` | Prefija los números positivos con un signo más `+`; por defecto solo los números negativos son prefijados con un signo negativo. |
+| ``(espacio) | Rellena el resultado con espacios. Esto es por defecto. |
+| `0` | Rellena solo los números a la izquierda con ceros. Con el especificador `s` esto también puede rellenar a la derecha con ceros. |
+| `'`(char) | Rellena el resultado con el carácter (char). |
+
+Ancho
+
+Sea un entero indicando el número de caracteres (mínimo) que esta conversión debe producir, o `*`. Si `*` es utilizado, entonces el ancho es proporcionado como un valor entero adicional precediendo al que se formatea por el especificador.
+
+Precisión
+
+Un punto `.` seguido opcionalmente sea de un entero, o de `*`, cuya significación depende del especificador:
+
+- Para los especificadores `e`, `E`, `f` y `F` : esto es el número de dígitos a mostrar después de la coma (por defecto, esto es 6).
+
+- Para los especificadores `g`, `G`, `h` y `H` : esto es el número máximo de dígitos significativos a mostrar.
+
+- Para el especificador `s`: actúa como un punto de corte, definiendo un límite máximo de caracteres de la cadena.
+
+> [!NOTE]
+> Si el punto es especificado sin un valor explícito para la precisión, 0 es asumido. Si `*` es utilizado, la precisión es proporcionada como un valor entero adicional precediendo al que se formatea por el especificador.
+
+<table>
+<caption>Especificadores</caption>
+<thead>
+<tr>
+<th>Especificador</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>%</code></td>
+<td>Un carácter de porcentaje literal. No se necesita ningún argumento.</td>
+</tr>
+<tr>
+<td><code>b</code></td>
+<td>El argumento es tratado como un entero y presentado como un número binario.</td>
+</tr>
+<tr>
+<td><code>c</code></td>
+<td>El argumento es tratado como un entero y presentado como el carácter de código ASCII correspondiente.</td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>El argumento es tratado como un entero y presentado como un número entero decimal (firmado).</td>
+</tr>
+<tr>
+<td><code>e</code></td>
+<td>El argumento es tratado como una notación científica (ej. 1.2e+2).</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>Como el especificador <code>e</code> pero utiliza una letra mayúscula (por ejemplo 1.2E+2).</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>El argumento es tratado como un número de coma flotante (tipo <code>float</code>) y presentado como un número de coma flotante (teniendo en cuenta la configuración local).</td>
+</tr>
+<tr>
+<td><code>F</code></td>
+<td>El argumento es tratado como un número de coma flotante (tipo <code>float</code>) y presentado como un número de coma flotante (sin tener en cuenta la configuración local).</td>
+</tr>
+<tr>
+<td><code>g</code></td>
+<td><p>Formato general.</p>
+<p>Sea P igual a la precisión si diferente de 0, 6 si la precisión es omitida o 1 si la precisión es cero. Entonces, si la conversión con el estilo E tuviera como exponente X:</p>
+<p>Si P &gt; X ≥ −4, la conversión es con estilo f y precisión P − (X + 1). De lo contrario, la conversión es con el estilo e y precisión P - 1.</p></td>
+</tr>
+<tr>
+<td><code>G</code></td>
+<td>Como el especificador <code>g</code> pero utiliza <code>E</code> y <code>f</code>.</td>
+</tr>
+<tr>
+<td><code>h</code></td>
+<td>Como el especificador <code>g</code> pero utiliza <code>F</code>. Disponible a partir de PHP 8.0.0.</td>
+</tr>
+<tr>
+<td><code>H</code></td>
+<td>Como el especificador <code>g</code> pero utiliza <code>E</code> y <code>F</code>. Disponible a partir de PHP 8.0.0.</td>
+</tr>
+<tr>
+<td><code>o</code></td>
+<td>El argumento es tratado como un entero y presentado como un número octal.</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td>El argumento es tratado y presentado como una cadena de caracteres.</td>
+</tr>
+<tr>
+<td><code>u</code></td>
+<td>El argumento es tratado como un entero y presentado como un número decimal no firmado.</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td>El argumento es tratado como un entero y presentado como un número hexadecimal (las letras en minúsculas).</td>
+</tr>
+<tr>
+<td><code>X</code></td>
+<td>El argumento es tratado como un entero y presentado como un número hexadecimal (las letras en mayúsculas).</td>
+</tr>
+</tbody>
+</table>
+
+> [!WARNING]
+> El especificador de tipo `c` ignora el alineamiento y el tamaño.
+
+> [!WARNING]
+> Intentar utilizar una combinación de una cadena y especificadores con juegos de caracteres que necesitan más de un octeto por carácter dará un resultado inesperado.
+
+Las variables serán forzadas a un tipo apropiado para el especificador:
+
+| Tipo     | Especificadores                        |
+|----------|----------------------------------------|
+| `string` | `s`                                    |
+| `int`    | `d`, `u`, `c`, `o`, `x`, `X`, `b`      |
+| `float`  | `e`, `E`, `f`, `F`, `g`, `G`, `h`, `H` |
+
+Manejo de tipos
+
+`values`  
+
+## Valores devueltos
+
+Devuelve una string formateada a partir del array de valores `values`, y utilizando el formato `format`.
+
+## Errores/Excepciones
+
+A partir de PHP 8.0.0, se lanza un `ValueError` si el número de argumentos es cero. Anterior a PHP 8.0.0, se emitía un `E_WARNING` en su lugar.
+
+A partir de PHP 8.0.0, se lanza un `ValueError` si `[width]` es menor que cero o mayor que `PHP_INT_MAX`. Anterior a PHP 8.0.0, se emitía un `E_WARNING` en su lugar.
+
+A partir de PHP 8.0.0, se lanza un `ValueError` si `[precision]` es menor que cero o mayor que `PHP_INT_MAX`. Anterior a PHP 8.0.0, se emitía un `E_WARNING` en su lugar.
+
+A partir de PHP 8.0.0, se lanza un `ValueError` cuando se proporcionan menos argumentos de los requeridos. Anterior a PHP 8.0.0, se devolvía `false` y se emitía un `E_WARNING` en su lugar.
+
+## Historial de cambios
+
+| Versión | Descripción |
+|----|----|
+| 8.0.0 | Esta función ya no devuelve `false` en caso de fallo. |
+| 8.0.0 | Lanza una `ValueError` si el número de argumentos es cero; anteriormente, esta función emitía un `E_WARNING`. |
+| 8.0.0 | Lanza una `ValueError` si `[width]` es inferior a cero o superior a `PHP_INT_MAX`; anteriormente, esta función emitía un `E_WARNING`. |
+| 8.0.0 | Lanza una `ValueError` si `[precision]` es inferior a cero o superior a `PHP_INT_MAX`; anteriormente, esta función emitía un `E_WARNING`. |
+| 8.0.0 | Lanza una `ValueError` cuando se proporcionan menos argumentos de los requeridos; anteriormente, esta función emitía un `E_WARNING`. |
+
+## Ejemplos
+
+Ejemplo con `vsprintf`: enteros con ceros iniciales
+
+```
+<?php
+print vsprintf("%04d-%02d-%02d", explode('-', '1988-8-1'));
+?>
+
+    
+```php
+
+El ejemplo anterior mostrará:
+
+    1988-08-01
+
+## Véase también
+
+`printf`, `sprintf`, `fprintf`, `vprintf`, `vfprintf`, `sscanf`, `fscanf`, `number_format`, `date`

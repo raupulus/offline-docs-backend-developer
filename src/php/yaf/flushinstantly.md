@@ -1,0 +1,38 @@
+---
+title: Yaf_Dispatcher::flushInstantly
+description: Activa/desactiva el vaciado instantáneo
+source_url: https://www.php.net/manual/es/yaf-dispatcher.flushinstantly.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/yaf/yaf_dispatcher/flushinstantly.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: yaf
+translation_status: ready
+translation_reviewed: false
+translation_revision: 49d4fb555
+order: 105660
+---
+
+Yaf_Dispatcher::flushInstantly
+
+Activa/desactiva el vaciado instantáneo
+
+## Descripción
+
+```php
+public Yaf_Dispatcher::flushInstantly([bool $flag]): Yaf_Dispatcher
+```php
+
+## Parámetros
+
+`flag`  
+Booleano
+
+> [!NOTE]
+> Desde 2.2.0, si no se proporciona este parámetro, será devuelto el estado actual
+
+## Valores devueltos

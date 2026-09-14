@@ -1,0 +1,77 @@
+---
+title: Ds\Map::remove
+description: Elimina y devuelve un valor por clave
+source_url: https://www.php.net/manual/es/ds-map.remove.php
+source_repo: https://github.com/php/doc-es.git
+source_ref: master
+source_commit: 954a0d911
+source_path: reference/ds/ds/map/remove.xml
+technology: php
+version: master
+license: CC-BY-3.0
+retrieved_at: '2026-08-02'
+section: ds
+translation_status: ready
+translation_reviewed: false
+translation_revision: dd07341fa
+order: 15070
+---
+
+Ds\Map::remove
+
+Elimina y devuelve un valor por clave
+
+## Descripción
+
+```php
+public Ds\Map::remove(mixed $key, [mixed $default]): mixed
+```php
+
+Elimina y devuelve un valor por clave, o devuelve un valor por defecto opcional si la clave no ha podido ser encontrada.
+
+> [!NOTE]
+> Las claves de tipo `object` son soportadas. Si un objeto implementa `Ds\Hashable`, la igualdad será determinada por la función `equals` del objeto. Si un objeto no implementa `Ds\Hashable`, los objetos deben ser referencias a la misma instancia para ser considerados iguales.
+
+> [!NOTE]
+> Asimismo, se puede utilizar la sintaxis de array para acceder a los valores por clave, por ejemplo `$map["clé"]`.
+
+> [!CAUTION]
+> Atención al uso de la sintaxis de array. Las claves escalares serán forzadas a enteros por el motor. Por ejemplo, `$map["1"]` intentará acceder a `int(1)`, mientras que `$map->get("1")` buscará correctamente la clave de string.
+>
+> Ver [arrays](#language.types.array).
+
+## Parámetros
+
+`key`  
+La clave a eliminar.
+
+`default`  
+El valor por defecto opcional, devuelto si la clave no ha podido ser encontrada.
+
+## Valores devueltos
+
+El valor que ha sido eliminado, o el `default` valor si ha sido proporcionado y la `key` no ha podido ser encontrada en el mapa.
+
+## Errores/Excepciones
+
+`OutOfBoundsException` si la clave no ha sido encontrada y ningún valor por defecto ha sido proporcionado.
+
+## Ejemplos
+
+Ejemplo de `Ds\Map::remove`
+
+```
+<?php
+$map = new \Ds\Map(["a" => 1, "b" => 2, "c" => 3]);
+
+var_dump($map->remove("a"));      //  1
+var_dump($map->remove("e", 10));  // 10 (uso del valor por defecto)
+?>
+
+   
+```php
+
+Resultado del ejemplo anterior es similar a:
+
+    int(1)
+    int(10)
