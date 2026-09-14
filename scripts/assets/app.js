@@ -210,10 +210,12 @@
 
   document.querySelectorAll('[data-search]').forEach(setup);
 
-  /* ── Atajo: / enfoca el buscador ───────────────────────────────── */
+  /* ── Atajos: / ó Ctrl+K / Cmd+K enfocan el buscador ───────────── */
 
   document.addEventListener('keydown', function (ev) {
-    if (ev.key !== '/' || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    var isSlash = (ev.key === '/' && !ev.ctrlKey && !ev.metaKey && !ev.altKey);
+    var isCmdK = ((ev.key === 'k' || ev.key === 'K') && (ev.ctrlKey || ev.metaKey));
+    if (!isSlash && !isCmdK) return;
 
     var tag = (ev.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea' || ev.target.isContentEditable) return;
@@ -224,4 +226,16 @@
     input.focus();
     input.select();
   });
+
+  /* ── PWA: Service Worker (solo sobre HTTPS o localhost) ────────── */
+
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    window.addEventListener('load', function () {
+      var manifest = document.querySelector('link[rel="manifest"]');
+      var swUrl = manifest ? manifest.getAttribute('href').replace(/manifest\.json$/, 'sw.js') : 'sw.js';
+      navigator.serviceWorker.register(swUrl).catch(function () {
+        // En caso de fallo de registro no afecta la navegación estándar
+      });
+    });
+  }
 })();

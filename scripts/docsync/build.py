@@ -375,6 +375,12 @@ def copy_assets(assets_src: Path, out_dir: Path) -> None:
         else:
             shutil.copytree(item, dest / item.name, dirs_exist_ok=True)
 
+    # Copiar manifiesto PWA y Service Worker a la raíz para ámbito global
+    for root_file in ("manifest.json", "sw.js", "icon.svg"):
+        src_file = assets_src / root_file
+        if src_file.is_file():
+            shutil.copy2(src_file, out_dir / root_file)
+
     # Hoja de estilos de Pygments para ambos temas. Se genera aquí para
     # no arrastrar un CSS a mano que se desactualice.
     try:
@@ -458,6 +464,72 @@ def build_standalone_pages(
         Log.ok(f"Página informativa: {dest_name}")
 
 
+def build_sitemap_and_robots(
+    out_dir: Path,
+    base_url: str = "https://docs.raupulus.dev",
+) -> None:
+    """Genera sitemap.xml y robots.txt para el sitio web estático."""
+    base_url = base_url.rstrip("/")
+    primary = ["index.html", "licenses.html", "legal.html"]
+    pages: list[str] = []
+
+    for p in primary:
+        if (out_dir / p).is_file():
+            pages.append(p)
+
+    for p in sorted(out_dir.rglob("*.html")):
+        rel = p.relative_to(out_dir).as_posix()
+        if rel not in primary:
+            pages.append(rel)
+
+    today = date.today().isoformat()
+
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+
+    for rel in pages:
+        if rel == "index.html":
+            loc = f"{base_url}/"
+            priority = "1.0"
+            changefreq = "weekly"
+        elif rel.endswith("/index.html"):
+            tech_slug = rel[:-10].rstrip("/")
+            loc = f"{base_url}/{tech_slug}/"
+            priority = "0.8"
+            changefreq = "weekly"
+        elif rel in ("licenses.html", "legal.html"):
+            loc = f"{base_url}/{rel}"
+            priority = "0.3"
+            changefreq = "monthly"
+        else:
+            loc = f"{base_url}/{rel}"
+            priority = "0.6"
+            changefreq = "monthly"
+
+        xml_lines.append("  <url>")
+        xml_lines.append(f"    <loc>{loc}</loc>")
+        xml_lines.append(f"    <lastmod>{today}</lastmod>")
+        xml_lines.append(f"    <changefreq>{changefreq}</changefreq>")
+        xml_lines.append(f"    <priority>{priority}</priority>")
+        xml_lines.append("  </url>")
+
+    xml_lines.append("</urlset>\n")
+
+    sitemap_file = out_dir / "sitemap.xml"
+    sitemap_file.write_text("\n".join(xml_lines), encoding="utf-8")
+    Log.ok(f"Sitemap generado: {sitemap_file.name} ({len(pages)} URLs)")
+
+    robots_content = (
+        "User-agent: *\n"
+        "Allow: /\n\n"
+        f"Sitemap: {base_url}/sitemap.xml\n"
+    )
+    (out_dir / "robots.txt").write_text(robots_content, encoding="utf-8")
+    Log.ok("robots.txt generado")
+
+
 # ── Orquestación ────────────────────────────────────────────────────
 
 def main(argv: list[str] | None = None) -> int:
@@ -470,6 +542,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", dest="public", default="public")
     parser.add_argument("--templates", default="scripts/templates")
     parser.add_argument("--assets", default="scripts/assets")
+    parser.add_argument("--base-url", default="https://docs.raupulus.dev", help="URL base para sitemap.xml")
     parser.add_argument("--source", help="Regenerar solo esta tecnología")
     args = parser.parse_args(argv)
 
@@ -550,6 +623,9 @@ def main(argv: list[str] | None = None) -> int:
 
     Log.step("Páginas informativas")
     build_standalone_pages(out_dir, env, built_at)
+
+    Log.step("Sitemap y robots.txt")
+    build_sitemap_and_robots(out_dir, args.base_url)
 
     Log.step("Listo")
     Log.info(f"Abre {out_dir}/index.html en el navegador")
