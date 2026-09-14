@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejemplos · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Wddx
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../wddx/examples.html"
+class="is-current" aria-current="page">Ejemplos</a>
+              </li>
+              <li>
+                <a href="../wddx/configure.html"
+>Instalación</a>
+              </li>
+              <li>
+                <a href="../wddx/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../wddx/wddx-add-vars.html"
+>wddx_add_vars</a>
+              </li>
+              <li>
+                <a href="../wddx/wddx-deserialize.html"
+>wddx_deserialize</a>
+              </li>
+              <li>
+                <a href="../wddx/wddx-packet-end.html"
+>wddx_packet_end</a>
+              </li>
+              <li>
+                <a href="../wddx/wddx-packet-start.html"
+>wddx_packet_start</a>
+              </li>
+              <li>
+                <a href="../wddx/wddx-serialize-value.html"
+>wddx_serialize_value</a>
+              </li>
+              <li>
+                <a href="../wddx/wddx-serialize-vars.html"
+>wddx_serialize_vars</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Ejemplos</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/wddx.examples.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#ejemplos">Ejemplos#</a></li>
+              <li class="lvl-2"><a href="#ejemplos-wddx">Ejemplos WDDX#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="ejemplos">Ejemplos<a class="headerlink" href="#ejemplos" title="Permanent link">#</a></h2>
+<h2 id="ejemplos-wddx">Ejemplos WDDX<a class="headerlink" href="#ejemplos-wddx" title="Permanent link">#</a></h2>
+<p>Todas las funciones que serializan variables utilizan el primer elemento de un array para determinar si el array debe ser serializado en un array o en una estructura. Si el primer elemento tiene una cadena de caracteres como clave, entonces será serializado en una estructura, de lo contrario, en un array.</p>
+<p>Serialización de un valor simple con WDDX</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">echo</span> <span class="nb">wddx_serialize_value</span><span class="p">(</span><span class="s2">&quot;PHP to WDDX packet example&quot;</span><span class="p">,</span> <span class="s2">&quot;PHP packet&quot;</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Este ejemplo mostrará:</p>
+<div class="codehilite"><pre><span></span><code>&lt;wddxPacket version=&#39;1.0&#39;&gt;&lt;header comment=&#39;PHP packet&#39;/&gt;&lt;data&gt;
+&lt;string&gt;PHP to WDDX packet example&lt;/string&gt;&lt;/data&gt;&lt;/wddxPacket&gt;
+</code></pre></div>
+
+<p>Uso de paquetes incrementales con WDDX</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$pi</span> <span class="o">=</span> <span class="mf">3.1415926</span><span class="p">;</span>
+<span class="nv">$packet_id</span> <span class="o">=</span> <span class="nb">wddx_packet_start</span><span class="p">(</span><span class="s2">&quot;PHP&quot;</span><span class="p">);</span>
+<span class="nb">wddx_add_vars</span><span class="p">(</span><span class="nv">$packet_id</span><span class="p">,</span> <span class="s2">&quot;pi&quot;</span><span class="p">);</span>
+
+<span class="cm">/* Supongamos que $cities proviene de una base de datos */</span>
+<span class="nv">$cities</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">&quot;Austin&quot;</span><span class="p">,</span> <span class="s2">&quot;Novato&quot;</span><span class="p">,</span> <span class="s2">&quot;Seattle&quot;</span><span class="p">);</span>
+<span class="nb">wddx_add_vars</span><span class="p">(</span><span class="nv">$packet_id</span><span class="p">,</span> <span class="s2">&quot;cities&quot;</span><span class="p">);</span>
+
+<span class="nv">$packet</span> <span class="o">=</span> <span class="nb">wddx_packet_end</span><span class="p">(</span><span class="nv">$packet_id</span><span class="p">);</span>
+<span class="k">echo</span> <span class="nv">$packet</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Este ejemplo mostrará:</p>
+<div class="codehilite"><pre><span></span><code>&lt;wddxPacket version=&#39;1.0&#39;&gt;&lt;header comment=&#39;PHP&#39;/&gt;&lt;data&gt;&lt;struct&gt;
+&lt;var name=&#39;pi&#39;&gt;&lt;number&gt;3.1415926&lt;/number&gt;&lt;/var&gt;&lt;var name=&#39;cities&#39;&gt;
+&lt;array length=&#39;3&#39;&gt;&lt;string&gt;Austin&lt;/string&gt;&lt;string&gt;Novato&lt;/string&gt;
+&lt;string&gt;Seattle&lt;/string&gt;&lt;/array&gt;&lt;/var&gt;&lt;/struct&gt;&lt;/data&gt;&lt;/wddxPacket&gt;
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]
+Los strings deben estar codificados en UTF-8; para manejar otros juegos de caracteres, convierta primero el string utilizando <code>mb_convert_encoding</code>, UConverter::transcode, o <code>iconv</code>.</p>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../varnish/getsnapshot.html">
+          <span class="muted">Anterior</span>VarnishStat::getSnapshot
+        </a>
+        <a class="pager-next" href="../wddx/configure.html">
+          <span class="muted">Siguiente</span>Instalación
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

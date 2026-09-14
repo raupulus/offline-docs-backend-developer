@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instalado como CGI binario · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Security
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../security/general.html"
+>Consideraciones generales</a>
+              </li>
+              <li>
+                <a href="../security/variables.html"
+>Datos Enviados por el Usuario</a>
+              </li>
+              <li>
+                <a href="../security/cgi-bin.html"
+class="is-current" aria-current="page">Instalado como CGI binario</a>
+              </li>
+              <li>
+                <a href="../security/apache.html"
+>Instalado como módulo de Apache</a>
+              </li>
+              <li>
+                <a href="../security/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../security/current.html"
+>Mantenerse al día</a>
+              </li>
+              <li>
+                <a href="../security/hiding.html"
+>Ocultar PHP</a>
+              </li>
+              <li>
+                <a href="../security/errors.html"
+>Reportando errores</a>
+              </li>
+              <li>
+                <a href="../security/sessions.html"
+>Seguridad de una Sesión</a>
+              </li>
+              <li>
+                <a href="../security/filesystem.html"
+>Seguridad del Sistema de Archivos</a>
+              </li>
+              <li>
+                <a href="../security/database.html"
+>Seguridad en bases de datos</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Instalado como CGI binario</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/security.cgi-bin.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#instalado-como-cgi-binario">Instalado como CGI binario#</a></li>
+              <li class="lvl-2"><a href="#ataques-posibles">Ataques posibles#</a></li>
+              <li class="lvl-2"><a href="#caso-1-ficheros-publicos-servidos-solamente">Caso 1: Ficheros públicos servidos solamente#</a></li>
+              <li class="lvl-2"><a href="#caso-2-utilizando-cgiforce_redirect">Caso 2: utilizando cgi.force_redirect#</a></li>
+              <li class="lvl-2"><a href="#caso-3-configurando-doc_root-o-user_dir">Caso 3: Configurando doc_root o user_dir#</a></li>
+              <li class="lvl-2"><a href="#caso-4-el-analizador-de-php-fuera-del-arbol-de-la-web">Caso 4: El analizador de PHP fuera del árbol de la web#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="instalado-como-cgi-binario">Instalado como CGI binario<a class="headerlink" href="#instalado-como-cgi-binario" title="Permanent link">#</a></h2>
+<h2 id="ataques-posibles">Ataques posibles<a class="headerlink" href="#ataques-posibles" title="Permanent link">#</a></h2>
+<p>Usar PHP como un binario CGI es una opción para configuraciones que por alguna razón no desean integrar PHP como un módulo dentro del software de servidor (como Apache), o usarán PHP con diferentes tipos de envoltorios CGI para crear entornos seguros <code>chroot</code> y <code>setuid</code> para scripts. Esta configuración usualmente involucra la instalación del binario ejecutable de <code>php</code> en el directorio <code>cgi-bin</code> del servidor web. La recomendación <a href="http://www.cert.org/advisories/CA-1996-11.html">CA-96.11</a> del CERT recomienda que está en contra de colocar cualquiera de los intérpretes dentro de <code>cgi-bin</code>. Aún si el binario de <code>php</code> puede ser usado como un intérprete independiente, PHP está diseñado para prevenir los ataques que esta configuración hace posible:</p>
+<ul>
+<li>Accediendo a los ficheros del sistema: <code>http://mi.servidor/cgi-bin/php?/etc/passwd</code></li>
+</ul>
+<p>La consulta de información en una URL después del signo de interrogación (<code>?</code>) es pasado como argumento de la línea de comandos al intérprete por la interfaz del CGI. Usualmente los intérpretes abren y ejecutan el fichero especificado como el primer argumento en la línea de comandos.</p>
+<p>Cuando es invocado como un binario de CGI, <code>php</code> se niega a interpretar los argumentos de línea de comandos.</p>
+<ul>
+<li>Accediendo a cualquier documento web en el servidor: <code>http://mi.servidor/cgi-bin/php/directorio/secreto/doc.html</code></li>
+</ul>
+<p>Parte de la ruta de información de la URL después del nombre del binario de PHP, <code>/directorio/secreto/doc.html</code> es convencionalmente utilizado para especificar el nombre del fichero a ser abierto e interpretado por el programa CGI. Usualmente las directivas de configuración de algunos servidores web (Apache: <code>Action</code>) son utilizados para redirigir peticiones a los documentos como <code>http://mi.servidor/directorio/secreto/script.php</code> al intérprete de PHP. Con esta configuración, el servidor web revisa primero los permisos de acceso a los directorios <code>/directorio/secreto</code>, y después crea la petición redirigida <code>http://mi.servidor/cgi-bin/php/directorio/secreto/script.php</code>. Desafortunadamente, si la petición es proporcionada originalmente en esta forma, no se revisan los accesos a los directorios hechos por el servidor web <code>/directorio/secreto/script.php</code>, sino solamente al fichero <code>/cgi-bin/php</code>. De esta forma <code>/cgi-bin/php</code> cualquier usuario está habilitado a acceder a cualquier documento protegido en el servidor web.</p>
+<p>En PHP, las directivas de configuración en tiempo de ejecución <a href="#ini.cgi.force-redirect">cgi.force_redirect</a>, <a href="#ini.doc-root">doc_root</a> y <a href="#ini.user-dir">user_dir</a> pueden ser utilizadas para prevenir este ataque, si el árbol de documentos del servidor tiene cualquiera de estos directorios con restricciones de acceso. Véase más abajo para una explicación completa de las diferentes combinaciones.</p>
+<h2 id="caso-1-ficheros-publicos-servidos-solamente">Caso 1: Ficheros públicos servidos solamente<a class="headerlink" href="#caso-1-ficheros-publicos-servidos-solamente" title="Permanent link">#</a></h2>
+<p>Si su servidor no tiene ningún contenido que no esté restringido por contraseña o control de acceso basado en IP, no hay necesidad de estas opciones de configuración. Si su servidor web no le permite hacer redirecciones, o el servidor no tiene una forma de comunicar al binario de PHP que la petición es una forma segura de petición de redireccionada la solicitud, puedes habilitar la directiva ini <a href="#ini.cgi.force-redirect">cgi.force_redirect</a>. Usted todavía tiene que asegurarse que sus scripts de PHP no confían en una forma o en otra para llamar el script, ni directamente <code>http://mi.servidor/cgi-bin/php/directorio/script.php</code> ni por redirección <code>http://mi.servidor/directorio/script.php</code>.</p>
+<p>La redirección puede ser configurada en Apache utilizando directivas <code>Action</code> y <code>AddHandler</code> (vea más abajo).</p>
+<h2 id="caso-2-utilizando-cgiforce_redirect">Caso 2: utilizando <code>cgi.force_redirect</code><a class="headerlink" href="#caso-2-utilizando-cgiforce_redirect" title="Permanent link">#</a></h2>
+<p>La directiva de configuración <a href="#ini.cgi.force-redirect">cgi.force_redirect</a> previene a cualquiera que llame a PHP directamente por medio de una URL como esta <code>http://mi.servidor/cgi-bin/php/directoriosecreto/script.php</code>. En cambio, <code>php</code> solamente lo analizará en este modo si éste se ha ido a través de una regla directa del servidor web.</p>
+<p>Usualmente la redirección en la configuración de Apache se hace con las siguientes directivas:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Action php-script /cgi-bin/php</span>
+<span class="x">AddHandler php-script .php</span>
+</code></pre></div>
+
+<p>Esta opción ha sido probada solamente con el servidor web Apache, y se basa en que en Apache se configure en una variable de entorno no-estándar de CGI <code>REDIRECT_STATUS</code> para peticiones de redirección. Si su servidor web no soporta ninguna forma de decirle si la petición es directa o redirigida, usted no puede utilizar esta opción y debe usar una de las otras formas de ejecutar la versión CGI aquí documentadas.</p>
+<h2 id="caso-3-configurando-doc_root-o-user_dir">Caso 3: Configurando doc_root o user_dir<a class="headerlink" href="#caso-3-configurando-doc_root-o-user_dir" title="Permanent link">#</a></h2>
+<p>Para incluir contenido activo, como scripts y ejecutables, en los directorios de documentos del servidor web es algunas veces considerado una práctica insegura. Si, por el hecho del algún error de configuración, los scripts no se ejecutan y son mostrados como documentos HTML regulares, esto podría resultar en una fuga de información de propiedad intelectual o de información de seguridad como las contraseñas. Por lo tanto muchos Administradores de Sistemas preferirán configurar otra estructura de directorios para scripts que sean accesibles solamente a través del CGI de PHP, y por lo tanto siempre interpretado y no desplegado como tal.</p>
+<p>También si el método para asegurar las peticiones no es redirigido, como se describió en la sección anterior, no está disponible, es necesario configurar un script <a href="#ini.doc-root">doc_root</a> que sea diferente de la raíz del documento web.</p>
+<p>Usted puede configurar el script de la raíz de documento de PHP en la directiva de configuración <a href="#ini.doc-root">doc_root</a> en el <a href="#configuration.file">fichero de configuración</a>, o puede configurar la variable de entorno <code>PHP_DOCUMENT_ROOT</code>. Si éste es configurado, la versión del CGI de PHP siempre construirá el nombre del fichero para abrir con este <code>doc_root</code> y la ruta de información en la petición, de tal forma que pueda estar seguro que ningún script será ejecutado fuera de este directorio (excepto por <code>user_dir</code> que se encuentra más abajo).</p>
+<p>Otra opción utilizable es esta <a href="#ini.user-dir">user_dir</a>. Cuando <code>user_dir</code> no está configurado, lo único que controla el fichero abierto es <code>doc_root</code>. Al abrir una URL como <code>http://mi.servidor/~usuario/documento.php</code> no resulta en la apertura de un fichero bajo el directorio personal de los usuarios, pero si un fichero llamado <code>~usuario/documento.php</code> debajo de <code>doc_root</code> (si, un nombre de directorio que inicia con una a tilde [<code>~</code>]).</p>
+<p>Si <code>user_dir</code> es configurado, por ejemplo <code>public_php</code>, una petición como <code>http://mi.servidor/~usuario/doc.php</code> abrirá un fichero llamado <code>doc.php</code> bajo el directorio llamado <code>public_php</code> debajo de el directorio personal del usuario. Si el directorio personal del usuario es <code>/home/usuario</code>, el fichero ejecutado será <code>/home/user/public_php/doc.php</code>.</p>
+<p>La expansión de <code>user_dir</code> sucede sin tomar en cuenta la configuración de <code>doc_root</code>, así que usted puede controlar el acceso a la raíz de los documentos y el directorio de los usuarios separadamente.</p>
+<h2 id="caso-4-el-analizador-de-php-fuera-del-arbol-de-la-web">Caso 4: El analizador de PHP fuera del árbol de la web<a class="headerlink" href="#caso-4-el-analizador-de-php-fuera-del-arbol-de-la-web" title="Permanent link">#</a></h2>
+<p>Una opción muy segura es poner el binario analizador de PHP en algún lugar fuera del árbol de ficheros de la web. En <code>/usr/local/bin</code>, por ejemplo. El único inconveniente real con esta opción es que ahora tendrá que poner una línea similar a:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">#!/usr/local/bin/php</span>
+</code></pre></div>
+
+<p>como la primera línea de cualquier fichero que contenga etiquetas de PHP. También necesitará hacer que el fichero sea ejecutable. Eso significa, tratarlo exactamente como trataría cualquier otro script de CGI escrito en Perl, sh, bash, o cualquier otro lenguaje común de script el cual utilice <code>#!</code> como mecanismo de ejecución de si mismo.</p>
+<p>Para que PHP maneje la información correctamente de <code>PATH_INFO</code> y <code>PATH_TRANSLATED</code> con esta configuración, La directiva ini <a href="#ini.cgi.discard-path">cgi.discard_path</a> debe estar habilitada..</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../security/variables.html">
+          <span class="muted">Anterior</span>Datos Enviados por el Usuario
+        </a>
+        <a class="pager-next" href="../security/apache.html">
+          <span class="muted">Siguiente</span>Instalado como módulo de Apache
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

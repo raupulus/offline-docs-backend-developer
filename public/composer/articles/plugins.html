@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setting up and using plugins · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+>Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+>Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+>Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+class="is-current" aria-current="page">Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+>Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+>Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+>Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Setting up and using plugins</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#synopsis">Synopsis#</a></li>
+              <li class="lvl-2"><a href="#creating-a-plugin">Creating a Plugin#</a></li>
+              <li class="lvl-3"><a href="#plugin-package">Plugin Package#</a></li>
+              <li class="lvl-3"><a href="#plugin-class">Plugin Class#</a></li>
+              <li class="lvl-2"><a href="#event-handler">Event Handler#</a></li>
+              <li class="lvl-2"><a href="#plugin-capabilities">Plugin capabilities#</a></li>
+              <li class="lvl-3"><a href="#command-provider">Command provider#</a></li>
+              <li class="lvl-2"><a href="#running-plugins-manually">Running plugins manually#</a></li>
+              <li class="lvl-2"><a href="#using-plugins">Using Plugins#</a></li>
+              <li class="lvl-2"><a href="#plugin-helpers">Plugin Helpers#</a></li>
+              <li class="lvl-2"><a href="#plugin-extra-attributes">Plugin Extra Attributes#</a></li>
+              <li class="lvl-3"><a href="#class">class#</a></li>
+              <li class="lvl-3"><a href="#plugin-modifies-downloads">plugin-modifies-downloads#</a></li>
+              <li class="lvl-3"><a href="#plugin-modifies-install-path">plugin-modifies-install-path#</a></li>
+              <li class="lvl-3"><a href="#plugin-optional">plugin-optional#</a></li>
+              <li class="lvl-2"><a href="#plugin-autoloading">Plugin Autoloading#</a></li>
+              <li class="lvl-2"><a href="#static-analysis-support">Static Analysis support#</a></li>
+              <li class="lvl-3"><a href="#usage-with-phpstan-extension-installer">Usage with PHPStan Extension Installer#</a></li>
+              <li class="lvl-3"><a href="#alternative-manual-installation">Alternative manual installation#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: Modify and extend Composer's functionality
+-->
+
+<h1 id="setting-up-and-using-plugins">Setting up and using plugins<a class="headerlink" href="#setting-up-and-using-plugins" title="Permanent link">#</a></h1>
+<h2 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">#</a></h2>
+<p>You may wish to alter or expand Composer's functionality with your own. For
+example if your environment poses special requirements on the behaviour of
+Composer which do not apply to the majority of its users or if you wish to
+accomplish something with Composer in a way that is not desired by most users.</p>
+<p>In these cases you could consider creating a plugin to handle your
+specific logic.</p>
+<h2 id="creating-a-plugin">Creating a Plugin<a class="headerlink" href="#creating-a-plugin" title="Permanent link">#</a></h2>
+<p>A plugin is a regular Composer package which ships its code as part of the
+package and may also depend on further packages.</p>
+<h3 id="plugin-package">Plugin Package<a class="headerlink" href="#plugin-package" title="Permanent link">#</a></h3>
+<p>The package file is the same as any other package file but with the following
+requirements:</p>
+<ol>
+<li>The <a href="../schema.html#type">type</a> attribute must be <code>composer-plugin</code>.</li>
+<li>The <a href="../schema.html#extra">extra</a> attribute must contain an element <code>class</code> defining the
+   class name of the plugin (including namespace). If a package contains
+   multiple plugins, this can be an array of class names.</li>
+<li>You must require the special package called <code>composer-plugin-api</code>
+   to define which Plugin API versions your plugin is compatible with.
+   Requiring this package doesn't actually include any extra dependencies,
+   it only specifies which version of the plugin API to use.</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> When developing a plugin, although not required, it's useful to add
+a require-dev dependency on <code>composer/composer</code> to have IDE autocompletion on Composer classes.</p>
+</blockquote>
+<p>The required version of the <code>composer-plugin-api</code> follows the same <a href="../basic-usage.html#package-versions">rules</a>
+as a normal package's rules.</p>
+<p>The current Composer plugin API version is <code>2.6.0</code>.</p>
+<p>An example of a valid plugin <code>composer.json</code> file (with the autoloading
+part omitted and an optional require-dev dependency on <code>composer/composer</code> for IDE auto completion):</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my/plugin-package&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer-plugin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;composer-plugin-api&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.0&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;require-dev&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;composer/composer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.0&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My\\Plugin&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="plugin-class">Plugin Class<a class="headerlink" href="#plugin-class" title="Permanent link">#</a></h3>
+<p>Every plugin has to supply a class which implements the
+<a href="https://github.com/composer/composer/blob/main/src/Composer/Plugin/PluginInterface.php"><code>Composer\Plugin\PluginInterface</code></a>. The <code>activate()</code> method of the plugin
+is called after the plugin is loaded and receives an instance of
+<a href="https://github.com/composer/composer/blob/main/src/Composer/Composer.php"><code>Composer\Composer</code></a> as well as an instance of
+<a href="https://github.com/composer/composer/blob/main/src/Composer/IO/IOInterface.php"><code>Composer\IO\IOInterface</code></a>. Using these two objects all configuration can
+be read and all internal objects and state can be manipulated as desired.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">phpDocumentor\Composer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Composer\Composer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\IO\IOInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Plugin\PluginInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">TemplateInstallerPlugin</span> <span class="k">implements</span> <span class="nx">PluginInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">Composer</span> <span class="nv">$composer</span><span class="p">,</span> <span class="nx">IOInterface</span> <span class="nv">$io</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$installer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TemplateInstaller</span><span class="p">(</span><span class="nv">$io</span><span class="p">,</span> <span class="nv">$composer</span><span class="p">);</span>
+        <span class="nv">$composer</span><span class="o">-&gt;</span><span class="na">getInstallationManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">addInstaller</span><span class="p">(</span><span class="nv">$installer</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="event-handler">Event Handler<a class="headerlink" href="#event-handler" title="Permanent link">#</a></h2>
+<p>Furthermore plugins may implement the
+<a href="https://github.com/composer/composer/blob/main/src/Composer/EventDispatcher/EventSubscriberInterface.php"><code>Composer\EventDispatcher\EventSubscriberInterface</code></a> in order to have its
+event handlers automatically registered with the <code>EventDispatcher</code> when the
+plugin is loaded.</p>
+<p>To register a method to an event, implement the method <code>getSubscribedEvents()</code>
+and have it return an array. The array key must be the
+<a href="scripts.html#event-names">event name</a>
+and the value is the name of the method in this class to be called.</p>
+<blockquote>
+<p><strong>Note:</strong> If you don't know which event to listen to, you can run a Composer
+command with the COMPOSER_DEBUG_EVENTS=1 environment variable set, which might
+help you identify what event you are looking for.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="x">public static function getSubscribedEvents()</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;post-autoload-dump&#39; =&gt; &#39;methodToBeCalled&#39;,</span>
+<span class="x">        // ^ event name ^         ^ method name ^</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>By default, the priority of an event handler is set to 0. The priority can be
+changed by attaching a tuple where the first value is the method name, as
+before, and the second value is an integer representing the priority.
+Higher integers represent higher priorities. Priority 2 is called before
+priority 1, etc.</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public static function getSubscribedEvents()</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        // Will be called before events with priority 0</span>
+<span class="x">        &#39;post-autoload-dump&#39; =&gt; [&#39;methodToBeCalled&#39;, 1]</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If multiple methods should be called, then an array of tuples can be attached
+to each event. The tuples do not need to include the priority. If it is
+omitted, it will default to 0.</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public static function getSubscribedEvents()</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;post-autoload-dump&#39; =&gt; [</span>
+<span class="x">            [&#39;methodToBeCalled&#39;      ], // Priority defaults to 0</span>
+<span class="x">            [&#39;someOtherMethodName&#39;, 1], // This fires first</span>
+<span class="x">        ]</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Here's a complete example:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Naderman\Composer\AWS</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Composer\Composer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\EventDispatcher\EventSubscriberInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\IO\IOInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Plugin\PluginInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Plugin\PluginEvents</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Plugin\PreFileDownloadEvent</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">AwsPlugin</span> <span class="k">implements</span> <span class="nx">PluginInterface</span><span class="p">,</span> <span class="nx">EventSubscriberInterface</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$composer</span><span class="p">;</span>
+    <span class="k">protected</span> <span class="nv">$io</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">Composer</span> <span class="nv">$composer</span><span class="p">,</span> <span class="nx">IOInterface</span> <span class="nv">$io</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">composer</span> <span class="o">=</span> <span class="nv">$composer</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">io</span> <span class="o">=</span> <span class="nv">$io</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">deactivate</span><span class="p">(</span><span class="nx">Composer</span> <span class="nv">$composer</span><span class="p">,</span> <span class="nx">IOInterface</span> <span class="nv">$io</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">uninstall</span><span class="p">(</span><span class="nx">Composer</span> <span class="nv">$composer</span><span class="p">,</span> <span class="nx">IOInterface</span> <span class="nv">$io</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getSubscribedEvents</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="nx">PluginEvents</span><span class="o">::</span><span class="na">PRE_FILE_DOWNLOAD</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="p">[</span><span class="s1">&#39;onPreFileDownload&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="p">],</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onPreFileDownload</span><span class="p">(</span><span class="nx">PreFileDownloadEvent</span> <span class="nv">$event</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$protocol</span> <span class="o">=</span> <span class="nb">parse_url</span><span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getProcessedUrl</span><span class="p">(),</span> <span class="nx">PHP_URL_SCHEME</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$protocol</span> <span class="o">===</span> <span class="s1">&#39;s3&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// ...</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="plugin-capabilities">Plugin capabilities<a class="headerlink" href="#plugin-capabilities" title="Permanent link">#</a></h2>
+<p>Composer defines a standard set of capabilities which may be implemented by plugins.
+Their goal is to make the plugin ecosystem more stable as it reduces the need to mess
+with <a href="https://github.com/composer/composer/blob/main/src/Composer/Composer.php"><code>Composer\Composer</code></a>'s internal state, by providing explicit extension points
+for common plugin requirements.</p>
+<p>Capable Plugins classes must implement the <a href="https://github.com/composer/composer/blob/main/src/Composer/Plugin/Capable.php"><code>Composer\Plugin\Capable</code></a> interface
+and declare their capabilities in the <code>getCapabilities()</code> method.
+This method must return an array, with the <em>key</em> as a Composer Capability class name,
+and the <em>value</em> as the Plugin's own implementation class name of said Capability:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">My\Composer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Composer\Composer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\IO\IOInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Plugin\PluginInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Plugin\Capable</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Plugin</span> <span class="k">implements</span> <span class="nx">PluginInterface</span><span class="p">,</span> <span class="nx">Capable</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">Composer</span> <span class="nv">$composer</span><span class="p">,</span> <span class="nx">IOInterface</span> <span class="nv">$io</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getCapabilities</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;Composer\Plugin\Capability\CommandProvider&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;My\Composer\CommandProvider&#39;</span><span class="p">,</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="command-provider">Command provider<a class="headerlink" href="#command-provider" title="Permanent link">#</a></h3>
+<p>The <a href="https://github.com/composer/composer/blob/main/src/Composer/Plugin/Capability/CommandProvider.php"><code>Composer\Plugin\Capability\CommandProvider</code></a> capability allows to register
+additional commands for Composer:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">My\Composer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Composer\Plugin\Capability\CommandProvider</span> <span class="k">as</span> <span class="nx">CommandProviderCapability</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Command\BaseCommand</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">CommandProvider</span> <span class="k">implements</span> <span class="nx">CommandProviderCapability</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getCommands</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span><span class="k">new</span> <span class="nx">Command</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Command</span> <span class="k">extends</span> <span class="nx">BaseCommand</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">&#39;custom-plugin-command&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span>
+    <span class="p">{</span>
+        <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;Executing&#39;</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now the <code>custom-plugin-command</code> is available alongside Composer commands.</p>
+<blockquote>
+<p><em>Composer commands are based on the <a href="https://symfony.com/doc/current/components/console.html">Symfony Console Component</a>.</em></p>
+</blockquote>
+<h2 id="running-plugins-manually">Running plugins manually<a class="headerlink" href="#running-plugins-manually" title="Permanent link">#</a></h2>
+<p>Plugins for an event can be run manually by the <code>run-script</code> command. This works the same way as
+<a href="scripts.html#running-scripts-manually">running scripts manually</a>.</p>
+<p>If it is another type of plugin the best way to test it is probably using a <a href="../repositories.html#path">path repository</a>
+to require the plugin in a test project. If you are developing locally and want to test frequently, you can make sure the path repository uses symlinks, as changes are updated immediately. Otherwise, you'll have to run <code>rm -rf vendor &amp;&amp; composer update</code>
+every time you want to install/run it again.</p>
+<h2 id="using-plugins">Using Plugins<a class="headerlink" href="#using-plugins" title="Permanent link">#</a></h2>
+<p>Plugin packages are automatically loaded as soon as they are installed and will
+be loaded when Composer starts up if they are found in the current project's
+list of installed packages. Additionally all plugin packages installed in the
+<code>COMPOSER_HOME</code> directory using the Composer global command are loaded before
+local project plugins are loaded.</p>
+<blockquote>
+<p>You may pass the <code>--no-plugins</code> option to Composer commands to disable all
+installed plugins. This may be particularly helpful if any of the plugins
+causes errors and you wish to update or uninstall it.</p>
+</blockquote>
+<h2 id="plugin-helpers">Plugin Helpers<a class="headerlink" href="#plugin-helpers" title="Permanent link">#</a></h2>
+<p>As of Composer 2, due to the fact that DownloaderInterface can sometimes return Promises
+and have been split up in more steps than they used to, we provide a <a href="https://github.com/composer/composer/blob/main/src/Composer/Util/SyncHelper.php">SyncHelper</a>
+to make downloading and installing packages easier.</p>
+<h2 id="plugin-extra-attributes">Plugin Extra Attributes<a class="headerlink" href="#plugin-extra-attributes" title="Permanent link">#</a></h2>
+<p>A few special plugin capabilities can be unlocked using extra attributes in the plugin's composer.json.</p>
+<h3 id="class">class<a class="headerlink" href="#class" title="Permanent link">#</a></h3>
+<p><a href="#plugin-package">See above</a> for an explanation of the class attribute and how it works.</p>
+<h3 id="plugin-modifies-downloads">plugin-modifies-downloads<a class="headerlink" href="#plugin-modifies-downloads" title="Permanent link">#</a></h3>
+<p>Some special plugins need to update package download URLs before they get downloaded.</p>
+<p>As of Composer 2.0, all packages are downloaded before they get installed. This means
+on the first installation, your plugin is not yet installed when the download occurs,
+and it does not get a chance to update the URLs on time.</p>
+<p>Specifying <code>{"extra": {"plugin-modifies-downloads": true}}</code> in your composer.json will
+hint to Composer that the plugin should be installed on its own before proceeding with
+the rest of the package downloads. This slightly slows down the overall installation
+process however, so do not use it in plugins which do not absolutely require it.</p>
+<h3 id="plugin-modifies-install-path">plugin-modifies-install-path<a class="headerlink" href="#plugin-modifies-install-path" title="Permanent link">#</a></h3>
+<p>Some special plugins modify the install path of packages.</p>
+<p>As of Composer 2.2.9, you can specify <code>{"extra": {"plugin-modifies-install-path": true}}</code>
+in your composer.json to hint to Composer that the plugin should be activated as soon
+as possible to prevent any bad side-effects from Composer assuming packages are installed
+in another location than they actually are.</p>
+<h3 id="plugin-optional">plugin-optional<a class="headerlink" href="#plugin-optional" title="Permanent link">#</a></h3>
+<p>Because Composer plugins can be used to perform actions which are necessary for installing
+a working application, like modifying which path files get stored in, skipping required
+plugins unintentionally can result in broken applications. So, in non-interactive mode,
+Composer will fail if a new plugin is not listed in <a href="../config.html#allow-plugins">"allow-plugins"</a>
+to force users to decide if they want to execute the plugin, to avoid silent failures.</p>
+<p>As of Composer 2.5.3, you can use the setting <code>{"extra": {"plugin-optional": true}}</code> on
+your plugin, to tell Composer that skipping the plugin has no catastrophic consequences,
+and it can safely be disabled in non-interactive mode if it is not yet listed in
+"allow-plugins". The next interactive run of Composer will still prompt users to choose if
+they want to enable or disable the plugin.</p>
+<h2 id="plugin-autoloading">Plugin Autoloading<a class="headerlink" href="#plugin-autoloading" title="Permanent link">#</a></h2>
+<p>Due to plugins being loaded by Composer at runtime, and to ensure that plugins which
+depend on other packages can function correctly, a runtime autoloader is created whenever
+a plugin is loaded. That autoloader is only configured to load with the plugin dependencies,
+so you may not have access to all the packages which are installed.</p>
+<h2 id="static-analysis-support">Static Analysis support<a class="headerlink" href="#static-analysis-support" title="Permanent link">#</a></h2>
+<p>As of Composer 2.3.7 we ship a <code>phpstan/rules.neon</code> PHPStan config file, which provides additional error checking when working on Composer plugins.</p>
+<h3 id="usage-with-phpstan-extension-installer">Usage with <a href="https://github.com/phpstan/extension-installer#usage">PHPStan Extension Installer</a><a class="headerlink" href="#usage-with-phpstan-extension-installer" title="Permanent link">#</a></h3>
+<p>The necessary configuration files are automatically loaded, in case your plugin projects declares a dependency to <code>phpstan/extension-installer</code>.</p>
+<h3 id="alternative-manual-installation">Alternative manual installation<a class="headerlink" href="#alternative-manual-installation" title="Permanent link">#</a></h3>
+<p>To make use of it, your Composer plugin project needs a <a href="https://phpstan.org/config-reference#multiple-files">PHPStan config file</a>, which includes the <code>phpstan/rules.neon</code> file:</p>
+<div class="codehilite"><pre><span></span><code>includes:
+    - vendor/composer/composer/phpstan/rules.neon
+
+// your remaining config..
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/handling-private-packages.html">
+          <span class="muted">Anterior</span>Handling private packages
+        </a>
+        <a class="pager-next" href="../articles/repository-priorities.html">
+          <span class="muted">Siguiente</span>Repository priorities
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

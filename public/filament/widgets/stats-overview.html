@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stats overview widgets · Filament</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Filament</a>
+<span class="badge">4.x</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="filament" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Filament…"
+         aria-label="Buscar en Filament" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Filament
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Filament">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../actions/overview.html">Actions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../forms/overview.html">Forms</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../infolists/overview.html">Infolists</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../notifications/overview.html">Notifications</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../schemas/overview.html">Schemas</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tables/overview.html">Tables</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Widgets
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../widgets/overview.html"
+>Overview</a>
+              </li>
+              <li>
+                <a href="../widgets/stats-overview.html"
+class="is-current" aria-current="page">Stats overview widgets</a>
+              </li>
+              <li>
+                <a href="../widgets/charts.html"
+>Chart widgets</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Stats overview widgets</h1>
+
+      <p class="doc-meta">
+<span class="badge">4.x</span>          <a href="https://filamentphp.com/docs" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#adding-a-description-and-icon-to-a-stat">Adding a description and icon to a stat#</a></li>
+              <li class="lvl-2"><a href="#changing-the-color-of-the-stat">Changing the color of the stat#</a></li>
+              <li class="lvl-2"><a href="#adding-extra-html-attributes-to-a-stat">Adding extra HTML attributes to a stat#</a></li>
+              <li class="lvl-2"><a href="#adding-a-chart-to-a-stat">Adding a chart to a stat#</a></li>
+              <li class="lvl-2"><a href="#live-updating-stats-polling">Live updating stats (polling)#</a></li>
+              <li class="lvl-2"><a href="#disabling-lazy-loading">Disabling lazy loading#</a></li>
+              <li class="lvl-2"><a href="#adding-a-heading-and-description">Adding a heading and description#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>import AutoScreenshot from "@components/AutoScreenshot.astro"</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>Filament comes with a "stats overview" widget template, which you can use to display a number of different stats in a single widget, without needing to write a custom view.</p>
+<p>Start by creating a widget with the command:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:filament-widget<span class="w"> </span>StatsOverview<span class="w"> </span>--stats-overview
+</code></pre></div>
+
+<p>This command will create a new <code>StatsOverview.php</code> file. Open it, and return <code>Stat</code> instances from the <code>getStats()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Filament\Widgets</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Filament\Widgets\StatsOverviewWidget</span> <span class="k">as</span> <span class="nx">BaseWidget</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Filament\Widgets\StatsOverviewWidget\Stat</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">StatsOverview</span> <span class="k">extends</span> <span class="nx">BaseWidget</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getStats</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="nx">Stat</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="s1">&#39;Unique views&#39;</span><span class="p">,</span> <span class="s1">&#39;192.1k&#39;</span><span class="p">),</span>
+            <span class="nx">Stat</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="s1">&#39;Bounce rate&#39;</span><span class="p">,</span> <span class="s1">&#39;21%&#39;</span><span class="p">),</span>
+            <span class="nx">Stat</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="s1">&#39;Average time on page&#39;</span><span class="p">,</span> <span class="s1">&#39;3:12&#39;</span><span class="p">),</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now, check out your widget in the dashboard.</p>
+<p><AutoScreenshot name="widgets/stats-overview/simple" alt="Stats overview" version="4.x" /></p>
+<h2 id="adding-a-description-and-icon-to-a-stat">Adding a description and icon to a stat<a class="headerlink" href="#adding-a-description-and-icon-to-a-stat" title="Permanent link">#</a></h2>
+<p>You may add a <code>description()</code> to provide additional information, along with a <code>descriptionIcon()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Widgets\StatsOverviewWidget\Stat;</span>
+
+<span class="x">protected function getStats(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Stat::make(&#39;Unique views&#39;, &#39;192.1k&#39;)</span>
+<span class="x">            -&gt;description(&#39;32k increase&#39;)</span>
+<span class="x">            -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-up&#39;),</span>
+<span class="x">        Stat::make(&#39;Bounce rate&#39;, &#39;21%&#39;)</span>
+<span class="x">            -&gt;description(&#39;7% decrease&#39;)</span>
+<span class="x">            -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-down&#39;),</span>
+<span class="x">        Stat::make(&#39;Average time on page&#39;, &#39;3:12&#39;)</span>
+<span class="x">            -&gt;description(&#39;3% increase&#39;)</span>
+<span class="x">            -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-up&#39;),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The <code>descriptionIcon()</code> method also accepts a second parameter to put the icon before the description instead of after it:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Support\Enums\IconPosition;</span>
+<span class="x">use Filament\Widgets\StatsOverviewWidget\Stat;</span>
+
+<span class="x">Stat::make(&#39;Unique views&#39;, &#39;192.1k&#39;)</span>
+<span class="x">    -&gt;description(&#39;32k increase&#39;)</span>
+<span class="x">    -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-up&#39;, IconPosition::Before)</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/stats-overview/description" alt="Stats overview with descriptions" version="4.x" /></p>
+<h2 id="changing-the-color-of-the-stat">Changing the color of the stat<a class="headerlink" href="#changing-the-color-of-the-stat" title="Permanent link">#</a></h2>
+<p>You may also give stats a <a href="../styling/colors">color</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Widgets\StatsOverviewWidget\Stat;</span>
+
+<span class="x">protected function getStats(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Stat::make(&#39;Unique views&#39;, &#39;192.1k&#39;)</span>
+<span class="x">            -&gt;description(&#39;32k increase&#39;)</span>
+<span class="x">            -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-up&#39;)</span>
+<span class="x">            -&gt;color(&#39;success&#39;),</span>
+<span class="x">        Stat::make(&#39;Bounce rate&#39;, &#39;21%&#39;)</span>
+<span class="x">            -&gt;description(&#39;7% increase&#39;)</span>
+<span class="x">            -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-down&#39;)</span>
+<span class="x">            -&gt;color(&#39;danger&#39;),</span>
+<span class="x">        Stat::make(&#39;Average time on page&#39;, &#39;3:12&#39;)</span>
+<span class="x">            -&gt;description(&#39;3% increase&#39;)</span>
+<span class="x">            -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-up&#39;)</span>
+<span class="x">            -&gt;color(&#39;success&#39;),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/stats-overview/color" alt="Stats overview with colors" version="4.x" /></p>
+<h2 id="adding-extra-html-attributes-to-a-stat">Adding extra HTML attributes to a stat<a class="headerlink" href="#adding-extra-html-attributes-to-a-stat" title="Permanent link">#</a></h2>
+<p>You may also pass extra HTML attributes to stats using <code>extraAttributes()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Widgets\StatsOverviewWidget\Stat;</span>
+
+<span class="x">protected function getStats(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Stat::make(&#39;Processed&#39;, &#39;192.1k&#39;)</span>
+<span class="x">            -&gt;color(&#39;success&#39;)</span>
+<span class="x">            -&gt;extraAttributes([</span>
+<span class="x">                &#39;class&#39; =&gt; &#39;cursor-pointer&#39;,</span>
+<span class="x">                &#39;wire:click&#39; =&gt; &quot;\$dispatch(&#39;setStatusFilter&#39;, { filter: &#39;processed&#39; })&quot;,</span>
+<span class="x">            ]),</span>
+<span class="x">        // ...</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>In this example, we are deliberately escaping the <code>$</code> in <code>$dispatch()</code> since this needs to be passed directly to the HTML, it is not a PHP variable.</p>
+<h2 id="adding-a-chart-to-a-stat">Adding a chart to a stat<a class="headerlink" href="#adding-a-chart-to-a-stat" title="Permanent link">#</a></h2>
+<p>You may also add or chain a <code>chart()</code> to each stat to provide historical data. The <code>chart()</code> method accepts an array of data points to plot:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Widgets\StatsOverviewWidget\Stat;</span>
+
+<span class="x">protected function getStats(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Stat::make(&#39;Unique views&#39;, &#39;192.1k&#39;)</span>
+<span class="x">            -&gt;description(&#39;32k increase&#39;)</span>
+<span class="x">            -&gt;descriptionIcon(&#39;heroicon-m-arrow-trending-up&#39;)</span>
+<span class="x">            -&gt;chart([7, 2, 10, 3, 15, 4, 17])</span>
+<span class="x">            -&gt;color(&#39;success&#39;),</span>
+<span class="x">        // ...</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/stats-overview/chart" alt="Stats overview with charts" version="4.x" /></p>
+<h2 id="live-updating-stats-polling">Live updating stats (polling)<a class="headerlink" href="#live-updating-stats-polling" title="Permanent link">#</a></h2>
+<p>By default, stats overview widgets refresh their data every 5 seconds.</p>
+<p>To customize this, you may override the <code>$pollingInterval</code> property on the class to a new interval:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $pollingInterval = &#39;10s&#39;;</span>
+</code></pre></div>
+
+<p>Alternatively, you may disable polling altogether:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $pollingInterval = null;</span>
+</code></pre></div>
+
+<h2 id="disabling-lazy-loading">Disabling lazy loading<a class="headerlink" href="#disabling-lazy-loading" title="Permanent link">#</a></h2>
+<p>By default, widgets are lazy-loaded. This means that they will only be loaded when they are visible on the page.</p>
+<p>To disable this behavior, you may override the <code>$isLazy</code> property on the widget class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected static bool $isLazy = false;</span>
+</code></pre></div>
+
+<h2 id="adding-a-heading-and-description">Adding a heading and description<a class="headerlink" href="#adding-a-heading-and-description" title="Permanent link">#</a></h2>
+<p>You may also add heading and description text above the widget by overriding the <code>$heading</code> and <code>$description</code> properties:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $heading = &#39;Analytics&#39;;</span>
+
+<span class="x">protected ?string $description = &#39;An overview of some analytics.&#39;;</span>
+</code></pre></div>
+
+<p>If you need to dynamically generate the heading or description text, you can instead override the <code>getHeading()</code> and <code>getDescription()</code> methods:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected function getHeading(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;Analytics&#39;;</span>
+<span class="x">}</span>
+
+<span class="x">protected function getDescription(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;An overview of some analytics.&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/stats-overview/heading" alt="Stats overview with heading and description" version="4.x" /></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../widgets/overview.html">
+          <span class="muted">Anterior</span>Overview
+        </a>
+        <a class="pager-next" href="../widgets/charts.html">
+          <span class="muted">Siguiente</span>Chart widgets
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use Composer behind a proxy · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../articles/aliases.html">Articles</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Faqs
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html"
+>How do I install a package to a custom path for my framework?</a>
+              </li>
+              <li>
+                <a href="../faqs/how-to-install-composer-programmatically.html"
+>How do I install Composer programmatically?</a>
+              </li>
+              <li>
+                <a href="../faqs/how-to-install-untrusted-packages-safely.html"
+>How do I install untrusted packages safely? Is it safe to run Composer as superuser or root?</a>
+              </li>
+              <li>
+                <a href="../faqs/how-to-use-composer-behind-a-proxy.html"
+class="is-current" aria-current="page">How to use Composer behind a proxy</a>
+              </li>
+              <li>
+                <a href="../faqs/should-i-commit-the-dependencies-in-my-vendor-directory.html"
+>Should I commit the dependencies in my vendor directory?</a>
+              </li>
+              <li>
+                <a href="../faqs/which-version-numbering-system-does-composer-itself-use.html"
+>Which version numbering system does Composer itself use?</a>
+              </li>
+              <li>
+                <a href="../faqs/why-are-unbound-version-constraints-a-bad-idea.html"
+>Why are unbound version constraints a bad idea?</a>
+              </li>
+              <li>
+                <a href="../faqs/why-are-version-constraints-combining-comparisons-and-wildcards-a-bad-idea.html"
+>Why are version constraints combining comparisons and wildcards a bad idea?</a>
+              </li>
+              <li>
+                <a href="../faqs/why-cant-composer-load-repositories-recursively.html"
+>Why can&#39;t Composer load repositories recursively?</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">How to use Composer behind a proxy</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#usage">Usage#</a></li>
+              <li class="lvl-3"><a href="#non-cli-usage">Non-CLI usage#</a></li>
+              <li class="lvl-2"><a href="#syntax">Syntax#</a></li>
+              <li class="lvl-3"><a href="#authorization">Authorization#</a></li>
+              <li class="lvl-2"><a href="#https-proxy-servers">HTTPS proxy servers#</a></li>
+              <li class="lvl-2"><a href="#bypassing-the-proxy-for-specific-domains">Bypassing the proxy for specific domains#</a></li>
+              <li class="lvl-2"><a href="#deprecated-environment-variables">Deprecated environment variables#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="how-to-use-composer-behind-a-proxy">How to use Composer behind a proxy<a class="headerlink" href="#how-to-use-composer-behind-a-proxy" title="Permanent link">#</a></h1>
+<p>Composer, like many other tools, uses environment variables to control the use of a proxy server and
+supports:</p>
+<ul>
+<li><code>http_proxy</code> - the proxy to use for HTTP requests</li>
+<li><code>https_proxy</code> - the proxy to use for HTTPS requests</li>
+<li><code>CGI_HTTP_PROXY</code> - the proxy to use for HTTP requests in a non-CLI context</li>
+<li><code>no_proxy</code> - domains that do not require a proxy</li>
+</ul>
+<p>These named variables are a convention, rather than an official standard, and their evolution and
+usage across different operating systems and tools is complex. Composer prefers the use of lowercase
+names, but accepts uppercase names where appropriate.</p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h2>
+<p>Composer requires specific environment variables for HTTP and HTTPS requests. For example:</p>
+<div class="codehilite"><pre><span></span><code>http_proxy=http://proxy.com:80
+https_proxy=http://proxy.com:80
+</code></pre></div>
+
+<p>Uppercase names can also be used.</p>
+<h3 id="non-cli-usage">Non-CLI usage<a class="headerlink" href="#non-cli-usage" title="Permanent link">#</a></h3>
+<p>Composer does not look for <code>http_proxy</code> or <code>HTTP_PROXY</code> in a non-CLI context. If you are running it
+this way (i.e. integration into a CMS or similar use case) you must use <code>CGI_HTTP_PROXY</code> for HTTP
+requests:</p>
+<div class="codehilite"><pre><span></span><code>CGI_HTTP_PROXY=http://proxy.com:80
+https_proxy=http://proxy.com:80
+
+# cgi_http_proxy can also be used
+</code></pre></div>
+
+<blockquote>
+<p><strong>Note:</strong> CGI_HTTP_PROXY was introduced by Perl in 2001 to prevent request header manipulation and
+was popularized in 2016 when this vulnerability was widely reported: https://httpoxy.org</p>
+</blockquote>
+<h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">#</a></h2>
+<p>Use <code>scheme://host:port</code> as in the examples above. Although a missing scheme defaults to http and a
+missing port defaults to 80/443 for http/https schemes, other tools might require these values.</p>
+<p>The host can be specified as an IP address using dotted quad notation for IPv4, or enclosed in
+square brackets for IPv6.</p>
+<h3 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">#</a></h3>
+<p>Composer supports Basic authorization, using the <code>scheme://user:pass@host:port</code> syntax. Reserved url
+characters in either the user name or password must be percent-encoded. For example:</p>
+<div class="codehilite"><pre><span></span><code>user:  me@company
+pass:  p@ssw$rd
+proxy: http://proxy.com:80
+
+# percent-encoded authorization
+me%40company:p%40ssw%24rd
+
+scheme://me%40company:p%40ssw%24rd@proxy.com:80
+</code></pre></div>
+
+<blockquote>
+<p><strong>Note:</strong> The user name and password components must be percent-encoded individually and then
+combined with the colon separator. The user name cannot contain a colon (even if percent-encoded),
+because the proxy will split the components on the first colon it finds.</p>
+</blockquote>
+<h2 id="https-proxy-servers">HTTPS proxy servers<a class="headerlink" href="#https-proxy-servers" title="Permanent link">#</a></h2>
+<p>Composer supports HTTPS proxy servers, where HTTPS is the scheme used to connect to the proxy, but
+only from PHP 7.3 with curl version 7.52.0 and above.</p>
+<div class="codehilite"><pre><span></span><code>http_proxy=https://proxy.com:443
+https_proxy=https://proxy.com:443
+</code></pre></div>
+
+<h2 id="bypassing-the-proxy-for-specific-domains">Bypassing the proxy for specific domains<a class="headerlink" href="#bypassing-the-proxy-for-specific-domains" title="Permanent link">#</a></h2>
+<p>Use the <code>no_proxy</code> (or <code>NO_PROXY</code>) environment variable to set a comma-separated list of domains
+that the proxy should <strong>not</strong> be used for.</p>
+<div class="codehilite"><pre><span></span><code>no_proxy=example.com
+# Bypasses the proxy for example.com and its sub-domains
+
+no_proxy=www.example.com
+# Bypasses the proxy for www.example.com and its sub-domains, but not for example.com
+</code></pre></div>
+
+<p>A domain can be restricted to a particular port (e.g. <code>:80</code>) and can also be specified as an IP
+address or an IP address block in CIDR notation.</p>
+<p>IPv6 addresses do not need to be enclosed in square brackets, like they are for
+http_proxy/https_proxy values, although this format is accepted.</p>
+<p>Setting the value to <code>*</code> will bypass the proxy for all requests.</p>
+<blockquote>
+<p><strong>Note:</strong> A leading dot in the domain name has no significance and is removed prior to processing.</p>
+</blockquote>
+<h2 id="deprecated-environment-variables">Deprecated environment variables<a class="headerlink" href="#deprecated-environment-variables" title="Permanent link">#</a></h2>
+<p>Composer originally provided <code>HTTP_PROXY_REQUEST_FULLURI</code> and <code>HTTPS_PROXY_REQUEST_FULLURI</code> to help
+mitigate issues with misbehaving proxies. These are no longer required or used.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../faqs/how-to-install-untrusted-packages-safely.html">
+          <span class="muted">Anterior</span>How do I install untrusted packages safely? Is it safe to run Composer as superuser or root?
+        </a>
+        <a class="pager-next" href="../faqs/should-i-commit-the-dependencies-in-my-vendor-directory.html">
+          <span class="muted">Siguiente</span>Should I commit the dependencies in my vendor directory?
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

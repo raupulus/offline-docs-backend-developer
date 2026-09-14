@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>var_representation · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Var_Representation
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../var_representation/constants.html"
+>Constantes predefinidas</a>
+              </li>
+              <li>
+                <a href="../var_representation/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../var_representation/var-representation.html"
+class="is-current" aria-current="page">var_representation</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">var_representation</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/function.var-representation.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#descripcion">Descripción#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>var_representation</p>
+<p>Devuelve una representación legible, corta y analizable de una variable</p>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="x">var_representation(mixed $value, [int $flags]): string</span>
+<span class="x">```php</span>
+
+<span class="x">`var_representation` (de la PECL var_representation) devuelve un string de caracteres con información estructurada sobre la variable dada. Es similar a `var_export` con diferencias en la indentación, escape de strings y las representaciones de array.</span>
+
+<span class="x">## Parámetros</span>
+
+<span class="x">`value`  </span>
+<span class="x">La variable para generar una representación.</span>
+
+<span class="x">`flags`  </span>
+<span class="x">Una máscara de bits que consiste en `VAR_REPRESENTATION_SINGLE_LINE`, `VAR_REPRESENTATION_UNESCAPED`. El comportamiento de estas constantes se describe en la página de las [constantes de var_representation](#var-representation.constants).</span>
+
+<span class="x">## Valores devueltos</span>
+
+<span class="x">Devuelve la representación de la variable.</span>
+
+<span class="x">## Ejemplos</span>
+
+<span class="x">Ejemplo de `var_representation`</span>
+</code></pre></div>
+
+<?php
+$a = [1, 2, ['key' => 'value']];
+echo var_representation($a), "\n";
+echo var_representation($a, VAR_REPRESENTATION_SINGLE_LINE), "\n";
+?>
+
+<div class="codehilite"><pre><span></span><code><span class="x">El ejemplo anterior mostrará:</span>
+
+<span class="x">    [</span>
+<span class="x">      1,</span>
+<span class="x">      2,</span>
+<span class="x">      [</span>
+<span class="x">        &#39;key&#39; =&gt; &#39;value&#39;,</span>
+<span class="x">      ],</span>
+<span class="x">    ]</span>
+<span class="x">    [1, 2, [&#39;key&#39; =&gt; &#39;value&#39;]]</span>
+
+<span class="x">Escapado de caracteres de control</span>
+</code></pre></div>
+
+<?php
+echo var_representation("Content-Length: 123\r\n");
+?>
+
+<div class="codehilite"><pre><span></span><code><span class="x">El ejemplo anterior mostrará:</span>
+
+<span class="x">    &quot;Content-Length: 123\r\n&quot;</span>
+
+<span class="x">Exportar una `stdClass`</span>
+</code></pre></div>
+
+<?php
+$person = new stdClass;
+$person->name = 'ElePHPant ElePHPantsdotter';
+$person->website = 'https://php.net/elephpant.php';
+
+echo var_representation($person);
+?>
+
+<div class="codehilite"><pre><span></span><code><span class="x">El ejemplo anterior mostrará:</span>
+
+<span class="x">    (object) [</span>
+<span class="x">      &#39;name&#39; =&gt; &#39;ElePHPant ElePHPantsdotter&#39;,</span>
+<span class="x">      &#39;website&#39; =&gt; &#39;https://php.net/elephpant.php&#39;,</span>
+<span class="x">    ]</span>
+
+<span class="x">Exportar clases</span>
+</code></pre></div>
+
+<?php
+class A { public $var; }
+$a = new A;
+$a->var = 5;
+echo var_representation($a);
+?>
+
+<div class="codehilite"><pre><span></span><code><span class="x">El ejemplo anterior mostrará:</span>
+
+<span class="x">    \A::__set_state([</span>
+<span class="x">      &#39;var&#39; =&gt; 5,</span>
+<span class="x">    ])</span>
+
+<span class="x">Uso con [\_\_set_state()](#object.set-state)</span>
+</code></pre></div>
+
+<?php
+class A
+{
+    public $var1;
+    public $var2;
+
+    public static function __set_state($an_array)
+    {
+        $obj = new A;
+        $obj->var1 = $an_array['var1'];
+        $obj->var2 = $an_array['var2'];
+        return $obj;
+    }
+}
+
+$a = new A;
+$a->var1 = 5;
+$a->var2 = 'foo';
+
+eval('$b = ' . var_representation($a) . ';'); // $b = \A::__set_state([
+                                              //   'var1' => 5,
+                                              //   'var2' => 'foo',
+                                              // ]);
+var_dump($b);
+?>
+
+<p>```php</p>
+<p>El ejemplo anterior mostrará:</p>
+<div class="codehilite"><pre><span></span><code>object(A)#2 (2) {
+  [&quot;var1&quot;]=&gt;
+  int(5)
+  [&quot;var2&quot;]=&gt;
+  string(3) &quot;foo&quot;
+}
+</code></pre></div>
+
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p><code>var_export</code></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../var_representation/setup.html">
+          <span class="muted">Anterior</span>Instalación/Configuración
+        </a>
+        <a class="pager-next" href="../varnish/constants.html">
+          <span class="muted">Siguiente</span>Constantes predefinidas
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

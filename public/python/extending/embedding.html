@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1. Incrustando Python en otra aplicación · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Extending
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../extending/building.html"
+>4. Construyendo extensiones C y C++</a>
+              </li>
+              <li>
+                <a href="../extending/embedding.html"
+class="is-current" aria-current="page">1. Incrustando Python en otra aplicación</a>
+              </li>
+              <li>
+                <a href="../extending/extending.html"
+>1. Extendiendo Python con C o C++</a>
+              </li>
+              <li>
+                <a href="../extending/index.html"
+>Ampliación e incrustación del intérprete de Python</a>
+              </li>
+              <li>
+                <a href="../extending/newtypes.html"
+>3. Definición de tipos de extensión: temas variados</a>
+              </li>
+              <li>
+                <a href="../extending/newtypes_tutorial.html"
+>2. Definición de tipos de extensión: Tutorial</a>
+              </li>
+              <li>
+                <a href="../extending/windows.html"
+>5. Creación de extensiones C y C++ en Windows</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../library/__future__.html">Library</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">1. Incrustando Python en otra aplicación</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#11-incrustacion-de-muy-alto-nivel">1.1. Incrustación de muy alto nivel#</a></li>
+              <li class="lvl-2"><a href="#12-mas-alla-de-la-incrustacion-de-muy-alto-nivel-una-vision-general">1.2. Más allá de la incrustación de muy alto nivel: una visión general#</a></li>
+              <li class="lvl-2"><a href="#13-incrustacion-pura">1.3. Incrustación pura#</a></li>
+              <li class="lvl-2"><a href="#14-extendiendo-python-incrustado">1.4. Extendiendo Python incrustado#</a></li>
+              <li class="lvl-2"><a href="#15-incrustando-python-en-c">1.5. Incrustando Python en C++#</a></li>
+              <li class="lvl-2"><a href="#16-compilar-y-enlazar-bajo-sistemas-tipo-unix">1.6. Compilar y enlazar bajo sistemas tipo Unix#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-incrustando-python-en-otra-aplicacion">1. Incrustando Python en otra aplicación<a class="headerlink" href="#1-incrustando-python-en-otra-aplicacion" title="Permanent link">#</a></h1>
+<p>Los capítulos anteriores discutieron cómo extender Python, es decir,
+cómo extender la funcionalidad de Python al adjuntarle una biblioteca
+de funciones C. También es posible hacerlo al revés: enriquezca su
+aplicación C/C++ incrustando Python en ella. La incrustación
+proporciona a su aplicación la capacidad de implementar parte de la
+funcionalidad de su aplicación en Python en lugar de C o C++. Esto se
+puede usar para muchos propósitos; Un ejemplo sería permitir a los
+usuarios adaptar la aplicación a sus necesidades escribiendo algunos
+scripts en Python. También puede usarlo usted mismo si parte de la
+funcionalidad se puede escribir en Python más fácilmente.</p>
+<p>Incrustar Python es similar a extenderlo, pero no del todo. La
+diferencia es que cuando extiende Python, el programa principal de la
+aplicación sigue siendo el intérprete de Python, mientras que si
+incrusta Python, el programa principal puede no tener nada que ver con
+Python --- en cambio, algunas partes de la aplicación ocasionalmente
+llaman al Intérprete de Python para ejecutar algún código de Python.</p>
+<p>Entonces, si está incrustando Python, está proporcionando su propio
+programa principal. Una de las cosas que tiene que hacer este programa
+principal es inicializar el intérprete de Python. Como mínimo, debe
+llamar a la función "Py_Initialize()". Hay llamadas opcionales para
+pasar argumentos de línea de comandos a Python. Luego, puede llamar al
+intérprete desde cualquier parte de la aplicación.</p>
+<p>Hay varias formas diferentes de llamar al intérprete: puede pasar una
+cadena que contiene declaraciones de Python a "PyRun_SimpleString()",
+o puede pasar un puntero de archivo estándar y un nombre de archivo
+(solo para identificación en mensajes de error) a
+"PyRun_SimpleFile()". También puede llamar a las operaciones de nivel
+inferior descritas en los capítulos anteriores para construir y usar
+objetos de Python.</p>
+<p>Ver también:</p>
+<p>Python/C API reference manual
+     Los detalles de la interfaz C de Python se dan en este manual.
+     Una gran cantidad de información necesaria se puede encontrar
+     aquí.</p>
+<h2 id="11-incrustacion-de-muy-alto-nivel">1.1. Incrustación de muy alto nivel<a class="headerlink" href="#11-incrustacion-de-muy-alto-nivel" title="Permanent link">#</a></h2>
+<p>La forma más simple de incrustar Python es el uso de la interfaz de
+muy alto nivel. Esta interfaz está diseñada para ejecutar un script de
+Python sin necesidad de interactuar directamente con la aplicación.
+Esto puede usarse, por ejemplo, para realizar alguna operación en un
+archivo.</p>
+<p>#define PY_SSIZE_T_CLEAN
+   #include <Python.h></p>
+<p>int
+   main(int argc, char *argv[])
+   {
+       PyStatus status;
+       PyConfig config;
+       PyConfig_InitPythonConfig(&amp;config);</p>
+<div class="codehilite"><pre><span></span><code>   /* optional but recommended */
+   status = PyConfig_SetBytesString(&amp;config, &amp;config.program_name, argv[0]);
+   if (PyStatus_Exception(status)) {
+       goto exception;
+   }
+
+   status = Py_InitializeFromConfig(&amp;config);
+   if (PyStatus_Exception(status)) {
+       goto exception;
+   }
+   PyConfig_Clear(&amp;config);
+
+   PyRun_SimpleString(&quot;from time import time,ctime\n&quot;
+                      &quot;print(&#39;Today is&#39;, ctime(time()))\n&quot;);
+   if (Py_FinalizeEx() &lt; 0) {
+       exit(120);
+   }
+   return 0;
+
+ exception:
+    PyConfig_Clear(&amp;config);
+    Py_ExitStatusException(status);
+</code></pre></div>
+
+<p>}</p>
+<p>Nota:</p>
+<p>"#define PY_SSIZE_T_CLEAN" se usaba para indicar que "Py_ssize_t"
+  debería usarse en algunas APIs en lugar de "int". No es necesario
+  desde Python 3.13, pero lo mantenemos aquí por compatibilidad. Ver
+  Cadena de caracteres y búferes para una descripción de esta macro.</p>
+<p>La configuración "PyConfig.program_name" debe llamarse antes de
+"Py_InitializeFromConfig()" para informar al intérprete sobre las
+rutas a las bibliotecas de tiempo de ejecución de Python. A
+continuación, el intérprete de Python se inicializa con
+"Py_Initialize()", seguido de la ejecución de un script Python
+codificado que imprime la fecha y la hora. Luego, la llamada
+"Py_FinalizeEx()" cierra el intérprete, seguido por el final del
+programa. En un programa real, es posible que desee obtener el script
+de Python de otra fuente, tal vez una rutina de editor de texto, un
+archivo o una base de datos. Obtener el código Python de un archivo se
+puede hacer mejor usando la función "PyRun_SimpleFile()", que le
+ahorra la molestia de asignar espacio de memoria y cargar el contenido
+del archivo.</p>
+<h2 id="12-mas-alla-de-la-incrustacion-de-muy-alto-nivel-una-vision-general">1.2. Más allá de la incrustación de muy alto nivel: una visión general<a class="headerlink" href="#12-mas-alla-de-la-incrustacion-de-muy-alto-nivel-una-vision-general" title="Permanent link">#</a></h2>
+<p>La interfaz de alto nivel le permite ejecutar piezas arbitrarias de
+código Python desde su aplicación, pero el intercambio de valores de
+datos es bastante engorroso, por decir lo menos. Si lo desea, debe
+usar llamadas de nivel inferior. A costa de tener que escribir más
+código C, puede lograr casi cualquier cosa.</p>
+<p>Cabe señalar que extender Python e incrustar Python es la misma
+actividad, a pesar de la intención diferente. La mayoría de los temas
+tratados en los capítulos anteriores siguen siendo válidos. Para
+mostrar esto, considere lo que realmente hace el código de extensión
+de Python a C:</p>
+<ol>
+<li>
+<p>Convierte valores de datos de Python a C,</p>
+</li>
+<li>
+<p>Realice una llamada de función a una rutina C usando los valores
+   convertidos, y</p>
+</li>
+<li>
+<p>Convierte los valores de datos de la llamada de C a Python.</p>
+</li>
+</ol>
+<p>Al incrustar Python, el código de interfaz hace:</p>
+<ol>
+<li>
+<p>Convierte valores de datos de C a Python,</p>
+</li>
+<li>
+<p>Realice una llamada de función a una rutina de interfaz de Python
+   utilizando los valores convertidos, y</p>
+</li>
+<li>
+<p>Convierte los valores de datos de la llamada de Python a C.</p>
+</li>
+</ol>
+<p>Como puede ver, los pasos de conversión de datos simplemente se
+intercambian para acomodar la dirección diferente de la transferencia
+de idiomas cruzados. La única diferencia es la rutina que llama entre
+ambas conversiones de datos. Al extender, llama a una rutina C, al
+incrustar, llama a una rutina Python.</p>
+<p>Este capítulo no discutirá cómo convertir datos de Python a C y
+viceversa. Además, se supone que se entiende el uso adecuado de las
+referencias y el tratamiento de errores. Dado que estos aspectos no
+difieren de extender el intérprete, puede consultar los capítulos
+anteriores para obtener la información requerida.</p>
+<h2 id="13-incrustacion-pura">1.3. Incrustación pura<a class="headerlink" href="#13-incrustacion-pura" title="Permanent link">#</a></h2>
+<p>El primer programa tiene como objetivo ejecutar una función en un
+script Python. Al igual que en la sección sobre la interfaz de muy
+alto nivel, el intérprete de Python no interactúa directamente con la
+aplicación (pero eso cambiará en la siguiente sección).</p>
+<p>El código para ejecutar una función definida en un script de Python
+es:</p>
+<p>#define PY_SSIZE_T_CLEAN
+   #include <Python.h></p>
+<p>int
+   main(int argc, char <em>argv[])
+   {
+       PyObject </em>pName, <em>pModule, </em>pFunc;
+       PyObject <em>pArgs, </em>pValue;
+       int i;</p>
+<div class="codehilite"><pre><span></span><code>   if (argc &lt; 3) {
+       fprintf(stderr,&quot;Usage: call pythonfile funcname [args]\n&quot;);
+       return 1;
+   }
+
+   Py_Initialize();
+   pName = PyUnicode_DecodeFSDefault(argv[1]);
+   /* Error checking of pName left out */
+
+   pModule = PyImport_Import(pName);
+   Py_DECREF(pName);
+
+   if (pModule != NULL) {
+       pFunc = PyObject_GetAttrString(pModule, argv[2]);
+       /* pFunc is a new reference */
+
+       if (pFunc &amp;&amp; PyCallable_Check(pFunc)) {
+           pArgs = PyTuple_New(argc - 3);
+           for (i = 0; i &lt; argc - 3; ++i) {
+               pValue = PyLong_FromLong(atoi(argv[i + 3]));
+               if (!pValue) {
+                   Py_DECREF(pArgs);
+                   Py_DECREF(pModule);
+                   fprintf(stderr, &quot;Cannot convert argument\n&quot;);
+                   return 1;
+               }
+               /* pValue reference stolen here: */
+               PyTuple_SetItem(pArgs, i, pValue);
+           }
+           pValue = PyObject_CallObject(pFunc, pArgs);
+           Py_DECREF(pArgs);
+           if (pValue != NULL) {
+               printf(&quot;Result of call: %ld\n&quot;, PyLong_AsLong(pValue));
+               Py_DECREF(pValue);
+           }
+           else {
+               Py_DECREF(pFunc);
+               Py_DECREF(pModule);
+               PyErr_Print();
+               fprintf(stderr,&quot;Call failed\n&quot;);
+               return 1;
+           }
+       }
+       else {
+           if (PyErr_Occurred())
+               PyErr_Print();
+           fprintf(stderr, &quot;Cannot find function \&quot;%s\&quot;\n&quot;, argv[2]);
+       }
+       Py_XDECREF(pFunc);
+       Py_DECREF(pModule);
+   }
+   else {
+       PyErr_Print();
+       fprintf(stderr, &quot;Failed to load \&quot;%s\&quot;\n&quot;, argv[1]);
+       return 1;
+   }
+   if (Py_FinalizeEx() &lt; 0) {
+       return 120;
+   }
+   return 0;
+</code></pre></div>
+
+<p>}</p>
+<p>Este código carga un script de Python usando "argv[1]" y llama a la
+función nombrada en "argv[2]". Sus argumentos enteros son los otros
+valores del arreglo "argv". Si usted compila y enlaza este programa
+(llamemos al ejecutable terminado <strong>call</strong>), y úselo para ejecutar un
+script Python, como:</p>
+<p>def multiply(a,b):
+       print("Will compute", a, "times", b)
+       c = 0
+       for i in range(0, a):
+           c = c + b
+       return c</p>
+<p>entonces el resultado debería ser:</p>
+<p>$ call multiply multiply 3 2
+   Will compute 3 times 2
+   Result of call: 6</p>
+<p>Aunque el programa es bastante grande por su funcionalidad, la mayor
+parte del código es para la conversión de datos entre Python y C, y
+para informes de errores. La parte interesante con respecto a
+incrustar Python comienza con:</p>
+<p>Py_Initialize();
+   pName = PyUnicode_DecodeFSDefault(argv[1]);
+   /<em> Error checking of pName left out </em>/
+   pModule = PyImport_Import(pName);</p>
+<p>After initializing the interpreter, the script is loaded using
+"PyImport_Import()".  This routine needs a Python string as its
+argument, which is constructed using the "PyUnicode_DecodeFSDefault()"
+data conversion routine.</p>
+<p>pFunc = PyObject_GetAttrString(pModule, argv[2]);
+   /<em> pFunc is a new reference </em>/</p>
+<p>if (pFunc &amp;&amp; PyCallable_Check(pFunc)) {
+       ...
+   }
+   Py_XDECREF(pFunc);</p>
+<p>Una vez que se carga el script, el nombre que estamos buscando se
+recupera usando "PyObject_GetAttrString()". Si el nombre existe y el
+objeto retornado es invocable, puede asumir con seguridad que es una
+función. Luego, el programa continúa construyendo una tupla de
+argumentos como de costumbre. La llamada a la función Python se
+realiza con:</p>
+<p>pValue = PyObject_CallObject(pFunc, pArgs);</p>
+<p>Al regresar la función, "pValue" es "NULL" o contiene una referencia
+al valor de retorno de la función. Asegúrese de liberar la referencia
+después de examinar el valor.</p>
+<h2 id="14-extendiendo-python-incrustado">1.4. Extendiendo Python incrustado<a class="headerlink" href="#14-extendiendo-python-incrustado" title="Permanent link">#</a></h2>
+<p>Hasta ahora, el intérprete de Python incorporado no tenía acceso a la
+funcionalidad de la aplicación misma. La API de Python lo permite al
+extender el intérprete incorporado. Es decir, el intérprete
+incorporado se amplía con las rutinas proporcionadas por la
+aplicación. Si bien suena complejo, no es tan malo. Simplemente olvide
+por un momento que la aplicación inicia el intérprete de Python. En
+cambio, considere que la aplicación es un conjunto de subrutinas y
+escriba un código de pegamento que le otorgue a Python acceso a esas
+rutinas, al igual que escribiría una extensión normal de Python. Por
+ejemplo:</p>
+<p>static int numargs=0;</p>
+<p>/<em> Return the number of arguments of the application command line </em>/
+   static PyObject<em>
+   emb_numargs(PyObject </em>self, PyObject *args)
+   {
+       if(!PyArg_ParseTuple(args, ":numargs"))
+           return NULL;
+       return PyLong_FromLong(numargs);
+   }</p>
+<p>static PyMethodDef emb_module_methods[] = {
+       {"numargs", emb_numargs, METH_VARARGS,
+        "Return the number of arguments received by the process."},
+       {NULL, NULL, 0, NULL}
+   };</p>
+<p>static struct PyModuleDef emb_module = {
+       .m_base = PyModuleDef_HEAD_INIT,
+       .m_name = "emb",
+       .m_size = 0,
+       .m_methods = emb_module_methods,
+   };</p>
+<p>static PyObject*
+   PyInit_emb(void)
+   {
+       return PyModuleDef_Init(&amp;emb_module);
+   }</p>
+<p>Inserte el código anterior justo encima de la función "main()".
+Además, inserte las siguientes dos declaraciones antes de la llamada a
+"Py_Initialize()":</p>
+<p>numargs = argc;
+   PyImport_AppendInittab("emb", &amp;PyInit_emb);</p>
+<p>Estas dos líneas inicializan la variable "numargs" y hacen que la
+función "emb.numargs()" sea accesible para el intérprete de Python
+incorporado. Con estas extensiones, el script de Python puede hacer
+cosas como</p>
+<p>import emb
+   print("Number of arguments", emb.numargs())</p>
+<p>En una aplicación real, los métodos expondrán una API de la aplicación
+a Python.</p>
+<h2 id="15-incrustando-python-en-c">1.5. Incrustando Python en C++<a class="headerlink" href="#15-incrustando-python-en-c" title="Permanent link">#</a></h2>
+<p>También es posible incrustar Python en un programa C++; precisamente
+cómo se hace esto dependerá de los detalles del sistema C++ utilizado;
+en general, necesitará escribir el programa principal en C++ y usar el
+compilador de C++ para compilar y vincular su programa. No es
+necesario volver a compilar Python usando C++.</p>
+<h2 id="16-compilar-y-enlazar-bajo-sistemas-tipo-unix">1.6. Compilar y enlazar bajo sistemas tipo Unix<a class="headerlink" href="#16-compilar-y-enlazar-bajo-sistemas-tipo-unix" title="Permanent link">#</a></h2>
+<p>No es necesariamente trivial encontrar los indicadores correctos para
+pasar a su compilador (y enlazador) para incrustar el intérprete de
+Python en su aplicación, particularmente porque Python necesita cargar
+módulos de biblioteca implementados como extensiones dinámicas en C
+(archivos ".so") enlazados en su contra.</p>
+<p>Para conocer los indicadores necesarios del compilador y el enlazador,
+puede ejecutar el script "python<em>X.Y</em>-config" que se genera como parte
+del proceso de instalación (también puede estar disponible un script
+"python3-config" ) Este script tiene varias opciones, de las cuales
+las siguientes serán directamente útiles para usted:</p>
+<ul>
+<li>
+<p>"pythonX.Y-config --cflags" le dará las banderas recomendadas al
+  compilar:</p>
+<p>$ /opt/bin/python3.11-config --cflags
+ -I/opt/include/python3.11 -I/opt/include/python3.11 -Wsign-compare  -DNDEBUG -g -fwrapv -O3 -Wall</p>
+</li>
+<li>
+<p>"pythonX.Y-config --ldflags --embed" le dará las banderas
+  recomendadas al vincular:</p>
+<p>$ /opt/bin/python3.11-config --ldflags --embed
+ -L/opt/lib/python3.11/config-3.11-x86_64-linux-gnu -L/opt/lib -lpython3.11 -lpthread -ldl  -lutil -lm</p>
+</li>
+</ul>
+<p>Nota:</p>
+<p>Para evitar confusiones entre varias instalaciones de Python (y
+  especialmente entre el sistema Python y su propio Python compilado),
+  se recomienda que use la ruta absoluta a "python<em>X.Y</em>-config", como
+  en el ejemplo anterior.</p>
+<p>Si este procedimiento no funciona para usted (no se garantiza que
+funcione para todas las plataformas tipo Unix; sin embargo, le damos
+la bienvenida informes de errores) deberá leer la documentación de su
+sistema sobre dinámica vincular o examinar Python "Makefile" (use
+"sysconfig.get_makefile_filename()" para encontrar su ubicación) y las
+opciones de compilación. En este caso, el módulo "sysconfig" es una
+herramienta útil para extraer mediante programación los valores de
+configuración que querrá combinar. Por ejemplo:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>import sysconfig
+sysconfig.get_config_var('LIBS')
+   '-lpthread -ldl  -lutil'
+sysconfig.get_config_var('LINKFORSHARED')
+   '-Xlinker -export-dynamic'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../extending/building.html">
+          <span class="muted">Anterior</span>4. Construyendo extensiones C y C++
+        </a>
+        <a class="pager-next" href="../extending/extending.html">
+          <span class="muted">Siguiente</span>1. Extendiendo Python con C o C++
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

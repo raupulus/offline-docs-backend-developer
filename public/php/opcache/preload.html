@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Precarga · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Opcache
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../opcache/ini.html"
+>Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../opcache/configure.html"
+>Instalación</a>
+              </li>
+              <li>
+                <a href="../opcache/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-compile-file.html"
+>opcache_compile_file</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-get-configuration.html"
+>opcache_get_configuration</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-get-status.html"
+>opcache_get_status</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-invalidate.html"
+>opcache_invalidate</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-is-script-cached.html"
+>opcache_is_script_cached</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-is-script-cached-in-file-cache.html"
+>opcache_is_script_cached_in_file_cache</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-jit-blacklist.html"
+>opcache_jit_blacklist</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-reset.html"
+>opcache_reset</a>
+              </li>
+              <li>
+                <a href="../opcache/preload.html"
+class="is-current" aria-current="page">Precarga</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Precarga</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/opcache.preloading.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#precarga">Precarga#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="precarga">Precarga<a class="headerlink" href="#precarga" title="Permanent link">#</a></h2>
+<p>A partir de PHP 7.4.0, PHP puede ser configurado para precargar scripts en el opcache cuando el motor se inicia. Todas las funciones, clases, interfaces o traits (pero no las constantes) de estos ficheros se volverán entonces disponibles globalmente para todas las peticiones sin necesidad de ser explícitamente incluidas. Esto intercambia la comodidad y el rendimiento (ya que el código está siempre disponible) por el uso de la memoria base. Asimismo, requiere reiniciar el proceso PHP para eliminar los scripts precargados, lo que significa que esta funcionalidad solo es práctica en producción, no en un entorno de desarrollo.</p>
+<p>Tenga en cuenta que el compromiso óptimo entre rendimiento y memoria puede variar según la aplicación. "Precargar todo" puede ser la estrategia más simple, pero no necesariamente la mejor. Además, la precarga solo es útil cuando hay un proceso persistente de una petición a otra. Esto significa que aunque pueda funcionar en un script CLI si el opcache está activado, generalmente es inútil. La excepción es al utilizar la precarga en las <a href="#ffi.examples-complete">bibliotecas FFI</a>.</p>
+<blockquote>
+<p>[!NOTE]
+La precarga no está soportada en Windows.</p>
+</blockquote>
+<p>La configuración de la precarga implica dos pasos, y requiere que el opcache esté activado. En primer lugar, defina el valor <a href="#ini.opcache.preload">opcache.preload</a> en <code>php.ini</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">opcache.preload=preload.php</span>
+</code></pre></div>
+
+<p><code>preload.php</code> es un fichero arbitrario que se ejecutará una vez al inicio del servidor (PHP-FPM, mod_php, etc.) y cargará código en memoria persistente. En los servidores que se inician como root antes de cambiar a un usuario del sistema no privilegiado, o si PHP se ejecuta como root (no recomendado), el valor <a href="#ini.opcache.preload-user">opcache.preload_user</a> puede especificar el usuario del sistema para ejecutar la precarga. La ejecución de la precarga como root no está permitida por defecto. Defina <code>opcache.preload_user=root</code> para permitirlo explícitamente.</p>
+<p>En el script <code>preload.php</code>, cualquier fichero referenciado por <code>include</code>, <code>include_once</code>, <code>require</code>, <code>require_once</code>, o <code>opcache_compile_file</code> serán analizados en la memoria persistente. En el siguiente ejemplo, todos los ficheros <code>.php</code> del directorio <code>src</code> serán precargados, excepto si son un fichero <code>Test</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$directory</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RecursiveDirectoryIterator</span><span class="p">(</span><span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/src&#39;</span><span class="p">);</span>
+<span class="nv">$fullTree</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RecursiveIteratorIterator</span><span class="p">(</span><span class="nv">$directory</span><span class="p">);</span>
+<span class="nv">$phpFiles</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RegexIterator</span><span class="p">(</span><span class="nv">$fullTree</span><span class="p">,</span> <span class="s1">&#39;/.+((?&lt;!Test)+\.php$)/i&#39;</span><span class="p">,</span> <span class="nx">RecursiveRegexIterator</span><span class="o">::</span><span class="na">GET_MATCH</span><span class="p">);</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$phpFiles</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$file</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">require_once</span> <span class="nv">$file</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p><code>include</code> y <code>opcache_compile_file</code> funcionarán ambos, pero tienen implicaciones diferentes en la forma en que el código es gestionado.</p>
+<ul>
+<li>
+<p><code>include</code> ejecutará el código del fichero, mientras que <code>opcache_compile_file</code> no lo hará. Esto significa que solo el primero soporta la declaración condicional (las funciones declaradas dentro de un bloque if).</p>
+</li>
+<li>
+<p>Debido a que <code>include</code> ejecutará el código, los ficheros incluidos de manera anidada también serán analizados y sus declaraciones precargadas.</p>
+</li>
+<li>
+<p><code>opcache_compile_file</code> puede cargar ficheros en cualquier orden. Es decir, si <code>a.php</code> define la clase <code>A</code> y <code>b.php</code> define la clase <code>B</code> que extiende <code>A</code>, entonces <code>opcache_compile_file</code> puede cargar estos dos ficheros en cualquier orden. Al utilizar <code>include</code>, sin embargo, <code>a.php</code> <em>debe</em> ser incluido primero.</p>
+</li>
+<li>
+<p>En ambos casos, si un script posterior incluye un fichero que ya ha sido precargado, entonces su contenido siempre se ejecutará, pero los símbolos que define no se volverán a definir. El uso de <code>include_once</code> no evitará que el fichero sea incluido una segunda vez. Puede ser necesario cargar un fichero nuevamente para incluir las constantes globales definidas en él, ya que no son gestionadas por la precarga.</p>
+</li>
+</ul>
+<p>Cuál enfoque es el mejor depende, por lo tanto, del comportamiento deseado. Con código que utilizaría de otro modo un cargador automático, <code>opcache_compile_file</code> permite una mayor flexibilidad. Con código que sería cargado manualmente de otro modo, <code>include</code> será más robusto.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../opcache/opcache-reset.html">
+          <span class="muted">Anterior</span>opcache_reset
+        </a>
+        <a class="pager-next" href="../openal/constants.html">
+          <span class="muted">Siguiente</span>Constantes predefinidas
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

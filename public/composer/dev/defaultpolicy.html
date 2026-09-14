@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Default Solver Policy · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../articles/aliases.html">Articles</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Dev
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../dev/defaultpolicy.html"
+class="is-current" aria-current="page">Default Solver Policy</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Default Solver Policy</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#selection-of-preferred-packages">Selection of preferred Packages#</a></li>
+              <li class="lvl-3"><a href="#repository-priorities">Repository priorities#</a></li>
+              <li class="lvl-3"><a href="#package-versions">Package versions#</a></li>
+              <li class="lvl-3"><a href="#virtual-packages-provides">Virtual Packages (provides)#</a></li>
+              <li class="lvl-3"><a href="#package-replacements">Package replacements#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="default-solver-policy">Default Solver Policy<a class="headerlink" href="#default-solver-policy" title="Permanent link">#</a></h1>
+<p>A solver policy defines behaviour variables of the dependency solver. It decides
+which versions are considered newer than others, which packages should be
+preferred over others and whether operations like downgrades or uninstall are
+allowed.</p>
+<h2 id="selection-of-preferred-packages">Selection of preferred Packages<a class="headerlink" href="#selection-of-preferred-packages" title="Permanent link">#</a></h2>
+<p>The following describe package pool situations with user requests and the
+resulting order in which the solver will try to install them.</p>
+<p>The rules are to be applied in the order of these descriptions.</p>
+<h3 id="repository-priorities">Repository priorities<a class="headerlink" href="#repository-priorities" title="Permanent link">#</a></h3>
+<p>Packages Repo1.Av1, Repo2.Av1</p>
+<ul>
+<li>priority(Repo1) &gt;= priority(Repo2) =&gt; (Repo1.Av1, Repo2.Av1)</li>
+<li>priority(Repo1) &lt;  priority(Repo2) =&gt; (Repo2.Av1, Repo1.Av1)</li>
+</ul>
+<h3 id="package-versions">Package versions<a class="headerlink" href="#package-versions" title="Permanent link">#</a></h3>
+<p>Packages: Av1, Av2, Av3</p>
+<ul>
+<li>Installed: Av2</li>
+</ul>
+<p>Request: install A</p>
+<ul>
+<li>(Av3)</li>
+</ul>
+<h3 id="virtual-packages-provides">Virtual Packages (provides)<a class="headerlink" href="#virtual-packages-provides" title="Permanent link">#</a></h3>
+<p>Packages Av1, Bv1</p>
+<ul>
+<li>Av1 provides Xv1</li>
+<li>Bv1 provides Xv1</li>
+</ul>
+<p>Request: install X</p>
+<ul>
+<li>priority(Av1.repo) &gt;= priority(Bv1.repo) =&gt; (Av1, Bv1)</li>
+<li>priority(Av1.repo) &lt;  priority(Bv1.repo) =&gt; (Bv1, Av1)</li>
+</ul>
+<h3 id="package-replacements">Package replacements<a class="headerlink" href="#package-replacements" title="Permanent link">#</a></h3>
+<p>Packages: Av1, Bv2</p>
+<ul>
+<li>Bv2 replaces Av1</li>
+</ul>
+<p>Request: install A</p>
+<ul>
+<li>priority(Av1.repo) &gt;= priority(Bv2.repo) =&gt; (Av1, Bv2)</li>
+<li>priority(Av1.repo) &lt;  priority(Bv2.repo) =&gt; (Bv2, Av1)</li>
+</ul>
+<p>Bv2 version is ignored, only the replacement version for A matters.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/versions.html">
+          <span class="muted">Anterior</span>Versions and constraints
+        </a>
+        <a class="pager-next" href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">
+          <span class="muted">Siguiente</span>How do I install a package to a custom path for my framework?
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seguridad del Sistema de Archivos · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Security
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../security/general.html"
+>Consideraciones generales</a>
+              </li>
+              <li>
+                <a href="../security/variables.html"
+>Datos Enviados por el Usuario</a>
+              </li>
+              <li>
+                <a href="../security/cgi-bin.html"
+>Instalado como CGI binario</a>
+              </li>
+              <li>
+                <a href="../security/apache.html"
+>Instalado como módulo de Apache</a>
+              </li>
+              <li>
+                <a href="../security/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../security/current.html"
+>Mantenerse al día</a>
+              </li>
+              <li>
+                <a href="../security/hiding.html"
+>Ocultar PHP</a>
+              </li>
+              <li>
+                <a href="../security/errors.html"
+>Reportando errores</a>
+              </li>
+              <li>
+                <a href="../security/sessions.html"
+>Seguridad de una Sesión</a>
+              </li>
+              <li>
+                <a href="../security/filesystem.html"
+class="is-current" aria-current="page">Seguridad del Sistema de Archivos</a>
+              </li>
+              <li>
+                <a href="../security/database.html"
+>Seguridad en bases de datos</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Seguridad del Sistema de Archivos</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/security.filesystem.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#seguridad-del-sistema-de-archivos">Seguridad del Sistema de Archivos#</a></li>
+              <li class="lvl-2"><a href="#cuestiones-relacionadas-a-bytes-nulos">Cuestiones relacionadas a bytes nulos#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="seguridad-del-sistema-de-archivos">Seguridad del Sistema de Archivos<a class="headerlink" href="#seguridad-del-sistema-de-archivos" title="Permanent link">#</a></h2>
+<p>PHP está sujeto a la seguridad integrada en la mayoría de sistemas de servidores con respecto a los permisos de archivos y directorios. Esto permite controlar qué archivos en el sistema de archivos se pueden leer. Se debe tener cuidado con los archivos que son legibles para garantizar que son seguros para la lectura por todos los usuarios que tienen acceso al sistema de archivos.</p>
+<p>Desde que PHP fue diseñado para permitir el acceso a nivel de usuarios para el sistema de archivos, es perfectamente posible escribir un script PHP que le permita leer archivos del sistema como <code>/etc/passwd</code>, modificar sus conexiones de red, enviar trabajos de impresión masiva, etc. Esto tiene algunas implicaciones obvias, es necesario asegurarse que los archivos que se van a leer o escribir son los apropiados.</p>
+<p>Considere el siguiente script, donde un usuario indica que quiere borrar un archivo en su directorio home. Esto supone una situación en la que una interfaz web en PHP es usada regularmente para gestionar archivos, por lo que es necesario que el usuario Apache pueda borrar archivos en los directorios home de los usuarios.</p>
+<p>Un control pobre puede llevar a ....</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="c1">// eliminar un archivo del directorio personal del usuario</span>
+<span class="nv">$username</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user_submitted_name&#39;</span><span class="p">];</span>
+<span class="nv">$userfile</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user_submitted_filename&#39;</span><span class="p">];</span>
+<span class="nv">$homedir</span>  <span class="o">=</span> <span class="s2">&quot;/home/</span><span class="si">$username</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="nb">unlink</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">$homedir</span><span class="s2">/</span><span class="si">$userfile</span><span class="s2">&quot;</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="s2">&quot;El archivo ha sido eliminado!&quot;</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Dado que el nombre de usuario y el nombre del archivo son enviados desde un formulario, estos pueden representar un nombre de archivo y un nombre de usuario que pertenecen a otra persona, incluso se podría borrar el archivo a pesar que se supone que no estaría permitido hacerlo. En este caso, usted desearía usar algún otro tipo de autenticación. Considere lo que podría suceder si las variables enviadas son <code>"../etc/"</code> y <code>"passwd"</code>. El código entonces se ejecutaría efectivamente como:</p>
+<p>... Un ataque al sistema de archivos</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="c1">// elimina un archivo desde cualquier lugar en el disco duro al que</span>
+<span class="c1">// el usuario de PHP tiene acceso. Si PHP tiene acceso de root:</span>
+<span class="nv">$username</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user_submitted_name&#39;</span><span class="p">];</span> <span class="c1">// &quot;../etc&quot;</span>
+<span class="nv">$userfile</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user_submitted_filename&#39;</span><span class="p">];</span> <span class="c1">// &quot;passwd&quot;</span>
+<span class="nv">$homedir</span>  <span class="o">=</span> <span class="s2">&quot;/home/</span><span class="si">$username</span><span class="s2">&quot;</span><span class="p">;</span> <span class="c1">// &quot;/home/../etc&quot;</span>
+
+<span class="nb">unlink</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">$homedir</span><span class="s2">/</span><span class="si">$userfile</span><span class="s2">&quot;</span><span class="p">);</span> <span class="c1">// &quot;/home/../etc/passwd&quot;</span>
+
+<span class="k">echo</span> <span class="s2">&quot;El archivo ha sido eliminado!&quot;</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Hay dos medidas importantes que usted debe tomar para prevenir estas cuestiones.</p>
+<ul>
+<li>
+<p>Únicamente permisos limitados al usuario web de PHP.</p>
+</li>
+<li>
+<p>Revise todas las variables que se envían.</p>
+</li>
+</ul>
+<p>Aquí está una versión mejorada del script:</p>
+<p>Comprobación más segura del nombre de archivo</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="c1">// elimina un archivo del disco duro al que</span>
+<span class="c1">// el usuario de PHP tiene acceso.</span>
+<span class="nv">$username</span> <span class="o">=</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;REMOTE_USER&#39;</span><span class="p">];</span> <span class="c1">// usando un mecanismo de autenticación</span>
+<span class="nv">$userfile</span> <span class="o">=</span> <span class="nb">basename</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user_submitted_filename&#39;</span><span class="p">]);</span>
+<span class="nv">$homedir</span>  <span class="o">=</span> <span class="s2">&quot;/home/</span><span class="si">$username</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="nv">$filepath</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">$homedir</span><span class="s2">/</span><span class="si">$userfile</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nb">file_exists</span><span class="p">(</span><span class="nv">$filepath</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nb">unlink</span><span class="p">(</span><span class="nv">$filepath</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$logstring</span> <span class="o">=</span> <span class="s2">&quot;Se ha eliminado </span><span class="si">$filepath</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nv">$logstring</span> <span class="o">=</span> <span class="s2">&quot;No se ha podido eliminar </span><span class="si">$filepath</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$fp</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s2">&quot;/home/logging/filedelete.log&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">);</span>
+<span class="nb">fwrite</span><span class="p">(</span><span class="nv">$fp</span><span class="p">,</span> <span class="nv">$logstring</span><span class="p">);</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$fp</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$logstring</span><span class="p">,</span> <span class="nx">ENT_QUOTES</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Sin embargo, incluso esto no está exento de defectos. Si la autenticación del sistema permite a los usuarios crear sus propios inicios de sesión de usuario, y un usuario eligió la entrada <code>"../etc/"</code>, el sistema está expuesto una vez más. Por esta razón, puede que prefiera escribir un chequeo más personalizado:</p>
+<p>Comprobación más segura del nombre de archivo</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$username</span>     <span class="o">=</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;REMOTE_USER&#39;</span><span class="p">];</span> <span class="c1">// usando un mecanismo de autenticación</span>
+<span class="nv">$userfile</span>     <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user_submitted_filename&#39;</span><span class="p">];</span>
+<span class="nv">$homedir</span>      <span class="o">=</span> <span class="s2">&quot;/home/</span><span class="si">$username</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="nv">$filepath</span>     <span class="o">=</span> <span class="s2">&quot;</span><span class="si">$homedir</span><span class="s2">/</span><span class="si">$userfile</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">ctype_alnum</span><span class="p">(</span><span class="nv">$username</span><span class="p">)</span> <span class="o">||</span> <span class="o">!</span><span class="nb">preg_match</span><span class="p">(</span><span class="s1">&#39;/^(?:[a-z0-9_-]|\.(?!\.))+$/iD&#39;</span><span class="p">,</span> <span class="nv">$userfile</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">die</span><span class="p">(</span><span class="s2">&quot;nombre de usuario o nombre de archivo incorrecto&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// etc.</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Dependiendo de sus sistema operativo, hay una gran variedad de archivos a los que debe estar atento, esto incluye las entradas de dispositivos (<code>/dev/</code> o <code>COM1</code>), archivos de configuracion (archivos <code>/etc/</code> y archivos <code>.ini</code>), las muy conocidas carpetas de almacenamiento (<code>/home/</code>, <code>My Documents</code>), etc. Por esta razón, por lo general es más fácil crear una política en donde se prohíba todo excepto lo que expresamente se permite.</p>
+<h2 id="cuestiones-relacionadas-a-bytes-nulos">Cuestiones relacionadas a bytes nulos<a class="headerlink" href="#cuestiones-relacionadas-a-bytes-nulos" title="Permanent link">#</a></h2>
+<p>Como PHP utiliza las funciones de C para operaciones relacionadas al sistema de archivos, se podría manejar bytes nulos de manera bastante inesperada. Como un byte nulo denota el fin de una cadena en C, las cadenas que contengan estos no serán consideradas por completo, sino sólo hasta que ocurra un byte nulo. El siguiente ejemplo muestra un código vulnerable que presenta este problema:</p>
+<p>Script vulnerable a bytes nulos</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$file</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">];</span> <span class="c1">// &quot;../../etc/passwd\0&quot;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">file_exists</span><span class="p">(</span><span class="s1">&#39;/home/wwwrun/&#39;</span> <span class="o">.</span> <span class="nv">$file</span> <span class="o">.</span> <span class="s1">&#39;.php&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// file_exists devolverá true si el archivo /home/wwwrun/../../etc/passwd existe</span>
+    <span class="k">include</span> <span class="s1">&#39;/home/wwwrun/&#39;</span> <span class="o">.</span> <span class="nv">$file</span> <span class="o">.</span> <span class="s1">&#39;.php&#39;</span><span class="p">;</span>
+    <span class="c1">// el archivo /etc/passwd se incluirá</span>
+<span class="p">}</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Por lo tanto, cualquier cadena que se utiliza en una operación de sistema de archivos siembre deben ser validados correctamente. He aquí una versión mejorada del ejemplo anterior:</p>
+<p>Validando correctamente la entrada</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$file</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">];</span>
+
+<span class="c1">// Lista blanca de valores posibles</span>
+<span class="k">switch</span> <span class="p">(</span><span class="nv">$file</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="s1">&#39;main&#39;</span><span class="o">:</span>
+    <span class="k">case</span> <span class="s1">&#39;foo&#39;</span><span class="o">:</span>
+    <span class="k">case</span> <span class="s1">&#39;bar&#39;</span><span class="o">:</span>
+        <span class="k">include</span> <span class="s1">&#39;/home/wwwrun/include/&#39;</span><span class="o">.</span><span class="nv">$file</span><span class="o">.</span><span class="s1">&#39;.php&#39;</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+        <span class="k">include</span> <span class="s1">&#39;/home/wwwrun/include/main.php&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../security/sessions.html">
+          <span class="muted">Anterior</span>Seguridad de una Sesión
+        </a>
+        <a class="pager-next" href="../security/database.html">
+          <span class="muted">Siguiente</span>Seguridad en bases de datos
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

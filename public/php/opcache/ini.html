@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuración en tiempo de ejecución · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Opcache
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../opcache/ini.html"
+class="is-current" aria-current="page">Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../opcache/configure.html"
+>Instalación</a>
+              </li>
+              <li>
+                <a href="../opcache/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-compile-file.html"
+>opcache_compile_file</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-get-configuration.html"
+>opcache_get_configuration</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-get-status.html"
+>opcache_get_status</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-invalidate.html"
+>opcache_invalidate</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-is-script-cached.html"
+>opcache_is_script_cached</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-is-script-cached-in-file-cache.html"
+>opcache_is_script_cached_in_file_cache</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-jit-blacklist.html"
+>opcache_jit_blacklist</a>
+              </li>
+              <li>
+                <a href="../opcache/opcache-reset.html"
+>opcache_reset</a>
+              </li>
+              <li>
+                <a href="../opcache/preload.html"
+>Precarga</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Configuración en tiempo de ejecución</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/opcache.configuration.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#configuracion-en-tiempo-de-ejecucion">Configuración en tiempo de ejecución#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="configuracion-en-tiempo-de-ejecucion">Configuración en tiempo de ejecución<a class="headerlink" href="#configuracion-en-tiempo-de-ejecucion" title="Permanent link">#</a></h2>
+<p>El comportamiento de estas funciones es afectado por la configuración en el archivo <code>php.ini</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Por defecto</th>
+<th>Cambiable</th>
+<th>Historial de cambios</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ini.opcache.enable">opcache.enable</a></td>
+<td>1</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.enable-cli">opcache.enable_cli</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Entre PHP 7.1.2 y 7.1.6 inclusive, el valor por omisión era 1</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.memory-consumption">opcache.memory_consumption</a></td>
+<td>"128"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.interned-strings-buffer">opcache.interned_strings_buffer</a></td>
+<td>"8"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.max-accelerated-files">opcache.max_accelerated_files</a></td>
+<td>"10000"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.max-wasted-percentage">opcache.max_wasted_percentage</a></td>
+<td>"5"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.use-cwd">opcache.use_cwd</a></td>
+<td>1</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.validate-timestamps">opcache.validate_timestamps</a></td>
+<td>1</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.revalidate-freq">opcache.revalidate_freq</a></td>
+<td>"2"</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.revalidate-path">opcache.revalidate_path</a></td>
+<td>0</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.save-comments">opcache.save_comments</a></td>
+<td>1</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.fast-shutdown">opcache.fast_shutdown</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Eliminado en PHP 7.2.0.</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.enable-file-override">opcache.enable_file_override</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.optimization-level">opcache.optimization_level</a></td>
+<td>"0x7FFEBFFF"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Modificado desde 0x7FFFBFFF en PHP 7.3.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.inherited-hack">opcache.inherited_hack</a></td>
+<td>1</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Eliminado en PHP 7.3.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.dups-fix">opcache.dups_fix</a></td>
+<td>0</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.blacklist-filename">opcache.blacklist_filename</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.max-file-size">opcache.max_file_size</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.consistency-checks">opcache.consistency_checks</a></td>
+<td>0</td>
+<td><code>INI_ALL</code></td>
+<td>&gt;Desactivado a partir de PHP 8.1.18 y 8.2.5. Eliminado a partir de PHP 8.3.0.</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.force-restart-timeout">opcache.force_restart_timeout</a></td>
+<td>"180"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.error-log">opcache.error_log</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.log-verbosity-level">opcache.log_verbosity_level</a></td>
+<td>1</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.record-warnings">opcache.record_warnings</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0.</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.preferred-memory-model">opcache.preferred_memory_model</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.protect-memory">opcache.protect_memory</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.mmap-base">opcache.mmap_base</a></td>
+<td><code>null</code></td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.restrict-api">opcache.restrict_api</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.file_update_protection">opcache.file_update_protection</a></td>
+<td>"2"</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.huge_code_pages">opcache.huge_code_pages</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.lockfile_path">opcache.lockfile_path</a></td>
+<td>"/tmp"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.opt_debug_level">opcache.opt_debug_level</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 7.1.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.file-cache">opcache.file_cache</a></td>
+<td>NULL</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.file-cache-only">opcache.file_cache_only</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.file-cache-consistency-checks">opcache.file_cache_consistency_checks</a></td>
+<td>1</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.file-cache-fallback">opcache.file_cache_fallback</a></td>
+<td>1</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Solo para Windows.</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.validate-permission">opcache.validate_permission</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 7.0.14</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.validate-root">opcache.validate_root</a></td>
+<td>0</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 7.0.14</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.preload">opcache.preload</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 7.4.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.preload-user">opcache.preload_user</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 7.4.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.cache-id">opcache.cache_id</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Solo para Windows. Disponible a partir de PHP 7.4.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit">opcache.jit</a></td>
+<td>"disable"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0. Antes de PHP 8.4.0, el valor predeterminado era "tracing".</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-buffer-size">opcache.jit_buffer_size</a></td>
+<td>64M</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0. Antes de PHP 8.4.0, el valor predeterminado era 0.</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-debug">opcache.jit_debug</a></td>
+<td>0</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-bisect-limit">opcache.jit_bisect_limit</a></td>
+<td>0</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-prof-threshold">opcache.jit_prof_threshold</a></td>
+<td>"0.005"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-max-root-traces">opcache.jit_max_root_traces</a></td>
+<td>"1024"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-max-side-traces">opcache.jit_max_side_traces</a></td>
+<td>"128"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-max-exit-counters">opcache.jit_max_exit_counters</a></td>
+<td>"8192"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-hot-loop">opcache.jit_hot_loop</a></td>
+<td>"61"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0. Antes de PHP 8.5.0, el valor predeterminado era 64.</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-hot-func">opcache.jit_hot_func</a></td>
+<td>"127"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-hot-return">opcache.jit_hot_return</a></td>
+<td>"8"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-hot-side-exit">opcache.jit_hot_side_exit</a></td>
+<td>"8"</td>
+<td><code>INI_SYSTEM</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-blacklist-root-trace">opcache.jit_blacklist_root_trace</a></td>
+<td>"16"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-blacklist-side-trace">opcache.jit_blacklist_side_trace</a></td>
+<td>"8"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-max-loop-unrolls">opcache.jit_max_loop_unrolls</a></td>
+<td>"8"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-max-recursive-calls">opcache.jit_max_recursive_calls</a></td>
+<td>"2"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-max-recursive-return">opcache.jit_max_recursive_returns</a></td>
+<td>"2"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+<tr>
+<td><a href="#ini.opcache.jit-max-polymorphic-calls">opcache.jit_max_polymorphic_calls</a></td>
+<td>"2"</td>
+<td><code>INI_ALL</code></td>
+<td>Disponible a partir de PHP 8.0.0</td>
+</tr>
+</tbody>
+</table>
+<p>Opciones de configuración de OPcache</p>
+<p>Para más detalles sobre los modos INI_*, refiérase a <a href="#configuration.changes.modes">???</a>.</p>
+<p>Aquí hay una aclaración sobre el uso de las directivas de configuración.</p>
+<p><code>opcache.enable</code> <code>bool</code><br>
+Activa el cache de opcode. Cuando está desactivado, el código no es ni optimizado, ni almacenado en caché. La configuración de <code>opcache.enable</code> no puede ser activada durante la ejecución mediante la función <code>ini_set</code>, solo puede ser desactivada. Intentar activarla en un script generará una advertencia.</p>
+<p><code>opcache.enable_cli</code> <code>bool</code><br>
+Activa el cache de opcode para la versión CLI de PHP.</p>
+<p><code>opcache.memory_consumption</code> <code>int</code><br>
+El tamaño de la memoria compartida utilizada por OPcache, en megabytes. El valor mínimo permisible es <code>"8"</code>, que se fuerza si se define un valor más pequeño.</p>
+<p><code>opcache.interned_strings_buffer</code> <code>int</code><br>
+La cantidad de memoria utilizada para almacenar cadenas internas, en megabytes. El valor máximo es de 32767 en arquitecturas de 64 bits, y de 4095 en arquitecturas de 32 bits.</p>
+<blockquote>
+<p>[!NOTE]
+Antes de PHP 8.4.0, el valor máximo era de 4095 megabytes en todas las arquitecturas.</p>
+</blockquote>
+<p><code>opcache.max_accelerated_files</code> <code>int</code><br>
+El número máximo de claves (y por lo tanto, de scripts) en la tabla de hash de OPcache. El valor actualmente utilizado será el primer número del conjunto de números primos <code>{ 223, 463, 983, 1979, 3907, 7963, 16229, 32531, 65407, 130987, 262237, 524521, 1048793 }</code> que sea mayor o igual que el valor configurado. El valor mínimo es 200. El valor máximo es 100000 en PHP \&lt; 5.5.6, y 1000000 en versiones posteriores. Los valores fuera de este intervalo se ajustan al intervalo permitido.</p>
+<p><code>opcache.max_wasted_percentage</code> <code>int</code><br>
+El porcentaje máximo de memoria desperdiciada permitido antes de que se programe un reinicio, si no hay suficiente memoria disponible. El valor máximo permisible es <code>"50"</code>, que se fuerza si se define un valor más grande.</p>
+<p><code>opcache.use_cwd</code> <code>bool</code><br>
+Si está activado, OPcache añade el directorio de trabajo actual a la clave del script, eliminando así posibles colisiones entre archivos con el mismo nombre base. Desactivar esta funcionalidad mejora el rendimiento, pero puede romper aplicaciones existentes.</p>
+<p><code>opcache.validate_timestamps</code> <code>bool</code><br>
+Si está activado, OPcache verificará las actualizaciones de los scripts cada <a href="#ini.opcache.revalidate-freq">opcache.revalidate_freq</a> segundos. Cuando esta directiva está desactivada, debe reinicializarse OPcache manualmente mediante la función <code>opcache_reset</code>, la función <code>opcache_invalidate</code> o reiniciando el servidor web para que los cambios en el sistema de archivos surtan efecto.</p>
+<blockquote>
+<p>[!NOTE]
+OPcache puede validar siempre el timestamp de un archivo durante la compilación si las opciones <a href="#ini.opcache.file_update_protection">opcache.file_update_protection</a> o <a href="#ini.opcache.max-file-size">opcache.max_file_size</a> están definidas en valores no nulos.</p>
+</blockquote>
+<p><code>opcache.revalidate_freq</code> <code>int</code><br>
+La frecuencia de verificación del timestamp del script para detectar posibles actualizaciones, en segundos. El valor <code>0</code> hará que OPcache verifique las actualizaciones en cada petición.</p>
+<p>Esta directiva de configuración se ignora si <a href="#ini.opcache.validate-timestamps">opcache.validate_timestamps</a> está desactivado.</p>
+<p><code>opcache.revalidate_path</code> <code>bool</code><br>
+Si está desactivado, los archivos en caché existentes que usan el mismo <a href="#ini.include-path">include_path</a> serán reutilizados. También, si un archivo con el mismo nombre está en otro lugar en el include_path, no será encontrado.</p>
+<p><code>opcache.save_comments</code> <code>bool</code><br>
+Si está desactivado, todos los comentarios de documentación serán eliminados del cache de opcode para reducir el tamaño del código optimizado. La desactivación de esta directiva puede romper aplicaciones y frameworks que dependen del análisis de comentarios para anotaciones, como Doctrine, Zend Framework 2 y PHPUnit.</p>
+<p><code>opcache.fast_shutdown</code> <code>bool</code><br>
+Si está activado, se utilizará una secuencia de cierre rápida, que no libera cada bloque asignado, sino que se basa en el gestor de memoria del Zend Engine para desasignar el conjunto entero de variables de la petición, en masa.</p>
+<p>Esta directiva fue eliminada en PHP 7.2.0. Una variante de la secuencia de cierre rápido fue integrada en PHP y será utilizada automáticamente si es posible.</p>
+<p><code>opcache.enable_file_override</code> <code>bool</code><br>
+Cuando está activado, el cache de opcode será verificado para saber si un archivo ya ha sido almacenado en caché cuando se llaman a las funciones <code>file_exists</code>, <code>is_file</code> y <code>is_readable</code>. Esto puede aumentar el rendimiento de las aplicaciones que verifican la existencia y la legibilidad de los scripts PHP, pero puede devolver datos obsoletos si <a href="#ini.opcache.validate-timestamps">opcache.validate_timestamps</a> está desactivado.</p>
+<p><code>opcache.optimization_level</code> <code>int</code><br>
+Una máscara de bits que controla qué pases de optimización se ejecutan. El valor por omisión es <code>0x7FFEBFFF</code>, que activa todas las optimizaciones seguras. Desactivar optimizaciones o activar optimizaciones no seguras es principalmente útil para depurar/desarrollar el optimizador.</p>
+<p>Cada bit en la máscara de bits activa un pase de optimización específico:</p>
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Nombre del pase</th>
+<th>Descripción</th>
+<th>Por omisión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>PASS_1</td>
+<td>Optimizaciones peephole simples</td>
+<td>On</td>
+</tr>
+<tr>
+<td>1</td>
+<td>PASS_2</td>
+<td>No utilizado (fusionado en PASS_1)</td>
+<td>On</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PASS_3</td>
+<td>Optimización de saltos simple</td>
+<td>On</td>
+</tr>
+<tr>
+<td>3</td>
+<td>PASS_4</td>
+<td>Optimización de llamadas</td>
+<td>On</td>
+</tr>
+<tr>
+<td>4</td>
+<td>PASS_5</td>
+<td>Optimización basada en el grafo de flujo de control</td>
+<td>On</td>
+</tr>
+<tr>
+<td>5</td>
+<td>PASS_6</td>
+<td>Optimización basada en análisis de flujo de datos</td>
+<td>On</td>
+</tr>
+<tr>
+<td>6</td>
+<td>PASS_7</td>
+<td>Si el grafo de llamadas debe utilizarse para optimizaciones basadas en SSA</td>
+<td>On</td>
+</tr>
+<tr>
+<td>7</td>
+<td>PASS_8</td>
+<td>Propagación de constantes condicional dispersa</td>
+<td>On</td>
+</tr>
+<tr>
+<td>8</td>
+<td>PASS_9</td>
+<td>Optimización de variables temporales</td>
+<td>On</td>
+</tr>
+<tr>
+<td>9</td>
+<td>PASS_10</td>
+<td>Eliminación de opcodes NOP</td>
+<td>On</td>
+</tr>
+<tr>
+<td>10</td>
+<td>PASS_11</td>
+<td>Compactación de literales</td>
+<td>On</td>
+</tr>
+<tr>
+<td>11</td>
+<td>PASS_12</td>
+<td>Pre-cálculo del tamaño de la pila de llamadas</td>
+<td>On</td>
+</tr>
+<tr>
+<td>12</td>
+<td>PASS_13</td>
+<td>Eliminación de variables no utilizadas</td>
+<td>On</td>
+</tr>
+<tr>
+<td>13</td>
+<td>PASS_14</td>
+<td>Eliminación de código muerto</td>
+<td>On</td>
+</tr>
+<tr>
+<td>14</td>
+<td>PASS_15</td>
+<td>Recopilación y sustitución de declaraciones de constantes (no seguro)</td>
+<td><em>Off</em></td>
+</tr>
+<tr>
+<td>15</td>
+<td>PASS_16</td>
+<td>Inserción en línea de funciones triviales (parte de la optimización de llamadas)</td>
+<td>On</td>
+</tr>
+<tr>
+<td>16</td>
+<td>(Flag)</td>
+<td>Ignorar la posibilidad de sobrecarga de operadores (no seguro)</td>
+<td><em>Off</em></td>
+</tr>
+</tbody>
+</table>
+<p>Máscara de bits de pases de optimización</p>
+<blockquote>
+<p>[!NOTE]
+Las <em>optimizaciones seguras</em> (activadas por omisión) preservan el comportamiento exacto del código PHP mientras mejoran el rendimiento. Incluyen la eliminación de código muerto, el plegado de constantes y la optimización de saltos.</p>
+<p>Las <em>optimizaciones no seguras</em> (desactivadas por omisión) pueden alterar el comportamiento en casos límite:</p>
+<ul>
+<li><em>Bit 14</em>: Recopilación de constantes. Las constantes se sustituyen en tiempo de compilación, ignorando el orden de declaración en tiempo de ejecución:</li>
+</ul>
+<div class="informalexample">
+<p>```
+  &lt;?php
+  echo getA();         // Outputs: "hello" instead of throwing an Error
+  const A = "hello";
+  function getA() { return A; }</p>
+<p>```</p>
+</div>
+<ul>
+<li><em>Bit 16</em>: Ignorar la sobrecarga de operadores. No seguro cuando se utilizan clases con <code>do_operation</code> (p. ej. <a href="#book.gmp">GMP</a>, <a href="#book.bc">BCMath</a>) en operaciones aritméticas. Con declaraciones de tipo, el optimizador puede aplicar las mismas optimizaciones de forma segura.</li>
+</ul>
+</blockquote>
+<p><code>opcache.inherited_hack</code> <code>bool</code><br>
+Esta directiva de configuración se ignora.</p>
+<p><code>opcache.dups_fix</code> <code>bool</code><br>
+Este hack solo debe ser activado como solución de contorno para errores "Cannot redeclare class".</p>
+<p><code>opcache.blacklist_filename</code> <code>string</code><br>
+La ubicación de almacenamiento del archivo que gestiona la lista negra de OPcache. Un archivo de lista negra es un archivo de texto que contiene nombres de archivos que no deben ser acelerados; uno por línea. Se permiten comodines, y también se pueden proporcionar prefijos. Las líneas que comienzan con punto y coma se consideran comentarios y serán ignoradas.</p>
+<p>Un archivo de lista negra simple se ve así:</p>
+<div class="codehilite"><pre><span></span><code>; Coincide con un archivo específico.
+/var/www/broken.php
+; Un prefijo que coincide con todos los archivos que comienzan con x.
+/var/www/x
+; Una coincidencia con comodín.
+/var/www/*-broken.php
+</code></pre></div>
+
+<p><code>opcache.max_file_size</code> <code>int</code><br>
+El tamaño máximo del archivo que puede ser almacenado en caché, en bytes. Si es <code>0</code>, todos los archivos podrán ser almacenados en caché.</p>
+<p><code>opcache.consistency_checks</code> <code>int</code><br>
+Si es diferente de cero, OPcache verificará la suma de comprobación del caché cada N peticiones, donde N es el valor de esta directiva de configuración. Esto solo debe ser activado durante el depurado, sabiendo que afecta significativamente al rendimiento.</p>
+<blockquote>
+<p>[!NOTE]
+Desactivado a partir de PHP 8.1.18 y 8.2.5. Eliminado a partir de PHP 8.3.0.</p>
+</blockquote>
+<p><code>opcache.force_restart_timeout</code> <code>int</code><br>
+La duración de espera para el inicio de un reinicio programado, si el caché no está activado, en segundos. Si este tiempo de espera se alcanza, entonces OPcache asume que algo está mal, y matará los procesos que gestionan los bloqueos en el caché para permitir un reinicio.</p>
+<p>Si <a href="#ini.opcache.log-verbosity-level">opcache.log_verbosity_level</a> es 2 o más, se registrará una advertencia en el registro de errores cuando ocurra este comportamiento.</p>
+<p>Esta directiva no es soportada en Windows.</p>
+<p><code>opcache.error_log</code> <code>string</code><br>
+El registro de errores para errores de OPcache. Una cadena vacía será vista como <code>stderr</code>, y los errores serán enviados a la salida estándar de errores (que será el registro de errores del servidor web en la mayoría de los casos).</p>
+<p><code>opcache.log_verbosity_level</code> <code>int</code><br>
+El nivel de verbosidad de los registros. Por omisión, solo los errores fatales (nivel 0) y los errores (nivel 1) serán registrados. Los otros niveles disponibles son las alertas (nivel 2), los mensajes informativos (nivel 3), y los mensajes de depuración (nivel 4).</p>
+<p><code>opcache.record_warnings</code> <code>bool</code><br>
+Si esta opción está activada, OPcache registrará los avisos de compilación y los reproducirá en el próximo include, incluso si se sirve desde el caché.</p>
+<p><code>opcache.preferred_memory_model</code> <code>string</code><br>
+El modelo de memoria preferido para OPcache, a utilizar. Si se deja vacío, OPcache elegirá el modelo más apropiado, que es la mejor forma de hacerlo en la mayoría de los casos.</p>
+<p>Los valores posibles son <code>mmap</code>, <code>shm</code>, <code>posix</code> y <code>win32</code>.</p>
+<p><code>opcache.protect_memory</code> <code>bool</code><br>
+Protege la memoria compartida de escrituras no autorizadas durante la ejecución de los scripts. Esto solo es útil para el depurado interno.</p>
+<p><code>opcache.mmap_base</code> <code>string</code><br>
+La base utilizada para los segmentos de memoria compartida en Windows. Todos los procesos PHP deben enlazar la memoria compartida en el mismo espacio de direcciones. El uso de esta directiva permite corregir los errores "Unable to reattach to base address".</p>
+<p><code>opcache.restrict_api</code> <code>string</code><br>
+Permite la llamada a las funciones de la API de OPcache solo desde scripts PHP cuyo camino comienza con una cadena específica. El valor por omisión, "", significa "sin restricciones".</p>
+<p><code>opcache.file_update_protection</code> <code>string</code><br>
+Impide el almacenamiento en caché de archivos que datan menos que este número de segundos. Esto protege del almacenamiento en caché de archivos actualizados incompletamente. Si todas las actualizaciones de archivos son atómicas, el rendimiento puede ser aumentado definiéndolo a <code>0</code>. Esto permitirá almacenar en caché los archivos inmediatamente.</p>
+<p><code>opcache.huge_code_pages</code> <code>bool</code><br>
+Activa o desactiva la copia de código PHP (segmento de texto) en HUGE PAGES. Esto debería mejorar el rendimiento, pero requiere una configuración adecuada del sistema operativo. Disponible en Linux a partir de PHP 7.0.0, y en FreeBSD a partir de PHP 7.4.0.</p>
+<p><code>opcache.lockfile_path</code> <code>string</code><br>
+Ruta absoluta utilizada para guardar los archivos de bloqueo compartidos (solo para *nix)</p>
+<p><code>opcache.opt_debug_level</code> <code>string</code><br>
+Produce un volcado de opcode para depurar los diferentes pasos de optimización. 0x10000 mostrará los opcodes tal como el compilador los produce antes de que se produzca cualquier optimización, mientras que 0x20000 mostrará los códigos optimizados.</p>
+<p><code>opcache.file_cache</code> <code>string</code><br>
+Activa y define el directorio de caché de segundo nivel. Esto debería mejorar el rendimiento cuando la memoria SHM está llena, al reiniciar el servidor o reinicializar SMH. El valor por omisión "" desactiva el almacenamiento en caché basado en archivos.</p>
+<p><code>opcache.file_cache_only</code> <code>bool</code><br>
+Activa o desactiva el almacenamiento en caché del opcode en la memoria compartida.</p>
+<blockquote>
+<p>[!NOTE]
+Antes de PHP 8.1.0, desactivar esta directiva con un archivo de caché ya lleno requiere el vaciado manual de la caché.</p>
+</blockquote>
+<p><code>opcache.file_cache_consistency_checks</code> <code>bool</code><br>
+Activa o desactiva la validación de la suma de comprobación cuando el script se carga desde el caché de archivos.</p>
+<p><code>opcache.file_cache_fallback</code> <code>bool</code><br>
+Sugiere opcache.file_cache_only=1 para un proceso determinado que ha fallado al unirse a la memoria compartida (solo para Windows). Se requiere el caché de archivos activado explícitamente.</p>
+<blockquote>
+<p>[!CAUTION]
+Desactivar esta opción de configuración puede impedir que los procesos se inicien, y por lo tanto se desaconseja.</p>
+</blockquote>
+<p><code>opcache.validate_permission</code> <code>bool</code><br>
+Valida los permisos de los archivos almacenados en caché con respecto al usuario actual.</p>
+<p><code>opcache.validate_root</code> <code>bool</code><br>
+Impide las colisiones de nombres en entornos `chroot`. Esto debería ser activado en todos los entornos `chroot` para impedir el acceso a archivos fuera del chroot.</p>
+<p><code>opcache.preload</code> <code>string</code><br>
+Especifica un script PHP que será compilado y ejecutado al iniciar el servidor, y que puede precargar otros archivos, ya sea mediante <code>include</code> o utilizando la función <code>opcache_compile_file</code>. Todas las entidades (por ejemplo funciones y clases) definidas en estos archivos estarán disponibles para las peticiones listas para usar, hasta que el servidor se apague.</p>
+<blockquote>
+<p>[!NOTE]
+El precargado no es soportado en Windows.</p>
+</blockquote>
+<p><code>opcache.preload_user</code> <code>string</code><br>
+Permite que el precargado se ejecute como usuario del sistema especificado. Esto es útil para servidores que se inician como root antes de cambiar a un usuario del sistema no privilegiado. El precargado como root no está permitido por omisión por razones de seguridad, a menos que esta directiva esté explícitamente definida como <code>root</code>. A partir de PHP 8.3.0, esta directiva ya no necesita ser definida para permitir el precargado al ejecutarse como root con o <a href="#book.phpdbg">phpdbg SAPI</a>.</p>
+<p><code>opcache.cache_id</code> <code>string</code><br>
+En Windows, todos los procesos que ejecutan el mismo PHP SAPI bajo el mismo usuario con el mismo ID de caché comparten una instancia única de OPcache. El valor del ID de caché puede ser elegido libremente.</p>
+<blockquote>
+<p>[!TIP]
+Para IIS, diferentes grupos de aplicaciones pueden tener su propia instancia OPcache utilizando la variable de entorno <code>APP_POOL_ID</code> como <code>opcache.cache_id</code>. For IIS, different application pools can have their own OPcache instance by using the environment variable <code>APP_POOL_ID</code> as <code>opcache.cache_id</code>.</p>
+</blockquote>
+<p><code>opcache.jit</code> <code>stringint</code><br>
+Para un uso típico, esta opción acepta una de las cuatro siguientes valores string:</p>
+<dl>
+<dt>disable</dt>
+<dd>
+<p>Desactivado completamente, no puede ser activado durante el tiempo de ejecución.</p>
+</dd>
+<dt>off</dt>
+<dd>
+<p>Desactivado, pero puede ser activado durante el tiempo de ejecución.</p>
+</dd>
+</dl>
+<p>tracing</p>
+<p>/</p>
+<dl>
+<dt>on</dt>
+<dd>
+<p>Utiliza el tracing JIT. Activado por omisión y recomendado para la mayoría de los usuarios.</p>
+</dd>
+<dt>function</dt>
+<dd>
+<p>Utiliza el function JIT.</p>
+</dd>
+</dl>
+<p>Para un uso avanzado, esta opción acepta un entero de 4 dígitos <code>CRTO</code>, donde los dígitos significan:</p>
+<dl>
+<dt><code>C</code> (Banderas de optimización específica del CPU)  </dt>
+<dt>0</dt>
+<dd>
+<p>Desactiva las optimizaciones específicas del CPU.</p>
+</dd>
+<dt>1</dt>
+<dd>
+<p>Activa el uso de AVX, si el CPU lo soporta.</p>
+</dd>
+<dt><code>R</code> (asignación de registros)  </dt>
+<dt>0</dt>
+<dd>
+<p>No realiza ninguna asignación de registros</p>
+</dd>
+<dt>1</dt>
+<dd>
+<p>Realiza asignaciones de registros a nivel de bloque.</p>
+</dd>
+<dt>2</dt>
+<dd>
+<p>Realiza asignaciones de registros globales.</p>
+</dd>
+<dt><code>T</code> (disparador)  </dt>
+<dt>0</dt>
+<dd>
+<p>Compila todas las funciones al cargar el script.</p>
+</dd>
+<dt>1</dt>
+<dd>
+<p>Compila las funciones en su primera ejecución.</p>
+</dd>
+<dt>2</dt>
+<dd>
+<p>Perfila las funciones en la primera petición y compila las funciones más calientes justo después.</p>
+</dd>
+<dt>3</dt>
+<dd>
+<p>Perfila a la volada y compila las funciones calientes.</p>
+</dd>
+<dt>4</dt>
+<dd>
+<p>Actualmente no utilizado.</p>
+</dd>
+<dt>5</dt>
+<dd>
+<p>Utiliza el tracing JIT. Perfila a la volada y compila las trazas para los segmentos de código caliente.</p>
+</dd>
+<dt><code>O</code> (nivel de optimización)  </dt>
+<dt>0</dt>
+<dd>
+<p>Sin JIT.</p>
+</dd>
+<dt>1</dt>
+<dd>
+<p>JIT mínimo (llama a los manejadores estándar de la VM).</p>
+</dd>
+<dt>2</dt>
+<dd>
+<p>Inlinea los manejadores de la VM.</p>
+</dd>
+<dt>3</dt>
+<dd>
+<p>Utiliza la inferencia de tipos.</p>
+</dd>
+<dt>4</dt>
+<dd>
+<p>Utiliza un grafo de llamadas.</p>
+</dd>
+<dt>5</dt>
+<dd>
+<p>Optimiza el script entero.</p>
+</dd>
+</dl>
+<p>El modo <code>"tracing"</code> corresponde a <code>CRTO = 1254</code>, el modo <code>"function"</code> corresponde a <code>CRTO = 1205</code>.</p>
+<p><code>opcache.jit_buffer_size</code> <code>int</code><br>
+La cantidad de memoria compartida reservada para código compilado JIT. Un valor de cero desactiva el JIT.</p>
+<p>Cuando se utiliza un <code>int</code>, el valor se mide en bytes. También se puede usar la notación abreviada, como se describe en <a href="#faq.using.shorthandbytes">esta FAQ</a>.</p>
+<p><code>opcache.jit_debug</code> <code>int</code><br>
+Una máscara de bits que especifica qué salida de depuración de JIT activar Para los valores posibles, consulte <a href="https://github.com/php/php-src/blob/master/ext/opcache/jit/zend_jit.h">zend_jit.h</a> (ver las definiciones de macro que comienzan con <code>ZEND_JIT_DEBUG</code>).</p>
+<p><code>opcache.jit_bisect_limit</code> <code>int</code><br>
+Opción de depuración que desactiva la compilación JIT después de la compilación de un cierto número de funciones. Esto puede ser útil para bisectar la fuente de una mala compilación JIT. Nota: esta opción solo funciona cuando el disparador JIT está definido a 0 (compilación al cargar el script) o 1 (compilación a la primera ejecución), por ejemplo, <code>opcache.jit=1215</code>. Ver más en la opción <a href="#ini.opcache.jit">opcache.jit</a>.</p>
+<p><code>opcache.jit_prof_threshold</code> <code>float</code><br>
+Al utilizar el modo de disparador "perfilar las funciones en la primera petición", este límite determina si una función es considerada caliente. El número de llamadas a la función dividido por el número de llamadas a todas las funciones debe ser superior a este límite. Por ejemplo, un límite de 0.005 significa que una función que corresponde a más de 0.5% de todas las llamadas será compilada JIT.</p>
+<p><code>opcache.jit_max_root_traces</code> <code>int</code><br>
+Número máximo de trazas raíz (root traces). La traza raíz es un flujo de ejecución que toma primero un camino a través del código, que es una unidad de la compilación JIT. JIT no compilara nuevo código si alcanza este límite.</p>
+<p><code>opcache.jit_max_side_traces</code> <code>int</code><br>
+Número máximo de trazas laterales (side trace) que una traza raíz puede tener. La traza lateral es otro flujo de ejecución que no sigue el camino de la traza raíz compilada. Las trazas laterales pertenecientes a la misma traza raíz no serán compiladas si se alcanza este límite.</p>
+<p><code>opcache.jit_max_exit_counters</code> <code>int</code><br>
+Número máximo de contadores de salida de traza lateral. Esto limita el número total de trazas laterales que puede haber, a través de todas las trazas raíz.</p>
+<p><code>opcache.jit_hot_loop</code> <code>int</code><br>
+Después de cuántas iteraciones un bucle es considerado caliente. El rango de valores válidos es <code>[0,255]</code> ; para cualquier parámetro fuera de este rango, por ejemplo -1 o 256, se utilizará el valor por omisión en su lugar. Especialmente, un valor nulo desactivará el JIT para trazar y compilar todos los bucles.</p>
+<blockquote>
+<p>[!NOTE]
+Se recomienda establecer este parámetro a un número primo, para evitar que sea un múltiplo de los contadores de iteraciones de bucle.</p>
+</blockquote>
+<p><code>opcache.jit_hot_func</code> <code>int</code><br>
+Después de cuántas llamadas una función es considerada caliente. El rango de valores válidos es <code>[0,255]</code> ; para cualquier parámetro fuera de este rango, por ejemplo -1 o 256, se utilizará el valor por omisión en su lugar. Especialmente, un valor nulo desactivará el JIT para trazar y compilar todas las funciones.</p>
+<p><code>opcache.jit_hot_return</code> <code>int</code><br>
+Después de cuántos retornos un retorno es considerado caliente. El rango de valores válidos es <code>[0,255]</code> ; para cualquier parámetro fuera de este rango, por ejemplo -1 o 256, se utilizará el valor por omisión en su lugar. Especialmente, un valor nulo desactivará el JIT para trazar y compilar todos los retornos.</p>
+<p><code>opcache.jit_hot_side_exit</code> <code>int</code><br>
+Después de cuántas salidas, una salida lateral es considerada caliente. El rango de valores válidos es <code>[0,255]</code> ; para cualquier parámetro fuera de este rango, por ejemplo -1 o 256, se utilizará el valor por omisión en su lugar. Especialmente, un valor nulo desactivará el JIT para trazar y compilar todas las salidas laterales.</p>
+<p><code>opcache.jit_blacklist_root_trace</code> <code>int</code><br>
+Número máximo de intentos de compilación de una traza raíz antes de que esta sea excluida.</p>
+<p><code>opcache.jit_blacklist_side_trace</code> <code>int</code><br>
+Número máximo de intentos de compilación de una traza lateral antes de que esta sea excluida.</p>
+<p><code>opcache.jit_max_loop_unrolls</code> <code>int</code><br>
+Número máximo de intentos para desenrollar un bucle en una traza lateral, intentando alcanzar la traza raíz y cerrar el bucle exterior.</p>
+<p><code>opcache.jit_max_recursive_calls</code> <code>int</code><br>
+Número máximo de llamadas recursivas desenrolladas en un bucle.</p>
+<p><code>opcache.jit_max_recursive_returns</code> <code>int</code><br>
+Número máximo de retornos recursivos desenrollados en un bucle.</p>
+<p><code>opcache.jit_max_polymorphic_calls</code> <code>int</code><br>
+Número máximo de intentos para inlinear una llamada polimórfica (dinámica o método). Llamadas por encima de este límite son tratadas como megamórficas y no son inlineadas.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../oci8/datatypes.html">
+          <span class="muted">Anterior</span>Tipos de datos admitidos
+        </a>
+        <a class="pager-next" href="../opcache/configure.html">
+          <span class="muted">Siguiente</span>Instalación
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

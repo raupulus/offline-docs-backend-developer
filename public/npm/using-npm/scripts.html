@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scripts · npm</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">npm</a>
+<span class="badge">latest</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="npm" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en npm…"
+         aria-label="Buscar en npm" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de npm
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de npm">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../commands/npm-access.html">Commands</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../configuring-npm/folders.html">Configuring Npm</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Using Npm
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../using-npm/config.html"
+>Config</a>
+              </li>
+              <li>
+                <a href="../using-npm/dependency-selectors.html"
+>Dependency Selectors</a>
+              </li>
+              <li>
+                <a href="../using-npm/developers.html"
+>Developers</a>
+              </li>
+              <li>
+                <a href="../using-npm/logging.html"
+>Logging</a>
+              </li>
+              <li>
+                <a href="../using-npm/orgs.html"
+>Organizations</a>
+              </li>
+              <li>
+                <a href="../using-npm/package-spec.html"
+>Package spec</a>
+              </li>
+              <li>
+                <a href="../using-npm/registry.html"
+>Registry</a>
+              </li>
+              <li>
+                <a href="../using-npm/removal.html"
+>Removal</a>
+              </li>
+              <li>
+                <a href="../using-npm/scope.html"
+>Scope</a>
+              </li>
+              <li>
+                <a href="../using-npm/scripts.html"
+class="is-current" aria-current="page">Scripts</a>
+              </li>
+              <li>
+                <a href="../using-npm/workspaces.html"
+>Workspaces</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Scripts</h1>
+
+      <p class="doc-meta">
+<span class="badge">latest</span>          <a href="https://docs.npmjs.com/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia TODO-VERIFICAR</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#description">Description#</a></li>
+              <li class="lvl-3"><a href="#pre-post-scripts">Pre &amp; Post Scripts#</a></li>
+              <li class="lvl-3"><a href="#life-cycle-scripts">Life Cycle Scripts#</a></li>
+              <li class="lvl-3"><a href="#life-cycle-operation-order">Life Cycle Operation Order#</a></li>
+              <li class="lvl-3"><a href="#working-directory-for-scripts">Working Directory for Scripts#</a></li>
+              <li class="lvl-3"><a href="#environment">Environment#</a></li>
+              <li class="lvl-3"><a href="#examples">Examples#</a></li>
+              <li class="lvl-3"><a href="#exiting">Exiting#</a></li>
+              <li class="lvl-3"><a href="#best-practices">Best Practices#</a></li>
+              <li class="lvl-3"><a href="#see-also">See Also#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h3>
+<p>The <code>"scripts"</code> property of your <code>package.json</code> file supports a number of built-in scripts and their preset life cycle events as well as arbitrary scripts.
+These all can be executed by running <code>npm run &lt;stage&gt;</code>.
+<em>Pre</em> and <em>post</em> commands with matching names will be run for those as well (e.g.
+<code>premyscript</code>,
+<code>myscript</code>, <code>postmyscript</code>).
+Scripts from dependencies can be run with <code>npm explore &lt;pkg&gt; -- npm run &lt;stage&gt;</code>.</p>
+<h3 id="pre-post-scripts">Pre &amp; Post Scripts<a class="headerlink" href="#pre-post-scripts" title="Permanent link">#</a></h3>
+<p>To create "pre" or "post" scripts for any scripts defined in the
+<code>"scripts"</code> section of the <code>package.json</code>, simply create another script
+<em>with a matching name</em> and add "pre" or "post" to the beginning of them.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;precompress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ executes BEFORE the `compress` script }}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;compress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ run command to compress files }}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;postcompress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ executes AFTER `compress` script }}&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>In this example <code>npm run compress</code> would execute these scripts as described.</p>
+<h3 id="life-cycle-scripts">Life Cycle Scripts<a class="headerlink" href="#life-cycle-scripts" title="Permanent link">#</a></h3>
+<p>There are some special life cycle scripts that happen only in certain situations.
+These scripts happen in addition to the <code>pre&lt;event&gt;</code>, <code>post&lt;event&gt;</code>, and
+<code>&lt;event&gt;</code> scripts.</p>
+<ul>
+<li><code>prepare</code>, <code>prepublish</code>, <code>prepublishOnly</code>, <code>prepack</code>, <code>postpack</code>, <code>dependencies</code></li>
+</ul>
+<p><strong>prepare</strong> (since <code>npm@4.0.0</code>)
+* Runs BEFORE the package is packed, i.e.
+during <code>npm publish</code> and <code>npm pack</code>
+* Runs on local <code>npm install</code> without package arguments (runs with flags like <code>--production</code> or <code>--omit=dev</code>, but does not run when installing specific packages like <code>npm install express</code>)
+* Runs AFTER <code>prepublishOnly</code> and <code>prepack</code>, but BEFORE <code>postpack</code>
+* Runs for a package if it's being installed as a link through <code>npm install &lt;folder&gt;</code></p>
+<ul>
+<li>
+<p>NOTE: If a package being installed through git contains a <code>prepare</code> script, its <code>dependencies</code> and <code>devDependencies</code> will be installed, and the prepare script will be run, before the package is packaged and installed.</p>
+</li>
+<li>
+<p>As of <code>npm@7</code> these scripts run in the background.
+  To see the output, run with: <code>--foreground-scripts</code>.</p>
+</li>
+<li>
+<p><strong>In workspaces, prepare scripts run concurrently</strong> across all packages. If you have interdependent packages where one must build before another, consider using <code>--foreground-scripts</code> (which can be set in <code>.npmrc</code> with <code>foreground-scripts=true</code>) to run scripts sequentially, or structure your build differently.</p>
+</li>
+</ul>
+<p><strong>prepublish</strong> (DEPRECATED)
+* Does not run during <code>npm publish</code>, but does run during <code>npm ci</code> and <code>npm install</code>.
+See below for more info.</p>
+<p><strong>prepublishOnly</strong>
+* Runs BEFORE the package is prepared and packed, ONLY on <code>npm publish</code>.</p>
+<p><strong>prepack</strong>
+* Runs BEFORE a tarball is packed (on "<code>npm pack</code>", "<code>npm publish</code>", and when installing a git dependency).
+* NOTE: "<code>npm run pack</code>" is NOT the same as "<code>npm pack</code>". "<code>npm run pack</code>" is an arbitrary user defined script name, whereas, "<code>npm pack</code>" is a CLI defined command.</p>
+<p><strong>postpack</strong>
+* Runs AFTER the tarball has been generated but before it is moved to its final destination (if at all, publish does not save the tarball locally)</p>
+<p><strong>dependencies</strong>
+* Runs AFTER any operations that modify the <code>node_modules</code> directory IF changes occurred.
+* Does NOT run in global mode</p>
+<h4 id="prepare-and-prepublish">Prepare and Prepublish<a class="headerlink" href="#prepare-and-prepublish" title="Permanent link">#</a></h4>
+<p><strong>Deprecation Note: prepublish</strong></p>
+<p>Since <code>npm@1.1.71</code>, the npm CLI has run the <code>prepublish</code> script for both <code>npm publish</code> and <code>npm install</code>, because it's a convenient way to prepare a package for use (some common use cases are described in the section below).
+It has also turned out to be, in practice, <a href="https://github.com/npm/npm/issues/10074">very confusing</a>.
+As of <code>npm@4.0.0</code>, a new event has been introduced, <code>prepare</code>, that preserves this existing behavior.
+A <em>new</em> event, <code>prepublishOnly</code> has been added as a transitional strategy to allow users to avoid the confusing behavior of existing npm versions and only run on <code>npm publish</code> (for instance, running the tests one last time to ensure they're in good shape).</p>
+<p>See <a href="https://github.com/npm/npm/issues/10074">https://github.com/npm/npm/issues/10074</a> for a much lengthier justification, with further reading, for this change.</p>
+<p><strong>Use Cases</strong></p>
+<p>Use a <code>prepare</code> script to perform build tasks that are platform-independent and need to run before your package is used.
+This includes tasks such as:</p>
+<ul>
+<li>Compiling TypeScript or other source code into JavaScript.</li>
+<li>Creating minified versions of JavaScript source code.</li>
+<li>Fetching remote resources that your package will use.</li>
+</ul>
+<p>Running these build tasks in the <code>prepare</code> script ensures they happen once, in a single place, reducing complexity and variability.
+Additionally, this means that:</p>
+<ul>
+<li>You can depend on build tools as <code>devDependencies</code>, and thus your users don't need to have them installed.</li>
+<li>You don't need to include minifiers in your package, reducing the size for your users.</li>
+<li>You don't need to rely on your users having <code>curl</code> or <code>wget</code> or other system tools on the target machines.</li>
+</ul>
+<h4 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">#</a></h4>
+<p>The <code>dependencies</code> script is run any time an <code>npm</code> command causes changes to the <code>node_modules</code> directory.
+It is run AFTER the changes have been applied and the <code>package.json</code> and <code>package-lock.json</code> files have been updated.</p>
+<h3 id="life-cycle-operation-order">Life Cycle Operation Order<a class="headerlink" href="#life-cycle-operation-order" title="Permanent link">#</a></h3>
+<h4 id="npm-cache-add"><a href="../commands/npm-cache.html"><code>npm cache add</code></a><a class="headerlink" href="#npm-cache-add" title="Permanent link">#</a></h4>
+<ul>
+<li><code>prepare</code></li>
+</ul>
+<h4 id="npm-ci"><a href="../commands/npm-ci.html"><code>npm ci</code></a><a class="headerlink" href="#npm-ci" title="Permanent link">#</a></h4>
+<ul>
+<li><code>preinstall</code> (before dependencies are installed)</li>
+<li><code>install</code></li>
+<li><code>postinstall</code></li>
+<li><code>prepublish</code></li>
+<li><code>preprepare</code></li>
+<li><code>prepare</code></li>
+<li><code>postprepare</code></li>
+</ul>
+<p><code>preinstall</code> runs before any dependencies are fetched or unpacked into <code>node_modules</code>, so scripts can prepare the environment (for example, setting up authentication for a private registry) before tarballs are fetched. For <code>npm ci</code>, <code>preinstall</code> fires <em>after</em> the lockfile has been validated against <code>package.json</code>, so it cannot influence dependency resolution — that remains locked to <code>package-lock.json</code>. The remaining scripts run after the installation of modules into <code>node_modules</code>, in order, with no internal actions happening in between.</p>
+<p>Because <code>preinstall</code> runs before reify, scripts cannot rely on packages from <code>node_modules</code>. <code>npm ci</code> wipes <code>node_modules</code> before <code>preinstall</code> fires, so <code>require()</code> of a dependency will always fail. Use <code>install</code> or <code>postinstall</code> for setup that depends on installed packages.</p>
+<h4 id="npm-diff"><a href="../commands/npm-diff.html"><code>npm diff</code></a><a class="headerlink" href="#npm-diff" title="Permanent link">#</a></h4>
+<ul>
+<li><code>prepare</code></li>
+</ul>
+<h4 id="npm-install"><a href="../commands/npm-install.html"><code>npm install</code></a><a class="headerlink" href="#npm-install" title="Permanent link">#</a></h4>
+<p>These run on a bare <code>npm install</code> in a local project (no package arguments).</p>
+<ul>
+<li><code>preinstall</code> (before dependencies are installed)</li>
+<li><code>install</code></li>
+<li><code>postinstall</code></li>
+<li><code>prepublish</code></li>
+<li><code>preprepare</code></li>
+<li><code>prepare</code></li>
+<li><code>postprepare</code></li>
+</ul>
+<p><code>preinstall</code> runs before any dependencies are fetched or unpacked into <code>node_modules</code>, so scripts can prepare the environment (for example, setting up authentication for a private registry) before resolution begins. The remaining scripts run after installation has completed.</p>
+<p>Because <code>preinstall</code> runs before reify, scripts cannot rely on packages from <code>node_modules</code>. On a fresh checkout, <code>require()</code> of a dependency will fail. On a repeat <code>npm install</code> against an existing <code>node_modules/</code>, it may incidentally succeed because the previously-installed tree is still on disk, but the version available is whatever was previously installed and may be removed or replaced by the upcoming install. Use <code>install</code> or <code>postinstall</code> for setup that depends on installed packages.</p>
+<p>If there is a <code>binding.gyp</code> file in the root of your package and you haven't defined your own <code>install</code> or <code>preinstall</code> scripts, npm will default the <code>install</code> command to compile using node-gyp via <code>node-gyp rebuild</code></p>
+<p>These are run from the scripts of <code>&lt;pkg-name&gt;</code></p>
+<h4 id="npm-pack"><a href="../commands/npm-pack.html"><code>npm pack</code></a><a class="headerlink" href="#npm-pack" title="Permanent link">#</a></h4>
+<ul>
+<li><code>prepack</code></li>
+<li><code>prepare</code></li>
+<li><code>postpack</code></li>
+</ul>
+<h4 id="npm-publish"><a href="../commands/npm-publish.html"><code>npm publish</code></a><a class="headerlink" href="#npm-publish" title="Permanent link">#</a></h4>
+<ul>
+<li><code>prepublishOnly</code></li>
+<li><code>prepack</code></li>
+<li><code>prepare</code></li>
+<li><code>postpack</code></li>
+<li><code>publish</code></li>
+<li><code>postpublish</code></li>
+</ul>
+<h4 id="npm-rebuild"><a href="../commands/npm-rebuild.html"><code>npm rebuild</code></a><a class="headerlink" href="#npm-rebuild" title="Permanent link">#</a></h4>
+<ul>
+<li><code>preinstall</code></li>
+<li><code>install</code></li>
+<li><code>postinstall</code></li>
+<li><code>prepare</code></li>
+</ul>
+<p><code>prepare</code> is only run if the current directory is a symlink (e.g.
+with linked packages)</p>
+<h4 id="npm-restart"><a href="../commands/npm-restart.html"><code>npm restart</code></a><a class="headerlink" href="#npm-restart" title="Permanent link">#</a></h4>
+<p>If there is a <code>restart</code> script defined, these events are run; otherwise,
+<code>stop</code> and <code>start</code> are both run if present, including their <code>pre</code> and <code>post</code> iterations)</p>
+<ul>
+<li><code>prerestart</code></li>
+<li><code>restart</code></li>
+<li><code>postrestart</code></li>
+</ul>
+<h4 id="npm-run-user-defined"><a href="../commands/npm-run.html"><code>npm run &lt;user defined&gt;</code></a><a class="headerlink" href="#npm-run-user-defined" title="Permanent link">#</a></h4>
+<ul>
+<li><code>pre&lt;user-defined&gt;</code></li>
+<li><code>&lt;user-defined&gt;</code></li>
+<li><code>post&lt;user-defined&gt;</code></li>
+</ul>
+<h4 id="npm-start"><a href="../commands/npm-start.html"><code>npm start</code></a><a class="headerlink" href="#npm-start" title="Permanent link">#</a></h4>
+<ul>
+<li><code>prestart</code></li>
+<li><code>start</code></li>
+<li><code>poststart</code></li>
+</ul>
+<p>If there is a <code>server.js</code> file in the root of your package, then npm will default the <code>start</code> command to <code>node server.js</code>.
+<code>prestart</code> and <code>poststart</code> will still run in this case.</p>
+<h4 id="npm-stop"><a href="../commands/npm-stop.html"><code>npm stop</code></a><a class="headerlink" href="#npm-stop" title="Permanent link">#</a></h4>
+<ul>
+<li><code>prestop</code></li>
+<li><code>stop</code></li>
+<li><code>poststop</code></li>
+</ul>
+<h4 id="npm-test"><a href="../commands/npm-test.html"><code>npm test</code></a><a class="headerlink" href="#npm-test" title="Permanent link">#</a></h4>
+<ul>
+<li><code>pretest</code></li>
+<li><code>test</code></li>
+<li><code>posttest</code></li>
+</ul>
+<h4 id="npm-version"><a href="../commands/npm-version.html"><code>npm version</code></a><a class="headerlink" href="#npm-version" title="Permanent link">#</a></h4>
+<ul>
+<li><code>preversion</code></li>
+<li><code>version</code></li>
+<li><code>postversion</code></li>
+</ul>
+<h4 id="a-note-on-a-lack-of-npm-uninstall-scripts">A Note on a lack of <a href="../commands/npm-uninstall.html"><code>npm uninstall</code></a> scripts<a class="headerlink" href="#a-note-on-a-lack-of-npm-uninstall-scripts" title="Permanent link">#</a></h4>
+<p>While npm v6 had <code>uninstall</code> lifecycle scripts, npm v7 does not.
+Removal of a package can happen for a wide variety of reasons, and there's no clear way to currently give the script enough context to be useful.</p>
+<p>Reasons for a package removal include:</p>
+<ul>
+<li>a user directly uninstalled this package</li>
+<li>a user uninstalled a dependent package and so this dependency is being uninstalled</li>
+<li>a user uninstalled a dependent package but another package also depends on this version</li>
+<li>this version has been merged as a duplicate with another version</li>
+<li>etc.</li>
+</ul>
+<p>Due to the lack of necessary context, <code>uninstall</code> lifecycle scripts are not implemented and will not function.</p>
+<h3 id="working-directory-for-scripts">Working Directory for Scripts<a class="headerlink" href="#working-directory-for-scripts" title="Permanent link">#</a></h3>
+<p>Scripts are always run from the root of the package folder, regardless of what the current working directory is when <code>npm</code> is invoked.
+This means your scripts can reliably assume they are running in the package root.</p>
+<p>If you want your script to behave differently based on the directory you were in when you ran <code>npm</code>, you can use the <code>INIT_CWD</code> environment variable, which holds the full path you were in when you ran <code>npm run</code>.</p>
+<h4 id="historical-behavior-in-older-npm-versions">Historical Behavior in Older npm Versions<a class="headerlink" href="#historical-behavior-in-older-npm-versions" title="Permanent link">#</a></h4>
+<p>For npm v6 and earlier, scripts were generally run from the root of the package, but there were rare cases and bugs in older versions where this was not guaranteed.
+If your package must support very old npm versions, you may wish to add a safeguard in your scripts (for example, by checking process.cwd()).</p>
+<p>For more details, see:
+- <a href="https://github.com/npm/cli/releases/tag/v7.0.0">npm v7 release notes</a>
+- <a href="https://github.com/npm/npm/issues/12356">Discussion about script working directory reliability in npm v6 and earlier</a></p>
+<h3 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">#</a></h3>
+<p>Package scripts run in an environment where many pieces of information are made available regarding the setup of npm and the current state of the process.</p>
+<h4 id="path">path<a class="headerlink" href="#path" title="Permanent link">#</a></h4>
+<p>If you depend on modules that define executable scripts, like test suites, then those executables will be added to the <code>PATH</code> for executing the scripts.
+So, if your package.json has this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;dependencies&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bar&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.x&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;start&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bar ./test&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>then you could run <code>npm start</code> to execute the <code>bar</code> script, which is exported into the <code>node_modules/.bin</code> directory on <code>npm install</code>.</p>
+<h4 id="packagejson-vars">package.json vars<a class="headerlink" href="#packagejson-vars" title="Permanent link">#</a></h4>
+<p>npm sets the following environment variables from the package.json:</p>
+<ul>
+<li><code>npm_package_name</code> - The package name</li>
+<li><code>npm_package_version</code> - The package version</li>
+<li><code>npm_package_bin_*</code> - Each executable defined in the bin field</li>
+<li><code>npm_package_engines_*</code> - Each engine defined in the engines field</li>
+<li><code>npm_package_config_*</code> - Each config value defined in the config field</li>
+<li><code>npm_package_json</code> - The full path to the package.json file</li>
+</ul>
+<p>Additionally, for install scripts (<code>preinstall</code>, <code>install</code>, <code>postinstall</code>), npm sets these environment variables:</p>
+<ul>
+<li><code>npm_package_resolved</code> - The resolved URL for the package</li>
+<li><code>npm_package_integrity</code> - The integrity hash for the package</li>
+<li><code>npm_package_optional</code> - Set to <code>"true"</code> if the package is optional</li>
+<li><code>npm_package_dev</code> - Set to <code>"true"</code> if the package is a dev dependency</li>
+<li><code>npm_package_peer</code> - Set to <code>"true"</code> if the package is a peer dependency</li>
+<li><code>npm_package_dev_optional</code> - Set to <code>"true"</code> if the package is both dev and optional</li>
+</ul>
+<p>For example, if you had <code>{"name":"foo", "version":"1.2.5"}</code> in your package.json file, then your package scripts would have the <code>npm_package_name</code> environment variable set to "foo", and the <code>npm_package_version</code> set to "1.2.5". You can access these variables in your code with <code>process.env.npm_package_name</code> and <code>process.env.npm_package_version</code>.</p>
+<p><strong>Note:</strong> In npm 7 and later, most package.json fields are no longer provided as environment variables. Scripts that need access to other package.json fields should read the package.json file directly. The <code>npm_package_json</code> environment variable provides the path to the file for this purpose.</p>
+<p>See <a href="../configuring-npm/package-json.html"><code>package.json</code></a> for more on package configs.</p>
+<h4 id="versioning-variables">versioning variables<a class="headerlink" href="#versioning-variables" title="Permanent link">#</a></h4>
+<p>For versioning scripts (<code>preversion</code>, <code>version</code>, <code>postversion</code>), npm sets these environment variables:</p>
+<ul>
+<li><code>npm_old_version</code> - The version before being bumped</li>
+<li><code>npm_new_version</code> – The version after being bumped</li>
+</ul>
+<h4 id="current-lifecycle-event">current lifecycle event<a class="headerlink" href="#current-lifecycle-event" title="Permanent link">#</a></h4>
+<p>Lastly, the <code>npm_lifecycle_event</code> environment variable is set to whichever stage of the cycle is being executed.
+So, you could have a single script used for different parts of the process which switches based on what's currently happening.</p>
+<p>Objects are flattened following this format, so if you had
+<code>{"scripts":{"install":"foo.js"}}</code> in your package.json, then you'd see this in the script:</p>
+<div class="codehilite"><pre><span></span><code>process.env.npm_package_scripts_install<span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;foo.js&quot;</span>
+</code></pre></div>
+
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h3>
+<p>For example, if your package.json contains this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;scripts&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prepare&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scripts/build.js&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;test&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scripts/test.js&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>then <code>scripts/build.js</code> will be called for the prepare stage of the lifecycle, and you can check the 
+<code>npm_lifecycle_event</code> environment variable if your script needs to behave differently in different contexts.</p>
+<p>If you want to run build commands, you can do so.
+This works just fine:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;scripts&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prepare&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;npm run build&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;build&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tsc&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;test&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jest&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="exiting">Exiting<a class="headerlink" href="#exiting" title="Permanent link">#</a></h3>
+<p>Scripts are run by passing the line as a script argument to <code>/bin/sh</code> on POSIX systems or <code>cmd.exe</code> on Windows.
+You can control which shell is used by setting the <a href="../using-npm/config.html#script-shell"><code>script-shell</code></a> configuration option.</p>
+<p>If the script exits with a code other than 0, then this will abort the process.</p>
+<p>Note that these script files don't have to be Node.js or even JavaScript programs.
+They just have to be some kind of executable file.</p>
+<h3 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">#</a></h3>
+<ul>
+<li>Don't exit with a non-zero error code unless you <em>really</em> mean it.
+  If the failure is minor or only will prevent some optional features, then it's better to just print a warning and exit successfully.</li>
+<li>Try not to use scripts to do what npm can do for you.
+Read through <a href="../configuring-npm/package-json.html"><code>package.json</code></a> to see all the things that you can specify and enable by simply describing your package appropriately.
+In general, this will lead to a more robust and consistent state.</li>
+<li>Inspect the env to determine where to put things.
+For instance, if the <code>NPM_CONFIG_BINROOT</code> environment variable is set to <code>/home/user/bin</code>, then don't try to install executables into <code>/usr/local/bin</code>.
+The user probably set it up that way for a reason.</li>
+<li>Don't prefix your script commands with "sudo".  If root permissions are required for some reason, then it'll fail with that error, and the user will sudo the npm command in question.</li>
+<li>Don't use <code>install</code>.
+Use a <code>.gyp</code> file for compilation, and <code>prepare</code> for anything else.
+You should almost never have to explicitly set a preinstall or install script.
+If you are doing this, please consider if there is another option.
+The only valid use of <code>install</code> or <code>preinstall</code> scripts is for compilation which must be done on the target architecture.</li>
+</ul>
+<h3 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">#</a></h3>
+<ul>
+<li><a href="../commands/npm-run.html">npm run</a></li>
+<li><a href="../configuring-npm/package-json.html">package.json</a></li>
+<li><a href="../using-npm/developers.html">npm developers</a></li>
+<li><a href="../commands/npm-install.html">npm install</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../using-npm/scope.html">
+          <span class="muted">Anterior</span>Scope
+        </a>
+        <a class="pager-next" href="../using-npm/workspaces.html">
+          <span class="muted">Siguiente</span>Workspaces
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event loop · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/__future__.html"
+>&#34;__future__&#34; --- Future statement definitions</a>
+              </li>
+              <li>
+                <a href="../library/__main__.html"
+>&#34;__main__&#34; --- Top-level code environment</a>
+              </li>
+              <li>
+                <a href="../library/_thread.html"
+>&#34;_thread&#34; --- Low-level threading API</a>
+              </li>
+              <li>
+                <a href="../library/abc.html"
+>&#34;abc&#34; --- Abstract Base Classes</a>
+              </li>
+              <li>
+                <a href="../library/aifc.html"
+>&#34;aifc&#34; --- Read and write AIFF and AIFC files</a>
+              </li>
+              <li>
+                <a href="../library/allos.html"
+>Servicios genéricos del sistema operativo</a>
+              </li>
+              <li>
+                <a href="../library/annotationlib.html"
+>&#34;annotationlib&#34; --- Functionality for introspecting annotations</a>
+              </li>
+              <li>
+                <a href="../library/archiving.html"
+>Compresión de datos y archivado</a>
+              </li>
+              <li>
+                <a href="../library/argparse.html"
+>&#34;argparse&#34; --- Parser for command-line options, arguments and subcommands</a>
+              </li>
+              <li>
+                <a href="../library/array.html"
+>&#34;array&#34; --- Efficient arrays of numeric values</a>
+              </li>
+              <li>
+                <a href="../library/ast.html"
+>&#34;ast&#34; --- Abstract syntax trees</a>
+              </li>
+              <li>
+                <a href="../library/asynchat.html"
+>&#34;asynchat&#34; --- Asynchronous socket command/response handler</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-api-index.html"
+>Índice de API de alto nivel</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-dev.html"
+>Desarrollando con asyncio</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-eventloop.html"
+class="is-current" aria-current="page">Event loop</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-exceptions.html"
+>Excepciones</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-extending.html"
+>Extensión</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-future.html"
+>Futures</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-graph.html"
+>Call graph introspection</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-llapi-index.html"
+>Índice de API de bajo nivel</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-platforms.html"
+>Soporte de plataforma</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-policy.html"
+>Políticas</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-protocol.html"
+>Transportes y protocolos</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-queue.html"
+>Colas</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-runner.html"
+>Runners</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-stream.html"
+>Streams</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-subprocess.html"
+>Sub-procesos</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-sync.html"
+>Primitivas de sincronización</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-task.html"
+>Coroutines and tasks</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-threading.html"
+>asyncio and free-threaded Python</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-tools.html"
+>Command-line introspection tools</a>
+              </li>
+              <li>
+                <a href="../library/asyncio.html"
+>&#34;asyncio&#34; --- Asynchronous I/O</a>
+              </li>
+              <li>
+                <a href="../library/asyncore.html"
+>&#34;asyncore&#34; --- Asynchronous socket handler</a>
+              </li>
+              <li>
+                <a href="../library/atexit.html"
+>&#34;atexit&#34; --- Exit handlers</a>
+              </li>
+              <li>
+                <a href="../library/audioop.html"
+>&#34;audioop&#34; --- Manipulate raw audio data</a>
+              </li>
+              <li>
+                <a href="../library/audit_events.html"
+>Tabla de auditoría de eventos</a>
+              </li>
+              <li>
+                <a href="../library/base64.html"
+>&#34;base64&#34; --- Base16, Base32, Base64, Base85 Data Encodings</a>
+              </li>
+              <li>
+                <a href="../library/bdb.html"
+>&#34;bdb&#34; --- Debugger framework</a>
+              </li>
+              <li>
+                <a href="../library/binary.html"
+>Servicios de datos binarios</a>
+              </li>
+              <li>
+                <a href="../library/binascii.html"
+>&#34;binascii&#34; --- Convert between binary and ASCII</a>
+              </li>
+              <li>
+                <a href="../library/bisect.html"
+>&#34;bisect&#34; --- Array bisection algorithm</a>
+              </li>
+              <li>
+                <a href="../library/builtins.html"
+>&#34;builtins&#34; --- Built-in objects</a>
+              </li>
+              <li>
+                <a href="../library/bz2.html"
+>&#34;bz2&#34; --- Support for **bzip2** compression</a>
+              </li>
+              <li>
+                <a href="../library/calendar.html"
+>&#34;calendar&#34; --- General calendar-related functions</a>
+              </li>
+              <li>
+                <a href="../library/cgi.html"
+>&#34;cgi&#34; --- Common Gateway Interface support</a>
+              </li>
+              <li>
+                <a href="../library/cgitb.html"
+>&#34;cgitb&#34; --- Traceback manager for CGI scripts</a>
+              </li>
+              <li>
+                <a href="../library/chunk.html"
+>&#34;chunk&#34; --- Read IFF chunked data</a>
+              </li>
+              <li>
+                <a href="../library/cmath.html"
+>&#34;cmath&#34; --- Mathematical functions for complex numbers</a>
+              </li>
+              <li>
+                <a href="../library/cmd.html"
+>&#34;cmd&#34; --- Support for line-oriented command interpreters</a>
+              </li>
+              <li>
+                <a href="../library/cmdline.html"
+>Modules command-line interface (CLI)</a>
+              </li>
+              <li>
+                <a href="../library/cmdlinelibs.html"
+>Command-line interface libraries</a>
+              </li>
+              <li>
+                <a href="../library/code.html"
+>&#34;code&#34; --- Interpreter base classes</a>
+              </li>
+              <li>
+                <a href="../library/codecs.html"
+>&#34;codecs&#34; --- Codec registry and base classes</a>
+              </li>
+              <li>
+                <a href="../library/codeop.html"
+>&#34;codeop&#34; --- Compile Python code</a>
+              </li>
+              <li>
+                <a href="../library/collections.abc.html"
+>&#34;collections.abc&#34; --- Abstract Base Classes for Containers</a>
+              </li>
+              <li>
+                <a href="../library/collections.html"
+>&#34;collections&#34; --- Container datatypes</a>
+              </li>
+              <li>
+                <a href="../library/colorsys.html"
+>&#34;colorsys&#34; --- Conversions between color systems</a>
+              </li>
+              <li>
+                <a href="../library/compileall.html"
+>&#34;compileall&#34; --- Byte-compile Python libraries</a>
+              </li>
+              <li>
+                <a href="../library/compression.html"
+>The &#34;compression&#34; package</a>
+              </li>
+              <li>
+                <a href="../library/compression.zstd.html"
+>&#34;compression.zstd&#34; --- Compression compatible with the Zstandard format</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Event loop</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#event-loop-methods">Event loop methods#</a></li>
+              <li class="lvl-3"><a href="#iniciar-y-para-el-bucle">Iniciar y para el bucle#</a></li>
+              <li class="lvl-3"><a href="#programacion-de-llamadas-de-retorno">Programación de llamadas de retorno#</a></li>
+              <li class="lvl-3"><a href="#planificando-llamadas-retardadas">Planificando llamadas retardadas#</a></li>
+              <li class="lvl-3"><a href="#creating-futures-and-tasks">Creating futures and tasks#</a></li>
+              <li class="lvl-3"><a href="#abriendo-conexiones-de-red">Abriendo conexiones de red#</a></li>
+              <li class="lvl-3"><a href="#creando-servidores-de-red">Creando servidores de red#</a></li>
+              <li class="lvl-3"><a href="#transfiriendo-archivos">Transfiriendo archivos#</a></li>
+              <li class="lvl-3"><a href="#tls-upgrade">TLS upgrade#</a></li>
+              <li class="lvl-3"><a href="#viendo-descriptores-de-archivos">Viendo descriptores de archivos#</a></li>
+              <li class="lvl-3"><a href="#trabajar-con-objetos-sockets-directamente">Trabajar con objetos sockets directamente#</a></li>
+              <li class="lvl-3"><a href="#dns">DNS#</a></li>
+              <li class="lvl-3"><a href="#trabajando-con-tuberias">Trabajando con tuberías#</a></li>
+              <li class="lvl-3"><a href="#senales-unix">Señales Unix#</a></li>
+              <li class="lvl-3"><a href="#ejecutando-codigo-en-un-hilos-o-grupos-de-procesos">Ejecutando código en un hilos o grupos de procesos#</a></li>
+              <li class="lvl-3"><a href="#error-handling-api">Error handling API#</a></li>
+              <li class="lvl-3"><a href="#habilitando-el-modo-depuracion">Habilitando el modo depuración#</a></li>
+              <li class="lvl-3"><a href="#running-subprocesses">Running subprocesses#</a></li>
+              <li class="lvl-2"><a href="#callback-handles">Callback handles#</a></li>
+              <li class="lvl-2"><a href="#server-objects">Server objects#</a></li>
+              <li class="lvl-2"><a href="#event-loop-implementations">Event loop implementations#</a></li>
+              <li class="lvl-2"><a href="#examples">Examples#</a></li>
+              <li class="lvl-3"><a href="#hola-mundo-con-call_soon">Hola Mundo con call_soon()#</a></li>
+              <li class="lvl-3"><a href="#muestra-la-fecha-actual-con-call_later">Muestra la fecha actual con call_later()#</a></li>
+              <li class="lvl-3"><a href="#mirar-un-descriptor-de-archivo-para-leer-eventos">Mirar un descriptor de archivo para leer eventos#</a></li>
+              <li class="lvl-3"><a href="#establece-los-gestores-de-senal-para-sigint-y-sigterm">Establece los gestores de señal para SIGINT y SIGTERM#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="event-loop">Event loop<a class="headerlink" href="#event-loop" title="Permanent link">#</a></h1>
+<p><strong>Código fuente:</strong> Lib/asyncio/events.py, Lib/asyncio/base_events.py</p>
+<p>======================================================================</p>
+<p>-[ Prólogo ]-</p>
+<p>El bucle de eventos es el núcleo de cada aplicación asyncio. Los
+bucles de eventos ejecutan tareas asíncronas y llamadas de retorno,
+realizan operaciones de E/S de red y ejecutan subprocesos.</p>
+<p>Los desarrolladores de aplicaciones normalmente deberían usar las
+funciones asyncio de alto nivel, como: "asyncio.run()", y rara vez
+deberían necesitar hacer referencia al objeto de bucle o llamar a sus
+métodos. Esta sección esta dirigida principalmente a autores de código
+de nivel inferior, bibliotecas y frameworks, quienes necesitan un
+control mas preciso sobre el comportamiento del bucle de eventos.</p>
+<p>-[ Obtención del bucle de eventos ]-</p>
+<p>Las siguientes funciones de bajo nivel se pueden utilizar para
+obtener, establecer o crear un bucle de eventos:</p>
+<p>asyncio.get_running_loop()</p>
+<p>Retorna el bucle de eventos en ejecución en el hilo del sistema
+   operativo actual.</p>
+<p>Raise a "RuntimeError" if there is no running event loop.</p>
+<p>This function can only be called from a coroutine or a callback.</p>
+<p>Added in version 3.7.</p>
+<p>asyncio.get_event_loop()</p>
+<p>Obtiene bucle de eventos actual.</p>
+<p>When called from a coroutine or a callback (e.g. scheduled with
+   call_soon or similar API), this function will always return the
+   running event loop.</p>
+<p>If there is no running event loop set, the function will return the
+   result of the "get_event_loop_policy().get_event_loop()" call.</p>
+<p>Dado que esta función tiene un comportamiento bastante complejo
+   (especialmente cuando están en uso las políticas de bucle de
+   eventos personalizadas), usar la función "get_running_loop()" es
+   preferible antes que "get_event_loop()" en corrutinas y llamadas de
+   retorno.</p>
+<p>As noted above, consider using the higher-level "asyncio.run()"
+   function, instead of using these lower level functions to manually
+   create and close an event loop.</p>
+<p>Distinto en la versión 3.14: Raises a "RuntimeError" if there is no
+   current event loop.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> The &quot;asyncio&quot; policy system is deprecated and will be removed in
+ Python 3.16; from there on, this function will return the current
+ running event loop if present else it will return the loop set by
+ &quot;set_event_loop()&quot;.
+</code></pre></div>
+
+<p>asyncio.set_event_loop(loop)</p>
+<p>Set <em>loop</em> as the current event loop for the current OS thread.</p>
+<p>asyncio.new_event_loop()</p>
+<p>Crea y retorna un nuevo objeto de bucle de eventos.</p>
+<p>Tenga en cuenta que el comportamiento de las funciones
+"get_event_loop()", "set_event_loop()", y "new_event_loop()" puede ser
+modificado mediante estableciendo una política de bucle de eventos
+personalizada.</p>
+<p>-[ Contenidos ]-</p>
+<p>Esta página de documentación contiene las siguientes secciones:</p>
+<ul>
+<li>
+<p>La sección Métodos del bucle de eventos es la documentación de
+  referencia de las APIs del bucle de eventos;</p>
+</li>
+<li>
+<p>La sección Callback Handles documenta las instancias "Handle" y
+  "TimerHandle" las cuales son retornadas por métodos planificados
+  como "loop.call_soon()" y "loop.call_later()";</p>
+</li>
+<li>
+<p>La sección Objetos del servidor documenta tipos retornados por los
+  métodos del bucle de eventos como "loop.create_server()";</p>
+</li>
+<li>
+<p>La sección Implementaciones de bucle de eventos documenta las clases
+  "SelectorEventLoop" y "ProactorEventLoop";</p>
+</li>
+<li>
+<p>La sección Ejemplos muestra como trabajar con algunas APIs de bucle
+  de eventos.</p>
+</li>
+</ul>
+<h2 id="event-loop-methods">Event loop methods<a class="headerlink" href="#event-loop-methods" title="Permanent link">#</a></h2>
+<p>Los bucles de eventos tienen APIs de <strong>bajo nivel</strong> para lo siguiente:</p>
+<ul>
+<li>
+<p>Iniciar y para el bucle</p>
+</li>
+<li>
+<p>Programación de llamadas de retorno</p>
+</li>
+<li>
+<p>Planificando llamadas retardadas</p>
+</li>
+<li>
+<p>Creating futures and tasks</p>
+</li>
+<li>
+<p>Abriendo conexiones de red</p>
+</li>
+<li>
+<p>Creando servidores de red</p>
+</li>
+<li>
+<p>Transfiriendo archivos</p>
+</li>
+<li>
+<p>TLS upgrade</p>
+</li>
+<li>
+<p>Viendo descriptores de archivos</p>
+</li>
+<li>
+<p>Trabajar con objetos sockets directamente</p>
+</li>
+<li>
+<p>DNS</p>
+</li>
+<li>
+<p>Trabajando con tuberías</p>
+</li>
+<li>
+<p>Señales Unix</p>
+</li>
+<li>
+<p>Ejecutando código en un hilos o grupos de procesos</p>
+</li>
+<li>
+<p>Error handling API</p>
+</li>
+<li>
+<p>Habilitando el modo depuración</p>
+</li>
+<li>
+<p>Running subprocesses</p>
+</li>
+</ul>
+<h3 id="iniciar-y-para-el-bucle">Iniciar y para el bucle<a class="headerlink" href="#iniciar-y-para-el-bucle" title="Permanent link">#</a></h3>
+<p>loop.run_until_complete(future)</p>
+<p>Se ejecuta hasta que <em>future</em> (una instancia de "Future") se haya
+   completado.</p>
+<p>Si el argumento es un objeto corrutina está implícitamente
+   planificado para ejecutarse como una "asyncio.Task".</p>
+<p>Retorna el resultado del Futuro o genera una excepción.</p>
+<p>loop.run_forever()</p>
+<p>Ejecuta el bucle de eventos hasta que "stop()" es llamado.</p>
+<p>If "stop()" is called before "run_forever()" is called, the loop
+   will poll the I/O selector once with a timeout of zero, run all
+   callbacks scheduled in response to I/O events (and those that were
+   already scheduled), and then exit.</p>
+<p>Si "stop()" es llamado mientras "run_forever()" se está ejecutando,
+   el loop ejecutará el lote actual de llamadas y después finalizará.
+   Tenga en cuenta que llamadas planificadas por otras llamadas no se
+   ejecutarán en este caso; en su lugar, ellas correrán la próxima vez
+   que "run_forever()" o "run_until_complete()" sean llamados.</p>
+<p>loop.stop()</p>
+<p>Detener el bucle de eventos.</p>
+<p>loop.is_running()</p>
+<p>Retorna "True" si el bucle de eventos esta en ejecución
+   actualmente.</p>
+<p>loop.is_closed()</p>
+<p>Retorna "True" si el bucle de eventos se cerró.</p>
+<p>loop.close()</p>
+<p>Cierra el bucle de eventos.</p>
+<p>El bucle no debe estar en ejecución cuando se llama a esta función.
+   Cualquier llamada de retorno pendiente será descartada.</p>
+<p>Este método limpia todas las colas y apaga el ejecutor, pero no
+   espera a que el ejecutor termine.</p>
+<p>Este método es idempotente e irreversible. No se debe llamar ningún
+   otro método después que el bucle de eventos es cerrado.</p>
+<p>async loop.shutdown_asyncgens()</p>
+<p>Schedule all currently open <em>asynchronous generator</em> objects to
+   close with an "aclose()" call.  After calling this method, the
+   event loop will issue a warning if a new asynchronous generator is
+   iterated. This should be used to reliably finalize all scheduled
+   asynchronous generators.</p>
+<p>Tenga en cuenta que no hay necesidad de llamar esta función cuando
+   "asyncio.run()" es utilizado.</p>
+<p>Ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>  try:
+      loop.run_forever()
+  finally:
+      loop.run_until_complete(loop.shutdown_asyncgens())
+      loop.close()
+</code></pre></div>
+
+<p>Added in version 3.6.</p>
+<p>async loop.shutdown_default_executor(timeout=None)</p>
+<p>Schedule the closure of the default executor and wait for it to
+   join all of the threads in the "ThreadPoolExecutor". Once this
+   method has been called, using the default executor with
+   "loop.run_in_executor()" will raise a "RuntimeError".</p>
+<p>The <em>timeout</em> parameter specifies the amount of time (in "float"
+   seconds) the executor will be given to finish joining. With the
+   default, "None", the executor is allowed an unlimited amount of
+   time.</p>
+<p>If the <em>timeout</em> is reached, a "RuntimeWarning" is emitted and the
+   default executor is terminated without waiting for its threads to
+   finish joining.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Do not call this method when using &quot;asyncio.run()&quot;, as the latter
+ handles default executor shutdown automatically.
+</code></pre></div>
+
+<p>Added in version 3.9.</p>
+<p>Distinto en la versión 3.12: Added the <em>timeout</em> parameter.</p>
+<h3 id="programacion-de-llamadas-de-retorno">Programación de llamadas de retorno<a class="headerlink" href="#programacion-de-llamadas-de-retorno" title="Permanent link">#</a></h3>
+<p>loop.call_soon(callback, *args, context=None)</p>
+<p>Programa el <em>callback</em> (retrollamada) <em>callback</em> para que se llame
+   con argumentos <em>args</em> en la próxima iteración del ciclo de eventos.</p>
+<p>Return an instance of "asyncio.Handle", which can be used later to
+   cancel the callback.</p>
+<p>Llamadas que son ejecutadas en el orden en el que fueron
+   registradas. Cada llamada será ejecutada exactamente una sola vez.</p>
+<p>The optional keyword-only <em>context</em> argument specifies a custom
+   "contextvars.Context" for the <em>callback</em> to run in. Callbacks use
+   the current context when no <em>context</em> is provided.</p>
+<p>Unlike "call_soon_threadsafe()", this method is not thread-safe.</p>
+<p>loop.call_soon_threadsafe(callback, *args, context=None)</p>
+<p>A thread-safe variant of "call_soon()". When scheduling callbacks
+   from another thread, this function <em>must</em> be used, since
+   "call_soon()" is not thread-safe.</p>
+<p>This function is safe to be called from a reentrant context or
+   signal handler, however, it is not safe or fruitful to use the
+   returned handle in such contexts.</p>
+<p>Lanza "RuntimeError" si se llama en un bucle que ha sido cerrado.
+   Esto puede suceder en un hilo secundario cuando la aplicación
+   principal se está apagando.</p>
+<p>Vea sección concurrencia y multiproceso de la documentación.</p>
+<p>Distinto en la versión 3.7: Fue agregado el parámetro solo de
+   palabra clave <em>context</em>. Vea <strong>PEP 567</strong> para mas detalles.</p>
+<p>Nota:</p>
+<p>La mayoría de las funciones planificadas de "asyncio" no permiten
+  pasar argumentos de palabra clave. Para hacer eso utilice
+  "functools.partial()":</p>
+<div class="codehilite"><pre><span></span><code> # will schedule &quot;print(&quot;Hello&quot;, flush=True)&quot;
+ loop.call_soon(
+     functools.partial(print, &quot;Hello&quot;, flush=True))
+</code></pre></div>
+
+<p>El uso de objetos parciales es usualmente mas conveniente que
+  utilizar lambdas, ya que asyncio puede renderizar mejor objetos
+  parciales en mensajes de depuración y error.</p>
+<h3 id="planificando-llamadas-retardadas">Planificando llamadas retardadas<a class="headerlink" href="#planificando-llamadas-retardadas" title="Permanent link">#</a></h3>
+<p>El bucle de eventos provee mecanismos para planificar funciones de
+llamadas que serán ejecutadas en algún punto en el futuro. El bucle de
+eventos usa relojes monotónicos para seguir el tiempo.</p>
+<p>loop.call_later(delay, callback, *args, context=None)</p>
+<p>Planifica <em>callback</em> para ser ejecutada luego de <em>delay</em> número de
+   segundos (puede ser tanto un entero como un flotante).</p>
+<p>Una instancia de "asyncio.TimerHandle" es retornada, la que puede
+   ser utilizada para cancelar la ejecución.</p>
+<p><em>callback</em> será ejecutada exactamente una sola vez. Si dos llamadas
+   son planificadas para el mismo momento exacto, el orden en el que
+   son ejecutadas es indefinido.</p>
+<p>The optional positional <em>args</em> will be passed to the callback when
+   it is called. Use "functools.partial()" to pass keyword arguments
+   to <em>callback</em>.</p>
+<p>Un argumento <em>context</em> opcional y solo de palabra clave que permite
+   especificar una clase "contextvars.Context" personalizada en la
+   cual <em>callback</em> será ejecutada. Cuando no se provee <em>context</em> el
+   contexto actual es utilizado.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> For performance, callbacks scheduled with &quot;loop.call_later()&quot; may
+ run up to one clock-resolution early (see
+ &quot;time.get_clock_info(&#39;monotonic&#39;).resolution&quot;).
+</code></pre></div>
+
+<p>Distinto en la versión 3.7: Fue agregado el parámetro solo de
+   palabra clave <em>context</em>. Vea <strong>PEP 567</strong> para mas detalles.</p>
+<p>Distinto en la versión 3.8: En Python 3.7 y versiones anteriores
+   con la implementación del bucle de eventos predeterminada, el
+   <em>delay</em> no puede exceder un día. Esto fue arreglado en Python 3.8.</p>
+<p>loop.call_at(when, callback, *args, context=None)</p>
+<p>Planifica <em>callback</em> para ser ejecutada en una marca de tiempo
+   absoluta <em>when</em> (un entero o un flotante), usando la misma
+   referencia de tiempo que "loop.time()".</p>
+<p>El comportamiento de este método es el mismo que "call_later()".</p>
+<p>Una instancia de "asyncio.TimerHandle" es retornada, la que puede
+   ser utilizada para cancelar la ejecución.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> For performance, callbacks scheduled with &quot;loop.call_at()&quot; may
+ run up to one clock-resolution early (see
+ &quot;time.get_clock_info(&#39;monotonic&#39;).resolution&quot;).
+</code></pre></div>
+
+<p>Distinto en la versión 3.7: Fue agregado el parámetro solo de
+   palabra clave <em>context</em>. Vea <strong>PEP 567</strong> para mas detalles.</p>
+<p>Distinto en la versión 3.8: En Python 3.7 y versiones anteriores
+   con la implementación del bucle de eventos predeterminada, la
+   diferencia entre <em>when</em> y el tiempo actual no puede exceder un día.
+   Esto fue arreglado en Python 3.8.</p>
+<p>loop.time()</p>
+<p>Retorna el tiempo actual, como un "float", de acuerdo al reloj
+   monotónico interno del bucle de evento.</p>
+<p>Nota:</p>
+<p>Distinto en la versión 3.8: En Python 3.7 y versiones anteriores los
+  tiempos de espera (<em>delay</em> relativo o <em>when</em> absoluto) no deben
+  exceder un día. Esto fue arreglado en Python 3.8.</p>
+<p>Ver también: La función "asyncio.sleep()".</p>
+<h3 id="creating-futures-and-tasks">Creating futures and tasks<a class="headerlink" href="#creating-futures-and-tasks" title="Permanent link">#</a></h3>
+<p>loop.create_future()</p>
+<p>Crea un objeto "asyncio.Future" adjunto al bucle de eventos.</p>
+<p>Esta es la manera preferida de crear Futures en asyncio. Esto
+   permite que bucles de eventos de terceros provean implementaciones
+   alternativas del objeto Future (con mejor rendimiento o
+   instrumentación).</p>
+<p>Added in version 3.5.2.</p>
+<p>loop.create_task(coro, <em>, name=None, context=None, eager_start=None, </em>*kwargs)</p>
+<p>Planifica la ejecución de la corrutina <em>coro</em>. Retorna un objeto
+   "Task".</p>
+<p>Bucles de eventos de terceros pueden usar sus propias subclases de
+   "Task" por interoperabilidad. En este caso, el tipo de resultado es
+   una subclase de "Task".</p>
+<p>The full function signature is largely the same as that of the
+   "Task" constructor (or factory) - all of the keyword arguments to
+   this function are passed through to that interface.</p>
+<p>Si el argumento <em>name</em> es provisto y no "None", se establece como
+   el nombre de la tarea usando "Task.set_name()".</p>
+<p>Un argumento opcional y solo de palabra clave <em>context</em> que permite
+   especificar una clase "contextvars.Context" personalizada en la
+   cual <em>coro</em> será ejecutada. Cuando no se provee <em>context</em> el
+   contexto actual es utilizado.</p>
+<p>An optional keyword-only <em>eager_start</em> argument allows specifying
+   if the task should execute eagerly during the call to create_task,
+   or be scheduled later. If <em>eager_start</em> is not passed the mode set
+   by "loop.set_task_factory()" will be used.</p>
+<p>Distinto en la versión 3.8: Agregado el parámetro <em>name</em>.</p>
+<p>Distinto en la versión 3.11: Agregado el parámetro <em>context</em>.</p>
+<p>Distinto en la versión 3.13.3: Added "kwargs" which passes on
+   arbitrary extra parameters, including  "name" and "context".</p>
+<p>Distinto en la versión 3.13.4: Rolled back the change that passes
+   on <em>name</em> and <em>context</em> (if it is None), while still passing on
+   other arbitrary keyword arguments (to avoid breaking backwards
+   compatibility with 3.13.3).</p>
+<p>Distinto en la versión 3.14: All <em>kwargs</em> are now passed on. The
+   <em>eager_start</em> parameter works with eager task factories.</p>
+<p>loop.set_task_factory(factory)</p>
+<p>Establece una fábrica de tareas que será utilizada por
+   "loop.create_task()".</p>
+<p>If <em>factory</em> is "None" the default task factory will be set.
+   Otherwise, <em>factory</em> must be a <em>callable</em> with the signature
+   matching "(loop, coro, <em><em>kwargs)", where </em>loop</em> is a reference to
+   the active event loop, and <em>coro</em> is a coroutine object.  The
+   callable must pass on all <em>kwargs</em>, and return a
+   "asyncio.Task"-compatible object.</p>
+<p>Distinto en la versión 3.13.3: Required that all <em>kwargs</em> are
+   passed on to "asyncio.Task".</p>
+<p>Distinto en la versión 3.13.4: <em>name</em> is no longer passed to task
+   factories. <em>context</em> is no longer passed to task factories if it is
+   "None".</p>
+<p>Distinto en la versión 3.14: <em>name</em> and <em>context</em> are now
+   unconditionally passed on to task factories again.</p>
+<p>loop.get_task_factory()</p>
+<p>Retorna una fábrica de tareas o "None" si la predefinida está en
+   uso.</p>
+<h3 id="abriendo-conexiones-de-red">Abriendo conexiones de red<a class="headerlink" href="#abriendo-conexiones-de-red" title="Permanent link">#</a></h3>
+<p>async loop.create_connection(protocol_factory, host=None, port=None, *, ssl=None, family=0, proto=0, flags=0, sock=None, local_addr=None, server_hostname=None, ssl_handshake_timeout=None, ssl_shutdown_timeout=None, happy_eyeballs_delay=None, interleave=None, all_errors=False)</p>
+<p>Abre una conexión de transmisión de transporte a una dirección
+   especificada por <em>host</em> y <em>port</em>.</p>
+<p>The socket family can be either "AF_INET" or "AF_INET6" depending
+   on <em>host</em> (or the <em>family</em> argument, if provided).</p>
+<p>The socket type will be "SOCK_STREAM".</p>
+<p><em>protocol_factory</em> debe ser un ejecutable que retorna una
+   implementación del asyncio protocol.</p>
+<p>Este método tratará de establecer la conexión en un segundo plano.
+   Cuando es exitosa, retorna un par "(transport, protocol)".</p>
+<p>La sinopsis cronológica de las operaciones subyacentes es como
+   sigue:</p>
+<ol>
+<li>
+<p>La conexión es establecida y un transporte es creado para ello.</p>
+</li>
+<li>
+<p><em>protocol_factory</em> es llamado sin argumentos y se espera que
+      retorne una instancia de protocol.</p>
+</li>
+<li>
+<p>La instancia del protocolo se acopla con el transporte mediante
+      el llamado de su método "connection_made()".</p>
+</li>
+<li>
+<p>Una tupla "(transport, protocol)" es retornada cuando se tiene
+      éxito.</p>
+</li>
+</ol>
+<p>El transporte creado es una transmisión (<em>stream</em>) bidireccional
+   que depende de la implementación.</p>
+<p>Otros argumentos:</p>
+<ul>
+<li>
+<p><em>ssl</em>: si se provee y no es falso, un transporte SSL/TLS es
+     creado (de manera predeterminada se crea un transporte TCP
+     plano).  Si <em>ssl</em> es un objeto "ssl.SSLContext", este contexto es
+     utilizado para crear el transporte; si <em>ssl</em> es "True", se
+     utiliza un contexto predeterminado retornado por
+     "ssl.create_default_context()".</p>
+<p>Ver también: Consideraciones de seguridad SSL/TLS</p>
+</li>
+<li>
+<p><em>server_hostname</em> establece o reemplaza el nombre de servidor
+     (<em>hostname</em>) contra el cual el certificado del servidor de
+     destino será comparado. Sólo debería ser pasado si <em>ssl</em> no es
+     "None". De manera predeterminada es usado el valor del argumento
+     <em>host</em>.  Si <em>host</em> está vacío, no hay valor predeterminado y
+     debes pasar un valor para <em>server_hostname</em>. Si <em>server_hostname</em>
+     es una cadena vacía, la comparación de nombres de servidores es
+     deshabilitada (lo que es un riesgo de seguridad serio,
+     permitiendo potenciales ataques de hombre-en-el-medio, <em>man-in-
+     the-middle attacks</em>).</p>
+</li>
+<li>
+<p><em>family</em>, <em>proto</em>, <em>flags</em> son dirección de familia, protocolo y
+     banderas opcionales que serán pasadas a través de <em>getaddrinfo()</em>
+     para la resolución de <em>host</em>. Si están dados, todos ellos
+     deberían ser enteros de las constantes del módulo "socket"
+     correspondiente.</p>
+</li>
+<li>
+<p><em>happy_eyeballs_delay</em>, si se proporciona, habilita Happy
+     Eyeballs para esta conexión. Debe ser un número de punto flotante
+     que represente la cantidad de tiempo en segundos para esperar a
+     que se complete un intento de conexión, antes de comenzar el
+     siguiente intento en paralelo. Este es el "Retraso de intento de
+     conexión" como se define en <strong>RFC 8305</strong>. Un valor predeterminado
+     sensato recomendado por el RFC es "0.25" (250 milisegundos).</p>
+</li>
+<li>
+<p><em>interleave</em> controla reordenamientos de dirección cuando un
+     nombre de servidor resuelve a múltiples direcciones IP. Si es "0"
+     o no es especificado, no se hace ningún reordenamiento, y las
+     direcciones son intentadas en el orden retornado por
+     "getaddrinfo()". Si un entero positivo es especificado, las
+     direcciones son intercaladas por dirección de familia, y el
+     entero dado es interpretado como "Número de familias de la
+     primera dirección" (<em>First Address Family Count</em>) como es
+     definida en <strong>RFC 8305</strong>. El valor predefinido es "0" si
+     <em>happy_eyeballs_delay</em> no es especificado, y "1" si lo es.</p>
+</li>
+<li>
+<p><em>sock</em>, si está dado, debe ser un objeto "socket.socket"
+     existente y ya conectado, que será utilizado por el transporte.
+     Si <em>sock</em> es dado, ningún <em>host</em>, <em>port</em>, <em>family</em>, <em>proto</em>,
+     <em>flags</em>, <em>happy_eyeballs_delay</em>, <em>interleave</em> o <em>local_addr</em>
+     deben ser especificados.</p>
+<p>Nota:</p>
+<p>El argumento <em>sock</em> transfiere la propiedad del socket al
+   transporte creado. Para cerrar el socket, llame al método
+   "close()" del transporte.</p>
+</li>
+<li>
+<p><em>local_addr</em>, si está dado, es una tupla "(local_host,
+     local_port)" usada para enlazar el socket localmente.  Los
+     <em>local_host</em> y <em>local_port</em> son buscados usando "getaddrinfo()",
+     de manera similar que con <em>host</em> y <em>port</em>.</p>
+</li>
+<li>
+<p><em>ssl_handshake_timeout</em> es (para una conexión TLS) el tiempo en
+     segundos a esperar que se complete el <em>handshake</em> TLS antes de
+     abortar la conexión. "60.0" segundos si es "None" (predefinido).</p>
+</li>
+<li>
+<p><em>ssl_shutdown_timeout</em> es el tiempo en segundos a esperar a que
+     se complete el apagado SSL antes de abortar la conexión. "30.0"
+     segundos si es "None" (predefinido).</p>
+</li>
+<li>
+<p><em>all_errors</em> determines what exceptions are raised when a
+     connection cannot be created. By default, only a single
+     "Exception" is raised: the first exception if there is only one
+     or all errors have same message, or a single "OSError" with the
+     error messages combined. When "all_errors" is "True", an
+     "ExceptionGroup" will be raised containing all exceptions (even
+     if there is only one).</p>
+</li>
+</ul>
+<p>Distinto en la versión 3.5: Agregado el soporte para SSL/TLS en
+   "ProactorEventLoop".</p>
+<p>Distinto en la versión 3.6: The socket option socket.TCP_NODELAY is
+   set by default for all TCP connections.</p>
+<p>Distinto en la versión 3.7: Agregado el parámetro
+   <em>ssl_handshake_timeout</em>.</p>
+<p>Distinto en la versión 3.8: Agregados los parámetros
+   <em>happy_eyeballs_delay</em> y <em>interleave</em>.Happy Eyeballs Algorithm:
+   Success with Dual-Stack Hosts. When a server's IPv4 path and
+   protocol are working, but the server's IPv6 path and protocol are
+   not working, a dual-stack client application experiences
+   significant connection delay compared to an IPv4-only client.  This
+   is undesirable because it causes the dual-stack client to have a
+   worse user experience.  This document specifies requirements for
+   algorithms that reduce this user-visible delay and provides an
+   algorithm.For more information:
+   https://datatracker.ietf.org/doc/html/rfc6555</p>
+<p>Distinto en la versión 3.11: Agregado el parámetro
+   <em>ssl_shutdown_timeout</em>.</p>
+<p>Distinto en la versión 3.12: <em>all_errors</em> was added.</p>
+<p>Ver también:</p>
+<div class="codehilite"><pre><span></span><code> La función &quot;open_connection()&quot; es una API alternativa de alto
+ nivel. Retorna un par de (&quot;StreamReader&quot;, &quot;StreamWriter&quot;) que
+ puede ser usado directamente en código async/await.
+</code></pre></div>
+
+<p>async loop.create_datagram_endpoint(protocol_factory, local_addr=None, remote_addr=None, *, family=0, proto=0, flags=0, reuse_port=None, allow_broadcast=None, sock=None)</p>
+<p>Crea un datagrama de conexión.</p>
+<p>The socket family can be either "AF_INET", "AF_INET6", or
+   "AF_UNIX", depending on <em>host</em> (or the <em>family</em> argument, if
+   provided).</p>
+<p>The socket type will be "SOCK_DGRAM".</p>
+<p><em>protocol_factory</em> debe ser un ejecutable que retorne una
+   implementación de protocol.</p>
+<p>Una tupla de "(transport, protocol)" es retornada cuando se tiene
+   éxito.</p>
+<p>Otros argumentos:</p>
+<ul>
+<li>
+<p><em>local_addr</em>, si está dado, es una tupla "(local_host,
+     local_port)" usada para enlazar el socket localmente.  Los
+     <em>local_host</em> y <em>local_port</em> son buscados utilizando
+     "getaddrinfo()".</p>
+<p>Nota:</p>
+<p>On Windows, when using the proactor event loop with
+   "local_addr=None", an "OSError" with "errno.WSAEINVAL" will be
+   raised when running it.</p>
+</li>
+<li>
+<p><em>remote_addr</em>, si está dado, es una tupla "(remote_host,
+     remote_port)" utilizada para conectar el socket a una dirección
+     remota. Los <em>remote_host</em> y <em>remote_port</em> son buscados utilizando
+     "getaddrinfo()".</p>
+</li>
+<li>
+<p><em>family</em>, <em>proto</em>, <em>flags</em> son direcciones de familia, protocolo
+     y banderas opcionales que serán pasadas a través de
+     "getaddrinfo()" para la resolución de <em>host</em>. Si está dado, estos
+     deben ser todos enteros de las constantes del módulo "socket"
+     correspondiente.</p>
+</li>
+<li>
+<p><em>reuse_port</em> tells the kernel to allow this endpoint to be bound
+     to the same port as other existing endpoints are bound to, so
+     long as they all set this flag when being created. This option is
+     not supported on Windows and some Unixes. If the
+     socket.SO_REUSEPORT constant is not defined then this capability
+     is unsupported.</p>
+</li>
+<li>
+<p><em>allow_broadcast</em> dice al kernel que habilite este punto de
+     conexión para enviar mensajes a la dirección de transmisión
+     (<em>broadcast</em>).</p>
+</li>
+<li>
+<p><em>sock</em> puede opcionalmente ser especificado para usar un objeto
+     "socket.socket" preexistente y ya conectado que será utilizado
+     por el transporte. Si están especificados, <em>local_addr</em> y
+     <em>remote_addr</em> deben ser omitidos (tienen que ser "None").</p>
+<p>Nota:</p>
+<p>El argumento <em>sock</em> transfiere la propiedad del socket al
+   transporte creado. Para cerrar el socket, llame al método
+   "close()" del transporte.</p>
+</li>
+</ul>
+<p>Refiérase a los ejemplos UDP echo client protocol y UDP echo server
+   protocol.</p>
+<p>Distinto en la versión 3.4.4: Los parámetros <em>family</em>, <em>proto</em>,
+   <em>flags</em>, <em>reuse_address</em>, <em>reuse_port</em>, <em>allow_broadcast</em> y <em>sock</em>
+   fueron agregados.</p>
+<p>Distinto en la versión 3.8: Se agregó soporte para Windows.</p>
+<p>Distinto en la versión 3.8.1: The <em>reuse_address</em> parameter is no
+   longer supported, as using socket.SO_REUSEADDR poses a significant
+   security concern for UDP. Explicitly passing "reuse_address=True"
+   will raise an exception.Cuando múltiples procesos con UIDs
+   diferentes asignan sockets a una misma dirección socket UDP con
+   "SO_REUSEADDR", los paquetes entrantes pueden distribuirse
+   aleatoriamente entre los sockets.For supported platforms,
+   <em>reuse_port</em> can be used as a replacement for similar
+   functionality. With <em>reuse_port</em>, socket.SO_REUSEPORT is used
+   instead, which specifically prevents processes with differing UIDs
+   from assigning sockets to the same socket address.</p>
+<p>Distinto en la versión 3.11: The <em>reuse_address</em> parameter,
+   disabled since Python 3.8.1, 3.7.6 and 3.6.10, has been entirely
+   removed.</p>
+<p>async loop.create_unix_connection(protocol_factory, path=None, *, ssl=None, sock=None, server_hostname=None, ssl_handshake_timeout=None, ssl_shutdown_timeout=None)</p>
+<p>Crear una conexión Unix.</p>
+<p>The socket family will be "AF_UNIX"; socket type will be
+   "SOCK_STREAM".</p>
+<p>Una tupla de "(transport, protocol)" es retornada cuando se tiene
+   éxito.</p>
+<p><em>path</em> es el nombre de un dominio de un socket Unix y es requerido,
+   a menos que un parámetro <em>sock</em> sea especificado. Los socket Unix
+   abstractos, "str", "bytes", y "Path" son soportados.</p>
+<p>Vea la documentación del método "loop.create_connection()" para
+   información acerca de los argumentos de este método.</p>
+<p>Availability: Unix.</p>
+<p>Distinto en la versión 3.7: Agregado el parámetro
+   <em>ssl_handshake_timeout</em>. El parámetro <em>path</em> ahora puede ser un
+   <em>path-like object</em>.</p>
+<p>Distinto en la versión 3.11: Agregado el parámetro
+   <em>ssl_shutdown_timeout</em>.</p>
+<h3 id="creando-servidores-de-red">Creando servidores de red<a class="headerlink" href="#creando-servidores-de-red" title="Permanent link">#</a></h3>
+<p>async loop.create_server(protocol_factory, host=None, port=None, *, family=socket.AF_UNSPEC, flags=socket.AI_PASSIVE, sock=None, backlog=100, ssl=None, reuse_address=None, reuse_port=None, keep_alive=None, ssl_handshake_timeout=None, ssl_shutdown_timeout=None, start_serving=True)</p>
+<p>Create a TCP server (socket type "SOCK_STREAM") listening on <em>port</em>
+   of the <em>host</em> address.</p>
+<p>Retorna un objeto "Server".</p>
+<p>Argumentos:</p>
+<ul>
+<li>
+<p><em>protocol_factory</em> debe ser un ejecutable que retorne una
+     implementación de protocol.</p>
+</li>
+<li>
+<p>El parámetro <em>host</em> puede ser establecido a distintos tipos que
+     determinan donde el servidor estaría escuchando:</p>
+<ul>
+<li>
+<p>Si <em>host</em> es una cadena, el servidor TCP está enlazado a una
+   sola interfaz de red especificada por <em>host</em>.</p>
+</li>
+<li>
+<p>Si <em>host</em> es una secuencia de cadenas, el servidor TCP está
+   enlazado a todas las interfaces de red especificadas por la
+   secuencia.</p>
+</li>
+<li>
+<p>Si <em>host</em> es una cadena vacía o "None", se asumen todas las
+   interfaces y una lista con múltiples sockets será retornada
+   (mas probablemente uno para IPv4 y otro para IPv6).</p>
+</li>
+</ul>
+</li>
+<li>
+<p>El parámetro <em>port</em> puede establecerse para especificar en qué
+     puerto debe escuchar el servidor. Si es "0" o "None" (por
+     defecto), se seleccionará un puerto aleatorio no utilizado (tenga
+     en cuenta que si <em>host</em> resuelve a múltiples interfaces de red,
+     se seleccionará un puerto aleatorio diferente para cada
+     interfaz).</p>
+</li>
+<li>
+<p><em>family</em> can be set to either "socket.AF_INET" or "AF_INET6" to
+     force the socket to use IPv4 or IPv6. If not set, the <em>family</em>
+     will be determined from host name (defaults to "AF_UNSPEC").</p>
+</li>
+<li>
+<p><em>flags</em> es una máscara de bits para "getaddrinfo()".</p>
+</li>
+<li>
+<p><em>sock</em> puede ser especificado opcionalmente para usar objetos
+     socket preexistentes. Si se utiliza, entonces <em>host</em> y <em>port</em> no
+     deben ser especificados.</p>
+<p>Nota:</p>
+<p>El argumento <em>sock</em> transfiere la propiedad del socket al
+   servidor creado. Para cerrar el socket, llame al método
+   "close()" del servidor.</p>
+</li>
+<li>
+<p><em>backlog</em> es el número máximo de conexiones encoladas pasadas a
+     "listen()" (el valor predeterminado es 100).</p>
+</li>
+<li>
+<p><em>ssl</em> puede ser establecido como una instancia de "SSLContext"
+     para habilitar TLS sobre las conexiones aceptadas.</p>
+</li>
+<li>
+<p><em>reuse_address</em> indica al kernel que reutilice un socket local en
+     estado "TIME_WAIT", sin esperar que su plazo de ejecución expire.
+     Si no es especificado será establecido automáticamente como
+     "True" en Unix.</p>
+</li>
+<li>
+<p><em>reuse_port</em> dice al kernel que habilite este punto de conexión
+     para ser unido al mismo puerto de la misma forma que otros puntos
+     de conexión existentes también están unidos, siempre y cuando
+     todos ellos establezcan esta bandera al ser creados.</p>
+</li>
+<li>
+<p><em>keep_alive</em> set to "True" keeps connections active by enabling
+     the periodic transmission of messages.</p>
+</li>
+</ul>
+<p>Distinto en la versión 3.13: Added the <em>keep_alive</em> parameter.</p>
+<ul>
+<li>
+<p><em>ssl_handshake_timeout</em> es (para un servidor TLS) el tiempo en
+     segundos a esperar por el apretón de manos (<em>handshake</em>) TLS a
+     ser completado antes de abortar la conexión. "60.0" si es "None"
+     (su valor predeterminado).</p>
+</li>
+<li>
+<p><em>ssl_shutdown_timeout</em> es el tiempo en segundos a esperar a que
+     se complete el apagado SSL antes de abortar la conexión. "30.0"
+     segundos si es "None" (predefinido).</p>
+</li>
+<li>
+<p><em>start_serving</em> establecido como "True" (de manera
+     predeterminada) produce que los servidores creados comiencen a
+     aceptar conexiones inmediatamente. Si es establecido como
+     "False", el usuario debe esperar por "Server.start_serving()" o
+     "Server.serve_forever()" para que el servidor comience a aceptar
+     conexiones.</p>
+</li>
+</ul>
+<p>Distinto en la versión 3.5: Agregado el soporte para SSL/TLS en
+   "ProactorEventLoop".</p>
+<p>Distinto en la versión 3.5.1: El parámetro <em>host</em> puede ser una
+   secuencia de cadenas.</p>
+<p>Distinto en la versión 3.6: Added <em>ssl_handshake_timeout</em> and
+   <em>start_serving</em> parameters. The socket option socket.TCP_NODELAY is
+   set by default for all TCP connections.</p>
+<p>Distinto en la versión 3.11: Agregado el parámetro
+   <em>ssl_shutdown_timeout</em>.</p>
+<p>Ver también:</p>
+<div class="codehilite"><pre><span></span><code> La función &quot;start_server()&quot; es una API alternativa de alto nivel
+ que retorna un par de &quot;StreamReader&quot; y &quot;StreamWriter&quot; que pueden
+ ser usados en código async/await.
+</code></pre></div>
+
+<p>async loop.create_unix_server(protocol_factory, path=None, *, sock=None, backlog=100, ssl=None, ssl_handshake_timeout=None, ssl_shutdown_timeout=None, start_serving=True, cleanup_socket=True)</p>
+<p>Similar to "loop.create_server()" but works with the "AF_UNIX"
+   socket family.</p>
+<p><em>path</em> es el nombre de un dominio de socket Unix, y es requerido a
+   menos que el argumento <em>sock</em> sea provisto. Son soportados sockets
+   unix abstractos, "str", "bytes", y rutas "Path".</p>
+<p>If <em>cleanup_socket</em> is true then the Unix socket will automatically
+   be removed from the filesystem when the server is closed, unless
+   the socket has been replaced after the server has been created.</p>
+<p>Vea la documentación de el método "loop.create_server()" para mas
+   información acerca de los argumentos de este método.</p>
+<p>Availability: Unix.</p>
+<p>Distinto en la versión 3.7: Agregados los parámetros
+   <em>ssl_handshake_timeout</em> y <em>start_serving</em>. El parámetro <em>path</em>
+   ahora puede ser un objeto "Path".</p>
+<p>Distinto en la versión 3.11: Agregado el parámetro
+   <em>ssl_shutdown_timeout</em>.</p>
+<p>Distinto en la versión 3.13: Added the <em>cleanup_socket</em> parameter.</p>
+<p>async loop.connect_accepted_socket(protocol_factory, sock, *, ssl=None, ssl_handshake_timeout=None, ssl_shutdown_timeout=None)</p>
+<p>Envuelve una conexión ya aceptada en un par de
+   transporte/protocolo.</p>
+<p>Este método puede ser usado por servidores que acepten conexiones
+   por fuera de asyncio, pero que usen asyncio para manejarlas.</p>
+<p>Parámetros:</p>
+<ul>
+<li>
+<p><em>protocol_factory</em> debe ser un ejecutable que retorne una
+     implementación de protocol.</p>
+</li>
+<li>
+<p><em>sock</em> es un objeto socket preexistente retornado por
+     "socket.accept".</p>
+<p>Nota:</p>
+<p>El argumento <em>sock</em> transfiere la propiedad del socket al
+   transporte creado. Para cerrar el socket, llame al método
+   "close()" del transporte.</p>
+</li>
+<li>
+<p><em>ssl</em> puede ser establecido como un "SSLContext" para habilitar
+     SSL sobre las conexiones aceptadas.</p>
+</li>
+<li>
+<p><em>ssl_handshake_timeout</em> es (para una conexión SSL) el tiempo en
+     segundos que se esperará para que se complete el apretón de manos
+     (<em>handshake</em>) SSL antes de abortar la conexión. "60.0" si es
+     "None" (su valor predeterminado).</p>
+</li>
+<li>
+<p><em>ssl_shutdown_timeout</em> es el tiempo en segundos a esperar a que
+     se complete el apagado SSL antes de abortar la conexión. "30.0"
+     segundos si es "None" (predefinido).</p>
+</li>
+</ul>
+<p>Retorna un par "(transport, protocol)".</p>
+<p>Added in version 3.5.3.</p>
+<p>Distinto en la versión 3.7: Agregado el parámetro
+   <em>ssl_handshake_timeout</em>.</p>
+<p>Distinto en la versión 3.11: Agregado el parámetro
+   <em>ssl_shutdown_timeout</em>.</p>
+<h3 id="transfiriendo-archivos">Transfiriendo archivos<a class="headerlink" href="#transfiriendo-archivos" title="Permanent link">#</a></h3>
+<p>async loop.sendfile(transport, file, offset=0, count=None, *, fallback=True)</p>
+<p>Envía un <em>file</em> a través de un <em>transport</em>. Retorna el numero total
+   de bytes enviados.</p>
+<p>El método usa "os.sendfile()" de alto rendimiento si está
+   disponible.</p>
+<p><em>file</em> debe ser un objeto de archivo regular abierto en modo
+   binario.</p>
+<p><em>offset</em> indica desde donde se empezará a leer el archivo. Si es
+   especificado, <em>count</em> es el número total de bytes a transmitir en
+   contraposición con enviar el archivo hasta que se alcance EOF. La
+   posición del archivo es actualizada siempre, incluso cuando este
+   método genere un error, y "file.tell()" puede ser usado para
+   obtener el número de bytes enviados hasta el momento.</p>
+<p><em>fallback</em> establecido como "True" hace que asyncio lea y envíe el
+   archivo manualmente cuando la plataforma no soporta la llamada de
+   envío de archivos del sistema (por ejemplo, Windows o sockets SSL
+   en Unix).</p>
+<p>Lanza "SendfileNotAvailableError" si el sistema no soporta la
+   llamada de envío de archivos del sistema y <em>fallback</em> es "True".</p>
+<p>Added in version 3.7.</p>
+<h3 id="tls-upgrade">TLS upgrade<a class="headerlink" href="#tls-upgrade" title="Permanent link">#</a></h3>
+<p>async loop.start_tls(transport, protocol, sslcontext, *, server_side=False, server_hostname=None, ssl_handshake_timeout=None, ssl_shutdown_timeout=None)</p>
+<p>Actualiza una conexión basada en transporte ya existente a TLS.</p>
+<p>Create a TLS coder/decoder instance and insert it between the
+   <em>transport</em> and the <em>protocol</em>. The coder/decoder implements both
+   <em>transport</em>-facing protocol and <em>protocol</em>-facing transport.</p>
+<p>Return the created two-interface instance. After <em>await</em>, the
+   <em>protocol</em> must stop using the original <em>transport</em> and communicate
+   with the returned object only because the coder caches
+   <em>protocol</em>-side data and sporadically exchanges extra TLS session
+   packets with <em>transport</em>.</p>
+<p>In some situations (e.g. when the passed transport is already
+   closing) this may return "None".</p>
+<p>Parámetros:</p>
+<ul>
+<li>
+<p>Las instancias <em>transport</em> y <em>protocol</em> que retornan los métodos
+     como "create_server()" y "create_connection()".</p>
+</li>
+<li>
+<p><em>sslcontext</em>: una instancia configurada de "SSLContext".</p>
+</li>
+<li>
+<p><em>server_side</em> pasa <em>True</em> cuando se actualiza una conexión del
+     lado del servidor (como en el caso de una creada por
+     "create_server()").</p>
+</li>
+<li>
+<p><em>server_hostname</em>: establece o reemplaza el nombre del host
+     contra el cual se compara el certificado del servidor de destino.</p>
+</li>
+<li>
+<p><em>ssl_handshake_timeout</em> es (para una conexión TLS) el tiempo en
+     segundos a esperar que se complete el <em>handshake</em> TLS antes de
+     abortar la conexión. "60.0" segundos si es "None" (predefinido).</p>
+</li>
+<li>
+<p><em>ssl_shutdown_timeout</em> es el tiempo en segundos a esperar a que
+     se complete el apagado SSL antes de abortar la conexión. "30.0"
+     segundos si es "None" (predefinido).</p>
+</li>
+</ul>
+<p>Added in version 3.7.</p>
+<p>Distinto en la versión 3.11: Agregado el parámetro
+   <em>ssl_shutdown_timeout</em>.</p>
+<h3 id="viendo-descriptores-de-archivos">Viendo descriptores de archivos<a class="headerlink" href="#viendo-descriptores-de-archivos" title="Permanent link">#</a></h3>
+<p>loop.add_reader(fd, callback, *args)</p>
+<p>Empieza a monitorear el descriptor de archivos <em>fd</em> para
+   disponibilidad de lectura e invoca <em>callback</em> con los argumentos
+   especificados una vez que <em>fd</em> está habilitado para ser leído.</p>
+<p>Any preexisting callback registered for <em>fd</em> is cancelled and
+   replaced by <em>callback</em>.</p>
+<p>loop.remove_reader(fd)</p>
+<p>Stop monitoring the <em>fd</em> file descriptor for read availability.
+   Returns "True" if <em>fd</em> was previously being monitored for reads.</p>
+<p>loop.add_writer(fd, callback, *args)</p>
+<p>Start monitoring the <em>fd</em> file descriptor for write availability
+   and invoke <em>callback</em> with the specified arguments <em>args</em> once <em>fd</em>
+   is available for writing.</p>
+<p>Any preexisting callback registered for <em>fd</em> is cancelled and
+   replaced by <em>callback</em>.</p>
+<p>Use "functools.partial()" para pasar argumentos de palabra clave a
+   <em>callback</em>.</p>
+<p>loop.remove_writer(fd)</p>
+<p>Stop monitoring the <em>fd</em> file descriptor for write availability.
+   Returns "True" if <em>fd</em> was previously being monitored for writes.</p>
+<p>Vea también la sección Soporte de plataforma para algunas limitaciones
+de estos métodos.</p>
+<h3 id="trabajar-con-objetos-sockets-directamente">Trabajar con objetos sockets directamente<a class="headerlink" href="#trabajar-con-objetos-sockets-directamente" title="Permanent link">#</a></h3>
+<p>En general, implementaciones de protocolo que usen APIs basadas en
+transporte como "loop.create_connection()" y "loop.create_server()"
+son mas rápidas que aquellas implementaciones que trabajan con
+directamente con sockets. De cualquier forma, hay algunos casos de uso
+en los cuales el rendimiento no es crítico, y trabajar directamente
+con objetos "socket" es mas conveniente.</p>
+<p>async loop.sock_recv(sock, nbytes)</p>
+<p>Recibe hasta <em>nbytes</em> de <em>sock</em>. Versión asíncrona de
+   "socket.recv()".</p>
+<p>Retorna los datos recibidos como un objeto bytes.</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Distinto en la versión 3.7: A pesar de que este método siempre fue
+   documentado como un método de corrutina, los lanzamientos previos a
+   Python 3.7 retornaban un "Future". Desde Python 3.7 este es un
+   método "async def".</p>
+<p>async loop.sock_recv_into(sock, buf)</p>
+<p>Recibe datos desde <em>sock</em> en el búfer <em>buf</em>. Modelado después del
+   método bloqueante "socket.recv_into()".</p>
+<p>Retorna el número de bytes escritos en el búfer.</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Added in version 3.7.</p>
+<p>async loop.sock_recvfrom(sock, bufsize)</p>
+<p>Recibe un datagrama de hasta <em>bufsize</em> de <em>sock</em>.  Versión
+   asíncrona de "socket.recvfrom()".</p>
+<p>Retorna una tupla de (datos recibidos, dirección remota).</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Added in version 3.11.</p>
+<p>async loop.sock_recvfrom_into(sock, buf, nbytes=0)</p>
+<p>Recibe un datagrama de hasta <em>nbytes</em> de <em>sock</em> en <em>buf</em>. Versión
+   asíncrona de "socket.recvfrom_into()".</p>
+<p>Retorna una dupla de (número de bytes recibidos, dirección remota).</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Added in version 3.11.</p>
+<p>async loop.sock_sendall(sock, data)</p>
+<p>Envía <em>data</em> al socket <em>sock</em>. Versión asíncrona de
+   "socket.sendall()".</p>
+<p>Este método continua enviando al socket hasta que se hayan enviado
+   todos los datos en <em>data</em> u ocurra un error. "None" es retornado
+   cuando se tiene éxito. Cuando ocurre un error, se lanza una
+   excepción. Adicionalmente, no hay manera de determinar cuantos
+   datos, si es que se hubo alguno, se procesaron correctamente por el
+   extremo receptor de la conexión.</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Distinto en la versión 3.7: A pesar de que este método siempre fue
+   documentado como un método de corrutina, antes de Python 3.7
+   retorna un "Future". Desde Python 3.7, este es un método "async
+   def".</p>
+<p>async loop.sock_sendto(sock, data, address)</p>
+<p>Envía un datagrama desde <em>sock</em> a <em>address</em>. Versión asíncrona de
+   "socket.sendto()".</p>
+<p>Retorna el número de bytes enviados.</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Added in version 3.11.</p>
+<p>async loop.sock_connect(sock, address)</p>
+<p>Conecta <em>sock</em> a un socket remoto en <em>address</em>.</p>
+<p>Versión asíncrona de "socket.connect()".</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>With "SelectorEventLoop", <em>address</em> does not need to be resolved:
+   for "AF_INET" and "AF_INET6" sockets, "sock_connect" first checks
+   whether <em>address</em> is already resolved by calling
+   "socket.inet_pton()", and uses "loop.getaddrinfo()" to resolve it
+   if it is not.</p>
+<p>"ProactorEventLoop", the default event loop on Windows, does not
+   resolve <em>address</em>.  The host must already be a numeric IP address;
+   passing a host name raises "OSError".  Resolve the address with
+   "loop.getaddrinfo()" first, or use "loop.create_connection()",
+   which resolves the address on every platform.</p>
+<p>Distinto en la versión 3.5.2: With "SelectorEventLoop", "address"
+   no longer needs to be resolved.</p>
+<p>Ver también:</p>
+<div class="codehilite"><pre><span></span><code> &quot;loop.create_connection()&quot; y &quot;asyncio.open_connection()&quot;.
+</code></pre></div>
+
+<p>async loop.sock_accept(sock)</p>
+<p>Acepta una conexión. Modelado después del método bloqueante
+   "socket.accept()".</p>
+<p>The socket must be bound to an address and listening for
+   connections. The return value is a pair "(conn, address)" where
+   <em>conn</em> is a <em>new</em> socket object usable to send and receive data on
+   the connection, and <em>address</em> is the address bound to the socket on
+   the other end of the connection.</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Distinto en la versión 3.7: A pesar de que este método siempre fue
+   documentado como un método de corrutina, antes de Python 3.7
+   retorna un "Future". Desde Python 3.7, este es un método "async
+   def".</p>
+<p>Ver también: "loop.create_server()" y "start_server()".</p>
+<p>async loop.sock_sendfile(sock, file, offset=0, count=None, *, fallback=True)</p>
+<p>Envía un archivo usando "os.sendfile" de alto rendimiento si es
+   posible. Retorna el número total de bytes enviados.</p>
+<p>Versión asíncrona de "socket.sendfile()".</p>
+<p><em>sock</em> debe ser un "socket.SOCK_STREAM" "socket" no bloqueante.</p>
+<p><em>file</em> debe ser un objeto de archivo regular abierto en modo
+   binario.</p>
+<p><em>offset</em> indica desde donde se empezará a leer el archivo. Si es
+   especificado, <em>count</em> es el número total de bytes a transmitir en
+   contraposición con enviar el archivo hasta que se alcance EOF. La
+   posición del archivo es actualizada siempre, incluso cuando este
+   método genere un error, y "file.tell()" puede ser usado para
+   obtener el número de bytes enviados hasta el momento.</p>
+<p><em>fallback</em>, cuando es establecida como "True", hace que asyncio lea
+   y escriba el archivo manualmente cuando el sistema no soporta la
+   llamada de envío de archivos del sistema (por ejemplo, Windows o
+   sockets SSL en Unix).</p>
+<p>Lanza "SendfileNotAvailableError" si el sistema no soporta la
+   llamada de envío de archivos del sistema <em>sendfile</em> y <em>fallback</em> es
+   "False".</p>
+<p><em>sock</em> debe ser un socket no bloqueante.</p>
+<p>Added in version 3.7.</p>
+<h3 id="dns">DNS<a class="headerlink" href="#dns" title="Permanent link">#</a></h3>
+<p>async loop.getaddrinfo(host, port, *, family=0, type=0, proto=0, flags=0)</p>
+<p>Versión asíncrona de "socket.getaddrinfo()".</p>
+<p>async loop.getnameinfo(sockaddr, flags=0)</p>
+<p>Asynchronous version of "socket.getnameinfo()".</p>
+<p>Nota:</p>
+<p>Both <em>getaddrinfo</em> and <em>getnameinfo</em> internally utilize their
+  synchronous versions through the loop's default thread pool
+  executor. When this executor is saturated, these methods may
+  experience delays, which higher-level networking libraries may
+  report as increased timeouts. To mitigate this, consider using a
+  custom executor for other user tasks, or setting a default executor
+  with a larger number of workers.</p>
+<p>Distinto en la versión 3.7: Ambos métodos <em>getaddrinfo</em> y
+<em>getnameinfo</em> siempre fueron documentados para retornar una corrutina,
+pero antes de Python 3.7 retornaban, de hecho, objetos "Future". A
+partir de Python 3.7, ambos métodos son corrutinas.</p>
+<h3 id="trabajando-con-tuberias">Trabajando con tuberías<a class="headerlink" href="#trabajando-con-tuberias" title="Permanent link">#</a></h3>
+<p>async loop.connect_read_pipe(protocol_factory, pipe)</p>
+<p>Registra el fin de lectura de <em>pipe</em> en el bucle de eventos.</p>
+<p><em>protocol_factory</em> debe ser un ejecutable que retorna una
+   implementación del asyncio protocol.</p>
+<p><em>pipe</em> is a <em>file-like object</em>.  See Supported pipe objects for the
+   objects supported as <em>pipe</em>.</p>
+<p>Retorna un par "(transport, protocol)", donde <em>transport</em>  soporta
+   la interface "ReadTransport" y <em>protocol</em> es un objeto instanciado
+   por <em>protocol_factory</em>.</p>
+<p>Con el bucle de eventos "SelectorEventLoop", el <em>pipe</em> es
+   establecido en modo no bloqueante.</p>
+<p>async loop.connect_write_pipe(protocol_factory, pipe)</p>
+<p>Registra el fin de escritura de <em>pipe</em> en el bucle de eventos.</p>
+<p><em>protocol_factory</em> debe ser un ejecutable que retorna una
+   implementación del asyncio protocol.</p>
+<p><em>pipe</em> is a <em>file-like object</em>.  See Supported pipe objects for the
+   objects supported as <em>pipe</em>.</p>
+<p>Retorna un par "(transport, protocol)", donde <em>transport</em> soporta
+   la interface "WriteTransport" y <em>protocol</em> es un objeto
+   inicializado por <em>protocol_factory</em>.</p>
+<p>Con el bucle de eventos "SelectorEventLoop", el <em>pipe</em> es
+   establecido en modo no bloqueante.</p>
+<p>-[ Supported pipe objects ]-</p>
+<p>These methods only work with objects the operating system can poll for
+readiness or perform overlapped I/O on.  Regular files on disk are
+<strong>not</strong> supported on any platform.  There is no asynchronous file I/O
+in asyncio; use "loop.run_in_executor()" to read and write regular
+files without blocking the event loop.</p>
+<p>On Unix, with "SelectorEventLoop", <em>pipe</em> must wrap one of the
+following:</p>
+<ul>
+<li>
+<p>a pipe, such as an end of an "os.pipe()" pair or a FIFO created with
+  "os.mkfifo()";</p>
+</li>
+<li>
+<p>a socket;</p>
+</li>
+<li>
+<p>a character device, such as a terminal.</p>
+</li>
+</ul>
+<p>On Windows, where only "ProactorEventLoop" implements these methods,
+<em>pipe</em> must wrap a handle opened for overlapped I/O (that is, created
+with the "FILE_FLAG_OVERLAPPED" flag), since the handle has to be
+associated with an I/O completion port.  Handles that were not opened
+for overlapped I/O are rejected.  In particular, the standard streams
+("sys.stdin", "sys.stdout" and "sys.stderr"), console handles, and the
+pipes created by "os.pipe()" are <strong>not</strong> opened for overlapped I/O and
+therefore cannot be used with these methods.</p>
+<p>Nota:</p>
+<p>"SelectorEventLoop" no soporta los métodos anteriores en windows. En
+  su lugar, use "ProactorEventLoop" para Windows.</p>
+<p>Ver también:</p>
+<p>Los métodos "loop.subprocess_exec()" y "loop.subprocess_shell()".</p>
+<h3 id="senales-unix">Señales Unix<a class="headerlink" href="#senales-unix" title="Permanent link">#</a></h3>
+<p>loop.add_signal_handler(signum, callback, *args)</p>
+<p>Set <em>callback</em> as the handler for the <em>signum</em> signal, passing
+   <em>args</em> as positional arguments.</p>
+<p>La llamada será invocada por <em>loop</em>, junto con otras llamadas
+   encoladas y corrutinas ejecutables de ese bucle de eventos. A menos
+   que los gestores de señal la registren usando "signal.signal()",
+   una llamada registrada con esta función tiene permitido interactuar
+   con el bucle de eventos.</p>
+<p>Lanza "ValueError" si el número de señal es invalido o
+   inalcanzable. Lanza "RuntimeError" si hay algún problema preparando
+   el gestor.</p>
+<p>Use "functools.partial()" para pasar argumentos de palabra clave a
+   <em>callback</em>.</p>
+<p>Como "signal.signal()", esta función debe ser invocada en el hilo
+   principal.</p>
+<p>loop.remove_signal_handler(sig)</p>
+<p>Elimina el gestor para la señal <em>sig</em>.</p>
+<p>Retorna "True" si el gestor de señal fue eliminado, o "False" si no
+   se estableció gestor para la señal dada.</p>
+<p>Availability: Unix.</p>
+<p>Ver también: El módulo "signal".</p>
+<h3 id="ejecutando-codigo-en-un-hilos-o-grupos-de-procesos">Ejecutando código en un hilos o grupos de procesos<a class="headerlink" href="#ejecutando-codigo-en-un-hilos-o-grupos-de-procesos" title="Permanent link">#</a></h3>
+<p>awaitable loop.run_in_executor(executor, func, *args)</p>
+<p>Arrange for <em>func</em> to be called in the specified executor passing
+   <em>args</em> as positional arguments.</p>
+<p>The <em>executor</em> argument should be an "concurrent.futures.Executor"
+   instance. The default executor is used if <em>executor</em> is "None". The
+   default executor can be set by "loop.set_default_executor()",
+   otherwise, a "concurrent.futures.ThreadPoolExecutor" will be lazy-
+   initialized and used by "run_in_executor()" if needed.</p>
+<p>Ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>  import asyncio
+  import concurrent.futures
+
+  def blocking_io():
+      # File operations (such as logging) can block the
+      # event loop: run them in a thread pool.
+      with open(&#39;/dev/urandom&#39;, &#39;rb&#39;) as f:
+          return f.read(100)
+
+  def cpu_bound():
+      # CPU-bound operations will block the event loop:
+      # in general it is preferable to run them in a
+      # process pool.
+      return sum(i * i for i in range(10 ** 7))
+
+  async def main():
+      loop = asyncio.get_running_loop()
+
+      ## Options:
+
+      # 1. Run in the default loop&#39;s executor:
+      result = await loop.run_in_executor(
+          None, blocking_io)
+      print(&#39;default thread pool&#39;, result)
+
+      # 2. Run in a custom thread pool:
+      with concurrent.futures.ThreadPoolExecutor() as pool:
+          result = await loop.run_in_executor(
+              pool, blocking_io)
+          print(&#39;custom thread pool&#39;, result)
+
+      # 3. Run in a custom process pool:
+      with concurrent.futures.ProcessPoolExecutor() as pool:
+          result = await loop.run_in_executor(
+              pool, cpu_bound)
+          print(&#39;custom process pool&#39;, result)
+
+      # 4. Run in a custom interpreter pool:
+      with concurrent.futures.InterpreterPoolExecutor() as pool:
+          result = await loop.run_in_executor(
+              pool, cpu_bound)
+          print(&#39;custom interpreter pool&#39;, result)
+
+  if __name__ == &#39;__main__&#39;:
+      asyncio.run(main())
+</code></pre></div>
+
+<p>Tenga en cuenta que la protección del punto de entrada ("if
+   <strong>name</strong> == '<strong>main</strong>'") es requerida para la opción 3 debido a las
+   peculiaridades de "multiprocessing", que es utilizado por
+   "ProcessPoolExecutor". Vea Importación segura del módulo principal.</p>
+<p>Este método retorna un objeto "asyncio.Future".</p>
+<p>Use "functools.partial()" para pasar argumentos de palabra clave a
+   <em>func</em>.</p>
+<p>Distinto en la versión 3.5.3: "loop.run_in_executor()" ya no
+   configura el "max_workers" del ejecutor del grupo de subprocesos
+   que crea, sino que lo deja en manos del ejecutor del grupo de
+   subprocesos ("ThreadPoolExecutor") para establecer el valor por
+   defecto.</p>
+<p>loop.set_default_executor(executor)</p>
+<p>Set <em>executor</em> as the default executor used by "run_in_executor()".
+   <em>executor</em> must be an instance of "ThreadPoolExecutor", which
+   includes "InterpreterPoolExecutor".</p>
+<p>Distinto en la versión 3.11: <em>executor</em> debe ser una instancia de
+   "ThreadPoolExecutor".</p>
+<h3 id="error-handling-api">Error handling API<a class="headerlink" href="#error-handling-api" title="Permanent link">#</a></h3>
+<p>Permite personalizar como son manejadas las excepciones en el bucle de
+eventos.</p>
+<p>loop.set_exception_handler(handler)</p>
+<p>Establece <em>handler</em> como el nuevo gestor de excepciones del bucle
+   de eventos.</p>
+<p>Si <em>handler</em> es "None", se establecerá el gestor de excepciones
+   predeterminado. De otro modo, <em>handler</em> debe ser un invocable con
+   la misma firma "(loop, context)", donde "loop" es una referencia al
+   bucle de eventos activo, y "context" es un objeto "dict" que
+   contiene los detalles de la excepción (vea la documentación de
+   "call_exception_handler()" para detalles acerca del contexto).</p>
+<p>If the handler is called on behalf of a "Task" or "Handle", it is
+   run in the "contextvars.Context" of that task or callback handle.</p>
+<p>Distinto en la versión 3.12: The handler may be called in the
+   "Context" of the task or handle where the exception originated.</p>
+<p>loop.get_exception_handler()</p>
+<p>Retorna el gesto de excepciones actual, o "None" si no fue
+   establecido ningún gestor de excepciones personalizado.</p>
+<p>Added in version 3.5.2.</p>
+<p>loop.default_exception_handler(context)</p>
+<p>Gestor de excepciones por defecto.</p>
+<p>Esto es llamado cuando ocurre una excepción y no se estableció
+   ningún gestor de excepciones. Esto puede ser llamado por un gestor
+   de excepciones personalizado que quiera cambiar el comportamiento
+   del gestor predeterminado.</p>
+<p>El parámetro <em>context</em> tiene el mismo significado que en
+   "call_exception_handler()".</p>
+<p>loop.call_exception_handler(context)</p>
+<p>Llama al gestor de excepciones del bucle de eventos actual.</p>
+<p><em>context</em> es un objeto "dict" conteniendo las siguientes claves (en
+   futuras versiones de Python podrían introducirse nuevas claves):</p>
+<ul>
+<li>
+<p>'message': Mensaje de error;</p>
+</li>
+<li>
+<p>'exception' (opcional): Objeto de excepción;</p>
+</li>
+<li>
+<p>'future' (opcional): instancia de "asyncio.Future";</p>
+</li>
+<li>
+<p>'task' (opcional): instancia de "asyncio.Task";</p>
+</li>
+<li>
+<p>'handle' (opcional): instancia de "asyncio.Handle";</p>
+</li>
+<li>
+<p>'protocol' (opcional): instancia de Protocol;</p>
+</li>
+<li>
+<p>'transport' (opcional): instancia de Transport;</p>
+</li>
+<li>
+<p>'socket' (opcional): instancia de "socket.socket";</p>
+</li>
+<li>
+<p>'source_traceback' (optional): Traceback of the source;</p>
+</li>
+<li>
+<p>'handle_traceback' (optional): Traceback of the handle;</p>
+</li>
+<li>
+<p>'asyncgen' (opcional): Generador asíncrono que causó
+        la excepción.</p>
+</li>
+</ul>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> This method should not be overloaded in subclassed event loops.
+ For custom exception handling, use the &quot;set_exception_handler()&quot;
+ method.
+</code></pre></div>
+
+<h3 id="habilitando-el-modo-depuracion">Habilitando el modo depuración<a class="headerlink" href="#habilitando-el-modo-depuracion" title="Permanent link">#</a></h3>
+<p>loop.get_debug()</p>
+<p>Obtiene el modo depuración ("bool") del bucle de eventos.</p>
+<p>El valor predeterminado es "True" si la variable de entorno
+   "PYTHONASYNCIODEBUG" es establecida a una cadena no vacía, de otro
+   modo será "False".</p>
+<p>loop.set_debug(enabled: bool)</p>
+<p>Establece el modo de depuración del bucle de eventos.</p>
+<p>Distinto en la versión 3.7: El nuevo Python Modo de Desarrollo
+   ahora también se puede usar para habilitar el modo de depuración.</p>
+<p>loop.slow_callback_duration</p>
+<p>This attribute can be used to set the minimum execution duration in
+   seconds that is considered "slow". When debug mode is enabled,
+   "slow" callbacks are logged.</p>
+<p>Default value is 100 milliseconds.</p>
+<p>Ver también: El modo depuración de asyncio.</p>
+<h3 id="running-subprocesses">Running subprocesses<a class="headerlink" href="#running-subprocesses" title="Permanent link">#</a></h3>
+<p>Los métodos descritos en esta subsección son de bajo nivel. En código
+async/await regular considere usar las convenientes funciones de alto
+nivel "asyncio.create_subprocess_shell()" y
+"asyncio.create_subprocess_exec()".</p>
+<p>Nota:</p>
+<p>En Windows, el bucle de eventos por defecto "ProactorEventLoop"
+  soporta subprocesos, mientras que "SelectorEventLoop" no. Vea
+  Soporte de subprocesos en Windows para más detalles.</p>
+<p>async loop.subprocess_exec(protocol_factory, <em>args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, </em>*kwargs)</p>
+<p>Crea un subproceso de uno o mas argumentos de cadena especificados
+   por <em>args</em>.</p>
+<p><em>args</em> debe ser una lista de cadenas representadas por:</p>
+<ul>
+<li>
+<p>"str";</p>
+</li>
+<li>
+<p>o "bytes", codificados a la codificación del sistema de archivos.</p>
+</li>
+</ul>
+<p>La primer cadena especifica el programa ejecutable, y las cadenas
+   restantes especifican los argumentos. En conjunto, los argumentos
+   de cadena forman el "argv" del programa.</p>
+<p>Esto es similar a la clase de la librería estándar
+   "subprocess.Popen" llamada con "shell=False" y la lista de cadenas
+   pasadas como el primer argumento; de cualquier forma, cuando
+   "Popen" toma un sólo argumento que es una lista de cadenas,
+   <em>subprocess_exec</em> toma múltiples cadenas como argumentos.</p>
+<p>El <em>protocol_factory</em> debe ser un ejecutable que retorne una
+   subclase de la clase "asyncio.SubprocessProtocol".</p>
+<p>Otros parámetros:</p>
+<ul>
+<li>
+<p><em>stdin</em> puede ser cualquier de estos:</p>
+<ul>
+<li>
+<p>a file-like object</p>
+</li>
+<li>
+<p>an existing file descriptor (a positive integer), for example
+   those created with "os.pipe()"</p>
+</li>
+<li>
+<p>la constante "subprocess.PIPE" (predeterminado) que creará una
+   tubería nueva y la conectará,</p>
+</li>
+<li>
+<p>el valor "None" que hará que el subproceso herede el descriptor
+   de archivo de este proceso</p>
+</li>
+<li>
+<p>la constante "subprocess.DEVNULL" que indica que el archivo
+   especial "os.devnull" será utilizado</p>
+</li>
+</ul>
+</li>
+<li>
+<p><em>stdout</em> puede ser cualquier de estos:</p>
+<ul>
+<li>
+<p>a file-like object</p>
+</li>
+<li>
+<p>la constante "subprocess.PIPE" (predeterminado) que creará una
+   tubería nueva y la conectará,</p>
+</li>
+<li>
+<p>el valor "None" que hará que el subproceso herede el descriptor
+   de archivo de este proceso</p>
+</li>
+<li>
+<p>la constante "subprocess.DEVNULL" que indica que el archivo
+   especial "os.devnull" será utilizado</p>
+</li>
+</ul>
+</li>
+<li>
+<p><em>stderr</em> puede ser cualquier de estos:</p>
+<ul>
+<li>
+<p>a file-like object</p>
+</li>
+<li>
+<p>la constante "subprocess.PIPE" (predeterminado) que creará una
+   tubería nueva y la conectará,</p>
+</li>
+<li>
+<p>el valor "None" que hará que el subproceso herede el descriptor
+   de archivo de este proceso</p>
+</li>
+<li>
+<p>la constante "subprocess.DEVNULL" que indica que el archivo
+   especial "os.devnull" será utilizado</p>
+</li>
+<li>
+<p>la constante "subprocess.STDOUT" que conectará el flujo de
+   errores predeterminado al flujo de salida predeterminado del
+   proceso</p>
+</li>
+</ul>
+</li>
+<li>
+<p>El resto de argumentos de palabra clave son pasados a
+     "subprocess.Popen" sin interpretación, excepto por <em>bufsize</em>,
+     <em>universal_newlines</em>, <em>shell</em>, <em>text</em>, <em>encoding</em> y <em>errors</em>, que
+     no deben ser especificados en lo absoluto.</p>
+<p>La API subproceso "asyncio" no soporta decodificar los flujos
+ como texto. "bytes.decode()" puede ser usado para convertir a
+ texto los bytes retornados por el flujo.</p>
+</li>
+</ul>
+<p>If a file-like object passed as <em>stdin</em>, <em>stdout</em> or <em>stderr</em>
+   represents a pipe, then the other side of this pipe should be
+   registered with "connect_write_pipe()" or "connect_read_pipe()" for
+   use with the event loop.</p>
+<p>Vea el constructor de la clase "subprocess.Popen" para
+   documentación acerca de otros argumentos.</p>
+<p>Retorna un par de "(transport, protocol)", donde <em>transport</em> se
+   ajusta a la clase base "asyncio.SubprocessTransport" y <em>protocol</em>
+   es un objeto instanciado por <em>protocol_factory</em>.</p>
+<p>If the transport is closed or is garbage collected, the child
+   process is killed if it is still running.</p>
+<p>async loop.subprocess_shell(protocol_factory, cmd, <em>, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, </em>*kwargs)</p>
+<p>Crea un subproceso desde <em>cmd</em>, que puede ser una cadena "str" o
+   "bytes" codificado a la codificación del sistema de archivos,
+   usando la sintaxis "shell" de la plataforma.</p>
+<p>Esto es similar a la clase de la librería estándar
+   "subprocess.Popen" llamada con "shell=True".</p>
+<p>El <em>protocol_factory</em> debe ser un ejecutable que retorne una
+   subclase de la clase "asyncio.SubprocessProtocol".</p>
+<p>Vea "subprocess_exec()" para mas detalles acerca de los argumentos
+   restantes.</p>
+<p>Retorna un par de "(transport, protocol)", donde <em>transport</em> se
+   ajusta a la clase base "SubprocessTransport" y <em>protocol</em> es un
+   objeto instanciado por <em>protocol_factory</em>.</p>
+<p>If the transport is closed or is garbage collected, the child
+   process is killed if it is still running.</p>
+<p>Nota:</p>
+<p>Es responsabilidad de la aplicación asegurar que todos los espacios
+  en blanco y caracteres especiales estén escapados correctamente para
+  evitar vulnerabilidades de inyección de código. La función
+  "shlex.quote()" puede ser usada para escapar apropiadamente espacios
+  en blanco y caracteres especiales en cadenas que van a ser usadas
+  para construir comandos de consola.</p>
+<h2 id="callback-handles">Callback handles<a class="headerlink" href="#callback-handles" title="Permanent link">#</a></h2>
+<p>class asyncio.Handle</p>
+<p>Un objeto de contenedor de llamada retornado por
+   "loop.call_soon()", "loop.call_soon_threadsafe()".</p>
+<p>get_context()</p>
+<div class="codehilite"><pre><span></span><code>  Return the &quot;contextvars.Context&quot; object associated with the
+  handle.
+
+  Added in version 3.12.
+</code></pre></div>
+
+<p>cancel()</p>
+<div class="codehilite"><pre><span></span><code>  Cancela la llamada. Si la llamada ya fue cancelada o ejecutada,
+  este método no tiene efecto.
+</code></pre></div>
+
+<p>cancelled()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; si la llamada fue cancelada.
+
+  Added in version 3.7.
+</code></pre></div>
+
+<p>class asyncio.TimerHandle</p>
+<p>Un objeto de contenedor de llamada retornado por
+   "loop.call_later()", and "loop.call_at()".</p>
+<p>Esta clase es una subclase de "Handle".</p>
+<p>when()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el tiempo de una llamada planificada como &quot;float&quot;
+  segundos.
+
+  El tiempo es una marca de tiempo absoluta, usando la misma
+  referencia de tiempo que &quot;loop.time()&quot;.
+
+  Added in version 3.7.
+</code></pre></div>
+
+<h2 id="server-objects">Server objects<a class="headerlink" href="#server-objects" title="Permanent link">#</a></h2>
+<p>Los objetos de servidor son creados por las funciones
+"loop.create_server()", "loop.create_unix_server()", "start_server()",
+y "start_unix_server()".</p>
+<p>Do not instantiate the "Server" class directly.</p>
+<p>class asyncio.Server</p>
+<p>Los objetos <em>Server</em> son gestores de asíncronos de contexto. Cuando
+   son usados en una declaración "async with", está garantizado que el
+   objeto Servidor está cerrado y no está aceptando nuevas conexiones
+   cuando la declaración "async with" es completada:</p>
+<div class="codehilite"><pre><span></span><code>  srv = await loop.create_server(...)
+
+  async with srv:
+      # some code
+
+  # At this point, srv is closed and no longer accepts new connections.
+</code></pre></div>
+
+<p>Distinto en la versión 3.7: El objeto Servidor es un gestor
+   asíncrono de contexto desde Python 3.7.</p>
+<p>Distinto en la versión 3.11: This class was exposed publicly as
+   "asyncio.Server" in Python 3.9.11, 3.10.3 and 3.11.</p>
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Deja de servir: deja de escuchar sockets y establece el atributo
+  &quot;sockets&quot; a &quot;None&quot;.
+
+  Los sockets que representan conexiones entrantes existentes de
+  clientes se dejan abiertas.
+
+  The server is closed asynchronously; use the &quot;wait_closed()&quot;
+  coroutine to wait until the server is closed (and no more
+  connections are active).
+</code></pre></div>
+
+<p>close_clients()</p>
+<div class="codehilite"><pre><span></span><code>  Close all existing incoming client connections.
+
+  Calls &quot;close()&quot; on all associated transports.
+
+  &quot;close()&quot; should be called before &quot;close_clients()&quot; when closing
+  the server to avoid races with new clients connecting.
+
+  Added in version 3.13.
+</code></pre></div>
+
+<p>abort_clients()</p>
+<div class="codehilite"><pre><span></span><code>  Close all existing incoming client connections immediately,
+  without waiting for pending operations to complete.
+
+  Calls &quot;abort()&quot; on all associated transports.
+
+  &quot;close()&quot; should be called before &quot;abort_clients()&quot; when closing
+  the server to avoid races with new clients connecting.
+
+  Added in version 3.13.
+</code></pre></div>
+
+<p>get_loop()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el bucle de eventos asociado con el objeto Servidor.
+
+  Added in version 3.7.
+</code></pre></div>
+
+<p>async start_serving()</p>
+<div class="codehilite"><pre><span></span><code>  Comienza a aceptar conexiones.
+
+  Este método es idempotente, así que puede ser llamado cuando el
+  servidor ya está sirviendo.
+
+  El parámetro sólo de palabra clave *start_serving* de
+  &quot;loop.create_server()&quot; y &quot;asyncio.start_server()&quot; permite crear
+  un objeto Servidor que no está aceptando conexiones
+  inicialmente. En este caso &quot;Server.start_serving()&quot;, o
+  &quot;Server.serve_forever()&quot; pueden ser usados para hacer que el
+  servidor empiece a aceptar conexiones.
+
+  Added in version 3.7.
+</code></pre></div>
+
+<p>async serve_forever()</p>
+<div class="codehilite"><pre><span></span><code>  Comienza a aceptar conexiones hasta que la corrutina sea
+  cancelada. La cancelación de la tarea &quot;serve_forever&quot; hace que
+  el servidor sea cerrado.
+
+  Este método puede ser llamado si el servidor ya está aceptando
+  conexiones. Solamente una tarea &quot;serve_forever&quot; puede existir
+  para un objeto *Server*.
+
+  Ejemplo:
+
+     async def client_connected(reader, writer):
+         # Communicate with the client with
+         # reader/writer streams.  For example:
+         await reader.readline()
+
+     async def main(host, port):
+         srv = await asyncio.start_server(
+             client_connected, host, port)
+         await srv.serve_forever()
+
+     asyncio.run(main(&#39;127.0.0.1&#39;, 0))
+
+  Added in version 3.7.
+</code></pre></div>
+
+<p>is_serving()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; si el servidor está aceptando nuevas conexiones.
+
+  Added in version 3.7.
+</code></pre></div>
+
+<p>async wait_closed()</p>
+<div class="codehilite"><pre><span></span><code>  Wait until the &quot;close()&quot; method completes and all active
+  connections have finished.
+
+  Distinto en la versión 3.12: &quot;wait_closed()&quot; now waits until the
+  server is closed and all active connections have finished.
+  Previously, it returned immediately if the server was already
+  closed, even if connections were still active.
+</code></pre></div>
+
+<p>sockets</p>
+<div class="codehilite"><pre><span></span><code>  List of socket-like objects, &quot;asyncio.trsock.TransportSocket&quot;,
+  which the server is listening on.
+
+  Distinto en la versión 3.7: Antes de Python 3.7 &quot;Server.sockets&quot;
+  solía retornar directamente una lista interna de servidores
+  socket. En 3.7 se retorna una copia de esa lista.
+</code></pre></div>
+
+<h2 id="event-loop-implementations">Event loop implementations<a class="headerlink" href="#event-loop-implementations" title="Permanent link">#</a></h2>
+<p>asyncio viene con dos implementaciones diferentes del bucle de
+eventos: "SelectorEventLoop" y "ProactorEventLoop".</p>
+<p>By default asyncio is configured to use "EventLoop".</p>
+<p>class asyncio.SelectorEventLoop</p>
+<p>A subclass of "AbstractEventLoop" based on the "selectors" module.</p>
+<p>Usa el <em>selector</em> disponible mas eficiente para la plataforma dada.
+   También es posible configurar manualmente la implementación exacta
+   del selector a utilizar:</p>
+<div class="codehilite"><pre><span></span><code>  import asyncio
+  import selectors
+
+  async def main():
+     ...
+
+  loop_factory = lambda: asyncio.SelectorEventLoop(selectors.SelectSelector())
+  asyncio.run(main(), loop_factory=loop_factory)
+</code></pre></div>
+
+<p>Availability: Unix, Windows.</p>
+<p>class asyncio.ProactorEventLoop</p>
+<p>A subclass of "AbstractEventLoop" for Windows that uses "I/O
+   Completion Ports" (IOCP).</p>
+<p>Availability: Windows.</p>
+<p>Ver también: MSDN documentation on I/O Completion Ports.</p>
+<p>class asyncio.EventLoop</p>
+<div class="codehilite"><pre><span></span><code>  An alias to the most efficient available subclass of
+  &quot;AbstractEventLoop&quot; for the given platform.
+
+  It is an alias to &quot;SelectorEventLoop&quot; on Unix and
+  &quot;ProactorEventLoop&quot; on Windows.
+</code></pre></div>
+
+<p>Added in version 3.13.</p>
+<p>class asyncio.AbstractEventLoop</p>
+<p>Clase base abstracta para bucles de evento compatibles con asyncio.</p>
+<p>La sección Event loop methods lista todos los métodos que una
+   implementación alternativa de "AbstractEventLoop" debería tener
+   definidos.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<p>Nótese que todos los ejemplos en esta sección muestran <strong>a propósito</strong>
+como usar las APIs de bucle de eventos de bajo nivel, como ser
+"loop.run_forever()" y "loop.call_soon()". Aplicaciones asyncio
+modernas raramente necesitan ser escritas de esta manera; considere
+utilizar funciones de alto nivel como "asyncio.run()".</p>
+<h3 id="hola-mundo-con-call_soon">Hola Mundo con call_soon()<a class="headerlink" href="#hola-mundo-con-call_soon" title="Permanent link">#</a></h3>
+<p>Un ejemplo usando el método "loop.call_soon()" para planificar una
+llamada. La llamada muestra ""Hello World"" y luego para el bucle de
+eventos:</p>
+<p>import asyncio</p>
+<p>def hello_world(loop):
+       """A callback to print 'Hello World' and stop the event loop"""
+       print('Hello World')
+       loop.stop()</p>
+<p>loop = asyncio.new_event_loop()</p>
+<p># Schedule a call to hello_world()
+   loop.call_soon(hello_world, loop)</p>
+<p># Blocking call interrupted by loop.stop()
+   try:
+       loop.run_forever()
+   finally:
+       loop.close()</p>
+<p>Ver también:</p>
+<p>Un ejemplo similar de Hola Mundo creado con una corrutina y la
+  función "run()".</p>
+<h3 id="muestra-la-fecha-actual-con-call_later">Muestra la fecha actual con call_later()<a class="headerlink" href="#muestra-la-fecha-actual-con-call_later" title="Permanent link">#</a></h3>
+<p>Un ejemplo de llamada mostrando la fecha actual cada un segundo. La
+llamada usa el método "loop.call_later()" para volver a planificarse
+después de 5 segundos, y después para el bucle de eventos:</p>
+<p>import asyncio
+   import datetime as dt</p>
+<p>def display_date(end_time, loop):
+       print(dt.datetime.now())
+       if (loop.time() + 1.0) &lt; end_time:
+           loop.call_later(1, display_date, end_time, loop)
+       else:
+           loop.stop()</p>
+<p>loop = asyncio.new_event_loop()</p>
+<p># Schedule the first call to display_date()
+   end_time = loop.time() + 5.0
+   loop.call_soon(display_date, end_time, loop)</p>
+<p># Blocking call interrupted by loop.stop()
+   try:
+       loop.run_forever()
+   finally:
+       loop.close()</p>
+<p>Ver también:</p>
+<p>Un ejemplo similar a fecha actual creado con una corrutina y la
+  función "run()".</p>
+<h3 id="mirar-un-descriptor-de-archivo-para-leer-eventos">Mirar un descriptor de archivo para leer eventos<a class="headerlink" href="#mirar-un-descriptor-de-archivo-para-leer-eventos" title="Permanent link">#</a></h3>
+<p>Espera hasta que el descriptor de archivo reciba algún dato usando el
+método "loop.add_reader()" y entonces cierra el bucle de eventos:</p>
+<p>import asyncio
+   from socket import socketpair</p>
+<p># Create a pair of connected file descriptors
+   rsock, wsock = socketpair()</p>
+<p>loop = asyncio.new_event_loop()</p>
+<p>def reader():
+       data = rsock.recv(100)
+       print("Received:", data.decode())</p>
+<div class="codehilite"><pre><span></span><code>   # We are done: unregister the file descriptor
+   loop.remove_reader(rsock)
+
+   # Stop the event loop
+   loop.stop()
+</code></pre></div>
+
+<p># Register the file descriptor for read event
+   loop.add_reader(rsock, reader)</p>
+<p># Simulate the reception of data from the network
+   loop.call_soon(wsock.send, 'abc'.encode())</p>
+<p>try:
+       # Run the event loop
+       loop.run_forever()
+   finally:
+       # We are done. Close sockets and the event loop.
+       rsock.close()
+       wsock.close()
+       loop.close()</p>
+<p>Ver también:</p>
+<ul>
+<li>
+<p>Un ejemplo similar usando transportes, protocolos y el método
+    "loop.create_connection()".</p>
+</li>
+<li>
+<p>Otro ejemplo similar usando la función de alto nivel
+    "asyncio.open_connection()" y transmisiones.</p>
+</li>
+</ul>
+<h3 id="establece-los-gestores-de-senal-para-sigint-y-sigterm">Establece los gestores de señal para SIGINT y SIGTERM<a class="headerlink" href="#establece-los-gestores-de-senal-para-sigint-y-sigterm" title="Permanent link">#</a></h3>
+<p>(This "signal" example only works on Unix.)</p>
+<p>Register handlers for signals "SIGINT" and "SIGTERM" using the
+"loop.add_signal_handler()" method:</p>
+<p>import asyncio
+   import functools
+   import os
+   import signal</p>
+<p>def ask_exit(signame, loop):
+       print("got signal %s: exit" % signame)
+       loop.stop()</p>
+<p>async def main():
+       loop = asyncio.get_running_loop()</p>
+<div class="codehilite"><pre><span></span><code>   for signame in {&#39;SIGINT&#39;, &#39;SIGTERM&#39;}:
+       loop.add_signal_handler(
+           getattr(signal, signame),
+           functools.partial(ask_exit, signame, loop))
+
+   await asyncio.sleep(3600)
+</code></pre></div>
+
+<p>print("Event loop running for 1 hour, press Ctrl+C to interrupt.")
+   print(f"pid {os.getpid()}: send SIGINT or SIGTERM to exit.")</p>
+<p>asyncio.run(main())</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/asyncio-dev.html">
+          <span class="muted">Anterior</span>Desarrollando con asyncio
+        </a>
+        <a class="pager-next" href="../library/asyncio-exceptions.html">
+          <span class="muted">Siguiente</span>Excepciones
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

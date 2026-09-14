@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instrumentación de CPython con DTrace y SystemTap · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Howto
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../howto/a-conceptual-overview-of-asyncio.html"
+>A Conceptual Overview of &#34;asyncio&#34;</a>
+              </li>
+              <li>
+                <a href="../howto/annotations.html"
+>Prácticas recomendadas para las anotaciones</a>
+              </li>
+              <li>
+                <a href="../howto/argparse-optparse.html"
+>Migrating &#34;optparse&#34; code to &#34;argparse&#34;</a>
+              </li>
+              <li>
+                <a href="../howto/argparse.html"
+>Tutorial de *argparse*</a>
+              </li>
+              <li>
+                <a href="../howto/clinic.html"
+>Argument Clinic Cómo Hacerlo</a>
+              </li>
+              <li>
+                <a href="../howto/cporting.html"
+>Portar módulos de extensión a Python 3</a>
+              </li>
+              <li>
+                <a href="../howto/curses.html"
+>Programación de curses con Python</a>
+              </li>
+              <li>
+                <a href="../howto/descriptor.html"
+>Descriptor Guide</a>
+              </li>
+              <li>
+                <a href="../howto/enum.html"
+>HOWTO - Enum</a>
+              </li>
+              <li>
+                <a href="../howto/free-threading-extensions.html"
+>C API Extension Support for Free Threading</a>
+              </li>
+              <li>
+                <a href="../howto/free-threading-python.html"
+>Python support for free threading</a>
+              </li>
+              <li>
+                <a href="../howto/functional.html"
+>HOWTO - Programación funcional</a>
+              </li>
+              <li>
+                <a href="../howto/gdb_helpers.html"
+>Debugging C API extensions and CPython Internals with GDB</a>
+              </li>
+              <li>
+                <a href="../howto/index.html"
+>Comos (*HOWTOs*) de Python</a>
+              </li>
+              <li>
+                <a href="../howto/instrumentation.html"
+class="is-current" aria-current="page">Instrumentación de CPython con DTrace y SystemTap</a>
+              </li>
+              <li>
+                <a href="../howto/ipaddress.html"
+>Introducción al modulo *ipaddress*</a>
+              </li>
+              <li>
+                <a href="../howto/isolating-extensions.html"
+>Aislamiento de módulos de extensión</a>
+              </li>
+              <li>
+                <a href="../howto/logging-cookbook.html"
+>Libro de recetas de Logging</a>
+              </li>
+              <li>
+                <a href="../howto/logging.html"
+>HOWTO hacer registros (*Logging*)</a>
+              </li>
+              <li>
+                <a href="../howto/mro.html"
+>The Python 2.3 Method Resolution Order</a>
+              </li>
+              <li>
+                <a href="../howto/perf_profiling.html"
+>Soporte de Python para el perfilador &#34;perf&#34; de Linux</a>
+              </li>
+              <li>
+                <a href="../howto/pyporting.html"
+>How to port Python 2 Code to Python 3</a>
+              </li>
+              <li>
+                <a href="../howto/regex.html"
+>Regular expression HOWTO</a>
+              </li>
+              <li>
+                <a href="../howto/remote_debugging.html"
+>Remote debugging attachment protocol</a>
+              </li>
+              <li>
+                <a href="../howto/sockets.html"
+>HOW TO - Programación con sockets</a>
+              </li>
+              <li>
+                <a href="../howto/sorting.html"
+>Sorting Techniques</a>
+              </li>
+              <li>
+                <a href="../howto/timerfd.html"
+>timer file descriptor HOWTO</a>
+              </li>
+              <li>
+                <a href="../howto/unicode.html"
+>CÓMO (*HOWTO*) Unicode</a>
+              </li>
+              <li>
+                <a href="../howto/urllib2.html"
+>HOWTO - Cómo obtener recursos de Internet con el paquete urllib</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../library/__future__.html">Library</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Instrumentación de CPython con DTrace y SystemTap</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#habilitando-los-marcadores-estaticos">Habilitando los marcadores estáticos#</a></li>
+              <li class="lvl-2"><a href="#sondas-estaticas-dtrace">Sondas estáticas DTrace#</a></li>
+              <li class="lvl-2"><a href="#marcadores-estaticos-systemtap">Marcadores estáticos SystemTap#</a></li>
+              <li class="lvl-2"><a href="#marcadores-estaticos-disponibles">Marcadores estáticos disponibles#</a></li>
+              <li class="lvl-3"><a href="#c-entry-points">C Entry Points#</a></li>
+              <li class="lvl-2"><a href="#arg1-int-arg2">| *arg1, int arg2)                                   |                           |                           |#</a></li>
+              <li class="lvl-2"><a href="#const-char-arg1-int-arg2">| const char *arg1, int arg2)                        |                           |                           |#</a></li>
+              <li class="lvl-2"><a href="#const-char-arg1-int-arg2_1">| const char *arg1, int arg2)                        |                           |                           |#</a></li>
+              <li class="lvl-2"><a href="#void-pydtrace_gc_startint-arg0-gc__start">| void PyDTrace_GC_START(int arg0)                   | &#34;gc__start()&#34;             |                           |#</a></li>
+              <li class="lvl-2"><a href="#void-pydtrace_gc_donepy_ssize_t-arg0-gc__done">| void PyDTrace_GC_DONE(Py_ssize_t arg0)             | &#34;gc__done()&#34;              |                           |#</a></li>
+              <li class="lvl-2"><a href="#void-pydtrace_instance_new_startint-arg0-instance__new__start-not-used-by-python">| void PyDTrace_INSTANCE_NEW_START(int arg0)         | &#34;instance__new__start()&#34;  | Not used by Python        |#</a></li>
+              <li class="lvl-2"><a href="#void-pydtrace_instance_new_doneint-arg0-instance__new__done-not-used-by-python">| void PyDTrace_INSTANCE_NEW_DONE(int arg0)          | &#34;instance__new__done()&#34;   | Not used by Python        |#</a></li>
+              <li class="lvl-2"><a href="#_1">|                                                    | ()&#34;                       |                           |#</a></li>
+              <li class="lvl-2"><a href="#_2">|                                                    | )&#34;                        |                           |#</a></li>
+              <li class="lvl-2"><a href="#arg0-rt">| *arg0)                                             | rt()&#34;                     |                           |#</a></li>
+              <li class="lvl-2"><a href="#arg0-int-arg1-e">| *arg0, int arg1)                                   | e()&#34;                      |                           |#</a></li>
+              <li class="lvl-2"><a href="#void-pydtrace_auditconst-char-arg0-void-arg1-audit">| void PyDTrace_AUDIT(const char arg0, void arg1)  | &#34;audit()&#34;                 |                           |#</a></li>
+              <li class="lvl-3"><a href="#c-probing-checks">C Probing Checks#</a></li>
+              <li class="lvl-2"><a href="#systemtap-tapsets">SystemTap Tapsets#</a></li>
+              <li class="lvl-2"><a href="#ejemplos">Ejemplos#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="instrumentacion-de-cpython-con-dtrace-y-systemtap">Instrumentación de CPython con DTrace y SystemTap<a class="headerlink" href="#instrumentacion-de-cpython-con-dtrace-y-systemtap" title="Permanent link">#</a></h1>
+<p>autor:
+   David Malcolm</p>
+<p>autor:
+   Łukasz Langa</p>
+<p>DTrace y SystemTap son herramientas de monitoreo, cada una de las
+cuales proporciona una forma de inspeccionar lo que están haciendo los
+procesos en un sistema informático. Ambos usan lenguajes específicos
+de dominio que permiten al usuario escribir scripts que:</p>
+<ul>
+<li>
+<p>filtrar qué procesos deben observarse</p>
+</li>
+<li>
+<p>recopilar datos de los procesos de interés</p>
+</li>
+<li>
+<p>generar reportes sobre los datos</p>
+</li>
+</ul>
+<p>A partir de Python 3.6, CPython se puede construir con "marcadores"
+incrustados, también conocidos como "sondas", que se pueden observar
+mediante un script de DTrace o SystemTap, lo que facilita la
+supervisión de lo que hacen los procesos de CPython en un sistema.</p>
+<p>Los marcadores de DTrace son detalles de implementación del intérprete
+CPython. No se ofrecen garantías sobre la compatibilidad de la sonda
+entre versiones de CPython. Los scripts de DTrace pueden dejar de
+funcionar o funcionar incorrectamente sin previo aviso al cambiar las
+versiones de CPython.</p>
+<h2 id="habilitando-los-marcadores-estaticos">Habilitando los marcadores estáticos<a class="headerlink" href="#habilitando-los-marcadores-estaticos" title="Permanent link">#</a></h2>
+<p>macOS viene con soporte integrado para DTrace. En Linux, para
+construir CPython con los marcadores incrustados para SystemTap, se
+deben instalar las herramientas de desarrollo de SystemTap.</p>
+<p>En una máquina Linux, esto se puede hacer a través de:</p>
+<p>$ yum install systemtap-sdt-devel</p>
+<p>o:</p>
+<p>$ sudo apt-get install systemtap-sdt-dev</p>
+<p>CPython debe ser "configurado con la opción --with-dtrace":</p>
+<p>checking for --with-dtrace... yes</p>
+<p>En macOS, puede enumerar las sondas disponibles de DTrace ejecutando
+un proceso de Python en segundo plano y listando todas las sondas
+disponibles por el proveedor de Python:</p>
+<p>$ python3.6 -q &amp;
+   $ sudo dtrace -l -P python$!  # or: dtrace -l -m python3.6</p>
+<div class="codehilite"><pre><span></span><code>  ID   PROVIDER            MODULE                          FUNCTION NAME
+</code></pre></div>
+
+<p>29564 python18035        python3.6          _PyEval_EvalFrameDefault function-entry
+   29565 python18035        python3.6             dtrace_function_entry function-entry
+   29566 python18035        python3.6          _PyEval_EvalFrameDefault function-return
+   29567 python18035        python3.6            dtrace_function_return function-return
+   29568 python18035        python3.6                           collect gc-done
+   29569 python18035        python3.6                           collect gc-start
+   29570 python18035        python3.6          _PyEval_EvalFrameDefault line
+   29571 python18035        python3.6                 maybe_dtrace_line line</p>
+<p>En Linux, puede verificar si los marcadores estáticos SystemTap están
+presentes en el binario construido al ver si contiene una sección
+".note.stapsdt".</p>
+<p>$ readelf -S ./python | grep .note.stapsdt
+   [30] .note.stapsdt        NOTE         0000000000000000 00308d78</p>
+<p>Si ha creado Python como una biblioteca compartida (con la opción de
+configuración "--enable-shared"), debe buscar en la biblioteca
+compartida. Por ejemplo:</p>
+<p>$ readelf -S libpython3.3dm.so.1.0 | grep .note.stapsdt
+   [29] .note.stapsdt        NOTE         0000000000000000 00365b68</p>
+<p>Un lector de formato ELF suficientemente moderno puede imprimir los
+metadatos:</p>
+<p>$ readelf -n ./python</p>
+<p>Displaying notes found at file offset 0x00000254 with length 0x00000020:
+       Owner                 Data size          Description
+       GNU                  0x00000010          NT_GNU_ABI_TAG (ABI version tag)
+           OS: Linux, ABI: 2.6.32</p>
+<p>Displaying notes found at file offset 0x00000274 with length 0x00000024:
+       Owner                 Data size          Description
+       GNU                  0x00000014          NT_GNU_BUILD_ID (unique build ID bitstring)
+           Build ID: df924a2b08a7e89f6e11251d4602022977af2670</p>
+<p>Displaying notes found at file offset 0x002d6c30 with length 0x00000144:
+       Owner                 Data size          Description
+       stapsdt              0x00000031          NT_STAPSDT (SystemTap probe descriptors)
+           Provider: python
+           Name: gc__start
+           Location: 0x00000000004371c3, Base: 0x0000000000630ce2, Semaphore: 0x00000000008d6bf6
+           Arguments: -4@%ebx
+       stapsdt              0x00000030          NT_STAPSDT (SystemTap probe descriptors)
+           Provider: python
+           Name: gc__done
+           Location: 0x00000000004374e1, Base: 0x0000000000630ce2, Semaphore: 0x00000000008d6bf8
+           Arguments: -8@%rax
+       stapsdt              0x00000045          NT_STAPSDT (SystemTap probe descriptors)
+           Provider: python
+           Name: function__entry
+           Location: 0x000000000053db6c, Base: 0x0000000000630ce2, Semaphore: 0x00000000008d6be8
+           Arguments: 8@%rbp 8@%r12 -4@%eax
+       stapsdt              0x00000046          NT_STAPSDT (SystemTap probe descriptors)
+           Provider: python
+           Name: function__return
+           Location: 0x000000000053dba8, Base: 0x0000000000630ce2, Semaphore: 0x00000000008d6bea
+           Arguments: 8@%rbp 8@%r12 -4@%eax</p>
+<p>The above metadata contains information for SystemTap describing how
+it can patch strategically placed machine code instructions to enable
+the tracing hooks used by a SystemTap script.</p>
+<h2 id="sondas-estaticas-dtrace">Sondas estáticas DTrace<a class="headerlink" href="#sondas-estaticas-dtrace" title="Permanent link">#</a></h2>
+<p>El siguiente ejemplo de script DTrace se puede utilizar para mostrar
+la jerarquía de llamada/retorno de un script de Python, solo
+rastreando dentro de la invocación de una función llamada "start". En
+otras palabras, las llamadas a funciones durante la importación
+aparecerán en la lista:</p>
+<p>self int indent;</p>
+<p>python$target:::function-entry
+   /copyinstr(arg1) == "start"/
+   {
+           self-&gt;trace = 1;
+   }</p>
+<p>python$target:::function-entry
+   /self-&gt;trace/
+   {
+           printf("%d\t%<em>s:", timestamp, 15, probename);
+           printf("%</em>s", self-&gt;indent, "");
+           printf("%s:%s:%d\n", basename(copyinstr(arg0)), copyinstr(arg1), arg2);
+           self-&gt;indent++;
+   }</p>
+<p>python$target:::function-return
+   /self-&gt;trace/
+   {
+           self-&gt;indent--;
+           printf("%d\t%<em>s:", timestamp, 15, probename);
+           printf("%</em>s", self-&gt;indent, "");
+           printf("%s:%s:%d\n", basename(copyinstr(arg0)), copyinstr(arg1), arg2);
+   }</p>
+<p>python$target:::function-return
+   /copyinstr(arg1) == "start"/
+   {
+           self-&gt;trace = 0;
+   }</p>
+<p>Se puede invocar así:</p>
+<p>$ sudo dtrace -q -s call_stack.d -c "python3.6 script.py"</p>
+<p>La salida se verá así:</p>
+<p>156641360502280  function-entry:call_stack.py:start:23
+   156641360518804  function-entry: call_stack.py:function_1:1
+   156641360532797  function-entry:  call_stack.py:function_3:9
+   156641360546807 function-return:  call_stack.py:function_3:10
+   156641360563367 function-return: call_stack.py:function_1:2
+   156641360578365  function-entry: call_stack.py:function_2:5
+   156641360591757  function-entry:  call_stack.py:function_1:1
+   156641360605556  function-entry:   call_stack.py:function_3:9
+   156641360617482 function-return:   call_stack.py:function_3:10
+   156641360629814 function-return:  call_stack.py:function_1:2
+   156641360642285 function-return: call_stack.py:function_2:6
+   156641360656770  function-entry: call_stack.py:function_3:9
+   156641360669707 function-return: call_stack.py:function_3:10
+   156641360687853  function-entry: call_stack.py:function_4:13
+   156641360700719 function-return: call_stack.py:function_4:14
+   156641360719640  function-entry: call_stack.py:function_5:18
+   156641360732567 function-return: call_stack.py:function_5:21
+   156641360747370 function-return:call_stack.py:start:28</p>
+<h2 id="marcadores-estaticos-systemtap">Marcadores estáticos SystemTap<a class="headerlink" href="#marcadores-estaticos-systemtap" title="Permanent link">#</a></h2>
+<p>La forma de bajo nivel para utilizar la integración de SystemTap es
+utilizar los marcadores estáticos directamente. Esto requiere que
+indique explícitamente el archivo binario que los contiene.</p>
+<p>Por ejemplo, este script SystemTap se puede utilizar para mostrar la
+jerarquía de llamada/retorno de un script de Python:</p>
+<p>probe process("python").mark("function__entry") {
+        filename = user_string($arg1);
+        funcname = user_string($arg2);
+        lineno = $arg3;</p>
+<div class="codehilite"><pre><span></span><code>    printf(&quot;%s =&gt; %s in %s:%d\\n&quot;,
+           thread_indent(1), funcname, filename, lineno);
+</code></pre></div>
+
+<p>}</p>
+<p>probe process("python").mark("function__return") {
+       filename = user_string($arg1);
+       funcname = user_string($arg2);
+       lineno = $arg3;</p>
+<div class="codehilite"><pre><span></span><code>   printf(&quot;%s &lt;= %s in %s:%d\\n&quot;,
+          thread_indent(-1), funcname, filename, lineno);
+</code></pre></div>
+
+<p>}</p>
+<p>Se puede invocar así:</p>
+<p>$ stap \
+     show-call-hierarchy.stp \
+     -c "./python test.py"</p>
+<p>La salida se verá así:</p>
+<p>11408 python(8274):        =&gt; <strong>contains</strong> in Lib/_abcoll.py:362
+   11414 python(8274):         =&gt; <strong>getitem</strong> in Lib/os.py:425
+   11418 python(8274):          =&gt; encode in Lib/os.py:490
+   11424 python(8274):          &lt;= encode in Lib/os.py:493
+   11428 python(8274):         &lt;= <strong>getitem</strong> in Lib/os.py:426
+   11433 python(8274):        &lt;= <strong>contains</strong> in Lib/_abcoll.py:366</p>
+<p>donde las columnas son:</p>
+<ul>
+<li>
+<p>tiempo en microsegundos desde el inicio del script</p>
+</li>
+<li>
+<p>nombre del ejecutable</p>
+</li>
+<li>
+<p>PID de proceso</p>
+</li>
+</ul>
+<p>y el resto indica la jerarquía de llamada/retorno a medida que se
+ejecuta el script.</p>
+<p>Para una compilación "--enable-shared" de CPython, los marcadores
+están contenidos dentro de la biblioteca compartida libpython, y la
+ruta de puntos de la sonda debe reflejar esto. Por ejemplo, esta línea
+del ejemplo anterior:</p>
+<p>probe process("python").mark("function__entry") {</p>
+<p>en su lugar debería leer:</p>
+<p>probe process("python").library("libpython3.6dm.so.1.0").mark("function__entry") {</p>
+<p>(asumiendo una compilación de depuración de CPython 3.6)</p>
+<h2 id="marcadores-estaticos-disponibles">Marcadores estáticos disponibles<a class="headerlink" href="#marcadores-estaticos-disponibles" title="Permanent link">#</a></h2>
+<p>function__entry(str filename, str funcname, int lineno)</p>
+<p>Este marcador indica que ha comenzado la ejecución de una función
+   de Python. Solo se activa para funciones de Python puro (código de
+   bytes).</p>
+<p>El nombre del archivo, el nombre de la función y el número de línea
+   se retornan al script de rastreo como argumentos posicionales, a
+   los que se debe acceder usando "$arg1", "$arg2", "$arg3":</p>
+<div class="codehilite"><pre><span></span><code>  * &quot;$arg1&quot; : &quot;(const char *)&quot; nombre del archivo, accesible
+    usando &quot;user_string($arg1)&quot;
+
+  * &quot;$arg2&quot; : &quot;(const char *)&quot; nombre de la función, accesible
+    usando &quot;user_string($arg2)&quot;
+
+  * &quot;$arg3&quot; : &quot;int&quot; número de linea
+</code></pre></div>
+
+<p>function__return(str filename, str funcname, int lineno)</p>
+<p>This marker is the converse of "function__entry()", and indicates
+   that execution of a Python function has ended (either via "return",
+   or via an exception).  It is only triggered for pure-Python
+   (bytecode) functions.</p>
+<p>The arguments are the same as for "function__entry()"</p>
+<p>line(str filename, str funcname, int lineno)</p>
+<p>Este marcador indica que una línea de Python está a punto de
+   ejecutarse. Es el equivalente al rastreo línea por línea con un
+   generador de perfiles de Python. No se activa con las funciones de
+   C.</p>
+<p>The arguments are the same as for "function__entry()".</p>
+<p>gc__start(int generation)</p>
+<p>Fires when the Python interpreter starts a garbage collection
+   cycle. "arg0" is the generation to scan, like "gc.collect()".</p>
+<p>gc__done(long collected)</p>
+<p>Se activa cuando el intérprete de Python finaliza un ciclo de
+   recolección de basura. "arg0" es el número de objetos recopilados.</p>
+<p>import__find__load__start(str modulename)</p>
+<p>Se activa antes "importlib" e intenta encontrar y cargar el módulo.
+   "arg0" es el nombre del módulo.</p>
+<p>Added in version 3.7.</p>
+<p>import__find__load__done(str modulename, int found)</p>
+<p>Se activa después de que la función <em>find_and_load</em> de "importlib"
+   es llamada. "arg0" es el nombre del módulo, "arg1" indica si el
+   módulo se cargó correctamente.</p>
+<p>Added in version 3.7.</p>
+<p>audit(str event, void *tuple)</p>
+<p>Se activa cuando se llama "sys.audit()" o "PySys_Audit()". "arg0"
+   es el nombre del evento como cadena C, "arg1" es un puntero
+   "PyObject" a un objeto tupla.</p>
+<p>Added in version 3.8.</p>
+<h3 id="c-entry-points">C Entry Points<a class="headerlink" href="#c-entry-points" title="Permanent link">#</a></h3>
+<p>To simplify triggering of DTrace markers, Python's C API comes with a
+number of helper functions that mirror each static marker. On builds
+of Python without DTrace enabled, these do nothing.</p>
+<p>In general, it is not necessary to call these yourself, as Python will
+do it for you.</p>
+<p>+----------------------------------------------------+---------------------------+---------------------------+
+| C API Function                                     | Static Marker             | Notes                     |
+|====================================================|===========================|===========================|
+| void PyDTrace_LINE(const char *arg0, const char    | "line()"                  |                           |</p>
+<h2 id="arg1-int-arg2">| *arg1, int arg2)                                   |                           |                           |<a class="headerlink" href="#arg1-int-arg2" title="Permanent link">#</a></h2>
+<p>| void PyDTrace_FUNCTION_ENTRY(const char *arg0,     | "function__entry()"       |                           |</p>
+<h2 id="const-char-arg1-int-arg2">| const char *arg1, int arg2)                        |                           |                           |<a class="headerlink" href="#const-char-arg1-int-arg2" title="Permanent link">#</a></h2>
+<p>| void PyDTrace_FUNCTION_RETURN(const char *arg0,    | "function__return()"      |                           |</p>
+<h2 id="const-char-arg1-int-arg2_1">| const char *arg1, int arg2)                        |                           |                           |<a class="headerlink" href="#const-char-arg1-int-arg2_1" title="Permanent link">#</a></h2>
+<h2 id="void-pydtrace_gc_startint-arg0-gc__start">| void PyDTrace_GC_START(int arg0)                   | "gc__start()"             |                           |<a class="headerlink" href="#void-pydtrace_gc_startint-arg0-gc__start" title="Permanent link">#</a></h2>
+<h2 id="void-pydtrace_gc_donepy_ssize_t-arg0-gc__done">| void PyDTrace_GC_DONE(Py_ssize_t arg0)             | "gc__done()"              |                           |<a class="headerlink" href="#void-pydtrace_gc_donepy_ssize_t-arg0-gc__done" title="Permanent link">#</a></h2>
+<h2 id="void-pydtrace_instance_new_startint-arg0-instance__new__start-not-used-by-python">| void PyDTrace_INSTANCE_NEW_START(int arg0)         | "instance__new__start()"  | Not used by Python        |<a class="headerlink" href="#void-pydtrace_instance_new_startint-arg0-instance__new__start-not-used-by-python" title="Permanent link">#</a></h2>
+<h2 id="void-pydtrace_instance_new_doneint-arg0-instance__new__done-not-used-by-python">| void PyDTrace_INSTANCE_NEW_DONE(int arg0)          | "instance__new__done()"   | Not used by Python        |<a class="headerlink" href="#void-pydtrace_instance_new_doneint-arg0-instance__new__done-not-used-by-python" title="Permanent link">#</a></h2>
+<p>| void PyDTrace_INSTANCE_DELETE_START(int arg0)      | "instance__delete__start  | Not used by Python        |</p>
+<h2 id="_1">|                                                    | ()"                       |                           |<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<p>| void PyDTrace_INSTANCE_DELETE_DONE(int arg0)       | "instance__delete__done(  | Not used by Python        |</p>
+<h2 id="_2">|                                                    | )"                        |                           |<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
+<p>| void PyDTrace_IMPORT_FIND_LOAD_START(const char    | "import__find__load__sta  |                           |</p>
+<h2 id="arg0-rt">| *arg0)                                             | rt()"                     |                           |<a class="headerlink" href="#arg0-rt" title="Permanent link">#</a></h2>
+<p>| void PyDTrace_IMPORT_FIND_LOAD_DONE(const char     | "import__find__load__don  |                           |</p>
+<h2 id="arg0-int-arg1-e">| *arg0, int arg1)                                   | e()"                      |                           |<a class="headerlink" href="#arg0-int-arg1-e" title="Permanent link">#</a></h2>
+<h2 id="void-pydtrace_auditconst-char-arg0-void-arg1-audit">| void PyDTrace_AUDIT(const char <em>arg0, void </em>arg1)  | "audit()"                 |                           |<a class="headerlink" href="#void-pydtrace_auditconst-char-arg0-void-arg1-audit" title="Permanent link">#</a></h2>
+<h3 id="c-probing-checks">C Probing Checks<a class="headerlink" href="#c-probing-checks" title="Permanent link">#</a></h3>
+<p>int PyDTrace_LINE_ENABLED(void)</p>
+<p>int PyDTrace_FUNCTION_ENTRY_ENABLED(void)</p>
+<p>int PyDTrace_FUNCTION_RETURN_ENABLED(void)</p>
+<p>int PyDTrace_GC_START_ENABLED(void)</p>
+<p>int PyDTrace_GC_DONE_ENABLED(void)</p>
+<p>int PyDTrace_INSTANCE_NEW_START_ENABLED(void)</p>
+<p>int PyDTrace_INSTANCE_NEW_DONE_ENABLED(void)</p>
+<p>int PyDTrace_INSTANCE_DELETE_START_ENABLED(void)</p>
+<p>int PyDTrace_INSTANCE_DELETE_DONE_ENABLED(void)</p>
+<p>int PyDTrace_IMPORT_FIND_LOAD_START_ENABLED(void)</p>
+<p>int PyDTrace_IMPORT_FIND_LOAD_DONE_ENABLED(void)</p>
+<p>int PyDTrace_AUDIT_ENABLED(void)</p>
+<p>All calls to "PyDTrace" functions must be guarded by a call to one
+   of these functions. This allows Python to minimize performance
+   impact when probing is disabled.</p>
+<p>On builds without DTrace enabled, these functions do nothing and
+   return "0".</p>
+<h2 id="systemtap-tapsets">SystemTap Tapsets<a class="headerlink" href="#systemtap-tapsets" title="Permanent link">#</a></h2>
+<p>La forma de nivel superior de utilizar la integración de SystemTap es
+utilizar un "tapset": el equivalente de SystemTap a una biblioteca,
+que oculta algunos de los detalles de bajo nivel de los marcadores
+estáticos.</p>
+<p>A continuación un archivo de tapset, basado en una compilación no
+compartida de CPython:</p>
+<p>/*
+      Provide a higher-level wrapping around the function__entry and
+      function__return markers:
+    */
+   probe python.function.entry = process("python").mark("function__entry")
+   {
+       filename = user_string($arg1);
+       funcname = user_string($arg2);
+       lineno = $arg3;
+       frameptr = $arg4
+   }
+   probe python.function.return = process("python").mark("function__return")
+   {
+       filename = user_string($arg1);
+       funcname = user_string($arg2);
+       lineno = $arg3;
+       frameptr = $arg4
+   }</p>
+<p>Si este archivo está instalado en el directorio de tapset de SystemTap
+(por ejemplo, "/usr/share/systemtap/tapset"), estos puntos de sonda
+adicionales estarán disponibles:</p>
+<p>python.function.entry(str filename, str funcname, int lineno, frameptr)</p>
+<p>Este punto de sonda indica que ha comenzado la ejecución de una
+   función de Python. Solo se activa para funciones de Python puro
+   (código de bytes).</p>
+<p>python.function.return(str filename, str funcname, int lineno, frameptr)</p>
+<p>Este punto de prueba es el inverso de "python.function.return", e
+   indica que la ejecución de una función de Python ha finalizado (ya
+   sea mediante "return" o mediante una excepción). Solo se activa
+   para funciones de Python puro (código de bytes).</p>
+<h2 id="ejemplos">Ejemplos<a class="headerlink" href="#ejemplos" title="Permanent link">#</a></h2>
+<p>Este script de SystemTap utiliza el tapset anterior para implementar
+de manera más limpia el ejemplo de rastrear la jerarquía de llamadas a
+funciones de Python, sin necesidad de nombrar directamente los
+marcadores estáticos:</p>
+<p>probe python.function.entry
+   {
+     printf("%s =&gt; %s in %s:%d\n",
+            thread_indent(1), funcname, filename, lineno);
+   }</p>
+<p>probe python.function.return
+   {
+     printf("%s &lt;= %s in %s:%d\n",
+            thread_indent(-1), funcname, filename, lineno);
+   }</p>
+<p>The following script uses the tapset above to provide a top-like view
+of all running CPython code, showing the top 20 most frequently
+entered bytecode frames, each second, across the whole system:</p>
+<p>global fn_calls;</p>
+<p>probe python.function.entry
+   {
+       fn_calls[pid(), filename, funcname, lineno] += 1;
+   }</p>
+<p>probe timer.ms(1000) {
+       printf("\033[2J\033[1;1H") /* clear screen */
+       printf("%6s %80s %6s %30s %6s\n",
+              "PID", "FILENAME", "LINE", "FUNCTION", "CALLS")
+       foreach ([pid, filename, funcname, lineno] in fn_calls- limit 20) {
+           printf("%6d %80s %6d %30s %6d\n",
+               pid, filename, lineno, funcname,
+               fn_calls[pid, filename, funcname, lineno]);
+       }
+       delete fn_calls;
+   }</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../howto/index.html">
+          <span class="muted">Anterior</span>Comos (*HOWTOs*) de Python
+        </a>
+        <a class="pager-next" href="../howto/ipaddress.html">
+          <span class="muted">Siguiente</span>Introducción al modulo *ipaddress*
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

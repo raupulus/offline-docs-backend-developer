@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;multiprocessing.shared_memory&#34; --- Shared memory for direct access across processes · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/importlib.html"
+>&#34;importlib&#34; --- La implementación de &#34;import&#34;</a>
+              </li>
+              <li>
+                <a href="../library/index.html"
+>La biblioteca estándar de Python</a>
+              </li>
+              <li>
+                <a href="../library/inspect.html"
+>&#34;inspect&#34; --- Inspect live objects</a>
+              </li>
+              <li>
+                <a href="../library/internet.html"
+>Protocolos y soporte de Internet</a>
+              </li>
+              <li>
+                <a href="../library/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../library/io.html"
+>&#34;io&#34; --- Core tools for working with streams</a>
+              </li>
+              <li>
+                <a href="../library/ipaddress.html"
+>&#34;ipaddress&#34; --- IPv4/IPv6 manipulation library</a>
+              </li>
+              <li>
+                <a href="../library/ipc.html"
+>Comunicación en redes y entre procesos</a>
+              </li>
+              <li>
+                <a href="../library/itertools.html"
+>&#34;itertools&#34; --- Functions creating iterators for efficient looping</a>
+              </li>
+              <li>
+                <a href="../library/json.html"
+>&#34;json&#34; --- JSON encoder and decoder</a>
+              </li>
+              <li>
+                <a href="../library/keyword.html"
+>&#34;keyword&#34; --- Testing for Python keywords</a>
+              </li>
+              <li>
+                <a href="../library/language.html"
+>Servicios del lenguaje Python</a>
+              </li>
+              <li>
+                <a href="../library/linecache.html"
+>&#34;linecache&#34; --- Random access to text lines</a>
+              </li>
+              <li>
+                <a href="../library/locale.html"
+>&#34;locale&#34; --- Internationalization services</a>
+              </li>
+              <li>
+                <a href="../library/logging.config.html"
+>&#34;logging.config&#34; --- Logging configuration</a>
+              </li>
+              <li>
+                <a href="../library/logging.handlers.html"
+>&#34;logging.handlers&#34; --- Logging handlers</a>
+              </li>
+              <li>
+                <a href="../library/logging.html"
+>&#34;logging&#34; --- Logging facility for Python</a>
+              </li>
+              <li>
+                <a href="../library/lzma.html"
+>&#34;lzma&#34; --- Compression using the LZMA algorithm</a>
+              </li>
+              <li>
+                <a href="../library/mailbox.html"
+>&#34;mailbox&#34; --- Manipulate mailboxes in various formats</a>
+              </li>
+              <li>
+                <a href="../library/mailcap.html"
+>&#34;mailcap&#34; --- Mailcap file handling</a>
+              </li>
+              <li>
+                <a href="../library/markup.html"
+>Herramientas Para Procesar Formatos de Marcado Estructurado</a>
+              </li>
+              <li>
+                <a href="../library/marshal.html"
+>&#34;marshal&#34; --- Internal Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/math.html"
+>&#34;math&#34; --- Mathematical functions</a>
+              </li>
+              <li>
+                <a href="../library/mimetypes.html"
+>&#34;mimetypes&#34; --- Map filenames to MIME types</a>
+              </li>
+              <li>
+                <a href="../library/mm.html"
+>Servicios Multimedia</a>
+              </li>
+              <li>
+                <a href="../library/mmap.html"
+>&#34;mmap&#34; --- Memory-mapped file support</a>
+              </li>
+              <li>
+                <a href="../library/modulefinder.html"
+>&#34;modulefinder&#34; --- Find modules used by a script</a>
+              </li>
+              <li>
+                <a href="../library/modules.html"
+>Importando módulos</a>
+              </li>
+              <li>
+                <a href="../library/msilib.html"
+>&#34;msilib&#34; --- Read and write Microsoft Installer files</a>
+              </li>
+              <li>
+                <a href="../library/msvcrt.html"
+>&#34;msvcrt&#34; --- Useful routines from the MS VC++ runtime</a>
+              </li>
+              <li>
+                <a href="../library/multiprocessing.shared_memory.html"
+class="is-current" aria-current="page">&#34;multiprocessing.shared_memory&#34; --- Shared memory for direct access across processes</a>
+              </li>
+              <li>
+                <a href="../library/multiprocessing.html"
+>&#34;multiprocessing&#34; --- Process-based parallelism</a>
+              </li>
+              <li>
+                <a href="../library/netdata.html"
+>Manejo de datos de internet</a>
+              </li>
+              <li>
+                <a href="../library/netrc.html"
+>&#34;netrc&#34; --- netrc file processing</a>
+              </li>
+              <li>
+                <a href="../library/nis.html"
+>&#34;nis&#34; --- Interface to Sun’s NIS (Yellow Pages)</a>
+              </li>
+              <li>
+                <a href="../library/nntplib.html"
+>&#34;nntplib&#34; --- NNTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/numbers.html"
+>&#34;numbers&#34; --- Numeric abstract base classes</a>
+              </li>
+              <li>
+                <a href="../library/numeric.html"
+>Módulos numéricos y matemáticos</a>
+              </li>
+              <li>
+                <a href="../library/operator.html"
+>&#34;operator&#34; --- Standard operators as functions</a>
+              </li>
+              <li>
+                <a href="../library/optparse.html"
+>&#34;optparse&#34; --- Parser for command line options</a>
+              </li>
+              <li>
+                <a href="../library/os.path.html"
+>&#34;os.path&#34; --- Common pathname manipulations</a>
+              </li>
+              <li>
+                <a href="../library/os.html"
+>&#34;os&#34; --- Interfaces misceláneas del sistema operativo</a>
+              </li>
+              <li>
+                <a href="../library/ossaudiodev.html"
+>&#34;ossaudiodev&#34; --- Access to OSS-compatible audio devices</a>
+              </li>
+              <li>
+                <a href="../library/pathlib.html"
+>&#34;pathlib&#34; --- Rutas de sistemas orientada a objetos</a>
+              </li>
+              <li>
+                <a href="../library/pdb.html"
+>&#34;pdb&#34; --- The Python Debugger</a>
+              </li>
+              <li>
+                <a href="../library/persistence.html"
+>Persistencia de datos</a>
+              </li>
+              <li>
+                <a href="../library/pickle.html"
+>&#34;pickle&#34; --- Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/pickletools.html"
+>&#34;pickletools&#34; --- Tools for pickle developers</a>
+              </li>
+              <li>
+                <a href="../library/pipes.html"
+>&#34;pipes&#34; --- Interface to shell pipelines</a>
+              </li>
+              <li>
+                <a href="../library/pkgutil.html"
+>&#34;pkgutil&#34; --- Package extension utility</a>
+              </li>
+              <li>
+                <a href="../library/platform.html"
+>&#34;platform&#34; ---  Access to underlying platform&#39;s identifying data</a>
+              </li>
+              <li>
+                <a href="../library/plistlib.html"
+>&#34;plistlib&#34; --- Generate and parse Apple &#34;.plist&#34; files</a>
+              </li>
+              <li>
+                <a href="../library/poplib.html"
+>&#34;poplib&#34; --- POP3 protocol client</a>
+              </li>
+              <li>
+                <a href="../library/posix.html"
+>&#34;posix&#34; --- The most common POSIX system calls</a>
+              </li>
+              <li>
+                <a href="../library/pprint.html"
+>&#34;pprint&#34; --- Data pretty printer</a>
+              </li>
+              <li>
+                <a href="../library/profile.html"
+>Los perfiladores de Python</a>
+              </li>
+              <li>
+                <a href="../library/pty.html"
+>&#34;pty&#34; --- Pseudo-terminal utilities</a>
+              </li>
+              <li>
+                <a href="../library/pwd.html"
+>&#34;pwd&#34; --- The password database</a>
+              </li>
+              <li>
+                <a href="../library/py_compile.html"
+>&#34;py_compile&#34; --- Compile Python source files</a>
+              </li>
+              <li>
+                <a href="../library/pyclbr.html"
+>&#34;pyclbr&#34; --- Python module browser support</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;multiprocessing.shared_memory&#34; --- Shared memory for direct access across processes</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+
+      <div class="doc-body">
+        <h1 id="multiprocessingshared_memory-shared-memory-for-direct-access-across-processes">"multiprocessing.shared_memory" --- Shared memory for direct access across processes<a class="headerlink" href="#multiprocessingshared_memory-shared-memory-for-direct-access-across-processes" title="Permanent link">#</a></h1>
+<p><strong>Código fuente:</strong> Lib/multiprocessing/shared_memory.py</p>
+<p>Added in version 3.8.</p>
+<p>======================================================================</p>
+<p>This module provides a class, "SharedMemory", for the allocation and
+management of shared memory to be accessed by one or more processes on
+a multicore or symmetric multiprocessor (SMP) machine.  To assist with
+the life-cycle management of shared memory especially across distinct
+processes, a "BaseManager" subclass, "SharedMemoryManager", is also
+provided in the "multiprocessing.managers" module.</p>
+<p>In this module, shared memory refers to "POSIX style" shared memory
+blocks (though is not necessarily implemented explicitly as such) and
+does not refer to "distributed shared memory".  This style of shared
+memory permits distinct processes to potentially read and write to a
+common (or shared) region of volatile memory.  Processes are
+conventionally limited to only have access to their own process memory
+space but shared memory permits the sharing of data between processes,
+avoiding the need to instead send messages between processes
+containing that data.  Sharing data directly via memory can provide
+significant performance benefits compared to sharing data via disk or
+socket or other communications requiring the
+serialization/deserialization and copying of data.</p>
+<p>class multiprocessing.shared_memory.SharedMemory(name=None, create=False, size=0, *, track=True)</p>
+<p>Create an instance of the "SharedMemory" class for either creating
+   a new shared memory block or attaching to an existing shared memory
+   block.  Each shared memory block is assigned a unique name. In this
+   way, one process can create a shared memory block with a particular
+   name and a different process can attach to that same shared memory
+   block using that same name.</p>
+<p>As a resource for sharing data across processes, shared memory
+   blocks may outlive the original process that created them.  When
+   one process no longer needs access to a shared memory block that
+   might still be needed by other processes, the "close()" method
+   should be called. When a shared memory block is no longer needed by
+   any process, the "unlink()" method should be called to ensure
+   proper cleanup.</p>
+<p>Parámetros:
+      * <strong>name</strong> (<em>str</em><em> | </em><em>None</em>) -- The unique name for the
+        requested shared memory, specified as a string. When creating
+        a new shared memory block, if "None" (the default) is supplied
+        for the name, a novel name will be generated.</p>
+<div class="codehilite"><pre><span></span><code>  * **create** (*bool*) -- Control whether a new shared memory
+    block is created (&quot;True&quot;) or an existing shared memory block
+    is attached (&quot;False&quot;).
+
+  * **size** (*int*) -- The requested number of bytes when
+    creating a new shared memory block. Because some platforms
+    choose to allocate chunks of memory based upon that platform&#39;s
+    memory page size, the exact size of the shared memory block
+    may be larger or equal to the size requested. When attaching
+    to an existing shared memory block, the *size* parameter is
+    ignored.
+
+  * **track** (*bool*) -- When &quot;True&quot;, register the shared memory
+    block with a resource tracker process on platforms where the
+    OS does not do this automatically. The resource tracker
+    ensures proper cleanup of the shared memory even if all other
+    processes with access to the memory exit without doing so.
+    Python processes created from a common ancestor using
+    &quot;multiprocessing&quot; facilities share a single resource tracker
+    process, and the lifetime of shared memory segments is handled
+    automatically among these processes. Python processes created
+    in any other way will receive their own resource tracker when
+    accessing shared memory with *track* enabled. This will cause
+    the shared memory to be deleted by the resource tracker of the
+    first process that terminates. To avoid this issue, users of
+    &quot;subprocess&quot; or standalone Python processes should set *track*
+    to &quot;False&quot; when there is already another process in place that
+    does the bookkeeping. *track* is ignored on Windows, which has
+    its own tracking and automatically deletes shared memory when
+    all handles to it have been closed.
+</code></pre></div>
+
+<p>Distinto en la versión 3.13: Added the <em>track</em> parameter.</p>
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Close the file descriptor/handle to the shared memory from this
+  instance.  &quot;close()&quot; should be called once access to the shared
+  memory block from this instance is no longer needed.  Depending
+  on operating system, the underlying memory may or may not be
+  freed even if all handles to it have been closed.  To ensure
+  proper cleanup, use the &quot;unlink()&quot; method.
+</code></pre></div>
+
+<p>unlink()</p>
+<div class="codehilite"><pre><span></span><code>  Delete the underlying shared memory block.  This should be
+  called only once per shared memory block regardless of the
+  number of handles to it, even in other processes. &quot;unlink()&quot; and
+  &quot;close()&quot; can be called in any order, but trying to access data
+  inside a shared memory block after &quot;unlink()&quot; may result in
+  memory access errors, depending on platform.
+
+  This method has no effect on Windows, where the only way to
+  delete a shared memory block is to close all handles.
+</code></pre></div>
+
+<p>buf</p>
+<div class="codehilite"><pre><span></span><code>  Un *memoryview* del contenido del bloque de memoria compartida.
+</code></pre></div>
+
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  Acceso de solo lectura al nombre único del bloque de memoria
+  compartida.
+</code></pre></div>
+
+<p>size</p>
+<div class="codehilite"><pre><span></span><code>  Acceso de solo lectura al tamaño en bytes del bloque de memoria
+  compartida.
+</code></pre></div>
+
+<p>El siguiente ejemplo muestra el uso de bajo nivel de instancias de
+"SharedMemory":</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing import shared_memory
+shm_a = shared_memory.SharedMemory(create=True, size=10)
+type(shm_a.buf)
+   <class 'memoryview'>
+buffer = shm_a.buf
+len(buffer)
+   10
+buffer[:4] = bytearray([22, 33, 44, 55])  # Modify multiple at once
+buffer[4] = 100                           # Modify single byte at a time</p>
+<h1 id="attach-to-an-existing-shared-memory-block">Attach to an existing shared memory block<a class="headerlink" href="#attach-to-an-existing-shared-memory-block" title="Permanent link">#</a></h1>
+<p>shm_b = shared_memory.SharedMemory(shm_a.name)
+import array
+array.array('b', shm_b.buf[:5])  # Copy the data into a new array.array
+   array('b', [22, 33, 44, 55, 100])
+shm_b.buf[:5] = b'howdy'  # Modify via shm_b using bytes
+bytes(shm_a.buf[:5])      # Access via shm_a
+   b'howdy'
+shm_b.close()   # Close each SharedMemory instance
+shm_a.close()
+shm_a.unlink()  # Call unlink only once to release the shared memory</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>The following example demonstrates a practical use of the
+"SharedMemory" class with NumPy arrays, accessing the same
+"numpy.ndarray" from two distinct Python shells:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<h1 id="in-the-first-python-interactive-shell">In the first Python interactive shell<a class="headerlink" href="#in-the-first-python-interactive-shell" title="Permanent link">#</a></h1>
+<p>import numpy as np
+a = np.array([1, 1, 2, 3, 5, 8])  # Start with an existing NumPy array
+from multiprocessing import shared_memory
+shm = shared_memory.SharedMemory(create=True, size=a.nbytes)</p>
+<h1 id="now-create-a-numpy-array-backed-by-shared-memory">Now create a NumPy array backed by shared memory<a class="headerlink" href="#now-create-a-numpy-array-backed-by-shared-memory" title="Permanent link">#</a></h1>
+<p>b = np.ndarray(a.shape, dtype=a.dtype, buffer=shm.buf)
+b[:] = a[:]  # Copy the original data into shared memory
+b
+   array([1, 1, 2, 3, 5, 8])
+type(b)
+   <class 'numpy.ndarray'>
+type(a)
+   <class 'numpy.ndarray'>
+shm.name  # We did not specify a name so one was chosen for us
+   'psm_21467_46075'</p>
+<h1 id="in-either-the-same-shell-or-a-new-python-shell-on-the-same-machine">In either the same shell or a new Python shell on the same machine<a class="headerlink" href="#in-either-the-same-shell-or-a-new-python-shell-on-the-same-machine" title="Permanent link">#</a></h1>
+<p>import numpy as np
+from multiprocessing import shared_memory</p>
+<h1 id="attach-to-the-existing-shared-memory-block">Attach to the existing shared memory block<a class="headerlink" href="#attach-to-the-existing-shared-memory-block" title="Permanent link">#</a></h1>
+<p>existing_shm = shared_memory.SharedMemory(name='psm_21467_46075')</p>
+<h1 id="note-that-ashape-is-6-and-adtype-is-npint64-in-this-example">Note that a.shape is (6,) and a.dtype is np.int64 in this example<a class="headerlink" href="#note-that-ashape-is-6-and-adtype-is-npint64-in-this-example" title="Permanent link">#</a></h1>
+<p>c = np.ndarray((6,), dtype=np.int64, buffer=existing_shm.buf)
+c
+   array([1, 1, 2, 3, 5, 8])
+c[-1] = 888
+c
+   array([  1,   1,   2,   3,   5, 888])</p>
+<h1 id="back-in-the-first-python-interactive-shell-b-reflects-this-change">Back in the first Python interactive shell, b reflects this change<a class="headerlink" href="#back-in-the-first-python-interactive-shell-b-reflects-this-change" title="Permanent link">#</a></h1>
+<p>b
+   array([  1,   1,   2,   3,   5, 888])</p>
+<h1 id="clean-up-from-within-the-second-python-shell">Clean up from within the second Python shell<a class="headerlink" href="#clean-up-from-within-the-second-python-shell" title="Permanent link">#</a></h1>
+<p>del c  # Unnecessary; merely emphasizing the array is no longer used
+existing_shm.close()</p>
+<h1 id="clean-up-from-within-the-first-python-shell">Clean up from within the first Python shell<a class="headerlink" href="#clean-up-from-within-the-first-python-shell" title="Permanent link">#</a></h1>
+<p>del b  # Unnecessary; merely emphasizing the array is no longer used
+shm.close()
+shm.unlink()  # Free and release the shared memory block at the very end</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>class multiprocessing.managers.SharedMemoryManager([address[, authkey]])</p>
+<p>A subclass of "multiprocessing.managers.BaseManager" which can be
+   used for the management of shared memory blocks across processes.</p>
+<p>A call to "start()" on a "SharedMemoryManager" instance causes a
+   new process to be started. This new process's sole purpose is to
+   manage the life cycle of all shared memory blocks created through
+   it.  To trigger the release of all shared memory blocks managed by
+   that process, call "shutdown()" on the instance. This triggers a
+   "unlink()" call on all of the "SharedMemory" objects managed by
+   that process and then stops the process itself.  By creating
+   "SharedMemory" instances through a "SharedMemoryManager", we avoid
+   the need to manually track and trigger the freeing of shared memory
+   resources.</p>
+<p>Esta clase proporciona métodos para crear y retornar instancias
+   "SharedMemory" y para crear un objeto de tipo lista
+   ("ShareableList") basados en memoria compartida.</p>
+<p>Refer to "BaseManager" for a description of the inherited <em>address</em>
+   and <em>authkey</em> optional input arguments and how they may be used to
+   connect to an existing "SharedMemoryManager" service from other
+   processes.</p>
+<p>SharedMemory(size)</p>
+<div class="codehilite"><pre><span></span><code>  Create and return a new &quot;SharedMemory&quot; object with the specified
+  *size* in bytes.
+</code></pre></div>
+
+<p>ShareableList(sequence)</p>
+<div class="codehilite"><pre><span></span><code>  Create and return a new &quot;ShareableList&quot; object, initialized by
+  the values from the input *sequence*.
+</code></pre></div>
+
+<p>The following example demonstrates the basic mechanisms of a
+"SharedMemoryManager":</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing.managers import SharedMemoryManager
+smm = SharedMemoryManager()
+smm.start()  # Start the process that manages the shared memory blocks
+sl = smm.ShareableList(range(4))
+sl
+   ShareableList([0, 1, 2, 3], name='psm_6572_7512')
+raw_shm = smm.SharedMemory(size=128)
+another_sl = smm.ShareableList('alpha')
+another_sl
+   ShareableList(['a', 'l', 'p', 'h', 'a'], name='psm_6572_12221')
+smm.shutdown()  # Calls unlink() on sl, raw_shm, and another_sl</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>The following example depicts a potentially more convenient pattern
+for using "SharedMemoryManager" objects via the "with" statement to
+ensure that all shared memory blocks are released after they are no
+longer needed:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>with SharedMemoryManager() as smm:
+   ...     sl = smm.ShareableList(range(2000))
+   ...     # Divide the work among two processes, storing partial results in sl
+   ...     p1 = Process(target=do_work, args=(sl, 0, 1000))
+   ...     p2 = Process(target=do_work, args=(sl, 1000, 2000))
+   ...     p1.start()
+   ...     p2.start()  # A multiprocessing.Pool might be more efficient
+   ...     p1.join()
+   ...     p2.join()   # Wait for all work to complete in both processes
+   ...     total_result = sum(sl)  # Consolidate the partial results now in sl</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>When using a "SharedMemoryManager" in a "with" statement, the shared
+memory blocks created using that manager are all released when the
+"with" statement's code block finishes execution.</p>
+<p>class multiprocessing.shared_memory.ShareableList(sequence=None, *, name=None)</p>
+<p>Provide a mutable list-like object where all values stored within
+   are stored in a shared memory block. This constrains storable
+   values to the following built-in data types:</p>
+<ul>
+<li>
+<p>"int" (signed 64-bit)</p>
+</li>
+<li>
+<p>"float"</p>
+</li>
+<li>
+<p>"bool"</p>
+</li>
+<li>
+<p>"str" (less than 10M bytes each when encoded as UTF-8)</p>
+</li>
+<li>
+<p>"bytes" (less than 10M bytes each)</p>
+</li>
+<li>
+<p>"None"</p>
+</li>
+</ul>
+<p>It also notably differs from the built-in "list" type in that these
+   lists can not change their overall length (i.e. no "append()",
+   "insert()", etc.) and do not support the dynamic creation of new
+   "ShareableList" instances via slicing.</p>
+<p><em>sequence</em> is used in populating a new "ShareableList" full of
+   values. Set to "None" to instead attach to an already existing
+   "ShareableList" by its unique shared memory name.</p>
+<p><em>name</em> is the unique name for the requested shared memory, as
+   described in the definition for "SharedMemory".  When attaching to
+   an existing "ShareableList", specify its shared memory block's
+   unique name while leaving <em>sequence</em> set to "None".</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> A known issue exists for &quot;bytes&quot; and &quot;str&quot; values. If they end
+ with &quot;\x00&quot; nul bytes or characters, those may be *silently
+ stripped* when fetching them by index from the &quot;ShareableList&quot;.
+ This &quot;.rstrip(b&#39;\x00&#39;)&quot; behavior is considered a bug and may go
+ away in the future. See gh-106939.
+</code></pre></div>
+
+<p>Para aplicaciones donde eliminar espacios nulos finales es un
+   problema, solucionarlo añadiendo siempre incondicionalmente un byte
+   extra que no sea 0 al final de dichos valores al almacenar y
+   eliminándolo incondicionalmente al recuperarlos.</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; from multiprocessing import shared_memory
+  &gt;&gt;&gt; nul_bug_demo = shared_memory.ShareableList([&#39;?\x00&#39;, b&#39;\x03\x02\x01\x00\x00\x00&#39;])
+  &gt;&gt;&gt; nul_bug_demo[0]
+  &#39;?&#39;
+  &gt;&gt;&gt; nul_bug_demo[1]
+  b&#39;\x03\x02\x01&#39;
+  &gt;&gt;&gt; nul_bug_demo.shm.unlink()
+  &gt;&gt;&gt; padded = shared_memory.ShareableList([&#39;?\x00\x07&#39;, b&#39;\x03\x02\x01\x00\x00\x00\x07&#39;])
+  &gt;&gt;&gt; padded[0][:-1]
+  &#39;?\x00&#39;
+  &gt;&gt;&gt; padded[1][:-1]
+  b&#39;\x03\x02\x01\x00\x00\x00&#39;
+  &gt;&gt;&gt; padded.shm.unlink()
+</code></pre></div>
+
+<p>count(value)</p>
+<div class="codehilite"><pre><span></span><code>  Return the number of occurrences of *value*.
+</code></pre></div>
+
+<p>index(value)</p>
+<div class="codehilite"><pre><span></span><code>  Return first index position of *value*. Raise &quot;ValueError&quot; if
+  *value* is not present.
+</code></pre></div>
+
+<p>format</p>
+<div class="codehilite"><pre><span></span><code>  Atributo de solo lectura que contiene el formato de empaquetado
+  &quot;struct&quot; utilizado por todos los valores almacenados
+  actualmente.
+</code></pre></div>
+
+<p>shm</p>
+<div class="codehilite"><pre><span></span><code>  La instancia de &quot;SharedMemory&quot; donde se almacenan los valores.
+</code></pre></div>
+
+<p>El siguiente ejemplo muestra el uso básico de una instancia
+"ShareableList":</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing import shared_memory
+a = shared_memory.ShareableList(['howdy', b'HoWdY', -273.154, 100, None, True, 42])
+[ type(entry) for entry in a ]
+[<class 'str'>, <class 'bytes'>, <class 'float'>, <class 'int'>, <class 'NoneType'>, <class 'bool'>, <class 'int'>]
+a[2]
+-273.154
+a[2] = -78.5
+a[2]
+-78.5
+a[2] = 'dry ice'  # Changing data types is supported as well
+a[2]
+'dry ice'
+a[2] = 'larger than previously allocated storage space'
+Traceback (most recent call last):
+  ...
+ValueError: exceeds available storage for existing str
+a[2]
+'dry ice'
+len(a)
+7
+a.index(42)
+6
+a.count(b'howdy')
+0
+a.count(b'HoWdY')
+1
+a.shm.close()
+a.shm.unlink()
+del a  # Use of a ShareableList after call to unlink() is unsupported</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>El siguiente ejemplo muestra cómo uno, dos o muchos procesos pueden
+acceder al mismo "ShareableList" al proporcionar el nombre del bloque
+de memoria compartida detrás de él:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>b = shared_memory.ShareableList(range(5))         # In a first process
+c = shared_memory.ShareableList(name=b.shm.name)  # In a second process
+c
+ShareableList([0, 1, 2, 3, 4], name='...')
+c[-1] = -999
+b[-1]
+-999
+b.shm.close()
+c.shm.close()
+c.shm.unlink()</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>The following examples demonstrates that "ShareableList" (and
+underlying "SharedMemory") objects can be pickled and unpickled if
+needed. Note, that it will still be the same shared object. This
+happens, because the deserialized object has the same unique name and
+is just attached to an existing object with the same name (if the
+object is still alive):</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>import pickle
+from multiprocessing import shared_memory
+sl = shared_memory.ShareableList(range(10))
+list(sl)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</p>
+<p>deserialized_sl = pickle.loads(pickle.dumps(sl))
+list(deserialized_sl)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</p>
+<p>sl[0] = -1
+deserialized_sl[1] = -2
+list(sl)
+[-1, -2, 2, 3, 4, 5, 6, 7, 8, 9]
+list(deserialized_sl)
+[-1, -2, 2, 3, 4, 5, 6, 7, 8, 9]</p>
+<p>sl.shm.close()
+sl.shm.unlink()</p>
+</blockquote>
+</blockquote>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/msvcrt.html">
+          <span class="muted">Anterior</span>&#34;msvcrt&#34; --- Useful routines from the MS VC++ runtime
+        </a>
+        <a class="pager-next" href="../library/multiprocessing.html">
+          <span class="muted">Siguiente</span>&#34;multiprocessing&#34; --- Process-based parallelism
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom entries · Filament</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Filament</a>
+<span class="badge">4.x</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="filament" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Filament…"
+         aria-label="Buscar en Filament" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Filament
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Filament">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../actions/overview.html">Actions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../forms/overview.html">Forms</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Infolists
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../infolists/overview.html"
+>Overview</a>
+              </li>
+              <li>
+                <a href="../infolists/text-entry.html"
+>Text entry</a>
+              </li>
+              <li>
+                <a href="../infolists/icon-entry.html"
+>Icon entry</a>
+              </li>
+              <li>
+                <a href="../infolists/image-entry.html"
+>Image entry</a>
+              </li>
+              <li>
+                <a href="../infolists/color-entry.html"
+>Color entry</a>
+              </li>
+              <li>
+                <a href="../infolists/code-entry.html"
+>Code entry</a>
+              </li>
+              <li>
+                <a href="../infolists/key-value-entry.html"
+>Key-value entry</a>
+              </li>
+              <li>
+                <a href="../infolists/repeatable-entry.html"
+>Repeatable entry</a>
+              </li>
+              <li>
+                <a href="../infolists/custom-entries.html"
+class="is-current" aria-current="page">Custom entries</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../notifications/overview.html">Notifications</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../schemas/overview.html">Schemas</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tables/overview.html">Tables</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../widgets/overview.html">Widgets</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Custom entries</h1>
+
+      <p class="doc-meta">
+<span class="badge">4.x</span>          <a href="https://filamentphp.com/docs" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#accessing-the-state-of-the-entry-in-the-blade-view">Accessing the state of the entry in the Blade view#</a></li>
+              <li class="lvl-2"><a href="#accessing-the-state-of-another-component-in-the-blade-view">Accessing the state of another component in the Blade view#</a></li>
+              <li class="lvl-2"><a href="#accessing-the-eloquent-record-in-the-blade-view">Accessing the Eloquent record in the Blade view#</a></li>
+              <li class="lvl-2"><a href="#accessing-the-current-operation-in-the-blade-view">Accessing the current operation in the Blade view#</a></li>
+              <li class="lvl-2"><a href="#accessing-the-current-livewire-component-instance-in-the-blade-view">Accessing the current Livewire component instance in the Blade view#</a></li>
+              <li class="lvl-2"><a href="#accessing-the-current-entry-instance-in-the-blade-view">Accessing the current entry instance in the Blade view#</a></li>
+              <li class="lvl-2"><a href="#adding-a-configuration-method-to-a-custom-entry-class">Adding a configuration method to a custom entry class#</a></li>
+              <li class="lvl-2"><a href="#allowing-utility-injection-in-a-custom-entry-configuration-method">Allowing utility injection in a custom entry configuration method#</a></li>
+              <li class="lvl-2"><a href="#calling-entry-methods-from-javascript">Calling entry methods from JavaScript#</a></li>
+              <li class="lvl-3"><a href="#exposing-a-method">Exposing a method#</a></li>
+              <li class="lvl-3"><a href="#calling-the-method-from-javascript">Calling the method from JavaScript#</a></li>
+              <li class="lvl-3"><a href="#preventing-re-renders">Preventing re-renders#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>import Aside from "@components/Aside.astro"</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>You may create your own custom entry classes and views, which you can reuse across your project, and even release as a plugin to the community.</p>
+<p>To create a custom entry class and view, you may use the following command:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:filament-infolist-entry<span class="w"> </span>AudioPlayerEntry
+</code></pre></div>
+
+<p>This will create the following component class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Infolists\Components\Entry;</span>
+
+<span class="x">class AudioPlayerEntry extends Entry</span>
+<span class="x">{</span>
+<span class="x">    protected string $view = &#39;filament.infolists.components.audio-player-entry&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>It will also create a view file at <code>resources/views/filament/infolists/components/audio-player-entry.blade.php</code>.</p>
+<Aside variant="info">
+    Filament infolist entries are **not** Livewire components. Defining public properties and methods on a infolist entry class will not make them accessible in the Blade view.
+</Aside>
+
+<h2 id="accessing-the-state-of-the-entry-in-the-blade-view">Accessing the state of the entry in the Blade view<a class="headerlink" href="#accessing-the-state-of-the-entry-in-the-blade-view" title="Permanent link">#</a></h2>
+<p>Inside the Blade view, you may access the <a href="overview#entry-content-state">state</a> of the entry using the <code>$getState()</code> function:</p>
+<div class="codehilite"><pre><span></span><code>&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    {{ $getState() }}
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<h2 id="accessing-the-state-of-another-component-in-the-blade-view">Accessing the state of another component in the Blade view<a class="headerlink" href="#accessing-the-state-of-another-component-in-the-blade-view" title="Permanent link">#</a></h2>
+<p>Inside the Blade view, you may access the state of another component in the schema using the <code>$get()</code> function:</p>
+<div class="codehilite"><pre><span></span><code>&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    {{ $get(&#39;email&#39;) }}
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<Aside variant="tip">
+    Unless a form field is [reactive](../infolists/overview#the-basics-of-reactivity), the Blade view will not refresh when the value of the field changes, only when the next user interaction occurs that makes a request to the server. If you need to react to changes in a field's value, it should be `live()`.
+</Aside>
+
+<h2 id="accessing-the-eloquent-record-in-the-blade-view">Accessing the Eloquent record in the Blade view<a class="headerlink" href="#accessing-the-eloquent-record-in-the-blade-view" title="Permanent link">#</a></h2>
+<p>Inside the Blade view, you may access the current Eloquent record using the <code>$record</code> variable:</p>
+<div class="codehilite"><pre><span></span><code>&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    {{ $record-&gt;name }}
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<h2 id="accessing-the-current-operation-in-the-blade-view">Accessing the current operation in the Blade view<a class="headerlink" href="#accessing-the-current-operation-in-the-blade-view" title="Permanent link">#</a></h2>
+<p>Inside the Blade view, you may access the current operation, usually <code>create</code>, <code>edit</code> or <code>view</code>, using the <code>$operation</code> variable:</p>
+<div class="codehilite"><pre><span></span><code>&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    @if ($operation === &#39;create&#39;)
+        This is a new conference.
+    @else
+        This is an existing conference.
+    @endif
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<h2 id="accessing-the-current-livewire-component-instance-in-the-blade-view">Accessing the current Livewire component instance in the Blade view<a class="headerlink" href="#accessing-the-current-livewire-component-instance-in-the-blade-view" title="Permanent link">#</a></h2>
+<p>Inside the Blade view, you may access the current Livewire component instance using <code>$this</code>:</p>
+<div class="codehilite"><pre><span></span><code>@php
+    use Filament\Resources\Users\RelationManagers\ConferencesRelationManager;
+@endphp
+
+&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    @if ($this instanceof ConferencesRelationManager)
+        You are editing conferences the of a user.
+    @endif
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<h2 id="accessing-the-current-entry-instance-in-the-blade-view">Accessing the current entry instance in the Blade view<a class="headerlink" href="#accessing-the-current-entry-instance-in-the-blade-view" title="Permanent link">#</a></h2>
+<p>Inside the Blade view, you may access the current entry instance using <code>$entry</code>. You can call public methods on this object to access other information that may not be available in variables:</p>
+<div class="codehilite"><pre><span></span><code>&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    @if ($entry-&gt;isLabelHidden())
+        This is a new conference.
+    @endif
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<h2 id="adding-a-configuration-method-to-a-custom-entry-class">Adding a configuration method to a custom entry class<a class="headerlink" href="#adding-a-configuration-method-to-a-custom-entry-class" title="Permanent link">#</a></h2>
+<p>You may add a public method to the custom entry class that accepts a configuration value, stores it in a protected property, and returns it again from another public method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Infolists\Components\Entry;</span>
+
+<span class="x">class AudioPlayerEntry extends Entry</span>
+<span class="x">{</span>
+<span class="x">    protected string $view = &#39;filament.infolists.components.audio-player-entry&#39;;</span>
+
+<span class="x">    protected ?float $speed = null;</span>
+
+<span class="x">    public function speed(?float $speed): static</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;speed = $speed;</span>
+
+<span class="x">        return $this;</span>
+<span class="x">    }</span>
+
+<span class="x">    public function getSpeed(): ?float</span>
+<span class="x">    {</span>
+<span class="x">        return $this-&gt;speed;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Now, in the Blade view for the custom entry, you may access the speed using the <code>$getSpeed()</code> function:</p>
+<div class="codehilite"><pre><span></span><code>&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    {{ $getSpeed() }}
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<p>Any public method that you define on the custom entry class can be accessed in the Blade view as a variable function in this way.</p>
+<p>To pass the configuration value to the custom entry class, you may use the public method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Infolists\Components\AudioPlayerEntry;</span>
+
+<span class="x">AudioPlayerEntry::make(&#39;recording&#39;)</span>
+<span class="x">    -&gt;speed(0.5)</span>
+</code></pre></div>
+
+<h2 id="allowing-utility-injection-in-a-custom-entry-configuration-method">Allowing utility injection in a custom entry configuration method<a class="headerlink" href="#allowing-utility-injection-in-a-custom-entry-configuration-method" title="Permanent link">#</a></h2>
+<p><a href="overview#entry-utility-injection">Utility injection</a> is a powerful feature of Filament that allows users to configure a component using functions that can access various utilities. You can allow utility injection by ensuring that the parameter type and property type of the configuration allows the user to pass a <code>Closure</code>. In the getter method, you should pass the configuration value to the <code>$this-&gt;evaluate()</code> method, which will inject utilities into the user's function if they pass one, or return the value if it is static:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Closure;</span>
+<span class="x">use Filament\Infolists\Components\Entry;</span>
+
+<span class="x">class AudioPlayerEntry extends Entry</span>
+<span class="x">{</span>
+<span class="x">    protected string $view = &#39;filament.infolists.components.audio-player-entry&#39;;</span>
+
+<span class="x">    protected float | Closure | null $speed = null;</span>
+
+<span class="x">    public function speed(float | Closure | null $speed): static</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;speed = $speed;</span>
+
+<span class="x">        return $this;</span>
+<span class="x">    }</span>
+
+<span class="x">    public function getSpeed(): ?float</span>
+<span class="x">    {</span>
+<span class="x">        return $this-&gt;evaluate($this-&gt;speed);</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Now, you can pass a static value or a function to the <code>speed()</code> method, and <a href="overview#component-utility-injection">inject any utility</a> as a parameter:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Infolists\Components\AudioPlayerEntry;</span>
+
+<span class="x">AudioPlayerEntry::make(&#39;recording&#39;)</span>
+<span class="x">    -&gt;speed(fn (Conference $record): float =&gt; $record-&gt;isGlobal() ? 1 : 0.5)</span>
+</code></pre></div>
+
+<h2 id="calling-entry-methods-from-javascript">Calling entry methods from JavaScript<a class="headerlink" href="#calling-entry-methods-from-javascript" title="Permanent link">#</a></h2>
+<p>Sometimes you need to call a method on the entry class from JavaScript in the Blade view. For example, you might want to fetch data asynchronously or perform some server-side computation. Filament provides a way to expose methods on your entry class to JavaScript using the <code>#[ExposedLivewireMethod]</code> attribute.</p>
+<h3 id="exposing-a-method">Exposing a method<a class="headerlink" href="#exposing-a-method" title="Permanent link">#</a></h3>
+<p>To expose a method to JavaScript, add the <code>#[ExposedLivewireMethod]</code> attribute to a public method on your custom entry class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Infolists\Components\Entry;</span>
+<span class="x">use Filament\Support\Components\Attributes\ExposedLivewireMethod;</span>
+
+<span class="x">class AudioPlayerEntry extends Entry</span>
+<span class="x">{</span>
+<span class="x">    protected string $view = &#39;filament.infolists.components.audio-player-entry&#39;;</span>
+
+<span class="x">    #[ExposedLivewireMethod]</span>
+<span class="x">    public function getWaveformData(): array</span>
+<span class="x">    {</span>
+<span class="x">        // Generate waveform data from the audio file...</span>
+
+<span class="x">        return $waveformData;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<Aside variant="info">
+    Only methods marked with `#[ExposedLivewireMethod]` can be called from JavaScript. This is a security measure to prevent arbitrary method execution.
+</Aside>
+
+<h3 id="calling-the-method-from-javascript">Calling the method from JavaScript<a class="headerlink" href="#calling-the-method-from-javascript" title="Permanent link">#</a></h3>
+<p>In your Blade view, you may call the exposed method using <code>$wire.callSchemaComponentMethod()</code>. The first argument is the component's key (available via <code>$getKey()</code>), and the second argument is the method name. You may pass arguments as a third argument:</p>
+<div class="codehilite"><pre><span></span><code>@php
+    $key = $getKey();
+@endphp
+
+&lt;x-dynamic-component
+    :component=&quot;$getEntryWrapperView()&quot;
+    :entry=&quot;$entry&quot;
+&gt;
+    &lt;div
+        x-data=&quot;{
+            waveform: null,
+            async loadWaveform() {
+                this.waveform = await $wire.callSchemaComponentMethod(
+                    @js($key),
+                    &#39;getWaveformData&#39;,
+                )
+            },
+        }&quot;
+        x-init=&quot;loadWaveform&quot;
+    &gt;
+        &lt;template x-if=&quot;waveform&quot;&gt;
+            {{-- Render the waveform visualization --}}
+        &lt;/template&gt;
+    &lt;/div&gt;
+&lt;/x-dynamic-component&gt;
+</code></pre></div>
+
+<h3 id="preventing-re-renders">Preventing re-renders<a class="headerlink" href="#preventing-re-renders" title="Permanent link">#</a></h3>
+<p>By default, calling an exposed method will trigger a re-render of the Livewire component. If your method doesn't need to update the UI, you may add Livewire's <code>#[Renderless]</code> attribute alongside <code>#[ExposedLivewireMethod]</code> to skip the re-render:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Infolists\Components\Entry;</span>
+<span class="x">use Filament\Support\Components\Attributes\ExposedLivewireMethod;</span>
+<span class="x">use Livewire\Attributes\Renderless;</span>
+
+<span class="x">class AudioPlayerEntry extends Entry</span>
+<span class="x">{</span>
+<span class="x">    protected string $view = &#39;filament.infolists.components.audio-player-entry&#39;;</span>
+
+<span class="x">    #[ExposedLivewireMethod]</span>
+<span class="x">    #[Renderless]</span>
+<span class="x">    public function getWaveformData(): array</span>
+<span class="x">    {</span>
+<span class="x">        // ...</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../infolists/repeatable-entry.html">
+          <span class="muted">Anterior</span>Repeatable entry
+        </a>
+        <a class="pager-next" href="../notifications/overview.html">
+          <span class="muted">Siguiente</span>Overview
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

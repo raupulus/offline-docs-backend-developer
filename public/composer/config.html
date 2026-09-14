@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Config · Composer</title>
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./articles/aliases.html">Articles</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Composer
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="./basic-usage.html"
+>Basic usage</a>
+              </li>
+              <li>
+                <a href="./libraries.html"
+>Libraries</a>
+              </li>
+              <li>
+                <a href="./cli.html"
+>Command-line interface / Commands</a>
+              </li>
+              <li>
+                <a href="./schema.html"
+>The composer.json schema</a>
+              </li>
+              <li>
+                <a href="./repositories.html"
+>Repositories</a>
+              </li>
+              <li>
+                <a href="./config.html"
+class="is-current" aria-current="page">Config</a>
+              </li>
+              <li>
+                <a href="./runtime.html"
+>Runtime Composer utilities</a>
+              </li>
+              <li>
+                <a href="./community.html"
+>Community</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Config</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#process-timeout">process-timeout#</a></li>
+              <li class="lvl-3"><a href="#disabling-timeouts-for-an-individual-script-command">Disabling timeouts for an individual script command#</a></li>
+              <li class="lvl-2"><a href="#allow-plugins">allow-plugins#</a></li>
+              <li class="lvl-2"><a href="#use-include-path">use-include-path#</a></li>
+              <li class="lvl-2"><a href="#preferred-install">preferred-install#</a></li>
+              <li class="lvl-2"><a href="#source-fallback">source-fallback#</a></li>
+              <li class="lvl-2"><a href="#policy">policy#</a></li>
+              <li class="lvl-3"><a href="#advisories">advisories#</a></li>
+              <li class="lvl-3"><a href="#abandoned">abandoned#</a></li>
+              <li class="lvl-3"><a href="#malware">malware#</a></li>
+              <li class="lvl-3"><a href="#ignore-unreachable">ignore-unreachable#</a></li>
+              <li class="lvl-3"><a href="#custom-dependency-policies">Custom dependency policies#</a></li>
+              <li class="lvl-3"><a href="#ignore-format">ignore format#</a></li>
+              <li class="lvl-2"><a href="#audit_3">audit#</a></li>
+              <li class="lvl-3"><a href="#how-configaudit-interacts-with-configpolicy">How config.audit interacts with config.policy#</a></li>
+              <li class="lvl-3"><a href="#ignore_3">ignore#</a></li>
+              <li class="lvl-3"><a href="#abandoned_1">abandoned#</a></li>
+              <li class="lvl-3"><a href="#ignore-abandoned">ignore-abandoned#</a></li>
+              <li class="lvl-3"><a href="#ignore-severity_1">ignore-severity#</a></li>
+              <li class="lvl-3"><a href="#ignore-unreachable_1">ignore-unreachable#</a></li>
+              <li class="lvl-3"><a href="#block-insecure">block-insecure#</a></li>
+              <li class="lvl-3"><a href="#block-abandoned">block-abandoned#</a></li>
+              <li class="lvl-2"><a href="#use-parent-dir">use-parent-dir#</a></li>
+              <li class="lvl-2"><a href="#store-auths">store-auths#</a></li>
+              <li class="lvl-2"><a href="#github-protocols">github-protocols#</a></li>
+              <li class="lvl-2"><a href="#github-oauth">github-oauth#</a></li>
+              <li class="lvl-2"><a href="#gitlab-domains">gitlab-domains#</a></li>
+              <li class="lvl-2"><a href="#gitlab-oauth">gitlab-oauth#</a></li>
+              <li class="lvl-2"><a href="#gitlab-token">gitlab-token#</a></li>
+              <li class="lvl-2"><a href="#gitlab-protocol">gitlab-protocol#</a></li>
+              <li class="lvl-2"><a href="#forgejo-domains">forgejo-domains#</a></li>
+              <li class="lvl-2"><a href="#forgejo-token">forgejo-token#</a></li>
+              <li class="lvl-2"><a href="#disable-tls">disable-tls#</a></li>
+              <li class="lvl-2"><a href="#secure-http">secure-http#</a></li>
+              <li class="lvl-2"><a href="#bitbucket-oauth">bitbucket-oauth#</a></li>
+              <li class="lvl-2"><a href="#cafile">cafile#</a></li>
+              <li class="lvl-2"><a href="#capath">capath#</a></li>
+              <li class="lvl-2"><a href="#http-basic">http-basic#</a></li>
+              <li class="lvl-2"><a href="#bearer">bearer#</a></li>
+              <li class="lvl-2"><a href="#platform">platform#</a></li>
+              <li class="lvl-2"><a href="#vendor-dir">vendor-dir#</a></li>
+              <li class="lvl-2"><a href="#bin-dir">bin-dir#</a></li>
+              <li class="lvl-2"><a href="#data-dir">data-dir#</a></li>
+              <li class="lvl-2"><a href="#cache-dir">cache-dir#</a></li>
+              <li class="lvl-2"><a href="#cache-files-dir">cache-files-dir#</a></li>
+              <li class="lvl-2"><a href="#cache-repo-dir">cache-repo-dir#</a></li>
+              <li class="lvl-2"><a href="#cache-vcs-dir">cache-vcs-dir#</a></li>
+              <li class="lvl-2"><a href="#cache-files-ttl">cache-files-ttl#</a></li>
+              <li class="lvl-2"><a href="#cache-files-maxsize">cache-files-maxsize#</a></li>
+              <li class="lvl-2"><a href="#cache-read-only">cache-read-only#</a></li>
+              <li class="lvl-2"><a href="#bin-compat">bin-compat#</a></li>
+              <li class="lvl-2"><a href="#prepend-autoloader">prepend-autoloader#</a></li>
+              <li class="lvl-2"><a href="#autoloader-suffix">autoloader-suffix#</a></li>
+              <li class="lvl-2"><a href="#optimize-autoloader">optimize-autoloader#</a></li>
+              <li class="lvl-2"><a href="#sort-packages">sort-packages#</a></li>
+              <li class="lvl-2"><a href="#classmap-authoritative">classmap-authoritative#</a></li>
+              <li class="lvl-2"><a href="#apcu-autoloader">apcu-autoloader#</a></li>
+              <li class="lvl-2"><a href="#github-domains">github-domains#</a></li>
+              <li class="lvl-2"><a href="#github-expose-hostname">github-expose-hostname#</a></li>
+              <li class="lvl-2"><a href="#use-github-api">use-github-api#</a></li>
+              <li class="lvl-2"><a href="#notify-on-install">notify-on-install#</a></li>
+              <li class="lvl-2"><a href="#discard-changes">discard-changes#</a></li>
+              <li class="lvl-2"><a href="#archive-format">archive-format#</a></li>
+              <li class="lvl-2"><a href="#archive-dir">archive-dir#</a></li>
+              <li class="lvl-2"><a href="#htaccess-protect">htaccess-protect#</a></li>
+              <li class="lvl-2"><a href="#lock">lock#</a></li>
+              <li class="lvl-2"><a href="#platform-check">platform-check#</a></li>
+              <li class="lvl-2"><a href="#secure-svn-domains">secure-svn-domains#</a></li>
+              <li class="lvl-2"><a href="#bump-after-update">bump-after-update#</a></li>
+              <li class="lvl-2"><a href="#allow-missing-requirements">allow-missing-requirements#</a></li>
+              <li class="lvl-2"><a href="#update-with-minimal-changes">update-with-minimal-changes#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="config">Config<a class="headerlink" href="#config" title="Permanent link">#</a></h1>
+<p>This chapter will describe the <code>config</code> section of the <code>composer.json</code>
+<a href="schema.html">schema</a>.</p>
+<h2 id="process-timeout">process-timeout<a class="headerlink" href="#process-timeout" title="Permanent link">#</a></h2>
+<p>The timeout in seconds for process executions, defaults to 300 (5mins).
+The duration processes like <code>git clone</code>s can run before
+Composer assumes they died out. You may need to make this higher if you have a
+slow connection or huge vendors.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;process-timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="disabling-timeouts-for-an-individual-script-command">Disabling timeouts for an individual script command<a class="headerlink" href="#disabling-timeouts-for-an-individual-script-command" title="Permanent link">#</a></h3>
+<p>To disable the process timeout on a custom command under <code>scripts</code>, a static
+helper is available:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;test&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;Composer\\Config::disableProcessTimeout&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;phpunit&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="allow-plugins">allow-plugins<a class="headerlink" href="#allow-plugins" title="Permanent link">#</a></h2>
+<p>Defaults to <code>{}</code> which does not allow any plugins to be loaded.</p>
+<p>As of Composer 2.2.0, the <code>allow-plugins</code> option adds a layer of security
+allowing you to restrict which Composer plugins are able to execute code during
+a Composer run.</p>
+<p>When a new plugin is first activated, which is not yet listed in the config option,
+Composer will print a warning. If you run Composer interactively it will
+prompt you to decide if you want to execute the plugin or not.</p>
+<p>Use this setting to allow only packages you trust to execute code. Set it to
+an object with package name patterns as keys. The values are <strong>true</strong> to allow
+and <strong>false</strong> to disallow while suppressing further warnings and prompts.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;allow-plugins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;third-party/required-plugin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;my-organization/*&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;unnecessary/plugin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>You can also set the config option itself to <code>false</code> to disallow all plugins, or <code>true</code> to allow all plugins to run (NOT recommended). For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;allow-plugins&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="use-include-path">use-include-path<a class="headerlink" href="#use-include-path" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. If <code>true</code>, the Composer autoloader will also look for classes
+in the PHP include path.</p>
+<h2 id="preferred-install">preferred-install<a class="headerlink" href="#preferred-install" title="Permanent link">#</a></h2>
+<p>Defaults to <code>dist</code> and can be any of <code>source</code>, <code>dist</code> or <code>auto</code>. This option
+allows you to set the install method Composer will prefer to use. Can
+optionally be an object with package name patterns for keys for more granular install preferences.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;preferred-install&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;my-organization/stable-package&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dist&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;my-organization/*&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;partner-organization/*&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;*&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dist&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ul>
+<li><code>source</code> means Composer will install packages from their <code>source</code> if there
+  is one. This is typically a git clone or equivalent checkout of the version
+  control system the package uses. This is useful if you want to make a bugfix
+  to a project and get a local git clone of the dependency directly.</li>
+<li><code>auto</code> is the legacy behavior where Composer uses <code>source</code> automatically
+  for dev versions, and <code>dist</code> otherwise.</li>
+<li><code>dist</code> (the default as of Composer 2.1) means Composer installs from <code>dist</code>,
+  where possible. This is typically a zip file download, which is faster than
+  cloning the entire repository.</li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> Order matters. More specific patterns should be earlier than
+more relaxed patterns. When mixing the string notation with the hash
+configuration in global and package configurations the string notation
+is translated to a <code>*</code> package pattern.</p>
+<p><strong>Tip:</strong> If you want a source checkout for some packages so you can make
+local edits, but only on your own machine (not in CI), prefer configuring
+<code>preferred-install</code> globally rather than committing it to the project. For
+example:</p>
+<p><code>composer config --global preferred-install.my-vendor/* source</code></p>
+<p>CI then keeps installing from <code>dist</code> by default, while your dev machine
+always pulls those packages from source. This avoids relying on a source
+install failure to fall back to dist, and saves CI from attempting a clone
+first, which keep the output leaner and your CI faster.</p>
+</blockquote>
+<h2 id="source-fallback">source-fallback<a class="headerlink" href="#source-fallback" title="Permanent link">#</a></h2>
+<blockquote>
+<p><strong>Deprecated:</strong> This option is deprecated and will be removed in Composer 2.11.
+Do not set it unless you absolutely need to. It exists as a temporary opt-in
+while we disable the dist → source fallback for security reasons (silently
+switching from a dist to a less-trusted or manipulated source checkout has
+security implications). If you have a legitimate use case for re-enabling
+the dist → source fallback and do not want us to remove it in 2.11, please
+open an issue at https://github.com/composer/composer/issues to let us know.</p>
+</blockquote>
+<p>Defaults to <code>false</code>. When set to <code>true</code>, a failed <strong>dist</strong> install will fall
+back to a <strong>source</strong> checkout. This option only governs the dist → source
+direction; falling back from a failed source checkout to the dist artifact is
+always allowed regardless of this setting.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;source-fallback&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>Note:</strong> With this option at its default (<code>false</code>) and a dist download
+failing, Composer throws an error immediately instead of trying a source
+checkout. Make sure your preferred installation source (<code>preferred-install</code>)
+is correctly configured.</p>
+</blockquote>
+<h2 id="policy">policy<a class="headerlink" href="#policy" title="Permanent link">#</a></h2>
+<p>Unified dependency policy configuration. Controls Composer behavior for dependencies with security
+advisories, flagged as malware, abandoned packages, and custom dependency policies. Audit reports
+can be generated with <code>composer audit</code>; blocking prevents insecure or otherwise flagged package
+versions from being installed during <code>composer update</code>, <code>require</code>, or <code>remove</code> and malware also
+during a <code>composer install</code>.</p>
+<p>Set to <code>false</code> to disable all dependency policy enforcement:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>Migrating from <code>config.audit</code>?</strong> See
+<a href="#how-config-audit-interacts-with-config-policy">How <code>config.audit</code> interacts with <code>config.policy</code></a>
+for how the legacy keys are still honored as a fallback while you migrate.</p>
+</blockquote>
+<h3 id="advisories">advisories<a class="headerlink" href="#advisories" title="Permanent link">#</a></h3>
+<p>Configuration for packages affected by security advisories.</p>
+<h4 id="block">block<a class="headerlink" href="#block" title="Permanent link">#</a></h4>
+<p>Defaults to <code>true</code>. When <code>true</code>, package versions with active security advisories are blocked and
+cannot be installed during <code>update</code>/<code>require</code>/<code>remove</code> unless the advisory or package is ignored.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;advisories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;block&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="audit">audit<a class="headerlink" href="#audit" title="Permanent link">#</a></h4>
+<p>Defaults to <code>fail</code>. How <code>composer audit</code> treats packages with security advisories.</p>
+<ul>
+<li><code>ignore</code> — advisories are not reported</li>
+<li><code>report</code> — advisories are reported but do not cause a non-zero exit code</li>
+<li><code>fail</code> — advisories cause <code>composer audit</code> to exit with a non-zero code</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;advisories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;report&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="ignore-id">ignore-id<a class="headerlink" href="#ignore-id" title="Permanent link">#</a></h4>
+<p>A list of advisory IDs (CVE, GHSA, PKSA, …) to ignore. Each entry can optionally include a reason
+and scoping (<code>on-block</code>/<code>on-audit</code>) to limit where the ignore applies.</p>
+<h5 id="simple-list">Simple list:<a class="headerlink" href="#simple-list" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;advisories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;CVE-1234&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;GHSA-xx&quot;</span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h5 id="with-reasons">With reasons:<a class="headerlink" href="#with-reasons" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;advisories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;CVE-1234&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Not affected.&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;GHSA-xx&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Patch applied.&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h5 id="with-scoping">With scoping:<a class="headerlink" href="#with-scoping" title="Permanent link">#</a></h5>
+<p><code>on-block: false</code> means the advisory no longer blocks updates but is still reported in audit.
+<code>on-audit: false</code> means the advisory still blocks updates but is no longer reported in audit.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;advisories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;CVE-1234&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;on-block&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Patch applied, still want blocking.&quot;</span><span class="p">},</span>
+<span class="w">                    </span><span class="nt">&quot;GHSA-xx&quot;</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="nt">&quot;on-audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;False positive, still report.&quot;</span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="ignore">ignore<a class="headerlink" href="#ignore" title="Permanent link">#</a></h4>
+<p>A list of package names to ignore for security advisory handling. Supports wildcards and optional
+version constraints. See the <a href="#ignore-format">ignore format</a> for all supported syntax variants.</p>
+<h4 id="ignore-severity">ignore-severity<a class="headerlink" href="#ignore-severity" title="Permanent link">#</a></h4>
+<p>A list of advisory severity levels to ignore: <code>low</code>, <code>medium</code>, <code>high</code>, <code>critical</code>.</p>
+<h5 id="simple-list_1">Simple list:<a class="headerlink" href="#simple-list_1" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;advisories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore-severity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h5 id="with-scoping_1">With scoping:<a class="headerlink" href="#with-scoping_1" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;advisories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore-severity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;low&quot;</span><span class="p">:</span><span class="w">    </span><span class="p">{</span><span class="nt">&quot;on-block&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
+<span class="w">                    </span><span class="nt">&quot;medium&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;on-audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Handled via WAF&quot;</span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="abandoned">abandoned<a class="headerlink" href="#abandoned" title="Permanent link">#</a></h3>
+<p>Configuration for abandoned packages.</p>
+<h4 id="block_1">block<a class="headerlink" href="#block_1" title="Permanent link">#</a></h4>
+<p>Defaults to <code>false</code>. When <code>true</code>, abandoned packages cannot be installed during
+<code>update</code>/<code>require</code>/<code>remove</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;block&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="audit_1">audit<a class="headerlink" href="#audit_1" title="Permanent link">#</a></h4>
+<p>Defaults to <code>fail</code>. How <code>composer audit</code> treats abandoned packages.</p>
+<ul>
+<li><code>ignore</code> — abandoned packages are not reported</li>
+<li><code>report</code> — abandoned packages are reported but do not cause a non-zero exit code</li>
+<li><code>fail</code> — abandoned packages cause <code>composer audit</code> to exit with a non-zero code</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;report&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Can be overridden via the <a href="cli.html#composer-audit-abandoned"><code>COMPOSER_AUDIT_ABANDONED</code></a>
+environment variable or the <a href="cli.html#audit"><code>--abandoned</code></a> CLI option.</p>
+<h4 id="ignore_1">ignore<a class="headerlink" href="#ignore_1" title="Permanent link">#</a></h4>
+<p>A list of package names (or patterns) to ignore for the abandoned check, regardless of their
+abandoned state. See the <a href="#ignore-format">ignore format</a> for all supported syntax variants.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;acme/*&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Scheduled for replacement next quarter.&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;vendor/legacy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;on-block&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow in updates but still report.&quot;</span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="malware">malware<a class="headerlink" href="#malware" title="Permanent link">#</a></h3>
+<p>Configuration for package versions flagged as containing malware.</p>
+<h4 id="block_2">block<a class="headerlink" href="#block_2" title="Permanent link">#</a></h4>
+<p>Defaults to <code>true</code>. When <code>true</code>, package versions flagged as malware are blocked.</p>
+<h4 id="block-scope">block-scope<a class="headerlink" href="#block-scope" title="Permanent link">#</a></h4>
+<p>Defaults to <code>all</code>. Controls which commands trigger blocking:</p>
+<ul>
+<li><code>all</code> — block during both <code>update</code>/<code>require</code>/<code>remove</code> and <code>install</code></li>
+<li><code>update</code> — block only during <code>update</code>/<code>require</code>/<code>remove</code></li>
+<li><code>install</code> — block only during <code>install</code></li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;malware&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;block-scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;update&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="audit_2">audit<a class="headerlink" href="#audit_2" title="Permanent link">#</a></h4>
+<p>Defaults to <code>fail</code>. Same values as <a href="#audit">advisories.audit</a>.</p>
+<h4 id="ignore_2">ignore<a class="headerlink" href="#ignore_2" title="Permanent link">#</a></h4>
+<p>Package names to exclude from malware checks. See the <a href="#ignore-format">ignore format</a> for all
+supported syntax variants.</p>
+<h4 id="ignore-source">ignore-source<a class="headerlink" href="#ignore-source" title="Permanent link">#</a></h4>
+<p>A list of source names to exclude from malware checks.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;malware&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore-source&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;aikido&quot;</span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="ignore-unreachable">ignore-unreachable<a class="headerlink" href="#ignore-unreachable" title="Permanent link">#</a></h3>
+<p>Defaults to <code>["update", "install"]</code>. When the operation is listed here, repositories and policies with URL sources that are unreachable or
+return a non-200 response are silently ignored rather than causing an error. Useful in environments where not all package
+repositories are accessible.</p>
+<p>Set to <code>true</code> to ignore unreachable repositories and custom dependency policy sources for all operations and to <code>false</code> to ignore them
+for no operations. Possible values are: <code>audit</code>, <code>install</code>, and <code>update</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore-unreachable&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;install&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;update&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;audit&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="custom-dependency-policies">Custom dependency policies<a class="headerlink" href="#custom-dependency-policies" title="Permanent link">#</a></h3>
+<p>In addition to the built-in <code>advisories</code>, <code>malware</code>, and <code>abandoned</code> dependency policies, you can
+define named custom dependency policies. A custom dependency policy needs its own set of package
+versions, supplied by one or more sources (advertised by package repositories or set explicitly here).</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;my-policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;block&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;sources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;url&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.org/my-bad-packages-list.json&quot;</span><span class="p">}</span>
+<span class="w">                </span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;vendor/package&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Assessed and accepted.&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Source URLs must use <code>https://</code>. <code>http://</code> and other schemes are rejected both at
+schema validation time (<code>composer validate</code>) and at config load time.</p>
+<p>A <code>url</code> source is queried the same way as a repository's <a href="repositories.html#filter"><code>api-url</code></a>:
+Composer sends a POST request with the relevant package PURLs and the custom dependency policy name,
+and expects the matching filter entries back. The request is not cached client-side because each
+request body is different. Implementors should be aware that large amounts (a few hundred would be
+normal) of package names can be submitted. The submitted PURLs are the full set of candidate package
+names gathered <em>before</em> dependency resolution, so they identify packages by name only (no version
+constraints yet), and not every submitted package will necessarily be selected by the resolver
+afterwards.</p>
+<p>The endpoint receives a JSON body of the form:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;packages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pkg://composer/vendor/package&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pkg://composer/other/package&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;lists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my-policy&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The request body reuses the wire format of a Composer repository's <a href="repositories.html#filter"><code>api-url</code></a>.
+There, a single endpoint can serve several named filter lists (for example <code>malware</code> and
+<code>typosquatting</code>), so <code>lists</code> is an array naming which of them Composer wants, and the response is a
+<code>filter</code> object keyed by list name. A custom dependency policy has no such multiplexing: its <code>url</code>
+source exists only to serve that one policy. Composer therefore always sends the policy name as the
+sole element of <code>lists</code> (so the array carries exactly one value here), and the endpoint should treat
+any list name it receives as referring to that policy.</p>
+<p>The endpoint must return JSON of the form:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;filter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;package&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vendor/package&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&gt;=1.0.0,&lt;1.2.0&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.org/filters/123&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Assessed and rejected.&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PKFE-xxxx-xxxx-xxxx&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Because the <code>url</code> source only ever serves this one policy, the response drops the per-list keying used
+by a repository's <code>api-url</code> (where <code>filter</code> is an object mapping each requested list name to its
+entries). Here <code>filter</code> is instead a flat array of entries that all belong to this policy. The
+<code>package</code> and <code>constraint</code> fields are required on each entry; <code>url</code>, <code>reason</code>, and <code>id</code> are optional.
+Entries whose package does not match a package in the request are ignored.</p>
+<p>Custom dependency policy names must not conflict with the reserved names <code>advisories</code>, <code>malware</code>, or
+<code>abandoned</code>, and must not start with <code>ignore</code> (the only <code>ignore</code>-prefixed key allowed at this
+level is the documented <code>ignore-unreachable</code> setting).</p>
+<p>The following names are reserved for future built-in dependency policies and cannot be used as custom
+dependency policy names: <code>package</code>, <code>packages</code>, <code>license</code>, <code>licence</code>, <code>licenses</code>, <code>licences</code>, <code>support</code>,
+<code>maintenance</code>, <code>security</code>, <code>minimum-release-age</code>. Composer rejects any colliding key both at
+schema validation time (<code>composer validate</code>) and at config load time.</p>
+<h3 id="ignore-format">ignore format<a class="headerlink" href="#ignore-format" title="Permanent link">#</a></h3>
+<p>The <code>ignore</code> key on every dependency policy accepts package name patterns with optional version constraints
+and per-rule scoping. All formats may be mixed in the same map.</p>
+<h5 id="simple-list-ignore-all-versions">Simple list (ignore all versions):<a class="headerlink" href="#simple-list-ignore-all-versions" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;&lt;policy&gt;&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;vendor/package&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;acme/*&quot;</span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h5 id="with-reason">With reason:<a class="headerlink" href="#with-reason" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;&lt;policy&gt;&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;vendor/package&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Assessed, no risk.&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h5 id="with-version-constraint">With version constraint:<a class="headerlink" href="#with-version-constraint" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;&lt;policy&gt;&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;vendor/package&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Only v2 is affected.&quot;</span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h5 id="with-scoping_2">With scoping:<a class="headerlink" href="#with-scoping_2" title="Permanent link">#</a></h5>
+<p><code>on-block: false</code> ignores only for audit (the package is still blocked during updates as on-block ignoring is disabled).
+<code>on-audit: false</code> ignores only for blocking (the package is still reported in audit).</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;&lt;policy&gt;&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;vendor/package&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;on-audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Workaround applied; keep reporting.&quot;</span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h5 id="multiple-rules-for-the-same-package">Multiple rules for the same package:<a class="headerlink" href="#multiple-rules-for-the-same-package" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;&lt;policy&gt;&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;vendor/package&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="p">{</span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;on-audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
+<span class="w">                        </span><span class="p">{</span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v2 is patched.&quot;</span><span class="p">}</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="audit_3">audit<a class="headerlink" href="#audit_3" title="Permanent link">#</a></h2>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#policy"><code>config.policy</code></a> instead. All <code>config.audit</code> keys are still
+supported for backwards compatibility but will be removed in a future major version.</p>
+</blockquote>
+<p>Security audit and version blocking configuration options. Audit reports can be generated with <code>composer audit</code>
+and short format versions are automatically reported at the end of update or require commands. Version blocking
+discards package versions identified as insecure or abandoned, depending on configuration, before resolving
+dependencies, ensuring they cannot be installed.</p>
+<h3 id="how-configaudit-interacts-with-configpolicy">How <code>config.audit</code> interacts with <code>config.policy</code><a class="headerlink" href="#how-configaudit-interacts-with-configpolicy" title="Permanent link">#</a></h3>
+<p>The legacy <code>config.audit</code> keys are only read as a fallback when the corresponding
+<a href="#policy"><code>config.policy</code></a> section is <strong>absent</strong>. The fallback is all-or-nothing per built-in dependency policy:</p>
+<ul>
+<li>If <a href="#advisories"><code>config.policy.advisories</code></a> is set (to any value, including <code>false</code>),
+  every advisories-related <code>audit.*</code> key (<a href="#block-insecure"><code>audit.block-insecure</code></a>, <a href="#ignore-3"><code>audit.ignore</code></a>,
+  <a href="#ignore-severity-1"><code>audit.ignore-severity</code></a>) is <strong>ignored entirely</strong> — only
+  <a href="#block"><code>policy.advisories.block</code></a>, <a href="#ignore"><code>policy.advisories.ignore</code></a>, and
+  <a href="#ignore-severity"><code>policy.advisories.ignore-severity</code></a> are read. Mix-and-matching,
+  e.g. setting <code>policy.advisories.block</code> while expecting <code>audit.ignore-severity</code> to still
+  apply, is not supported. Migrate all advisories-related settings together.</li>
+<li>If <a href="#abandoned"><code>config.policy.abandoned</code></a> is set (to any value, including <code>false</code>),
+  every abandoned-related <code>audit.*</code> key (<a href="#block-abandoned"><code>audit.block-abandoned</code></a>, <a href="#abandoned-1"><code>audit.abandoned</code></a>,
+  <a href="#ignore-abandoned"><code>audit.ignore-abandoned</code></a>) is <strong>ignored entirely</strong> — only
+  <a href="#block-1"><code>policy.abandoned.block</code></a>, <a href="#audit-1"><code>policy.abandoned.audit</code></a>, and
+  <a href="#ignore-1"><code>policy.abandoned.ignore</code></a> are read.</li>
+<li>The two built-in dependency policies are independent: configuring <code>policy.advisories</code> while leaving the
+  abandoned settings under <code>audit.*</code> is allowed and vice versa.</li>
+<li>Setting <a href="#ignore-unreachable"><code>policy.ignore-unreachable</code></a> supersedes the legacy
+  <a href="#ignore-unreachable-1"><code>audit.ignore-unreachable</code></a> key.</li>
+</ul>
+<h3 id="ignore_3">ignore<a class="headerlink" href="#ignore_3" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#ignore-id"><code>config.policy.advisories.ignore-id</code></a> for advisory IDs
+(CVE, GHSA, PKSA) and <a href="#ignore"><code>config.policy.advisories.ignore</code></a> for package names instead.
+Note: the new format uses <code>on-block</code>/<code>on-audit</code> booleans instead of <code>"apply": "audit|block|all"</code>.</p>
+</blockquote>
+<p>A list of advisory ids, remote ids, CVE ids or package names (not recommended) that are ignored in audit reports and/or version blocking.</p>
+<h4 id="simple-format-with-reasons">Simple format with reasons:<a class="headerlink" href="#simple-format-with-reasons" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;CVE-1234&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The affected component is not in use.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;GHSA-xx&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The security fix was applied as a patch.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;PKSA-yy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Due to mitigations in place the update can be delayed.&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="simple-format-without-reasons">Simple format without reasons:<a class="headerlink" href="#simple-format-without-reasons" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;CVE-1234&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;GHSA-xx&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PKSA-yy&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="detailed-format-with-apply-scope">Detailed format with apply scope:<a class="headerlink" href="#detailed-format-with-apply-scope" title="Permanent link">#</a></h4>
+<p>The detailed format allows you to control whether an ignore applies to audit reports only, version blocking only, or both. The <code>apply</code> field accepts:
+- <code>audit</code> - Only ignore for audit reports (advisory doesn't appear in audit reports, but package is still blocked during updates)
+- <code>block</code> - Only ignore for version blocking (package can be used during updates, but advisory still appears in audit reports)
+- <code>all</code> - Ignore during audit reports and version blocking (default behavior)</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;CVE-1234&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;apply&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;audit&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Not applicable to us, so don&#39;t report, but still want to make sure we don&#39;t use this version in updates.&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;GHSA-xx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;apply&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;block&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Workaround applied, can only fix next week, allow during updates but still report in audits&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;PKSA-yy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;apply&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;False report, Ignore completely in all contexts&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>All formats can be mixed together in the same configuration.</p>
+<h3 id="abandoned_1">abandoned<a class="headerlink" href="#abandoned_1" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#audit-1"><code>config.policy.abandoned.audit</code></a> instead.</p>
+</blockquote>
+<p>Defaults to <code>fail</code> since Composer 2.7 (defaulted to <code>report</code> in Composer 2.6 that added the option). Defines whether and how audit reports should report abandoned packages. There are three possible values:</p>
+<ul>
+<li><code>ignore</code> means audit reports do not consider abandoned packages at all.</li>
+<li><code>report</code> means abandoned packages are reported as an error but do not cause the composer audit command return a non-zero exit code.</li>
+<li><code>fail</code> means abandoned packages will cause the audit command to fail with a non-zero exit code.</li>
+</ul>
+<p>Note, that this only applies to audit reports, this setting does not impact the blocking of insecure
+package versions. To configure blocking of abandoned packages, see the <a href="#block-abandoned"><code>block-abandoned</code></a>
+option.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;report&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Since Composer 2.7, the option can be overridden via the <a href="cli.html#composer-audit-abandoned"><code>COMPOSER_AUDIT_ABANDONED</code></a> environment variable.</p>
+<p>Since Composer 2.8, the option can be overridden via the
+<a href="cli.html#audit"><code>--abandoned</code></a> command line option, which overrides both the
+config value and the environment variable.</p>
+<h3 id="ignore-abandoned">ignore-abandoned<a class="headerlink" href="#ignore-abandoned" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#ignore-1"><code>config.policy.abandoned.ignore</code></a> instead.
+Note: the new format uses <code>on-block</code>/<code>on-audit</code> booleans instead of <code>"apply": "audit|block|all"</code>.</p>
+</blockquote>
+<p>A list of abandoned package names that are ignored for audit reports and/or version blocking. Allows you to select packages that you want to keep
+using despite their abandoned state.</p>
+<h4 id="simple-format-with-reasons_1">Simple format with reasons:<a class="headerlink" href="#simple-format-with-reasons_1" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore-abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;acme/*&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Work scheduled for removal next month.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;acme/package&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Transitive dependency but unreachable and not in active use within our project context.&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="simple-format-without-reasons_1">Simple format without reasons:<a class="headerlink" href="#simple-format-without-reasons_1" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore-abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;acme/*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;acme/package&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="detailed-format-with-apply-scope_1">Detailed format with apply scope:<a class="headerlink" href="#detailed-format-with-apply-scope_1" title="Permanent link">#</a></h4>
+<p>The detailed format allows you to control whether an ignore applies to audit reports only, version blocking only, or both. The <code>apply</code> field accepts:
+- <code>audit</code> - Only ignore for audit reports (package doesn't appear in audit reports, but is still blocked during updates if <a href="#block-abandoned"><code>block-abandoned</code></a> is enabled)
+- <code>block</code> - Only ignore for version blocking (package can be used during updates even if <a href="#block-abandoned"><code>block-abandoned</code></a> is enabled, but still appears in audit reports)
+- <code>all</code> - Ignore for audit reports and version blocking (default behavior)</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore-abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;acme/package&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;apply&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;block&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow during updates but still report as abandoned&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;vendor/*&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;apply&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;We maintain these packages internally&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>All formats can be mixed together in the same configuration.</p>
+<h3 id="ignore-severity_1">ignore-severity<a class="headerlink" href="#ignore-severity_1" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#ignore-severity"><code>config.policy.advisories.ignore-severity</code></a> instead.
+Note: the new format uses <code>on-block</code>/<code>on-audit</code> booleans instead of <code>"apply": "audit|block|all"</code>.</p>
+</blockquote>
+<p>Defaults to <code>[]</code>. A list of severity levels that are ignored for audit reports and/or version blocking.</p>
+<h4 id="simple-format">Simple format:<a class="headerlink" href="#simple-format" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore-severity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="detailed-format-with-apply-scope_2">Detailed format with apply scope:<a class="headerlink" href="#detailed-format-with-apply-scope_2" title="Permanent link">#</a></h4>
+<p>The detailed format allows you to control whether an ignore applies to audit reports only, version blocking only, or both. The <code>apply</code> field accepts:
+- <code>audit</code> - Only ignore for audit reports (advisories with this severity don't appear in audit reports, but packages are still blocked during updates)
+- <code>block</code> - Only ignore for version blocking (packages can be used during updates, but advisories with this severity still appear in audit reports)
+- <code>all</code> - Ignore during both auditing and blocking (default behavior)</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore-severity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;low&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;apply&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;medium&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;apply&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;block&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>All formats can be mixed together in the same configuration.</p>
+<h3 id="ignore-unreachable_1">ignore-unreachable<a class="headerlink" href="#ignore-unreachable_1" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#ignore-unreachable"><code>config.policy.ignore-unreachable</code></a> instead.</p>
+</blockquote>
+<p>Defaults to <code>false</code>. Should unreachable repositories be ignored during a <code>composer audit</code>. This can be helpful if you are running the command
+in an environment from which not all repositories can be accessed. This setting does not apply to version blocking or audit reports generated
+in other places than the <code>compoder audit</code> command.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;ignore-unreachable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="block-insecure">block-insecure<a class="headerlink" href="#block-insecure" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#block"><code>config.policy.advisories.block</code></a> instead.</p>
+</blockquote>
+<p>Defaults to <code>true</code>. If <code>true</code>, any package versions affected by security advisories will be blocked and cannot be used
+during a composer update/require/delete commands, unless the security advisories are ignored. If <a href="#block-abandoned"><code>block-abandoned</code></a> is
+enabled, version blocking will also prevent use of abandoned packages.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;block-insecure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="block-abandoned">block-abandoned<a class="headerlink" href="#block-abandoned" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Deprecated.</strong> Use <a href="#block-1"><code>config.policy.abandoned.block</code></a> instead.</p>
+</blockquote>
+<p>Defaults to <code>false</code>. If <code>true</code>, any abandoned packages cannot be used during a composer update/required/delete command. Only applies if
+version blocking is not disabled by setting <a href="#block-insecure"><code>block-insecure</code></a> to false.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;audit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;block-abandoned&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="use-parent-dir">use-parent-dir<a class="headerlink" href="#use-parent-dir" title="Permanent link">#</a></h2>
+<p>When running Composer in a directory where there is no composer.json, if there
+is one present in a directory above Composer will by default ask you whether
+you want to use that directory's composer.json instead.</p>
+<p>If you always want to answer yes to this prompt, you can set this config value
+to <code>true</code>. To never be prompted, set it to <code>false</code>. The default is <code>"prompt"</code>.</p>
+<blockquote>
+<p><strong>Note:</strong> This config must be set in your global user-wide config for it
+to work. Use for example <code>php composer.phar config --global use-parent-dir true</code>
+to set it.</p>
+</blockquote>
+<h2 id="store-auths">store-auths<a class="headerlink" href="#store-auths" title="Permanent link">#</a></h2>
+<p>What to do after prompting for authentication, one of: <code>true</code> (always store),
+<code>false</code> (do not store) and <code>"prompt"</code> (ask every time), defaults to <code>"prompt"</code>.</p>
+<h2 id="github-protocols">github-protocols<a class="headerlink" href="#github-protocols" title="Permanent link">#</a></h2>
+<p>Defaults to <code>["https", "ssh", "git"]</code>. A list of protocols to use when cloning
+from github.com, in priority order. By default <code>git</code> is present but only if <a href="#secure-http">secure-http</a>
+is disabled, as the git protocol is not encrypted. If you want your origin remote
+push URLs to be using https and not ssh (<code>git@github.com:...</code>), then set the protocol
+list to be only <code>["https"]</code> and Composer will stop overwriting the push URL to an ssh
+URL.</p>
+<h2 id="github-oauth">github-oauth<a class="headerlink" href="#github-oauth" title="Permanent link">#</a></h2>
+<p>A list of domain names and oauth keys. For example using <code>{"github.com":
+"oauthtoken"}</code> as the value of this option will use <code>oauthtoken</code> to access
+private repositories on github and to circumvent the low IP-based rate limiting
+of their API. Composer may prompt for credentials when needed, but these can also be
+manually set. Read more on how to get an OAuth token for GitHub and cli syntax
+<a href="articles/authentication-for-private-packages.html#github-oauth">here</a>.</p>
+<h2 id="gitlab-domains">gitlab-domains<a class="headerlink" href="#gitlab-domains" title="Permanent link">#</a></h2>
+<p>Defaults to <code>["gitlab.com"]</code>. A list of domains of GitLab servers.
+This is used if you use the <code>gitlab</code> repository type.</p>
+<h2 id="gitlab-oauth">gitlab-oauth<a class="headerlink" href="#gitlab-oauth" title="Permanent link">#</a></h2>
+<p>A list of domain names and oauth keys. For example using <code>{"gitlab.com":
+"oauthtoken"}</code> as the value of this option will use <code>oauthtoken</code> to access
+private repositories on gitlab. Please note: If the package is not hosted at
+gitlab.com the domain names must be also specified with the
+<a href="config.html#gitlab-domains"><code>gitlab-domains</code></a> option.
+Further info can also be found <a href="articles/authentication-for-private-packages.html#gitlab-oauth">here</a></p>
+<h2 id="gitlab-token">gitlab-token<a class="headerlink" href="#gitlab-token" title="Permanent link">#</a></h2>
+<p>A list of domain names and private tokens. Private token can be either simple
+string, or array with username and token. For example using <code>{"gitlab.com":
+"privatetoken"}</code> as the value of this option will use <code>privatetoken</code> to access
+private repositories on gitlab. Using <code>{"gitlab.com": {"username": "gitlabuser",
+ "token": "privatetoken"}}</code> will use both username and token for gitlab deploy
+token functionality (https://docs.gitlab.com/ee/user/project/deploy_tokens/)
+Please note: If the package is not hosted at
+gitlab.com the domain names must be also specified with the
+<a href="config.html#gitlab-domains"><code>gitlab-domains</code></a> option. The token must have
+<code>api</code> or <code>read_api</code> scope.
+Further info can also be found <a href="articles/authentication-for-private-packages.html#gitlab-token">here</a></p>
+<h2 id="gitlab-protocol">gitlab-protocol<a class="headerlink" href="#gitlab-protocol" title="Permanent link">#</a></h2>
+<p>A protocol to force use of when creating a repository URL for the <code>source</code>
+value of the package metadata. One of <code>git</code> or <code>http</code>. (<code>https</code> is treated
+as a synonym for <code>http</code>.) Helpful when working with projects referencing
+private repositories which will later be cloned in GitLab CI jobs with a
+<a href="https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#predefined-variables-reference">GitLab CI_JOB_TOKEN</a>
+using HTTP basic auth. By default, Composer will generate a git-over-SSH
+URL for private repositories and HTTP(S) only for public.</p>
+<h2 id="forgejo-domains">forgejo-domains<a class="headerlink" href="#forgejo-domains" title="Permanent link">#</a></h2>
+<p>Defaults to <code>["codeberg.org"]</code>. A list of domains of Forgejo servers.
+This is used if you use the <code>forgejo</code> repository type.</p>
+<h2 id="forgejo-token">forgejo-token<a class="headerlink" href="#forgejo-token" title="Permanent link">#</a></h2>
+<p>A list of domain names and username/access-tokens to authenticate against them. For
+example using <code>{"codeberg.org": {"username": "forgejo-user", "token": "access-token"}}</code> as the
+value of this option will let Composer authenticate against codeberg.org.
+Please note: If the package is not hosted at
+codeberg.org the domain names must be also specified with the
+<a href="config.html#forgejo-domains"><code>forgejo-domains</code></a> option.
+Further info can also be found <a href="articles/authentication-for-private-packages.html#forgejo-token">here</a></p>
+<h2 id="disable-tls">disable-tls<a class="headerlink" href="#disable-tls" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. If set to true all HTTPS URLs will be tried with HTTP
+instead and no network level encryption is performed. Enabling this is a
+security risk and is NOT recommended. The better way is to enable the
+php_openssl extension in php.ini. Enabling this will implicitly disable the
+<code>secure-http</code> option.</p>
+<h2 id="secure-http">secure-http<a class="headerlink" href="#secure-http" title="Permanent link">#</a></h2>
+<p>Defaults to <code>true</code>. If set to true only HTTPS URLs are allowed to be
+downloaded via Composer. If you really absolutely need HTTP access to something
+then you can disable it, but using <a href="https://letsencrypt.org/">Let's Encrypt</a> to
+get a free SSL certificate is generally a better alternative.</p>
+<h2 id="bitbucket-oauth">bitbucket-oauth<a class="headerlink" href="#bitbucket-oauth" title="Permanent link">#</a></h2>
+<p>A list of domain names and consumers. For example using <code>{"bitbucket.org":
+{"consumer-key": "myKey", "consumer-secret": "mySecret"}}</code>.
+Read more <a href="articles/authentication-for-private-packages.html#bitbucket-oauth">here</a>.</p>
+<h2 id="cafile">cafile<a class="headerlink" href="#cafile" title="Permanent link">#</a></h2>
+<p>Location of Certificate Authority file on local filesystem. In PHP 5.6+ you
+should rather set this via openssl.cafile in php.ini, although PHP 5.6+ should
+be able to detect your system CA file automatically.</p>
+<h2 id="capath">capath<a class="headerlink" href="#capath" title="Permanent link">#</a></h2>
+<p>If cafile is not specified or if the certificate is not found there, the
+directory pointed to by capath is searched for a suitable certificate.
+capath must be a correctly hashed certificate directory.</p>
+<h2 id="http-basic">http-basic<a class="headerlink" href="#http-basic" title="Permanent link">#</a></h2>
+<p>A list of domain names and username/passwords to authenticate against them. For
+example using <code>{"example.org": {"username": "alice", "password": "foo"}}</code> as the
+value of this option will let Composer authenticate against example.org.
+More info can be found <a href="articles/authentication-for-private-packages.html#http-basic">here</a>.</p>
+<h2 id="bearer">bearer<a class="headerlink" href="#bearer" title="Permanent link">#</a></h2>
+<p>A list of domain names and tokens to authenticate against them. For example using
+<code>{"example.org": "foo"}</code> as the value of this option will let Composer authenticate
+against example.org using an <code>Authorization: Bearer foo</code> header.</p>
+<h2 id="platform">platform<a class="headerlink" href="#platform" title="Permanent link">#</a></h2>
+<p>Lets you fake platform packages (PHP and extensions) so that you can emulate a
+production env or define your target platform in the config. Example: <code>{"php":
+"7.0.3", "ext-something": "4.0.3"}</code>.</p>
+<p>This will make sure that no package requiring more than PHP 7.0.3 can be installed
+regardless of the actual PHP version you run locally. However it also means
+the dependencies are not checked correctly anymore, if you run PHP 5.6 it will
+install fine as it assumes 7.0.3, but then it will fail at runtime. This also means if
+<code>{"php":"7.4"}</code> is specified; no packages will be used that define <code>7.4.1</code> as minimum.</p>
+<p>Therefore if you use this it is recommended, and safer, to also run the
+<a href="cli.html#check-platform-reqs"><code>check-platform-reqs</code></a> command as part of your
+deployment strategy.</p>
+<p>If a dependency requires some extension that you do not have installed locally
+you may ignore it instead by passing <code>--ignore-platform-req=ext-foo</code> to <code>update</code>,
+<code>install</code> or <code>require</code>. In the long run though you should install required
+extensions as if you ignore one now and a new package you add a month later also
+requires it, you may introduce issues in production unknowingly.</p>
+<p>If you have an extension installed locally but <em>not</em> on production, you may want
+to artificially hide it from Composer using <code>{"ext-foo": false}</code>.</p>
+<h2 id="vendor-dir">vendor-dir<a class="headerlink" href="#vendor-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>vendor</code>. You can install dependencies into a different directory if
+you want to. <code>$HOME</code> and <code>~</code> will be replaced by your home directory's path in
+vendor-dir and all <code>*-dir</code> options below.</p>
+<h2 id="bin-dir">bin-dir<a class="headerlink" href="#bin-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>vendor/bin</code>. If a project includes binaries, they will be symlinked
+into this directory.</p>
+<h2 id="data-dir">data-dir<a class="headerlink" href="#data-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>C:\Users\&lt;user&gt;\AppData\Roaming\Composer</code> on Windows,
+<code>$XDG_DATA_HOME/composer</code> on unix systems that follow the XDG Base Directory
+Specifications, and <code>$COMPOSER_HOME</code> on other unix systems. Right now it is only
+used for storing past composer.phar files to be able to roll back to older
+versions. See also <a href="cli.html#composer-home">COMPOSER_HOME</a>.</p>
+<p>Because <code>self-update --rollback</code> restores a previously stored <code>composer.phar</code> from
+this directory, it must be writable only by the user that owns the Composer
+installation and should be treated as a trusted location. A directory writable by
+other users would let them plant a malicious phar that a privileged rollback would
+install.</p>
+<h2 id="cache-dir">cache-dir<a class="headerlink" href="#cache-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>C:\Users\&lt;user&gt;\AppData\Local\Composer</code> on Windows,
+<code>/Users/&lt;user&gt;/Library/Caches/composer</code> on macOS, <code>$XDG_CACHE_HOME/composer</code>
+on unix systems that follow the XDG Base Directory Specifications, and
+<code>$COMPOSER_HOME/cache</code> on other unix systems. Stores all the caches used by
+Composer. See also <a href="cli.html#composer-home">COMPOSER_HOME</a>.</p>
+<h2 id="cache-files-dir">cache-files-dir<a class="headerlink" href="#cache-files-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>$cache-dir/files</code>. Stores the zip archives of packages.</p>
+<h2 id="cache-repo-dir">cache-repo-dir<a class="headerlink" href="#cache-repo-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>$cache-dir/repo</code>. Stores repository metadata for the <code>composer</code>
+type and the VCS repos of type <code>svn</code>, <code>fossil</code>, <code>github</code> and <code>bitbucket</code>.</p>
+<h2 id="cache-vcs-dir">cache-vcs-dir<a class="headerlink" href="#cache-vcs-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>$cache-dir/vcs</code>. Stores VCS clones for loading VCS repository
+metadata for the <code>git</code>/<code>hg</code> types and to speed up installs.</p>
+<h2 id="cache-files-ttl">cache-files-ttl<a class="headerlink" href="#cache-files-ttl" title="Permanent link">#</a></h2>
+<p>Defaults to <code>15552000</code> (6 months). Composer caches all dist (zip, tar, ...)
+packages that it downloads. Those are purged after six months of being unused by
+default. This option allows you to tweak this duration (in seconds) or disable
+it completely by setting it to 0.</p>
+<h2 id="cache-files-maxsize">cache-files-maxsize<a class="headerlink" href="#cache-files-maxsize" title="Permanent link">#</a></h2>
+<p>Defaults to <code>300MiB</code>. Composer caches all dist (zip, tar, ...) packages that it
+downloads. When the garbage collection is periodically ran, this is the maximum
+size the cache will be able to use. Older (less used) files will be removed
+first until the cache fits.</p>
+<h2 id="cache-read-only">cache-read-only<a class="headerlink" href="#cache-read-only" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. Whether to use the Composer cache in read-only mode.</p>
+<h2 id="bin-compat">bin-compat<a class="headerlink" href="#bin-compat" title="Permanent link">#</a></h2>
+<p>Defaults to <code>auto</code>. Determines the compatibility of the binaries to be installed.
+If it is <code>auto</code> then Composer only installs .bat proxy files when on Windows or WSL. If
+set to <code>full</code> then both .bat files for Windows and scripts for Unix-based
+operating systems will be installed for each binary. This is mainly useful if you
+run Composer inside a linux VM but still want the <code>.bat</code> proxies available for use
+in the Windows host OS. If set to <code>proxy</code> Composer will only create bash/Unix-style
+proxy files and no .bat files even on Windows/WSL.</p>
+<h2 id="prepend-autoloader">prepend-autoloader<a class="headerlink" href="#prepend-autoloader" title="Permanent link">#</a></h2>
+<p>Defaults to <code>true</code>. If <code>false</code>, the Composer autoloader will not be prepended to
+existing autoloaders. This is sometimes required to fix interoperability issues
+with other autoloaders.</p>
+<h2 id="autoloader-suffix">autoloader-suffix<a class="headerlink" href="#autoloader-suffix" title="Permanent link">#</a></h2>
+<p>Defaults to <code>null</code>. When set to a non-empty string, this value will be used as a
+suffix for the generated Composer autoloader. If set to <code>null</code>, the
+<code>content-hash</code> value from the <code>composer.lock</code> file will be used if available;
+otherwise, a random suffix will be generated.</p>
+<h2 id="optimize-autoloader">optimize-autoloader<a class="headerlink" href="#optimize-autoloader" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. If <code>true</code>, always optimize when dumping the autoloader.</p>
+<h2 id="sort-packages">sort-packages<a class="headerlink" href="#sort-packages" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. If <code>true</code>, the <code>require</code> command keeps packages sorted
+by name in <code>composer.json</code> when adding a new package.</p>
+<h2 id="classmap-authoritative">classmap-authoritative<a class="headerlink" href="#classmap-authoritative" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. If <code>true</code>, the Composer autoloader will only load classes
+from the classmap. Implies <code>optimize-autoloader</code>.</p>
+<h2 id="apcu-autoloader">apcu-autoloader<a class="headerlink" href="#apcu-autoloader" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. If <code>true</code>, the Composer autoloader will check for APCu and
+use it to cache found/not-found classes when the extension is enabled.</p>
+<h2 id="github-domains">github-domains<a class="headerlink" href="#github-domains" title="Permanent link">#</a></h2>
+<p>Defaults to <code>["github.com"]</code>. A list of domains to use in github mode. This is
+used for GitHub Enterprise setups.</p>
+<h2 id="github-expose-hostname">github-expose-hostname<a class="headerlink" href="#github-expose-hostname" title="Permanent link">#</a></h2>
+<p>Defaults to <code>true</code>. If <code>false</code>, the OAuth tokens created to access the
+github API will have a date instead of the machine hostname.</p>
+<h2 id="use-github-api">use-github-api<a class="headerlink" href="#use-github-api" title="Permanent link">#</a></h2>
+<p>Defaults to <code>true</code>.  Similar to the <code>no-api</code> key on a specific repository,
+setting <code>use-github-api</code> to <code>false</code> will define the global behavior for all
+GitHub repositories to clone the repository as it would with any other git
+repository instead of using the GitHub API. But unlike using the <code>git</code>
+driver directly, Composer will still attempt to use GitHub's zip files.</p>
+<h2 id="notify-on-install">notify-on-install<a class="headerlink" href="#notify-on-install" title="Permanent link">#</a></h2>
+<p>Defaults to <code>true</code>. Composer allows repositories to define a notification URL,
+so that they get notified whenever a package from that repository is installed.
+This option allows you to disable that behavior.</p>
+<h2 id="discard-changes">discard-changes<a class="headerlink" href="#discard-changes" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code> and can be any of <code>true</code>, <code>false</code> or <code>"stash"</code>. This option
+allows you to set the default style of handling dirty updates when in
+non-interactive mode. <code>true</code> will always discard changes in vendors, while
+<code>"stash"</code> will try to stash and reapply. Use this for CI servers or deploy
+scripts if you tend to have modified vendors.</p>
+<h2 id="archive-format">archive-format<a class="headerlink" href="#archive-format" title="Permanent link">#</a></h2>
+<p>Defaults to <code>tar</code>. Overrides the default format used by the archive command.</p>
+<h2 id="archive-dir">archive-dir<a class="headerlink" href="#archive-dir" title="Permanent link">#</a></h2>
+<p>Defaults to <code>.</code>. Default destination for archives created by the archive
+command.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;archive-dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/home/user/.composer/repo&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="htaccess-protect">htaccess-protect<a class="headerlink" href="#htaccess-protect" title="Permanent link">#</a></h2>
+<p>Defaults to <code>true</code>. If set to <code>false</code>, Composer will not create <code>.htaccess</code> files
+in the Composer home, cache, and data directories.</p>
+<h2 id="lock">lock<a class="headerlink" href="#lock" title="Permanent link">#</a></h2>
+<p>Defaults to <code>true</code>. If set to <code>false</code>, Composer will not create a <code>composer.lock</code>
+file and will ignore it if one is present.</p>
+<h2 id="platform-check">platform-check<a class="headerlink" href="#platform-check" title="Permanent link">#</a></h2>
+<p>Defaults to <code>php-only</code> which only checks the PHP version. Set to <code>true</code> to also
+check the presence of extension. If set to <code>false</code>, Composer will not create and
+require a <code>platform_check.php</code> file as part of the autoloader bootstrap.</p>
+<h2 id="secure-svn-domains">secure-svn-domains<a class="headerlink" href="#secure-svn-domains" title="Permanent link">#</a></h2>
+<p>Defaults to <code>[]</code>. Lists domains which should be trusted/marked as using a secure
+Subversion/SVN transport. By default svn:// protocol is seen as insecure and will
+throw, but you can set this config option to <code>["example.org"]</code> to allow using svn
+URLs on that hostname. This is a better/safer alternative to disabling <code>secure-http</code>
+altogether.</p>
+<h2 id="bump-after-update">bump-after-update<a class="headerlink" href="#bump-after-update" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code> and can be any of <code>true</code>, <code>false</code>, <code>"dev"</code> or <code>"no-dev"</code>. If
+set to true, Composer will run the <code>bump</code> command after running the <code>update</code> command.
+If set to <code>"dev"</code> or <code>"no-dev"</code> then only the corresponding dependencies will be bumped.</p>
+<h2 id="allow-missing-requirements">allow-missing-requirements<a class="headerlink" href="#allow-missing-requirements" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. Ignores error during <code>install</code> if there are any missing
+requirements - the lock file is not up to date with the latest changes in
+<code>composer.json</code>.</p>
+<h2 id="update-with-minimal-changes">update-with-minimal-changes<a class="headerlink" href="#update-with-minimal-changes" title="Permanent link">#</a></h2>
+<p>Defaults to <code>false</code>. If set to true, Composer will only perform absolutely necessary
+changes to transitive dependencies during update.
+Can also be set via the <code>COMPOSER_MINIMAL_CHANGES=1</code> env var.</p>
+<p>&larr; <a href="repositories.html">Repositories</a>  |  <a href="runtime.html">Runtime</a> &rarr;</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./repositories.html">
+          <span class="muted">Anterior</span>Repositories
+        </a>
+        <a class="pager-next" href="./runtime.html">
+          <span class="muted">Siguiente</span>Runtime Composer utilities
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

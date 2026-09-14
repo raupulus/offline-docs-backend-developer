@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;bisect&#34; --- Array bisection algorithm · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/ast.html"
+>&#34;ast&#34; --- Abstract syntax trees</a>
+              </li>
+              <li>
+                <a href="../library/asynchat.html"
+>&#34;asynchat&#34; --- Asynchronous socket command/response handler</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-api-index.html"
+>Índice de API de alto nivel</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-dev.html"
+>Desarrollando con asyncio</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-eventloop.html"
+>Event loop</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-exceptions.html"
+>Excepciones</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-extending.html"
+>Extensión</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-future.html"
+>Futures</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-graph.html"
+>Call graph introspection</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-llapi-index.html"
+>Índice de API de bajo nivel</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-platforms.html"
+>Soporte de plataforma</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-policy.html"
+>Políticas</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-protocol.html"
+>Transportes y protocolos</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-queue.html"
+>Colas</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-runner.html"
+>Runners</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-stream.html"
+>Streams</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-subprocess.html"
+>Sub-procesos</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-sync.html"
+>Primitivas de sincronización</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-task.html"
+>Coroutines and tasks</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-threading.html"
+>asyncio and free-threaded Python</a>
+              </li>
+              <li>
+                <a href="../library/asyncio-tools.html"
+>Command-line introspection tools</a>
+              </li>
+              <li>
+                <a href="../library/asyncio.html"
+>&#34;asyncio&#34; --- Asynchronous I/O</a>
+              </li>
+              <li>
+                <a href="../library/asyncore.html"
+>&#34;asyncore&#34; --- Asynchronous socket handler</a>
+              </li>
+              <li>
+                <a href="../library/atexit.html"
+>&#34;atexit&#34; --- Exit handlers</a>
+              </li>
+              <li>
+                <a href="../library/audioop.html"
+>&#34;audioop&#34; --- Manipulate raw audio data</a>
+              </li>
+              <li>
+                <a href="../library/audit_events.html"
+>Tabla de auditoría de eventos</a>
+              </li>
+              <li>
+                <a href="../library/base64.html"
+>&#34;base64&#34; --- Base16, Base32, Base64, Base85 Data Encodings</a>
+              </li>
+              <li>
+                <a href="../library/bdb.html"
+>&#34;bdb&#34; --- Debugger framework</a>
+              </li>
+              <li>
+                <a href="../library/binary.html"
+>Servicios de datos binarios</a>
+              </li>
+              <li>
+                <a href="../library/binascii.html"
+>&#34;binascii&#34; --- Convert between binary and ASCII</a>
+              </li>
+              <li>
+                <a href="../library/bisect.html"
+class="is-current" aria-current="page">&#34;bisect&#34; --- Array bisection algorithm</a>
+              </li>
+              <li>
+                <a href="../library/builtins.html"
+>&#34;builtins&#34; --- Built-in objects</a>
+              </li>
+              <li>
+                <a href="../library/bz2.html"
+>&#34;bz2&#34; --- Support for **bzip2** compression</a>
+              </li>
+              <li>
+                <a href="../library/calendar.html"
+>&#34;calendar&#34; --- General calendar-related functions</a>
+              </li>
+              <li>
+                <a href="../library/cgi.html"
+>&#34;cgi&#34; --- Common Gateway Interface support</a>
+              </li>
+              <li>
+                <a href="../library/cgitb.html"
+>&#34;cgitb&#34; --- Traceback manager for CGI scripts</a>
+              </li>
+              <li>
+                <a href="../library/chunk.html"
+>&#34;chunk&#34; --- Read IFF chunked data</a>
+              </li>
+              <li>
+                <a href="../library/cmath.html"
+>&#34;cmath&#34; --- Mathematical functions for complex numbers</a>
+              </li>
+              <li>
+                <a href="../library/cmd.html"
+>&#34;cmd&#34; --- Support for line-oriented command interpreters</a>
+              </li>
+              <li>
+                <a href="../library/cmdline.html"
+>Modules command-line interface (CLI)</a>
+              </li>
+              <li>
+                <a href="../library/cmdlinelibs.html"
+>Command-line interface libraries</a>
+              </li>
+              <li>
+                <a href="../library/code.html"
+>&#34;code&#34; --- Interpreter base classes</a>
+              </li>
+              <li>
+                <a href="../library/codecs.html"
+>&#34;codecs&#34; --- Codec registry and base classes</a>
+              </li>
+              <li>
+                <a href="../library/codeop.html"
+>&#34;codeop&#34; --- Compile Python code</a>
+              </li>
+              <li>
+                <a href="../library/collections.abc.html"
+>&#34;collections.abc&#34; --- Abstract Base Classes for Containers</a>
+              </li>
+              <li>
+                <a href="../library/collections.html"
+>&#34;collections&#34; --- Container datatypes</a>
+              </li>
+              <li>
+                <a href="../library/colorsys.html"
+>&#34;colorsys&#34; --- Conversions between color systems</a>
+              </li>
+              <li>
+                <a href="../library/compileall.html"
+>&#34;compileall&#34; --- Byte-compile Python libraries</a>
+              </li>
+              <li>
+                <a href="../library/compression.html"
+>The &#34;compression&#34; package</a>
+              </li>
+              <li>
+                <a href="../library/compression.zstd.html"
+>&#34;compression.zstd&#34; --- Compression compatible with the Zstandard format</a>
+              </li>
+              <li>
+                <a href="../library/concurrency.html"
+>Ejecución concurrente</a>
+              </li>
+              <li>
+                <a href="../library/concurrent.futures.html"
+>&#34;concurrent.futures&#34; --- Launching parallel tasks</a>
+              </li>
+              <li>
+                <a href="../library/concurrent.interpreters.html"
+>&#34;concurrent.interpreters&#34; --- Multiple interpreters in the same process</a>
+              </li>
+              <li>
+                <a href="../library/concurrent.html"
+>El paquete &#34;concurrent&#34;</a>
+              </li>
+              <li>
+                <a href="../library/configparser.html"
+>&#34;configparser&#34; --- Configuration file parser</a>
+              </li>
+              <li>
+                <a href="../library/constants.html"
+>Constantes incorporadas</a>
+              </li>
+              <li>
+                <a href="../library/contextlib.html"
+>&#34;contextlib&#34; --- Utilidades para declaraciones de contexto &#34;with&#34;</a>
+              </li>
+              <li>
+                <a href="../library/contextvars.html"
+>&#34;contextvars&#34; --- Context Variables</a>
+              </li>
+              <li>
+                <a href="../library/copy.html"
+>&#34;copy&#34; --- Shallow and deep copy operations</a>
+              </li>
+              <li>
+                <a href="../library/copyreg.html"
+>&#34;copyreg&#34; --- Register &#34;pickle&#34; support functions</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;bisect&#34; --- Array bisection algorithm</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#notas-de-rendimiento">Notas de rendimiento#</a></li>
+              <li class="lvl-2"><a href="#busqueda-en-listas-ordenadas">Búsqueda en listas ordenadas#</a></li>
+              <li class="lvl-2"><a href="#ejemplos">Ejemplos#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="bisect-array-bisection-algorithm">"bisect" --- Array bisection algorithm<a class="headerlink" href="#bisect-array-bisection-algorithm" title="Permanent link">#</a></h1>
+<p><strong>Código fuente:</strong> Lib/bisect.py</p>
+<p>======================================================================</p>
+<p>Este módulo brinda soporte para mantener una lista ordenada sin tener
+que reordenar la lista tras cada nueva inserción. Para listas largas
+de elementos que tienen operaciones de comparación costosas, esto
+puede suponer una mejora con respecto a las búsquedas lineales o el
+reordenado frecuente.</p>
+<p>The module is called "bisect" because it uses a basic bisection
+algorithm to do its work.  Unlike other bisection tools that search
+for a specific value, the functions in this module are designed to
+locate an insertion point. Accordingly, the functions never call an
+"<strong>eq</strong>()" method to determine whether a value has been found.
+Instead, the functions only call the "<strong>lt</strong>()" method and will return
+an insertion point between values in an array.</p>
+<p>Nota:</p>
+<p>The functions in this module are not thread-safe. If multiple
+  threads concurrently use "bisect" functions on the same sequence,
+  this may result in undefined behaviour. Likewise, if the provided
+  sequence is mutated by a different thread while a "bisect" function
+  is operating on it, the result is undefined. For example, using
+  "insort_left()" on the same list from multiple threads may result in
+  the list becoming unsorted.</p>
+<p>Las siguientes funciones están disponibles:</p>
+<p>bisect.bisect_left(a, x, lo=0, hi=len(a), *, key=None)</p>
+<p>Ubicar el punto de inserción para <em>x</em> en <em>a</em> para mantener el
+   ordenamiento. Los parámetros <em>lo</em> (inferior) y <em>hi</em> (superior)
+   pueden utilizarse para especificar un subconjunto de la lista que
+   debería considerarse; por defecto se utiliza la lista completa. Si
+   <em>x</em> ya está presente en <em>a</em>, el punto de inserción será antes (a la
+   izquierda) de cualquier elemento existente. El valor de retorno es
+   adecuado para que se utilice como primer parámetro para
+   "list.insert()", suponiendo que <em>a</em> ya está ordenada.</p>
+<dl>
+<dt>El punto de inserción retornado <em>ip</em> divide el arreglo <em>a</em> en dos</dt>
+<dt>partes, de modo que "all(elem &lt; x for elem in a[lo : ip])" es</dt>
+<dt>verdadero para el lado izquierdo y "all(elem &gt;= x for elem in a[ip</dt>
+<dd>hi])" es verdadero para el lado derecho.</dd>
+</dl>
+<p><em>key</em> especifica una <em>función clave</em> de un argumento que es usada
+   para extraer una clave de comparación de cada elemento en el
+   arreglo. La función clave no se aplica a <em>x</em> para facilitar la
+   búsqueda de registros complejos.</p>
+<p>Si <em>key</em> es "None", los elementos se comparan directamente y
+   ninguna función clave es llamada.</p>
+<p>Distinto en la versión 3.10: Se agregó el parámetro <em>key</em>.</p>
+<p>bisect.bisect_right(a, x, lo=0, hi=len(a), <em>, key=None)
+bisect.bisect(a, x, lo=0, hi=len(a), </em>, key=None)</p>
+<p>Similar a "bisect_left()", pero retorna un punto de inserción que
+   viene después (a la derecha) de cualquier entrada existente de <em>x</em>
+   en <em>a</em>.</p>
+<p>El punto de inserción retornado <em>ip</em> divide el arreglo <em>a</em> en dos
+   partes, de modo que "all(elem  &lt;= x for elem in a[lo : ip])" es
+   verdadero para el lado izquierdo y "all(elem &gt; x for elem in a[ip :
+   hi])" es verdadero para el lado derecho.</p>
+<p>Distinto en la versión 3.10: Se agregó el parámetro <em>key</em>.</p>
+<p>bisect.insort_left(a, x, lo=0, hi=len(a), *, key=None)</p>
+<p>Inserte <em>x</em> en <em>a</em> en orden ordenado.</p>
+<p>This function first runs "bisect_left()" to locate an insertion
+   point. Next, it runs the "insert()" method on <em>a</em> to insert <em>x</em> at
+   the appropriate position to maintain sort order.</p>
+<p>Para mantener la inserción de registros en una tabla, la función
+   <em>key</em> (en caso de existir) se aplica a <em>x</em> en el paso de búsqueda
+   pero no en el paso de inserción.</p>
+<p>Keep in mind that the <em>O</em>(log <em>n</em>) search is dominated by the slow
+   <em>O</em>(<em>n</em>) insertion step.</p>
+<p>Distinto en la versión 3.10: Se agregó el parámetro <em>key</em>.</p>
+<p>bisect.insort_right(a, x, lo=0, hi=len(a), <em>, key=None)
+bisect.insort(a, x, lo=0, hi=len(a), </em>, key=None)</p>
+<p>Similar a "insort_left()", pero inserta <em>x</em> en <em>a</em> después de
+   cualquier entrada de <em>x</em> existente.</p>
+<p>This function first runs "bisect_right()" to locate an insertion
+   point. Next, it runs the "insert()" method on <em>a</em> to insert <em>x</em> at
+   the appropriate position to maintain sort order.</p>
+<p>Para mantener la inserción de registros en una tabla, la función
+   <em>key</em> (en caso de existir) se aplica a <em>x</em> en el paso de búsqueda
+   pero no en el paso de inserción.</p>
+<p>Keep in mind that the <em>O</em>(log <em>n</em>) search is dominated by the slow
+   <em>O</em>(<em>n</em>) insertion step.</p>
+<p>Distinto en la versión 3.10: Se agregó el parámetro <em>key</em>.</p>
+<h2 id="notas-de-rendimiento">Notas de rendimiento<a class="headerlink" href="#notas-de-rendimiento" title="Permanent link">#</a></h2>
+<p>Al escribir código sensible al tiempo usando <em>bisect()</em> y <em>insort()</em>,
+tenga en cuenta estos pensamientos:</p>
+<ul>
+<li>
+<p>La bisección es eficaz para buscar rangos de valores. Para localizar
+  valores específicos, los diccionarios son más eficaces.</p>
+</li>
+<li>
+<p>The <em>insort()</em> functions are <em>O</em>(<em>n</em>) because the logarithmic search
+  step is dominated by the linear time insertion step.</p>
+</li>
+<li>
+<p>The search functions are stateless and discard key function results
+  after they are used.  Consequently, if the search functions are used
+  in a loop, the key function may be called again and again on the
+  same array elements. If the key function isn't fast, consider
+  wrapping it with "@functools.cache" to avoid duplicate computations.
+  Alternatively, consider searching an array of precomputed keys to
+  locate the insertion point (as shown in the examples section below).</p>
+</li>
+</ul>
+<p>Ver también:</p>
+<ul>
+<li>
+<p>Sorted Collections es un módulo de alto rendimiento que utiliza
+    <em>bisect</em> para gestionar colecciones de datos ordenadas.</p>
+</li>
+<li>
+<p>El SortedCollection recipe usa bisect para construir una clase de
+    colección con todas las funciones con métodos de búsqueda
+    sencillos y soporte para una función clave. Las claves se calculan
+    previamente para ahorrar llamadas innecesarias a la función clave
+    durante las búsquedas.</p>
+</li>
+</ul>
+<h2 id="busqueda-en-listas-ordenadas">Búsqueda en listas ordenadas<a class="headerlink" href="#busqueda-en-listas-ordenadas" title="Permanent link">#</a></h2>
+<p>Las bisect functions anteriores son útiles para encontrar puntos de
+inserción, pero pueden resultar difíciles o engorrosas para tareas de
+búsqueda habituales. Las siguientes cinco funciones muestran cómo
+convertirlas en búsquedas estándar para listas ordenadas:</p>
+<p>def index(a, x):
+       'Locate the leftmost value exactly equal to x'
+       i = bisect_left(a, x)
+       if i != len(a) and a[i] == x:
+           return i
+       raise ValueError</p>
+<p>def find_lt(a, x):
+       'Find rightmost value less than x'
+       i = bisect_left(a, x)
+       if i:
+           return a[i-1]
+       raise ValueError</p>
+<p>def find_le(a, x):
+       'Find rightmost value less than or equal to x'
+       i = bisect_right(a, x)
+       if i:
+           return a[i-1]
+       raise ValueError</p>
+<p>def find_gt(a, x):
+       'Find leftmost value greater than x'
+       i = bisect_right(a, x)
+       if i != len(a):
+           return a[i]
+       raise ValueError</p>
+<p>def find_ge(a, x):
+       'Find leftmost item greater than or equal to x'
+       i = bisect_left(a, x)
+       if i != len(a):
+           return a[i]
+       raise ValueError</p>
+<h2 id="ejemplos">Ejemplos<a class="headerlink" href="#ejemplos" title="Permanent link">#</a></h2>
+<p>La función "bisect()" puede ser útil para búsquedas en tablas
+numéricas. Este ejemplo utiliza "bisect()" para buscar una
+calificación de un examen (digamos) dada por una letra, basándose en
+un conjunto de punto de corte numéricos ordenados: 90 o más es una
+'A', de 80 a 89 es una 'B', y así sucesivamente:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>def grade(score):
+   ...     i = bisect([60, 70, 80, 90], score)
+   ...     return "FDCBA"[i]
+   ...
+[grade(score) for score in [33, 99, 77, 70, 89, 90, 100]]
+   ['F', 'A', 'C', 'C', 'B', 'A', 'A']</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Las funciones "bisect()" y "insort()" también funcionan con listas de
+tuplas. El argumento <em>key</em> puede usarse para extraer el campo usado
+para ordenar registros en una tabla:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from collections import namedtuple
+from operator import attrgetter
+from bisect import bisect, insort
+from pprint import pprint</p>
+<p>Movie = namedtuple('Movie', ('name', 'released', 'director'))</p>
+<p>movies = [
+   ...     Movie('Jaws', 1975, 'Spielberg'),
+   ...     Movie('Titanic', 1997, 'Cameron'),
+   ...     Movie('The Birds', 1963, 'Hitchcock'),
+   ...     Movie('Aliens', 1986, 'Cameron')
+   ... ]</p>
+<h1 id="find-the-first-movie-released-after-1960">Find the first movie released after 1960<a class="headerlink" href="#find-the-first-movie-released-after-1960" title="Permanent link">#</a></h1>
+<p>by_year = attrgetter('released')
+movies.sort(key=by_year)
+movies[bisect(movies, 1960, key=by_year)]
+   Movie(name='The Birds', released=1963, director='Hitchcock')</p>
+<h1 id="insert-a-movie-while-maintaining-sort-order">Insert a movie while maintaining sort order<a class="headerlink" href="#insert-a-movie-while-maintaining-sort-order" title="Permanent link">#</a></h1>
+<p>romance = Movie('Love Story', 1970, 'Hiller')
+insort(movies, romance, key=by_year)
+pprint(movies)
+   [Movie(name='The Birds', released=1963, director='Hitchcock'),
+    Movie(name='Love Story', released=1970, director='Hiller'),
+    Movie(name='Jaws', released=1975, director='Spielberg'),
+    Movie(name='Aliens', released=1986, director='Cameron'),
+    Movie(name='Titanic', released=1997, director='Cameron')]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Para evitar llamadas repetidas a la función clave, cuando ésta usa
+muchos recursos, se puede buscar en una lista de claves previamente
+calculadas para encontrar el índice de un registro:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>data = [('red', 5), ('blue', 1), ('yellow', 8), ('black', 0)]
+data.sort(key=lambda r: r[1])       # Or use operator.itemgetter(1).
+keys = [r[1] for r in data]         # Precompute a list of keys.
+data[bisect_left(keys, 0)]
+   ('black', 0)
+data[bisect_left(keys, 1)]
+   ('blue', 1)
+data[bisect_left(keys, 5)]
+   ('red', 5)
+data[bisect_left(keys, 8)]
+   ('yellow', 8)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/binascii.html">
+          <span class="muted">Anterior</span>&#34;binascii&#34; --- Convert between binary and ASCII
+        </a>
+        <a class="pager-next" href="../library/builtins.html">
+          <span class="muted">Siguiente</span>&#34;builtins&#34; --- Built-in objects
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

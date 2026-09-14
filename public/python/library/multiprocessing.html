@@ -1,0 +1,3582 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;multiprocessing&#34; --- Process-based parallelism · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/index.html"
+>La biblioteca estándar de Python</a>
+              </li>
+              <li>
+                <a href="../library/inspect.html"
+>&#34;inspect&#34; --- Inspect live objects</a>
+              </li>
+              <li>
+                <a href="../library/internet.html"
+>Protocolos y soporte de Internet</a>
+              </li>
+              <li>
+                <a href="../library/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../library/io.html"
+>&#34;io&#34; --- Core tools for working with streams</a>
+              </li>
+              <li>
+                <a href="../library/ipaddress.html"
+>&#34;ipaddress&#34; --- IPv4/IPv6 manipulation library</a>
+              </li>
+              <li>
+                <a href="../library/ipc.html"
+>Comunicación en redes y entre procesos</a>
+              </li>
+              <li>
+                <a href="../library/itertools.html"
+>&#34;itertools&#34; --- Functions creating iterators for efficient looping</a>
+              </li>
+              <li>
+                <a href="../library/json.html"
+>&#34;json&#34; --- JSON encoder and decoder</a>
+              </li>
+              <li>
+                <a href="../library/keyword.html"
+>&#34;keyword&#34; --- Testing for Python keywords</a>
+              </li>
+              <li>
+                <a href="../library/language.html"
+>Servicios del lenguaje Python</a>
+              </li>
+              <li>
+                <a href="../library/linecache.html"
+>&#34;linecache&#34; --- Random access to text lines</a>
+              </li>
+              <li>
+                <a href="../library/locale.html"
+>&#34;locale&#34; --- Internationalization services</a>
+              </li>
+              <li>
+                <a href="../library/logging.config.html"
+>&#34;logging.config&#34; --- Logging configuration</a>
+              </li>
+              <li>
+                <a href="../library/logging.handlers.html"
+>&#34;logging.handlers&#34; --- Logging handlers</a>
+              </li>
+              <li>
+                <a href="../library/logging.html"
+>&#34;logging&#34; --- Logging facility for Python</a>
+              </li>
+              <li>
+                <a href="../library/lzma.html"
+>&#34;lzma&#34; --- Compression using the LZMA algorithm</a>
+              </li>
+              <li>
+                <a href="../library/mailbox.html"
+>&#34;mailbox&#34; --- Manipulate mailboxes in various formats</a>
+              </li>
+              <li>
+                <a href="../library/mailcap.html"
+>&#34;mailcap&#34; --- Mailcap file handling</a>
+              </li>
+              <li>
+                <a href="../library/markup.html"
+>Herramientas Para Procesar Formatos de Marcado Estructurado</a>
+              </li>
+              <li>
+                <a href="../library/marshal.html"
+>&#34;marshal&#34; --- Internal Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/math.html"
+>&#34;math&#34; --- Mathematical functions</a>
+              </li>
+              <li>
+                <a href="../library/mimetypes.html"
+>&#34;mimetypes&#34; --- Map filenames to MIME types</a>
+              </li>
+              <li>
+                <a href="../library/mm.html"
+>Servicios Multimedia</a>
+              </li>
+              <li>
+                <a href="../library/mmap.html"
+>&#34;mmap&#34; --- Memory-mapped file support</a>
+              </li>
+              <li>
+                <a href="../library/modulefinder.html"
+>&#34;modulefinder&#34; --- Find modules used by a script</a>
+              </li>
+              <li>
+                <a href="../library/modules.html"
+>Importando módulos</a>
+              </li>
+              <li>
+                <a href="../library/msilib.html"
+>&#34;msilib&#34; --- Read and write Microsoft Installer files</a>
+              </li>
+              <li>
+                <a href="../library/msvcrt.html"
+>&#34;msvcrt&#34; --- Useful routines from the MS VC++ runtime</a>
+              </li>
+              <li>
+                <a href="../library/multiprocessing.shared_memory.html"
+>&#34;multiprocessing.shared_memory&#34; --- Shared memory for direct access across processes</a>
+              </li>
+              <li>
+                <a href="../library/multiprocessing.html"
+class="is-current" aria-current="page">&#34;multiprocessing&#34; --- Process-based parallelism</a>
+              </li>
+              <li>
+                <a href="../library/netdata.html"
+>Manejo de datos de internet</a>
+              </li>
+              <li>
+                <a href="../library/netrc.html"
+>&#34;netrc&#34; --- netrc file processing</a>
+              </li>
+              <li>
+                <a href="../library/nis.html"
+>&#34;nis&#34; --- Interface to Sun’s NIS (Yellow Pages)</a>
+              </li>
+              <li>
+                <a href="../library/nntplib.html"
+>&#34;nntplib&#34; --- NNTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/numbers.html"
+>&#34;numbers&#34; --- Numeric abstract base classes</a>
+              </li>
+              <li>
+                <a href="../library/numeric.html"
+>Módulos numéricos y matemáticos</a>
+              </li>
+              <li>
+                <a href="../library/operator.html"
+>&#34;operator&#34; --- Standard operators as functions</a>
+              </li>
+              <li>
+                <a href="../library/optparse.html"
+>&#34;optparse&#34; --- Parser for command line options</a>
+              </li>
+              <li>
+                <a href="../library/os.path.html"
+>&#34;os.path&#34; --- Common pathname manipulations</a>
+              </li>
+              <li>
+                <a href="../library/os.html"
+>&#34;os&#34; --- Interfaces misceláneas del sistema operativo</a>
+              </li>
+              <li>
+                <a href="../library/ossaudiodev.html"
+>&#34;ossaudiodev&#34; --- Access to OSS-compatible audio devices</a>
+              </li>
+              <li>
+                <a href="../library/pathlib.html"
+>&#34;pathlib&#34; --- Rutas de sistemas orientada a objetos</a>
+              </li>
+              <li>
+                <a href="../library/pdb.html"
+>&#34;pdb&#34; --- The Python Debugger</a>
+              </li>
+              <li>
+                <a href="../library/persistence.html"
+>Persistencia de datos</a>
+              </li>
+              <li>
+                <a href="../library/pickle.html"
+>&#34;pickle&#34; --- Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/pickletools.html"
+>&#34;pickletools&#34; --- Tools for pickle developers</a>
+              </li>
+              <li>
+                <a href="../library/pipes.html"
+>&#34;pipes&#34; --- Interface to shell pipelines</a>
+              </li>
+              <li>
+                <a href="../library/pkgutil.html"
+>&#34;pkgutil&#34; --- Package extension utility</a>
+              </li>
+              <li>
+                <a href="../library/platform.html"
+>&#34;platform&#34; ---  Access to underlying platform&#39;s identifying data</a>
+              </li>
+              <li>
+                <a href="../library/plistlib.html"
+>&#34;plistlib&#34; --- Generate and parse Apple &#34;.plist&#34; files</a>
+              </li>
+              <li>
+                <a href="../library/poplib.html"
+>&#34;poplib&#34; --- POP3 protocol client</a>
+              </li>
+              <li>
+                <a href="../library/posix.html"
+>&#34;posix&#34; --- The most common POSIX system calls</a>
+              </li>
+              <li>
+                <a href="../library/pprint.html"
+>&#34;pprint&#34; --- Data pretty printer</a>
+              </li>
+              <li>
+                <a href="../library/profile.html"
+>Los perfiladores de Python</a>
+              </li>
+              <li>
+                <a href="../library/pty.html"
+>&#34;pty&#34; --- Pseudo-terminal utilities</a>
+              </li>
+              <li>
+                <a href="../library/pwd.html"
+>&#34;pwd&#34; --- The password database</a>
+              </li>
+              <li>
+                <a href="../library/py_compile.html"
+>&#34;py_compile&#34; --- Compile Python source files</a>
+              </li>
+              <li>
+                <a href="../library/pyclbr.html"
+>&#34;pyclbr&#34; --- Python module browser support</a>
+              </li>
+              <li>
+                <a href="../library/pydoc.html"
+>&#34;pydoc&#34; --- Documentation generator and online help system</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;multiprocessing&#34; --- Process-based parallelism</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduccion">Introducción#</a></li>
+              <li class="lvl-3"><a href="#la-clase-process">La clase &#34;Process&#34;#</a></li>
+              <li class="lvl-3"><a href="#contextos-y-metodos-de-inicio">Contextos y métodos de inicio#</a></li>
+              <li class="lvl-3"><a href="#intercambiando-objetos-entre-procesos">Intercambiando objetos entre procesos#</a></li>
+              <li class="lvl-3"><a href="#sincronizacion-entre-procesos">Sincronización entre procesos#</a></li>
+              <li class="lvl-3"><a href="#compartiendo-estado-entre-procesos">Compartiendo estado entre procesos#</a></li>
+              <li class="lvl-3"><a href="#usando-una-piscina-de-trabajadores-pool-of-workers">Usando una piscina de trabajadores (pool of workers)#</a></li>
+              <li class="lvl-2"><a href="#referencia">Referencia#</a></li>
+              <li class="lvl-3"><a href="#global-start-method">Global start method#</a></li>
+              <li class="lvl-3"><a href="#process-y-excepciones">&#34;Process&#34; y excepciones#</a></li>
+              <li class="lvl-3"><a href="#tuberias-pipes-y-colas-queues">Tuberías (Pipes) y Colas (Queues)#</a></li>
+              <li class="lvl-3"><a href="#miscelanea">Miscelánea#</a></li>
+              <li class="lvl-3"><a href="#objetos-de-conexion-connection-objects">Objetos de conexión Connection Objects#</a></li>
+              <li class="lvl-3"><a href="#primitivas-de-sincronizacion-synchronization-primitives">Primitivas de sincronización (Synchronization primitives)#</a></li>
+              <li class="lvl-3"><a href="#objetos-compartidos-ctypes">Objetos compartidos &#34;ctypes&#34;#</a></li>
+              <li class="lvl-2"><a href="#c_double24-rawvaluec_double-24-rawvalued-24">| c_double(2.4)      | RawValue(c_double, 2.4)  | RawValue(&#39;d&#39;, 2.4)        |#</a></li>
+              <li class="lvl-2"><a href="#mystruct4-6-rawvaluemystruct-4-6">| MyStruct(4, 6)     | RawValue(MyStruct, 4, 6) |                             |#</a></li>
+              <li class="lvl-2"><a href="#c_short-7-rawarrayc_short-7-rawarrayh-7">| (c_short * 7)()    | RawArray(c_short, 7)     | RawArray(‘h’, 7)          |#</a></li>
+              <li class="lvl-2"><a href="#8-8">| 8)                  | 8))                       |                             |#</a></li>
+              <li class="lvl-3"><a href="#administradores-managers">Administradores (Managers)#</a></li>
+              <li class="lvl-3"><a href="#objetos-proxy-proxy-objects">Objetos Proxy (Proxy Objects)#</a></li>
+              <li class="lvl-3"><a href="#piscinas-de-procesos-process-pools">Piscinas de procesos (Process Pools)#</a></li>
+              <li class="lvl-3"><a href="#oyentes-y-clientes-listeners-and-clients">Oyentes y clientes (Listeners and Clients)#</a></li>
+              <li class="lvl-3"><a href="#llaves-de-autentificacion">Llaves de autentificación#</a></li>
+              <li class="lvl-3"><a href="#logging">Logging#</a></li>
+              <li class="lvl-3"><a href="#the-multiprocessingdummy-module">The &#34;multiprocessing.dummy&#34; module#</a></li>
+              <li class="lvl-2"><a href="#pautas-de-programacion">Pautas de programación#</a></li>
+              <li class="lvl-3"><a href="#todos-los-metodos-de-inicio">Todos los métodos de inicio#</a></li>
+              <li class="lvl-3"><a href="#los-metodos-de-inicio-spawn-y-forkserver">Los métodos de inicio spawn y forkserver#</a></li>
+              <li class="lvl-2"><a href="#ejemplos">Ejemplos#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="multiprocessing-process-based-parallelism">"multiprocessing" --- Process-based parallelism<a class="headerlink" href="#multiprocessing-process-based-parallelism" title="Permanent link">#</a></h1>
+<p><strong>Código fuente:</strong> Lib/multiprocessing/</p>
+<p>======================================================================</p>
+<p>Availability: not Android, not iOS, not WASI.</p>
+<p>This module is not supported on mobile platforms or WebAssembly
+platforms.</p>
+<h2 id="introduccion">Introducción<a class="headerlink" href="#introduccion" title="Permanent link">#</a></h2>
+<p>"multiprocessing" is a package that supports spawning processes using
+an API similar to the "threading" module.  The "multiprocessing"
+package offers both local and remote concurrency, effectively side-
+stepping the <em>Global Interpreter Lock</em> by using subprocesses instead
+of threads.  Due to this, the "multiprocessing" module allows the
+programmer to fully leverage multiple processors on a given machine.
+It runs on both POSIX and Windows.</p>
+<p>The "multiprocessing" module also introduces the "Pool" object which
+offers a convenient means of parallelizing the execution of a function
+across multiple input values, distributing the input data across
+processes (data parallelism).  The following example demonstrates the
+common practice of defining such functions in a module so that child
+processes can successfully import that module.  This basic example of
+data parallelism using "Pool",</p>
+<p>from multiprocessing import Pool</p>
+<p>def f(x):
+       return x*x</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       with Pool(5) as p:
+           print(p.map(f, [1, 2, 3]))</p>
+<p>imprimirá la salida estándar</p>
+<p>[1, 4, 9]</p>
+<p>The "multiprocessing" module also introduces APIs which do not have
+analogs in the "threading" module, like the ability to "terminate",
+"interrupt" or "kill" a running process.</p>
+<p>Ver también:</p>
+<p>"concurrent.futures.ProcessPoolExecutor" ofrece una interfaz de
+  nivel superior para enviar tareas a un proceso en segundo plano sin
+  bloquear la ejecución del proceso de llamada. En comparación con el
+  uso directo de la interfaz "Pool", la API "concurrent.futures"
+  permite separar el envío de trabajo al grupo de procesos subyacente
+  de la espera de los resultados.</p>
+<h3 id="la-clase-process">La clase "Process"<a class="headerlink" href="#la-clase-process" title="Permanent link">#</a></h3>
+<p>In "multiprocessing", processes are spawned by creating a "Process"
+object and then calling its "start()" method.  "Process" follows the
+API of "threading.Thread".  A trivial example of a multiprocess
+program is</p>
+<p>from multiprocessing import Process</p>
+<p>def f(name):
+       print('hello', name)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       p = Process(target=f, args=('bob',))
+       p.start()
+       p.join()</p>
+<p>Para mostrar las IDs individuales involucradas en el proceso, aquí hay
+un ejemplo ampliado:</p>
+<p>from multiprocessing import Process
+   import os</p>
+<p>def info(title):
+       print(title)
+       print('module name:', <strong>name</strong>)
+       print('parent process:', os.getppid())
+       print('process id:', os.getpid())</p>
+<p>def f(name):
+       info('function f')
+       print('hello', name)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       info('main line')
+       p = Process(target=f, args=('bob',))
+       p.start()
+       p.join()</p>
+<p>Para obtener una explicación de por qué es necesaria la parte "if
+<strong>name</strong> == '<strong>main</strong>'" , consulte Pautas de programación.</p>
+<p>The arguments to "Process" usually need to be picklable so they can be
+passed to the child process. If you tried typing the above example
+directly into a REPL it could lead to an "AttributeError" in the child
+process trying to locate the <em>f</em> function in the "<strong>main</strong>" module.</p>
+<h3 id="contextos-y-metodos-de-inicio">Contextos y métodos de inicio<a class="headerlink" href="#contextos-y-metodos-de-inicio" title="Permanent link">#</a></h3>
+<p>Depending on the platform, "multiprocessing" supports three ways to
+start a process.  These <em>start methods</em> are</p>
+<p>Generación (<em>spawn</em>)
+      El proceso principal inicia un nuevo proceso de interpretación
+      de Python. El proceso secundario solo heredará los recursos
+      necesarios para ejecutar el método "run()" del objeto de
+      proceso. En particular, los identificadores y descriptores de
+      archivo innecesarios del proceso principal no se heredarán.
+      Iniciar un proceso con este método es bastante lento en
+      comparación con <em>fork</em> o <em>forkserver</em>.</p>
+<div class="codehilite"><pre><span></span><code>  Available on POSIX and Windows platforms.  The default on
+  Windows and macOS.
+</code></pre></div>
+
+<p><em>fork</em>
+      El proceso parental usa "os.fork()" para bifurcar el intérprete
+      de Python. El proceso hijo, cuando comienza, es efectivamente
+      idéntico al proceso parental. Todos los recursos del proceso
+      parental son heredados por el proceso hijo. Tenga en cuenta que
+      bifurcar (<em>forking</em>) de forma segura un proceso multihilo es
+      problemático.</p>
+<div class="codehilite"><pre><span></span><code>  Available on POSIX systems.
+
+  Distinto en la versión 3.14: This is no longer the default start
+  method on any platform. Code that requires *fork* must
+  explicitly specify that via &quot;get_context()&quot; or
+  &quot;set_start_method()&quot;.
+
+  Distinto en la versión 3.12: If Python is able to detect that
+  your process has multiple threads, the &quot;os.fork()&quot; function that
+  this start method calls internally will raise a
+  &quot;DeprecationWarning&quot;. Use a different start method. See the
+  &quot;os.fork()&quot; documentation for further explanation.
+</code></pre></div>
+
+<p><em>forkserver</em>
+      When the program starts and selects the <em>forkserver</em> start
+      method, a server process is spawned.  From then on, whenever a
+      new process is needed, the parent process connects to the server
+      and requests that it fork a new process.  The fork server
+      process is single threaded unless system libraries or preloaded
+      imports spawn threads as a side-effect so it is generally safe
+      for it to use "os.fork()". No unnecessary resources are
+      inherited.</p>
+<div class="codehilite"><pre><span></span><code>  Available on POSIX platforms which support passing file
+  descriptors over Unix pipes such as Linux.  The default on
+  those.
+
+  Distinto en la versión 3.14: This became the default start
+  method on POSIX platforms.
+</code></pre></div>
+
+<p>Distinto en la versión 3.4: <em>spawn</em> added on all POSIX platforms, and
+<em>forkserver</em> added for some POSIX platforms. Child processes no longer
+inherit all of the parents inheritable handles on Windows.</p>
+<p>Distinto en la versión 3.8: On macOS, the <em>spawn</em> start method is now
+the default.  The <em>fork</em> start method should be considered unsafe as
+it can lead to crashes of the subprocess as macOS system libraries may
+start threads. See bpo-33725.</p>
+<p>Distinto en la versión 3.14: On POSIX platforms the default start
+method was changed from <em>fork</em> to <em>forkserver</em> to retain the
+performance but avoid common multithreaded process incompatibilities.
+See gh-84559.</p>
+<p>On POSIX using the <em>spawn</em> or <em>forkserver</em> start methods will also
+start a <em>resource tracker</em> process which tracks the unlinked named
+system resources (such as named semaphores or "SharedMemory" objects)
+created by processes of the program.  When all processes have exited
+the resource tracker unlinks any remaining tracked object. Usually
+there should be none, but if a process was killed by a signal there
+may be some "leaked" resources.  (Neither leaked semaphores nor shared
+memory segments will be automatically unlinked until the next reboot.
+This is problematic for both objects because the system allows only a
+limited number of named semaphores, and shared memory segments occupy
+some space in the main memory.)</p>
+<p>Para seleccionar un método de inicio, utilice la función
+"set_start_method()" en la cláusula "if <strong>name</strong> == '<strong>main</strong>'" del
+módulo principal. Por ejemplo:</p>
+<p>import multiprocessing as mp</p>
+<p>def foo(q):
+       q.put('hello')</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       mp.set_start_method('spawn')
+       q = mp.Queue()
+       p = mp.Process(target=foo, args=(q,))
+       p.start()
+       print(q.get())
+       p.join()</p>
+<p>"set_start_method()" no debería ser usada más de una vez en el
+programa.</p>
+<p>Alternativamente, se puede usar "get_context()" para obtener un objeto
+de contexto. Los objetos de contexto tienen la misma API que el módulo
+de multiprocesamiento, y permiten utilizar múltiples métodos de inicio
+en el mismo programa.</p>
+<p>import multiprocessing as mp</p>
+<p>def foo(q):
+       q.put('hello')</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       ctx = mp.get_context('spawn')
+       q = ctx.Queue()
+       p = ctx.Process(target=foo, args=(q,))
+       p.start()
+       print(q.get())
+       p.join()</p>
+<p>Tenga en cuenta que los objetos relacionados con un contexto pueden no
+ser compatibles con procesos para un contexto diferente. En
+particular, los <em>locks</em> creados con el contexto <em>fork</em> no se pueden
+pasar a los procesos iniciados con los métodos de inicio <em>spawn</em> o
+<em>forkserver</em> .</p>
+<p>Libraries using "multiprocessing" or "ProcessPoolExecutor" should be
+designed to allow their users to provide their own multiprocessing
+context.  Using a specific context of your own within a library can
+lead to incompatibilities with the rest of the library user's
+application.  Always document if your library requires a specific
+start method.</p>
+<p>Advertencia:</p>
+<p>The "'spawn'" and "'forkserver'" start methods generally cannot be
+  used with "frozen" executables (i.e., binaries produced by packages
+  like <strong>PyInstaller</strong> and <strong>cx_Freeze</strong>) on POSIX systems. The
+  "'fork'" start method may work if code does not use threads.</p>
+<h3 id="intercambiando-objetos-entre-procesos">Intercambiando objetos entre procesos<a class="headerlink" href="#intercambiando-objetos-entre-procesos" title="Permanent link">#</a></h3>
+<p>"multiprocessing" supports two types of communication channel between
+processes:</p>
+<p><strong>Colas (<em>queues</em>)</strong></p>
+<p>La clase "Queue" es prácticamente un clon de "queue.Queue". Por
+   ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, Queue
+
+  def f(q):
+      q.put([42, None, &#39;hello&#39;])
+
+  if __name__ == &#39;__main__&#39;:
+      q = Queue()
+      p = Process(target=f, args=(q,))
+      p.start()
+      print(q.get())    # prints &quot;[42, None, &#39;hello&#39;]&quot;
+      p.join()
+</code></pre></div>
+
+<p>Queues are thread and process safe. Any object put into a
+   "multiprocessing" queue will be serialized.</p>
+<p><strong>Tuberías (<em>Pipes</em>)</strong></p>
+<p>La función "Pipe()" retorna un par de objetos de conexión
+   conectados por una tubería (<em>pipe</em>) que, por defecto, es un dúplex
+   (bidireccional). Por ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, Pipe
+
+  def f(conn):
+      conn.send([42, None, &#39;hello&#39;])
+      conn.close()
+
+  if __name__ == &#39;__main__&#39;:
+      parent_conn, child_conn = Pipe()
+      p = Process(target=f, args=(child_conn,))
+      p.start()
+      print(parent_conn.recv())   # prints &quot;[42, None, &#39;hello&#39;]&quot;
+      p.join()
+</code></pre></div>
+
+<p>Los dos objetos de conexión retornados por "Pipe()" representan los
+   dos extremos de la tubería (<em>pipe</em>). Cada objeto de conexión tiene
+   los métodos "send()" y "recv()" (entre otros). Tenga en cuenta que
+   los datos en una tubería pueden corromperse si dos procesos (o
+   hilos) intentan leer o escribir en el <em>mismo</em> (<em>same</em>) extremo de
+   la tubería al mismo tiempo. Por supuesto, no hay riesgo de
+   corrupción por procesos que utilizan diferentes extremos de la
+   tubería (<em>pipe</em>) al mismo tiempo.</p>
+<p>The "send()" method serializes the object and "recv()" re-creates
+   the object.</p>
+<h3 id="sincronizacion-entre-procesos">Sincronización entre procesos<a class="headerlink" href="#sincronizacion-entre-procesos" title="Permanent link">#</a></h3>
+<p>"multiprocessing" contains equivalents of all the synchronization
+primitives from "threading".  For instance one can use a lock to
+ensure that only one process prints to standard output at a time:</p>
+<p>from multiprocessing import Process, Lock</p>
+<p>def f(l, i):
+       l.acquire()
+       try:
+           print('hello world', i)
+       finally:
+           l.release()</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       lock = Lock()</p>
+<div class="codehilite"><pre><span></span><code>   for num in range(10):
+       Process(target=f, args=(lock, num)).start()
+</code></pre></div>
+
+<p>Sin usar el candado (<em>lock</em>) de salida de los diferentes procesos, es
+probable que todo se mezcle.</p>
+<h3 id="compartiendo-estado-entre-procesos">Compartiendo estado entre procesos<a class="headerlink" href="#compartiendo-estado-entre-procesos" title="Permanent link">#</a></h3>
+<p>Como se mencionó anteriormente, cuando se realiza una programación
+concurrente, generalmente es mejor evitar el uso del estado compartido
+en la medida de lo posible. Esto es particularmente cierto cuando se
+utilizan múltiples procesos.</p>
+<p>However, if you really do need to use some shared data then
+"multiprocessing" provides a couple of ways of doing so.</p>
+<p><strong>Memoria compartida</strong></p>
+<p>Los datos se pueden almacenar en un mapa de memoria compartida
+   usando "Value" o "Array". Por ejemplo, el siguiente código</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, Value, Array
+
+  def f(n, a):
+      n.value = 3.1415927
+      for i in range(len(a)):
+          a[i] = -a[i]
+
+  if __name__ == &#39;__main__&#39;:
+      num = Value(&#39;d&#39;, 0.0)
+      arr = Array(&#39;i&#39;, range(10))
+
+      p = Process(target=f, args=(num, arr))
+      p.start()
+      p.join()
+
+      print(num.value)
+      print(arr[:])
+</code></pre></div>
+
+<p>imprimirá</p>
+<div class="codehilite"><pre><span></span><code>  3.1415927
+  [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
+</code></pre></div>
+
+<p>Los argumentos "'d'" y "'i'" utilizados al crear "num" y "arr" son
+   códigos de tipo del tipo utilizado por "array" module: "'d'" indica
+   un flotador de doble precisión y "'i'" indica un entero con signo.
+   Estos objetos compartidos serán seguros para procesos y
+   subprocesos.</p>
+<p>Para una mayor flexibilidad en el uso de la memoria compartida, se
+   puede usar el módulo "multiprocessing.sharedctypes" que admite la
+   creación arbitraria de objetos <em>ctypes</em> asignados desde la memoria
+   compartida.</p>
+<p><strong>Proceso servidor (<em>Server process</em>)</strong></p>
+<p>Un objeto de administrador retornado por "Manager()" controla un
+   proceso de servidor que contiene objetos de Python y permite que
+   otros procesos los manipulen usando proxies.</p>
+<p>A manager returned by "Manager()" will support types "list",
+   "dict", "set", "Namespace", "Lock", "RLock", "Semaphore",
+   "BoundedSemaphore", "Condition", "Event", "Barrier", "Queue",
+   "Value" and "Array".  For example,</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, Manager
+
+  def f(d, l, s):
+      d[1] = &#39;1&#39;
+      d[&#39;2&#39;] = 2
+      d[0.25] = None
+      l.reverse()
+      s.add(&#39;a&#39;)
+      s.add(&#39;b&#39;)
+
+  if __name__ == &#39;__main__&#39;:
+      with Manager() as manager:
+          d = manager.dict()
+          l = manager.list(range(10))
+          s = manager.set()
+
+          p = Process(target=f, args=(d, l, s))
+          p.start()
+          p.join()
+
+          print(d)
+          print(l)
+          print(s)
+</code></pre></div>
+
+<p>imprimirá</p>
+<div class="codehilite"><pre><span></span><code>  {0.25: None, 1: &#39;1&#39;, &#39;2&#39;: 2}
+  [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+  {&#39;a&#39;, &#39;b&#39;}
+</code></pre></div>
+
+<p>Los administradores de procesos del servidor son más flexibles que
+   el uso de objetos de memoria compartida porque pueden hacerse para
+   admitir tipos de objetos arbitrarios. Por lo tanto, un solo
+   administrador puede ser compartido por procesos en diferentes
+   ordenadores a través de una red. Sin embargo, son más lentos que
+   usar memoria compartida.</p>
+<h3 id="usando-una-piscina-de-trabajadores-pool-of-workers">Usando una piscina de trabajadores (<em>pool of workers</em>)<a class="headerlink" href="#usando-una-piscina-de-trabajadores-pool-of-workers" title="Permanent link">#</a></h3>
+<p>La clase "Pool" representa procesos de piscina de trabajadores (<em>pool
+of workers</em>). Tiene métodos que permiten que las tareas se descarguen
+a los procesos de trabajo de diferentes maneras.</p>
+<p>Por ejemplo:</p>
+<p>from multiprocessing import Pool, TimeoutError
+   import time
+   import os</p>
+<p>def f(x):
+       return x*x</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       # start 4 worker processes
+       with Pool(processes=4) as pool:</p>
+<div class="codehilite"><pre><span></span><code>       # print &quot;[0, 1, 4,..., 81]&quot;
+       print(pool.map(f, range(10)))
+
+       # print same numbers in arbitrary order
+       for i in pool.imap_unordered(f, range(10)):
+           print(i)
+
+       # evaluate &quot;f(20)&quot; asynchronously
+       res = pool.apply_async(f, (20,))      # runs in *only* one process
+       print(res.get(timeout=1))             # prints &quot;400&quot;
+
+       # evaluate &quot;os.getpid()&quot; asynchronously
+       res = pool.apply_async(os.getpid, ()) # runs in *only* one process
+       print(res.get(timeout=1))             # prints the PID of that process
+
+       # launching multiple evaluations asynchronously *may* use more processes
+       multiple_results = [pool.apply_async(os.getpid, ()) for i in range(4)]
+       print([res.get(timeout=1) for res in multiple_results])
+
+       # make a single worker sleep for 10 seconds
+       res = pool.apply_async(time.sleep, (10,))
+       try:
+           print(res.get(timeout=1))
+       except TimeoutError:
+           print(&quot;We lacked patience and got a multiprocessing.TimeoutError&quot;)
+
+       print(&quot;For the moment, the pool remains available for more work&quot;)
+
+   # exiting the &#39;with&#39;-block has stopped the pool
+   print(&quot;Now the pool is closed and no longer available&quot;)
+</code></pre></div>
+
+<p>Tenga en cuenta que los métodos de una piscina (<em>pool</em>) solo deben ser
+utilizados por el proceso que lo creó.</p>
+<p>Nota:</p>
+<p>La funcionalidad en este paquete requiere que los procesos hijos
+  (<em>children</em>) puedan importar el módulo "<strong>main</strong>". Esto está
+  cubierto en Pautas de programación sin embargo, vale la pena
+  señalarlo aquí. Esto significa que algunos ejemplos, como
+  "multiprocessing.pool.Pool" no funcionarán en el intérprete
+  interactivo. Por ejemplo:</p>
+<div class="codehilite"><pre><span></span><code> &gt;&gt;&gt; from multiprocessing import Pool
+ &gt;&gt;&gt; p = Pool(5)
+ &gt;&gt;&gt; def f(x):
+ ...     return x*x
+ ...
+ &gt;&gt;&gt; with p:
+ ...     p.map(f, [1,2,3])
+ Process PoolWorker-1:
+ Process PoolWorker-2:
+ Process PoolWorker-3:
+ Traceback (most recent call last):
+ Traceback (most recent call last):
+ Traceback (most recent call last):
+ AttributeError: Can&#39;t get attribute &#39;f&#39; on &lt;module &#39;__main__&#39; (&lt;class &#39;_frozen_importlib.BuiltinImporter&#39;&gt;)&gt;
+ AttributeError: Can&#39;t get attribute &#39;f&#39; on &lt;module &#39;__main__&#39; (&lt;class &#39;_frozen_importlib.BuiltinImporter&#39;&gt;)&gt;
+ AttributeError: Can&#39;t get attribute &#39;f&#39; on &lt;module &#39;__main__&#39; (&lt;class &#39;_frozen_importlib.BuiltinImporter&#39;&gt;)&gt;
+</code></pre></div>
+
+<p>(Si intenta esto, en realidad generará tres trazas completas
+  intercaladas de forma semialeatoria, y luego tendrá que detener el
+  proceso principal de alguna manera)</p>
+<h2 id="referencia">Referencia<a class="headerlink" href="#referencia" title="Permanent link">#</a></h2>
+<p>The "multiprocessing" package mostly replicates the API of the
+"threading" module.</p>
+<h3 id="global-start-method">Global start method<a class="headerlink" href="#global-start-method" title="Permanent link">#</a></h3>
+<p>Python supports several ways to create and initialize a process. The
+global start method sets the default mechanism for creating a process.</p>
+<p>Several multiprocessing functions and methods that may also
+instantiate certain objects will implicitly set the global start
+method to the system's default, if it hasn’t been set already. The
+global start method can only be set once. If you need to change the
+start method from the system default, you must proactively set the
+global start method before calling functions or methods, or creating
+these objects.</p>
+<h3 id="process-y-excepciones">"Process" y excepciones<a class="headerlink" href="#process-y-excepciones" title="Permanent link">#</a></h3>
+<p>class multiprocessing.Process(group=None, target=None, name=None, args=(), kwargs={}, *, daemon=None)</p>
+<p>Los objetos de proceso representan la actividad que se ejecuta en
+   un proceso separado. La clase "Process" tiene equivalentes para
+   todos los métodos "threading.Thread".</p>
+<p>The constructor should always be called with keyword arguments.
+   <em>group</em> should always be "None"; it exists solely for compatibility
+   with "threading.Thread".  <em>target</em> is the callable object to be
+   invoked by the "run()" method.  It defaults to "None", meaning
+   nothing is called. <em>name</em> is the process name (see "name" for more
+   details). <em>args</em> is the argument tuple for the target invocation.
+   <em>kwargs</em> is a dictionary of keyword arguments for the target
+   invocation.  If provided, the keyword-only <em>daemon</em> argument sets
+   the process "daemon" flag to "True" or "False".  If "None" (the
+   default), this flag will be inherited from the creating process.</p>
+<p>De forma predeterminada, no se pasan argumentos a <em>target</em>. El
+   argumento <em>args</em>, que por defecto es "()", se puede usar para
+   especificar una lista o tupla de los argumentos para pasar a
+   <em>target</em>.</p>
+<p>If a subclass overrides the constructor, it must make sure it
+   invokes the base class constructor ("super().<strong>init</strong>()") before
+   doing anything else to the process.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> In general, all arguments to &quot;Process&quot; must be picklable.  This
+ is frequently observed when trying to create a &quot;Process&quot; or use a
+ &quot;concurrent.futures.ProcessPoolExecutor&quot; from a REPL with a
+ locally defined *target* function.Passing a callable object
+ defined in the current REPL session causes the child process to
+ die via an uncaught &quot;AttributeError&quot; exception when starting as
+ *target* must have been defined within an importable module in
+ order to be loaded during unpickling.Example of this uncatchable
+ error from the child:
+
+    &gt;&gt;&gt; import multiprocessing as mp
+    &gt;&gt;&gt; def knigit():
+    ...     print(&quot;Ni!&quot;)
+    ...
+    &gt;&gt;&gt; process = mp.Process(target=knigit)
+    &gt;&gt;&gt; process.start()
+    &gt;&gt;&gt; Traceback (most recent call last):
+      File &quot;.../multiprocessing/spawn.py&quot;, line ..., in spawn_main
+      File &quot;.../multiprocessing/spawn.py&quot;, line ..., in _main
+    AttributeError: module &#39;__main__&#39; has no attribute &#39;knigit&#39;
+    &gt;&gt;&gt; process
+    &lt;SpawnProcess name=&#39;SpawnProcess-1&#39; pid=379473 parent=378707 stopped exitcode=1&gt;
+
+ See Los métodos de inicio spawn y forkserver.  While this
+ restriction is not true if using the &quot;&quot;fork&quot;&quot; start method, as of
+ Python &quot;3.14&quot; that is no longer the default on any platform.  See
+ Contextos y métodos de inicio. See also gh-132898.
+</code></pre></div>
+
+<p>Distinto en la versión 3.3: Added the <em>daemon</em> parameter.</p>
+<p>run()</p>
+<div class="codehilite"><pre><span></span><code>  Método que representa la actividad del proceso.
+
+  Puede anular este método en una subclase. El método estándar
+  &quot;run()&quot; invoca el objeto invocable pasado al constructor del
+  objeto como argumento objetivo, si lo hay, con argumentos
+  posicionares y de palabras clave tomados de los argumentos
+  *args* y *kwargs*, respectivamente.
+
+  El uso de una lista o tupla como argumento *args* pasado a
+  &quot;Process&quot; logra el mismo efecto.
+
+  Ejemplo:
+
+     &gt;&gt;&gt; from multiprocessing import Process
+     &gt;&gt;&gt; p = Process(target=print, args=[1])
+     &gt;&gt;&gt; p.run()
+     1
+     &gt;&gt;&gt; p = Process(target=print, args=(1,))
+     &gt;&gt;&gt; p.run()
+     1
+</code></pre></div>
+
+<p>start()</p>
+<div class="codehilite"><pre><span></span><code>  Comienza la actividad del proceso.
+
+  Esto debe llamarse como máximo una vez por objeto de proceso.
+  Organiza la invocación del método &quot;run()&quot; del objeto en un
+  proceso separado.
+</code></pre></div>
+
+<p>join([timeout])</p>
+<div class="codehilite"><pre><span></span><code>  Si el argumento opcional *timeout* es &quot;None&quot; (el valor
+  predeterminado), el método se bloquea hasta que el proceso cuyo
+  método &quot;join()&quot; se llama termina. Si *timeout* es un número
+  positivo, bloquea como máximo *timeout* segundos. Tenga en
+  cuenta que el método retorna &quot;None&quot; si su proceso finaliza o si
+  el método agota el tiempo de espera. Verifique el proceso
+  &quot;exitcode&quot; para determinar si terminó.
+
+  Un proceso puede unirse muchas veces.
+
+  Un proceso no puede unirse a sí mismo porque esto provocaría un
+  punto muerto. Es un error intentar unirse a un proceso antes de
+  que se haya iniciado.
+</code></pre></div>
+
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  El nombre del proceso. El nombre es una cadena utilizada solo
+  con fines de identificación. No tiene semántica. Múltiples
+  procesos pueden tener el mismo nombre.
+
+  El nombre inicial es establecido por el constructor. Si no se
+  proporciona un nombre explícito al constructor, se forma un
+  nombre usando *&#39;Process-N:sub:`1`:N:sub:`2`:...:N:sub:`k`&#39;* se
+  construye, donde cada *N:sub:`k`* es el *N-enésimo* hijo del
+  parental.
+</code></pre></div>
+
+<p>is_alive()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna si el proceso está vivo.
+
+  Aproximadamente, un objeto de proceso está vivo desde el momento
+  en que el método &quot;start()&quot; retorna hasta que finaliza el proceso
+  hijo.
+</code></pre></div>
+
+<p>daemon</p>
+<div class="codehilite"><pre><span></span><code>  La bandera del proceso *daemon* , es un valor booleano. Esto
+  debe establecerse antes de que &quot;start()&quot; sea llamado.
+
+  El valor inicial se hereda del proceso de creación.
+
+  Cuando un proceso sale, intenta terminar todos sus procesos
+  demoníacos (*daemonic*) hijos.
+
+  Tenga en cuenta que un proceso demoníaco (*daemonic*) no puede
+  crear procesos hijos. De lo contrario, un proceso demoníaco
+  (*daemonic*) dejaría a sus hijos huérfanos si se termina cuando
+  finaliza su proceso parental. Además, estos **no** son *daemons*
+  o servicios de Unix, son procesos normales qué finalizarán (y no
+  se unirán) si los procesos no demoníacos han salido.
+</code></pre></div>
+
+<p>Además de API "threading.Thread", los objetos "Process" también
+   admiten los siguientes atributos y métodos:</p>
+<p>pid</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el ID del proceso. Antes de que se genere el proceso,
+  esto será &quot;None&quot;.
+</code></pre></div>
+
+<p>exitcode</p>
+<div class="codehilite"><pre><span></span><code>  El código de salida del proceso secundario. Será &quot;None&quot; si el
+  proceso aún no ha finalizado.
+
+  Si el método &quot;run()&quot; del proceso secundario se retornó
+  normalmente, el código de salida será 0. Si terminó a través de
+  &quot;sys.exit()&quot; con un argumento entero *N*, el código de salida
+  será *N*.
+
+  Si el proceso secundario finalizó debido a una excepción no
+  capturada dentro de &quot;run()&quot;, el código de salida será 1. Si fue
+  terminado por la señal *N*, el código de salida será el valor
+  negativo *-N*.
+</code></pre></div>
+
+<p>authkey</p>
+<div class="codehilite"><pre><span></span><code>  La clave de autenticación del proceso (una cadena de bytes).
+
+  When &quot;multiprocessing&quot; is initialized the main process is
+  assigned a random string using &quot;os.urandom()&quot;.
+
+  Cuando se crea un objeto &quot;Process&quot;, este heredará la clave de
+  autenticación de su proceso parental, aunque esto puede
+  cambiarse configurando &quot;authkey&quot; a otra cadena de bytes.
+
+  Consulte Llaves de autentificación.
+</code></pre></div>
+
+<p>sentinel</p>
+<div class="codehilite"><pre><span></span><code>  Un identificador numérico de un objeto del sistema que estará
+  &quot;listo&quot; cuando finalice el proceso.
+
+  You can use this value if you want to wait on several events at
+  once using &quot;multiprocessing.connection.wait()&quot;.  Otherwise
+  calling &quot;join()&quot; is simpler.
+
+  On Windows, this is an OS handle usable with the
+  &quot;WaitForSingleObject&quot; and &quot;WaitForMultipleObjects&quot; family of API
+  calls.  On POSIX, this is a file descriptor usable with
+  primitives from the &quot;select&quot; module.
+
+  Added in version 3.3.
+</code></pre></div>
+
+<p>interrupt()</p>
+<div class="codehilite"><pre><span></span><code>  Terminate the process. Works on POSIX using the &quot;SIGINT&quot; signal.
+  Behavior on Windows is undefined.
+
+  By default, this terminates the child process by raising
+  &quot;KeyboardInterrupt&quot;. This behavior can be altered by setting the
+  respective signal handler in the child process &quot;signal.signal()&quot;
+  for &quot;SIGINT&quot;.
+
+  Note: if the child process catches and discards
+  &quot;KeyboardInterrupt&quot;, the process will not be terminated.
+
+  Note: the default behavior will also set &quot;exitcode&quot; to &quot;1&quot; as if
+  an uncaught exception was raised in the child process. To have a
+  different &quot;exitcode&quot; you may simply catch &quot;KeyboardInterrupt&quot;
+  and call &quot;exit(your_code)&quot;.
+
+  Added in version 3.14.
+</code></pre></div>
+
+<p>terminate()</p>
+<div class="codehilite"><pre><span></span><code>  Terminate the process.  On POSIX this is done using the
+  &quot;SIGTERM&quot; signal; on Windows &quot;TerminateProcess()&quot; is used.  Note
+  that exit handlers and finally clauses, etc., will not be
+  executed.
+
+  Tenga en cuenta que los procesos descendientes del proceso *no*
+  finalizarán -- simplemente quedarán huérfanos.
+
+  Advertencia:
+
+    Si este método se usa cuando el proceso asociado está usando
+    una tubería (*pipe*) o una cola(*queue*), entonces la tubería
+    o la cola pueden corromperse y pueden quedar inutilizables por
+    otro proceso. Del mismo modo, si el proceso ha adquirido un
+    *lock* o un semáforo, etc., su finalización puede provocar el
+    bloqueo de otros procesos.
+</code></pre></div>
+
+<p>kill()</p>
+<div class="codehilite"><pre><span></span><code>  Same as &quot;terminate()&quot; but using the &quot;SIGKILL&quot; signal on POSIX.
+
+  Added in version 3.7.
+</code></pre></div>
+
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  El cierre del objeto &quot;Process&quot;, libera todos los recursos
+  asociados a él.  &quot;ValueError&quot; se lanza si el proceso subyacente
+  aún se está ejecutando. Una vez &quot;close()&quot; se retorna con éxito,
+  la mayoría de los otros métodos y atributos del objeto &quot;Process&quot;
+  lanzará &quot;ValueError&quot;.
+
+  Added in version 3.7.
+</code></pre></div>
+
+<p>Tenga en cuenta que los métodos "start()", "join()", "is_alive()",
+   "terminate()" y "exitcode" deberían solo ser llamados por el
+   proceso que creó el objeto del proceso.</p>
+<p>Ejemplo de uso de algunos métodos de la "Process":</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; import multiprocessing, time, signal
+  &gt;&gt;&gt; mp_context = multiprocessing.get_context(&#39;spawn&#39;)
+  &gt;&gt;&gt; p = mp_context.Process(target=time.sleep, args=(1000,))
+  &gt;&gt;&gt; print(p, p.is_alive())
+  &lt;...Process ... initial&gt; False
+  &gt;&gt;&gt; p.start()
+  &gt;&gt;&gt; print(p, p.is_alive())
+  &lt;...Process ... started&gt; True
+  &gt;&gt;&gt; p.terminate()
+  &gt;&gt;&gt; time.sleep(0.1)
+  &gt;&gt;&gt; print(p, p.is_alive())
+  &lt;...Process ... stopped exitcode=-SIGTERM&gt; False
+  &gt;&gt;&gt; p.exitcode == -signal.SIGTERM
+  True
+</code></pre></div>
+
+<p>exception multiprocessing.ProcessError</p>
+<p>The base class of all "multiprocessing" exceptions.</p>
+<p>exception multiprocessing.BufferTooShort</p>
+<p>Exception raised by "Connection.recv_bytes_into()" when the
+   supplied buffer object is too small for the message read.</p>
+<p>Si "e" es una instancia de "BufferTooShort" entonces "e.args[0]"
+   dará el mensaje como una cadena de <em>bytes</em>.</p>
+<p>exception multiprocessing.AuthenticationError</p>
+<p>Lanzada cuando hay un error de autenticación.</p>
+<p>exception multiprocessing.TimeoutError</p>
+<p>Lanzada por métodos con un tiempo de espera (<em>timeout</em>) cuando este
+   expira.</p>
+<h3 id="tuberias-pipes-y-colas-queues">Tuberías (<em>Pipes</em>) y Colas (<em>Queues</em>)<a class="headerlink" href="#tuberias-pipes-y-colas-queues" title="Permanent link">#</a></h3>
+<p>Cuando se usan múltiples procesos, uno generalmente usa el paso de
+mensajes para la comunicación entre procesos y evita tener que usar
+primitivas de sincronización como <em>locks</em>.</p>
+<p>Para pasar mensajes se puede usar "Pipe()" (para una conexión entre
+dos procesos) o una cola (<em>queue</em>)(que permite múltiples productores y
+consumidores).</p>
+<p>Los tipos "Queue", "SimpleQueue" y "JoinableQueue" son colas multi-
+productor, multi-consumidor FIFO (first-in, first-out) (primero en
+entrar, primero en salir) modeladas en "queue.Queue" en la biblioteca
+estándar. Se diferencian en que "Queue" carece de "task_done()" y
+"join()" métodos introducidos en Python 2.5 "queue.Queue" class.</p>
+<p>Si usa "JoinableQueue", entonces <strong>debe</strong> llamar a
+"JoinableQueue.task_done()" para cada tarea eliminada de la cola
+(<em>queue</em>) o de lo contrario el semáforo utilizado para contar el
+número de tareas sin terminar puede eventualmente desbordarse,
+lanzando un excepción.</p>
+<p>One difference from other Python queue implementations, is that
+"multiprocessing" queues serializes all objects that are put into them
+using "pickle". The object returned by the get method is a re-created
+object that does not share memory with the original object.</p>
+<p>Tenga en cuenta que también se puede crear una cola compartida
+mediante el uso de un objeto de administrador -- consulte
+Administradores (Managers).</p>
+<p>Nota:</p>
+<p>"multiprocessing" uses the usual "queue.Empty" and "queue.Full"
+  exceptions to signal a timeout.  They are not available in the
+  "multiprocessing" namespace so you need to import them from "queue".</p>
+<p>Nota:</p>
+<p>Cuando un objeto se coloca en una cola (<em>queue</em>), el objeto se
+  serializa (<em>pickled</em>) y luego un subproceso de fondo vacía los datos
+  serializados a una tubería (<em>pipe</em>) subyacente. Esto tiene algunas
+  consecuencias que son un poco sorprendentes, pero no deberían causar
+  dificultades prácticas: si realmente causan molestias, se puede usar
+  una cola creada con un manager.</p>
+<ol>
+<li>
+<p>Después de poner un objeto en una cola vacía, puede haber un
+     retraso infinitesimal antes de que el método de la cola "empty()"
+     retorne "False" y "get_nowait()" puede retornar sin lanzar
+     "queue.Empty".</p>
+</li>
+<li>
+<p>Si varios procesos están poniendo en cola objetos, es posible que
+     los objetos se reciban en el otro extremo fuera de orden. Sin
+     embargo, los objetos en cola por el mismo proceso siempre estarán
+     en el orden esperado entre sí.</p>
+</li>
+</ol>
+<p>Advertencia:</p>
+<p>Si se termina un proceso usando "Process.terminate()" o "os.kill()"
+  mientras intenta usar una clase "Queue", es probable que los datos
+  de la cola(<em>queue</em>) se corrompan. Esto puede hacer que cualquier
+  otro proceso obtenga una excepción cuando intente usar la cola más
+  adelante.</p>
+<p>Advertencia:</p>
+<p>Como se mencionó anteriormente, si un proceso hijo ha puesto
+  elementos en una cola (<em>queue</em>) (y no ha utilizado
+  "JoinableQueue.cancel_join_thread"), entonces ese proceso no
+  terminará hasta que todos los elementos almacenados en búfer hayan
+  sido vaciados a la tubería (<em>pipe</em>).Esto significa que si intenta
+  unirse a ese proceso, puede obtener un punto muerto a menos que esté
+  seguro de que todos los elementos que se han puesto en la cola
+  (<em>queue</em>) se han consumido. Del mismo modo, si el proceso hijo no es
+  <em>daemonic</em>, el proceso parental puede bloquearse en la salida cuando
+  intenta unir todos sus elementos hijos no <em>daemonic</em>.Tenga en cuenta
+  que una cola (<em>queue</em>) creada con un administrador no tiene este
+  problema. Consulte Pautas de programación.</p>
+<p>Para ver un ejemplo del uso de colas para la comunicación entre
+procesos, consulte Ejemplos.</p>
+<p>multiprocessing.Pipe(duplex=True)</p>
+<p>Retorna un par de objetos <em><code>(conn1, conn2)</code></em> de la "Connection"
+   que representan los extremos de una tubería (<em>pipe</em>).</p>
+<p>Si <em>duplex</em> es "True" (el valor predeterminado), entonces la
+   tubería (<em>pipe</em>) es bidireccional. Si <em>duplex</em> es "False", entonces
+   la tubería es unidireccional: "conn1" solo se puede usar para
+   recibir mensajes y "conn2" solo se puede usar para enviar mensajes.</p>
+<p>The "send()" method serializes the object using "pickle" and the
+   "recv()" re-creates the object.</p>
+<p>class multiprocessing.Queue([maxsize])</p>
+<p>Retorna un proceso de cola (<em>queue</em>) compartida implementado
+   utilizando una tubería (<em>pipe</em>) y algunos candados/semáforos
+   (<em>locks/semaphores</em>). Cuando un proceso pone por primera vez un
+   elemento en la cola, se inicia un hilo alimentador que transfiere
+   objetos desde un búfer a la tubería.</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>Las excepciones habituales "queue.Empty" y "queue.Full" del módulo
+   de la biblioteca estándar "queue" se generan para indicar tiempos
+   de espera.</p>
+<p>"Queue" implements all the methods of "queue.Queue" except for
+   "task_done()", "join()", and "shutdown()".</p>
+<p>qsize()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el tamaño aproximado de la cola (*queue*). Debido a la
+  semántica multiproceso/multiprocesamiento, este número no es
+  confiable.
+
+  Note that this may raise &quot;NotImplementedError&quot; on platforms like
+  macOS where &quot;sem_getvalue()&quot; is not implemented.
+</code></pre></div>
+
+<p>empty()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; si la cola (*queue*) está vacía, de lo contrario
+  retorna &quot;False&quot; . Debido a la semántica
+  multiproceso/multiprocesamiento, esto no es confiable.
+
+  May raise an &quot;OSError&quot; on closed queues. (not guaranteed)
+</code></pre></div>
+
+<p>full()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; si la cola (*queue*) está llena, de lo contrario
+  retorna &quot;False&quot; . Debido a la semántica
+  multiproceso/multiprocesamiento, esto no es confiable.
+</code></pre></div>
+
+<p>put(obj[, block[, timeout]])</p>
+<div class="codehilite"><pre><span></span><code>  Pone *obj* en la cola. Si el argumento opcional *block* es
+  &quot;True&quot; (el valor predeterminado) y *timeout* es &quot;None&quot; (el valor
+  predeterminado), se bloquea si es necesario hasta que haya un
+  espacio disponible. Si *timeout* es un número positivo, bloquea
+  a lo sumo *timeout* segundos y genera la excepción &quot;queue.Full&quot;
+  si no hay espacio libre disponible en ese tiempo. De lo
+  contrario (*block* es &quot;False&quot;), y coloca un elemento en la cola
+  si hay un espacio libre disponible de inmediato, de lo
+  contrario, genera la excepción &quot;queue.Full&quot; (*timeout* se ignora
+  en ese caso).
+
+  Distinto en la versión 3.8: Si la cola (*queue*) está cerrada,
+  &quot;ValueError&quot; se lanza en lugar de &quot;AssertionError&quot;.
+</code></pre></div>
+
+<p>put_nowait(obj)</p>
+<div class="codehilite"><pre><span></span><code>  Equivalente a &quot;put(obj, False)&quot;.
+</code></pre></div>
+
+<p>get([block[, timeout]])</p>
+<div class="codehilite"><pre><span></span><code>  Elimina y retorna un artículo de la cola (*queue*). Si un
+  argumento opcional *block* es &quot;True&quot; (el valor predeterminado) y
+  el *timeout* es &quot;None&quot; (el valor predeterminado), es bloqueado
+  si es necesario hasta que un elemento esté disponible. Si el
+  *timeout* es un número positivo, bloquea a lo sumo segundos y
+  genera la excepción &quot;queue.Empty&quot; si no había ningún elemento
+  disponible dentro de ese tiempo. De lo contrario (el bloque es
+  &quot;False&quot;), retorna un elemento si hay uno disponible de
+  inmediato, de lo contrario, levante la excepción &quot;queue.Empty&quot;
+  (*timeout* se ignora en ese caso).
+
+  Distinto en la versión 3.8: Si la cola está cerrada, se lanza
+  &quot;ValueError&quot; en lugar de &quot;OSError&quot;.
+</code></pre></div>
+
+<p>get_nowait()</p>
+<div class="codehilite"><pre><span></span><code>  Equivalente a &quot;get(False)&quot;.
+</code></pre></div>
+
+<p>La "multiprocessing.Queue" tiene algunos métodos adicionales que no
+   se encuentran en "queue.Queue". Estos métodos suelen ser
+   innecesarios para la mayoría de los códigos:</p>
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Cierra la cola: libera recursos internos.
+
+  A queue must not be used anymore after it is closed. For
+  example, &quot;get()&quot;, &quot;put()&quot; and &quot;empty()&quot; methods must no longer
+  be called.
+
+  The background thread will quit once it has flushed all buffered
+  data to the pipe.  This is called automatically when the queue
+  is garbage collected.
+</code></pre></div>
+
+<p>join_thread()</p>
+<div class="codehilite"><pre><span></span><code>  Unifica al hilo de fondo. Esto solo se puede usar después de que
+  se ha llamado a &quot;close()&quot;. Esto se bloquea hasta que salga el
+  hilo de fondo, asegurando que todos los datos en el búfer se
+  hayan vaciado a la tubería (*pipe*).
+
+  Por defecto, si un proceso no es el creador de la cola
+  (*queue*), al salir intentará unirse al hilo de fondo de la
+  cola. El proceso puede llamar a &quot;cancel_join_thread()&quot; para
+  hacer que el &quot;join_thread()&quot; no haga nada.
+</code></pre></div>
+
+<p>cancel_join_thread()</p>
+<div class="codehilite"><pre><span></span><code>  Evita que &quot;join_thread()&quot; bloquee. En particular, esto evita que
+  el subproceso en segundo plano se una automáticamente cuando
+  finaliza el proceso; consulte &quot;join_thread()&quot;.
+
+  Un mejor nombre para este método podría ser
+  &quot;allow_exit_without_flush()&quot;.  Es probable que provoque la
+  pérdida de datos encolados, y es casi seguro que no necesitará
+  usarlo. Realmente solo está allí si necesita que el proceso
+  actual salga inmediatamente sin esperar a vaciar los datos en en
+  la tubería (*pipe*) subyacente, y no le importan los datos
+  perdidos.
+</code></pre></div>
+
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> La funcionalidad de esta clase requiere una implementación de
+ semáforo compartido en funcionamiento en el sistema operativo que
+ es huésped (*host*). Sin uno, la funcionalidad en esta clase se
+ deshabilitará, y los intentos de instanciar a &quot;Queue&quot; resultarán
+ en &quot;ImportError&quot;. Consulte bpo-3770 para información adicional.
+ Lo mismo es válido para cualquiera de los tipos de cola
+ especializados que se enumeran a continuación.
+</code></pre></div>
+
+<p>class multiprocessing.SimpleQueue</p>
+<p>Es un tipo simplificado "Queue", muy similar a un <em>lock</em> de "Pipe".</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Cierra la cola: libera recursos internos.
+
+  Una cola no se debe usar más después de ser cerrada. Por ejemplo
+  los métodos &quot;get()&quot;, &quot;put()&quot; y &quot;empty()&quot; no deben ser llamados.
+
+  Added in version 3.9.
+</code></pre></div>
+
+<p>empty()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; si la cola (*queue*) está vacía, de otra manera
+  retorna &quot;False&quot;.
+
+  Always raises an &quot;OSError&quot; if the SimpleQueue is closed.
+</code></pre></div>
+
+<p>get()</p>
+<div class="codehilite"><pre><span></span><code>  Eliminar y retornar un artículo de la cola (*queue*).
+</code></pre></div>
+
+<p>put(item)</p>
+<div class="codehilite"><pre><span></span><code>  Pone *item* en la cola.
+</code></pre></div>
+
+<p>class multiprocessing.JoinableQueue([maxsize])</p>
+<p>"JoinableQueue", una subclase "Queue" , es una cola (<em>queue</em>) que
+   además tiene los métodos "task_done()" y "join()".</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>task_done()</p>
+<div class="codehilite"><pre><span></span><code>  Indica que una tarea anteriormente en cola (*queue*) está
+  completa. Usado por los consumidores de la cola. Por cada
+  &quot;get()&quot; utilizado para recuperar una tarea, una llamada
+  posterior a &quot;task_done()&quot; le dice a la cola que el procesamiento
+  de la tarea se ha completado.
+
+  Si un &quot;join()&quot; se está bloqueando actualmente, se reanudará
+  cuando se hayan procesado todos los elementos (lo que significa
+  que &quot;task_done()&quot; es llamado para cada elemento que había sido
+  puesto en cola (*queue*) por &quot;put()&quot;).
+
+  Lanza un &quot;ValueError&quot; si es llamado más veces que elementos hay
+  en una cola.
+</code></pre></div>
+
+<p>join()</p>
+<div class="codehilite"><pre><span></span><code>  Se bloquea hasta que todos los elementos en una cola han sido
+  recibidos y procesados.
+
+  El recuento de tareas no finalizadas aumenta cada vez que se
+  agrega un elemento a la cola. El recuento disminuye cada vez que
+  un consumidor llama a &quot;task_done()&quot; para indicar que el artículo
+  se recuperó y todo el trabajo en él está completo. Cuando el
+  recuento de tareas inacabadas cae a cero, &quot;join()&quot; se
+  desbloquea.
+</code></pre></div>
+
+<h3 id="miscelanea">Miscelánea<a class="headerlink" href="#miscelanea" title="Permanent link">#</a></h3>
+<p>multiprocessing.active_children()</p>
+<p>Retorna una lista con todos los hijos del proceso actual.</p>
+<p>Llamar a esto tiene el efecto secundario de "unir" (<em>joining</em>)
+   cualquier proceso que ya haya finalizado.</p>
+<p>multiprocessing.cpu_count()</p>
+<p>Retorna el número de CPU en el sistema.</p>
+<p>This number is not equivalent to the number of CPUs the current
+   process can use.  The number of usable CPUs can be obtained with
+   "os.process_cpu_count()" (or "len(os.sched_getaffinity(0))").</p>
+<p>Cuando no se puede determinar el número de CPUs, se lanza un
+   "NotImplementedError".</p>
+<p>Ver también: "os.cpu_count()" "os.process_cpu_count()"</p>
+<p>Distinto en la versión 3.13: The return value can also be
+   overridden using the "-X cpu_count" flag or "PYTHON_CPU_COUNT" as
+   this is merely a wrapper around the "os" cpu count APIs.</p>
+<p>multiprocessing.current_process()</p>
+<p>Retorna el objeto de la "Process" correspondiente al proceso
+   actual.</p>
+<p>Un análogo de la "threading.current_thread()".</p>
+<p>multiprocessing.parent_process()</p>
+<p>Retorna el objeto de la "Process" correspondiente al proceso
+   parental de "current_process()". Para el proceso principal,
+   "parent_process" será "None".</p>
+<p>Added in version 3.8.</p>
+<p>multiprocessing.freeze_support()</p>
+<p>Add support for when a program which uses "multiprocessing" has
+   been frozen to produce an executable.  (Has been tested with
+   <strong>py2exe</strong>, <strong>PyInstaller</strong> and <strong>cx_Freeze</strong>.)</p>
+<p>Es necesario llamar a esta función inmediatamente después de la
+   línea principal del módulo "if <strong>name</strong> == '<strong>main</strong>'" . Por
+   ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, freeze_support
+
+  def f():
+      print(&#39;hello world!&#39;)
+
+  if __name__ == &#39;__main__&#39;:
+      freeze_support()
+      Process(target=f).start()
+</code></pre></div>
+
+<p>Si se omite la línea "freeze_support()" entonces se intenta
+   comenzar el ejecutable congelado que lanzará "RuntimeError".</p>
+<p>Calling "freeze_support()" has no effect when the start method is
+   not <em>spawn</em>. In addition, if the module is being run normally by
+   the Python interpreter (the program has not been frozen), then
+   "freeze_support()" has no effect.</p>
+<p>multiprocessing.get_all_start_methods()</p>
+<p>Returns a list of the supported start methods, the first of which
+   is the default.  The possible start methods are "'fork'", "'spawn'"
+   and "'forkserver'".  Not all platforms support all methods.  See
+   Contextos y métodos de inicio.</p>
+<p>Added in version 3.4.</p>
+<p>multiprocessing.get_context(method=None)</p>
+<p>Return a context object which has the same attributes as the
+   "multiprocessing" module.</p>
+<p>If <em>method</em> is "None" then the default context is returned. Note
+   that if the global start method has not been set, this will set it
+   to the system default See Global start method for more details.
+   Otherwise <em>method</em> should be "'fork'", "'spawn'", "'forkserver'".
+   "ValueError" is raised if the specified start method is not
+   available.  See Contextos y métodos de inicio.</p>
+<p>Added in version 3.4.</p>
+<p>multiprocessing.get_start_method(allow_none=False)</p>
+<p>Retorna el nombre del método de inicio que es utilizado para
+   iniciar procesos.</p>
+<p>If the global start method is not set and <em>allow_none</em> is "False",
+   the global start method is set to the default, and its name is
+   returned. See Global start method for more details.</p>
+<p>The return value can be "'fork'", "'spawn'", "'forkserver'" or
+   "None".  See Contextos y métodos de inicio.</p>
+<p>Added in version 3.4.</p>
+<p>Distinto en la versión 3.8: En macOS, el método de inicio <em>spawn</em>
+   ahora es el predeterminado. El método de inicio <em>fork</em> debe
+   considerarse inseguro ya que puede provocar bloqueos del
+   subproceso. Consulte bpo-33725.</p>
+<p>multiprocessing.set_executable(executable)</p>
+<p>Set the path of the Python interpreter to use when starting a child
+   process. (By default "sys.executable" is used).  Embedders will
+   probably need to do something like</p>
+<div class="codehilite"><pre><span></span><code>  set_executable(os.path.join(sys.exec_prefix, &#39;pythonw.exe&#39;))
+</code></pre></div>
+
+<p>antes ellos pueden crear procesos hijos.</p>
+<p>Distinto en la versión 3.4: Now supported on POSIX when the
+   "'spawn'" start method is used.</p>
+<p>Distinto en la versión 3.11: Acepta un <em>path-like object</em>.</p>
+<p>multiprocessing.set_forkserver_preload(module_names)</p>
+<p>Set a list of module names for the forkserver main process to
+   attempt to import so that their already imported state is inherited
+   by forked processes. Any "ImportError" when doing so is silently
+   ignored. This can be used as a performance enhancement to avoid
+   repeated work in every process.</p>
+<p>For this to work, it must be called before the forkserver process
+   has been launched (before creating a "Pool" or starting a
+   "Process").</p>
+<p>Only meaningful when using the "'forkserver'" start method. See
+   Contextos y métodos de inicio.</p>
+<p>Added in version 3.4.</p>
+<p>multiprocessing.set_start_method(method, force=False)</p>
+<p>Set the method which should be used to start child processes. The
+   <em>method</em> argument can be "'fork'", "'spawn'" or "'forkserver'".
+   Raises "RuntimeError" if the start method has already been set and
+   <em>force</em> is not "True".  If <em>method</em> is "None" and <em>force</em> is "True"
+   then the start method is set to "None".  If <em>method</em> is "None" and
+   <em>force</em> is "False" then the context is set to the default context.</p>
+<p>Tenga en cuenta que esto debería llamarse como máximo una vez, y
+   debería protegerse dentro de la cláusula "if <strong>name</strong> ==
+   '<strong>main</strong>'" del módulo principal.</p>
+<p>See Contextos y métodos de inicio.</p>
+<p>Added in version 3.4.</p>
+<p>Nota:</p>
+<p>"multiprocessing" contains no analogues of
+  "threading.active_count()", "threading.enumerate()",
+  "threading.settrace()", "threading.setprofile()", "threading.Timer",
+  or "threading.local".</p>
+<h3 id="objetos-de-conexion-connection-objects">Objetos de conexión <em>Connection Objects</em><a class="headerlink" href="#objetos-de-conexion-connection-objects" title="Permanent link">#</a></h3>
+<p>Los objetos de conexión permiten el envío y la recepción de objetos
+serializables (<em>pickable</em>) o cadenas de caracteres seleccionables.
+Pueden considerarse como sockets conectados orientados a mensajes.</p>
+<p>Los objetos de conexión usualmente son creados usando "Pipe" -- ver
+también Oyentes y clientes (Listeners and Clients).</p>
+<p>class multiprocessing.connection.Connection</p>
+<p>send(obj)</p>
+<div class="codehilite"><pre><span></span><code>  Envía un objeto al otro extremo de la conexión que debe leerse
+  usando &quot;recv()&quot;.
+
+  El objeto debe ser serializable (*pickable*). Los serializados
+  (*pickable*) muy grandes (aproximadamente 32 *MiB+* , aunque
+  depende del sistema operativo) pueden generar una excepción
+  &quot;ValueError&quot;.
+</code></pre></div>
+
+<p>recv()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna un objeto enviado desde el otro extremo de la conexión
+  usando &quot;send()&quot;. Se bloquea hasta que haya algo para recibir. Se
+  lanza &quot;EOFError&quot; si no queda nada por recibir y el otro extremo
+  está cerrado.
+</code></pre></div>
+
+<p>fileno()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el descriptor de archivo o identificador utilizado por
+  la conexión.
+</code></pre></div>
+
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Cierra la conexión.
+
+  Esto se llama automáticamente cuando la conexión es basura
+  recolectada.
+</code></pre></div>
+
+<p>poll([timeout])</p>
+<div class="codehilite"><pre><span></span><code>  Retorna si hay datos disponibles para leer.
+
+  Si no se especifica *timeout*, se retornará de inmediato. Si
+  *timeout* es un número, esto especifica el tiempo máximo en
+  segundos para bloquear. Si *timeout* es &quot;None&quot;, se usa un tiempo
+  de espera infinito.
+
+  Tenga en cuenta que se pueden sondear varios objetos de conexión
+  a la vez utilizando &quot;multiprocessing.connection.wait()&quot;.
+</code></pre></div>
+
+<p>send_bytes(buf[, offset[, size]])</p>
+<div class="codehilite"><pre><span></span><code>  Envía datos de *bytes* desde a *bytes-like object* como un
+  mensaje completo.
+
+  If *offset* is given then data is read from that position in
+  *buf*.  If *size* is given then that many bytes will be read
+  from *buf*.  Very large buffers (approximately 32 MiB+, though
+  it depends on the OS) may raise a &quot;ValueError&quot; exception
+</code></pre></div>
+
+<p>recv_bytes([maxlength])</p>
+<div class="codehilite"><pre><span></span><code>  Retorna un mensaje completo de datos de *bytes* enviados desde
+  el otro extremo de la conexión como una cadena de caracteres. Se
+  bloquea hasta que haya algo para recibir. Aumenta &quot;EOFError&quot; si
+  no queda nada por recibir y el otro extremo se ha cerrado.
+
+  Si se especifica *maxlength* y el mensaje es más largo que
+  *maxlength*, entonces se lanza un &quot;OSError&quot; y la conexión ya no
+  será legible.
+
+  Distinto en la versión 3.3: Esta función solía lanzar un
+  &quot;IOError&quot;, que ahora es un alias de &quot;OSError&quot;.
+</code></pre></div>
+
+<p>recv_bytes_into(buf[, offset])</p>
+<div class="codehilite"><pre><span></span><code>  Read into *buf* a complete message of byte data sent from the
+  other end of the connection and return the number of bytes in
+  the message.  Blocks until there is something to receive.
+  Raises &quot;EOFError&quot; if there is nothing left to receive and the
+  other end was closed.
+
+  *buf* must be a writable *bytes-like object*.  If *offset* is
+  given then the message will be written into the buffer from that
+  position.  Offset must be a non-negative integer less than the
+  length of *buf* (in bytes).
+
+  Si el búfer es demasiado corto, se genera una excepción
+  &quot;BufferTooShort&quot; y el mensaje completo está disponible como
+  &quot;e.args[0]&quot; donde &quot;e&quot; es la instancia de excepción.
+</code></pre></div>
+
+<p>Distinto en la versión 3.3: Los objetos de conexión ahora pueden
+   transferirse entre procesos usando "Connection.send()" y
+   "Connection.recv()".Connection objects also now support the context
+   management protocol -- see Tipos gestores de contexto.
+   "<strong>enter</strong>()" returns the connection object, and "<strong>exit</strong>()" calls
+   "close()".</p>
+<p>Por ejemplo:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing import Pipe
+a, b = Pipe()
+a.send([1, 'hello', None])
+b.recv()
+   [1, 'hello', None]
+b.send_bytes(b'thank you')
+a.recv_bytes()
+   b'thank you'
+import array
+arr1 = array.array('i', range(5))
+arr2 = array.array('i', [0] * 10)
+a.send_bytes(arr1)
+count = b.recv_bytes_into(arr2)
+assert count == len(arr1) * arr1.itemsize
+arr2
+   array('i', [0, 1, 2, 3, 4, 0, 0, 0, 0, 0])</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Advertencia:</p>
+<p>El método "Connection.recv()" desempaqueta automáticamente los datos
+  que recibe, lo que puede ser un riesgo de seguridad a menos que
+  pueda confiar en el proceso que envió el mensaje.Por lo tanto, a
+  menos que el objeto de conexión se haya producido usando "Pipe()"
+  solo debe usar los métodos "recv()" y "send()" después de realizar
+  algún tipo de autenticación. Consulte Llaves de autentificación.</p>
+<p>Advertencia:</p>
+<p>Si se mata un proceso mientras intenta leer o escribir en una
+  tubería (<em>pipe</em>), entonces es probable que los datos en la tubería
+  se corrompan, porque puede ser imposible estar seguro de dónde se
+  encuentran los límites del mensaje.</p>
+<h3 id="primitivas-de-sincronizacion-synchronization-primitives">Primitivas de sincronización (<em>Synchronization primitives</em>)<a class="headerlink" href="#primitivas-de-sincronizacion-synchronization-primitives" title="Permanent link">#</a></h3>
+<p>En general, las primitivas de sincronización no son tan necesarias en
+un programa multiproceso como en un programa <em>multihilos</em>
+(<em>multithreaded</em>). Consulte la documentación para "threading" .</p>
+<p>Tenga en cuenta que también se pueden crear primitivas de
+sincronización utilizando un objeto administrador -- consulte
+Administradores (Managers).</p>
+<p>class multiprocessing.Barrier(parties[, action[, timeout]])</p>
+<p>Un objeto de barrera: un clon de "threading.Barrier".</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>Added in version 3.3.</p>
+<p>class multiprocessing.BoundedSemaphore([value])</p>
+<p>Un objeto semáforo (<em>semaphore object</em>) acotado: un análogo cercano
+   de la "threading.BoundedSemaphore".</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>Existe una diferencia solitaria de su análogo cercano: el primer
+   argumento de su método "acquire" es nombrado <em>block</em>, es
+   consistente con "Lock.acquire()".</p>
+<p>locked()</p>
+<div class="codehilite"><pre><span></span><code>  Return a boolean indicating whether this object is locked right
+  now.
+
+  Added in version 3.14.
+</code></pre></div>
+
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> En macOS, esto no se puede distinguir de &quot;Semaphore&quot; porque
+ &quot;sem_getvalue()&quot; no está implementado en esa plataforma.
+</code></pre></div>
+
+<p>class multiprocessing.Condition([lock])</p>
+<p>Una variable de condición: un alias para la "threading.Condition".</p>
+<p>If <em>lock</em> is specified then it should be a "Lock" or "RLock" object
+   from "multiprocessing".</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>Distinto en la versión 3.3: El método "wait_for()" fue a añadido.</p>
+<p>class multiprocessing.Event</p>
+<p>Un clon de "threading.Event".</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>class multiprocessing.Lock</p>
+<p>Un objeto candado no recursivo: un análogo cercano de
+   "threading.Lock" . Una vez que un proceso o subproceso ha adquirido
+   un bloqueo, los intentos posteriores de adquirirlo de cualquier
+   proceso o subproceso se bloquearán hasta que se libere; cualquier
+   proceso o hilo puede liberarlo. Los conceptos y comportamientos de
+   "threading.Lock" como se aplica a los subprocesos se replican aquí
+   en "multiprocessing.Lock" como se aplica a los procesos o
+   subprocesos, excepto como se indica.</p>
+<p>Tenga en cuenta que "Lock" es en realidad una función de fábrica
+   que retorna una instancia de "multiprocessing.synchronize.Lock"
+   inicializada con un contexto predeterminado.</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>La "Lock" soporta el protocolo <em>context manager</em> y, por lo tanto,
+   se puede usar en la declaración "with".</p>
+<p>acquire(block=True, timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Adquiriendo un candado (*lock*), bloqueante o no bloqueante.
+
+  Con el argumento *block* establecido en &quot;True&quot; (el valor
+  predeterminado), la llamada al método se bloqueará hasta que el
+  bloqueo esté en un estado desbloqueado, luego configúrelo como
+  bloqueado y retorne &quot;True&quot;. Tenga en cuenta que el nombre de
+  este primer argumento difiere del que aparece en
+  &quot;threading.Lock.acquire()&quot;.
+
+  Con el argumento *block* establecido en &quot;False&quot;, la llamada al
+  método no se bloquea. Si el bloqueo está actualmente en un
+  estado bloqueado, retorna &quot;False&quot;; de lo contrario, configure el
+  bloqueo en un estado bloqueado y retorne &quot;True&quot;.
+
+  Cuando se invoca con un valor positivo de punto flotante para
+  *timeout*, bloquea como máximo el número de segundos
+  especificado por *timeout* siempre que no se pueda obtener el
+  bloqueo. Las invocaciones con un valor negativo para *timeout*
+  de cero. Las invocaciones con un valor *timeout* de &quot;None&quot; (el
+  valor predeterminado) establecen el período de tiempo de espera
+  en infinito. Tenga en cuenta que el tratamiento de valores
+  negativos o &quot;None&quot; para *timeout* difiere del comportamiento
+  implementado en &quot;threading.Lock.acquire()&quot;. El argumento
+  *timeout* no tiene implicaciones prácticas si el argumento
+  *block* se establece en &quot;False&quot; y, por lo tanto, se ignora.
+  Retorna &quot;True&quot; si se ha adquirido el candado o &quot;False&quot; si ha
+  transcurrido el tiempo de espera.
+</code></pre></div>
+
+<p>release()</p>
+<div class="codehilite"><pre><span></span><code>  Suelta un candado. Esto se puede llamar desde cualquier proceso
+  o subproceso, no solo desde el proceso o subproceso que
+  originalmente adquirió el candado.
+
+  El comportamiento es el mismo que en &quot;threading.Lock.release()&quot;
+  excepto que cuando se invoca en un bloqueo desbloqueado, se
+  genera a &quot;ValueError&quot;.
+</code></pre></div>
+
+<p>locked()</p>
+<div class="codehilite"><pre><span></span><code>  Return a boolean indicating whether this object is locked right
+  now.
+
+  Added in version 3.14.
+</code></pre></div>
+
+<p>class multiprocessing.RLock</p>
+<p>Un objeto de candado recursivo: un análogo cercano a
+   "threading.RLock". El proceso o el hilo que lo adquirió debe
+   liberar un candado recursivo. Una vez que un proceso o subproceso
+   ha adquirido un candado recursivo, el mismo proceso o subproceso
+   puede volver a adquirirlo sin bloquearlo; ese proceso o hilo debe
+   liberarlo una vez por cada vez que se haya adquirido.</p>
+<p>Tenga en cuenta que "RLock" es en realidad una función de fábrica
+   que retorna una instancia de "multiprocessing.synchronize.RLock"
+   inicializada con un contexto predeterminado.</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>La "RLock" admite el protocolo <em>context manager</em> y, por lo tanto,
+   puede usarse en "with".</p>
+<p>acquire(block=True, timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Adquiriendo un candado (*lock*), bloqueante o no bloqueante.
+
+  Cuando se invoca con el argumento *block* establecido en &quot;True&quot;
+  , bloquea hasta que el candado esté en un estado desbloqueado
+  (que no sea propiedad de ningún proceso o subproceso) a menos
+  que el candado o el subproceso actual ya sea de su propiedad. El
+  proceso o subproceso actual se apropia del candado (si aún no lo
+  tiene) y el nivel de recursión dentro de este  aumenta en uno,
+  lo que da como resultado un valor de retorno de &quot;True&quot;. Tenga en
+  cuenta que hay varias diferencias en el comportamiento de este
+  primer argumento en comparación con la implementación de
+  &quot;threading.RLock.acquire()&quot;, comenzando con el nombre del
+  argumento en sí.
+
+  Cuando se invoca con el argumento *block* establecido en
+  &quot;False&quot;, no bloquea. Si el candado ya ha sido adquirido (y por
+  lo tanto es propiedad) de otro proceso o subproceso, el proceso
+  o subproceso actual no se apropia y el nivel de recursión dentro
+  del candado no cambia, lo que resulta en un valor de retorno de
+  &quot;False&quot;. Si el candado está en un estado desbloqueado, el
+  proceso o subproceso actual toma posesión y el nivel de
+  recurrencia se incrementa, lo que resulta en un valor de retorno
+  de &quot;True&quot;.
+
+  El uso y los comportamientos del argumento *timeout* son los
+  mismos que en &quot;Lock.acquire()&quot;. Tenga en cuenta que algunos de
+  estos comportamientos de *timeout* difieren de los
+  comportamientos implementados en &quot;threading.RLock.acquire()&quot;.
+</code></pre></div>
+
+<p>release()</p>
+<div class="codehilite"><pre><span></span><code>  Libera un candado, disminuyendo el nivel de recursión. Si
+  después del decremento el nivel de recursión es cero, restablece
+  el candado a desbloqueado (que no sea propiedad de ningún
+  proceso o subproceso) y si se bloquean otros procesos o
+  subprocesos esperando que el candado se desbloquee, permite que
+  continúe exactamente uno de ellos. Si después del decremento el
+  nivel de recursión sigue siendo distinto de cero, el candado
+  permanece bloqueado y pertenece al proceso de llamada o
+  subproceso.
+
+  Solo llame a este método cuando el proceso o subproceso de
+  llamada sea el propietario del candado. Se lanza un
+  &quot;AssertionError&quot; si se llama a este método mediante un proceso o
+  subproceso que no sea el propietario o si el candado está en un
+  estado desbloqueado (sin propietario). Tenga en cuenta que el
+  tipo de excepción planteada en esta situación difiere del
+  comportamiento implementado en &quot;threading.RLock.release()&quot;.
+</code></pre></div>
+
+<p>locked()</p>
+<div class="codehilite"><pre><span></span><code>  Return a boolean indicating whether this object is locked right
+  now.
+
+  Added in version 3.14.
+</code></pre></div>
+
+<p>class multiprocessing.Semaphore([value])</p>
+<p>Un objeto semáforo: un análogo cercano de "threading.Semaphore".</p>
+<p>Instantiating this class may set the global start method. See
+   Global start method for more details.</p>
+<p>Existe una diferencia solitaria de su análogo cercano: el primer
+   argumento de su método "acquire" es nombrado <em>block</em>, es
+   consistente con "Lock.acquire()".</p>
+<p>get_value()</p>
+<div class="codehilite"><pre><span></span><code>  Return the current value of semaphore.
+
+  Note that this may raise &quot;NotImplementedError&quot; on platforms like
+  macOS where &quot;sem_getvalue()&quot; is not implemented.
+</code></pre></div>
+
+<p>locked()</p>
+<div class="codehilite"><pre><span></span><code>  Return a boolean indicating whether this object is locked right
+  now.
+
+  Added in version 3.14.
+</code></pre></div>
+
+<p>Nota:</p>
+<p>En macOS, "sem_timedwait" no es compatible, por lo que llamar a
+  "acquire()" con un tiempo de espera emulará el comportamiento de esa
+  función utilizando un bucle inactivo.</p>
+<p>Nota:</p>
+<p>Parte de la funcionalidad de este paquete requiere una
+  implementación de semáforo compartido que funcione en el sistema
+  operativo. Sin uno, el módulo "multiprocessing.synchronize" se
+  desactivará, y los intentos de importarlo darán como resultado
+  "ImportError". Consulte bpo-3770 para información adicional.</p>
+<h3 id="objetos-compartidos-ctypes">Objetos compartidos "ctypes"<a class="headerlink" href="#objetos-compartidos-ctypes" title="Permanent link">#</a></h3>
+<p>Es posible crear objetos compartidos utilizando memoria compartida que
+puede ser heredada por procesos secundarios.</p>
+<p>multiprocessing.Value(typecode_or_type, *args, lock=True)</p>
+<p>Retorna un objeto "ctypes" asignado desde la memoria compartida.
+   Por defecto, el valor de retorno es en realidad un contenedor
+   sincronizado para el objeto. Se puede acceder al objeto en sí a
+   través del atributo <em>value</em> de la "Value".</p>
+<p><em>typecode_or_type</em> determina el tipo del objeto retornado: es un
+   tipo <em>ctypes</em> o un código de tipo de un carácter del tipo utilizado
+   por el módulo "array". *<em>args</em> se pasa al constructor para el tipo.</p>
+<p>Si <em>lock</em> es "True" (el valor predeterminado), se crea un nuevo
+   objeto de candado recursivo para sincronizar el acceso al valor. Si
+   <em>lock</em> es un objeto "Lock" o "RLock", se usará para sincronizar el
+   acceso al valor. Si <em>lock</em> es "False", entonces el acceso al objeto
+   retornado no estará protegido automáticamente por un candado, por
+   lo que no será necesariamente "proceso-seguro".</p>
+<p>Operaciones como "+=" que implican una lectura y escritura no son
+   atómicas. Entonces, si, por ejemplo, desea incrementar atómicamente
+   un valor compartido, es insuficiente simplemente hacer:</p>
+<div class="codehilite"><pre><span></span><code>  counter.value += 1
+</code></pre></div>
+
+<p>Suponiendo que el candado asociado es recursivo (que es por
+   defecto), puede hacer</p>
+<div class="codehilite"><pre><span></span><code>  with counter.get_lock():
+      counter.value += 1
+</code></pre></div>
+
+<p>Véase que <em>lock</em> es un argumento de solo una palabra clave.</p>
+<p>multiprocessing.Array(typecode_or_type, size_or_initializer, *, lock=True)</p>
+<p>Retorna una matriz <em>ctypes</em> asignada desde la memoria compartida.
+   Por defecto, el valor de retorno es en realidad un contenedor
+   sincronizado para el arreglo.</p>
+<p><em>typecode_or_type</em> determines the type of the elements of the
+   returned array: it is either a ctypes type or a one character
+   typecode of the kind used by the "array" module with the exception
+   of "'w'", which is not supported.  In addition, the "'c'" typecode
+   is an alias for "ctypes.c_char".  If <em>size_or_initializer</em> is an
+   integer, then it determines the length of the array, and the array
+   will be initially zeroed. Otherwise, <em>size_or_initializer</em> is a
+   sequence which is used to initialize the array and whose length
+   determines the length of the array.</p>
+<p>Si <em>lock</em> es "True" (el valor predeterminado), se crea un nuevo
+   objeto de bloqueo para sincronizar el acceso al valor. Si <em>lock</em> es
+   un objeto "Lock" o "RLock", se usará para sincronizar el acceso al
+   valor. Si <em>lock</em> es "False", entonces el acceso al objeto retornado
+   no estará protegido automáticamente por un candado, por lo que no
+   será necesariamente "proceso seguro".</p>
+<p>Véase que <em>lock</em> es un argumento de solo una palabra clave.</p>
+<p>Note that an array of "ctypes.c_char" has <em>value</em> and <em>raw</em>
+   attributes which can both be used to store and retrieve byte
+   strings. While <em>raw</em> allows interaction with a "bytes" object the
+   full size of the array, reading <em>value</em> will terminate after a null
+   byte, like most programming languages handle strings.</p>
+<h4 id="the-multiprocessingsharedctypes-module">The "multiprocessing.sharedctypes" module<a class="headerlink" href="#the-multiprocessingsharedctypes-module" title="Permanent link">#</a></h4>
+<p>The "multiprocessing.sharedctypes" module provides functions for
+allocating "ctypes" objects from shared memory which can be inherited
+by child processes.</p>
+<p>Nota:</p>
+<p>Aunque es posible almacenar un puntero en la memoria compartida,
+  recuerde que esto se referirá a una ubicación en el espacio de
+  direcciones de un proceso específico. Sin embargo, es muy probable
+  que el puntero sea inválido en el contexto de un segundo proceso y
+  tratar de desreferenciar el puntero del segundo proceso puede causar
+  un bloqueo.</p>
+<p>multiprocessing.sharedctypes.RawArray(typecode_or_type, size_or_initializer)</p>
+<p>Retorna una matriz <em>ctypes</em> asignada desde la memoria compartida.</p>
+<p><em>typecode_or_type</em> determina el tipo de los elementos de la matriz
+   retornada: es un tipo de tipo <em>ctypes</em> o un código de tipo de un
+   carácter del tipo utilizado por el módulo "array". Si
+   <em>size_or_initializer</em> es un entero, entonces determina la longitud
+   de la matriz, y la matriz se pondrá a cero inicialmente. De lo
+   contrario, <em>size_or_initializer</em> es una secuencia que se usa para
+   inicializar la matriz y cuya longitud determina la longitud del
+   arreglo.</p>
+<p>Tenga en cuenta que configurar y obtener un elemento es
+   potencialmente no atómico -- utiliza "Array()" en su lugar para
+   asegurarse de que el acceso se sincronice automáticamente mediante
+   un candado.</p>
+<p>multiprocessing.sharedctypes.RawValue(typecode_or_type, *args)</p>
+<p>Retorna un objeto <em>ctypes</em> asignado desde la memoria compartida.</p>
+<p><em>typecode_or_type</em> determina el tipo del objeto retornado: es un
+   tipo <em>ctypes</em> o un código de tipo de un carácter del tipo utilizado
+   por el módulo "array". *<em>args</em> se pasa al constructor para el tipo.</p>
+<p>Tenga en cuenta que configurar y obtener el valor es potencialmente
+   no atómico -- use "Value()" en su lugar para asegurarse de que el
+   acceso se sincronice automáticamente mediante un candado.</p>
+<p>Tenga en cuenta que una matriz de "ctypes.c_char" tiene atributos
+   "value" y "raw" que le permiten a uno usarlo para almacenar y
+   recuperar cadenas de caracteres -- consulte la documentación para
+   "ctypes".</p>
+<p>multiprocessing.sharedctypes.Array(typecode_or_type, size_or_initializer, *, lock=True, ctx=None)</p>
+<p>Lo mismo que "RawArray()", excepto que, dependiendo del valor de
+   <em>lock</em>, se puede retornar un contenedor de sincronización seguro
+   para el proceso en lugar de un arreglo de tipos crudos.</p>
+<p>Si <em>lock</em> es "True" (el valor predeterminado), se crea un nuevo
+   objeto candado para sincronizar el acceso al valor. Si <em>lock</em> es un
+   objeto "Lock" o "RLock", se utilizará para sincronizar el acceso al
+   valor. Si <em>lock</em> es "False", entonces el acceso al objeto retornado
+   no estará protegido automáticamente por un candado, por lo que no
+   será necesariamente "seguro para el proceso".</p>
+<p><em>ctx</em> is a context object, or "None" (use the current context). If
+   "None", calling this may set the global start method. See Global
+   start method for more details.</p>
+<p>Note that <em>lock</em> and <em>ctx</em> are keyword-only parameters.</p>
+<p>multiprocessing.sharedctypes.Value(typecode_or_type, *args, lock=True, ctx=None)</p>
+<p>Lo mismo que "RawValue()" excepto que, dependiendo del valor de
+   <em>lock</em>, se puede retornar una envoltura de sincronización segura
+   para el proceso en lugar de un objeto <em>ctypes</em> sin procesar.</p>
+<p>Si <em>lock</em> es "True" (el valor predeterminado), se crea un nuevo
+   objeto candado para sincronizar el acceso al valor. Si <em>lock</em> es un
+   objeto "Lock" o "RLock", se utilizará para sincronizar el acceso al
+   valor. Si <em>lock</em> es "False", entonces el acceso al objeto retornado
+   no estará protegido automáticamente por un candado, por lo que no
+   será necesariamente "seguro para el proceso".</p>
+<p><em>ctx</em> is a context object, or "None" (use the current context). If
+   "None", calling this may set the global start method. See Global
+   start method for more details.</p>
+<p>Note that <em>lock</em> and <em>ctx</em> are keyword-only parameters.</p>
+<p>multiprocessing.sharedctypes.copy(obj)</p>
+<p>Retorna un objeto <em>ctypes</em> asignado de la memoria compartida, que
+   es una copia del objeto <em>ctypes</em> <em>obj</em>.</p>
+<p>multiprocessing.sharedctypes.synchronized(obj, lock=None, ctx=None)</p>
+<p>Retorna un objeto contenedor seguro para un objeto <em>ctypes</em> que usa
+   <em>lock</em> para sincronizar el acceso. Si <em>lock</em> es "None" (el valor
+   predeterminado), se crea automáticamente un objeto
+   "multiprocessing.RLock".</p>
+<p><em>ctx</em> is a context object, or "None" (use the current context). If
+   "None", calling this may set the global start method. See Global
+   start method for more details.</p>
+<p>Un contenedor sincronizado tendrá dos métodos además de los del
+   objeto que envuelve: "get_obj()" retorna el objeto envuelto y
+   "get_lock()" retorna el objeto de bloqueo utilizado para la
+   sincronización.</p>
+<p>Tenga en cuenta que acceder al objeto <em>ctypes</em> a través del
+   contenedor puede ser mucho más lento que acceder al objeto <em>ctypes</em>
+   sin formato.</p>
+<p>Distinto en la versión 3.5: Los objetos sincronizados admiten el
+   protocolo: <em>context manager</em>.</p>
+<p>La siguiente tabla compara la sintaxis para crear objetos <em>ctypes</em>
+compartidos desde la memoria compartida con la sintaxis <em>ctypes</em>
+normal. (En la tabla "MyStruct" hay alguna subclase de
+"ctypes.Structure".)</p>
+<p>+----------------------+----------------------------+-----------------------------+
+| <em>ctypes</em>             | <em>sharedctypes</em> usando      | <em>sharedctypes</em> usando       |
+|                      | <em>type</em>                     | <em>typecode</em>                  |
+|======================|============================|=============================|</p>
+<h2 id="c_double24-rawvaluec_double-24-rawvalued-24">| <em>c_double(2.4)</em>      | <em>RawValue(c_double, 2.4)</em>  | <em>RawValue('d', 2.4)</em>        |<a class="headerlink" href="#c_double24-rawvaluec_double-24-rawvalued-24" title="Permanent link">#</a></h2>
+<h2 id="mystruct4-6-rawvaluemystruct-4-6">| <em>MyStruct(4, 6)</em>     | <em>RawValue(MyStruct, 4, 6)</em> |                             |<a class="headerlink" href="#mystruct4-6-rawvaluemystruct-4-6" title="Permanent link">#</a></h2>
+<h2 id="c_short-7-rawarrayc_short-7-rawarrayh-7">| <em>(c_short * 7)()</em>    | <em>RawArray(c_short, 7)</em>     | <em>RawArray(‘h’, 7)</em>          |<a class="headerlink" href="#c_short-7-rawarrayc_short-7-rawarrayh-7" title="Permanent link">#</a></h2>
+<p>| <em>(c_int * 3)(9, 2,   | </em>RawArray(c_int, (9, 2,    | <em>RawArray('i', (9, 2, 8))</em>  |</p>
+<h2 id="8-8">| 8)<em>                  | 8))</em>                       |                             |<a class="headerlink" href="#8-8" title="Permanent link">#</a></h2>
+<p>A continuación se muestra un ejemplo donde un número de objetos
+<em>ctypes</em> son modificados por un proceso hijo:</p>
+<p>from multiprocessing import Process, Lock
+   from multiprocessing.sharedctypes import Value, Array
+   from ctypes import Structure, c_double</p>
+<p>class Point(Structure):
+       <em>fields</em> = [('x', c_double), ('y', c_double)]</p>
+<p>def modify(n, x, s, A):
+       n.value <strong>= 2
+       x.value </strong>= 2
+       s.value = s.value.upper()
+       for a in A:
+           a.x <strong>= 2
+           a.y </strong>= 2</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       lock = Lock()</p>
+<div class="codehilite"><pre><span></span><code>   n = Value(&#39;i&#39;, 7)
+   x = Value(c_double, 1.0/3.0, lock=False)
+   s = Array(&#39;c&#39;, b&#39;hello world&#39;, lock=lock)
+   A = Array(Point, [(1.875,-6.25), (-5.75,2.0), (2.375,9.5)], lock=lock)
+
+   p = Process(target=modify, args=(n, x, s, A))
+   p.start()
+   p.join()
+
+   print(n.value)
+   print(x.value)
+   print(s.value)
+   print([(a.x, a.y) for a in A])
+</code></pre></div>
+
+<p>Los resultados impresos son</p>
+<p>49
+   0.1111111111111111
+   HELLO WORLD
+   [(3.515625, 39.0625), (33.0625, 4.0), (5.640625, 90.25)]</p>
+<h3 id="administradores-managers">Administradores (<em>Managers</em>)<a class="headerlink" href="#administradores-managers" title="Permanent link">#</a></h3>
+<p>Los administradores (<em>managers</em>) proporcionan una forma de crear datos
+que se pueden compartir entre diferentes procesos, incluido el
+intercambio en una red entre procesos que se ejecutan en diferentes
+máquinas. Un objeto administrador controla un proceso de servidor que
+gestiona <em>shared objects</em> (<em>objetos compartidos</em>). Otros procesos
+pueden acceder a los objetos compartidos mediante el uso de servidores
+proxy.</p>
+<p>multiprocessing.Manager()</p>
+<p>Retorna un objeto iniciado "SyncManager" que se puede usar para
+   compartir objetos entre procesos. El objeto administrador retornado
+   corresponde a un proceso hijo generado y tiene métodos que crearán
+   objetos compartidos y retornarán los proxies correspondientes.</p>
+<p>Los procesos del administrador se cerrarán tan pronto como se
+recolecte la basura o salga su proceso padre. Las clases de
+administrador se definen en el módulo "multiprocessing.managers":</p>
+<p>class multiprocessing.managers.BaseManager(address=None, authkey=None, serializer='pickle', ctx=None, *, shutdown_timeout=1.0)</p>
+<p>Crear un objeto <em>BaseManager</em>.</p>
+<p>Una vez creado, debe llamar a "start()" o
+   "get_server().serve_forever()" para asegurarse de que el objeto de
+   administrador se refiera a un proceso de administrador iniciado.</p>
+<p><em>address</em> es la dirección en la que el proceso del administrador
+   escucha las nuevas conexiones. Si <em>address</em> es "None", se elige una
+   arbitrariamente.</p>
+<p><em>authkey</em> es la clave de autenticación que se utilizará para
+   verificar la validez de las conexiones entrantes al proceso del
+   servidor. Si <em>authkey</em> es "None", entonces se usa
+   "current_process().authkey". De lo contrario, se usa <em>authkey</em> y
+   debe ser una cadena de <em>bytes</em>.</p>
+<p><em>serializer</em> debe ser "'pickle'" (usar serialización "pickle") o
+   "'xmlrpclib'" (usar serialización "xmlrpc.client").</p>
+<p><em>ctx</em> is a context object, or "None" (use the current context). If
+   "None", calling this may set the global start method. See Global
+   start method for more details.</p>
+<p><em>shutdown_timeout</em> es un tiempo de espera en segundos que se
+   utiliza para esperar hasta que el proceso utilizado por el
+   administrador se complete en el método "shutdown()". Si se agota el
+   tiempo de apagado, el proceso finaliza. Si la finalización del
+   proceso también supera el tiempo de espera, el proceso se cancela.</p>
+<p>Distinto en la versión 3.11: Se agregó el parámetro
+   <em>shutdown_timeout</em>.</p>
+<p>start([initializer[, initargs]])</p>
+<div class="codehilite"><pre><span></span><code>  Se inicia un subproceso para iniciar el administrador. Si
+  *initializer* no es &quot;None&quot;, entonces el subproceso llamará
+  &quot;initializer(*initargs)&quot; cuando se inicie.
+</code></pre></div>
+
+<p>get_server()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna un objeto &quot;Server&quot; que representa el servidor real bajo
+  el control del Administrador. El objeto &quot;Server&quot; admite el
+  método &quot;serve_forever()&quot;:
+
+     &gt;&gt;&gt; from multiprocessing.managers import BaseManager
+     &gt;&gt;&gt; manager = BaseManager(address=(&#39;&#39;, 50000), authkey=b&#39;abc&#39;)
+     &gt;&gt;&gt; server = manager.get_server()
+     &gt;&gt;&gt; server.serve_forever()
+
+  &quot;Server&quot; tiene un atributo adicional &quot;address&quot;.
+</code></pre></div>
+
+<p>connect()</p>
+<div class="codehilite"><pre><span></span><code>  Conecta un objeto de administrador (*manager*) local a un
+  proceso de administrador remoto:
+
+     &gt;&gt;&gt; from multiprocessing.managers import BaseManager
+     &gt;&gt;&gt; m = BaseManager(address=(&#39;127.0.0.1&#39;, 50000), authkey=b&#39;abc&#39;)
+     &gt;&gt;&gt; m.connect()
+</code></pre></div>
+
+<p>shutdown()</p>
+<div class="codehilite"><pre><span></span><code>  Detiene el proceso utilizado por el gerente (*manager*). Esto
+  solo está disponible si &quot;start()&quot; se ha utilizado para iniciar
+  el proceso del servidor.
+
+  Esto se puede llamar múltiples veces.
+</code></pre></div>
+
+<p>register(typeid[, callable[, proxytype[, exposed[, method_to_typeid[, create_method]]]]])</p>
+<div class="codehilite"><pre><span></span><code>  Un método de clase que puede usarse para registrar un tipo o
+  invocarse con la clase de administrador (*manager*).
+
+  *typeid* es un &quot;identificador de tipo&quot; que se utiliza para
+  identificar un tipo particular de objeto compartido. Esto debe
+  ser una cadena de caracteres.
+
+  *callable* es un invocable utilizado para crear objetos para
+  este identificador de tipo. Si una instancia de administrador se
+  conectará al servidor utilizando el método &quot;connect()&quot;, o si el
+  argumento *create_method* es &quot;False&quot;, esto se puede dejar como
+  &quot;None&quot;.
+
+  *proxytype* es una subclase de &quot;BaseProxy&quot; que se usa para crear
+  *proxies* para objetos compartidos con este *typeid*. Si &quot;None&quot;,
+  se crea automáticamente una clase proxy.
+
+  Se utiliza *exposed* para especificar una secuencia de nombres
+  de métodos a los que se debe permitir el acceso de los
+  servidores proxy para este tipo de identificación utilizando
+  &quot;BaseProxy._callmethod()&quot;. (Si *exposed* es &quot;None&quot;, entonces
+  &quot;proxytype._exposed_&quot; se usa en su lugar si existe). En el caso
+  de que no se especifique una lista expuesta, todos los &quot;métodos
+  públicos&quot; del objeto compartido serán accesibles . (Aquí un
+  &quot;método público&quot; significa cualquier atributo que tenga un
+  método &quot;__call__()&quot; y cuyo nombre no comience con &quot;&#39;_&#39;&quot;.)
+
+  El *method_to_typeid* es una asignación utilizada para
+  especificar el tipo de retorno de los métodos expuestos que
+  deberían retornar un proxy. Asigna nombres de métodos a cadenas
+  *typeid*. (Si *method_to_typeid* es &quot;None&quot; entonces
+  &quot;proxytype._method_to_typeid&quot; se usa en su lugar si existe). Si
+  el nombre de un método no es una clave de esta asignación o si
+  la asignación es &quot;None&quot; entonces el objeto retornado por el
+  método se copiará por valor.
+
+  *create_method* determina si un método debe crearse con el
+  nombre *typeid* que se puede usar para indicarle al proceso del
+  servidor que cree un nuevo objeto compartido y retornando un
+  proxy para él. Por defecto es &quot;True&quot;.
+</code></pre></div>
+
+<p>"BaseManager" las instancias también tienen una propiedad de solo
+   lectura:</p>
+<p>address</p>
+<div class="codehilite"><pre><span></span><code>  La dirección utilizada por el administrador.
+</code></pre></div>
+
+<p>Distinto en la versión 3.3: Los objetos de administrador admiten el
+   protocolo de gestión de contexto; consulte Tipos gestores de
+   contexto. "<strong>enter</strong>()" inicia el proceso del servidor (si aún no
+   se ha iniciado) y luego retorna el objeto de administrador.
+   "<strong>exit</strong>()" llama "shutdown()".En versiones anteriores
+   "<strong>enter</strong>()" no iniciaba el proceso del servidor del administrador
+   si aún no se había iniciado.</p>
+<p>class multiprocessing.managers.SyncManager</p>
+<p>Una subclase de "BaseManager" que se puede utilizar para la
+   sincronización de procesos. Los objetos de este tipo son retornados
+   por "multiprocessing.Manager()".</p>
+<p>Sus métodos crean y retornan Objetos Proxy (Proxy Objects) para
+   varios tipos de datos de uso común que se sincronizarán entre
+   procesos. Esto incluye notablemente listas compartidas y
+   diccionarios.</p>
+<p>Barrier(parties[, action[, timeout]])</p>
+<div class="codehilite"><pre><span></span><code>  &quot;threading.Barrier&quot; crea un objeto compartido y retorna un proxy
+  para él.
+
+  Added in version 3.3.
+</code></pre></div>
+
+<p>BoundedSemaphore([value])</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;threading.BoundedSemaphore&quot; y retorna
+  un proxy para él.
+</code></pre></div>
+
+<p>Condition([lock])</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;threading.Condition&quot; y retorna un
+  proxy para él.
+
+  Si se proporciona *lock*, debería ser un proxy para un objeto
+  &quot;threading.Lock&quot; o &quot;threading.RLock&quot;.
+
+  Distinto en la versión 3.3: El método &quot;wait_for()&quot; fue a
+  añadido.
+</code></pre></div>
+
+<p>Event()</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;threading.Event&quot; y retorna un proxy
+  para él.
+</code></pre></div>
+
+<p>Lock()</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;threading.Lock&quot; y retorna un proxy
+  para él.
+</code></pre></div>
+
+<p>Namespace()</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;Namespace&quot; y retorna un proxy para
+  él.
+</code></pre></div>
+
+<p>Queue([maxsize])</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;queue.Queue&quot; y retorna un proxy para
+  él.
+</code></pre></div>
+
+<p>RLock()</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;threading.RLock&quot; y retorna un proxy
+  para él.
+</code></pre></div>
+
+<p>Semaphore([value])</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;threading.Semaphore&quot; y retorna un
+  proxy para él.
+</code></pre></div>
+
+<p>Array(typecode, sequence)</p>
+<div class="codehilite"><pre><span></span><code>  Crea un arreglo y retorna un proxy para ello.
+</code></pre></div>
+
+<p>Value(typecode, value)</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto con un atributo de escritura &quot;value&quot; y retorna un
+  proxy para él.
+</code></pre></div>
+
+<p>dict()
+   dict(mapping)
+   dict(sequence)</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;dict&quot; y retorna un proxy para él.
+</code></pre></div>
+
+<p>list()
+   list(sequence)</p>
+<div class="codehilite"><pre><span></span><code>  Crea un objeto compartido &quot;list&quot; y retorna un proxy para él.
+</code></pre></div>
+
+<p>set()
+   set(sequence)
+   set(mapping)</p>
+<div class="codehilite"><pre><span></span><code>  Create a shared &quot;set&quot; object and return a proxy for it.
+
+  Added in version 3.14: &quot;set&quot; support was added.
+</code></pre></div>
+
+<p>Distinto en la versión 3.6: Los objetos compartidos pueden
+   anidarse. Por ejemplo, un objeto contenedor compartido, como una
+   lista compartida, puede contener otros objetos compartidos que
+   serán administrados y sincronizados por "SyncManager".</p>
+<p>class multiprocessing.managers.Namespace</p>
+<p>Un tipo que puede registrarse con "SyncManager".</p>
+<p>Un objeto de espacio de nombres no tiene métodos públicos, pero
+   tiene atributos de escritura. Su representación muestra los valores
+   de sus atributos.</p>
+<p>Sin embargo, cuando se usa un proxy para un objeto de espacio de
+   nombres, un atributo que comience con "'_'" será un atributo del
+   proxy y no un atributo del referente:</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; mp_context = multiprocessing.get_context(&#39;spawn&#39;)
+  &gt;&gt;&gt; manager = mp_context.Manager()
+  &gt;&gt;&gt; Global = manager.Namespace()
+  &gt;&gt;&gt; Global.x = 10
+  &gt;&gt;&gt; Global.y = &#39;hello&#39;
+  &gt;&gt;&gt; Global._z = 12.3    # this is an attribute of the proxy
+  &gt;&gt;&gt; print(Global)
+  Namespace(x=10, y=&#39;hello&#39;)
+</code></pre></div>
+
+<h4 id="administradores-customizables-customized-managers">Administradores customizables (<em>Customized managers</em>)<a class="headerlink" href="#administradores-customizables-customized-managers" title="Permanent link">#</a></h4>
+<p>Para crear su propio administrador, uno crea una subclase de
+"BaseManager" y utiliza el método de clase "register()" para registrar
+nuevos tipos o llamadas con la clase de administrador. Por ejemplo:</p>
+<p>from multiprocessing.managers import BaseManager</p>
+<p>class MathsClass:
+       def add(self, x, y):
+           return x + y
+       def mul(self, x, y):
+           return x * y</p>
+<p>class MyManager(BaseManager):
+       pass</p>
+<p>MyManager.register('Maths', MathsClass)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       with MyManager() as manager:
+           maths = manager.Maths()
+           print(maths.add(4, 3))         # prints 7
+           print(maths.mul(7, 8))         # prints 56</p>
+<h4 id="utilizando-un-administrador-remoto">Utilizando un administrador remoto<a class="headerlink" href="#utilizando-un-administrador-remoto" title="Permanent link">#</a></h4>
+<p>Es posible ejecutar un servidor administrador en una máquina y hacer
+que los clientes lo usen desde otras máquinas (suponiendo que los
+cortafuegos involucrados lo permitan).</p>
+<p>La ejecución de los siguientes comandos crea un servidor para una
+única cola compartida a la que los clientes remotos pueden acceder:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing.managers import BaseManager
+from queue import Queue
+queue = Queue()
+class QueueManager(BaseManager): pass
+QueueManager.register('get_queue', callable=lambda:queue)
+m = QueueManager(address=('', 50000), authkey=b'abracadabra')
+s = m.get_server()
+s.serve_forever()</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Un cliente puede tener accesos al servidor de la siguiente manera:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing.managers import BaseManager
+class QueueManager(BaseManager): pass
+QueueManager.register('get_queue')
+m = QueueManager(address=('foo.bar.org', 50000), authkey=b'abracadabra')
+m.connect()
+queue = m.get_queue()
+queue.put('hello')</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Otro cliente puede también usarlo:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing.managers import BaseManager
+class QueueManager(BaseManager): pass
+QueueManager.register('get_queue')
+m = QueueManager(address=('foo.bar.org', 50000), authkey=b'abracadabra')
+m.connect()
+queue = m.get_queue()
+queue.get()
+   'hello'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Los procesos locales también pueden acceder a esa cola (<em>queue</em>),
+utilizando el código de arriba en el cliente para acceder de forma
+remota:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from multiprocessing import Process, Queue
+from multiprocessing.managers import BaseManager
+class Worker(Process):
+   ...     def <strong>init</strong>(self, q):
+   ...         self.q = q
+   ...         super().<strong>init</strong>()
+   ...     def run(self):
+   ...         self.q.put('local hello')
+   ...
+queue = Queue()
+w = Worker(queue)
+w.start()
+class QueueManager(BaseManager): pass
+   ...
+QueueManager.register('get_queue', callable=lambda: queue)
+m = QueueManager(address=('', 50000), authkey=b'abracadabra')
+s = m.get_server()
+s.serve_forever()</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="objetos-proxy-proxy-objects">Objetos Proxy (<em>Proxy Objects</em>)<a class="headerlink" href="#objetos-proxy-proxy-objects" title="Permanent link">#</a></h3>
+<p>Un proxy es un objeto que <em>se refiere</em> a un objeto compartido que vive
+(presumiblemente) en un proceso diferente. Se dice que el objeto
+compartido es el <em>referente</em> del proxy. Varios objetos proxy pueden
+tener el mismo referente.</p>
+<p>Un objeto proxy tiene métodos que invocan los métodos correspondientes
+de su referente (aunque no todos los métodos del referente estarán
+necesariamente disponibles a través del proxy). De esta manera, un
+proxy se puede usar al igual que su referente:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mp_context = multiprocessing.get_context('spawn')
+manager = mp_context.Manager()
+l = manager.list([i*i for i in range(10)])
+print(l)
+   [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+print(repr(l))
+   <ListProxy object, typeid 'list' at 0x...>
+l[4]
+   16
+l[2:5]
+   [4, 9, 16]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Tenga en cuenta que la aplicación "str()" a un proxy retornará la
+representación del referente, mientras que la aplicación "repr()"
+retornará la representación del proxy.</p>
+<p>Una característica importante de los objetos proxy es que son
+seleccionables para que puedan pasarse entre procesos. Como tal, un
+referente puede contener Objetos Proxy (Proxy Objects). Esto permite
+anidar estas listas administradas, dictados y otros Objetos Proxy
+(Proxy Objects):</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>a = manager.list()
+b = manager.list()
+a.append(b)         # referent of a now contains referent of b
+print(a, b)
+   [<ListProxy object, typeid 'list' at ...>] []
+b.append('hello')
+print(a[0], b)
+   ['hello'] ['hello']</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Del mismo modo, los proxies <em>dict</em> y <em>list</em> pueden estar anidados uno
+dentro del otro:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p 26 3_="3," _c_:="'c':" _z_:="'z':">l_outer = manager.list([ manager.dict() for i in range(2) ])
+d_first_inner = l_outer[0]
+d_first_inner['a'] = 1
+d_first_inner['b'] = 2
+l_outer[1]['c'] = 3
+l_outer[1]['z'] = 26
+print(l_outer[0])
+   {'a': 1, 'b': 2}
+print(l_outer[1])</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Si los objetos estándar (no proxy) "list" or "dict" están contenidos
+en un referente, las modificaciones a esos valores mutables no se
+propagarán a través del administrador porque el proxy no tiene forma
+de saber cuándo los valores contenidos dentro son modificados. Sin
+embargo, almacenar un valor en un proxy de contenedor (que desencadena
+un "<strong>setitem</strong>" en el objeto proxy) se propaga a través del
+administrador y, por lo tanto, para modificar efectivamente dicho
+elemento, uno podría reasignar el valor modificado al proxy de
+contenedor:</p>
+<p># create a list proxy and append a mutable object (a dictionary)
+   lproxy = manager.list()
+   lproxy.append({})
+   # now mutate the dictionary
+   d = lproxy[0]
+   d['a'] = 1
+   d['b'] = 2
+   # at this point, the changes to d are not yet synced, but by
+   # updating the dictionary, the proxy is notified of the change
+   lproxy[0] = d</p>
+<p>Este enfoque es quizás menos conveniente que emplear anidado Objetos
+Proxy (Proxy Objects) para la mayoría de los casos de uso, pero
+también demuestra un nivel de control sobre la sincronización.</p>
+<p>Nota:</p>
+<p>The proxy types in "multiprocessing" do nothing to support
+  comparisons by value.  So, for instance, we have:</p>
+<div class="codehilite"><pre><span></span><code> &gt;&gt;&gt; manager.list([1,2,3]) == [1,2,3]
+ False
+</code></pre></div>
+
+<p>En su lugar, se debe usar una copia del referente al hacer
+  comparaciones.</p>
+<p>class multiprocessing.managers.BaseProxy</p>
+<p>Los objetos proxy son instancias de subclases de "BaseProxy".</p>
+<p>_callmethod(methodname[, args[, kwds]])</p>
+<div class="codehilite"><pre><span></span><code>  Llama y retorna el resultado de un método del referente del
+  proxy.
+
+  Si &quot;proxy&quot; es un proxy cuyo referente es &quot;obj&quot; entonces la
+  expresión
+
+     proxy._callmethod(methodname, args, kwds)
+
+  evaluará la expresión
+
+     getattr(obj, methodname)(*args, **kwds)
+
+  en el proceso del administrador.
+
+  El valor retornado será una copia del resultado de la llamada o
+  un proxy a un nuevo objeto compartido; consulte la documentación
+  del argumento *method_to_typeid* de &quot;BaseManager.register()&quot;.
+
+  Si la llamada genera una excepción, entonces se vuelve a generar
+  &quot;_callmethod()&quot;. Si se genera alguna otra excepción en el
+  proceso del administrador, esto se convierte en una excepción
+  &quot;RemoteError&quot; y se genera mediante  &quot;_callmethod()&quot;.
+
+  Tenga en cuenta en particular que se lanzará una excepción si
+  *methodname* no ha sido *exposed*.
+
+  Un ejemplo de uso de &quot;_callmethod()&quot;:
+
+     &gt;&gt;&gt; l = manager.list(range(10))
+     &gt;&gt;&gt; l._callmethod(&#39;__len__&#39;)
+     10
+     &gt;&gt;&gt; l._callmethod(&#39;__getitem__&#39;, (slice(2, 7),)) # equivalent to l[2:7]
+     [2, 3, 4, 5, 6]
+     &gt;&gt;&gt; l._callmethod(&#39;__getitem__&#39;, (20,))          # equivalent to l[20]
+     Traceback (most recent call last):
+     ...
+     IndexError: list index out of range
+</code></pre></div>
+
+<p>_getvalue()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna una copia del referente.
+
+  Si el referente no se puede deserializar (*unpicklable*), esto
+  lanzará una excepción.
+</code></pre></div>
+
+<p><strong>repr</strong>()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna una representación de un objeto proxy.
+</code></pre></div>
+
+<p><strong>str</strong>()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna una representación del referente.
+</code></pre></div>
+
+<h4 id="limpieza-cleanup">Limpieza (<em>Cleanup</em>)<a class="headerlink" href="#limpieza-cleanup" title="Permanent link">#</a></h4>
+<p>Un objeto proxy utiliza una devolución de llamada (<em>callback</em>) de
+referencia débil (<em>weakref</em>) para que cuando sea recolectado por el
+recolector de basura se da de baja del administrador que posee su
+referente.</p>
+<p>Un objeto compartido se elimina del proceso del administrador cuando
+ya no hay ningún proxy que se refiera a él.</p>
+<h3 id="piscinas-de-procesos-process-pools">Piscinas de procesos (<em>Process Pools</em>)<a class="headerlink" href="#piscinas-de-procesos-process-pools" title="Permanent link">#</a></h3>
+<p>Se puede crear un grupo de procesos que llevarán a cabo las tareas que
+se le presenten con la  "Pool" class.</p>
+<p>class multiprocessing.pool.Pool([processes[, initializer[, initargs[, maxtasksperchild[, context]]]]])</p>
+<p>Un objeto de grupo de procesos que controla un grupo de procesos de
+   trabajo a los que se pueden enviar trabajos. Admite resultados
+   asincrónicos con tiempos de espera y devoluciones de llamada y
+   tiene una implementación de mapa paralelo.</p>
+<p><em>processes</em> is the number of worker processes to use.  If
+   <em>processes</em> is "None" then the number returned by
+   "os.process_cpu_count()" is used.</p>
+<p>Si <em>initializer</em> no es "None", cada proceso de trabajo llamará
+   "initializer(*initargs)" cuando se inicie.</p>
+<p><em>maxtasksperchild</em> es el número de tareas que un proceso de trabajo
+   puede completar antes de salir y ser reemplazado por un proceso de
+   trabajo nuevo, para permitir que se liberen los recursos no
+   utilizados. El valor predeterminado <em>maxtasksperchild</em> es "None",
+   lo que significa que los procesos de trabajo vivirán tanto tiempo
+   como el grupo.</p>
+<p><em>context</em> can be used to specify the context used for starting the
+   worker processes.  Usually a pool is created using the function
+   "multiprocessing.Pool()" or the "Pool()" method of a context
+   object.  In both cases <em>context</em> is set appropriately. If "None",
+   calling this function will have the side effect of setting the
+   current global start method if it has not been set already. See the
+   "get_context()" function.</p>
+<p>Tenga en cuenta que los métodos del objeto de grupo solo deben ser
+   invocados por el proceso que creó el grupo.</p>
+<p>Advertencia:</p>
+<div class="codehilite"><pre><span></span><code> Los objetos &quot;multiprocessing.pool&quot; tienen recursos internos que
+ necesitan ser administrados adecuadamente (como cualquier otro
+ recurso) utilizando el grupo como administrador de contexto o
+ llamando a &quot;close()&quot; y &quot;terminate()&quot; manualmente. De lo
+ contrario, el proceso puede demorarse en la finalización.Tenga en
+ cuenta que **no es correcto** confiar en el recolector de basura
+ para destruir el grupo ya que *CPython* no asegura que se llamará
+ al finalizador del grupo (consulte &quot;object.__del__()&quot; para
+ obtener más información).
+</code></pre></div>
+
+<p>Distinto en la versión 3.2: Added the <em>maxtasksperchild</em> parameter.</p>
+<p>Distinto en la versión 3.4: Added the <em>context</em> parameter.</p>
+<p>Distinto en la versión 3.13: <em>processes</em> uses
+   "os.process_cpu_count()" by default, instead of "os.cpu_count()".</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Worker processes within a &quot;Pool&quot; typically live for the complete
+ duration of the Pool&#39;s work queue. A frequent pattern found in
+ other systems (such as Apache, mod_wsgi, etc) to free resources
+ held by workers is to allow a worker within a pool to complete
+ only a set amount of work before exiting, being cleaned up and a
+ new process spawned to replace the old one. The
+ *maxtasksperchild* argument to the &quot;Pool&quot; exposes this ability to
+ the end user.
+</code></pre></div>
+
+<p>apply(func[, args[, kwds]])</p>
+<div class="codehilite"><pre><span></span><code>  Llama a *func* con argumentos *args* y argumentos de palabras
+  clave *kwds*. Se bloquea hasta que el resultado esté listo.
+  Dados estos bloques, &quot;apply_async()&quot; es más adecuado para
+  realizar trabajos en paralelo. Además, *func* solo se ejecuta en
+  uno de los trabajadores de piscina.
+</code></pre></div>
+
+<p>apply_async(func[, args[, kwds[, callback[, error_callback]]]])</p>
+<div class="codehilite"><pre><span></span><code>  Una variante del método &quot;apply()&quot; que retorna un objeto
+  &quot;AsyncResult&quot;.
+
+  Si se especifica *callback*, debería ser un invocable que acepte
+  un único argumento. Cuando el resultado está listo, se le aplica
+  *callback*, a menos que la llamada falle, en cuyo caso se aplica
+  *error_callback*.
+
+  Si se especifica *error_callback*, debería ser un invocable que
+  acepte un único argumento. Si la función de destino falla, se
+  llama a *error_callback* con la instancia de excepción.
+
+  Las devoluciones de llamada deben completarse inmediatamente ya
+  que de lo contrario el hilo que maneja los resultados se
+  bloqueará.
+</code></pre></div>
+
+<p>map(func, iterable[, chunksize])</p>
+<div class="codehilite"><pre><span></span><code>  Un equivalente paralelo de la función incorporada &quot;map()&quot;
+  (aunque solo admite un argumento *iterable*, para varios
+  iterables consulte &quot;starmap()&quot;). Bloquea hasta que el resultado
+  esté listo.
+
+  Este método corta el iterable en varios trozos que envía al
+  grupo de procesos como tareas separadas. El tamaño (aproximado)
+  de estos fragmentos se puede especificar estableciendo
+  *chunksize* en un entero positivo.
+
+  Tenga en cuenta que puede causar un alto uso de memoria para
+  iterables muy largos. Considere usar &quot;imap()&quot; o
+  &quot;imap_unordered()&quot; con la opción explícita *chunksize* para una
+  mejor eficiencia.
+</code></pre></div>
+
+<p>map_async(func, iterable[, chunksize[, callback[, error_callback]]])</p>
+<div class="codehilite"><pre><span></span><code>  Una variante del método &quot;map()&quot; que retorna un objeto
+  &quot;AsyncResult&quot;.
+
+  Si se especifica *callback*, debería ser un invocable que acepte
+  un único argumento. Cuando el resultado está listo, se le aplica
+  *callback*, a menos que la llamada falle, en cuyo caso se aplica
+  *error_callback*.
+
+  Si se especifica *error_callback*, debería ser un invocable que
+  acepte un único argumento. Si la función de destino falla, se
+  llama a *error_callback* con la instancia de excepción.
+
+  Las devoluciones de llamada deben completarse inmediatamente ya
+  que de lo contrario el hilo que maneja los resultados se
+  bloqueará.
+</code></pre></div>
+
+<p>imap(func, iterable[, chunksize])</p>
+<div class="codehilite"><pre><span></span><code>  Una versión más perezosa (*lazier*) de &quot;map()&quot;.
+
+  El argumento *chunksize* es el mismo que el utilizado por el
+  método &quot;map()&quot;. Para iterables muy largos, usar un valor grande
+  para *chunksize* puede hacer que el trabajo se complete **much**
+  (**mucho**) más rápido que usar el valor predeterminado de &quot;1&quot;.
+
+  Además, si *chunksize* es &quot;1&quot;, el método &quot;next()&quot; del iterador
+  retornado por el método &quot;imap()&quot; tiene un parámetro opcional
+  *timeout* :&quot;next (timeout)&quot; lanzará
+  &quot;multiprocessing.TimeoutError&quot; si el resultado no puede
+  retornarse dentro de *timeout* segundos.
+</code></pre></div>
+
+<p>imap_unordered(func, iterable[, chunksize])</p>
+<div class="codehilite"><pre><span></span><code>  Lo mismo que &quot;imap()&quot;, excepto que el orden de los resultados
+  del iterador retornado debe considerarse arbitrario. (Solo
+  cuando hay un solo proceso de trabajo se garantiza que el orden
+  sea &quot;correcto&quot;).
+</code></pre></div>
+
+<p>starmap(func, iterable[, chunksize])</p>
+<div class="codehilite"><pre><span></span><code>  Como &quot;map()&quot;, excepto que se espera que los elementos de
+  *iterable* sean iterables que se desempaquetan como argumentos.
+
+  Por lo tanto, un *iterable* de &quot;[(1,2), (3, 4)]&quot; da como
+  resultado &quot;[func(1,2), func(3,4)]&quot;.
+
+  Added in version 3.3.
+</code></pre></div>
+
+<p>starmap_async(func, iterable[, chunksize[, callback[, error_callback]]])</p>
+<div class="codehilite"><pre><span></span><code>  Una combinación de &quot;starmap()&quot; y &quot;map_async()&quot; que itera sobre
+  *iterable* de iterables y llama a *func* con los iterables
+  desempaquetados. Como resultado se retorna un objeto.
+
+  Added in version 3.3.
+</code></pre></div>
+
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Impide que se envíen más tareas a la piscina (*pool*). Una vez
+  que se hayan completado todas las tareas, se cerrarán los
+  procesos de trabajo.
+</code></pre></div>
+
+<p>terminate()</p>
+<div class="codehilite"><pre><span></span><code>  Detiene los procesos de trabajo inmediatamente sin completar el
+  trabajo pendiente. Cuando el objeto del grupo es basura
+  recolectada &quot;terminate()&quot; se llamará inmediatamente.
+</code></pre></div>
+
+<p>join()</p>
+<div class="codehilite"><pre><span></span><code>  Espera a que salgan los procesos de trabajo. Se debe llamar
+  &quot;close()&quot; o &quot;terminate()&quot; antes de usar &quot;join()&quot;.
+</code></pre></div>
+
+<p>Distinto en la versión 3.3: Los objetos de piscina (<em>pool</em>) ahora
+   admiten el protocolo de administración de contexto; consulte Tipos
+   gestores de contexto. "<strong> enter</strong>()" retorna el objeto de grupo, y
+   "<strong> exit</strong>()" llama "terminate()".</p>
+<p>class multiprocessing.pool.AsyncResult</p>
+<p>La clase del resultado retornado por "Pool.apply_async()" y
+   "Pool.map_async()".</p>
+<p>get([timeout])</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el resultado cuando llegue. Si *timeout* no es &quot;None&quot; y
+  el resultado no llega dentro de *timeout* segundos, entonces se
+  lanza &quot;multiprocessing.TimeoutError&quot;. Si la llamada remota
+  generó una excepción, esa excepción se volverá a plantear
+  mediante &quot;get()&quot;.
+</code></pre></div>
+
+<p>wait([timeout])</p>
+<div class="codehilite"><pre><span></span><code>  Espera hasta que el resultado esté disponible o hasta que pase
+  *timeout* segundos.
+</code></pre></div>
+
+<p>ready()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna si la llamada se ha completado.
+</code></pre></div>
+
+<p>successful()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna si la llamada se completó sin generar una excepción.
+  Lanzará &quot;ValueError&quot; si el resultado no está listo.
+
+  Distinto en la versión 3.7: Si el resultado no está listo
+  &quot;ValueError&quot; aparece en lugar de &quot;AssertionError&quot;.
+</code></pre></div>
+
+<p>El siguiente ejemplo demuestra el uso de una piscina(<em>pool</em>):</p>
+<p>from multiprocessing import Pool
+   import time</p>
+<p>def f(x):
+       return x*x</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       with Pool(processes=4) as pool:         # start 4 worker processes
+           result = pool.apply_async(f, (10,)) # evaluate "f(10)" asynchronously in a single process
+           print(result.get(timeout=1))        # prints "100" unless your computer is <em>very</em> slow</p>
+<div class="codehilite"><pre><span></span><code>       print(pool.map(f, range(10)))       # prints &quot;[0, 1, 4,..., 81]&quot;
+
+       it = pool.imap(f, range(10))
+       print(next(it))                     # prints &quot;0&quot;
+       print(next(it))                     # prints &quot;1&quot;
+       print(it.next(timeout=1))           # prints &quot;4&quot; unless your computer is *very* slow
+
+       result = pool.apply_async(time.sleep, (10,))
+       print(result.get(timeout=1))        # raises multiprocessing.TimeoutError
+</code></pre></div>
+
+<h3 id="oyentes-y-clientes-listeners-and-clients">Oyentes y clientes (<em>Listeners and Clients</em>)<a class="headerlink" href="#oyentes-y-clientes-listeners-and-clients" title="Permanent link">#</a></h3>
+<p>Por lo general, el paso de mensajes entre procesos se realiza mediante
+colas o mediante objetos "Connection" retornados por "Pipe()".</p>
+<p>However, the "multiprocessing.connection" module allows some extra
+flexibility.  It basically gives a high level message oriented API for
+dealing with sockets or Windows named pipes.  It also has support for
+<em>digest authentication</em> using the "hmac" module, and for polling
+multiple connections at the same time.</p>
+<p>multiprocessing.connection.deliver_challenge(connection, authkey)</p>
+<p>Envía un mensaje generado aleatoriamente al otro extremo de la
+   conexión y espera una respuesta.</p>
+<p>Si la respuesta coincide con el resumen del mensaje utilizando
+   <em>authkey</em> como clave, se envía un mensaje de bienvenida al otro
+   extremo de la conexión. De lo contrario se lanza
+   "AuthenticationError".</p>
+<p>multiprocessing.connection.answer_challenge(connection, authkey)</p>
+<p>Recibe un mensaje, calcula el resumen del mensaje usando <em>authkey</em>
+   como la clave y luego envía el resumen de vuelta.</p>
+<p>Si no se recibe un mensaje de bienvenida, se lanza
+   "AuthenticationError".</p>
+<p>multiprocessing.connection.Client(address[, family[, authkey]])</p>
+<p>Se intenta configurar una conexión con el oyente que utiliza la
+   dirección <em>address</em>, retornando "Connection".</p>
+<p>El tipo de conexión está determinado por el argumento <em>family</em>,
+   pero esto generalmente se puede omitir ya que generalmente se puede
+   inferir del formato de <em>address</em>. (Consulte Formatos de dirección
+   (Address formats))</p>
+<p>If <em>authkey</em> is given and not "None", it should be a byte string
+   and will be used as the secret key for an HMAC-based authentication
+   challenge. No authentication is done if <em>authkey</em> is "None".
+   "AuthenticationError" is raised if authentication fails. See Llaves
+   de autentificación.</p>
+<p>class multiprocessing.connection.Listener([address[, family[, backlog[, authkey]]]])</p>
+<p>Un contenedor para un <em>socket</em> vinculado o una tubería (<em>pipe</em>) con
+   nombre de Windows que está 'escuchando' las conexiones.</p>
+<p><em>address</em> es la dirección que utilizará el <em>socket</em> vinculado o la
+   conocida tubería (<em>pipe</em>) con nombre del objeto de escucha.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Si se usa una dirección de &#39;0.0.0.0&#39; , la dirección no será un
+ punto final conectable en Windows. Si necesita un punto final
+ conectable, debe usar &#39;127.0.0.1&#39;.
+</code></pre></div>
+
+<p><em>family</em> es el tipo de socket (o tubería con nombre) a utilizar.
+   Esta puede ser una de las cadenas de caracteres "'AF_INET'" (para
+   un socket TCP), "' AF_UNIX'" (para un socket de dominio Unix) o
+   "'AF_PIPE'" (para una tubería con nombre de Windows) . De estos,
+   solo el primero está garantizado para estar disponible. Si <em>family</em>
+   es "None" , <em>family</em> se deduce del formato de <em>address</em>. Si
+   <em>address</em> también es "None" , se elige un valor predeterminado.
+   Este valor predeterminado es <em>family</em> con la opción más rápida
+   disponible. Consulte Formatos de dirección (Address formats). Tenga
+   en cuenta que si <em>family</em> es "'AF_UNIX'" y la dirección es "None",
+   el <em>socket</em> se creará en un directorio temporal privado usando
+   "tempfile.mkstemp()".</p>
+<p>Si el objeto de escucha utiliza un <em>socket</em>, entonces <em>backlog</em> (1
+   por defecto) se pasa al método "listen()" del <em>socket</em> una vez que
+   se ha vinculado.</p>
+<p>If <em>authkey</em> is given and not "None", it should be a byte string
+   and will be used as the secret key for an HMAC-based authentication
+   challenge. No authentication is done if <em>authkey</em> is "None".
+   "AuthenticationError" is raised if authentication fails. See Llaves
+   de autentificación.</p>
+<p>accept()</p>
+<div class="codehilite"><pre><span></span><code>  Acepta una conexión en el *socket* vinculado o canalización con
+  nombre del objeto de escucha y retorne un objeto &quot;Connection&quot;.
+  Si se intenta la autenticación y falla, entonces se lanza una
+  &quot;AuthenticationError&quot;.
+</code></pre></div>
+
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Cierra el socket vinculado o la tubería con nombre del objeto de
+  escucha. Esto se llama automáticamente cuando el oyente es
+  recolectado por el recolector de basura. Sin embargo, es
+  aconsejable llamarlo explícitamente.
+</code></pre></div>
+
+<p>Los objetos de escucha tienen las siguientes propiedades de solo
+   lectura:</p>
+<p>address</p>
+<div class="codehilite"><pre><span></span><code>  La dirección que está utilizando el objeto *Listener*.
+</code></pre></div>
+
+<p>last_accepted</p>
+<div class="codehilite"><pre><span></span><code>  La dirección de donde vino la última conexión aceptada. Si esto
+  no está disponible, entonces es &quot;None&quot;.
+</code></pre></div>
+
+<p>Distinto en la versión 3.3: Los objetos de escucha ahora admiten el
+   protocolo de gestión de contexto -- consulte Tipos gestores de
+   contexto. El objeto <em>lISTENER</em> retorna "<strong>enter</strong>()", y
+   "<strong>exit</strong>()" llama a "close()".</p>
+<p>multiprocessing.connection.wait(object_list, timeout=None)</p>
+<p>Espera hasta que un objeto en <em>object_list</em> esté listo. Retorna la
+   lista de esos objetos en <em>object_list</em> que están listos. Si
+   <em>timeout</em> es flotante, la llamada se bloquea durante como máximo
+   tantos segundos. Si <em>timeout</em> es "`None", se bloqueará por un
+   período ilimitado. Un tiempo de espera negativo es equivalente a un
+   tiempo de espera cero.</p>
+<p>For both POSIX and Windows, an object can appear in <em>object_list</em>
+   if it is</p>
+<ul>
+<li>
+<p>un objeto legible de "Connection";</p>
+</li>
+<li>
+<p>un objeto conectado y legible de "socket.socket"; o</p>
+</li>
+<li>
+<p>el atributo "sentinel" de un objeto "Process".</p>
+</li>
+</ul>
+<p>Un objeto de conexión o <em>socket</em> está listo cuando hay datos
+   disponibles para leer, o el otro extremo se ha cerrado.</p>
+<p><strong>POSIX</strong>: "wait(object_list, timeout)" almost equivalent
+   "select.select(object_list, [], [], timeout)".  The difference is
+   that, if "select.select()" is interrupted by a signal, it can raise
+   "OSError" with an error number of "EINTR", whereas "wait()" will
+   not.</p>
+<p><strong>Windows</strong>: An item in <em>object_list</em> must either be an integer
+   handle which is waitable (according to the definition used by the
+   documentation of the Win32 function "WaitForMultipleObjects()") or
+   it can be an object with a "fileno()" method which returns a socket
+   handle or pipe handle.  (Note that pipe handles and socket handles
+   are <strong>not</strong> waitable handles.)</p>
+<p>Added in version 3.3.</p>
+<p><strong>Ejemplos</strong></p>
+<p>El siguiente código de servidor crea un escucha que utiliza "'secret
+password'" como clave de autenticación. Luego espera una conexión y
+envía algunos datos al cliente:</p>
+<p>from multiprocessing.connection import Listener
+   from array import array</p>
+<p>address = ('localhost', 6000)     # family is deduced to be 'AF_INET'</p>
+<p>with Listener(address, authkey=b'secret password') as listener:
+       with listener.accept() as conn:
+           print('connection accepted from', listener.last_accepted)</p>
+<div class="codehilite"><pre><span></span><code>       conn.send([2.25, None, &#39;junk&#39;, float])
+
+       conn.send_bytes(b&#39;hello&#39;)
+
+       conn.send_bytes(array(&#39;i&#39;, [42, 1729]))
+</code></pre></div>
+
+<p>El siguiente código se conecta al servidor y recibe algunos datos del
+servidor:</p>
+<p>from multiprocessing.connection import Client
+   from array import array</p>
+<p>address = ('localhost', 6000)</p>
+<p>with Client(address, authkey=b'secret password') as conn:
+       print(conn.recv())                  # =&gt; [2.25, None, 'junk', float]</p>
+<div class="codehilite"><pre><span></span><code>   print(conn.recv_bytes())            # =&gt; &#39;hello&#39;
+
+   arr = array(&#39;i&#39;, [0, 0, 0, 0, 0])
+   print(conn.recv_bytes_into(arr))    # =&gt; 8
+   print(arr)                          # =&gt; array(&#39;i&#39;, [42, 1729, 0, 0, 0])
+</code></pre></div>
+
+<p>El siguiente código utiliza "wait()" para esperar mensajes de
+múltiples procesos a la vez:</p>
+<p>from multiprocessing import Process, Pipe, current_process
+   from multiprocessing.connection import wait</p>
+<p>def foo(w):
+       for i in range(10):
+           w.send((i, current_process().name))
+       w.close()</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       readers = []</p>
+<div class="codehilite"><pre><span></span><code>   for i in range(4):
+       r, w = Pipe(duplex=False)
+       readers.append(r)
+       p = Process(target=foo, args=(w,))
+       p.start()
+       # We close the writable end of the pipe now to be sure that
+       # p is the only process which owns a handle for it.  This
+       # ensures that when p closes its handle for the writable end,
+       # wait() will promptly report the readable end as being ready.
+       w.close()
+
+   while readers:
+       for r in wait(readers):
+           try:
+               msg = r.recv()
+           except EOFError:
+               readers.remove(r)
+           else:
+               print(msg)
+</code></pre></div>
+
+<h4 id="formatos-de-direccion-address-formats">Formatos de dirección (<em>Address formats</em>)<a class="headerlink" href="#formatos-de-direccion-address-formats" title="Permanent link">#</a></h4>
+<ul>
+<li>
+<p>Una dirección "'AF_INET'" es una tupla de la forma "(hostname,
+  port)" donde <em>hostname</em> es una cadena de caracteres y <em>port</em> es un
+  número entero.</p>
+</li>
+<li>
+<p>Una dirección "'AF_UNIX'" es una cadena que representa un nombre de
+  archivo en el sistema de archivos.</p>
+</li>
+<li>
+<p>Una dirección "'AF_PIPE'" es una cadena con el formato
+  "r'\.\pipe*PipeName<em>'". Para usar "Client()" para conectarse a una
+  tubería con nombre en una computadora remota llamada </em>ServerName<em>,
+  se debe usar una dirección de la forma
+  "r'\</em>ServerName<em>\pipe*PipeName</em>'" en cambio.</p>
+</li>
+</ul>
+<p>Tenga en cuenta que cualquier cadena que comience con dos barras
+inclinadas invertidas se asume por defecto como una dirección
+"'AF_PIPE'" en lugar de una dirección "'AF_UNIX'".</p>
+<h3 id="llaves-de-autentificacion">Llaves de autentificación<a class="headerlink" href="#llaves-de-autentificacion" title="Permanent link">#</a></h3>
+<p>Cuando uno usa "Connection.recv", los datos recibidos se desbloquean
+automáticamente. Desafortunadamente, la eliminación de datos de una
+fuente no confiable es un riesgo de seguridad. Por lo tanto "Listener"
+y "Client()" usan el módulo "hmac" para proporcionar autenticación de
+resumen.</p>
+<p>Una clave de autenticación es una cadena de bytes que se puede
+considerar como una contraseña: una vez que se establece una conexión,
+ambos extremos exigirán pruebas de que el otro conoce la clave de
+autenticación. (Demostrar que ambos extremos están usando la misma
+clave <strong>no</strong> implica enviar la clave a través de la conexión).</p>
+<p>Si se solicita la autenticación pero no se especifica una clave de
+autenticación, se utiliza el valor de retorno de
+"current_process().authkey" (consulte "Process" ). Este valor será
+heredado automáticamente por cualquier objeto "Process" que crea el
+proceso actual. Esto significa que (por defecto) todos los procesos de
+un programa multiproceso compartirán una única clave de autenticación
+que se puede usar al configurar conexiones entre ellos.</p>
+<p>Las claves de autenticación adecuadas también se pueden generar
+utilizando "os.urandom()".</p>
+<p>This authentication protects "Listener" and "Client()" connections,
+which are reachable by address.  It is not applied to the anonymous
+pipes created by "Pipe()" or used internally by "Queue".
+"multiprocessing" treats all local processes running as the same user
+as trusted; on most operating systems such processes can access each
+other's pipe file descriptors regardless.  Applications that require
+isolation between processes of the same user must arrange it at the
+operating-system level -- for example, by running workers under a
+different user account or in a sandbox.</p>
+<h3 id="logging"><em>Logging</em><a class="headerlink" href="#logging" title="Permanent link">#</a></h3>
+<p>Existe cierto soporte para el registro. Sin embargo, tenga en cuenta
+que el paquete "logging" no utiliza candados compartidos de proceso,
+por lo que es posible (dependiendo del tipo de controlador) que los
+mensajes de diferentes procesos se mezclen.</p>
+<p>multiprocessing.get_logger()</p>
+<p>Returns the logger used by "multiprocessing".  If necessary, a new
+   one will be created.</p>
+<p>When first created the logger has level "logging.NOTSET" and no
+   default handler. Messages sent to this logger will not by default
+   propagate to the root logger.</p>
+<p>Tenga en cuenta que en Windows los procesos hijos solo heredarán el
+   nivel del registrador del proceso parental -- no se heredará
+   ninguna otra personalización del registrador.</p>
+<p>multiprocessing.log_to_stderr(level=None)</p>
+<p>Esta función realiza una llamada a "get_logger()" pero además de
+   retornar el registrador creado por get_logger, agrega un
+   controlador que envía la salida a "sys.stderr" usando el formato
+   "'[%(levelname)s/%(processName)s] %(message)s'". Puede modificar
+   "levelname" del registrador pasando un argumento "level".</p>
+<p>A continuación se muestra una sesión de ejemplo con el registro
+activado:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>import multiprocessing, logging
+logger = multiprocessing.log_to_stderr()
+logger.setLevel(logging.INFO)
+logger.warning('doomed')
+   [WARNING/MainProcess] doomed
+m = multiprocessing.Manager()
+   [INFO/SyncManager-...] child process calling self.run()
+   [INFO/SyncManager-...] created temp directory /.../pymp-...
+   [INFO/SyncManager-...] manager serving at '/.../listener-...'
+del m
+   [INFO/MainProcess] sending shutdown message to manager
+   [INFO/SyncManager-...] manager exiting with exitcode 0</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Para obtener una tabla completa de niveles de registro, consulte el
+módulo "logging".</p>
+<h3 id="the-multiprocessingdummy-module">The "multiprocessing.dummy" module<a class="headerlink" href="#the-multiprocessingdummy-module" title="Permanent link">#</a></h3>
+<p>"multiprocessing.dummy" replicates the API of "multiprocessing" but is
+no more than a wrapper around the "threading" module.</p>
+<p>In particular, the "Pool" function provided by "multiprocessing.dummy"
+returns an instance of "ThreadPool", which is a subclass of "Pool"
+that supports all the same method calls but uses a pool of worker
+threads rather than worker processes.</p>
+<p>class multiprocessing.pool.ThreadPool([processes[, initializer[, initargs]]])</p>
+<p>Un objeto de <em>pool</em> de hebras que controla un <em>pool</em> de hebras
+   trabajadoras a las cuales se pueden enviar trabajos. La interfaz de
+   las instancias de "ThreadPool" son totalmente compatibles con las
+   instancias de "Pool", y sus recursos también deben ser debidamente
+   administrador, ya sea usando el <em>pool</em> como un gestor de contexto,
+   o llamando a "close()" y "terminate()" manualmente.</p>
+<p><em>processes</em> is the number of worker threads to use.  If <em>processes</em>
+   is "None" then the number returned by "os.process_cpu_count()" is
+   used.</p>
+<p>Si <em>initializer</em> no es "None", cada proceso de trabajo llamará
+   "initializer(*initargs)" cuando se inicie.</p>
+<p>A diferencia de "Pool", <em>maxtasksperchild</em> and <em>context</em> no se
+   pueden entregar.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Un &quot;ThreadPool&quot; comparte la misma interfaz que &quot;Pool&quot;, la cual
+ está diseñada alrededor de un *pool* de procesos, y precede la
+ introducción del módulo &quot;concurrent.futures&quot;. Como tal, hereda
+ algunas operaciones que no tienen sentido para un *pool* basado
+ en hebras, y tiene su propio tipo para representar el estado de
+ trabajos asíncronos, &quot;AsyncResult&quot;, el cual no es entendido por
+ otras librerías.Los usuarios deberían por lo general preferir
+ usar &quot;concurrent.futures.ThreadPoolExecutor&quot;, el cual tiene una
+ interfaz más simple que fue diseñada alrededor de hebras desde un
+ principio, y que retorna instancias de
+ &quot;concurrent.futures.Future&quot;, las que son compatibles con muchas
+ más librerías, incluyendo &quot;asyncio&quot;.
+</code></pre></div>
+
+<h2 id="pautas-de-programacion">Pautas de programación<a class="headerlink" href="#pautas-de-programacion" title="Permanent link">#</a></h2>
+<p>There are certain guidelines and idioms which should be adhered to
+when using "multiprocessing".</p>
+<h3 id="todos-los-metodos-de-inicio">Todos los métodos de inicio<a class="headerlink" href="#todos-los-metodos-de-inicio" title="Permanent link">#</a></h3>
+<p>Lo siguiente se aplica a todos los métodos de inicio.</p>
+<p>Evita estado compartido</p>
+<p>En la medida de lo posible, se debe tratar de evitar el
+   desplazamiento de grandes cantidades de datos entre procesos.</p>
+<p>Probablemente sea mejor seguir usando colas (<em>queues</em>) o tuberías
+   (<em>pipes</em>) para la comunicación entre procesos en lugar de usar las
+   primitivas de sincronización de nivel inferior.</p>
+<p>Serialización (<em>picklability</em>)</p>
+<p>Asegúrese que todos los argumentos de los métodos de <em>proxies</em> son
+   serializables (<em>pickable</em>)</p>
+<p>Seguridad de hilos de <em>proxies</em></p>
+<p>No usa un objeto proxy de más de un hilo a menos que lo proteja con
+   un candado (<em>lock</em>).</p>
+<p>(Nunca hay un problema con diferentes procesos que usan el <em>mismo</em>
+   proxy.)</p>
+<p>Uniéndose a procesos zombies</p>
+<p>On POSIX when a process finishes but has not been joined it becomes
+   a zombie. There should never be very many because each time a new
+   process starts (or "active_children()" is called) all completed
+   processes which have not yet been joined will be joined.  Also
+   calling a finished process's "Process.is_alive" will join the
+   process.  Even so it is probably good practice to explicitly join
+   all the processes that you start.</p>
+<p>Mejor heredar que serializar/deserializar (<em>pickle/unpickle</em>)</p>
+<p>When using the <em>spawn</em> or <em>forkserver</em> start methods many types
+   from "multiprocessing" need to be picklable so that child processes
+   can use them.  However, one should generally avoid sending shared
+   objects to other processes using pipes or queues. Instead you
+   should arrange the program so that a process which needs access to
+   a shared resource created elsewhere can inherit it from an ancestor
+   process.</p>
+<p>Evita procesos de finalización</p>
+<p>El uso del método "Process.terminate" para detener un proceso puede
+   causar que los recursos compartidos (como candados, semáforos,
+   tuberías  y colas) que el proceso utiliza actualmente se rompan o
+   no disponible para otros procesos.</p>
+<p>Por lo tanto, probablemente sea mejor considerar usar
+   "Process.terminate" en procesos que nunca usan recursos
+   compartidos.</p>
+<p>Unirse a procesos que usan colas</p>
+<p>Tenga en cuenta que un proceso que ha puesto elementos en una cola
+   esperará antes de finalizar hasta que todos los elementos
+   almacenados en búfer sean alimentados por el hilo "alimentador" a
+   la tubería subyacente. (El proceso secundario puede llamar al
+   método "Queue.cancel_join_thread" de la cola para evitar este
+   comportamiento).</p>
+<p>Esto significa que siempre que use una cola debe asegurarse de que
+   todos los elementos que se hayan puesto en la cola se eliminarán
+   antes de unirse al proceso. De lo contrario, no puede estar seguro
+   de que los procesos que han puesto elementos en la cola
+   finalizarán. Recuerde también que los procesos no demoníacos se
+   unirán automáticamente.</p>
+<p>Un ejemplo que de bloqueo mutuo (<em>deadlock</em>) es el siguiente</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, Queue
+
+  def f(q):
+      q.put(&#39;X&#39; * 1000000)
+
+  if __name__ == &#39;__main__&#39;:
+      queue = Queue()
+      p = Process(target=f, args=(queue,))
+      p.start()
+      p.join()                    # this deadlocks
+      obj = queue.get()
+</code></pre></div>
+
+<p>Una solución aquí sería intercambiar las dos últimas líneas (o
+   simplemente eliminar la línea "p.join()").</p>
+<p>Se pasan recursos explícitamente a procesos hijos</p>
+<p>On POSIX using the <em>fork</em> start method, a child process can make
+   use of a shared resource created in a parent process using a global
+   resource.  However, it is better to pass the object as an argument
+   to the constructor for the child process.</p>
+<p>Además de hacer que el código (potencialmente) sea compatible con
+   Windows y los otros métodos de inicio, esto también garantiza que
+   mientras el proceso secundario siga vivo, el objeto no se
+   recolectará en el proceso primario. Esto podría ser importante si
+   se libera algún recurso cuando el objeto es basura recolectada en
+   el proceso padre.</p>
+<p>Entonces por ejemplo</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, Lock
+
+  def f():
+      ... do something using &quot;lock&quot; ...
+
+  if __name__ == &#39;__main__&#39;:
+      lock = Lock()
+      for i in range(10):
+          Process(target=f).start()
+</code></pre></div>
+
+<p>debería ser reescrito como</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, Lock
+
+  def f(l):
+      ... do something using &quot;l&quot; ...
+
+  if __name__ == &#39;__main__&#39;:
+      lock = Lock()
+      for i in range(10):
+          Process(target=f, args=(lock,)).start()
+</code></pre></div>
+
+<p>Tenga cuidado de reemplazar "sys.stdin" con un <em>"file like object"</em></p>
+<p>"multiprocessing" originally unconditionally called:</p>
+<div class="codehilite"><pre><span></span><code>  os.close(sys.stdin.fileno())
+</code></pre></div>
+
+<p>en el método "multiprocessing.Process._bootstrap()" --- Esto dio
+   lugar a problemas con los procesos en proceso. Esto ha sido
+   cambiado a:</p>
+<div class="codehilite"><pre><span></span><code>  sys.stdin.close()
+  sys.stdin = open(os.open(os.devnull, os.O_RDONLY), closefd=False)
+</code></pre></div>
+
+<p>Which solves the fundamental issue of processes colliding with each
+   other resulting in a bad file descriptor error, but introduces a
+   potential danger to applications which replace "sys.stdin()" with a
+   "file-like object" with output buffering.  This danger is that if
+   multiple processes call "close()" on this file-like object, it
+   could result in the same data being flushed to the object multiple
+   times, resulting in corruption.</p>
+<p>Si escribe un objeto similar a un archivo e implementa su propio
+   almacenamiento en caché, puede hacer que sea seguro para la
+   bifurcación (<em>fork-safe</em>) almacenando el pid cada vez que se agrega
+   al caché y descartando el caché cuando cambia el pid. Por ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>  @property
+  def cache(self):
+      pid = os.getpid()
+      if pid != self._pid:
+          self._pid = pid
+          self._cache = []
+      return self._cache
+</code></pre></div>
+
+<p>Para más información, consulte bpo-5155, bpo-5313 y bpo-5331</p>
+<h3 id="los-metodos-de-inicio-spawn-y-forkserver">Los métodos de inicio <em>spawn</em> y <em>forkserver</em><a class="headerlink" href="#los-metodos-de-inicio-spawn-y-forkserver" title="Permanent link">#</a></h3>
+<p>There are a few extra restrictions which don't apply to the <em>fork</em>
+start method.</p>
+<p>Más serialización (<em>pickability</em>)</p>
+<p>Ensure that all arguments to "Process" are picklable.  Also, if you
+   subclass "Process.<strong>init</strong>", you must make sure that instances will
+   be picklable when the "Process.start" method is called.</p>
+<p>Variables globales</p>
+<p>Tenga en cuenta que si el código que se ejecuta en un proceso
+   secundario intenta acceder a una variable global, entonces el valor
+   que ve (si lo hay) puede no ser el mismo que el valor en el proceso
+   primario en el momento en que fue llamado "Process.start".</p>
+<p>Sin embargo, las variables globales que son solo constantes de
+   nivel de módulo no causan problemas.</p>
+<p>Importando de manera segura el módulo principal</p>
+<p>Make sure that the main module can be safely imported by a new
+   Python interpreter without causing unintended side effects (such as
+   starting a new process).</p>
+<p>Por ejemplo, usando el método de inicio <em>spawn</em> o <em>forkserver</em>
+   ejecutando este módulo fallaría produciendo "RuntimeError":</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process
+
+  def foo():
+      print(&#39;hello&#39;)
+
+  p = Process(target=foo)
+  p.start()
+</code></pre></div>
+
+<p>En su lugar, se debe proteger el "punto de entrada" (<em>"entry
+   point"</em>) del programa utilizando como sigue "if <strong>name</strong> ==
+   '<strong>main</strong>':"</p>
+<div class="codehilite"><pre><span></span><code>  from multiprocessing import Process, freeze_support, set_start_method
+
+  def foo():
+      print(&#39;hello&#39;)
+
+  if __name__ == &#39;__main__&#39;:
+      freeze_support()
+      set_start_method(&#39;spawn&#39;)
+      p = Process(target=foo)
+      p.start()
+</code></pre></div>
+
+<p>(La línea "freeze_support()" puede omitirse si el programa se
+   ejecuta normalmente en lugar de congelarse).</p>
+<p>Esto permite que el intérprete de Python recién generado importe de
+   forma segura el módulo y luego ejecute la función del módulo
+   "foo()".</p>
+<p>Se aplican restricciones similares si se crea un grupo o
+   administrador en el módulo principal.</p>
+<h2 id="ejemplos">Ejemplos<a class="headerlink" href="#ejemplos" title="Permanent link">#</a></h2>
+<p>Demostración de cómo crear y usar gerentes y proxies personalizados:</p>
+<p>from multiprocessing import freeze_support
+   from multiprocessing.managers import BaseManager, BaseProxy
+   import operator</p>
+<p>##</p>
+<p>class Foo:
+       def f(self):
+           print('you called Foo.f()')
+       def g(self):
+           print('you called Foo.g()')
+       def _h(self):
+           print('you called Foo._h()')</p>
+<p># A simple generator function
+   def baz():
+       for i in range(10):
+           yield i*i</p>
+<p># Proxy type for generator objects
+   class GeneratorProxy(BaseProxy):
+       <em>exposed</em> = ['<strong>next</strong>']
+       def <strong>iter</strong>(self):
+           return self
+       def <strong>next</strong>(self):
+           return self._callmethod('<strong>next</strong>')</p>
+<p># Function to return the operator module
+   def get_operator_module():
+       return operator</p>
+<p>##</p>
+<p>class MyManager(BaseManager):
+       pass</p>
+<p># register the Foo class; make <code>f()</code> and <code>g()</code> accessible via proxy
+   MyManager.register('Foo1', Foo)</p>
+<p># register the Foo class; make <code>g()</code> and <code>_h()</code> accessible via proxy
+   MyManager.register('Foo2', Foo, exposed=('g', '_h'))</p>
+<p># register the generator function baz; use <code>GeneratorProxy</code> to make proxies
+   MyManager.register('baz', baz, proxytype=GeneratorProxy)</p>
+<p># register get_operator_module(); make public functions accessible via proxy
+   MyManager.register('operator', get_operator_module)</p>
+<p>##</p>
+<p>def test():
+       manager = MyManager()
+       manager.start()</p>
+<div class="codehilite"><pre><span></span><code>   print(&#39;-&#39; * 20)
+
+   f1 = manager.Foo1()
+   f1.f()
+   f1.g()
+   assert not hasattr(f1, &#39;_h&#39;)
+   assert sorted(f1._exposed_) == sorted([&#39;f&#39;, &#39;g&#39;])
+
+   print(&#39;-&#39; * 20)
+
+   f2 = manager.Foo2()
+   f2.g()
+   f2._h()
+   assert not hasattr(f2, &#39;f&#39;)
+   assert sorted(f2._exposed_) == sorted([&#39;g&#39;, &#39;_h&#39;])
+
+   print(&#39;-&#39; * 20)
+
+   it = manager.baz()
+   for i in it:
+       print(&#39;&lt;%d&gt;&#39; % i, end=&#39; &#39;)
+   print()
+
+   print(&#39;-&#39; * 20)
+
+   op = manager.operator()
+   print(&#39;op.add(23, 45) =&#39;, op.add(23, 45))
+   print(&#39;op.pow(2, 94) =&#39;, op.pow(2, 94))
+   print(&#39;op._exposed_ =&#39;, op._exposed_)
+</code></pre></div>
+
+<p>##</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       freeze_support()
+       test()</p>
+<p>Usando "Pool":</p>
+<p>import multiprocessing
+   import time
+   import random
+   import sys</p>
+<p>#
+   # Functions used by test code
+   #</p>
+<p>def calculate(func, args):
+       result = func(*args)
+       return '%s says that %s%s = %s' % (
+           multiprocessing.current_process().name,
+           func.<strong>name</strong>, args, result
+           )</p>
+<p>def calculatestar(args):
+       return calculate(*args)</p>
+<p>def mul(a, b):
+       time.sleep(0.5 * random.random())
+       return a * b</p>
+<p>def plus(a, b):
+       time.sleep(0.5 * random.random())
+       return a + b</p>
+<p>def f(x):
+       return 1.0 / (x - 5.0)</p>
+<p>def pow3(x):
+       return x ** 3</p>
+<p>def noop(x):
+       pass</p>
+<p>#
+   # Test code
+   #</p>
+<p>def test():
+       PROCESSES = 4
+       print('Creating pool with %d processes\n' % PROCESSES)</p>
+<div class="codehilite"><pre><span></span><code>   with multiprocessing.Pool(PROCESSES) as pool:
+       #
+       # Tests
+       #
+
+       TASKS = [(mul, (i, 7)) for i in range(10)] + \
+               [(plus, (i, 8)) for i in range(10)]
+
+       results = [pool.apply_async(calculate, t) for t in TASKS]
+       imap_it = pool.imap(calculatestar, TASKS)
+       imap_unordered_it = pool.imap_unordered(calculatestar, TASKS)
+
+       print(&#39;Ordered results using pool.apply_async():&#39;)
+       for r in results:
+           print(&#39;\t&#39;, r.get())
+       print()
+
+       print(&#39;Ordered results using pool.imap():&#39;)
+       for x in imap_it:
+           print(&#39;\t&#39;, x)
+       print()
+
+       print(&#39;Unordered results using pool.imap_unordered():&#39;)
+       for x in imap_unordered_it:
+           print(&#39;\t&#39;, x)
+       print()
+
+       print(&#39;Ordered results using pool.map() --- will block till complete:&#39;)
+       for x in pool.map(calculatestar, TASKS):
+           print(&#39;\t&#39;, x)
+       print()
+
+       #
+       # Test error handling
+       #
+
+       print(&#39;Testing error handling:&#39;)
+
+       try:
+           print(pool.apply(f, (5,)))
+       except ZeroDivisionError:
+           print(&#39;\tGot ZeroDivisionError as expected from pool.apply()&#39;)
+       else:
+           raise AssertionError(&#39;expected ZeroDivisionError&#39;)
+
+       try:
+           print(pool.map(f, list(range(10))))
+       except ZeroDivisionError:
+           print(&#39;\tGot ZeroDivisionError as expected from pool.map()&#39;)
+       else:
+           raise AssertionError(&#39;expected ZeroDivisionError&#39;)
+
+       try:
+           print(list(pool.imap(f, list(range(10)))))
+       except ZeroDivisionError:
+           print(&#39;\tGot ZeroDivisionError as expected from list(pool.imap())&#39;)
+       else:
+           raise AssertionError(&#39;expected ZeroDivisionError&#39;)
+
+       it = pool.imap(f, list(range(10)))
+       for i in range(10):
+           try:
+               x = next(it)
+           except ZeroDivisionError:
+               if i == 5:
+                   pass
+           except StopIteration:
+               break
+           else:
+               if i == 5:
+                   raise AssertionError(&#39;expected ZeroDivisionError&#39;)
+
+       assert i == 9
+       print(&#39;\tGot ZeroDivisionError as expected from IMapIterator.next()&#39;)
+       print()
+
+       #
+       # Testing timeouts
+       #
+
+       print(&#39;Testing ApplyResult.get() with timeout:&#39;, end=&#39; &#39;)
+       res = pool.apply_async(calculate, TASKS[0])
+       while 1:
+           sys.stdout.flush()
+           try:
+               sys.stdout.write(&#39;\n\t%s&#39; % res.get(0.02))
+               break
+           except multiprocessing.TimeoutError:
+               sys.stdout.write(&#39;.&#39;)
+       print()
+       print()
+
+       print(&#39;Testing IMapIterator.next() with timeout:&#39;, end=&#39; &#39;)
+       it = pool.imap(calculatestar, TASKS)
+       while 1:
+           sys.stdout.flush()
+           try:
+               sys.stdout.write(&#39;\n\t%s&#39; % it.next(0.02))
+           except StopIteration:
+               break
+           except multiprocessing.TimeoutError:
+               sys.stdout.write(&#39;.&#39;)
+       print()
+       print()
+</code></pre></div>
+
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       multiprocessing.freeze_support()
+       test()</p>
+<p>Un ejemplo que muestra cómo usar las colas para alimentar tareas a una
+colección de procesos de trabajo y recopilar los resultados:</p>
+<p>import time
+   import random</p>
+<p>from multiprocessing import Process, Queue, current_process, freeze_support</p>
+<p>#
+   # Function run by worker processes
+   #</p>
+<p>def worker(input, output):
+       for func, args in iter(input.get, 'STOP'):
+           result = calculate(func, args)
+           output.put(result)</p>
+<p>#
+   # Function used to calculate result
+   #</p>
+<p>def calculate(func, args):
+       result = func(*args)
+       return '%s says that %s%s = %s' % \
+           (current_process().name, func.<strong>name</strong>, args, result)</p>
+<p>#
+   # Functions referenced by tasks
+   #</p>
+<p>def mul(a, b):
+       time.sleep(0.5*random.random())
+       return a * b</p>
+<p>def plus(a, b):
+       time.sleep(0.5*random.random())
+       return a + b</p>
+<p>#
+   #
+   #</p>
+<p>def test():
+       NUMBER_OF_PROCESSES = 4
+       TASKS1 = [(mul, (i, 7)) for i in range(20)]
+       TASKS2 = [(plus, (i, 8)) for i in range(10)]</p>
+<div class="codehilite"><pre><span></span><code>   # Create queues
+   task_queue = Queue()
+   done_queue = Queue()
+
+   # Submit tasks
+   for task in TASKS1:
+       task_queue.put(task)
+
+   # Start worker processes
+   for i in range(NUMBER_OF_PROCESSES):
+       Process(target=worker, args=(task_queue, done_queue)).start()
+
+   # Get and print results
+   print(&#39;Unordered results:&#39;)
+   for i in range(len(TASKS1)):
+       print(&#39;\t&#39;, done_queue.get())
+
+   # Add more tasks using `put()`
+   for task in TASKS2:
+       task_queue.put(task)
+
+   # Get and print some more results
+   for i in range(len(TASKS2)):
+       print(&#39;\t&#39;, done_queue.get())
+
+   # Tell child processes to stop
+   for i in range(NUMBER_OF_PROCESSES):
+       task_queue.put(&#39;STOP&#39;)
+</code></pre></div>
+
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       freeze_support()
+       test()</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/multiprocessing.shared_memory.html">
+          <span class="muted">Anterior</span>&#34;multiprocessing.shared_memory&#34; --- Shared memory for direct access across processes
+        </a>
+        <a class="pager-next" href="../library/netdata.html">
+          <span class="muted">Siguiente</span>Manejo de datos de internet
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thread states and the global interpreter lock · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              C Api
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../c-api/coro.html"
+>Objetos corrutina</a>
+              </li>
+              <li>
+                <a href="../c-api/curses.html"
+>Curses C API</a>
+              </li>
+              <li>
+                <a href="../c-api/datetime.html"
+>Objetos *DateTime*</a>
+              </li>
+              <li>
+                <a href="../c-api/descriptor.html"
+>Objetos descriptores</a>
+              </li>
+              <li>
+                <a href="../c-api/dict.html"
+>Objetos diccionario</a>
+              </li>
+              <li>
+                <a href="../c-api/exceptions.html"
+>Manejo de excepciones</a>
+              </li>
+              <li>
+                <a href="../c-api/extension-modules.html"
+>Defining extension modules</a>
+              </li>
+              <li>
+                <a href="../c-api/file.html"
+>File objects</a>
+              </li>
+              <li>
+                <a href="../c-api/float.html"
+>Floating-Point Objects</a>
+              </li>
+              <li>
+                <a href="../c-api/frame.html"
+>Frame objects</a>
+              </li>
+              <li>
+                <a href="../c-api/function.html"
+>Objetos función</a>
+              </li>
+              <li>
+                <a href="../c-api/gcsupport.html"
+>Apoyo a la recolección de basura cíclica</a>
+              </li>
+              <li>
+                <a href="../c-api/gen.html"
+>Objetos generadores</a>
+              </li>
+              <li>
+                <a href="../c-api/hash.html"
+>PyHash API</a>
+              </li>
+              <li>
+                <a href="../c-api/import.html"
+>Importando módulos</a>
+              </li>
+              <li>
+                <a href="../c-api/index.html"
+>Python/C API reference manual</a>
+              </li>
+              <li>
+                <a href="../c-api/init.html"
+>Initialization, finalization, and threads</a>
+              </li>
+              <li>
+                <a href="../c-api/init_config.html"
+>Configuración de inicialización de Python</a>
+              </li>
+              <li>
+                <a href="../c-api/interp-lifecycle.html"
+>Interpreter initialization and finalization</a>
+              </li>
+              <li>
+                <a href="../c-api/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../c-api/iter.html"
+>Protocolo iterador</a>
+              </li>
+              <li>
+                <a href="../c-api/iterator.html"
+>Objetos iteradores</a>
+              </li>
+              <li>
+                <a href="../c-api/lifecycle.html"
+>Object Life Cycle</a>
+              </li>
+              <li>
+                <a href="../c-api/list.html"
+>Objetos lista</a>
+              </li>
+              <li>
+                <a href="../c-api/long.html"
+>Objetos enteros</a>
+              </li>
+              <li>
+                <a href="../c-api/mapping.html"
+>Protocolo de mapeo</a>
+              </li>
+              <li>
+                <a href="../c-api/marshal.html"
+>Soporte de empaquetado (*marshalling*) de datos</a>
+              </li>
+              <li>
+                <a href="../c-api/memory.html"
+>Gestión de la memoria</a>
+              </li>
+              <li>
+                <a href="../c-api/memoryview.html"
+>Objetos de vista de memoria (*MemoryView*)</a>
+              </li>
+              <li>
+                <a href="../c-api/method.html"
+>Objetos de método de instancia</a>
+              </li>
+              <li>
+                <a href="../c-api/module.html"
+>Objetos módulo</a>
+              </li>
+              <li>
+                <a href="../c-api/monitoring.html"
+>Monitoring C API</a>
+              </li>
+              <li>
+                <a href="../c-api/none.html"
+>El objeto &#34;None&#34;</a>
+              </li>
+              <li>
+                <a href="../c-api/number.html"
+>Protocolo de números</a>
+              </li>
+              <li>
+                <a href="../c-api/object.html"
+>Protocolo de objeto</a>
+              </li>
+              <li>
+                <a href="../c-api/objimpl.html"
+>Soporte de implementación de objetos</a>
+              </li>
+              <li>
+                <a href="../c-api/perfmaps.html"
+>Soporte para Mapeo Perf</a>
+              </li>
+              <li>
+                <a href="../c-api/picklebuffer.html"
+>Pickle buffer objects</a>
+              </li>
+              <li>
+                <a href="../c-api/profiling.html"
+>Profiling and tracing</a>
+              </li>
+              <li>
+                <a href="../c-api/refcounting.html"
+>Conteo de referencias</a>
+              </li>
+              <li>
+                <a href="../c-api/reflection.html"
+>Reflexión</a>
+              </li>
+              <li>
+                <a href="../c-api/sequence.html"
+>Protocolo de secuencia</a>
+              </li>
+              <li>
+                <a href="../c-api/set.html"
+>Objetos conjunto</a>
+              </li>
+              <li>
+                <a href="../c-api/slice.html"
+>Objetos rebanada (*slice*)</a>
+              </li>
+              <li>
+                <a href="../c-api/stable.html"
+>Estabilidad de la API en C</a>
+              </li>
+              <li>
+                <a href="../c-api/structures.html"
+>Estructuras de objetos comunes</a>
+              </li>
+              <li>
+                <a href="../c-api/subinterpreters.html"
+>Multiple interpreters in a Python process</a>
+              </li>
+              <li>
+                <a href="../c-api/synchronization.html"
+>Synchronization primitives</a>
+              </li>
+              <li>
+                <a href="../c-api/sys.html"
+>Utilidades del sistema operativo</a>
+              </li>
+              <li>
+                <a href="../c-api/threads.html"
+class="is-current" aria-current="page">Thread states and the global interpreter lock</a>
+              </li>
+              <li>
+                <a href="../c-api/time.html"
+>PyTime C API</a>
+              </li>
+              <li>
+                <a href="../c-api/tls.html"
+>Thread-local storage support</a>
+              </li>
+              <li>
+                <a href="../c-api/tuple.html"
+>Objetos tupla</a>
+              </li>
+              <li>
+                <a href="../c-api/type.html"
+>Objetos tipo</a>
+              </li>
+              <li>
+                <a href="../c-api/typehints.html"
+>Objetos para indicaciones de tipado</a>
+              </li>
+              <li>
+                <a href="../c-api/typeobj.html"
+>Type Object Structures</a>
+              </li>
+              <li>
+                <a href="../c-api/unicode.html"
+>Objetos y códecs unicode</a>
+              </li>
+              <li>
+                <a href="../c-api/utilities.html"
+>Utilidades</a>
+              </li>
+              <li>
+                <a href="../c-api/veryhigh.html"
+>La capa de muy alto nivel</a>
+              </li>
+              <li>
+                <a href="../c-api/weakref.html"
+>Objetos de referencia débil</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../library/__future__.html">Library</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Thread states and the global interpreter lock</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#detaching-the-thread-state-from-extension-code">Detaching the thread state from extension code#</a></li>
+              <li class="lvl-3"><a href="#apis">APIs#</a></li>
+              <li class="lvl-2"><a href="#non-python-created-threads">Non-Python created threads#</a></li>
+              <li class="lvl-2"><a href="#legacy-api">Legacy API#</a></li>
+              <li class="lvl-2"><a href="#cautions-about-fork">Cautions about fork()#</a></li>
+              <li class="lvl-2"><a href="#high-level-apis">High-level APIs#</a></li>
+              <li class="lvl-2"><a href="#gil-state-apis">GIL-state APIs#</a></li>
+              <li class="lvl-2"><a href="#low-level-apis">Low-level APIs#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="thread-states-and-the-global-interpreter-lock">Thread states and the global interpreter lock<a class="headerlink" href="#thread-states-and-the-global-interpreter-lock" title="Permanent link">#</a></h1>
+<p>Unless on a <em>free-threaded build</em> of <em>CPython</em>, the Python interpreter
+is generally not thread-safe.  In order to support multi-threaded
+Python programs, there's a global lock, called the <em>global interpreter
+lock</em> or <em>GIL</em>, that must be held by a thread before accessing Python
+objects. Without the lock, even the simplest operations could cause
+problems in a multi-threaded program: for example, when two threads
+simultaneously increment the reference count of the same object, the
+reference count could end up being incremented only once instead of
+twice.</p>
+<p>As such, only a thread that holds the GIL may operate on Python
+objects or invoke Python's C API.</p>
+<p>In order to emulate concurrency, the interpreter regularly tries to
+switch threads between bytecode instructions (see
+"sys.setswitchinterval()"). This is why locks are also necessary for
+thread-safety in pure-Python code.</p>
+<p>Additionally, the global interpreter lock is released around blocking
+I/O operations, such as reading or writing to a file. From the C API,
+this is done by detaching the thread state.</p>
+<p>The Python interpreter keeps some thread-local information inside a
+data structure called "PyThreadState", known as a <em>thread state</em>. Each
+thread has a thread-local pointer to a "PyThreadState"; a thread state
+referenced by this pointer is considered to be <em>attached</em>.</p>
+<p>A thread can only have one <em>attached thread state</em> at a time. An
+attached thread state is typically analogous with holding the GIL,
+except on free-threaded builds.  On builds with the GIL enabled,
+attaching a thread state will block until the GIL can be acquired.
+However, even on builds with the GIL disabled, it is still required to
+have an attached thread state, as the interpreter needs to keep track
+of which threads may access Python objects.</p>
+<p>Nota:</p>
+<p>Even on the free-threaded build, attaching a thread state may block,
+  as the GIL can be re-enabled or threads might be temporarily
+  suspended (such as during a garbage collection).</p>
+<p>Generally, there will always be an attached thread state when using
+Python's C API, including during embedding and when implementing
+methods, so it's uncommon to need to set up a thread state on your
+own. Only in some specific cases, such as in a
+"Py_BEGIN_ALLOW_THREADS" block or in a fresh thread, will the thread
+not have an attached thread state. If uncertain, check if
+"PyThreadState_GetUnchecked()" returns "NULL".</p>
+<p>If it turns out that you do need to create a thread state, call
+"PyThreadState_New()" followed by "PyThreadState_Swap()", or use the
+dangerous "PyGILState_Ensure()" function.</p>
+<h2 id="detaching-the-thread-state-from-extension-code">Detaching the thread state from extension code<a class="headerlink" href="#detaching-the-thread-state-from-extension-code" title="Permanent link">#</a></h2>
+<p>Most extension code manipulating the <em>thread state</em> has the following
+simple structure:</p>
+<p>Save the thread state in a local variable.
+   ... Do some blocking I/O operation ...
+   Restore the thread state from the local variable.</p>
+<p>This is so common that a pair of macros exists to simplify it:</p>
+<p>Py_BEGIN_ALLOW_THREADS
+   ... Do some blocking I/O operation ...
+   Py_END_ALLOW_THREADS</p>
+<p>The "Py_BEGIN_ALLOW_THREADS" macro opens a new block and declares a
+hidden local variable; the "Py_END_ALLOW_THREADS" macro closes the
+block.</p>
+<p>The block above expands to the following code:</p>
+<p>PyThreadState *_save;</p>
+<p>_save = PyEval_SaveThread();
+   ... Do some blocking I/O operation ...
+   PyEval_RestoreThread(_save);</p>
+<p>Here is how these functions work:</p>
+<p>The attached thread state implies that the GIL is held for the
+interpreter. To detach it, "PyEval_SaveThread()" is called and the
+result is stored in a local variable.</p>
+<p>By detaching the thread state, the GIL is released, which allows other
+threads to attach to the interpreter and execute while the current
+thread performs blocking I/O. When the I/O operation is complete, the
+old thread state is reattached by calling "PyEval_RestoreThread()",
+which will wait until the GIL can be acquired.</p>
+<p>Nota:</p>
+<p>Performing blocking I/O is the most common use case for detaching
+  the thread state, but it is also useful to call it over long-running
+  native code that doesn't need access to Python objects or Python's C
+  API. For example, the standard "zlib" and "hashlib" modules detach
+  the <em>thread state</em> when compressing or hashing data.</p>
+<p>On a <em>free-threaded build</em>, the <em>GIL</em> is usually out of the question,
+but <strong>detaching the thread state is still required</strong>, because the
+interpreter periodically needs to block all threads to get a
+consistent view of Python objects without the risk of race conditions.
+For example, CPython currently suspends all threads for a short period
+of time while running the garbage collector.</p>
+<p>Advertencia:</p>
+<p>Detaching the thread state can lead to unexpected behavior during
+  interpreter finalization. See Cautions regarding runtime
+  finalization for more details.</p>
+<h3 id="apis">APIs<a class="headerlink" href="#apis" title="Permanent link">#</a></h3>
+<p>The following macros are normally used without a trailing semicolon;
+look for example usage in the Python source distribution.</p>
+<p>Nota:</p>
+<p>These macros are still necessary on the <em>free-threaded build</em> to
+  prevent deadlocks.</p>
+<p>Py_BEGIN_ALLOW_THREADS
+    * Part of the Stable ABI.*</p>
+<p>This macro expands to "{ PyThreadState *_save; _save =
+   PyEval_SaveThread();". Note that it contains an opening brace; it
+   must be matched with a following "Py_END_ALLOW_THREADS" macro.  See
+   above for further discussion of this macro.</p>
+<p>Py_END_ALLOW_THREADS
+    * Part of the Stable ABI.*</p>
+<p>This macro expands to "PyEval_RestoreThread(_save); }". Note that
+   it contains a closing brace; it must be matched with an earlier
+   "Py_BEGIN_ALLOW_THREADS" macro.  See above for further discussion
+   of this macro.</p>
+<p>Py_BLOCK_THREADS
+    * Part of the Stable ABI.*</p>
+<p>This macro expands to "PyEval_RestoreThread(_save);": it is
+   equivalent to "Py_END_ALLOW_THREADS" without the closing brace.</p>
+<p>Py_UNBLOCK_THREADS
+    * Part of the Stable ABI.*</p>
+<p>This macro expands to "_save = PyEval_SaveThread();": it is
+   equivalent to "Py_BEGIN_ALLOW_THREADS" without the opening brace
+   and variable declaration.</p>
+<h2 id="non-python-created-threads">Non-Python created threads<a class="headerlink" href="#non-python-created-threads" title="Permanent link">#</a></h2>
+<p>When threads are created using the dedicated Python APIs (such as the
+"threading" module), a thread state is automatically associated with
+them, However, when a thread is created from native code (for example,
+by a third-party library with its own thread management), it doesn't
+hold an attached thread state.</p>
+<p>If you need to call Python code from these threads (often this will be
+part of a callback API provided by the aforementioned third-party
+library), you must first register these threads with the interpreter
+by creating a new thread state and attaching it.</p>
+<p>The most robust way to do this is through "PyThreadState_New()"
+followed by "PyThreadState_Swap()".</p>
+<p>Nota:</p>
+<p>"PyThreadState_New" requires an argument pointing to the desired
+  interpreter; such a pointer can be acquired via a call to
+  "PyInterpreterState_Get()" from the code where the thread was
+  created.</p>
+<p>For example:</p>
+<p>/<em> The return value of PyInterpreterState_Get() from the
+      function that created this thread. </em>/
+   PyInterpreterState *interp = thread_data-&gt;interp;</p>
+<p>/<em> Create a new thread state for the interpreter. It does not start out
+      attached. </em>/
+   PyThreadState *tstate = PyThreadState_New(interp);</p>
+<p>/<em> Attach the thread state, which will acquire the GIL. </em>/
+   PyThreadState_Swap(tstate);</p>
+<p>/<em> Perform Python actions here. </em>/
+   result = CallSomeFunction();
+   /<em> evaluate result or handle exception </em>/</p>
+<p>/<em> Destroy the thread state. No Python API allowed beyond this point. </em>/
+   PyThreadState_Clear(tstate);
+   PyThreadState_DeleteCurrent();</p>
+<p>Advertencia:</p>
+<p>If the interpreter finalized before "PyThreadState_Swap" was called,
+  then "interp" will be a dangling pointer!</p>
+<h2 id="legacy-api">Legacy API<a class="headerlink" href="#legacy-api" title="Permanent link">#</a></h2>
+<p>Another common pattern to call Python code from a non-Python thread is
+to use "PyGILState_Ensure()" followed by a call to
+"PyGILState_Release()".</p>
+<p>These functions do not work well when multiple interpreters exist in
+the Python process. If no Python interpreter has ever been used in the
+current thread (which is common for threads created outside Python),
+"PyGILState_Ensure" will create and attach a thread state for the
+"main" interpreter (the first interpreter in the Python process).</p>
+<p>Additionally, these functions have thread-safety issues during
+interpreter finalization. Using "PyGILState_Ensure" during
+finalization will likely crash the process.</p>
+<p>Usage of these functions look like such:</p>
+<p>PyGILState_STATE gstate;
+   gstate = PyGILState_Ensure();</p>
+<p>/<em> Perform Python actions here. </em>/
+   result = CallSomeFunction();
+   /<em> evaluate result or handle exception </em>/</p>
+<p>/<em> Release the thread. No Python API allowed beyond this point. </em>/
+   PyGILState_Release(gstate);</p>
+<h2 id="cautions-about-fork">Cautions about fork()<a class="headerlink" href="#cautions-about-fork" title="Permanent link">#</a></h2>
+<p>Another important thing to note about threads is their behaviour in
+the face of the C "fork()" call. On most systems with "fork()", after
+a process forks only the thread that issued the fork will exist.  This
+has a concrete impact both on how locks must be handled and on all
+stored state in CPython's runtime.</p>
+<p>The fact that only the "current" thread remains means any locks held
+by other threads will never be released. Python solves this for
+"os.fork()" by acquiring the locks it uses internally before the fork,
+and releasing them afterwards. In addition, it resets any Lock objects
+in the child. When extending or embedding Python, there is no way to
+inform Python of additional (non-Python) locks that need to be
+acquired before or reset after a fork. OS facilities such as
+"pthread_atfork()" would need to be used to accomplish the same thing.
+Additionally, when extending or embedding Python, calling "fork()"
+directly rather than through "os.fork()" (and returning to or calling
+into Python) may result in a deadlock by one of Python's internal
+locks being held by a thread that is defunct after the fork.
+"PyOS_AfterFork_Child()" tries to reset the necessary locks, but is
+not always able to.</p>
+<p>The fact that all other threads go away also means that CPython's
+runtime state there must be cleaned up properly, which "os.fork()"
+does.  This means finalizing all other "PyThreadState" objects
+belonging to the current interpreter and all other
+"PyInterpreterState" objects.  Due to this and the special nature of
+the "main" interpreter, "fork()" should only be called in that
+interpreter's "main" thread, where the CPython global runtime was
+originally initialized. The only exception is if "exec()" will be
+called immediately after.</p>
+<h2 id="high-level-apis">High-level APIs<a class="headerlink" href="#high-level-apis" title="Permanent link">#</a></h2>
+<p>These are the most commonly used types and functions when writing
+multi-threaded C extensions.</p>
+<p>type PyThreadState
+    * Part of the Limited API (as an opaque struct).*</p>
+<p>This data structure represents the state of a single thread.  The
+   only public data member is:</p>
+<p>PyInterpreterState *interp</p>
+<div class="codehilite"><pre><span></span><code>  This thread&#39;s interpreter state.
+</code></pre></div>
+
+<p>void PyEval_InitThreads()
+    * Part of the Stable ABI.*</p>
+<p>Deprecated function which does nothing.</p>
+<p>In Python 3.6 and older, this function created the GIL if it didn't
+   exist.</p>
+<p>Distinto en la versión 3.9: The function now does nothing.</p>
+<p>Distinto en la versión 3.7: This function is now called by
+   "Py_Initialize()", so you don't have to call it yourself anymore.</p>
+<p>Distinto en la versión 3.2: This function cannot be called before
+   "Py_Initialize()" anymore.</p>
+<p>Obsoleto desde la versión 3.9.</p>
+<p>PyThreadState <em>PyEval_SaveThread()
+    * Part of the Stable ABI.</em></p>
+<p>Detach the <em>attached thread state</em> and return it. The thread will
+   have no <em>thread state</em> upon returning.</p>
+<p>void PyEval_RestoreThread(PyThreadState <em>tstate)
+    * Part of the Stable ABI.</em></p>
+<p>Set the <em>attached thread state</em> to <em>tstate</em>. The passed <em>thread
+   state</em> <strong>should not</strong> be <em>attached</em>, otherwise deadlock ensues.
+   <em>tstate</em> will be attached upon returning.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Calling this function from a thread when the runtime is
+ finalizing will hang the thread until the program exits, even if
+ the thread was not created by Python.  Refer to Cautions
+ regarding runtime finalization for more details.
+</code></pre></div>
+
+<p>Distinto en la versión 3.14: Hangs the current thread, rather than
+   terminating it, if called while the interpreter is finalizing.</p>
+<p>PyThreadState <em>PyThreadState_Get()
+    * Part of the Stable ABI.</em></p>
+<p>Return the <em>attached thread state</em>. If the thread has no attached
+   thread state, (such as when inside of "Py_BEGIN_ALLOW_THREADS"
+   block), then this issues a fatal error (so that the caller needn't
+   check for "NULL").</p>
+<p>See also "PyThreadState_GetUnchecked()".</p>
+<p>PyThreadState *PyThreadState_GetUnchecked()</p>
+<p>Similar to "PyThreadState_Get()", but don't kill the process with a
+   fatal error if it is NULL. The caller is responsible to check if
+   the result is NULL.</p>
+<p>Added in version 3.13: In Python 3.5 to 3.12, the function was
+   private and known as "_PyThreadState_UncheckedGet()".</p>
+<p>PyThreadState <em>PyThreadState_Swap(PyThreadState </em>tstate)
+    * Part of the Stable ABI.*</p>
+<p>Set the <em>attached thread state</em> to <em>tstate</em>, and return the <em>thread
+   state</em> that was attached prior to calling.</p>
+<p>This function is safe to call without an <em>attached thread state</em>;
+   it will simply return "NULL" indicating that there was no prior
+   thread state.</p>
+<p>Ver también: "PyEval_ReleaseThread()"</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Similar to &quot;PyGILState_Ensure()&quot;, this function will hang the
+ thread if the runtime is finalizing.
+</code></pre></div>
+
+<h2 id="gil-state-apis">GIL-state APIs<a class="headerlink" href="#gil-state-apis" title="Permanent link">#</a></h2>
+<p>The following functions use thread-local storage, and are not
+compatible with sub-interpreters:</p>
+<p>type PyGILState_STATE
+    * Part of the Stable ABI.*</p>
+<p>The type of the value returned by "PyGILState_Ensure()" and passed
+   to "PyGILState_Release()".</p>
+<p>enumerator PyGILState_LOCKED</p>
+<div class="codehilite"><pre><span></span><code>  The GIL was already held when &quot;PyGILState_Ensure()&quot; was called.
+</code></pre></div>
+
+<p>enumerator PyGILState_UNLOCKED</p>
+<div class="codehilite"><pre><span></span><code>  The GIL was not held when &quot;PyGILState_Ensure()&quot; was called.
+</code></pre></div>
+
+<p>PyGILState_STATE PyGILState_Ensure()
+    * Part of the Stable ABI.*</p>
+<p>Ensure that the current thread is ready to call the Python C API
+   regardless of the current state of Python, or of the <em>attached
+   thread state</em>. This may be called as many times as desired by a
+   thread as long as each call is matched with a call to
+   "PyGILState_Release()". In general, other thread-related APIs may
+   be used between "PyGILState_Ensure()" and "PyGILState_Release()"
+   calls as long as the thread state is restored to its previous state
+   before the Release().  For example, normal usage of the
+   "Py_BEGIN_ALLOW_THREADS" and "Py_END_ALLOW_THREADS" macros is
+   acceptable.</p>
+<p>The return value is an opaque "handle" to the <em>attached thread
+   state</em> when "PyGILState_Ensure()" was called, and must be passed to
+   "PyGILState_Release()" to ensure Python is left in the same state.
+   Even though recursive calls are allowed, these handles <em>cannot</em> be
+   shared - each unique call to "PyGILState_Ensure()" must save the
+   handle for its call to "PyGILState_Release()".</p>
+<p>When the function returns, there will be an <em>attached thread state</em>
+   and the thread will be able to call arbitrary Python code.  Failure
+   is a fatal error.</p>
+<p>Advertencia:</p>
+<div class="codehilite"><pre><span></span><code> Calling this function when the runtime is finalizing is unsafe.
+ Doing so will either hang the thread until the program ends, or
+ fully crash the interpreter in rare cases. Refer to Cautions
+ regarding runtime finalization for more details.
+</code></pre></div>
+
+<p>Distinto en la versión 3.14: Hangs the current thread, rather than
+   terminating it, if called while the interpreter is finalizing.</p>
+<p>void PyGILState_Release(PyGILState_STATE)
+    * Part of the Stable ABI.*</p>
+<p>Release any resources previously acquired.  After this call,
+   Python's state will be the same as it was prior to the
+   corresponding "PyGILState_Ensure()" call (but generally this state
+   will be unknown to the caller, hence the use of the GILState API).</p>
+<p>Every call to "PyGILState_Ensure()" must be matched by a call to
+   "PyGILState_Release()" on the same thread.</p>
+<p>PyThreadState <em>PyGILState_GetThisThreadState()
+    * Part of the Stable ABI.</em></p>
+<p>Get the <em>attached thread state</em> for this thread.  May return "NULL"
+   if no GILState API has been used on the current thread.  Note that
+   the main thread always has such a thread-state, even if no auto-
+   thread-state call has been made on the main thread.  This is mainly
+   a helper/diagnostic function.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> This function may return non-&quot;NULL&quot; even when the *thread state*
+ is detached. Prefer &quot;PyThreadState_Get()&quot; or
+ &quot;PyThreadState_GetUnchecked()&quot; for most cases.
+</code></pre></div>
+
+<p>Ver también: "PyThreadState_Get()"</p>
+<p>int PyGILState_Check()</p>
+<p>Return "1" if the current thread is holding the <em>GIL</em> and "0"
+   otherwise. This function can be called from any thread at any time.
+   Only if it has had its <em>thread state</em> initialized via
+   "PyGILState_Ensure()" will it return "1". This is mainly a
+   helper/diagnostic function.  It can be useful for example in
+   callback contexts or memory allocation functions when knowing that
+   the <em>GIL</em> is locked can allow the caller to perform sensitive
+   actions or otherwise behave differently.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> If the current Python process has ever created a subinterpreter,
+ this function will *always* return &quot;1&quot;. Prefer
+ &quot;PyThreadState_GetUnchecked()&quot; for most cases.
+</code></pre></div>
+
+<p>Added in version 3.4.</p>
+<h2 id="low-level-apis">Low-level APIs<a class="headerlink" href="#low-level-apis" title="Permanent link">#</a></h2>
+<p>PyThreadState <em>PyThreadState_New(PyInterpreterState </em>interp)
+    * Part of the Stable ABI.*</p>
+<p>Create a new thread state object belonging to the given interpreter
+   object. An <em>attached thread state</em> is not needed.</p>
+<p>void PyThreadState_Clear(PyThreadState <em>tstate)
+    * Part of the Stable ABI.</em></p>
+<p>Reset all information in a <em>thread state</em> object.  <em>tstate</em> must be
+   <em>attached</em></p>
+<p>Distinto en la versión 3.9: This function now calls the
+   "PyThreadState.on_delete" callback. Previously, that happened in
+   "PyThreadState_Delete()".</p>
+<p>Distinto en la versión 3.13: The "PyThreadState.on_delete" callback
+   was removed.</p>
+<p>void PyThreadState_Delete(PyThreadState <em>tstate)
+    * Part of the Stable ABI.</em></p>
+<p>Destroy a <em>thread state</em> object.  <em>tstate</em> should not be <em>attached</em>
+   to any thread. <em>tstate</em> must have been reset with a previous call
+   to "PyThreadState_Clear()".</p>
+<p>void PyThreadState_DeleteCurrent(void)</p>
+<p>Detach the <em>attached thread state</em> (which must have been reset with
+   a previous call to "PyThreadState_Clear()") and then destroy it.</p>
+<p>No <em>thread state</em> will be <em>attached</em> upon returning.</p>
+<p>PyFrameObject <em>PyThreadState_GetFrame(PyThreadState </em>tstate)
+    * Part of the Stable ABI since version 3.10.*</p>
+<p>Get the current frame of the Python thread state <em>tstate</em>.</p>
+<p>Return a <em>strong reference</em>. Return "NULL" if no frame is currently
+   executing.</p>
+<p>See also "PyEval_GetFrame()".</p>
+<p><em>tstate</em> must not be "NULL", and must be <em>attached</em>.</p>
+<p>Added in version 3.9.</p>
+<p>uint64_t PyThreadState_GetID(PyThreadState <em>tstate)
+    * Part of the Stable ABI since version 3.10.</em></p>
+<p>Get the unique <em>thread state</em> identifier of the Python thread state
+   <em>tstate</em>.</p>
+<p><em>tstate</em> must not be "NULL", and must be <em>attached</em>.</p>
+<p>Added in version 3.9.</p>
+<p>PyInterpreterState <em>PyThreadState_GetInterpreter(PyThreadState </em>tstate)
+    * Part of the Stable ABI since version 3.10.*</p>
+<p>Get the interpreter of the Python thread state <em>tstate</em>.</p>
+<p><em>tstate</em> must not be "NULL", and must be <em>attached</em>.</p>
+<p>Added in version 3.9.</p>
+<p>void PyThreadState_EnterTracing(PyThreadState *tstate)</p>
+<p>Suspend tracing and profiling in the Python thread state <em>tstate</em>.</p>
+<p>Resume them using the "PyThreadState_LeaveTracing()" function.</p>
+<p>Added in version 3.11.</p>
+<p>void PyThreadState_LeaveTracing(PyThreadState *tstate)</p>
+<p>Resume tracing and profiling in the Python thread state <em>tstate</em>
+   suspended by the "PyThreadState_EnterTracing()" function.</p>
+<p>See also "PyEval_SetTrace()" and "PyEval_SetProfile()" functions.</p>
+<p>Added in version 3.11.</p>
+<p>int PyUnstable_ThreadState_SetStackProtection(PyThreadState <em>tstate, void </em>stack_start_addr, size_t stack_size)</p>
+<p><em>This is Unstable API. It may change without warning in minor
+   releases.</em></p>
+<p>Set the stack protection start address and stack protection size of
+   a Python thread state.</p>
+<p>On success, return "0". On failure, set an exception and return
+   "-1".</p>
+<p>CPython implements recursion control for C code by raising
+   "RecursionError" when it notices that the machine execution stack
+   is close to overflow. See for example the "Py_EnterRecursiveCall()"
+   function. For this, it needs to know the location of the current
+   thread's stack, which it normally gets from the operating system.
+   When the stack is changed, for example using context switching
+   techniques like the Boost library's "boost::context", you must call
+   "PyUnstable_ThreadState_SetStackProtection()" to inform CPython of
+   the change.</p>
+<p>Call "PyUnstable_ThreadState_SetStackProtection()" either before or
+   after changing the stack. Do not call any other Python C API
+   between the call and the stack change.</p>
+<p>See "PyUnstable_ThreadState_ResetStackProtection()" for undoing
+   this operation.</p>
+<p>Added in version 3.15.</p>
+<p>void PyUnstable_ThreadState_ResetStackProtection(PyThreadState *tstate)</p>
+<p><em>This is Unstable API. It may change without warning in minor
+   releases.</em></p>
+<p>Reset the stack protection start address and stack protection size
+   of a Python thread state to the operating system defaults.</p>
+<p>See "PyUnstable_ThreadState_SetStackProtection()" for an
+   explanation.</p>
+<p>Added in version 3.15.</p>
+<p>PyObject <em>PyThreadState_GetDict()
+    </em>Return value: Borrowed reference.*<em> Part of the Stable ABI.</em></p>
+<p>Return a dictionary in which extensions can store thread-specific
+   state information.  Each extension should use a unique key to use
+   to store state in the dictionary.  It is okay to call this function
+   when no <em>thread state</em> is <em>attached</em>. If this function returns
+   "NULL", no exception has been raised and the caller should assume
+   no thread state is attached.</p>
+<p>void PyEval_AcquireThread(PyThreadState <em>tstate)
+    * Part of the Stable ABI.</em></p>
+<p><em>Attach</em> <em>tstate</em> to the current thread, which must not be "NULL"
+   or already <em>attached</em>.</p>
+<p>The calling thread must not already have an <em>attached thread
+   state</em>.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Calling this function from a thread when the runtime is
+ finalizing will hang the thread until the program exits, even if
+ the thread was not created by Python.  Refer to Cautions
+ regarding runtime finalization for more details.
+</code></pre></div>
+
+<p>Distinto en la versión 3.8: Updated to be consistent with
+   "PyEval_RestoreThread()", "Py_END_ALLOW_THREADS()", and
+   "PyGILState_Ensure()", and terminate the current thread if called
+   while the interpreter is finalizing.</p>
+<p>Distinto en la versión 3.14: Hangs the current thread, rather than
+   terminating it, if called while the interpreter is finalizing.</p>
+<p>"PyEval_RestoreThread()" is a higher-level function which is always
+   available (even when threads have not been initialized).</p>
+<p>void PyEval_ReleaseThread(PyThreadState <em>tstate)
+    * Part of the Stable ABI.</em></p>
+<p>Detach the <em>attached thread state</em>. The <em>tstate</em> argument, which
+   must not be "NULL", is only used to check that it represents the
+   <em>attached thread state</em> --- if it isn't, a fatal error is reported.</p>
+<p>"PyEval_SaveThread()" is a higher-level function which is always
+   available (even when threads have not been initialized).</p>
+<h1 id="asynchronous-notifications">Asynchronous notifications<a class="headerlink" href="#asynchronous-notifications" title="Permanent link">#</a></h1>
+<p>A mechanism is provided to make asynchronous notifications to the main
+interpreter thread.  These notifications take the form of a function
+pointer and a void pointer argument.</p>
+<p>int Py_AddPendingCall(int (<em>func)(void</em>), void <em>arg)
+    * Part of the Stable ABI.</em></p>
+<p>Schedule a function to be called from the main interpreter thread.
+   On success, "0" is returned and <em>func</em> is queued for being called
+   in the main thread.  On failure, "-1" is returned without setting
+   any exception.</p>
+<p>When successfully queued, <em>func</em> will be <em>eventually</em> called from
+   the main interpreter thread with the argument <em>arg</em>.  It will be
+   called asynchronously with respect to normally running Python code,
+   but with both these conditions met:</p>
+<ul>
+<li>
+<p>on a <em>bytecode</em> boundary;</p>
+</li>
+<li>
+<p>with the main thread holding an <em>attached thread state</em> (<em>func</em>
+     can therefore use the full C API).</p>
+</li>
+</ul>
+<p><em>func</em> must return "0" on success, or "-1" on failure with an
+   exception set.  <em>func</em> won't be interrupted to perform another
+   asynchronous notification recursively, but it can still be
+   interrupted to switch threads if the <em>thread state</em> is detached.</p>
+<p>This function doesn't need an <em>attached thread state</em>. However, to
+   call this function in a subinterpreter, the caller must have an
+   <em>attached thread state</em>. Otherwise, the function <em>func</em> can be
+   scheduled to be called from the wrong interpreter.</p>
+<p>Advertencia:</p>
+<div class="codehilite"><pre><span></span><code> This is a low-level function, only useful for very special cases.
+ There is no guarantee that *func* will be called as quick as
+ possible.  If the main thread is busy executing a system call,
+ *func* won&#39;t be called before the system call returns.  This
+ function is generally **not** suitable for calling Python code
+ from arbitrary C threads.  Instead, use the PyGILState API.
+</code></pre></div>
+
+<p>Added in version 3.1.</p>
+<p>Distinto en la versión 3.9: If this function is called in a
+   subinterpreter, the function <em>func</em> is now scheduled to be called
+   from the subinterpreter, rather than being called from the main
+   interpreter. Each subinterpreter now has its own list of scheduled
+   calls.</p>
+<p>Distinto en la versión 3.12: This function now always schedules
+   <em>func</em> to be run in the main interpreter.</p>
+<p>int Py_MakePendingCalls(void)
+    * Part of the Stable ABI.*</p>
+<p>Execute all pending calls. This is usually executed automatically
+   by the interpreter.</p>
+<p>This function returns "0" on success, and returns "-1" with an
+   exception set on failure.</p>
+<p>If this is not called in the main thread of the main interpreter,
+   this function does nothing and returns "0". The caller must hold an
+   <em>attached thread state</em>.</p>
+<p>Added in version 3.1.</p>
+<p>Distinto en la versión 3.12: This function only runs pending calls
+   in the main interpreter.</p>
+<p>int PyThreadState_SetAsyncExc(unsigned long id, PyObject <em>exc)
+    * Part of the Stable ABI.</em></p>
+<p>Asynchronously raise an exception in a thread. The <em>id</em> argument is
+   the thread id of the target thread; <em>exc</em> is the exception object
+   to be raised. This function does not <em>steal</em> any references to
+   <em>exc</em>. To prevent naive misuse, you must write your own C extension
+   to call this.  Must be called with an <em>attached thread state</em>.
+   Returns the number of thread states modified; this is normally one,
+   but will be zero if the thread id isn't found.  If <em>exc</em> is "NULL",
+   the pending exception (if any) for the thread is cleared. This
+   raises no exceptions.</p>
+<p>Distinto en la versión 3.7: The type of the <em>id</em> parameter changed
+   from long to unsigned long.</p>
+<h1 id="operating-system-thread-apis">Operating system thread APIs<a class="headerlink" href="#operating-system-thread-apis" title="Permanent link">#</a></h1>
+<p>PYTHREAD_INVALID_THREAD_ID</p>
+<p>Sentinel value for an invalid thread ID.</p>
+<p>This is currently equivalent to "(unsigned long)-1".</p>
+<p>unsigned long PyThread_start_new_thread(void (<em>func)(void</em>), void <em>arg)
+    * Part of the Stable ABI.</em></p>
+<p>Start function <em>func</em> in a new thread with argument <em>arg</em>. The
+   resulting thread is not intended to be joined.</p>
+<p><em>func</em> must not be "NULL", but <em>arg</em> may be "NULL".</p>
+<p>On success, this function returns the identifier of the new thread;
+   on failure, this returns "PYTHREAD_INVALID_THREAD_ID".</p>
+<p>The caller does not need to hold an <em>attached thread state</em>.</p>
+<p>unsigned long PyThread_get_thread_ident(void)
+    * Part of the Stable ABI.*</p>
+<p>Return the identifier of the current thread, which will never be
+   zero.</p>
+<p>This function cannot fail, and the caller does not need to hold an
+   <em>attached thread state</em>.</p>
+<p>Ver también: "threading.get_ident()"</p>
+<p>PyObject <em>PyThread_GetInfo(void)
+    * Part of the Stable ABI since version 3.3.</em></p>
+<p>Get general information about the current thread in the form of a
+   struct sequence object. This information is accessible as
+   "sys.thread_info" in Python.</p>
+<p>On success, this returns a new <em>strong reference</em> to the thread
+   information; on failure, this returns "NULL" with an exception set.</p>
+<p>The caller must hold an <em>attached thread state</em>.</p>
+<p>PY_HAVE_THREAD_NATIVE_ID</p>
+<p>This macro is defined when the system supports native thread IDs.</p>
+<p>unsigned long PyThread_get_thread_native_id(void)
+    * Part of the Stable ABI on platforms with native thread IDs.*</p>
+<p>Get the native identifier of the current thread as it was assigned
+   by the operating system's kernel, which will never be less than
+   zero.</p>
+<p>This function is only available when "PY_HAVE_THREAD_NATIVE_ID" is
+   defined.</p>
+<p>This function cannot fail, and the caller does not need to hold an
+   <em>attached thread state</em>.</p>
+<p>Ver también: "threading.get_native_id()"</p>
+<p>void PyThread_exit_thread(void)
+    * Part of the Stable ABI.*</p>
+<p>Terminate the current thread. This function is generally considered
+   unsafe and should be avoided. It is kept solely for backwards
+   compatibility.</p>
+<p>This function is only safe to call if all functions in the full
+   call stack are written to safely allow it.</p>
+<p>Advertencia:</p>
+<div class="codehilite"><pre><span></span><code> If the current system uses POSIX threads (also known as
+ &quot;pthreads&quot;), this calls *pthread_exit(3)*, which attempts to
+ unwind the stack and call C++ destructors on some libc
+ implementations. However, if a &quot;noexcept&quot; function is reached, it
+ may terminate the process. Other systems, such as macOS, do
+ unwinding.On Windows, this function calls &quot;_endthreadex()&quot;, which
+ kills the thread without calling C++ destructors.In any case,
+ there is a risk of corruption on the thread&#39;s stack.
+</code></pre></div>
+
+<p>Obsoleto desde la versión 3.14.</p>
+<p>void PyThread_init_thread(void)
+    * Part of the Stable ABI.*</p>
+<p>Initialize "PyThread*" APIs. Python executes this function
+   automatically, so there's little need to call it from an extension
+   module.</p>
+<p>int PyThread_set_stacksize(size_t size)
+    * Part of the Stable ABI.*</p>
+<p>Set the stack size of the current thread to <em>size</em> bytes.</p>
+<p>This function returns "0" on success, "-1" if <em>size</em> is invalid, or
+   "-2" if the system does not support changing the stack size. This
+   function does not set exceptions.</p>
+<p>The caller does not need to hold an <em>attached thread state</em>.</p>
+<p>size_t PyThread_get_stacksize(void)
+    * Part of the Stable ABI.*</p>
+<p>Return the stack size of the current thread in bytes, or "0" if the
+   system's default stack size is in use.</p>
+<p>The caller does not need to hold an <em>attached thread state</em>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../c-api/sys.html">
+          <span class="muted">Anterior</span>Utilidades del sistema operativo
+        </a>
+        <a class="pager-next" href="../c-api/time.html">
+          <span class="muted">Siguiente</span>PyTime C API
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

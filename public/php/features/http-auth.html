@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Identificación HTTP con PHP · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Features
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../features/persistent-connections.html"
+>Conexiones persistentes a bases de datos</a>
+              </li>
+              <li>
+                <a href="../features/cookies.html"
+>Cookies</a>
+              </li>
+              <li>
+                <a href="../features/file-upload.html"
+>Gestión de cargas de ficheros</a>
+              </li>
+              <li>
+                <a href="../features/connection-handling.html"
+>Gestión de las conexiones</a>
+              </li>
+              <li>
+                <a href="../features/http-auth.html"
+class="is-current" aria-current="page">Identificación HTTP con PHP</a>
+              </li>
+              <li>
+                <a href="../features/dtrace.html"
+>Rastreo dinámico de DTrace</a>
+              </li>
+              <li>
+                <a href="../features/gc.html"
+>Recolección de basura (Garbage Collection)</a>
+              </li>
+              <li>
+                <a href="../features/sessions.html"
+>Sesiones</a>
+              </li>
+              <li>
+                <a href="../features/remote-files.html"
+>Uso de ficheros a distancia</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Identificación HTTP con PHP</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.http-auth.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#identificacion-http-con-php">Identificación HTTP con PHP#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="identificacion-http-con-php">Identificación HTTP con PHP<a class="headerlink" href="#identificacion-http-con-php" title="Permanent link">#</a></h2>
+<p>Es posible utilizar la función <code>header</code> para solicitar una identificación (<code>"Authentication Required"</code>) al cliente, generando así la aparición de una ventana de solicitud de usuario y contraseña. Una vez que los campos han sido completados, la URL será llamada de nuevo, con las <a href="#reserved.variables">variables predefinidas</a> <code>PHP_AUTH_USER</code>, <code>PHP_AUTH_PW</code> y <code>AUTH_TYPE</code> conteniendo respectivamente el nombre de usuario, la contraseña y el tipo de identificación. Estas variables predefinidas se encuentran en los arrays <code>$_SERVER</code>. <em>Solo</em> el método de identificación "Basic" es soportado. Consulte la función <code>header</code> para más información.</p>
+<p>Aquí hay un ejemplo de script que fuerza la identificación del cliente para acceder a una página:</p>
+<p>Ejemplo de identificación HTTP simple</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;PHP_AUTH_USER&#39;</span><span class="p">]))</span> <span class="p">{</span>
+    <span class="nb">header</span><span class="p">(</span><span class="s1">&#39;HTTP/1.1 401 Unauthorized&#39;</span><span class="p">);</span>
+    <span class="nb">header</span><span class="p">(</span><span class="s1">&#39;WWW-Authenticate: Basic realm=&quot;My Realm&quot;&#39;</span><span class="p">);</span>
+    <span class="k">echo</span> <span class="s1">&#39;Texto utilizado si el visitante usa el botón de cancelación&#39;</span><span class="p">;</span>
+    <span class="k">exit</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">&quot;&lt;p&gt;Hola, </span><span class="si">{</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;PHP_AUTH_USER&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&lt;/p&gt;&quot;</span><span class="p">;</span>
+    <span class="k">echo</span> <span class="s2">&quot;&lt;p&gt;Su contraseña es </span><span class="si">{</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;PHP_AUTH_PW&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&lt;/p&gt;&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]
+Sea muy cuidadoso al usar encabezados HTTP con PHP. Para garantizar la máxima compatibilidad entre los navegadores, la palabra clave "Basic" debe escribirse con una B mayúscula, y el texto de presentación debe colocarse entre comillas dobles (no simples), y exactamente un espacio debe preceder al código <em>401</em> en el encabezado <em>HTTP/1.1 401</em>. Los parámetros de autenticación deben estar separados por comas.</p>
+</blockquote>
+<p>En lugar de mostrar simplemente las variables globales <code>PHP_AUTH_USER</code> y <code>PHP_AUTH_PW</code>, se preferirá verificar la validez del nombre de usuario y la contraseña. Por ejemplo, enviando esta información a una base de datos, o buscando en un fichero dbm.</p>
+<blockquote>
+<p>[!NOTE]
+PHP utiliza la presencia de la directiva <code>AuthType</code> para determinar si una identificación externa está activada.</p>
+</blockquote>
+<p>Tenga en cuenta, sin embargo, que las manipulaciones anteriores no impiden que cualquier persona con una página no identificada robe las contraseñas de las páginas protegidas, en el mismo servidor.</p>
+<blockquote>
+<p>[!NOTE]
+La autenticación HTTP Basic es realmente básica, y no fue diseñada para soportar cierres de sesión. Dado que HTTP es un protocolo sin estado, la mayoría de los navegadores almacenarán en caché las credenciales proporcionadas tan pronto como se reciba un código de estado <code>2xx</code>, y las enviarán en cada solicitud, hasta que se cierre el navegador. No existe una forma definida para que un servidor solicite nuevas credenciales. A lo largo de los años, varias soluciones alternativas se han difundido como consejos en Internet, pero todas dependen de cómo los diferentes navegadores han elegido manejar casos límite no definidos (o incluso violaciones del estándar HTTP). Es mejor evitar tales soluciones alternativas y no utilizar la autenticación Basic para nada serio.</p>
+<p>[!NOTE]
+Para que la identificación HTTP funcione con un servidor IIS con la versión CGI de PHP, la directiva PHP <a href="#ini.cgi.rfc2616-headers">cgi.rfc2616_headers</a> debe establecerse en <code>0</code> (el valor por defecto), y debe editar la configuración "<code>Directory Security</code>" de IIS. Haga clic en "<code>Edit</code>" y active solo "<code>Anonymous Access</code>", todos los demás campos deben dejarse inactivos.</p>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../features/connection-handling.html">
+          <span class="muted">Anterior</span>Gestión de las conexiones
+        </a>
+        <a class="pager-next" href="../features/dtrace.html">
+          <span class="muted">Siguiente</span>Rastreo dinámico de DTrace
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

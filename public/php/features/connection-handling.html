@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestión de las conexiones · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Features
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../features/persistent-connections.html"
+>Conexiones persistentes a bases de datos</a>
+              </li>
+              <li>
+                <a href="../features/cookies.html"
+>Cookies</a>
+              </li>
+              <li>
+                <a href="../features/file-upload.html"
+>Gestión de cargas de ficheros</a>
+              </li>
+              <li>
+                <a href="../features/connection-handling.html"
+class="is-current" aria-current="page">Gestión de las conexiones</a>
+              </li>
+              <li>
+                <a href="../features/http-auth.html"
+>Identificación HTTP con PHP</a>
+              </li>
+              <li>
+                <a href="../features/dtrace.html"
+>Rastreo dinámico de DTrace</a>
+              </li>
+              <li>
+                <a href="../features/gc.html"
+>Recolección de basura (Garbage Collection)</a>
+              </li>
+              <li>
+                <a href="../features/sessions.html"
+>Sesiones</a>
+              </li>
+              <li>
+                <a href="../features/remote-files.html"
+>Uso de ficheros a distancia</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Gestión de las conexiones</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.connection-handling.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#gestion-de-las-conexiones">Gestión de las conexiones#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="gestion-de-las-conexiones">Gestión de las conexiones<a class="headerlink" href="#gestion-de-las-conexiones" title="Permanent link">#</a></h2>
+<p>El estado de las conexiones se conserva internamente por PHP. Hay cuatro estados posibles:</p>
+<ul>
+<li>
+<p>0 - NORMAL (normal)</p>
+</li>
+<li>
+<p>1 - ABORTED (anulado)</p>
+</li>
+<li>
+<p>2 - TIMEOUT (caducado)</p>
+</li>
+<li>
+<p>3 - ABORTED and TIMEOUT (anulado y caducado)</p>
+</li>
+</ul>
+<p>Cuando un script PHP está en ejecución, el estado es NORMAL. Si el cliente remoto se desconecta, el estado se convierte en ABORTED. Una desconexión del cliente remoto generalmente es causada por los usuarios presionando su botón STOP. Si se supera el tiempo máximo de ejecución de PHP, (ver <code>set_time_limit</code>), el script adopta el estado TIMEOUT.</p>
+<p>Asimismo, se puede decidir si se desea que la desconexión de un cliente provoque la interrupción del script. A veces es práctico que los scripts continúen ejecutándose hasta el final, incluso si el cliente ya no está presente para recibir la información. Sin embargo, por omisión, el script se detendrá tan pronto como el cliente se desconecte. Este comportamiento puede ser modificado con la directiva <code>ignore_user_abort</code> en el fichero <code>php.ini</code> o bien con la directiva Apache <code>php_value ignore_user_abort</code> del fichero Apache <code>httpd.conf</code> o con la función <code>ignore_user_abort</code>. Si no se solicita a PHP que ignore la desconexión, y el usuario se desconecta, el script será terminado. La única excepción es si se ha registrado una función de cierre, con <code>register_shutdown_function</code>. Con tal función, cuando el usuario interrumpe su solicitud, en la próxima ejecución del script, PHP se dará cuenta de que el último script no ha sido terminado, y desencadenará la función de cierre. Esta función también será llamada al final del script, si este termina normalmente. Para poder tener un comportamiento diferente según el estado del script al finalizar, se pueden ejecutar comandos específicos a la desconexión gracias a la función <code>connection_aborted</code>. Esta función devolverá <code>true</code> si la conexión ha sido anulada.</p>
+<p>El script también puede ser interrumpido automáticamente después de un cierto tiempo. Por omisión, el tiempo límite es de 30 segundos. Este valor puede ser cambiado utilizando la directiva PHP <code>max_execution_time</code> en el fichero <code>php.ini</code> o con la directiva <code>php_value max_execution_time</code>, en el fichero Apache <code>httpd.conf</code> o también con la función <code>set_time_limit</code>. Cuando el tiempo límite expira, el script es terminado, y como en la desconexión del cliente, una función de terminación será llamada. En esta función, se puede saber si es el tiempo límite el que ha causado el fin del script, llamando a la función <code>connection_status</code>. Esta función devolverá <code>2</code> si el tiempo límite ha sido superado.</p>
+<p>Una cosa a tener en cuenta es que los dos casos ABORTED y TIMEOUT pueden ser llamados al mismo tiempo. Esto es posible si se solicita a PHP que ignore las desconexiones de los usuarios. PHP aún así notará el hecho de que el usuario se ha desconectado, pero el script continuará. Luego, cuando alcance el límite de tiempo, el script caducará. En ese momento, la función <code>connection_status</code> devolverá <code>3</code>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../features/file-upload.html">
+          <span class="muted">Anterior</span>Gestión de cargas de ficheros
+        </a>
+        <a class="pager-next" href="../features/http-auth.html">
+          <span class="muted">Siguiente</span>Identificación HTTP con PHP
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

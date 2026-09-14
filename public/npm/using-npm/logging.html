@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logging · npm</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">npm</a>
+<span class="badge">latest</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="npm" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en npm…"
+         aria-label="Buscar en npm" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de npm
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de npm">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../commands/npm-access.html">Commands</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../configuring-npm/folders.html">Configuring Npm</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Using Npm
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../using-npm/config.html"
+>Config</a>
+              </li>
+              <li>
+                <a href="../using-npm/dependency-selectors.html"
+>Dependency Selectors</a>
+              </li>
+              <li>
+                <a href="../using-npm/developers.html"
+>Developers</a>
+              </li>
+              <li>
+                <a href="../using-npm/logging.html"
+class="is-current" aria-current="page">Logging</a>
+              </li>
+              <li>
+                <a href="../using-npm/orgs.html"
+>Organizations</a>
+              </li>
+              <li>
+                <a href="../using-npm/package-spec.html"
+>Package spec</a>
+              </li>
+              <li>
+                <a href="../using-npm/registry.html"
+>Registry</a>
+              </li>
+              <li>
+                <a href="../using-npm/removal.html"
+>Removal</a>
+              </li>
+              <li>
+                <a href="../using-npm/scope.html"
+>Scope</a>
+              </li>
+              <li>
+                <a href="../using-npm/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../using-npm/workspaces.html"
+>Workspaces</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Logging</h1>
+
+      <p class="doc-meta">
+<span class="badge">latest</span>          <a href="https://docs.npmjs.com/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia TODO-VERIFICAR</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#description">Description#</a></li>
+              <li class="lvl-3"><a href="#setting-log-file-location">Setting Log File Location#</a></li>
+              <li class="lvl-3"><a href="#setting-log-levels">Setting Log Levels#</a></li>
+              <li class="lvl-3"><a href="#timing-information">Timing Information#</a></li>
+              <li class="lvl-3"><a href="#registry-response-headers">Registry Response Headers#</a></li>
+              <li class="lvl-3"><a href="#logs-and-sensitive-information">Logs and Sensitive Information#</a></li>
+              <li class="lvl-3"><a href="#see-also">See also#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h3>
+<p>The <code>npm</code> CLI has various mechanisms for showing different levels of information back to end-users for certain commands, configurations &amp; environments.</p>
+<h3 id="setting-log-file-location">Setting Log File Location<a class="headerlink" href="#setting-log-file-location" title="Permanent link">#</a></h3>
+<p>All logs are written to a debug log, with the path to that file printed if the execution of a command fails.</p>
+<p>The default location of the logs directory is a directory named <code>_logs</code> inside the npm cache.
+This can be changed with the <code>logs-dir</code> config option.</p>
+<p>For example, if you wanted to write all your logs to the current working directory, you could run: <code>npm install --logs-dir=.</code>.
+This is especially helpful in debugging a specific <code>npm</code> issue as you can run a command multiple times with different config values and then diff all the log files.</p>
+<p>Log files will be removed from the <code>logs-dir</code> when the number of log files exceeds <code>logs-max</code>, with the oldest logs being deleted first.</p>
+<p>To turn off logs completely set <code>--logs-max=0</code>.</p>
+<h3 id="setting-log-levels">Setting Log Levels<a class="headerlink" href="#setting-log-levels" title="Permanent link">#</a></h3>
+<h4 id="loglevel"><code>loglevel</code><a class="headerlink" href="#loglevel" title="Permanent link">#</a></h4>
+<p><code>loglevel</code> is a global argument/config that can be set to determine the type of information to be displayed.</p>
+<p>The default value of <code>loglevel</code> is <code>"notice"</code> but there are several levels/types of logs available, including:</p>
+<ul>
+<li><code>"silent"</code></li>
+<li><code>"error"</code></li>
+<li><code>"warn"</code></li>
+<li><code>"notice"</code></li>
+<li><code>"http"</code></li>
+<li><code>"info"</code></li>
+<li><code>"verbose"</code></li>
+<li><code>"silly"</code></li>
+</ul>
+<p>All logs pertaining to a level preceding the current setting will be shown.</p>
+<h5 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">#</a></h5>
+<p>The log levels listed above have various corresponding aliases, including:</p>
+<ul>
+<li><code>-d</code>: <code>--loglevel info</code></li>
+<li><code>--dd</code>: <code>--loglevel verbose</code></li>
+<li><code>--verbose</code>: <code>--loglevel verbose</code></li>
+<li><code>--ddd</code>: <code>--loglevel silly</code></li>
+<li><code>-q</code>: <code>--loglevel warn</code></li>
+<li><code>--quiet</code>: <code>--loglevel warn</code></li>
+<li><code>-s</code>: <code>--loglevel silent</code></li>
+<li><code>--silent</code>: <code>--loglevel silent</code></li>
+</ul>
+<h4 id="foreground-scripts"><code>foreground-scripts</code><a class="headerlink" href="#foreground-scripts" title="Permanent link">#</a></h4>
+<p>The <code>npm</code> CLI began hiding the output of lifecycle scripts for <code>npm install</code> as of <code>v7</code>.
+Notably, this means you will not see logs/output from packages that may be using "install scripts" to display information back to you or from your own project's scripts defined in <code>package.json</code>.
+If you'd like to change this behavior &amp; log this output you can set <code>foreground-scripts</code> to <code>true</code>.</p>
+<h3 id="timing-information">Timing Information<a class="headerlink" href="#timing-information" title="Permanent link">#</a></h3>
+<p>The <a href="../using-npm/config.html#timing"><code>--timing</code> config</a> can be set which does a few things:</p>
+<ol>
+<li>Always shows the full path to the debug log regardless of command exit status</li>
+<li>Write timing information to a process specific timing file in the cache or <code>logs-dir</code></li>
+<li>Output timing information to the terminal</li>
+</ol>
+<p>This file contains a <code>timers</code> object where the keys are an identifier for the portion of the process being timed and the value is the number of milliseconds it took to complete.</p>
+<p>Sometimes it is helpful to get timing information without outputting anything to the terminal.
+For example, the performance might be affected by writing to the terminal.
+In this case you can use
+<code>--timing --silent</code> which will still write the timing file, but not output anything to the terminal while running.</p>
+<h3 id="registry-response-headers">Registry Response Headers<a class="headerlink" href="#registry-response-headers" title="Permanent link">#</a></h3>
+<h4 id="npm-notice"><code>npm-notice</code><a class="headerlink" href="#npm-notice" title="Permanent link">#</a></h4>
+<p>The <code>npm</code> CLI reads from &amp; logs any <code>npm-notice</code> headers that are returned from the configured registry.
+This mechanism can be used by third-party registries to provide useful information when network-dependent requests occur.</p>
+<p>This header is not cached, and will not be logged if the request is served from the cache.</p>
+<h3 id="logs-and-sensitive-information">Logs and Sensitive Information<a class="headerlink" href="#logs-and-sensitive-information" title="Permanent link">#</a></h3>
+<p>The <code>npm</code> CLI makes a best effort to redact the following from terminal output and log files:</p>
+<ul>
+<li>Passwords inside basic auth URLs</li>
+<li>npm tokens</li>
+</ul>
+<p>However, this behavior should not be relied on to keep all possible sensitive information redacted.
+If you are concerned about secrets in your log file or terminal output, you can use <code>--loglevel=silent</code> and <code>--logs-max=0</code> to ensure no logs are written to your terminal or filesystem.</p>
+<h3 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">#</a></h3>
+<ul>
+<li><a href="../using-npm/config.html">config</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../using-npm/developers.html">
+          <span class="muted">Anterior</span>Developers
+        </a>
+        <a class="pager-next" href="../using-npm/orgs.html">
+          <span class="muted">Siguiente</span>Organizations
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

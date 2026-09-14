@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;importlib&#34; --- La implementación de &#34;import&#34; · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/functional.html"
+>Módulos de programación funcional</a>
+              </li>
+              <li>
+                <a href="../library/functions.html"
+>Funciones incorporadas</a>
+              </li>
+              <li>
+                <a href="../library/functools.html"
+>&#34;functools&#34; --- Higher-order functions and operations on callable objects</a>
+              </li>
+              <li>
+                <a href="../library/gc.html"
+>&#34;gc&#34; --- Garbage Collector interface</a>
+              </li>
+              <li>
+                <a href="../library/getopt.html"
+>&#34;getopt&#34; --- C-style parser for command line options</a>
+              </li>
+              <li>
+                <a href="../library/getpass.html"
+>&#34;getpass&#34; --- Portable password input</a>
+              </li>
+              <li>
+                <a href="../library/gettext.html"
+>&#34;gettext&#34; --- Multilingual internationalization services</a>
+              </li>
+              <li>
+                <a href="../library/glob.html"
+>&#34;glob&#34; --- Unix style pathname pattern expansion</a>
+              </li>
+              <li>
+                <a href="../library/graphlib.html"
+>&#34;graphlib&#34; --- Functionality to operate with graph-like structures</a>
+              </li>
+              <li>
+                <a href="../library/grp.html"
+>&#34;grp&#34; --- The group database</a>
+              </li>
+              <li>
+                <a href="../library/gzip.html"
+>&#34;gzip&#34; --- Support for **gzip** files</a>
+              </li>
+              <li>
+                <a href="../library/hashlib.html"
+>&#34;hashlib&#34; --- Secure hashes and message digests</a>
+              </li>
+              <li>
+                <a href="../library/heapq.html"
+>&#34;heapq&#34; --- Heap queue algorithm</a>
+              </li>
+              <li>
+                <a href="../library/hmac.html"
+>&#34;hmac&#34; --- Keyed-Hashing for Message Authentication</a>
+              </li>
+              <li>
+                <a href="../library/html.entities.html"
+>&#34;html.entities&#34; --- Definitions of HTML general entities</a>
+              </li>
+              <li>
+                <a href="../library/html.parser.html"
+>&#34;html.parser&#34; --- Simple HTML and XHTML parser</a>
+              </li>
+              <li>
+                <a href="../library/html.html"
+>&#34;html&#34; --- HyperText Markup Language support</a>
+              </li>
+              <li>
+                <a href="../library/http.client.html"
+>&#34;http.client&#34; --- HTTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/http.cookiejar.html"
+>&#34;http.cookiejar&#34; --- Cookie handling for HTTP clients</a>
+              </li>
+              <li>
+                <a href="../library/http.cookies.html"
+>&#34;http.cookies&#34; --- HTTP state management</a>
+              </li>
+              <li>
+                <a href="../library/http.server.html"
+>&#34;http.server&#34; --- HTTP servers</a>
+              </li>
+              <li>
+                <a href="../library/http.html"
+>&#34;http&#34; --- HTTP modules</a>
+              </li>
+              <li>
+                <a href="../library/i18n.html"
+>Internacionalización</a>
+              </li>
+              <li>
+                <a href="../library/idle.html"
+>IDLE --- Python editor and shell</a>
+              </li>
+              <li>
+                <a href="../library/imaplib.html"
+>&#34;imaplib&#34; --- IMAP4 protocol client</a>
+              </li>
+              <li>
+                <a href="../library/imghdr.html"
+>&#34;imghdr&#34; --- Determine the type of an image</a>
+              </li>
+              <li>
+                <a href="../library/imp.html"
+>&#34;imp&#34; --- Access the import internals</a>
+              </li>
+              <li>
+                <a href="../library/importlib.metadata.html"
+>&#34;importlib.metadata&#34; -- Acceso a los metadatos de los paquetes</a>
+              </li>
+              <li>
+                <a href="../library/importlib.resources.abc.html"
+>&#34;importlib.resources.abc&#34; -- Abstract base classes for resources</a>
+              </li>
+              <li>
+                <a href="../library/importlib.resources.html"
+>&#34;importlib.resources&#34; -- Package resource reading, opening and access</a>
+              </li>
+              <li>
+                <a href="../library/importlib.html"
+class="is-current" aria-current="page">&#34;importlib&#34; --- La implementación de &#34;import&#34;</a>
+              </li>
+              <li>
+                <a href="../library/index.html"
+>La biblioteca estándar de Python</a>
+              </li>
+              <li>
+                <a href="../library/inspect.html"
+>&#34;inspect&#34; --- Inspect live objects</a>
+              </li>
+              <li>
+                <a href="../library/internet.html"
+>Protocolos y soporte de Internet</a>
+              </li>
+              <li>
+                <a href="../library/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../library/io.html"
+>&#34;io&#34; --- Core tools for working with streams</a>
+              </li>
+              <li>
+                <a href="../library/ipaddress.html"
+>&#34;ipaddress&#34; --- IPv4/IPv6 manipulation library</a>
+              </li>
+              <li>
+                <a href="../library/ipc.html"
+>Comunicación en redes y entre procesos</a>
+              </li>
+              <li>
+                <a href="../library/itertools.html"
+>&#34;itertools&#34; --- Functions creating iterators for efficient looping</a>
+              </li>
+              <li>
+                <a href="../library/json.html"
+>&#34;json&#34; --- JSON encoder and decoder</a>
+              </li>
+              <li>
+                <a href="../library/keyword.html"
+>&#34;keyword&#34; --- Testing for Python keywords</a>
+              </li>
+              <li>
+                <a href="../library/language.html"
+>Servicios del lenguaje Python</a>
+              </li>
+              <li>
+                <a href="../library/linecache.html"
+>&#34;linecache&#34; --- Random access to text lines</a>
+              </li>
+              <li>
+                <a href="../library/locale.html"
+>&#34;locale&#34; --- Internationalization services</a>
+              </li>
+              <li>
+                <a href="../library/logging.config.html"
+>&#34;logging.config&#34; --- Logging configuration</a>
+              </li>
+              <li>
+                <a href="../library/logging.handlers.html"
+>&#34;logging.handlers&#34; --- Logging handlers</a>
+              </li>
+              <li>
+                <a href="../library/logging.html"
+>&#34;logging&#34; --- Logging facility for Python</a>
+              </li>
+              <li>
+                <a href="../library/lzma.html"
+>&#34;lzma&#34; --- Compression using the LZMA algorithm</a>
+              </li>
+              <li>
+                <a href="../library/mailbox.html"
+>&#34;mailbox&#34; --- Manipulate mailboxes in various formats</a>
+              </li>
+              <li>
+                <a href="../library/mailcap.html"
+>&#34;mailcap&#34; --- Mailcap file handling</a>
+              </li>
+              <li>
+                <a href="../library/markup.html"
+>Herramientas Para Procesar Formatos de Marcado Estructurado</a>
+              </li>
+              <li>
+                <a href="../library/marshal.html"
+>&#34;marshal&#34; --- Internal Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/math.html"
+>&#34;math&#34; --- Mathematical functions</a>
+              </li>
+              <li>
+                <a href="../library/mimetypes.html"
+>&#34;mimetypes&#34; --- Map filenames to MIME types</a>
+              </li>
+              <li>
+                <a href="../library/mm.html"
+>Servicios Multimedia</a>
+              </li>
+              <li>
+                <a href="../library/mmap.html"
+>&#34;mmap&#34; --- Memory-mapped file support</a>
+              </li>
+              <li>
+                <a href="../library/modulefinder.html"
+>&#34;modulefinder&#34; --- Find modules used by a script</a>
+              </li>
+              <li>
+                <a href="../library/modules.html"
+>Importando módulos</a>
+              </li>
+              <li>
+                <a href="../library/msilib.html"
+>&#34;msilib&#34; --- Read and write Microsoft Installer files</a>
+              </li>
+              <li>
+                <a href="../library/msvcrt.html"
+>&#34;msvcrt&#34; --- Useful routines from the MS VC++ runtime</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;importlib&#34; --- La implementación de &#34;import&#34;</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduccion">Introducción#</a></li>
+              <li class="lvl-2"><a href="#funciones">Funciones#</a></li>
+              <li class="lvl-2"><a href="#importlibabc-abstract-base-classes-related-to-import">&#34;importlib.abc&#34; -- Abstract base classes related to import#</a></li>
+              <li class="lvl-2"><a href="#importlibmachinery-importers-and-path-hooks">&#34;importlib.machinery&#34; -- Importers and path hooks#</a></li>
+              <li class="lvl-2"><a href="#importlibutil-utility-code-for-importers">&#34;importlib.util&#34; -- Utility code for importers#</a></li>
+              <li class="lvl-2"><a href="#ejemplos">Ejemplos#</a></li>
+              <li class="lvl-3"><a href="#importar-programaticamente">Importar programáticamente#</a></li>
+              <li class="lvl-3"><a href="#comprobando-si-se-puede-importar-un-modulo">Comprobando si se puede importar un módulo#</a></li>
+              <li class="lvl-3"><a href="#importar-un-archivo-fuente-directamente">Importar un archivo fuente directamente#</a></li>
+              <li class="lvl-3"><a href="#implementar-importaciones-diferidas">Implementar importaciones diferidas#</a></li>
+              <li class="lvl-3"><a href="#configurar-un-importador">Configurar un importador#</a></li>
+              <li class="lvl-3"><a href="#aproximando-importlibimport_module">Aproximando &#34;importlib.import_module()&#34;#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="importlib-la-implementacion-de-import">"importlib" --- La implementación de "import"<a class="headerlink" href="#importlib-la-implementacion-de-import" title="Permanent link">#</a></h1>
+<p>Added in version 3.1.</p>
+<p><strong>Código fuente:</strong> Lib/importlib/<strong>init</strong>.py</p>
+<p>======================================================================</p>
+<h2 id="introduccion">Introducción<a class="headerlink" href="#introduccion" title="Permanent link">#</a></h2>
+<p>The purpose of the "importlib" package is three-fold.</p>
+<p>Uno es proveer la implementación de la declaración de "import" (y así,
+por extensión, el método "<strong>import</strong>()" ) en el código fuente de
+Python. Esto provee una implementación de la "import" la cual es
+compatible con cualquier intérprete de Python. También provee una
+implementación que es más fácil de comprender que una implementada en
+un lenguajes que no es Python.</p>
+<p>Dos, los componentes incluidos para implementar "import"  están
+expuestos en este paquete para que sea más fácil para los usuarios
+crear sus propios objetos (conocidos de forma genérica como
+<em>importer</em>) para participar en el proceso de importación.</p>
+<p>Tres, el paquete contiene módulos exponiendo funcionalidad adicional
+para administrar aspectos de paquetes de Python:</p>
+<ul>
+<li>
+<p>"importlib.metadata" presenta acceso a metadatos de distribuciones
+  de terceros.</p>
+</li>
+<li>
+<p>"importlib.resources" provee rutinas para acceder a <em>recursos</em> que
+  no son código de paquetes de Python.</p>
+</li>
+</ul>
+<p>Ver también:</p>
+<p>La declaración import
+     La referencia en el lenguaje para la declaración de "import".</p>
+<p>Especificaciones de paquetes
+     Especificaciones originales de los paquetes. Algunas semánticas
+     han cambiado desde que este documento fue escrito (ejemplo,
+     redirección de acuerdo a "None" en "sys.modules").</p>
+<p>La función "<strong>import</strong>()"
+     La declaración de "import" es una decoración sintáctica para esta
+     función.</p>
+<p>La inicialización de la ruta de búsqueda de módulo de sys.path
+     La inicialización de "sys.path".</p>
+<p><strong>PEP 235</strong>
+     Importar en sistemas que no distinguen entre mayúsculas y
+     minúsculas</p>
+<p><strong>PEP 263</strong>
+     Definiendo las codificaciones del código fuente de Python</p>
+<p><strong>PEP 302</strong>
+     Nuevos ganchos de importación</p>
+<p><strong>PEP 328</strong>
+     Importaciones: Multilíneas, y absolutos/relativos</p>
+<p><strong>PEP 366</strong>
+     Importaciones relativas, explicitas, del módulo principal</p>
+<p><strong>PEP 420</strong>
+     Paquetes implícitos en el espacio de nombres</p>
+<p><strong>PEP 451</strong>
+     Un tipo de ModuleSpec para el sistema de importación</p>
+<p><strong>PEP 488</strong>
+     Eliminación de archivos PYO</p>
+<p><strong>PEP 489</strong>
+     Inicialización de extensión de módulo en múltiples fases</p>
+<p><strong>PEP 552</strong>
+     Pycs determinísticos</p>
+<p><strong>PEP 3120</strong>
+     Usando UTF-8 como la codificación fuente por defecto</p>
+<p><strong>PEP 3147</strong>
+     Repositorio de directorios PYC</p>
+<h2 id="funciones">Funciones<a class="headerlink" href="#funciones" title="Permanent link">#</a></h2>
+<p>importlib.<strong>import</strong>(name, globals=None, locals=None, fromlist=(), level=0)</p>
+<p>Una implementación de la función "<strong>import</strong>()" incorporada.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> La importación programática los módulos debe usar
+ &quot;import_module()&quot; en lugar de esta función.
+</code></pre></div>
+
+<p>importlib.import_module(name, package=None)</p>
+<p>Importar un módulo. El argumento llamado <em>name</em> especifica qué
+   módulo importar en términos absolutos o relativos (ejemplo, puede
+   ser "pkg.mod" o "..mod"). Si el nombre fuera especificado en
+   términos relativos, entonces el argumento llamado <em>package</em> debe
+   ser igual al nombre del paquete que será el ancla para resolver el
+   nombre del paquete (ejemplo "import_module('..mod', 'pkg.subpkg')"
+   importará "pkg.mod").</p>
+<p>La función "import_module()" actúa como un envoltorio simplificador
+   alrededor de "importlib.<strong>import</strong>()".  Esto quiere decir que las
+   semánticas de la función son derivadas de "importlib.<strong>import</strong>()".
+   La diferencia más importante entre las dos funciones es que
+   "import_module()" retorna el paquete especificado o el módulo
+   (ejemplo "pkg.mod"), mientras que "<strong>import</strong>()" retorna el paquete
+   o módulo del nivel superior (ejemplo "pkg").</p>
+<p>Si está importando dinámicamente un módulo que se creó desde que el
+   intérprete comenzó la ejecución (por ejemplo, creó un archivo
+   fuente de Python), es posible que deba llamar a
+   "invalidate_caches()" para que el nuevo módulo sea detectado por el
+   sistema de importación.</p>
+<p>Distinto en la versión 3.3: Paquetes padres son importados
+   automáticamente.</p>
+<p>importlib.invalidate_caches()</p>
+<p>Invalide los cache internos de ubicadores encontrados en
+   "sys.meta_path".Si un buscador implementa "invalidate_caches()"
+   entonces será llamado para realizar la invalidación.Esta función
+   debe ser llamada si cualquier módulo ha sido creado/instalado
+   mientras tu programa esta siendo ejecutado para garantizar que
+   todos los buscadores noten la existencia del nuevo módulo.</p>
+<p>Added in version 3.3.</p>
+<p>Distinto en la versión 3.10: Paquetes de espacio de nombres
+   creados/instalados en una ubicación "sys.path" distinta después de
+   que el mismo espacio de nombres fue importado son notados.</p>
+<p>importlib.reload(module)</p>
+<p>Recarga un <em>modulo</em> previamente importado. El argumento debe ser un
+   objeto módulo, por lo que debe haber sido importado exitosamente.
+   Esto es útil cuando has editado el código fuente de un archivo
+   usando un editor externo y deseas probar la nueva versión sin
+   abandonar el interprete de Python. El valor retornado es el objeto
+   módulo (que puede ser diferente si la reimportación crea un nuevo
+   objeto en "sys.modules").</p>
+<p>Cuando "reload()" es ejecutada:</p>
+<ul>
+<li>
+<p>El código de un módulo de Python es recompilado y el código del
+     módulo reejecutado, definiendo un nuevo conjunto de objetos que
+     son asignados a los nombres de los módulos en el diccionario,
+     reusando el <em>loader</em> que originalmente carga los módulos. El
+     método "init" de los módulos de extension no es llamado de nuevo.</p>
+</li>
+<li>
+<p>Al igual que con todos los demás objetos en Python, los objetos
+     antiguos solo se recuperan después de que sus recuentos de
+     referencias caen a cero.</p>
+</li>
+<li>
+<p>Los nombres en el espacio de nombres del módulo se actualizan
+     para señalar cualquier objeto nuevo o modificado.</p>
+</li>
+<li>
+<p>Otras referencias a los objetos antiguos (como los nombres
+     externos al módulo) no se vuelven a vincular para hacer
+     referencia a los nuevos objetos y deben actualizarse en cada
+     espacio de nombres donde se produzcan si se desea.</p>
+</li>
+</ul>
+<p>Hay una serie de otras advertencias:</p>
+<p>Cuando se vuelve a cargar un módulo, se conserva su diccionario
+   (que contiene las variables globales del módulo). Las
+   redefiniciones de nombres anularán las antiguas definiciones, por
+   lo que generalmente esto no es un problema. Si la nueva versión de
+   un módulo no define un nombre que fue definido por la versión
+   anterior, la definición anterior permanece. Esta característica se
+   puede utilizar en beneficio del módulo si mantiene una tabla global
+   o caché de objetos --- con una declaración "try" puede probar la
+   presencia de la tabla y omitir su inicialización si lo desea:</p>
+<div class="codehilite"><pre><span></span><code>  try:
+      cache
+  except NameError:
+      cache = {}
+</code></pre></div>
+
+<p>Por lo general, no es muy útil recargar módulos integrados o
+   cargados dinámicamente. No se recomienda recargar "sys",
+   "<strong>main</strong>", "builtins" y otros módulos clave. En muchos casos, los
+   módulos de extensión no están diseñados para inicializarse más de
+   una vez y pueden fallar de manera arbitraria cuando se vuelven a
+   cargar.</p>
+<p>Si un módulo importa objetos de otro módulo usando "from" ...
+   "import" ..., al llamar a "reload()" para el otro módulo no
+   redefine los objetos importados de él --- una forma de evitar esto
+   es volver a ejecutar la instrucción "from", otra es usar "import" y
+   nombres calificados (<em>module.name</em>) en su lugar.</p>
+<p>Si un módulo crea instancias de una clase, volver a cargar el
+   módulo que define la clase no afecta las definiciones de método de
+   las instancias --- continúan usando la definición de clase
+   anterior. Lo mismo ocurre con las clases derivadas.</p>
+<p>Added in version 3.4.</p>
+<p>Distinto en la versión 3.7: "ModuleNotFoundError" se lanza cuando
+   el módulo que se está recargando carece de "ModuleSpec".</p>
+<p>Advertencia:</p>
+<div class="codehilite"><pre><span></span><code> This function is not thread-safe. Calling it from multiple
+ threads can result in unexpected behavior. It&#39;s recommended to
+ use the &quot;threading.Lock&quot; or other synchronization primitives for
+ thread-safe module reloading.
+</code></pre></div>
+
+<h2 id="importlibabc-abstract-base-classes-related-to-import">"importlib.abc" -- Abstract base classes related to import<a class="headerlink" href="#importlibabc-abstract-base-classes-related-to-import" title="Permanent link">#</a></h2>
+<p><strong>Código fuente:</strong> Lib/importlib/abc.py</p>
+<p>======================================================================</p>
+<p>The "importlib.abc" module contains all of the core abstract base
+classes used by "import". Some subclasses of the core abstract base
+classes are also provided to help in implementing the core ABCs.</p>
+<p>Jerarquía ABC:</p>
+<p>object
+    +-- MetaPathFinder
+    +-- PathEntryFinder
+    +-- Loader
+         +-- ResourceLoader --------+
+         +-- InspectLoader          |
+              +-- ExecutionLoader --+
+                                    +-- FileLoader
+                                    +-- SourceLoader</p>
+<p>class importlib.abc.MetaPathFinder</p>
+<p>Una clase base abstracta que representa <em>meta path finder</em>.</p>
+<p>Added in version 3.3.</p>
+<p>Distinto en la versión 3.10: Ya no hereda de "Finder".</p>
+<p>find_spec(fullname, path, target=None)</p>
+<div class="codehilite"><pre><span></span><code>  An abstract method for finding a *spec* for the specified
+  module.  If this is a top-level import, *path* will be &quot;None&quot;.
+  Otherwise, this is a search for a subpackage or module and
+  *path* will be the value of &quot;__path__&quot; from the parent package.
+  If a spec cannot be found, &quot;None&quot; is returned. When passed in,
+  &quot;target&quot; is a module object that the finder may use to make a
+  more educated guess about what spec to return.
+  &quot;importlib.util.spec_from_loader()&quot; may be useful for
+  implementing concrete &quot;MetaPathFinders&quot;.
+
+  Added in version 3.4.
+</code></pre></div>
+
+<p>invalidate_caches()</p>
+<div class="codehilite"><pre><span></span><code>  Un método opcional que, cuando se llama, debería invalidar
+  cualquier caché interno utilizado por el buscador. Utilizado por
+  &quot;importlib.invalidate_caches()&quot; al invalidar los cachés de todos
+  los buscadores en &quot;sys.meta_path&quot;.
+
+  Distinto en la versión 3.4: Retorna &quot;None&quot; cuando se llama en
+  lugar de &quot;NotImplemented&quot;.
+</code></pre></div>
+
+<p>class importlib.abc.PathEntryFinder</p>
+<p>Una clase base abstracta que representa un <em>buscador de entradas de
+   ruta</em>. Aunque tiene algunas similitudes con "MetaPathFinder",
+   "PathEntryFinder" está diseñado para usarse solo dentro del
+   subsistema de importación basado en rutas proporcionado por
+   "importlib.machinery.PathFinder".</p>
+<p>Added in version 3.3.</p>
+<p>Distinto en la versión 3.10: Ya no hereda de "Finder".</p>
+<p>find_spec(fullname, target=None)</p>
+<div class="codehilite"><pre><span></span><code>  Un método abstracto para encontrar un *spec* para el módulo
+  especificado. El buscador buscará el módulo solo dentro del
+  *path entry* a la que está asignado. Si no se puede encontrar
+  una especificación, se retorna &quot;None&quot;. Cuando se pasa, &quot;target&quot;
+  es un objeto de módulo que el buscador puede usar para hacer una
+  suposición más informada sobre qué especificación retornar.
+  &quot;importlib.util.spec_from_loader()&quot; puede ser útil para
+  implementar &quot;PathEntryFinders&quot; concretos.
+
+  Added in version 3.4.
+</code></pre></div>
+
+<p>invalidate_caches()</p>
+<div class="codehilite"><pre><span></span><code>  Un método opcional que, cuando se llama, debería invalidar
+  cualquier caché interno utilizado por el buscador. Usado por
+  &quot;importlib.machinery.PathFinder.invalidate_caches()&quot; al
+  invalidar las cachés de todos los buscadores en caché.
+</code></pre></div>
+
+<p>class importlib.abc.Loader</p>
+<p>Una clase base abstracta para un <em>loader</em>. Consulte <strong>PEP 302</strong>
+   para obtener la definición exacta de cargador.</p>
+<p>Los cargadores que deseen admitir la lectura de recursos deben
+   implementar un método "get_resource_reader()" según lo especificado
+   por "importlib.abc.ResourceReader".</p>
+<p>Distinto en la versión 3.7: Introducido el método opcional
+   "get_resource_reader()".</p>
+<p>create_module(spec)</p>
+<div class="codehilite"><pre><span></span><code>  Un método que retorna el objeto de módulo que se utilizará al
+  importar un módulo. Este método puede retornar &quot;None&quot;, lo que
+  indica que se debe llevar a cabo la semántica de creación de
+  módulos predeterminada.
+
+  Added in version 3.4.
+
+  Distinto en la versión 3.6: Este método ya no es opcional cuando
+  se defina &quot;exec_module()&quot;.
+</code></pre></div>
+
+<p>exec_module(module)</p>
+<div class="codehilite"><pre><span></span><code>  Un método abstracto que ejecuta el módulo en su propio espacio
+  de nombres cuando se importa o se vuelve a cargar un módulo. El
+  módulo ya debería estar inicializado cuando se llama a
+  &quot;exec_module()&quot;. Cuando existe este método, se debe definir
+  &quot;create_module()&quot;.
+
+  Added in version 3.4.
+
+  Distinto en la versión 3.6: &quot;create_module()&quot; también debe
+  definirse.
+</code></pre></div>
+
+<p>load_module(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Un método heredado para cargar un módulo. Si el módulo no se
+  puede cargar, se lanza &quot;ImportError&quot;; de lo contrario, se
+  retorna el módulo cargado.
+
+  Si el módulo solicitado ya existe en &quot;sys.modules&quot;, ese módulo
+  debe usarse y recargarse. De lo contrario, el cargador debe
+  crear un nuevo módulo e insertarlo en &quot;sys.modules&quot; antes de que
+  comience la carga, para evitar la recursividad de la
+  importación. Si el cargador insertó un módulo y la carga falla,
+  el cargador debe eliminarlo de &quot;sys.modules&quot;; los módulos que ya
+  estaban en &quot;sys.modules&quot; antes de que el cargador comenzara a
+  ejecutarse deben dejarse intactos.
+
+  El cargador debe establecer varios atributos en el módulo (tenga
+  en cuenta que algunos de estos atributos pueden cambiar cuando
+  se recarga un módulo):
+
+  * &quot;module.__name__&quot;
+
+  * &quot;module.__file__&quot;
+
+  * &quot;module.__cached__&quot; *(deprecated)*
+
+  * &quot;module.__path__&quot;
+
+  * &quot;module.__package__&quot; *(deprecated)*
+
+  * &quot;module.__loader__&quot; *(deprecated)*
+
+  Cuando &quot;exec_module()&quot; está disponible, se proporciona una
+  funcionalidad compatible con versiones anteriores.
+
+  Distinto en la versión 3.4: Lanza &quot;ImportError&quot; cuando se llama
+  en lugar de &quot;NotImplementedError&quot;. Funcionalidad proporcionada
+  cuando &quot;exec_module()&quot; está disponible.
+
+  Deprecated since version 3.4, will be removed in version 3.15:
+  La API recomendada para cargar un módulo es &quot;exec_module()&quot; (y
+  &quot;create_module()&quot;). Los cargadores deberían implementarlo en
+  lugar de &quot;load_module()&quot;. La maquinaria de importación se
+  encarga de todas las demás responsabilidades de &quot;load_module()&quot;
+  cuando se implementa &quot;exec_module()&quot;.
+</code></pre></div>
+
+<p>class importlib.abc.ResourceLoader</p>
+<p><em>Reemplazado por TraversableResources</em></p>
+<div class="codehilite"><pre><span></span><code>  Una clase base abstracta para un *loader* que implementa el
+  protocolo opcional **PEP 302** para cargar recursos arbitrarios
+  desde el back-end de almacenamiento.
+
+  Obsoleto desde la versión 3.7: This ABC is deprecated in favour
+  of supporting resource loading through
+  &quot;importlib.resources.abc.TraversableResources&quot;. This class
+  exists for backwards compatibility only with other ABCs in this
+  module.
+
+  abstractmethod get_data(path)
+
+        An abstract method to return the bytes for the data
+        located at *path*. Loaders that have a file-like storage
+        back-end that allows storing arbitrary data can implement
+        this abstract method to give direct access to the data
+        stored. &quot;OSError&quot; is to be raised if the *path* cannot be
+        found. The *path* is expected to be constructed using a
+        module&#39;s &quot;__file__&quot; attribute or an item from a package&#39;s
+        &quot;__path__&quot;.
+
+        Distinto en la versión 3.4: Lanza &quot;OSError&quot; en vez de
+        &quot;NotImplementedError&quot;.
+</code></pre></div>
+
+<p>class importlib.abc.InspectLoader</p>
+<p>Una clase base abstracta para un <em>loader</em> que implementa el
+   protocolo opcional <strong>PEP 302</strong> para cargadores que inspeccionan
+   módulos.</p>
+<p>get_code(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el objeto código para un módulo, o &quot;None&quot; si el módulo
+  no tiene un objeto código (como sería el caso, por ejemplo, para
+  un módulo integrado). Lanza un &quot;ImportError&quot; si el cargador no
+  puede encontrar el módulo solicitado.
+
+  Nota:
+
+    Si bien el método tiene una implementación predeterminada, se
+    sugiere que se anule si es posible para mejorar el
+    rendimiento.
+
+  Distinto en la versión 3.4: Ya no es un método abstracto y se
+  proporciona una implementación concreta.
+</code></pre></div>
+
+<p>abstractmethod get_source(fullname)</p>
+<div class="codehilite"><pre><span></span><code>     Un método abstracto para retornar la fuente de un módulo. Se
+     retorna como una cadena de caracteres de texto usando
+     *universal newlines*, traduciendo todos los separadores de
+     línea reconocidos en caracteres &quot;&#39;\n&#39;&quot;. Retorna &quot;None&quot; si no
+     hay una fuente disponible (por ejemplo, un módulo integrado).
+     Lanza la excepción &quot;ImportError&quot; si el cargador no puede
+     encontrar el módulo especificado.
+
+     Distinto en la versión 3.4: Lanza &quot;ImportError&quot; en vez de
+     &quot;NotImplementedError&quot;.
+</code></pre></div>
+
+<p>is_package(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Un método opcional para retornar un valor verdadero si el módulo
+  es un paquete, un valor falso en caso contrario. Se lanza
+  &quot;ImportError&quot; si el *cargador* no puede encontrar el módulo.
+
+  Distinto en la versión 3.4: Lanza &quot;ImportError&quot; en vez de
+  &quot;NotImplementedError&quot;.
+</code></pre></div>
+
+<p>static source_to_code(data, path='<string>')</p>
+<div class="codehilite"><pre><span></span><code>  Cree un objeto de código a partir de la fuente de Python.
+
+  El argumento *data* puede ser cualquier cosa que admita la
+  función &quot;compile()&quot; (es decir, cadena de caracteres o bytes). El
+  argumento *path* debe ser la &quot;ruta&quot; de donde se originó el
+  código fuente, que puede ser un concepto abstracto (por ejemplo,
+  ubicación en un archivo zip).
+
+  Con el objeto de código subsiguiente, uno puede ejecutarlo en un
+  módulo ejecutando &quot;exec(code, module.__dict__)&quot;.
+
+  Added in version 3.4.
+
+  Distinto en la versión 3.5: Hace el método estático.
+</code></pre></div>
+
+<p>exec_module(module)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación de &quot;Loader.exec_module()&quot;.
+
+  Added in version 3.4.
+</code></pre></div>
+
+<p>load_module(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación de &quot;Loader.load_module()&quot;.
+
+  Deprecated since version 3.4, will be removed in version 3.15:
+  use &quot;exec_module()&quot; en su lugar.
+</code></pre></div>
+
+<p>class importlib.abc.ExecutionLoader</p>
+<p>Una clase base abstracta que hereda de "InspectLoader" que, cuando
+   se implementa, ayuda a que un módulo se ejecute como un script. El
+   ABC representa un protocolo opcional <strong>PEP 302</strong>.</p>
+<p>abstractmethod get_filename(fullname)</p>
+<div class="codehilite"><pre><span></span><code>     An abstract method that is to return the value of &quot;__file__&quot;
+     for the specified module. If no path is available,
+     &quot;ImportError&quot; is raised.
+
+     Si el código fuente está disponible, entonces el método debe
+     devolver la ruta al archivo fuente, independientemente de si
+     se utilizó un código de bytes para cargar el módulo.
+
+     Distinto en la versión 3.4: Lanza &quot;ImportError&quot; en vez de
+     &quot;NotImplementedError&quot;.
+</code></pre></div>
+
+<p>class importlib.abc.FileLoader(fullname, path)</p>
+<p>Una clase base abstracta que hereda de "ResourceLoader" y
+   "ExecutionLoader", proporcionando implementaciones concretas de
+   "ResourceLoader.get_data()" y "ExecutionLoader.get_filename()".</p>
+<p>El argumento <em>fullname</em> es un nombre completamente resuelto del
+   módulo que el cargador debe manejar. El argumento <em>path</em> es la ruta
+   al archivo del módulo.</p>
+<p>Added in version 3.3.</p>
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  El nombre del módulo que puede manejar el cargador.
+</code></pre></div>
+
+<p>path</p>
+<div class="codehilite"><pre><span></span><code>  Ruta al archivo del módulo.
+</code></pre></div>
+
+<p>load_module(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Llama a super&#39;s &quot;load_module()&quot;.
+
+  Deprecated since version 3.4, will be removed in version 3.15:
+  Utilice &quot;Loader.exec_module()&quot; en su lugar.
+</code></pre></div>
+
+<p>abstractmethod get_filename(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;path&quot;.
+</code></pre></div>
+
+<p>abstractmethod get_data(path)</p>
+<div class="codehilite"><pre><span></span><code>  Lee *path* como un archivo binario y retorna los bytes de él.
+</code></pre></div>
+
+<p>class importlib.abc.SourceLoader</p>
+<p>Una clase base abstracta para implementar la carga de archivos
+   fuente (y opcionalmente bytecode). La clase hereda tanto de
+   "ResourceLoader" como de "ExecutionLoader", lo que requiere la
+   implementación de:</p>
+<ul>
+<li>
+<p>"ResourceLoader.get_data()"</p>
+</li>
+<li>
+<p>"ExecutionLoader.get_filename()"
+        Solo debe devolver la ruta al archivo de origen; la carga sin
+        fuente no es compatible.</p>
+</li>
+</ul>
+<p>Los métodos abstractos definidos por esta clase son para agregar
+   soporte de archivo de código de bytes opcional. No implementar
+   estos métodos opcionales (o hacer que se lance
+   "NotImplementedError") hace que el cargador solo funcione con el
+   código fuente. La implementación de los métodos permite que el
+   cargador trabaje con archivos fuente <em>y</em> código de bytes; no
+   permite la carga <em>sin fuente</em> donde solo se proporciona un código
+   de bytes. Los archivos de código de bytes son una optimización para
+   acelerar la carga al eliminar el paso de análisis del compilador de
+   Python, por lo que no se expone ninguna API específica de código de
+   bytes.</p>
+<p>path_stats(path)</p>
+<div class="codehilite"><pre><span></span><code>  Método abstracto opcional que retorna un &quot;dict&quot; que contiene
+  metadatos sobre la ruta especificada. Las claves de diccionario
+  admitidas son:
+
+  * &quot;&#39;mtime&#39;&quot; (obligatorio): un número entero o de punto flotante
+    que representa la hora de modificación del código fuente;
+
+  * &quot;&#39;size&#39;&quot; (opcional): el tamaño en bytes del código fuente.
+
+  Cualquier otra clave del diccionario se ignora para permitir
+  futuras extensiones. Si no se puede manejar la ruta, se genera
+  &quot;OSError&quot;.
+
+  Added in version 3.3.
+
+  Distinto en la versión 3.4: Lanza &quot;OSError&quot; en vez de
+  &quot;NotImplementedError&quot;.
+</code></pre></div>
+
+<p>path_mtime(path)</p>
+<div class="codehilite"><pre><span></span><code>  Método abstracto opcional que retorna la hora de modificación de
+  la ruta especificada.
+
+  Obsoleto desde la versión 3.3: Este método está obsoleto en
+  favor de &quot;path_stats()&quot;. No tiene que implementarlo, pero aún
+  está disponible para fines de compatibilidad. Lanza &quot;OSError&quot; si
+  la ruta no se puede manejar.
+
+  Distinto en la versión 3.4: Lanza &quot;OSError&quot; en vez de
+  &quot;NotImplementedError&quot;.
+</code></pre></div>
+
+<p>set_data(path, data)</p>
+<div class="codehilite"><pre><span></span><code>  Método abstracto opcional que escribe los bytes especificados en
+  una ruta de archivo. Los directorios intermedios que no existan
+  se crearán automáticamente.
+
+  Cuando la escritura en la ruta falla porque la ruta es de solo
+  lectura (&quot;errno.EACCES&quot;/&quot;PermissionError&quot;), no propague la
+  excepción.
+
+  Distinto en la versión 3.4: Ya no lanza &quot;NotImplementedError&quot;
+  cuando se llama.
+</code></pre></div>
+
+<p>get_code(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de &quot;InspectLoader.get_code()&quot;.
+</code></pre></div>
+
+<p>exec_module(module)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de &quot;Loader.exec_module()&quot;.
+
+  Added in version 3.4.
+</code></pre></div>
+
+<p>load_module(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de &quot;Loader.load_module()&quot;.
+
+  Deprecated since version 3.4, will be removed in version 3.15:
+  Utilice &quot;exec_module()&quot; en su lugar.
+</code></pre></div>
+
+<p>get_source(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de &quot;InspectLoader.get_source()&quot;.
+</code></pre></div>
+
+<p>is_package(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de &quot;InspectLoader.is_package()&quot;. Se
+  determina que un módulo es un paquete si su ruta de archivo
+  (proporcionada por &quot;ExecutionLoader.get_filename()&quot;) es un
+  archivo llamado &quot;__init__&quot; cuando se elimina la extensión del
+  archivo **y** el nombre del módulo sí lo hace no termina en
+  &quot;__init__&quot;.
+</code></pre></div>
+
+<h2 id="importlibmachinery-importers-and-path-hooks">"importlib.machinery" -- Importers and path hooks<a class="headerlink" href="#importlibmachinery-importers-and-path-hooks" title="Permanent link">#</a></h2>
+<p><strong>Código fuente:</strong> Lib/importlib/machinery.py</p>
+<p>======================================================================</p>
+<p>Este módulo contiene varios objetos que ayudan "import" buscar y
+cargar módulos.</p>
+<p>importlib.machinery.SOURCE_SUFFIXES</p>
+<p>Una lista de cadenas de caracteres que representan los sufijos de
+   archivo reconocidos para los módulos de origen.</p>
+<p>Added in version 3.3.</p>
+<p>importlib.machinery.DEBUG_BYTECODE_SUFFIXES</p>
+<p>Una lista de cadenas que representan los sufijos de archivo para
+   módulos de código de bytes no optimizados.</p>
+<p>Added in version 3.3.</p>
+<p>Obsoleto desde la versión 3.5: Use "BYTECODE_SUFFIXES" instead.</p>
+<p>importlib.machinery.OPTIMIZED_BYTECODE_SUFFIXES</p>
+<p>Una lista de cadenas de caracteres que representan los sufijos de
+   archivo para módulos de código de bytes optimizados.</p>
+<p>Added in version 3.3.</p>
+<p>Obsoleto desde la versión 3.5: Use "BYTECODE_SUFFIXES" instead.</p>
+<p>importlib.machinery.BYTECODE_SUFFIXES</p>
+<p>Una lista de cadenas de caracteres que representan los sufijos de
+   archivo reconocidos para los módulos de código de bytes (incluido
+   el punto inicial).</p>
+<p>Added in version 3.3.</p>
+<p>Distinto en la versión 3.5: El valor ya no depende de "<strong>debug</strong>".</p>
+<p>importlib.machinery.EXTENSION_SUFFIXES</p>
+<p>Una lista de cadenas de caracteres que representan los sufijos de
+   archivo reconocidos para los módulos de extensión.</p>
+<p>Added in version 3.3.</p>
+<p>importlib.machinery.all_suffixes()</p>
+<p>Retorna una lista combinada de cadenas de caracteres que
+   representan todos los sufijos de archivo para módulos reconocidos
+   por la maquinaria de importación estándar. Este es un ayudante para
+   el código que simplemente necesita saber si una ruta del sistema de
+   archivos potencialmente se refiere a un módulo sin necesidad de
+   detalles sobre el tipo de módulo (por ejemplo,
+   "inspect.getmodulename()").</p>
+<p>Added in version 3.3.</p>
+<p>class importlib.machinery.BuiltinImporter</p>
+<p>Un <em>importer</em> para módulos integrados. Todos los módulos integrados
+   conocidos se enumeran en "sys.builtin_module_names". Esta clase
+   implementa los ABC "importlib.abc.MetaPathFinder" y
+   "importlib.abc.InspectLoader".</p>
+<p>Esta clase solo define los métodos de clase para aliviar la
+   necesidad de instanciación.</p>
+<p>Distinto en la versión 3.5: Como parte de <strong>PEP 489</strong>, el
+   importador integrado ahora implementa "Loader.create_module()" y
+   "Loader.exec_module()"</p>
+<p>class importlib.machinery.FrozenImporter</p>
+<p>Un <em>importer</em> para módulos congelados. Esta clase implementa los
+   ABC "importlib.abc.MetaPathFinder" y "importlib.abc.InspectLoader".</p>
+<p>Esta clase solo define los métodos de clase para aliviar la
+   necesidad de instanciación.</p>
+<p>Distinto en la versión 3.4: Métodos obtenidos "create_module()" y
+   "exec_module()".</p>
+<p>class importlib.machinery.WindowsRegistryFinder</p>
+<p><em>Finder</em> para los módulos declarados en el registro de Windows.
+   Esta clase implementa el "importlib.abc.MetaPathFinder" ABC.</p>
+<p>Esta clase solo define los métodos de clase para aliviar la
+   necesidad de instanciación.</p>
+<p>Added in version 3.3.</p>
+<p>Obsoleto desde la versión 3.6: Utilice la configuración de "site"
+   en su lugar. Es posible que las versiones futuras de Python no
+   habiliten este buscador de forma predeterminada.</p>
+<p>class importlib.machinery.PathFinder</p>
+<p>Un <em>Finder</em> para "sys.path" y atributos del paquete "<strong>path</strong>".
+   Esta clase implementa el "importlib.abc.MetaPathFinder" ABC.</p>
+<p>Esta clase solo define los métodos de clase para aliviar la
+   necesidad de instanciación.</p>
+<p>classmethod find_spec(fullname, path=None, target=None)</p>
+<div class="codehilite"><pre><span></span><code>  Método de clase que intenta encontrar un *spec* para el módulo
+  especificado por *fullname* en &quot;sys.path&quot; o, si está definido,
+  en *path*. Para cada entrada de ruta que se busca, se comprueba
+  &quot;sys.path_importer_cache&quot;. Si se encuentra un objeto que no es
+  falso, se utiliza como *path entry finder* para buscar el módulo
+  que se está buscando. Si no se encuentra ninguna entrada en
+  &quot;sys.path_importer_cache&quot;, entonces &quot;sys.path_hooks&quot; se busca un
+  buscador para la entrada de ruta y, si se encuentra, se almacena
+  en &quot;sys.path_importer_cache&quot; junto con ser consultado sobre el
+  módulo. Si nunca se encuentra ningún buscador, entonces &quot;None&quot;
+  se almacena en el caché y se retorna.
+
+  Added in version 3.4.
+
+  Distinto en la versión 3.5: Si el directorio de trabajo actual,
+  representado por una cadena de caracteres vacía, ya no es
+  válido, se retorna &quot;None&quot; pero no se almacena ningún valor en
+  &quot;sys.path_importer_cache&quot;.
+</code></pre></div>
+
+<p>classmethod invalidate_caches()</p>
+<div class="codehilite"><pre><span></span><code>  Llama &quot;importlib.abc.PathEntryFinder.invalidate_caches()&quot; en
+  todos los buscadores almacenados en &quot;sys.path_importer_cache&quot;
+  que definen el método. De lo contrario, las entradas en
+  &quot;sys.path_importer_cache&quot; establecidas en &quot;None&quot; se eliminan.
+
+  Distinto en la versión 3.7: Se eliminan las entradas de &quot;None&quot;
+  en &quot;sys.path_importer_cache&quot;.
+</code></pre></div>
+
+<p>Distinto en la versión 3.4: Llama a objetos en "sys.path_hooks" con
+   el directorio de trabajo actual para "''" (es decir, la cadena de
+   caracteres vacía).</p>
+<p>class importlib.machinery.FileFinder(path, *loader_details)</p>
+<p>Una implementación concreta de "importlib.abc.PathEntryFinder" que
+   almacena en caché los resultados del sistema de archivos.</p>
+<p>El argumento <em>path</em> es el directorio que el buscador se encarga de
+   buscar.</p>
+<p>El argumento <em>loader_details</em> es un número variable de tuplas de 2
+   elementos, cada una de las cuales contiene un cargador y una
+   secuencia de sufijos de archivo que el cargador reconoce. Se espera
+   que los cargadores sean invocables que acepten dos argumentos del
+   nombre del módulo y la ruta al archivo encontrado.</p>
+<p>El buscador almacenará en caché el contenido del directorio según
+   sea necesario, haciendo llamadas estadísticas para cada búsqueda de
+   módulo para verificar que la caché no esté desactualizada. Debido a
+   que la obsolescencia de la caché se basa en la granularidad de la
+   información de estado del sistema operativo del sistema de
+   archivos, existe una condición de carrera potencial de buscar un
+   módulo, crear un nuevo archivo y luego buscar el módulo que
+   representa el nuevo archivo. Si las operaciones ocurren lo
+   suficientemente rápido como para ajustarse a la granularidad de las
+   llamadas estadísticas, la búsqueda del módulo fallará. Para evitar
+   que esto suceda, cuando cree un módulo dinámicamente, asegúrese de
+   llamar a "importlib.invalidate_caches()".</p>
+<p>Added in version 3.3.</p>
+<p>path</p>
+<div class="codehilite"><pre><span></span><code>  La ruta en la que buscará el buscador.
+</code></pre></div>
+
+<p>find_spec(fullname, target=None)</p>
+<div class="codehilite"><pre><span></span><code>  Intente encontrar la especificación para manejar *fullname*
+  dentro de &quot;path&quot;.
+
+  Added in version 3.4.
+</code></pre></div>
+
+<p>invalidate_caches()</p>
+<div class="codehilite"><pre><span></span><code>  Borrar el caché interno.
+</code></pre></div>
+
+<p>classmethod path_hook(*loader_details)</p>
+<div class="codehilite"><pre><span></span><code>  Un método de clase que retorna un cierre para su uso en
+  &quot;sys.path_hooks&quot;. El cierre retorna una instancia de
+  &quot;FileFinder&quot; utilizando el argumento de ruta proporcionado al
+  cierre directamente y *loader_details* indirectamente.
+
+  Si el argumento del cierre no es un directorio existente, se
+  lanza &quot;ImportError&quot;.
+</code></pre></div>
+
+<p>class importlib.machinery.SourceFileLoader(fullname, path)</p>
+<p>Una implementación concreta de "importlib.abc.SourceLoader"
+   subclasificando "importlib.abc.FileLoader" y proporcionando algunas
+   implementaciones concretas de otros métodos.</p>
+<p>Added in version 3.3.</p>
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  El nombre del módulo que manejará este cargador.
+</code></pre></div>
+
+<p>path</p>
+<div class="codehilite"><pre><span></span><code>  La ruta al archivo de origen.
+</code></pre></div>
+
+<p>is_package(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; si &quot;path&quot; parece ser para un paquete.
+</code></pre></div>
+
+<p>path_stats(path)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de
+  &quot;importlib.abc.SourceLoader.path_stats()&quot;.
+</code></pre></div>
+
+<p>set_data(path, data)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de
+  &quot;importlib.abc.SourceLoader.set_data()&quot;.
+</code></pre></div>
+
+<p>load_module(name=None)</p>
+<div class="codehilite"><pre><span></span><code>  Implementación concreta de &quot;importlib.abc.Loader.load_module()&quot;
+  donde especificar el nombre del módulo a cargar es opcional.
+
+  Deprecated since version 3.6, will be removed in version 3.15:
+  Utilice &quot;importlib.abc.Loader.exec_module()&quot; en su lugar.
+</code></pre></div>
+
+<p>class importlib.machinery.SourcelessFileLoader(fullname, path)</p>
+<p>Una implementación concreta de "importlib.abc.FileLoader" que puede
+   importar archivos de código de bytes (es decir, no existen archivos
+   de código fuente).</p>
+<p>Tenga en cuenta que el uso directo de archivos de código de bytes
+   (y, por lo tanto, no de archivos de código fuente) impide que sus
+   módulos sean utilizables por todas las implementaciones de Python o
+   las nuevas versiones de Python que cambian el formato de código de
+   bytes.</p>
+<p>Added in version 3.3.</p>
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  El nombre del módulo que manejará el cargador.
+</code></pre></div>
+
+<p>path</p>
+<div class="codehilite"><pre><span></span><code>  La ruta al archivo de código de bytes.
+</code></pre></div>
+
+<p>is_package(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Determina si el módulo es un paquete basado en &quot;path&quot;.
+</code></pre></div>
+
+<p>get_code(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el objeto de código para &quot;name&quot; creado a partir de
+  &quot;path&quot;.
+</code></pre></div>
+
+<p>get_source(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;None&quot; ya que los archivos de código de bytes no tienen
+  fuente cuando se usa este cargador.
+</code></pre></div>
+
+<p>load_module(name=None)</p>
+<p>Implementación concreta de "importlib.abc.Loader.load_module()"
+   donde especificar el nombre del módulo a cargar es opcional.</p>
+<p>Deprecated since version 3.6, will be removed in version 3.15:
+   Utilice "importlib.abc.Loader.exec_module()" en su lugar.</p>
+<p>class importlib.machinery.ExtensionFileLoader(fullname, path)</p>
+<p>Una implementación concreta de "importlib.abc.ExecutionLoader" para
+   módulos de extensión.</p>
+<p>El argumento <em>fullname</em> especifica el nombre del módulo que el
+   cargador debe admitir. El argumento <em>path</em> es la ruta al archivo
+   del módulo de extensión.</p>
+<p>Tenga en cuenta que, de manera predeterminada, la importación de un
+   módulo de extensión fallará en los subintérpretes si no implementa
+   la inicialización multifase (ver <strong>PEP 489</strong>), incluso si de lo
+   contrario se importaría correctamente.</p>
+<p>Added in version 3.3.</p>
+<p>Distinto en la versión 3.12: Ahora se requiere inicialización
+   multifase para el uso en subintérpretes.</p>
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  Nombre del módulo que admite el cargador.
+</code></pre></div>
+
+<p>path</p>
+<div class="codehilite"><pre><span></span><code>  Ruta al módulo de extensión.
+</code></pre></div>
+
+<p>create_module(spec)</p>
+<div class="codehilite"><pre><span></span><code>  Crea el objeto de módulo a partir de la especificación dada de
+  acuerdo con **PEP 489**.
+
+  Added in version 3.5.
+</code></pre></div>
+
+<p>exec_module(module)</p>
+<div class="codehilite"><pre><span></span><code>  Inicializa el objeto de módulo dado de acuerdo con **PEP 489**.
+
+  Added in version 3.5.
+</code></pre></div>
+
+<p>is_package(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Returns &quot;True&quot; if the file path points to a package&#39;s &quot;__init__&quot;
+  module based on &quot;EXTENSION_SUFFIXES&quot;.
+</code></pre></div>
+
+<p>get_code(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;None&quot; ya que los módulos de extensión carecen de un
+  objeto de código.
+</code></pre></div>
+
+<p>get_source(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;None&quot; ya que los módulos de extensión no tienen código
+  fuente.
+</code></pre></div>
+
+<p>get_filename(fullname)</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;path&quot;.
+
+  Added in version 3.4.
+</code></pre></div>
+
+<p>class importlib.machinery.NamespaceLoader(name, path, path_finder)</p>
+<p>Una implementación concreta de "importlib.abc.InspectLoader" para
+   paquetes de espacio de nombres. Ésta es un alias para una clase
+   privada y sólo se hace pública para introspeccionar el atributo
+   "<strong>loader</strong>" en paquetes de espacio de nombres:</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; from importlib.machinery import NamespaceLoader
+  &gt;&gt;&gt; import my_namespace
+  &gt;&gt;&gt; isinstance(my_namespace.__loader__, NamespaceLoader)
+  True
+  &gt;&gt;&gt; import importlib.abc
+  &gt;&gt;&gt; isinstance(my_namespace.__loader__, importlib.abc.Loader)
+  True
+</code></pre></div>
+
+<p>Added in version 3.11.</p>
+<p>class importlib.machinery.ModuleSpec(name, loader, *, origin=None, loader_state=None, is_package=None)</p>
+<p>A specification for a module's import-system-related state.  This
+   is typically exposed as the module's "<strong>spec</strong>" attribute.  Many of
+   these attributes are also available directly on a module: for
+   example, "module.<strong>spec</strong>.origin == module.<strong>file</strong>".  Note,
+   however, that while the <em>values</em> are usually equivalent, they can
+   differ since there is no synchronization between the two objects.
+   For example, it is possible to update the module's "<strong>file</strong>" at
+   runtime and this will not be automatically reflected in the
+   module's "<strong>spec</strong>.origin", and vice versa.</p>
+<p>Added in version 3.4.</p>
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  The module&#39;s fully qualified name (see &quot;module.__name__&quot;). The
+  *finder* should always set this attribute to a non-empty string.
+</code></pre></div>
+
+<p>loader</p>
+<div class="codehilite"><pre><span></span><code>  The *loader* used to load the module (see &quot;module.__loader__&quot;).
+  The *finder* should always set this attribute.
+</code></pre></div>
+
+<p>origin</p>
+<div class="codehilite"><pre><span></span><code>  The location the *loader* should use to load the module (see
+  &quot;module.__file__&quot;). For example, for modules loaded from a &quot;.py&quot;
+  file this is the filename. The *finder* should always set this
+  attribute to a meaningful value for the *loader* to use.  In the
+  uncommon case that there is not one (like for namespace
+  packages), it should be set to &quot;None&quot;.
+</code></pre></div>
+
+<p>submodule_search_locations</p>
+<div class="codehilite"><pre><span></span><code>  A (possibly empty) *sequence* of strings enumerating the
+  locations in which a package&#39;s submodules will be found (see
+  &quot;module.__path__&quot;). Most of the time there will only be a single
+  directory in this list.
+
+  The *finder* should set this attribute to a sequence, even an
+  empty one, to indicate to the import system that the module is a
+  package.  It should be set to &quot;None&quot; for non-package modules.
+  It is set automatically later to a special object for namespace
+  packages.
+</code></pre></div>
+
+<p>loader_state</p>
+<div class="codehilite"><pre><span></span><code>  El *buscador* podría establecer este atributo a un objeto
+  conteniendo datos adicionales y específicos al módulo para usar
+  cuando se carga el módulo.. De lo contrario, debe establecerse
+  en &quot;None&quot;.
+</code></pre></div>
+
+<p>cached</p>
+<div class="codehilite"><pre><span></span><code>  The filename of a compiled version of the module&#39;s code (see
+  &quot;module.__cached__&quot;). The *finder* should always set this
+  attribute but it may be &quot;None&quot; for modules that do not need
+  compiled code stored.
+</code></pre></div>
+
+<p>parent</p>
+<div class="codehilite"><pre><span></span><code>  (Read-only) The fully qualified name of the package the module
+  is in (or the empty string for a top-level module). See
+  &quot;module.__package__&quot;. If the module is a package then this is
+  the same as &quot;name&quot;.
+</code></pre></div>
+
+<p>has_location</p>
+<div class="codehilite"><pre><span></span><code>  &quot;True&quot; if the spec&#39;s &quot;origin&quot; refers to a loadable location,
+  &quot;False&quot; otherwise.  This value impacts how &quot;origin&quot; is
+  interpreted and how the module&#39;s &quot;__file__&quot; is populated.
+</code></pre></div>
+
+<p>class importlib.machinery.AppleFrameworkLoader(name, path)</p>
+<p>Una especialización de "importlib.machinery.ExtensionFileLoader"
+   que puede cargar módulos de extensión en formato Framework.</p>
+<p>Para que sea compatible con la App Store de iOS, <em>todos</em> los
+   módulos binarios de una aplicación de iOS deben ser bibliotecas
+   dinámicas, contenidas en un marco con metadatos apropiados,
+   almacenados en la carpeta "Frameworks" de la aplicación
+   empaquetada. Solo puede haber un único binario por marco y no puede
+   haber material binario ejecutable fuera de la carpeta Frameworks.</p>
+<p>To accommodate this requirement, when running on iOS, extension
+   module binaries are <em>not</em> packaged as ".so" files on "sys.path",
+   but as individual standalone frameworks. To discover those
+   frameworks, this loader is registered against the ".fwork" file
+   extension, with a ".fwork" file acting as a placeholder in the
+   original location of the binary on "sys.path". The ".fwork" file
+   contains the path of the actual binary in the "Frameworks" folder,
+   relative to the app bundle. To allow for resolving a framework-
+   packaged binary back to the original location, the framework is
+   expected to contain a ".origin" file that contains the location of
+   the ".fwork" file, relative to the app bundle.</p>
+<p>Por ejemplo, considere el caso de una importación "from foo.bar
+   import _whiz", donde "_whiz" se implementa con el módulo binario
+   "sources/foo/bar/_whiz.abi3.so", donde "sources" es la ubicación
+   registrada en "sys.path", relativa al paquete de la aplicación.
+   Este módulo <em>debe</em> distribuirse como
+   "Frameworks/foo.bar._whiz.framework/foo.bar._whiz" (creando el
+   nombre del marco a partir de la ruta de importación completa del
+   módulo), con un archivo "Info.plist" en el directorio ".framework"
+   que identifica el binario como un marco. El módulo "foo.bar._whiz"
+   se representaría en la ubicación original con un archivo marcador
+   "sources/foo/bar/_whiz.abi3.fwork", que contiene la ruta
+   "Frameworks/foo.bar._whiz/foo.bar._whiz". El framework también
+   contendría
+   "Frameworks/foo.bar._whiz.framework/foo.bar._whiz.origin", que
+   contiene la ruta al archivo ".fwork".</p>
+<p>When a module is loaded with this loader, the "<strong>file</strong>" for the
+   module will report as the location of the ".fwork" file. This
+   allows code to use the "<strong>file</strong>" of a  module as an anchor for
+   file system traversal. However, the spec origin will reference the
+   location of the <em>actual</em> binary in the ".framework" folder.</p>
+<p>El proyecto Xcode que crea la aplicación es responsable de
+   convertir los archivos ".so" desde donde se encuentren en
+   "PYTHONPATH" en marcos en la carpeta "Frameworks" (lo que incluye
+   quitar las extensiones del archivo del módulo, agregar metadatos
+   del marco y firmar el marco resultante), y crear los archivos
+   ".fwork" y ".origin". Esto generalmente se hará con un paso de
+   compilación en el proyecto Xcode; consulte la documentación de iOS
+   para obtener detalles sobre cómo construir este paso de
+   compilación.</p>
+<p>Added in version 3.13.</p>
+<p>Availability: iOS.</p>
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  Nombre del módulo que admite el cargador.
+</code></pre></div>
+
+<p>path</p>
+<div class="codehilite"><pre><span></span><code>  Ruta al archivo &quot;.fwork&quot; para el módulo de extensión.
+</code></pre></div>
+
+<h2 id="importlibutil-utility-code-for-importers">"importlib.util" -- Utility code for importers<a class="headerlink" href="#importlibutil-utility-code-for-importers" title="Permanent link">#</a></h2>
+<p><strong>Código fuente:</strong> Lib/importlib/util.py</p>
+<p>======================================================================</p>
+<p>Este módulo contiene los diversos objetos que ayudan en la
+construcción de un <em>importer</em>.</p>
+<p>importlib.util.MAGIC_NUMBER</p>
+<p>Los bytes que representan el número de versión del código de bytes.
+   Si necesita ayuda para cargar/escribir código de bytes, considere
+   "importlib.abc.SourceLoader".</p>
+<p>Added in version 3.4.</p>
+<p>importlib.util.cache_from_source(path, debug_override=None, *, optimization=None)</p>
+<p>Retorna la ruta <strong>PEP 3147</strong>/<strong>PEP 488</strong> al archivo compilado por
+   bytes asociado con la <em>path</em> de origen. Por ejemplo, si <em>path</em> es
+   "/foo/bar/baz.py", el valor de retorno sería
+   "/foo/bar/<strong>pycache</strong>/baz.cpython-32.pyc" para Python 3.2. La
+   cadena de caracteres "cpython-32" proviene de la etiqueta mágica
+   actual (ver "get_tag()"; si "sys.implementation.cache_tag" no está
+   definido, se lanzará "NotImplementedError").</p>
+<p>El parámetro <em>optimization</em> se utiliza para especificar el nivel de
+   optimización del archivo de código de bytes. Una cadena de
+   caracteres vacía no representa optimización, por lo que
+   "/foo/bar/baz.py" con una <em>optimization</em> de "''" dará como
+   resultado una ruta de código de bytes de
+   "/foo/bar/<strong>pycache</strong>/baz.cpython-32.pyc". "None" hace que se
+   utilice el nivel de optimización del intérprete. Se usa la
+   representación de cadena de caracteres de cualquier otro valor, por
+   lo que "/foo/bar/baz.py" con una <em>optimization</em> de "2" conducirá a
+   la ruta del código de bytes de
+   "/foo/bar/<strong>pycache</strong>/baz.cpython-32.opt-2.pyc". La representación
+   de cadena de caracteres <em>optimization</em> solo puede ser alfanumérica,
+   de lo contrario se lanza "ValueError".</p>
+<p>El parámetro <em>debug_override</em> está obsoleto y se puede usar para
+   anular el valor del sistema para "<strong>debug</strong>". Un valor "True" es el
+   equivalente a establecer <em>optimization</em> en la cadena de caracteres
+   vacía. Un valor "False" es lo mismo que establecer <em>optimization</em>
+   en "1". Si tanto <em>debug_override</em> como <em>optimization</em> no es "None",
+   entonces se lanza "TypeError".</p>
+<p>Added in version 3.4.</p>
+<p>Distinto en la versión 3.5: Se agregó el parámetro <em>optimization</em> y
+   el parámetro <em>debug_override</em> quedó obsoleto.</p>
+<p>Distinto en la versión 3.6: Acepta un <em>path-like object</em>.</p>
+<p>importlib.util.source_from_cache(path)</p>
+<p>Dado el <em>path</em> a un nombre de archivo <strong>PEP 3147</strong>, retorna la ruta
+   del archivo del código fuente asociado. Por ejemplo, si <em>path</em> es
+   "/foo/bar/<strong>pycache</strong>/baz.cpython-32.pyc", la ruta retornada sería
+   "/foo/bar/baz.py". <em>path</em> no necesita existir, sin embargo, si no
+   se ajusta al formato <strong>PEP 3147</strong> o <strong>PEP 488</strong>, se lanza un
+   "ValueError". Si "sys.implementation.cache_tag" no está definido,
+   se lanza "NotImplementedError".</p>
+<p>Added in version 3.4.</p>
+<p>Distinto en la versión 3.6: Acepta un <em>path-like object</em>.</p>
+<p>importlib.util.decode_source(source_bytes)</p>
+<p>Decodifica los bytes dados que representan el código fuente y los
+   retorna como una cadena de caracteres con nuevas líneas universales
+   (como lo requiere "importlib.abc.InspectLoader.get_source()").</p>
+<p>Added in version 3.4.</p>
+<p>importlib.util.resolve_name(name, package)</p>
+<p>Resuelve un nombre de módulo relativo a uno absoluto.</p>
+<p>Si <strong>name</strong> no tiene puntos iniciales, entonces <strong>name</strong>
+   simplemente se retorna. Esto permite el uso como
+   "importlib.util.resolve_name('sys', <strong>spec</strong>.parent)" sin hacer una
+   verificación para ver si se necesita el argumento <strong>package</strong>.</p>
+<p>"ImportError" se lanza si <strong>name</strong> es un nombre de módulo relativo
+   pero <strong>package</strong> es un valor falso (por ejemplo, "None" o la cadena
+   de caracteres vacía). También se lanza "ImportError" si un nombre
+   relativo escaparía del paquete que lo contiene (por ejemplo,
+   solicitando "..bacon" desde el paquete "spam").</p>
+<p>Added in version 3.3.</p>
+<p>Distinto en la versión 3.9: Para mejorar la coherencia con las
+   declaraciones de importación, aumente "ImportError" en lugar de
+   "ValueError" para intentos de importación relativa no válidos.</p>
+<p>importlib.util.find_spec(name, package=None)</p>
+<p>Busque el <em>spec</em> de un módulo, opcionalmente relativa al nombre del
+   <strong>paquete</strong> especificado. Si el módulo está en "sys.modules", se
+   retorna "sys.modules[name].<strong>spec</strong>" (a menos que la especificación
+   sea "None" o no esté configurada, en cuyo caso se lanza una
+   excepción "ValueError"). De lo contrario, se realiza una búsqueda
+   utilizando "sys.meta_path". Se retorna "None" si no se encuentra
+   ninguna especificación.</p>
+<p>Si <strong>name</strong> es para un submódulo (contiene un punto), el módulo
+   principal se importa automáticamente.</p>
+<p><strong>name</strong> y <strong>package</strong> funcionan igual que para "import_module()".</p>
+<p>Added in version 3.4.</p>
+<p>Distinto en la versión 3.7: Raises "ModuleNotFoundError" instead of
+   "AttributeError" if <strong>package</strong> is in fact not a package (i.e.
+   lacks a "<strong>path</strong>" attribute).</p>
+<p>importlib.util.module_from_spec(spec)</p>
+<p>Cree un nuevo módulo basado en <strong>spec</strong> y
+   "spec.loader.create_module".</p>
+<p>Si "spec.loader.create_module" no retorna "None", no se
+   restablecerán los atributos preexistentes. Además, no se lanzará
+   "AttributeError" si se activa mientras se accede a <strong>spec</strong> o se
+   establece un atributo en el módulo.</p>
+<p>Esta función es preferible a usar "types.ModuleType" para crear un
+   nuevo módulo ya que <strong>spec</strong> se usa para establecer tantos
+   atributos de importación controlados en el módulo como sea posible.</p>
+<p>Added in version 3.5.</p>
+<p>importlib.util.spec_from_loader(name, loader, *, origin=None, is_package=None)</p>
+<p>Una función de fábrica para crear una instancia de "ModuleSpec"
+   basada en un cargador. Los parámetros tienen el mismo significado
+   que para ModuleSpec. La función utiliza APIs disponibles de
+   <em>loader</em>, tal como "InspectLoader.is_package()", para completar
+   cualquier información que falte en la especificación.</p>
+<p>Added in version 3.4.</p>
+<p>importlib.util.spec_from_file_location(name, location, *, loader=None, submodule_search_locations=None)</p>
+<p>Una función de fábrica para crear una instancia de "ModuleSpec"
+   basada en la ruta a un archivo. La información que falte se
+   completará en la especificación mediante el uso de las API de
+   loader y la implicación de que el módulo estará basado en archivos.</p>
+<p>Added in version 3.4.</p>
+<p>Distinto en la versión 3.6: Acepta un <em>path-like object</em>.</p>
+<p>importlib.util.source_hash(source_bytes)</p>
+<p>Retorna el hash de <em>source_bytes</em> como bytes. Un archivo ".pyc"
+   basado en hash incrusta "source_hash()" del contenido del archivo
+   fuente correspondiente en su encabezado.</p>
+<p>Added in version 3.7.</p>
+<p>importlib.util._incompatible_extension_module_restrictions(*, disable_check)</p>
+<p>Un administrador de contexto que puede omitir temporalmente la
+   comprobación de compatibilidad para módulos de extensión. De manera
+   predeterminada, la comprobación está habilitada y fallará cuando se
+   importe un módulo de inicialización de una sola fase en un
+   subintérprete. También fallará para un módulo de inicialización de
+   varias fases que no admita explícitamente una GIL por intérprete,
+   cuando se importe en un intérprete con su propia GIL.</p>
+<p>Tenga en cuenta que esta función está pensada para dar cabida a un
+   caso inusual, que probablemente desaparecerá en algún momento. Es
+   muy probable que esto no sea lo que estaba buscando.</p>
+<p>Puede obtener el mismo efecto que esta función implementando la
+   interfaz básica de init multifase (<strong>PEP 489</strong>) y mintiendo acerca
+   del soporte para múltiples intérpretes (o por intérprete GIL).</p>
+<p>Advertencia:</p>
+<div class="codehilite"><pre><span></span><code> El uso de esta función para desactivar la comprobación puede
+ provocar un comportamiento inesperado e incluso fallos. Solo debe
+ utilizarse durante el desarrollo de módulos de extensión.
+</code></pre></div>
+
+<p>Added in version 3.12.</p>
+<p>class importlib.util.LazyLoader(loader)</p>
+<p>Una clase que pospone la ejecución del cargador de un módulo hasta
+   que el módulo tiene acceso a un atributo.</p>
+<p>Esta clase <strong>solo</strong> funciona con cargadores que definen
+   "exec_module()", ya que se requiere control sobre qué tipo de
+   módulo se usa para el módulo. Por esas mismas razones, el método
+   "create_module()" del cargador debe retornar "None" o un tipo para
+   el cual se pueda mutar su atributo "<strong>class</strong>" junto con no usar
+   <em>slots</em>. Finalmente, los módulos que sustituyen el objeto colocado
+   en "sys.modules" no funcionarán ya que no hay forma de reemplazar
+   correctamente las referencias del módulo en todo el intérprete de
+   manera segura; "ValueError" se lanza si se detecta dicha
+   sustitución.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> Para proyectos donde el tiempo de inicio es crítico, esta clase
+ permite minimizar potencialmente el costo de cargar un módulo si
+ nunca se usa. Para proyectos en los que el tiempo de inicio no es
+ esencial, el uso de esta clase se desaconseja **en gran medida**
+ debido a que los mensajes de error creados durante la carga se
+ posponen y, por lo tanto, ocurren fuera de contexto.
+</code></pre></div>
+
+<p>Added in version 3.5.</p>
+<p>Distinto en la versión 3.6: Comenzó a llamar "create_module()",
+   eliminando la advertencia de compatibilidad para
+   "importlib.machinery.BuiltinImporter" y
+   "importlib.machinery.ExtensionFileLoader".</p>
+<p>classmethod factory(loader)</p>
+<div class="codehilite"><pre><span></span><code>  Un método de clase que retorna un elemento invocable que crea un
+  cargador diferido. Está pensado para usarse en situaciones en
+  las que el cargador se pasa por clase en lugar de por instancia.
+
+     suffixes = importlib.machinery.SOURCE_SUFFIXES
+     loader = importlib.machinery.SourceFileLoader
+     lazy_loader = importlib.util.LazyLoader.factory(loader)
+     finder = importlib.machinery.FileFinder(path, (lazy_loader, suffixes))
+</code></pre></div>
+
+<h2 id="ejemplos">Ejemplos<a class="headerlink" href="#ejemplos" title="Permanent link">#</a></h2>
+<h3 id="importar-programaticamente">Importar programáticamente<a class="headerlink" href="#importar-programaticamente" title="Permanent link">#</a></h3>
+<p>Para importar un módulo mediante programación, use
+"importlib.import_module()".</p>
+<p>import importlib</p>
+<p>itertools = importlib.import_module('itertools')</p>
+<h3 id="comprobando-si-se-puede-importar-un-modulo">Comprobando si se puede importar un módulo<a class="headerlink" href="#comprobando-si-se-puede-importar-un-modulo" title="Permanent link">#</a></h3>
+<p>Si necesita averiguar si un módulo se puede importar sin realmente
+realizar la importación, entonces debe usar
+"importlib.util.find_spec()".</p>
+<p>Note que si "name" es un sub-módulo (contiene sólo un punto),
+"importlib.util.find_spec()" importará el módulo padre.</p>
+<p>import importlib.util
+   import sys</p>
+<p># Con fines ilustrativos.
+   name = 'itertools'</p>
+<p>if name in sys.modules:
+       print(f"{name!r} already in sys.modules")
+   elif (spec := importlib.util.find_spec(name)) is not None:
+   # Si eligió realizar la importación real ...
+   module = importlib.util.module_from_spec(spec)
+   sys.modules[name] = module
+   spec.loader.exec_module(module)
+   print(f"{name!r} ha sido importado")
+   else:
+       print(f"no puede ser encontrado el módulo {name!r}")</p>
+<h3 id="importar-un-archivo-fuente-directamente">Importar un archivo fuente directamente<a class="headerlink" href="#importar-un-archivo-fuente-directamente" title="Permanent link">#</a></h3>
+<p>Esta receta debe usarse con precaución: es una aproximación de una
+declaración de importación donde se especifica directamente la ruta
+del archivo, en lugar de buscar "sys.path". Primero se deben
+considerar alternativas, como modificar "sys.path" cuando se requiere
+un módulo adecuado o usar "runpy.run_path()" cuando el espacio de
+nombres global resultante de la ejecución de un archivo Python es
+apropiado.</p>
+<p>Para importar un archivo fuente de Python directamente desde una ruta,
+use la siguiente receta:</p>
+<p>import importlib.util
+   import sys</p>
+<p>def import_from_path(module_name, file_path):
+       spec = importlib.util.spec_from_file_location(module_name, file_path)
+       module = importlib.util.module_from_spec(spec)
+       sys.modules[module_name] = module
+       spec.loader.exec_module(module)
+       return module</p>
+<p># Sólo con fines ilustrativos. (el uso de <code>json</code> es arbitrario).
+   import json
+   file_path = json.<strong>file</strong>
+   module_name = json.<strong>name</strong></p>
+<p># Resultado similar a <code>import json</code>.
+   json = import_from_path(module_name, file_path)</p>
+<h3 id="implementar-importaciones-diferidas">Implementar importaciones diferidas<a class="headerlink" href="#implementar-importaciones-diferidas" title="Permanent link">#</a></h3>
+<p>El ejemplo de abajo muestra cómo implementar importaciones diferidas:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>import importlib.util
+import sys
+def lazy_import(name):
+   ...     spec = importlib.util.find_spec(name)
+   ...     loader = importlib.util.LazyLoader(spec.loader)
+   ...     spec.loader = loader
+   ...     module = importlib.util.module_from_spec(spec)
+   ...     sys.modules[name] = module
+   ...     loader.exec_module(module)
+   ...     return module
+   ...
+lazy_typing = lazy_import("typing")</p>
+<h1 id="lazy_typing-es-un-objeto-de-modulo-real">lazy_typing es un objeto de módulo real,<a class="headerlink" href="#lazy_typing-es-un-objeto-de-modulo-real" title="Permanent link">#</a></h1>
+<h1 id="pero-aun-no-esta-cargado-en-la-memoria">pero aún no está cargado en la memoria.<a class="headerlink" href="#pero-aun-no-esta-cargado-en-la-memoria" title="Permanent link">#</a></h1>
+<p>lazy_typing.TYPE_CHECKING
+   False</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="configurar-un-importador">Configurar un importador<a class="headerlink" href="#configurar-un-importador" title="Permanent link">#</a></h3>
+<p>Para personalizaciones profundas de importación, normalmente querrá
+implementar un <em>importador</em>. Esto significa gestionar tanto el
+<em>buscador</em> como el <em>cargador</em>. Para los buscadores hay dos opciones
+para elegir según sus necesidades: un <em>meta path finder</em> o un <em>path
+entry finder</em>. El primero es lo que pondría en "sys.meta_path"
+mientras que el segundo es lo que crea utilizando un <em>path entry hook</em>
+en "sys.path_hooks" que funciona con entradas "sys.path" para crear
+potencialmente un buscador. Este ejemplo le mostrará cómo registrar
+sus propios importadores para que la importación los utilice (para
+crear un importador para usted, lea la documentación de las clases
+apropiadas definidas dentro de este paquete):</p>
+<p>import importlib.machinery
+   import sys</p>
+<p># Sólo con fines ilustrativos.
+   SpamMetaPathFinder = importlib.machinery.PathFinder
+   SpamPathEntryFinder = importlib.machinery.FileFinder
+   detalles_del_cargador = (importlib.machinery.SourceFileLoader,
+                                               importlib.machinery.SOURCE_SUFFIXES)</p>
+<p># Configuración de un meta buscador de rutas.
+   # Asegúrese de colocar el buscador en la ubicación adecuada en la lista en términos de
+   # prioridad.
+   sys.meta_path.append(SpamMetaPathFinder)</p>
+<p># Configuración de un buscador de entradas de ruta.
+   # Asegúrese de colocar el gancho de ruta en la ubicación adecuada en la lista en términos
+   # de prioridad.
+   sys.path_hooks.append(SpamPathEntryFinder.path_hook(detalles_del_cargador))</p>
+<h3 id="aproximando-importlibimport_module">Aproximando "importlib.import_module()"<a class="headerlink" href="#aproximando-importlibimport_module" title="Permanent link">#</a></h3>
+<p>La importación en sí está implementada en código Python, lo que
+permite exponer la mayor parte de la maquinaria de importación a
+través de importlib. Lo siguiente ayuda a ilustrar las diversas API
+que importlib expone al proporcionar una implementación aproximada de
+"importlib.import_module()":</p>
+<p>import importlib.util
+   import sys</p>
+<p>def import_module(name, package=None):
+       """An approximate implementation of import."""
+       absolute_name = importlib.util.resolve_name(name, package)
+       try:
+           return sys.modules[absolute_name]
+       except KeyError:
+           pass</p>
+<div class="codehilite"><pre><span></span><code>   path = None
+   if &#39;.&#39; in absolute_name:
+       parent_name, _, child_name = absolute_name.rpartition(&#39;.&#39;)
+       parent_module = import_module(parent_name)
+       path = parent_module.__spec__.submodule_search_locations
+   for finder in sys.meta_path:
+       spec = finder.find_spec(absolute_name, path)
+       if spec is not None:
+           break
+   else:
+       msg = f&#39;No module named {absolute_name!r}&#39;
+       raise ModuleNotFoundError(msg, name=absolute_name)
+   module = importlib.util.module_from_spec(spec)
+   sys.modules[absolute_name] = module
+   spec.loader.exec_module(module)
+   if path is not None:
+       setattr(parent_module, child_name, module)
+   return module
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/importlib.resources.html">
+          <span class="muted">Anterior</span>&#34;importlib.resources&#34; -- Package resource reading, opening and access
+        </a>
+        <a class="pager-next" href="../library/index.html">
+          <span class="muted">Siguiente</span>La biblioteca estándar de Python
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

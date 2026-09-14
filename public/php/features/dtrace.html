@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rastreo dinámico de DTrace · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Features
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../features/persistent-connections.html"
+>Conexiones persistentes a bases de datos</a>
+              </li>
+              <li>
+                <a href="../features/cookies.html"
+>Cookies</a>
+              </li>
+              <li>
+                <a href="../features/file-upload.html"
+>Gestión de cargas de ficheros</a>
+              </li>
+              <li>
+                <a href="../features/connection-handling.html"
+>Gestión de las conexiones</a>
+              </li>
+              <li>
+                <a href="../features/http-auth.html"
+>Identificación HTTP con PHP</a>
+              </li>
+              <li>
+                <a href="../features/dtrace.html"
+class="is-current" aria-current="page">Rastreo dinámico de DTrace</a>
+              </li>
+              <li>
+                <a href="../features/gc.html"
+>Recolección de basura (Garbage Collection)</a>
+              </li>
+              <li>
+                <a href="../features/sessions.html"
+>Sesiones</a>
+              </li>
+              <li>
+                <a href="../features/remote-files.html"
+>Uso de ficheros a distancia</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Rastreo dinámico de DTrace</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.dtrace.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#rastreo-dinamico-de-dtrace">Rastreo dinámico de DTrace#</a></li>
+              <li class="lvl-2"><a href="#introduccion-a-php-y-dtrace">Introducción a PHP y DTrace#</a></li>
+              <li class="lvl-2"><a href="#usar-php-y-dtrace">Usar PHP y DTrace#</a></li>
+              <li class="lvl-3"><a href="#configurar-php-para-las-sondas-estaticas-de-dtrace">Configurar PHP para las sondas estáticas de DTrace#</a></li>
+              <li class="lvl-3"><a href="#sondas-estaticas-dtrace-en-el-nucleo-de-php">Sondas estáticas DTrace en el núcleo de PHP#</a></li>
+              <li class="lvl-3"><a href="#lista-de-sondas-estaticas-dtrace-de-php">Lista de sondas estáticas DTrace de PHP#</a></li>
+              <li class="lvl-3"><a href="#dtrace-con-un-ejemplo-php">DTrace con un ejemplo PHP#</a></li>
+              <li class="lvl-3"><a href="#vease-tambien">Véase también#</a></li>
+              <li class="lvl-2"><a href="#usar-systemtap-con-las-sondas-estaticas-dtrace-de-php">Usar SystemTap con las sondas estáticas DTrace de PHP#</a></li>
+              <li class="lvl-3"><a href="#instalar-php-con-systemtap">Instalar PHP con SystemTap#</a></li>
+              <li class="lvl-3"><a href="#lista-de-sondas-estaticas-con-systemtap">Lista de sondas estáticas con SystemTap#</a></li>
+              <li class="lvl-3"><a href="#systemtap-con-un-ejemplo-php">SystemTap con un Ejemplo PHP#</a></li>
+              <li class="lvl-2"><a href="#usar-bpftrace-con-las-sondas-estaticas-dtrace-de-php">Usar bpftrace con las sondas estáticas DTrace de PHP#</a></li>
+              <li class="lvl-3"><a href="#instalar-bpftrace">Instalar bpftrace#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="rastreo-dinamico-de-dtrace">Rastreo dinámico de DTrace<a class="headerlink" href="#rastreo-dinamico-de-dtrace" title="Permanent link">#</a></h2>
+<h2 id="introduccion-a-php-y-dtrace">Introducción a PHP y DTrace<a class="headerlink" href="#introduccion-a-php-y-dtrace" title="Permanent link">#</a></h2>
+<p>DTrace es un framework de rastreo siempre disponible, a bajo costo, disponible en varias plataformas, incluyendo Solaris, macOS, Oracle Linux y BSD. DTrace puede rastrear el comportamiento del sistema operativo y la ejecución de programas de usuario. Puede mostrar los valores de los argumentos y ser utilizado para deducir estadísticas de rendimiento. Las sondas son controladas por scripts creados por el usuario y escritos en el lenguaje de script DTrace D. Esto permite un análisis eficiente de los puntos de datos.</p>
+<p>Las sondas PHP que no son activamente monitoreadas por el script DTrace D del usuario no contienen código instrumentado, por lo que no hay degradación del rendimiento durante la ejecución normal de la aplicación. Las sondas que son monitoreadas tienen un costo de funcionamiento bastante bajo para generalmente permitir la supervisión de DTrace en sistemas de producción.</p>
+<p>PHP incorpora sondas de "Rastreo Estático Definido por el Usuario" (USDT) que se disparan en el momento de la ejecución. Por ejemplo, cuando un script D monitorea la sonda <code>function-entry</code> de PHP, entonces, cada vez que se llama a una función del script PHP, esta sonda se dispara y el código de acción del script D asociado se ejecuta. Este código de acción podría, por ejemplo, imprimir los argumentos de la sonda como la ubicación del fichero fuente de la función PHP. La acción también puede agrupar datos como el número de veces que se llama a cada función.</p>
+<p>Solo se describen aquí las sondas PHP USDT. Consulte la documentación externa general y específica del sistema operativo para ver cómo DTrace puede ser utilizado para trazar funciones arbitrarias, y cómo puede ser utilizado para trazar el comportamiento del sistema operativo. Tenga en cuenta que no todas las funcionalidades de DTrace están disponibles en todas las implementaciones de DTrace.</p>
+<p>Las sondas DTrace estáticas en PHP pueden alternativamente ser utilizadas con la función SystemTap en ciertas distribuciones Linux.</p>
+<h2 id="usar-php-y-dtrace">Usar PHP y DTrace<a class="headerlink" href="#usar-php-y-dtrace" title="Permanent link">#</a></h2>
+<p>PHP puede ser configurado con las sondas estáticas DTrace en las plataformas que soportan el rastreo dinámico DTrace.</p>
+<h3 id="configurar-php-para-las-sondas-estaticas-de-dtrace">Configurar PHP para las sondas estáticas de DTrace<a class="headerlink" href="#configurar-php-para-las-sondas-estaticas-de-dtrace" title="Permanent link">#</a></h3>
+<p>Consulte la documentación específica de la plataforma externa para habilitar el soporte de DTrace del sistema operativo. Por ejemplo, en Oracle Linux inicie un núcleo UEK3 y haga:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## modprobe fasttrap</span>
+<span class="x">## chmod 666 /dev/dtrace/helper</span>
+</code></pre></div>
+
+<p>En lugar de usar <code>chmod</code>, puede usar una regla de paquetado ACL para limitar el acceso al dispositivo a un usuario específico.</p>
+<p>Construir PHP con el parámetro de configuración <code>--enable-dtrace</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## ./configure --enable-dtrace ...</span>
+<span class="x">## make</span>
+<span class="x">## make install</span>
+</code></pre></div>
+
+<p>Esto hace que las sondas estáticas estén disponibles en el núcleo de PHP. Todas las extensiones PHP que proporcionen sus propias sondas deben ser construidas por separado como extensiones compartidas.</p>
+<p>Para habilitar las sondas, definir la variable de entorno <code>USE_ZEND_DTRACE=1</code> a los procesos PHP objetivo.</p>
+<h3 id="sondas-estaticas-dtrace-en-el-nucleo-de-php">Sondas estáticas DTrace en el núcleo de PHP<a class="headerlink" href="#sondas-estaticas-dtrace-en-el-nucleo-de-php" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Nombre de la sonda</th>
+<th>Descripción de la sonda</th>
+<th>Argumentos de la sonda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request-startup</code></td>
+<td>Se dispara cuando una petición comienza.</td>
+<td>char *<code>file</code>, char *<code>request_uri</code>, char *<code>request_method</code></td>
+</tr>
+<tr>
+<td><code>request-shutdown</code></td>
+<td>Se dispara cuando una petición se detiene.</td>
+<td>char *<code>file</code>, char *<code>request_uri</code>, char *<code>request_method</code></td>
+</tr>
+<tr>
+<td><code>compile-file-entry</code></td>
+<td>Se dispara cuando comienza la compilación de un script.</td>
+<td>char *<code>compile_file</code>, char *<code>compile_file_translated</code></td>
+</tr>
+<tr>
+<td><code>compile-file-return</code></td>
+<td>Se dispara cuando termina la compilación de un script.</td>
+<td>char *<code>compile_file</code>, char *<code>compile_file_translated</code></td>
+</tr>
+<tr>
+<td><code>execute-entry</code></td>
+<td>Se dispara cuando un array de opcodes debe ser ejecutado. Por ejemplo, se dispara en llamadas de función, inclusiones y reanudaciones de generador.</td>
+<td>char *<code>request_file</code>, int <code>lineno</code></td>
+</tr>
+<tr>
+<td><code>execute-return</code></td>
+<td>Se dispara después de la ejecución de un array de opcodes.</td>
+<td>char *<code>request_file</code>, int <code>lineno</code></td>
+</tr>
+<tr>
+<td><code>function-entry</code></td>
+<td>Se dispara cuando el motor de PHP entra en una función PHP o una llamada de método.</td>
+<td>char *<code>function_name</code>, char *<code>request_file</code>, int <code>lineno</code>, char *<code>classname</code>, char *<code>scope</code></td>
+</tr>
+<tr>
+<td><code>function-return</code></td>
+<td>Se dispara cuando el motor PHP regresa de una función PHP o una llamada de método.</td>
+<td>char *<code>function_name</code>, char *<code>request_file</code>, int <code>lineno</code>, char *<code>classname</code>, char *<code>scope</code></td>
+</tr>
+<tr>
+<td><code>exception-thrown</code></td>
+<td>Se dispara cuando se lanza una excepción.</td>
+<td>char *<code>classname</code></td>
+</tr>
+<tr>
+<td><code>exception-caught</code></td>
+<td>Se dispara cuando se captura una excepción.</td>
+<td>char *<code>classname</code></td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>Se dispara cuando ocurre un error, independientemente del nivel de <a href="#ini.error-reporting">error_reporting</a>.</td>
+<td>char *<code>errormsg</code>, char *<code>request_file</code>, int <code>lineno</code></td>
+</tr>
+</tbody>
+</table>
+<p>Las siguientes sondas estáticas están disponibles en PHP</p>
+<p>Las extensiones PHP también pueden disponer de sondas estáticas adicionales.</p>
+<h3 id="lista-de-sondas-estaticas-dtrace-de-php">Lista de sondas estáticas DTrace de PHP<a class="headerlink" href="#lista-de-sondas-estaticas-dtrace-de-php" title="Permanent link">#</a></h3>
+<p>Para listar las sondas disponibles, inicie un proceso PHP y luego ejecute:</p>
+<div class="codehilite"><pre><span></span><code># dtrace -l
+</code></pre></div>
+
+<p>El resultado será similar al siguiente:</p>
+<div class="codehilite"><pre><span></span><code>   ID   PROVIDER            MODULE                          FUNCTION NAME
+   [ . . . ]
+    4   php15271               php               dtrace_compile_file compile-file-entry
+    5   php15271               php               dtrace_compile_file compile-file-return
+    6   php15271               php                        zend_error error
+    7   php15271               php  ZEND_CATCH_SPEC_CONST_CV_HANDLER exception-caught
+    8   php15271               php     zend_throw_exception_internal exception-thrown
+    9   php15271               php                 dtrace_execute_ex execute-entry
+   10   php15271               php           dtrace_execute_internal execute-entry
+   11   php15271               php                 dtrace_execute_ex execute-return
+   12   php15271               php           dtrace_execute_internal execute-return
+   13   php15271               php                 dtrace_execute_ex function-entry
+   14   php15271               php                 dtrace_execute_ex function-return
+   15   php15271               php              php_request_shutdown request-shutdown
+   16   php15271               php               php_request_startup request-startup
+</code></pre></div>
+
+<p>Los valores de la columna Provider son <code>php</code> y el identificador del proceso PHP en ejecución.</p>
+<p>Si el servidor web Apache está en ejecución, el nombre del módulo podría ser, por ejemplo, <code>libphp5.so</code>, y habría varios bloques de listas, uno por cada proceso Apache en ejecución.</p>
+<p>La columna Función hace referencia a la implementación interna en C de PHP, donde se encuentra cada proveedor.</p>
+<p>Si no hay un proceso PHP en ejecución, no se mostrará ninguna sonda PHP.</p>
+<h3 id="dtrace-con-un-ejemplo-php">DTrace con un ejemplo PHP<a class="headerlink" href="#dtrace-con-un-ejemplo-php" title="Permanent link">#</a></h3>
+<p>Este ejemplo muestra los fundamentos del lenguaje de script DTrace D.</p>
+<p><code>all_probes.d</code> para trazar todas las sondas estáticas PHP con DTrace</p>
+<div class="codehilite"><pre><span></span><code>#!/usr/sbin/dtrace -Zs
+
+#pragma D option quiet
+
+php*:::compile-file-entry
+{
+    printf(&quot;PHP compile-file-entry\n&quot;);
+    printf(&quot;  compile_file              %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  compile_file_translated   %s\n&quot;, copyinstr(arg1));
+}
+
+php*:::compile-file-return
+{
+    printf(&quot;PHP compile-file-return\n&quot;);
+    printf(&quot;  compile_file              %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  compile_file_translated   %s\n&quot;, copyinstr(arg1));
+}
+
+php*:::error
+{
+    printf(&quot;PHP error\n&quot;);
+    printf(&quot;  errormsg                  %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  request_file              %s\n&quot;, copyinstr(arg1));
+    printf(&quot;  lineno                    %d\n&quot;, (int)arg2);
+}
+
+php*:::exception-caught
+{
+    printf(&quot;PHP exception-caught\n&quot;);
+    printf(&quot;  classname                 %s\n&quot;, copyinstr(arg0));
+}
+
+php*:::exception-thrown
+{
+    printf(&quot;PHP exception-thrown\n&quot;);
+    printf(&quot;  classname                 %s\n&quot;, copyinstr(arg0));
+}
+
+php*:::execute-entry
+{
+    printf(&quot;PHP execute-entry\n&quot;);
+    printf(&quot;  request_file              %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  lineno                    %d\n&quot;, (int)arg1);
+}
+
+php*:::execute-return
+{
+    printf(&quot;PHP execute-return\n&quot;);
+    printf(&quot;  request_file              %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  lineno                    %d\n&quot;, (int)arg1);
+}
+
+php*:::function-entry
+{
+    printf(&quot;PHP function-entry\n&quot;);
+    printf(&quot;  function_name             %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  request_file              %s\n&quot;, copyinstr(arg1));
+    printf(&quot;  lineno                    %d\n&quot;, (int)arg2);
+    printf(&quot;  classname                 %s\n&quot;, copyinstr(arg3));
+    printf(&quot;  scope                     %s\n&quot;, copyinstr(arg4));
+}
+
+php*:::function-return
+{
+    printf(&quot;PHP function-return\n&quot;);
+    printf(&quot;  function_name             %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  request_file              %s\n&quot;, copyinstr(arg1));
+    printf(&quot;  lineno                    %d\n&quot;, (int)arg2);
+    printf(&quot;  classname                 %s\n&quot;, copyinstr(arg3));
+    printf(&quot;  scope                     %s\n&quot;, copyinstr(arg4));
+}
+
+php*:::request-shutdown
+{
+    printf(&quot;PHP request-shutdown\n&quot;);
+    printf(&quot;  file                      %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  request_uri               %s\n&quot;, copyinstr(arg1));
+    printf(&quot;  request_method            %s\n&quot;, copyinstr(arg2));
+}
+
+php*:::request-startup
+{
+    printf(&quot;PHP request-startup\n&quot;);
+    printf(&quot;  file                      %s\n&quot;, copyinstr(arg0));
+    printf(&quot;  request_uri               %s\n&quot;, copyinstr(arg1));
+    printf(&quot;  request_method            %s\n&quot;, copyinstr(arg2));
+}
+</code></pre></div>
+
+<p>Este script utiliza la opción <code>-Z</code> de <code>dtrace</code>, lo que le permite ejecutarse cuando no hay ningún proceso PHP en ejecución. Si se omitiera esta opción, el script terminaría inmediatamente porque sabe que ninguna de las sondas a monitorear existe.</p>
+<p>El script traza todos los puntos de sondeo estáticos de PHP durante la duración de un script PHP en ejecución. Ejecute el script D:</p>
+<div class="codehilite"><pre><span></span><code># ./all_probes.d
+</code></pre></div>
+
+<p>Ejecute un script o una aplicación PHP. El script D de monitoreo mostrará los argumentos de cada sonda a medida que se dispare.</p>
+<p>Cuando el monitoreo haya terminado, el script D puede ser interrumpido con un <span class="keycombo">CTRL+C</span></p>
+<p>En máquinas multi-CPU, el orden de las sondas puede no ser secuencial. Esto depende del CPU que ha procesado las sondas, y de cómo los hilos migran de un CPU a otro. La visualización de los timestamps de las sondas permite reducir la confusión, por ejemplo :</p>
+<div class="codehilite"><pre><span></span><code>php*:::function-entry
+{
+      printf(&quot;%lld: PHP function-entry &quot;, walltimestamp);
+      [ . . .]
+}
+</code></pre></div>
+
+<h3 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h3>
+<p>OCI8 y el rastreo dinámico DTrace</p>
+<h2 id="usar-systemtap-con-las-sondas-estaticas-dtrace-de-php">Usar SystemTap con las sondas estáticas DTrace de PHP<a class="headerlink" href="#usar-systemtap-con-las-sondas-estaticas-dtrace-de-php" title="Permanent link">#</a></h2>
+<p>En ciertas distribuciones Linux, la utilidad de rastreo SystemTap puede ser utilizada para trazar las sondas estáticas DTrace de PHP. Esto está disponible con PHP 5.4.20 y PHP 5.5.</p>
+<h3 id="instalar-php-con-systemtap">Instalar PHP con SystemTap<a class="headerlink" href="#instalar-php-con-systemtap" title="Permanent link">#</a></h3>
+<p>Instale el paquete de desarrollo SDT de SystemTap:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## yum install systemtap-sdt-devel</span>
+</code></pre></div>
+
+<p>Instalar PHP con las sondas DTrace habilitadas:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## ./configure --enable-dtrace ...</span>
+<span class="x">## make</span>
+</code></pre></div>
+
+<h3 id="lista-de-sondas-estaticas-con-systemtap">Lista de sondas estáticas con SystemTap<a class="headerlink" href="#lista-de-sondas-estaticas-con-systemtap" title="Permanent link">#</a></h3>
+<p>Las sondas estáticas en PHP pueden ser listadas utilizando <code>stap</code>:</p>
+<div class="codehilite"><pre><span></span><code># stap -l &#39;process.provider(&quot;php&quot;).mark(&quot;*&quot;)&#39; -c &#39;sapi/cli/php -i&#39;
+</code></pre></div>
+
+<p>Esto produce:</p>
+<div class="codehilite"><pre><span></span><code>process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;compile__file__entry&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;compile__file__return&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;error&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;exception__caught&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;exception__thrown&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;execute__entry&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;execute__return&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;function__entry&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;function__return&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;request__shutdown&quot;)
+process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;request__startup&quot;)
+</code></pre></div>
+
+<h3 id="systemtap-con-un-ejemplo-php">SystemTap con un Ejemplo PHP<a class="headerlink" href="#systemtap-con-un-ejemplo-php" title="Permanent link">#</a></h3>
+<p><code>all_probes.stp</code> para trazar todas las sondas estáticas PHP con SystemTap</p>
+<div class="codehilite"><pre><span></span><code><span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;compile__file__entry&quot;) {</span>
+<span class="x">    printf(&quot;Probe compile__file__entry\n&quot;);</span>
+<span class="x">    printf(&quot;  compile_file %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  compile_file_translated %s\n&quot;, user_string($arg2));</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;compile__file__return&quot;) {</span>
+<span class="x">    printf(&quot;Probe compile__file__return\n&quot;);</span>
+<span class="x">    printf(&quot;  compile_file %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  compile_file_translated %s\n&quot;, user_string($arg2));</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;error&quot;) {</span>
+<span class="x">    printf(&quot;Probe error\n&quot;);</span>
+<span class="x">    printf(&quot;  errormsg %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, user_string($arg2));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, $arg3);</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;exception__caught&quot;) {</span>
+<span class="x">    printf(&quot;Probe exception__caught\n&quot;);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, user_string($arg1));</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;exception__thrown&quot;) {</span>
+<span class="x">    printf(&quot;Probe exception__thrown\n&quot;);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, user_string($arg1));</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;execute__entry&quot;) {</span>
+<span class="x">    printf(&quot;Probe execute__entry\n&quot;);</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, $arg2);</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;execute__return&quot;) {</span>
+<span class="x">    printf(&quot;Probe execute__return\n&quot;);</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, $arg2);</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;function__entry&quot;) {</span>
+<span class="x">    printf(&quot;Probe function__entry\n&quot;);</span>
+<span class="x">    printf(&quot;  function_name %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, user_string($arg2));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, $arg3);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, user_string($arg4));</span>
+<span class="x">    printf(&quot;  scope %s\n&quot;, user_string($arg5));</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;function__return&quot;) {</span>
+<span class="x">    printf(&quot;Probe function__return: %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot; function_name %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, user_string($arg2));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, $arg3);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, user_string($arg4));</span>
+<span class="x">    printf(&quot;  scope %s\n&quot;, user_string($arg5));</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;request__shutdown&quot;) {</span>
+<span class="x">    printf(&quot;Probe request__shutdown\n&quot;);</span>
+<span class="x">    printf(&quot;  file %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  request_uri %s\n&quot;, user_string($arg2));</span>
+<span class="x">    printf(&quot;  request_method %s\n&quot;, user_string($arg3));</span>
+<span class="x">}</span>
+<span class="x">probe process(&quot;sapi/cli/php&quot;).provider(&quot;php&quot;).mark(&quot;request__startup&quot;) {</span>
+<span class="x">    printf(&quot;Probe request__startup\n&quot;);</span>
+<span class="x">    printf(&quot;  file %s\n&quot;, user_string($arg1));</span>
+<span class="x">    printf(&quot;  request_uri %s\n&quot;, user_string($arg2));</span>
+<span class="x">    printf(&quot;  request_method %s\n&quot;, user_string($arg3));</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>El script anterior trazará todos los puntos de sondeo estáticos de PHP durante toda la duración de la ejecución de un script PHP:</p>
+<div class="codehilite"><pre><span></span><code># stap -c &#39;sapi/cli/php test.php&#39; all_probes.stp
+</code></pre></div>
+
+<h2 id="usar-bpftrace-con-las-sondas-estaticas-dtrace-de-php">Usar bpftrace con las sondas estáticas DTrace de PHP<a class="headerlink" href="#usar-bpftrace-con-las-sondas-estaticas-dtrace-de-php" title="Permanent link">#</a></h2>
+<p>En las distribuciones Linux con un núcleo que soporta eBPF, la utilidad bpftrace puede conectarse directamente a las sondas USDT de DTrace de PHP, sin necesidad de SystemTap.</p>
+<h3 id="instalar-bpftrace">Instalar bpftrace<a class="headerlink" href="#instalar-bpftrace" title="Permanent link">#</a></h3>
+<p>Instale bpftrace utilizando el gestor de paquetes de la distribución. Por ejemplo, en Oracle Linux, RHEL o Fedora:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## dnf install bpftrace</span>
+</code></pre></div>
+
+<p>O bien, en Debian o Ubuntu:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## apt install bpftrace</span>
+</code></pre></div>
+
+<p>Los ejemplos siguientes asumen que el binario PHP objetivo está instalado en <code>/usr/bin/php</code>.</p>
+<p>Las mismas sondas USDT también son expuestas por otros SAPIs construidos a partir del mismo árbol de fuentes, por lo que el objetivo de la sonda puede ser en su lugar el módulo de Apache (<code>libphp.so</code>) o el binario del FastCGI Process Manager (<code>php-fpm</code>); sustituya la ruta apropiada o conéctese por PID con <code>-p</code> según sea necesario.</p>
+<p>Asegúrese de que el binario objetivo esté construido con DTrace y de que la variable de entorno esté configurada correctamente. Consulte <a href="#features.dtrace.install">Configurar PHP para las sondas estáticas de DTrace</a> para más detalles.</p>
+<p>Las sondas estáticas en PHP pueden ser listadas utilizando <code>bpftrace</code>:</p>
+<div class="codehilite"><pre><span></span><code># bpftrace -l &#39;usdt:/usr/bin/php:php:*&#39;
+</code></pre></div>
+
+<p>Esto produce:</p>
+<div class="codehilite"><pre><span></span><code>usdt:/usr/bin/php:php:compile__file__entry
+usdt:/usr/bin/php:php:compile__file__return
+usdt:/usr/bin/php:php:error
+usdt:/usr/bin/php:php:exception__caught
+usdt:/usr/bin/php:php:exception__thrown
+usdt:/usr/bin/php:php:execute__entry
+usdt:/usr/bin/php:php:execute__return
+usdt:/usr/bin/php:php:function__entry
+usdt:/usr/bin/php:php:function__return
+usdt:/usr/bin/php:php:request__shutdown
+usdt:/usr/bin/php:php:request__startup
+</code></pre></div>
+
+<p><code>all_probes.bt</code> para trazar todas las sondas estáticas PHP con bpftrace</p>
+<div class="codehilite"><pre><span></span><code><span class="x">#!/usr/bin/env bpftrace</span>
+
+<span class="x">usdt:/usr/bin/php:php:compile__file__entry</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe compile__file__entry\n&quot;);</span>
+<span class="x">    printf(&quot;  compile_file %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  compile_file_translated %s\n&quot;, str(arg1));</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:compile__file__return</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe compile__file__return\n&quot;);</span>
+<span class="x">    printf(&quot;  compile_file %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  compile_file_translated %s\n&quot;, str(arg1));</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:error</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe error\n&quot;);</span>
+<span class="x">    printf(&quot;  errormsg %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, str(arg1));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, (int32)arg2);</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:exception__caught</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe exception__caught\n&quot;);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, str(arg0));</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:exception__thrown</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe exception__thrown\n&quot;);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, str(arg0));</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:execute__entry</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe execute__entry\n&quot;);</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, (int32)arg1);</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:execute__return</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe execute__return\n&quot;);</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, (int32)arg1);</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:function__entry</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe function__entry\n&quot;);</span>
+<span class="x">    printf(&quot;  function_name %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, str(arg1));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, (int32)arg2);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, str(arg3));</span>
+<span class="x">    printf(&quot;  scope %s\n&quot;, str(arg4));</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:function__return</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe function__return\n&quot;);</span>
+<span class="x">    printf(&quot;  function_name %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  request_file %s\n&quot;, str(arg1));</span>
+<span class="x">    printf(&quot;  lineno %d\n&quot;, (int32)arg2);</span>
+<span class="x">    printf(&quot;  classname %s\n&quot;, str(arg3));</span>
+<span class="x">    printf(&quot;  scope %s\n&quot;, str(arg4));</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:request__shutdown</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe request__shutdown\n&quot;);</span>
+<span class="x">    printf(&quot;  file %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  request_uri %s\n&quot;, str(arg1));</span>
+<span class="x">    printf(&quot;  request_method %s\n&quot;, str(arg2));</span>
+<span class="x">}</span>
+<span class="x">usdt:/usr/bin/php:php:request__startup</span>
+<span class="x">{</span>
+<span class="x">    printf(&quot;Probe request__startup\n&quot;);</span>
+<span class="x">    printf(&quot;  file %s\n&quot;, str(arg0));</span>
+<span class="x">    printf(&quot;  request_uri %s\n&quot;, str(arg1));</span>
+<span class="x">    printf(&quot;  request_method %s\n&quot;, str(arg2));</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>El script anterior trazará todos los puntos de sondeo estáticos del núcleo de PHP durante toda la duración de la ejecución de un script PHP. bpftrace requiere privilegios de root:</p>
+<div class="codehilite"><pre><span></span><code># USE_ZEND_DTRACE=1 bpftrace -c &#39;/usr/bin/php test.php&#39; all_probes.bt
+</code></pre></div>
+
+<p>Para trazar un proceso PHP que ya está en ejecución (por ejemplo, un worker de <code>php-fpm</code> o un proceso Apache que carga <code>libphp.so</code>), conéctese por PID:</p>
+<div class="codehilite"><pre><span></span><code># bpftrace -p $PID all_probes.bt
+</code></pre></div>
+
+<p>La ruta del objetivo <code>usdt:</code> en el script debe coincidir con el binario del proceso en ejecución; ajuste <code>usdt:/usr/bin/php</code> al binario de <code>php-fpm</code> o a <code>libphp.so</code> según corresponda.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../features/http-auth.html">
+          <span class="muted">Anterior</span>Identificación HTTP con PHP
+        </a>
+        <a class="pager-next" href="../features/gc.html">
+          <span class="muted">Siguiente</span>Recolección de basura (Garbage Collection)
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

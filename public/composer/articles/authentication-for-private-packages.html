@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authentication for privately hosted packages and repositories · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+class="is-current" aria-current="page">Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+>Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+>Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+>Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+>Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+>Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+>Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Authentication for privately hosted packages and repositories</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#authentication-in-authjson-per-project">Authentication in auth.json per project#</a></li>
+              <li class="lvl-2"><a href="#global-authentication-credentials">Global authentication credentials#</a></li>
+              <li class="lvl-3"><a href="#command-line-global-credential-editing">Command line global credential editing#</a></li>
+              <li class="lvl-3"><a href="#manually-editing-global-authentication-credentials">Manually editing global authentication credentials#</a></li>
+              <li class="lvl-2"><a href="#authentication-in-composerjson-file-itself">Authentication in composer.json file itself#</a></li>
+              <li class="lvl-2"><a href="#authentication-using-the-composer_auth-environment-variable">Authentication using the COMPOSER_AUTH environment variable#</a></li>
+              <li class="lvl-2"><a href="#http-basic">http-basic#</a></li>
+              <li class="lvl-3"><a href="#command-line-http-basic">Command line http-basic#</a></li>
+              <li class="lvl-3"><a href="#manual-http-basic">Manual http-basic#</a></li>
+              <li class="lvl-2"><a href="#inline-http-basic">Inline http-basic#</a></li>
+              <li class="lvl-3"><a href="#command-line-inline-http-basic">Command line inline http-basic#</a></li>
+              <li class="lvl-3"><a href="#manual-inline-http-basic">Manual inline http-basic#</a></li>
+              <li class="lvl-2"><a href="#http-bearer">HTTP Bearer#</a></li>
+              <li class="lvl-3"><a href="#command-line-http-bearer-authentication">Command line HTTP Bearer authentication#</a></li>
+              <li class="lvl-3"><a href="#manual-http-bearer-authentication">Manual HTTP Bearer authentication#</a></li>
+              <li class="lvl-2"><a href="#custom-headers">custom-headers#</a></li>
+              <li class="lvl-3"><a href="#command-line-custom-headers">Command line custom-headers#</a></li>
+              <li class="lvl-3"><a href="#manual-custom-headers">Manual custom-headers#</a></li>
+              <li class="lvl-2"><a href="#inline-custom-headers">Inline custom-headers#</a></li>
+              <li class="lvl-3"><a href="#manual-inline-custom-headers">Manual inline custom-headers#</a></li>
+              <li class="lvl-2"><a href="#gitlab-oauth">gitlab-oauth#</a></li>
+              <li class="lvl-3"><a href="#command-line-gitlab-oauth">Command line gitlab-oauth#</a></li>
+              <li class="lvl-3"><a href="#manual-gitlab-oauth">Manual gitlab-oauth#</a></li>
+              <li class="lvl-2"><a href="#gitlab-token">gitlab-token#</a></li>
+              <li class="lvl-3"><a href="#command-line-gitlab-token">Command line gitlab-token#</a></li>
+              <li class="lvl-3"><a href="#manual-gitlab-token">Manual gitlab-token#</a></li>
+              <li class="lvl-2"><a href="#github-oauth">github-oauth#</a></li>
+              <li class="lvl-3"><a href="#command-line-github-oauth">Command line github-oauth#</a></li>
+              <li class="lvl-3"><a href="#manual-github-oauth">Manual github-oauth#</a></li>
+              <li class="lvl-2"><a href="#bitbucket-oauth">bitbucket-oauth#</a></li>
+              <li class="lvl-3"><a href="#command-line-bitbucket-oauth">Command line bitbucket-oauth#</a></li>
+              <li class="lvl-3"><a href="#manual-bitbucket-oauth">Manual bitbucket-oauth#</a></li>
+              <li class="lvl-3"><a href="#bitbucket-api-tokens">Bitbucket API tokens#</a></li>
+              <li class="lvl-2"><a href="#client-tls-certificates">Client TLS certificates#</a></li>
+              <li class="lvl-3"><a href="#manual-client-certificates">Manual client certificates#</a></li>
+              <li class="lvl-2"><a href="#forgejo-token">forgejo-token#</a></li>
+              <li class="lvl-3"><a href="#command-line-forgejo-token">Command line forgejo-token#</a></li>
+              <li class="lvl-3"><a href="#manual-forgejo-token">Manual forgejo-token#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: Access privately hosted packages/repositories
+-->
+
+<h1 id="authentication-for-privately-hosted-packages-and-repositories">Authentication for privately hosted packages and repositories<a class="headerlink" href="#authentication-for-privately-hosted-packages-and-repositories" title="Permanent link">#</a></h1>
+<p>Your <a href="handling-private-packages.html">private package server</a> or version control system is probably secured with one
+or more authentication options. In order to allow your project to have access to these
+packages and repositories you will have to tell Composer how to authenticate with the server that hosts them.</p>
+<h1 id="authentication-principles">Authentication principles<a class="headerlink" href="#authentication-principles" title="Permanent link">#</a></h1>
+<p>Whenever Composer encounters a protected Composer repository it will try to authenticate
+using already defined credentials first. When none of those credentials apply it will prompt
+for credentials and save them (or a token if Composer is able to retrieve one).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">type</th>
+<th style="text-align: center;">Generated by Prompt?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="#http-basic">http-basic</a></td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#inline-http-basic">Inline http-basic</a></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#http-bearer">HTTP Bearer</a></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#custom-headers">Custom Headers</a></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#inline-custom-headers">Inline Custom Headers</a></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#gitlab-oauth">gitlab-oauth</a></td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#gitlab-token">gitlab-token</a></td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#github-oauth">github-oauth</a></td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#bitbucket-oauth">bitbucket-oauth</a></td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#client-tls-certificates">Client TLS certificates</a></td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="#forgejo-token">forgejo-token</a></td>
+<td style="text-align: center;">yes</td>
+</tr>
+</tbody>
+</table>
+<p>Sometimes automatic authentication is not possible, or you may want to predefine
+authentication credentials.</p>
+<p>Credentials can be stored on 4 different places; in an <code>auth.json</code> for the project, a global
+<code>auth.json</code>, in the <code>composer.json</code> itself or in the <code>COMPOSER_AUTH</code> environment variable.</p>
+<h2 id="authentication-in-authjson-per-project">Authentication in auth.json per project<a class="headerlink" href="#authentication-in-authjson-per-project" title="Permanent link">#</a></h2>
+<p>In this authentication storage method, an <code>auth.json</code> file will be present in the same folder
+as the projects' <code>composer.json</code> file. You can either create and edit this file using the
+command line or manually edit or create it.</p>
+<blockquote>
+<p><strong>Note: Make sure the <code>auth.json</code> file is in <code>.gitignore</code></strong> to avoid
+leaking credentials into your git history.</p>
+</blockquote>
+<h2 id="global-authentication-credentials">Global authentication credentials<a class="headerlink" href="#global-authentication-credentials" title="Permanent link">#</a></h2>
+<p>If you don't want to supply credentials for every project you work on, storing your credentials
+globally might be a better idea. These credentials are stored in a global <code>auth.json</code> in your
+Composer home directory.</p>
+<h3 id="command-line-global-credential-editing">Command line global credential editing<a class="headerlink" href="#command-line-global-credential-editing" title="Permanent link">#</a></h3>
+<p>For all authentication methods it is possible to edit them using the command line;</p>
+<ul>
+<li><a href="#command-line-http-basic">http-basic</a></li>
+<li><a href="#command-line-inline-http-basic">Inline http-basic</a></li>
+<li><a href="#command-line-http-bearer-authentication">HTTP Bearer</a></li>
+<li><a href="#command-line-custom-headers">Custom Headers</a></li>
+<li><a href="#command-line-gitlab-oauth">gitlab-oauth</a></li>
+<li><a href="#command-line-gitlab-token">gitlab-token</a></li>
+<li><a href="#command-line-github-oauth">github-oauth</a></li>
+<li><a href="#command-line-bitbucket-oauth">bitbucket-oauth</a></li>
+<li><a href="#command-line-forgejo-token">forgejo-token</a></li>
+</ul>
+<h3 id="manually-editing-global-authentication-credentials">Manually editing global authentication credentials<a class="headerlink" href="#manually-editing-global-authentication-credentials" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Note:</strong> It is not recommended to manually edit your authentication options as this might
+result in invalid json. Instead preferably use <a href="#command-line-global-credential-editing">the command line</a>.</p>
+</blockquote>
+<p>To manually edit it, run:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>--editor<span class="w"> </span><span class="o">[</span>--auth<span class="o">]</span>
+</code></pre></div>
+
+<p>For specific authentication implementations, see their sections;</p>
+<ul>
+<li><a href="#manual-http-basic">http-basic</a></li>
+<li><a href="#manual-inline-http-basic">Inline http-basic</a></li>
+<li><a href="#manual-http-bearer-authentication">HTTP Bearer</a></li>
+<li><a href="#manual-custom-headers">Custom Headers</a></li>
+<li><a href="#manual-inline-custom-headers">Inline Custom Headers</a></li>
+<li><a href="#manual-gitlab-oauth">gitlab-oauth</a></li>
+<li><a href="#manual-gitlab-token">gitlab-token</a></li>
+<li><a href="#manual-github-oauth">github-oauth</a></li>
+<li><a href="#manual-bitbucket-oauth">bitbucket-oauth</a></li>
+<li><a href="#manual-client-certificates">Client TLS certificates</a></li>
+<li><a href="#manual-forgejo-token">forgejo-token</a></li>
+</ul>
+<p>Manually editing this file instead of using the command line may result in invalid json errors.
+To fix this you need to open the file in an editor and fix the error. To find the location of
+your global <code>auth.json</code>, execute:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>home
+</code></pre></div>
+
+<p>The folder will contain your global <code>auth.json</code> if it exists.</p>
+<p>You can open this file in your favorite editor and fix the error.</p>
+<h2 id="authentication-in-composerjson-file-itself">Authentication in composer.json file itself<a class="headerlink" href="#authentication-in-composerjson-file-itself" title="Permanent link">#</a></h2>
+<blockquote>
+<p><strong>Note:</strong> <strong>This is not recommended</strong> as these credentials are visible
+to anyone who has access to the composer.json, either when it is shared through
+a version control system like git or when an attacker gains (read) access to
+your production server files.</p>
+</blockquote>
+<p>It is also possible to add credentials to a <code>composer.json</code> on a per-project basis in the <code>config</code>
+section or directly in the repository definition.</p>
+<h2 id="authentication-using-the-composer_auth-environment-variable">Authentication using the COMPOSER_AUTH environment variable<a class="headerlink" href="#authentication-using-the-composer_auth-environment-variable" title="Permanent link">#</a></h2>
+<blockquote>
+<p><strong>Note:</strong> Using the command line environment variable method also has security implications.
+These credentials will most likely be stored in memory,
+and may be persisted to a file like <code>~/.bash_history</code> (linux) or <code>ConsoleHost_history.txt</code>
+(PowerShell on Windows) when closing a session.</p>
+</blockquote>
+<p>The final option to supply Composer with credentials is to use the <code>COMPOSER_AUTH</code> environment variable.
+These variables can be either passed as command line variables or set in actual environment variables.
+Read more about the usage of this environment variable <a href="../cli.html#composer-auth">here</a>.</p>
+<h1 id="authentication-methods">Authentication methods<a class="headerlink" href="#authentication-methods" title="Permanent link">#</a></h1>
+<h2 id="http-basic">http-basic<a class="headerlink" href="#http-basic" title="Permanent link">#</a></h2>
+<h3 id="command-line-http-basic">Command line http-basic<a class="headerlink" href="#command-line-http-basic" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>http-basic.repo.example.org<span class="w"> </span>username<span class="w"> </span>password
+</code></pre></div>
+
+<p>In the above command, the config key <code>http-basic.repo.example.org</code> consists of two parts:</p>
+<ul>
+<li><code>http-basic</code> is the authentication method.</li>
+<li><code>repo.example.org</code> is the repository host name, you should replace it with the host name of your repository.</li>
+</ul>
+<h3 id="manual-http-basic">Manual http-basic<a class="headerlink" href="#manual-http-basic" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;http-basic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;example.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;username&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;password&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="inline-http-basic">Inline http-basic<a class="headerlink" href="#inline-http-basic" title="Permanent link">#</a></h2>
+<p>For the inline http-basic authentication method the credentials are not stored in a separate
+<code>auth.json</code> in the project or globally, but in the <code>composer.json</code> or global configuration
+in the same place where the Composer repository definition is defined.</p>
+<p>Make sure that the username and password are encoded according
+to <a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.1">RFC 3986</a> (2.1. Percent-Encoding).
+If the username e.g. is an email address it needs to be passed as <code>name%40example.com</code>.</p>
+<h3 id="command-line-inline-http-basic">Command line inline http-basic<a class="headerlink" href="#command-line-inline-http-basic" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>repositories.unique-name<span class="w"> </span>composer<span class="w"> </span>https://username:password@repo.example.org
+</code></pre></div>
+
+<h3 id="manual-inline-http-basic">Manual inline http-basic<a class="headerlink" href="#manual-inline-http-basic" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;repositories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://username:password@example.org&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="http-bearer">HTTP Bearer<a class="headerlink" href="#http-bearer" title="Permanent link">#</a></h2>
+<h3 id="command-line-http-bearer-authentication">Command line HTTP Bearer authentication<a class="headerlink" href="#command-line-http-bearer-authentication" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>bearer.repo.example.org<span class="w"> </span>token
+</code></pre></div>
+
+<p>In the above command, the config key <code>bearer.repo.example.org</code> consists of two parts:</p>
+<ul>
+<li><code>bearer</code> is the authentication method.</li>
+<li><code>repo.example.org</code> is the repository host name, you should replace it with the host name of your repository.</li>
+</ul>
+<h3 id="manual-http-bearer-authentication">Manual HTTP Bearer authentication<a class="headerlink" href="#manual-http-bearer-authentication" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bearer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;example.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TOKEN&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="custom-headers">custom-headers<a class="headerlink" href="#custom-headers" title="Permanent link">#</a></h2>
+<p>Use custom HTTP headers for authentication with private repositories that require header-based authentication.</p>
+<h3 id="command-line-custom-headers">Command line custom-headers<a class="headerlink" href="#command-line-custom-headers" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>custom-headers.repo.example.org<span class="w"> </span><span class="s2">&quot;API-TOKEN: YOUR-API-TOKEN&quot;</span><span class="w"> </span><span class="s2">&quot;X-CUSTOM-HEADER: Value&quot;</span>
+</code></pre></div>
+
+<p>In the above command, the config key <code>custom-headers.repo.example.org</code> consists of two parts:</p>
+<ul>
+<li><code>custom-headers</code> is the authentication method.</li>
+<li><code>repo.example.org</code> is the repository host name, you should replace it with the host name of your repository.</li>
+</ul>
+<p>You can provide multiple custom headers as separate arguments. Each header must be in the standard HTTP header
+format <code>"Header-Name: Header-Value"</code>.</p>
+<h3 id="manual-custom-headers">Manual custom-headers<a class="headerlink" href="#manual-custom-headers" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;custom-headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;repo.example.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;API-TOKEN: YOUR-API-TOKEN&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;X-CUSTOM-HEADER: Value&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="inline-custom-headers">Inline custom-headers<a class="headerlink" href="#inline-custom-headers" title="Permanent link">#</a></h2>
+<h3 id="manual-inline-custom-headers">Manual inline custom-headers<a class="headerlink" href="#manual-inline-custom-headers" title="Permanent link">#</a></h3>
+<p>For the inline custom-headers authentication method, the custom headers are defined directly
+in your <code>composer.json</code> file as part of the repository configuration.</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;repositories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://repo.example.org&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;http&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;header&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="s2">&quot;API-TOKEN: YOUR-API-TOKEN&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="s2">&quot;X-CUSTOM-HEADER: Value&quot;</span>
+<span class="w">                    </span><span class="p">]</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="gitlab-oauth">gitlab-oauth<a class="headerlink" href="#gitlab-oauth" title="Permanent link">#</a></h2>
+<blockquote>
+<p><strong>Note:</strong> For the gitlab authentication to work on private gitlab instances, the
+<a href="../config.html#gitlab-domains"><code>gitlab-domains</code></a> section should also contain the URL.</p>
+</blockquote>
+<h3 id="command-line-gitlab-oauth">Command line gitlab-oauth<a class="headerlink" href="#command-line-gitlab-oauth" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>gitlab-oauth.gitlab.example.org<span class="w"> </span>token
+</code></pre></div>
+
+<p>In the above command, the config key <code>gitlab-oauth.gitlab.example.org</code> consists of two parts:</p>
+<ul>
+<li><code>gitlab-oauth</code> is the authentication method.</li>
+<li><code>gitlab.example.org</code> is the host name of your GitLab instance, you should replace it with the host name of your GitLab
+  instance or use <code>gitlab.com</code> if you don't have a self-hosted GitLab instance.</li>
+</ul>
+<h3 id="manual-gitlab-oauth">Manual gitlab-oauth<a class="headerlink" href="#manual-gitlab-oauth" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;gitlab-oauth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;example.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;token&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="gitlab-token">gitlab-token<a class="headerlink" href="#gitlab-token" title="Permanent link">#</a></h2>
+<blockquote>
+<p><strong>Note:</strong> For the gitlab authentication to work on private gitlab instances, the
+<a href="../config.html#gitlab-domains"><code>gitlab-domains</code></a> section should also contain the URL.</p>
+</blockquote>
+<p>To create a new access token, go to
+your <a href="https://gitlab.com/-/user_settings/personal_access_tokens">access tokens section on GitLab</a>
+(or the equivalent URL on your private instance) and create a new token. See
+also <a href="https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token">the GitLab access token documentation</a>
+for more information.</p>
+<p>When creating a gitlab token manually, make sure it has either the <code>read_api</code> or <code>api</code> scope.</p>
+<h3 id="command-line-gitlab-token">Command line gitlab-token<a class="headerlink" href="#command-line-gitlab-token" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>gitlab-token.gitlab.example.org<span class="w"> </span>token
+</code></pre></div>
+
+<p>In the above command, the config key <code>gitlab-token.gitlab.example.org</code> consists of two parts:</p>
+<ul>
+<li><code>gitlab-token</code> is the authentication method.</li>
+<li><code>gitlab.example.org</code> is the host name of your GitLab instance, you should replace it with the host name of your GitLab
+  instance or use <code>gitlab.com</code> if you don't have a self-hosted GitLab instance.</li>
+</ul>
+<h3 id="manual-gitlab-token">Manual gitlab-token<a class="headerlink" href="#manual-gitlab-token" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;gitlab-token&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;example.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;token&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="github-oauth">github-oauth<a class="headerlink" href="#github-oauth" title="Permanent link">#</a></h2>
+<p>GitHub currently offers two types of access tokens:</p>
+<ul>
+<li><a href="https://github.com/settings/personal-access-tokens">Fine-grained tokens</a></li>
+<li><a href="https://github.com/settings/personal-access-tokens">Tokens (classic)</a></li>
+</ul>
+<p>These can be found in <a href="https://github.com/settings/profile">Settings</a>, at the very bottom of the left-side menu (<a href="https://github.com/settings/apps">Developer options</a>). To create a new access token, head to your <a href="https://github.com/settings/personal-access-tokens">token settings section on GitHub</a> and <a href="https://github.com/settings/personal-access-tokens/new">generate a new token</a>.</p>
+<p>Read more about <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">Personal Access Tokens</a>.</p>
+<p>It is <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#types-of-personal-access-tokens">recommended</a> to use fine-grained tokens,
+as you can have much tighter control over what can be accessed. Composer requires read-only access to repository metadata and contents.</p>
+<p>In most cases, a fine-grained token with read-only access to public repositories might be sufficient. Even without any additional permissions, these tokens <a href="https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api">raise your API rate limits</a>.</p>
+<p>Additional permissions will be necessary in the following cases:</p>
+<ul>
+<li>You are using <code>vcs</code> type <code>repositories</code> entries in your <code>composer.json</code> file pointing to private repositories.</li>
+<li>You are cloning <code>source</code> or downloading <code>dist</code> files for private repositories over HTTPS (and not over SSH, for example).</li>
+</ul>
+<p>In these cases, create a fine-grained token with read-only access to "contents". The token can be bound to either all of your or the organisation's repositories, or even scoped down to only selected repositories.</p>
+<p>As of November 2025, fine-grained tokens are limited in that you can only use them to access the private repositories of a single user <em>or</em> a single organisation at once. You may want to check the <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens-limitations">GitHub documentation</a> on details about that. If you need to work with repositories from different organisations, check if using directory-specific authentication configuration can meet your requirements.</p>
+<p>As a last option, a "classic" token with the <code>repo</code> scope will give broad access to all of your private repositories – including write permissions and much more. The <a href="https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps">scopes documentation</a> contains the complete list. Be careful when using this kind of token.</p>
+<p>Regardless of the type of token used, we recommend using tokens with a limited lifetime. This reduces the exposure in case the token is compromised.</p>
+<h3 id="command-line-github-oauth">Command line github-oauth<a class="headerlink" href="#command-line-github-oauth" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>github-oauth.github.com<span class="w"> </span>token
+</code></pre></div>
+
+<p>In the above command, the config key <code>github-oauth.github.com</code> consists of two parts:</p>
+<ul>
+<li><code>github-oauth</code> is the authentication method.</li>
+<li><code>github.com</code> is the host name for which this token applies. For GitHub you most likely do not need to change this.</li>
+</ul>
+<h3 id="manual-github-oauth">Manual github-oauth<a class="headerlink" href="#manual-github-oauth" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;github-oauth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;github.com&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;token&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="bitbucket-oauth">bitbucket-oauth<a class="headerlink" href="#bitbucket-oauth" title="Permanent link">#</a></h2>
+<p>The Bitbucket driver uses OAuth to access your private repositories via the Bitbucket REST APIs, and you will need to
+create an OAuth consumer to use the driver, please refer
+to <a href="https://support.atlassian.com/bitbucket-cloud/docs/use-oauth-on-bitbucket-cloud/">Atlassian's Documentation</a>. You
+will need to fill the callback URL with something to satisfy Bitbucket, but the address does not need to go anywhere and
+is not used by Composer.</p>
+<p>The created consumer needs to have at least the "Repository &gt; Read" permissions. </p>
+<h3 id="command-line-bitbucket-oauth">Command line bitbucket-oauth<a class="headerlink" href="#command-line-bitbucket-oauth" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>bitbucket-oauth.bitbucket.org<span class="w"> </span>consumer-key<span class="w"> </span>consumer-secret
+</code></pre></div>
+
+<p>In the above command, the config key <code>bitbucket-oauth.bitbucket.org</code> consists of two parts:</p>
+<ul>
+<li><code>bitbucket-oauth</code> is the authentication method.</li>
+<li><code>bitbucket.org</code> is the host name for which this token applies. Unless you have a private instance you don't need to
+  change this.</li>
+</ul>
+<h3 id="manual-bitbucket-oauth">Manual bitbucket-oauth<a class="headerlink" href="#manual-bitbucket-oauth" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bitbucket-oauth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;bitbucket.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;consumer-key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;key&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;consumer-secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;secret&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="bitbucket-api-tokens">Bitbucket API tokens<a class="headerlink" href="#bitbucket-api-tokens" title="Permanent link">#</a></h3>
+<p>As an alternative to OAuth consumers, you can use Atlassian API tokens. Create a token with
+the <code>read:repository:bitbucket</code> scope in <a href="https://id.atlassian.com/manage-profile/security/api-tokens">your Atlassian account</a>.</p>
+<p>Once you have a token, configure it using HTTP Basic authentication with your Atlassian account
+email as the username and the token as the password:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>http-basic.bitbucket.org<span class="w"> </span>your@email.com<span class="w"> </span>api-token
+</code></pre></div>
+
+<p>Or manually in <code>auth.json</code>:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;http-basic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;bitbucket.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your@email.com&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;api-token&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="client-tls-certificates">Client TLS certificates<a class="headerlink" href="#client-tls-certificates" title="Permanent link">#</a></h2>
+<p>Accessing private repositories that require client TLS certificates.</p>
+<p>For global/project-wide configuration
+see <a href="handling-private-packages.html#security">Handling private packages: Security section</a>.</p>
+<h3 id="manual-client-certificates">Manual client certificates<a class="headerlink" href="#manual-client-certificates" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;client-certificate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;repo.example.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;local_cert&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/certificate&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;local_pk&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/key&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;passphrase&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MySecretPassword&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Supported options are <code>local_cert</code> (required), <code>local_pk</code>, <code>passphrase</code>.
+More information for options can be found at <a href="https://www.php.net/manual/en/context.ssl.php">SSL context options</a></p>
+<p>Options could be omitted:</p>
+<ul>
+<li><code>local_pk</code>: in case of keeping certificate and private key in a single file;</li>
+<li><code>passphrase</code>: in case of passwordless private key.</li>
+</ul>
+<h2 id="forgejo-token">forgejo-token<a class="headerlink" href="#forgejo-token" title="Permanent link">#</a></h2>
+<blockquote>
+<p><strong>Note:</strong> For the forge authentication to work on private Forgejo instances, the
+<a href="../config.html#forgejo-domains"><code>forgejo-domains</code></a> section should also contain the domain.</p>
+</blockquote>
+<p>To create a new access token, go to
+your <a href="https://codeberg.org/user/settings/applications">applications section on Forgejo</a>
+(or the equivalent URL on your private instance) and create a new access token. See
+also <a href="https://docs.codeberg.org/advanced/access-token/">the Forgejo access token documentation</a> for more information.</p>
+<p>When creating a Forgejo access token, make sure it has the <code>read:repository</code> scope.</p>
+<h3 id="command-line-forgejo-token">Command line forgejo-token<a class="headerlink" href="#command-line-forgejo-token" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>forgejo-token.forgejo.example.org<span class="w"> </span>username<span class="w"> </span>access-token
+</code></pre></div>
+
+<p>In the above command, the config key <code>forgejo-token.forgejo.example.org</code> consists of two parts:</p>
+<ul>
+<li><code>forgejo-token</code> is the authentication method.</li>
+<li><code>forgejo.example.org</code> is the host name of your Forgejo instance, you should replace it with the host name of your
+  Forgejo instance or use <code>codeberg.org</code> if you don't have a self-hosted Forgejo instance.</li>
+</ul>
+<h3 id="manual-forgejo-token">Manual forgejo-token<a class="headerlink" href="#manual-forgejo-token" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>--global<span class="o">]</span><span class="w"> </span>--editor<span class="w"> </span>--auth
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;forgejo-token&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;forgejo.example.org&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;forgejo-user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;access-token&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/aliases.html">
+          <span class="muted">Anterior</span>Aliases
+        </a>
+        <a class="pager-next" href="../articles/autoloader-optimization.html">
+          <span class="muted">Siguiente</span>Autoloader optimization
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

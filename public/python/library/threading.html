@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;threading&#34; --- Thread-based parallelism · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/sndhdr.html"
+>&#34;sndhdr&#34; --- Determine type of sound file</a>
+              </li>
+              <li>
+                <a href="../library/socket.html"
+>&#34;socket&#34; --- Low-level networking interface</a>
+              </li>
+              <li>
+                <a href="../library/socketserver.html"
+>&#34;socketserver&#34; --- A framework for network servers</a>
+              </li>
+              <li>
+                <a href="../library/spwd.html"
+>&#34;spwd&#34; --- The shadow password database</a>
+              </li>
+              <li>
+                <a href="../library/sqlite3.html"
+>&#34;sqlite3&#34; --- DB-API 2.0 interfaz para bases de datos SQLite</a>
+              </li>
+              <li>
+                <a href="../library/ssl.html"
+>&#34;ssl&#34; --- TLS/SSL wrapper for socket objects</a>
+              </li>
+              <li>
+                <a href="../library/stat.html"
+>&#34;stat&#34; --- Interpreting &#34;stat()&#34; results</a>
+              </li>
+              <li>
+                <a href="../library/statistics.html"
+>&#34;statistics&#34; --- Mathematical statistics functions</a>
+              </li>
+              <li>
+                <a href="../library/stdtypes.html"
+>Tipos integrados</a>
+              </li>
+              <li>
+                <a href="../library/string.templatelib.html"
+>&#34;string.templatelib&#34; --- Support for template string literals</a>
+              </li>
+              <li>
+                <a href="../library/string.html"
+>&#34;string&#34; --- Common string operations</a>
+              </li>
+              <li>
+                <a href="../library/stringprep.html"
+>&#34;stringprep&#34; --- Internet String Preparation</a>
+              </li>
+              <li>
+                <a href="../library/struct.html"
+>&#34;struct&#34; --- Interpret bytes as packed binary data</a>
+              </li>
+              <li>
+                <a href="../library/subprocess.html"
+>&#34;subprocess&#34; --- Subprocess management</a>
+              </li>
+              <li>
+                <a href="../library/sunau.html"
+>&#34;sunau&#34; --- Read and write Sun AU files</a>
+              </li>
+              <li>
+                <a href="../library/superseded.html"
+>Módulos reemplazados</a>
+              </li>
+              <li>
+                <a href="../library/symtable.html"
+>&#34;symtable&#34; --- Access to the compiler&#39;s symbol tables</a>
+              </li>
+              <li>
+                <a href="../library/sys.monitoring.html"
+>&#34;sys.monitoring&#34; --- Execution event monitoring</a>
+              </li>
+              <li>
+                <a href="../library/sys.html"
+>&#34;sys&#34; --- System-specific parameters and functions</a>
+              </li>
+              <li>
+                <a href="../library/sys_path_init.html"
+>La inicialización de la ruta de búsqueda de módulo de &#34;sys.path&#34;</a>
+              </li>
+              <li>
+                <a href="../library/sysconfig.html"
+>&#34;sysconfig&#34; --- Provide access to Python&#39;s configuration information</a>
+              </li>
+              <li>
+                <a href="../library/syslog.html"
+>&#34;syslog&#34; --- Unix syslog library routines</a>
+              </li>
+              <li>
+                <a href="../library/tabnanny.html"
+>&#34;tabnanny&#34; --- Detection of ambiguous indentation</a>
+              </li>
+              <li>
+                <a href="../library/tarfile.html"
+>&#34;tarfile&#34; --- Read and write tar archive files</a>
+              </li>
+              <li>
+                <a href="../library/telnetlib.html"
+>&#34;telnetlib&#34; --- Telnet client</a>
+              </li>
+              <li>
+                <a href="../library/tempfile.html"
+>&#34;tempfile&#34; --- Generate temporary files and directories</a>
+              </li>
+              <li>
+                <a href="../library/termios.html"
+>&#34;termios&#34; --- POSIX style tty control</a>
+              </li>
+              <li>
+                <a href="../library/test.html"
+>&#34;test&#34; --- Regression tests package for Python</a>
+              </li>
+              <li>
+                <a href="../library/text.html"
+>Servicios de procesamiento de texto</a>
+              </li>
+              <li>
+                <a href="../library/textwrap.html"
+>&#34;textwrap&#34; --- Text wrapping and filling</a>
+              </li>
+              <li>
+                <a href="../library/threading.html"
+class="is-current" aria-current="page">&#34;threading&#34; --- Thread-based parallelism</a>
+              </li>
+              <li>
+                <a href="../library/threadsafety.html"
+>Thread Safety Guarantees</a>
+              </li>
+              <li>
+                <a href="../library/time.html"
+>&#34;time&#34; --- Time access and conversions</a>
+              </li>
+              <li>
+                <a href="../library/timeit.html"
+>&#34;timeit&#34; --- Measure execution time of small code snippets</a>
+              </li>
+              <li>
+                <a href="../library/tk.html"
+>Graphical user interfaces with Tk</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.colorchooser.html"
+>&#34;tkinter.colorchooser&#34; --- Color choosing dialog</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.dnd.html"
+>&#34;tkinter.dnd&#34; --- Drag and drop support</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.font.html"
+>&#34;tkinter.font&#34; --- Tkinter font wrapper</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.messagebox.html"
+>&#34;tkinter.messagebox&#34; --- Tkinter message prompts</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.scrolledtext.html"
+>&#34;tkinter.scrolledtext&#34; --- Scrolled text widget</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.ttk.html"
+>&#34;tkinter.ttk&#34; --- Tk themed widgets</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.html"
+>&#34;tkinter&#34; --- Python interface to Tcl/Tk</a>
+              </li>
+              <li>
+                <a href="../library/token.html"
+>&#34;token&#34; --- Constants used with Python parse trees</a>
+              </li>
+              <li>
+                <a href="../library/tokenize.html"
+>&#34;tokenize&#34; --- Tokenizer for Python source</a>
+              </li>
+              <li>
+                <a href="../library/tomllib.html"
+>&#34;tomllib&#34; --- Parse TOML files</a>
+              </li>
+              <li>
+                <a href="../library/trace.html"
+>&#34;trace&#34; --- Trace or track Python statement execution</a>
+              </li>
+              <li>
+                <a href="../library/traceback.html"
+>&#34;traceback&#34; --- Print or retrieve a stack traceback</a>
+              </li>
+              <li>
+                <a href="../library/tracemalloc.html"
+>&#34;tracemalloc&#34; --- Trace memory allocations</a>
+              </li>
+              <li>
+                <a href="../library/tty.html"
+>&#34;tty&#34; --- Terminal control functions</a>
+              </li>
+              <li>
+                <a href="../library/turtle.html"
+>&#34;turtle&#34; --- Turtle graphics</a>
+              </li>
+              <li>
+                <a href="../library/types.html"
+>&#34;types&#34; --- Dynamic type creation and names for built-in types</a>
+              </li>
+              <li>
+                <a href="../library/typing.html"
+>&#34;typing&#34; --- Support for type hints</a>
+              </li>
+              <li>
+                <a href="../library/unicodedata.html"
+>&#34;unicodedata&#34; --- Unicode Database</a>
+              </li>
+              <li>
+                <a href="../library/unittest.mock-examples.html"
+>&#34;unittest.mock&#34; --- getting started</a>
+              </li>
+              <li>
+                <a href="../library/unittest.mock.html"
+>&#34;unittest.mock&#34; --- mock object library</a>
+              </li>
+              <li>
+                <a href="../library/unittest.html"
+>&#34;unittest&#34; --- Unit testing framework</a>
+              </li>
+              <li>
+                <a href="../library/unix.html"
+>Unix-specific services</a>
+              </li>
+              <li>
+                <a href="../library/urllib.error.html"
+>&#34;urllib.error&#34; --- Exception classes raised by urllib.request</a>
+              </li>
+              <li>
+                <a href="../library/urllib.parse.html"
+>&#34;urllib.parse&#34; --- Parse URLs into components</a>
+              </li>
+              <li>
+                <a href="../library/urllib.request.html"
+>&#34;urllib.request&#34; --- Extensible library for opening URLs</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;threading&#34; --- Thread-based parallelism</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#gil-and-performance-considerations">GIL and performance considerations#</a></li>
+              <li class="lvl-2"><a href="#reference">Reference#</a></li>
+              <li class="lvl-3"><a href="#thread-local-data">Thread-local data#</a></li>
+              <li class="lvl-3"><a href="#thread-objects">Thread objects#</a></li>
+              <li class="lvl-3"><a href="#lock-objects">Lock objects#</a></li>
+              <li class="lvl-3"><a href="#rlock-objects">RLock objects#</a></li>
+              <li class="lvl-3"><a href="#condition-objects">Condition objects#</a></li>
+              <li class="lvl-3"><a href="#semaphore-objects">Semaphore objects#</a></li>
+              <li class="lvl-3"><a href="#semaphore-example">&#34;Semaphore&#34; example#</a></li>
+              <li class="lvl-3"><a href="#event-objects">Event objects#</a></li>
+              <li class="lvl-3"><a href="#timer-objects">Timer objects#</a></li>
+              <li class="lvl-3"><a href="#barrier-objects">Barrier objects#</a></li>
+              <li class="lvl-2"><a href="#uso-de-locks-condiciones-y-semaforos-en-la-declaracion-with">Uso de locks, condiciones y semáforos en la declaración &#34;with&#34;#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="threading-thread-based-parallelism">"threading" --- Thread-based parallelism<a class="headerlink" href="#threading-thread-based-parallelism" title="Permanent link">#</a></h1>
+<p><strong>Código fuente:</strong> Lib/threading.py</p>
+<p>======================================================================</p>
+<p>Este módulo construye interfaces de hilado de alto nivel sobre el
+módulo de más bajo nivel "_thread".</p>
+<p>Availability: not WASI.</p>
+<p>This module does not work or is not available on WebAssembly. See
+Plataformas WebAssembly for more information.</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>The "threading" module provides a way to run multiple threads (smaller
+units of a process) concurrently within a single process. It allows
+for the creation and management of threads, making it possible to
+execute tasks in parallel, sharing memory space. Threads are
+particularly useful when tasks are I/O bound, such as file operations
+or making network requests, where much of the time is spent waiting
+for external resources.</p>
+<p>A typical use case for "threading" includes managing a pool of worker
+threads that can process multiple tasks concurrently.  Here's a basic
+example of creating and starting threads using "Thread":</p>
+<p>import threading
+   import time</p>
+<p>def crawl(link, delay=3):
+       print(f"crawl started for {link}")
+       time.sleep(delay)  # Blocking I/O (simulating a network request)
+       print(f"crawl ended for {link}")</p>
+<p>links = [
+       "https://python.org",
+       "https://docs.python.org",
+       "https://peps.python.org",
+   ]</p>
+<p># Start threads for each link
+   threads = []
+   for link in links:
+       # Using <code>args</code> to pass positional arguments and <code>kwargs</code> for keyword arguments
+       t = threading.Thread(target=crawl, args=(link,), kwargs={"delay": 2})
+       threads.append(t)</p>
+<p># Start each thread
+   for t in threads:
+       t.start()</p>
+<p># Wait for all threads to finish
+   for t in threads:
+       t.join()</p>
+<p>Distinto en la versión 3.7: Este módulo solía ser opcional, ahora está
+siempre disponible.</p>
+<p>Ver también:</p>
+<p>"concurrent.futures.ThreadPoolExecutor" ofrece una interfaz a mas
+  alto nivel para enviar tareas a un hilo en segundo plano sin
+  bloquear la ejecución del hilo de llamada, pero manteniendo la
+  capacidad de recuperar sus resultados cuando sea necesario.</p>
+<p>"queue" proporciona una interfaz segura a nivel de hilos
+  intercambiar datos entre hilos en ejecución.</p>
+<p>"asyncio" ofrece un enfoque alternativo para lograr la concurrencia
+  a nivel de tarea sin requerir el uso de múltiples subprocesos del
+  sistema operativo.</p>
+<p>Nota:</p>
+<p>En la serie Python 2.x, este módulo contenía nombres "camelCase"
+  para algunos métodos y funciones. Estos están obsoletos a partir de
+  Python 3.10, pero aún son compatibles por compatibilidad con Python
+  2.5 y versiones anteriores.</p>
+<p>En CPython, debido al <em>Candado de intérprete global</em>, solo un hilo
+puede ejecutar código Python a la vez (aunque ciertas bibliotecas
+orientadas al rendimiento pueden superar esta limitación). Si desea
+que su aplicación haga un mejor uso de los recursos computacionales de
+las máquinas multinúcleo, se recomienda utilizar "multiprocessing" o
+"concurrent.futures.ProcessPoolExecutor". Sin embargo, el subproceso
+sigue siendo un modelo apropiado si desea ejecutar varias tareas
+vinculadas a E/S simultáneamente.</p>
+<h2 id="gil-and-performance-considerations">GIL and performance considerations<a class="headerlink" href="#gil-and-performance-considerations" title="Permanent link">#</a></h2>
+<p>Unlike the "multiprocessing" module, which uses separate processes to
+bypass the <em>global interpreter lock</em> (GIL), the threading module
+operates within a single process, meaning that all threads share the
+same memory space. However, the GIL limits the performance gains of
+threading when it comes to CPU-bound tasks, as only one thread can
+execute Python bytecode at a time. Despite this, threads remain a
+useful tool for achieving concurrency in many scenarios.</p>
+<p>As of Python 3.13, <em>free-threaded</em> builds can disable the GIL,
+enabling true parallel execution of threads, but this feature is not
+available by default (see <strong>PEP 703</strong>).</p>
+<h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">#</a></h2>
+<p>Este módulo define las siguientes funciones:</p>
+<p>threading.active_count()</p>
+<p>Retorna el número de objetos "Thread" actualmente con vida. La
+   cuenta retornada es igual al largo de la lista retornada por
+   "enumerate()".</p>
+<p>La función "activeCount" es un alias obsoleto para esta función.</p>
+<p>threading.current_thread()</p>
+<p>Return the current "Thread" object, corresponding to the caller's
+   thread of control.  If the caller's thread of control was not
+   created through the "threading" module, a dummy thread object with
+   limited functionality is returned.</p>
+<p>La función "currentThread" es un alias obsoleto para esta función.</p>
+<p>threading.excepthook(args, /)</p>
+<p>Gestiona una excepción lanzada por "Thread.run()".</p>
+<p>El argumento <em>args</em> posee los siguientes atributos:</p>
+<ul>
+<li>
+<p><em>exc_type</em>: Tipo de excepción.</p>
+</li>
+<li>
+<p><em>exc_value</em>: Valor de la excepción, puede ser "None".</p>
+</li>
+<li>
+<p><em>exc_traceback</em>: Rastreo de la excepción, puede ser "None".</p>
+</li>
+<li>
+<p><em>thread</em>: El hilo que ha lanzado la excepción, puede ser "None".</p>
+</li>
+</ul>
+<p>Si <em>exc_type</em> es "SystemExit", la excepción es silenciosamente
+   ignorada. De otro modo, la excepción se imprime en "sys.stderr".</p>
+<p>Si esta función lanza una excepción, se llama a "sys.excepthook()"
+   para manejarla.</p>
+<p>"threading.excepthook()" se puede sobrescribir para controlar cómo
+   se gestionan las excepciones levantadas por "Thread.run()".</p>
+<p>Guarda <em>exc_value</em> usando un <em>hook</em> personalizado puede crear un
+   ciclo de referencias. Debe ser aclarado explícitamente que se rompa
+   el ciclo de referencias cuando la excepción ya no se necesite.</p>
+<p>Guardando <em>thread</em> usando un <em>hook</em> personalizado puede resucitarlo
+   si se asigna a un objeto que esté siendo finalizado. Evítese que
+   <em>thread</em> sea almacenado después de que el <em>hook</em> personalizado se
+   complete para evitar resucitar objetos.</p>
+<p>Ver también: "sys.excepthook()" gestiona excepciones no capturadas.</p>
+<p>Added in version 3.8.</p>
+<p>threading.<strong>excepthook</strong></p>
+<p>Mantiene el valor original de "threading.excepthook()". Se guarda
+   para que se pueda restaurar el valor original en caso de que se
+   reemplacen con objetos rotos o alternativos.</p>
+<p>Added in version 3.10.</p>
+<p>threading.get_ident()</p>
+<p>Retorna el 'identificador de hilo' del hilo actual. Éste es un
+   entero distinto de cero. Su valor no tiene un significado directo;
+   ha sido pensado como una <em>cookie</em> mágica para usarse, por ejemplo,
+   en indexar un diccionario con datos específicos del hilo. Los
+   identificadores de hilo pueden ser reciclados cuando se abandona un
+   hilo y se crea otro hilo.</p>
+<p>Added in version 3.3.</p>
+<p>threading.get_native_id()</p>
+<p>Retorna la ID de Hilo (<em>Thread ID</em>) nativo integral del hilo actual
+   asignado por el kernel. Este es un entero distinto de cero. Su
+   valor puede utilizarse para identificar de forma única a este hilo
+   en particular a través de todo el sistema (hasta que el hilo
+   termine, luego de lo cual el valor puede ser reciclado por el SO).</p>
+<p>Availability: Windows, FreeBSD, Linux, macOS, OpenBSD, NetBSD, AIX,
+   DragonFlyBSD, GNU/kFreeBSD.</p>
+<p>Added in version 3.8.</p>
+<p>Distinto en la versión 3.13: Added support for GNU/kFreeBSD.</p>
+<p>threading.enumerate()</p>
+<p>Retorna una lista de todos los objetos "Thread" actualmente
+   activos. La lista incluye subprocesos demoníacos y objetos de
+   subprocesos ficticios creados por "current_thread()". Excluye los
+   subprocesos terminados y los subprocesos que aún no se han
+   iniciado. Sin embargo, el hilo principal siempre es parte del
+   resultado, incluso cuando se termina.</p>
+<p>threading.main_thread()</p>
+<p>Retorna el objeto "Thread" principal. En condiciones normales, el
+   hilo principal es el hilo desde el que fue inicializado el
+   intérprete de Python.</p>
+<p>Added in version 3.4.</p>
+<p>threading.settrace(func)</p>
+<p>Set a trace function for all threads started from the "threading"
+   module. The <em>func</em> will be passed to  "sys.settrace()" for each
+   thread, before its "run()" method is called.</p>
+<p>threading.settrace_all_threads(func)</p>
+<p>Set a trace function for all threads started from the "threading"
+   module and all Python threads that are currently executing.</p>
+<p>La <em>func</em> será pasada a "sys.settrace()" para cada hilo, antes de
+   que su método "run()" sea invocado.</p>
+<p>Added in version 3.12.</p>
+<p>threading.gettrace()</p>
+<p>Obtiene la función de rastreo según lo establecido por
+   "settrace()".</p>
+<p>Added in version 3.10.</p>
+<p>threading.setprofile(func)</p>
+<p>Set a profile function for all threads started from the "threading"
+   module. The <em>func</em> will be passed to  "sys.setprofile()" for each
+   thread, before its "run()" method is called.</p>
+<p>threading.setprofile_all_threads(func)</p>
+<p>Set a profile function for all threads started from the "threading"
+   module and all Python threads that are currently executing.</p>
+<p>La <em>func</em> se pasará a "sys.setprofile()" para cada hilo, antes de
+   que se llame a su método "run()".</p>
+<p>Added in version 3.12.</p>
+<p>threading.getprofile()</p>
+<p>Obtiene la función de generador de perfiles establecida por
+   "setprofile()".</p>
+<p>Added in version 3.10.</p>
+<p>threading.stack_size([size])</p>
+<p>Retorna el tamaño de pila usado para crear nuevos hilos. El
+   argumento opcional <em>size</em> (tamaño) especifica el tamaño de pila a
+   ser utilizado para hilos creados posteriormente, y debe ser 0 (usar
+   el valor por defecto de la plataforma o el configurado) o un valor
+   entero positivo de al menos 32.768 (32KiB). Si no se especifica
+   <em>size</em>, se usará 0. Si no existe soporte para cambiar el tamaño de
+   pila, se lanzará un "RuntimeError". Si el tamaño de pila
+   especificado es inválido, se lanzará un "ValueError" y el tamaño de
+   pila no será modificado. El tamaño mínimo de pila actualmente
+   soportado es de 32KiB para garantizar suficiente espacio de pila
+   para el intérprete mismo. Nótese que algunas plataformas pueden
+   tener restricciones particulares de valores para tamaños de pila,
+   como requerir un tamaño de pila &gt; 32KiB, o requerir una asignación
+   en múltiplos del tamaño de página de la memoria del sistema. Debe
+   consultarse la documentación de cada plataforma para mayor
+   información (páginas de 4KiB son comunes; se recomienda el uso de
+   múltiplos de 4096 para el tamaño de pila en ausencia de información
+   más específica)</p>
+<p>Availability: Windows, pthreads.</p>
+<p>Plataformas Unix con soporte para subprocesos POSIX.</p>
+<p>Este módulo también define la siguiente constante:</p>
+<p>threading.TIMEOUT_MAX</p>
+<p>El máximo valor permitido para el parámetro <em>timeout</em> de las
+   funciones bloqueantes ("Lock.acquire()", "RLock.acquire()",
+   "Condition.wait()", etc.). La especificación de un tiempo de espera
+   mayor a este valor lanzará un "OverflowError".</p>
+<p>Added in version 3.2.</p>
+<p>Este módulo define un número de clases, las cuales son detalladas en
+las siguientes secciones.</p>
+<p>El diseño de este módulo está vagamente basado en el modelo de hilos
+de Java. Sin embargo, donde Java hace que los bloqueos y las variables
+de condición sean comportamientos básicos de cada objeto, en Python
+son objetos separados.  La clase "Thread" de Python soporta un
+subconjunto del comportamiento de la clase Thread de Java;
+actualmente, no hay prioridades, no hay grupos de hilos, y los hilos
+no pueden ser destruidos, detenidos, suspendidos, reanudados o
+interrumpidos.  Los métodos estáticos de la clase Thread de Java,
+cuando se implementan, se asignan a funciones de nivel de módulo.</p>
+<p>Todos los métodos descritos abajo son ejecutados de manera atómica.</p>
+<h3 id="thread-local-data">Thread-local data<a class="headerlink" href="#thread-local-data" title="Permanent link">#</a></h3>
+<p>Thread-local data is data whose values are thread specific. If you
+have data that you want to be local to a thread, create a "local"
+object and use its attributes:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata = local()
+mydata.number = 42
+mydata.number
+   42</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>You can also access the "local"-object's dictionary:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata.<strong>dict</strong>
+   {'number': 42}
+mydata.<strong>dict</strong>.setdefault('widgets', [])
+   []
+mydata.widgets
+   []</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>If we access the data in a different thread:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>log = []
+def f():
+   ...     items = sorted(mydata.<strong>dict</strong>.items())
+   ...     log.append(items)
+   ...     mydata.number = 11
+   ...     log.append(mydata.number)</p>
+<p>import threading
+thread = threading.Thread(target=f)
+thread.start()
+thread.join()
+log
+   [[], 11]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>we get different data.  Furthermore, changes made in the other thread
+don't affect data seen in this thread:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata.number
+   42</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Of course, values you get from a "local" object, including their
+"<strong>dict</strong>" attribute, are for whatever thread was current at the time
+the attribute was read.  For that reason, you generally don't want to
+save these values across threads, as they apply only to the thread
+they came from.</p>
+<p>You can create custom "local" objects by subclassing the "local"
+class:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>class MyLocal(local):
+   ...     number = 2
+   ...     def <strong>init</strong>(self, /, **kw):
+   ...         self.<strong>dict</strong>.update(kw)
+   ...     def squared(self):
+   ...         return self.number ** 2</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>This can be useful to support default values, methods and
+initialization.  Note that if you define an "<strong>init</strong>()" method, it
+will be called each time the "local" object is used in a separate
+thread.  This is necessary to initialize each thread's dictionary.</p>
+<p>Now if we create a "local" object:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata = MyLocal(color='red')</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>we have a default number:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata.number
+   2</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>an initial color:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata.color
+   'red'
+del mydata.color</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>And a method that operates on the data:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata.squared()
+   4</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>As before, we can access the data in a separate thread:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>log = []
+thread = threading.Thread(target=f)
+thread.start()
+thread.join()
+log
+   [[('color', 'red')], 11]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>without affecting this thread's data:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata.number
+   2
+mydata.color
+   Traceback (most recent call last):
+   ...
+   AttributeError: 'MyLocal' object has no attribute 'color'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Note that subclasses can define <em><strong>slots</strong></em>, but they are not thread
+local. They are shared across threads:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>class MyLocal(local):
+   ...     <strong>slots</strong> = 'number'</p>
+<p>mydata = MyLocal()
+mydata.number = 42
+mydata.color = 'red'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>So, the separate thread:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>thread = threading.Thread(target=f)
+thread.start()
+thread.join()</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>affects what we see:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>mydata.number
+   11</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>class threading.local</p>
+<p>Una clase que representa datos locales de hilo.</p>
+<h3 id="thread-objects">Thread objects<a class="headerlink" href="#thread-objects" title="Permanent link">#</a></h3>
+<p>La clase "Thread" representa una actividad que corre en un hilo de
+control separado. Hay dos manera de especificar la actividad: pasando
+un objeto invocable al constructor, o sobrescribiendo el método
+"run()" en una subclase. Ningún otro método (a excepción del
+constructor) deberá ser sobrescrito en una subclase. En otras
+palabras, <em>solo</em> sobrescribir los métodos  "<strong>init</strong>()" y "run()"  de
+esta clase.</p>
+<p>Una vez que un objeto <em>thread</em> es creado, su actividad debe ser
+iniciada llamando al método "start()" del hilo. Ésto invoca el método
+"run()" en un hilo de control separado.</p>
+<p>Una vez que la actividad del hilo ha sido iniciada, el hilo se
+considerará 'vivo'. Deja de estar vivo cuando su método "run()"
+termina -- ya sea normalmente, o por lanzar una excepción no manejada.
+El método  "is_alive()" verifica si acaso el hilo está vivo.</p>
+<p>Otras hilos pueden llamar al método "join()". Esto bloquea el hilo que
+llama hasta que el hilo cuyo método "join()" es llamado termina.</p>
+<p>Un hilo tiene un nombre. El nombre puede ser pasado al constructor y
+leído o cambiado a través del atributo "name".</p>
+<p>Si el método "run()" lanza una excepción, se llama a
+"threading.excepthook()" para gestionarla. Por defecto,
+"threading.excepthook()" ignora silenciosamente a "SystemExit".</p>
+<p>Un hilo puede ser marcado como un "hilo demonio". El significado de
+esta marca es que la totalidad del programa de Python finalizará
+cuando solo queden hilos demonio. El valor inicial es heredado del
+hilo creador. La marca puede ser establecida a través de la propiedad
+"daemon" o del argumento <em>daemon</em> en el constructor.</p>
+<p>Nota:</p>
+<p>Los hilos demonio son detenidos abruptamente al momento del cierre.
+  Sus recursos (tales como archivos abiertos, transacciones con bases
+  de datos, etc.) pueden no ser liberados adecuadamente. Si se
+  requiere que los hilos se detengan con gracia, háganse no-demoníacos
+  y úsese un mecanismo de señalización adecuado tal como un "Event".</p>
+<p>Existe un objeto "hilo principal"; éste corresponde al hilo de control
+inicial del programa de Python. No es un hilo demonio.</p>
+<p>Existe la posibilidad de crear "objetos de hilos <em>dummy</em>". Estos son
+objetos hilo correspondientes a "hilos extranjeros", que son hilos de
+control iniciados afuera del modulo <em>threading</em>, por ejemplo
+directamente de código en C. Los objetos de hilos <em>dummy</em> tienen
+funcionalidad limitada; siempre se consideran vivos y demoníacos, y no
+pueden se les puede aplicar el método joined. Nunca son eliminados, ya
+que es imposible detectar la terminación de hilos extranjeros.</p>
+<p>class threading.Thread(group=None, target=None, name=None, args=(), kwargs={}, *, daemon=None, context=None)</p>
+<p>Este constructor siempre debe ser llamado con argumentos de palabra
+   clave. Los argumentos son:</p>
+<p><em>group</em> must be "None" as it is reserved for future extension when
+   a "ThreadGroup" class is implemented.</p>
+<p><em>target</em> es el objeto invocable a ser invocado por el método
+   "run()". Por defecto es "None", lo que significa que nada es
+   llamado.</p>
+<p><em>name</em> es el nombre del hilo. De forma predeterminada, se construye
+   un nombre único con el formato "Hilo-<em>N</em>", donde <em>N</em> es un número
+   decimal pequeño, o "Hilo-<em>N</em> (target)" donde "target" es
+   "target.<strong>name</strong>" si se especifica el argumento <em>target</em>.</p>
+<p><em>args</em> es una lista o tupla de argumentos para la invocación de
+   destino. Por defecto es "()".</p>
+<p><em>kwargs</em> es un diccionario de argumentos de palabra clave para la
+   invocación objetivo. Por defecto es "{}".</p>
+<p>Si no es "None", <em>daemon</em> establece explícitamente si el hilo es
+   demoníaco. Si es "None" (el valor por defecto), la propiedad
+   demoníaca es heredada del hilo actual.</p>
+<p><em>context</em> is the "Context" value to use when starting the thread.
+   The default value is "None" which indicates that the
+   "sys.flags.thread_inherit_context" flag controls the behaviour.  If
+   the flag is true, threads will start with a copy of the context of
+   the caller of "start()".  If false, they will start with an empty
+   context.  To explicitly start with an empty context, pass a new
+   instance of "Context()".  To explicitly start with a copy of the
+   current context, pass the value from "copy_context()". The flag
+   defaults true on free-threaded builds and false otherwise.</p>
+<p>Si la subclase sobrescribe el constructor, debe asegurarse de
+   invocar al constructor de la clase base ("Thread.<strong>init</strong>()") antes
+   de hacer cualquier otra cosa al hilo.</p>
+<p>Distinto en la versión 3.3: Added the <em>daemon</em> parameter.</p>
+<p>Distinto en la versión 3.10: Utilice el nombre <em>target</em> si se omite
+   el argumento <em>name</em>.</p>
+<p>Distinto en la versión 3.14: Added the <em>context</em> parameter.</p>
+<p>start()</p>
+<div class="codehilite"><pre><span></span><code>  Inicia la actividad del hilo.
+
+  Debe ser llamada máximo una vez por objeto hilo. Se encarga de
+  que el método &quot;run()&quot; del objeto sea invocado en un hilo de
+  control separado.
+
+  Este método lanzará un &quot;RuntimeError&quot; si se llama más de una vez
+  en el mismo objeto hilo.
+
+  If supported, set the operating system thread name to
+  &quot;threading.Thread.name&quot;. The name can be truncated depending on
+  the operating system thread name limits.
+
+  Distinto en la versión 3.14: Set the operating system thread
+  name.
+</code></pre></div>
+
+<p>run()</p>
+<div class="codehilite"><pre><span></span><code>  Método que representa la actividad del hilo.
+
+  Se puede sobrescribir este método en una subclase. El método
+  estándar &quot;run()&quot; invoca el objeto invocable pasado al
+  constructor del objeto como argumento *target*, si lo hay, con
+  argumentos posicionales y de palabra clave tomados de los
+  argumentos *args* y *kwargs*, respectivamente.
+
+  Usar una lista o tupla como el argumento *args* que se pasa a
+  &quot;Thread&quot; podría lograr el mismo efecto.
+
+  Ejemplo:
+
+     &gt;&gt;&gt; from threading import Thread
+     &gt;&gt;&gt; t = Thread(target=print, args=[1])
+     &gt;&gt;&gt; t.run()
+     1
+     &gt;&gt;&gt; t = Thread(target=print, args=(1,))
+     &gt;&gt;&gt; t.run()
+     1
+</code></pre></div>
+
+<p>join(timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Espera a que el hilo termine. Esto bloquea el hilo llamador
+  hasta que el hilo cuyo método &quot;join()&quot; es llamado finalice -- ya
+  sea normalmente o a través de una excepción no gestionada -- o
+  hasta que el tiempo de espera opcional caduque.
+
+  When the *timeout* argument is present and not &quot;None&quot;, it should
+  be a floating-point number specifying a timeout for the
+  operation in seconds (or fractions thereof). As &quot;join()&quot; always
+  returns &quot;None&quot;, you must call &quot;is_alive()&quot; after &quot;join()&quot; to
+  decide whether a timeout happened -- if the thread is still
+  alive, the &quot;join()&quot; call timed out.
+
+  Cuando el argumento *timeout* no se presenta o es &quot;None&quot;, la
+  operación bloqueará hasta que el hilo termine.
+
+  Un hilo puede unirse varias veces.
+
+  &quot;join()&quot; lanza un &quot;RuntimeError&quot; si se intenta unir el hilo
+  actual ya que ello generaría un punto muerto. También es un
+  error aplicar &quot;join()&quot; a un hilo antes de que haya sido iniciado
+  y los intentos de hacerlo lanzaran la misma excepción.
+
+  If an attempt is made to join a running daemonic thread in late
+  stages of *Python finalization* &quot;join()&quot; raises a
+  &quot;PythonFinalizationError&quot;.
+
+  Distinto en la versión 3.14: May raise
+  &quot;PythonFinalizationError&quot;.
+</code></pre></div>
+
+<p>name</p>
+<div class="codehilite"><pre><span></span><code>  Un *string* utilizado con propósitos de identificación. No posee
+  semántica. Se puede dar el mismo nombre a múltiples hilos. El
+  nombre inicial es establecido por el constructor.
+
+  On some platforms, the thread name is set at the operating
+  system level when the thread starts, so that it is visible in
+  task managers. This name may be truncated to fit in a system-
+  specific limit (for example, 15 bytes on Linux or 63 bytes on
+  macOS).
+
+  Changes to *name* are only reflected at the OS level when the
+  currently running thread is renamed. (Setting the *name*
+  attribute of a different thread only updates the Python Thread
+  object.)
+</code></pre></div>
+
+<p>getName()
+   setName()</p>
+<div class="codehilite"><pre><span></span><code>  API getter/setter obsoleta para &quot;name&quot;; utilícelo directamente
+  como una propiedad en su lugar.
+
+  Obsoleto desde la versión 3.10.
+</code></pre></div>
+
+<p>ident</p>
+<div class="codehilite"><pre><span></span><code>  El &#39;identificador de hilo&#39; de este hilo o &quot;None&quot; si el hilo no
+  ha sido iniciado. Es un entero distinto de cero. Ver la función
+  &quot;get_ident()&quot;. Los identificadores de hilos pueden ser
+  reciclados cuando un hilo finaliza y otro hilo es creado. El
+  identificador está disponible incuso después de que el hilo ha
+  abandonado.
+</code></pre></div>
+
+<p>native_id</p>
+<div class="codehilite"><pre><span></span><code>  El ID de subproceso (&quot;TID&quot;) de este subproceso, según lo
+  asignado por el sistema operativo (kernel). Este es un número
+  entero no negativo, o &quot;None&quot; si el hilo no se ha iniciado.
+  Consulte la función &quot;get_native_id()&quot;. Este valor se puede usar
+  para identificar de forma única este hilo en particular en todo
+  el sistema (hasta que el hilo termine, después de lo cual el
+  sistema operativo puede reciclar el valor).
+
+  Nota:
+
+    Similar a las *Process IDs*, las *Thread IDs* sólo son válidas
+    (garantizadas como únicas a través de todo el sistema) desde
+    el momento en que se crea el hilo hasta que el hilo es
+    finalizado.
+
+  Availability: Windows, FreeBSD, Linux, macOS, OpenBSD, NetBSD,
+  AIX, DragonFlyBSD.
+
+  Added in version 3.8.
+</code></pre></div>
+
+<p>is_alive()</p>
+<div class="codehilite"><pre><span></span><code>  Retornar si acaso el hilo está vivo.
+
+  Este método retorna &quot;True&quot; desde justo antes de que el método
+  &quot;run()&quot; inicie hasta junto antes de que el método &quot;run()&quot;
+  termine. La función &quot;enumerate()&quot; del módulo retorna una lista
+  de todos los hilos vivos.
+</code></pre></div>
+
+<p>daemon</p>
+<div class="codehilite"><pre><span></span><code>  Un valor booleano que indica si este hilo es un hilo demonio
+  (*True*) o no (*False*). Debe ser establecido antes de que se
+  llame a &quot;start()&quot;, de lo contrario se lanzará un &quot;RuntimeError&quot;.
+  Su valor inicial se hereda del hilo creador; el hilo principal
+  no es un hilo demonio y por lo tanto todos los hilos creados en
+  el hilo principal tienen por defecto un valor &quot;daemon&quot; =
+  &quot;False&quot;.
+
+  El programa de Python en su totalidad finaliza cuando no queda
+  ningún hilo no-demonio vivo.
+</code></pre></div>
+
+<p>isDaemon()
+   setDaemon()</p>
+<div class="codehilite"><pre><span></span><code>  API getter/setter obsoleta para &quot;daemon&quot;; utilícelo directamente
+  como una propiedad en su lugar.
+
+  Obsoleto desde la versión 3.10.
+</code></pre></div>
+
+<h3 id="lock-objects">Lock objects<a class="headerlink" href="#lock-objects" title="Permanent link">#</a></h3>
+<p>Una primitiva <em>lock</em>, es una primitiva de sincronización que no
+pertenece a ningún hilo en particular cuando está cerrado. En Python,
+es la primitiva de sincronización de más bajo nivel actualmente
+disponible, implementado directamente por el módulo de extensión
+"_thread".</p>
+<p>Una primitiva <em>lock</em> está en uno de dos estados, "cerrado" o "abierto"
+(<em>locked</em>/<em>unlocked</em>). Se crea en estado abierto. Tiene dos métodos
+básicos, "acquire()" (adquirir) y "release()" (liberar). Cuando el
+estado es <em>abierto</em>, "acquire()" cambia el estado a cerrado y retorna
+inmediatamente. Cuando el estado es <em>cerrado</em>, "acquire()" bloquea
+hasta que una llamada a "release()" en otro hilo lo cambie a abierto,
+luego la llamada a "acquire()" lo restablece a cerrado y retorna. El
+método "release()" sólo debe ser llamado en el estado cerrado; cambia
+el estado a abierto y retorna inmediatamente. Si se realiza un intento
+de liberar un <em>lock</em> abierto, se lanzará un "RuntimeError".</p>
+<p>Los <em>locks</em> también soportan el protocolo de gestión de contexto.</p>
+<p>Cuando más de un hilo está bloqueado en "acquire()" esperando que el
+estado sea abierto, sólo un hilo procederá cuando una llamada a
+"release()" restablezca el estado a abierto; cuál de los hilos en
+espera procederá no está definido, y puede variar a través de las
+implementaciones.</p>
+<p>Todos los métodos se ejecutan de manera atómica.</p>
+<p>class threading.Lock</p>
+<p>La clase que implemente los objetos de la primitiva <em>lock</em>. Una vez
+   que un hilo ha adquirido un <em>lock</em>, intentos subsecuentes por
+   adquirirlo bloquearán, hasta que sea liberado; cualquier hilo puede
+   liberarlo.</p>
+<p>Distinto en la versión 3.13: "Lock" is now a class. In earlier
+   Pythons, "Lock" was a factory function which returned an instance
+   of the underlying private lock type.</p>
+<p>acquire(blocking=True, timeout=-1)</p>
+<div class="codehilite"><pre><span></span><code>  Adquirir un *lock*, bloqueante o no bloqueante.
+
+  Cuando se invoca con el argumento *blocking* establecido como
+  &quot;True&quot; (el valor por defecto), bloquea hasta que el *lock* se
+  abra, luego lo establece como cerrado y retorna &quot;True&quot;.
+
+  Cuando es invocado con el argumento *blocking* como &quot;False&quot;, no
+  bloquea. Si una llamada con *blocking* establecido como &quot;True&quot;
+  bloqueara, retorna &quot;Falso&quot; inmediatamente; de otro modo, cierra
+  el *lock* y retorna &quot;True&quot;.
+
+  Cuando se invoca con el argumento de punto flotante *timeout*
+  fijado a un valor positivo, bloquea por a lo más el número de
+  segundos especificado en *timeout* y mientras el *lock* no pueda
+  ser adquirido. Un argumento *timeout* de &quot;-1&quot; especifica una
+  espera ilimitada. No está admitido especificar un *timeout*
+  cuando *blocking* es &quot;False&quot;.
+
+  El valor de retorno es &quot;True&quot; si el *lock* es adquirido con
+  éxito, &quot;Falso&quot; si no (por ejemplo si *timeout* expiró).
+
+  Distinto en la versión 3.2: El parámetro *timeout* es nuevo.
+
+  Distinto en la versión 3.2: La adquisición de un *lock* ahora
+  puede ser interrumpida por señales en POSIX si la implementación
+  de hilado subyacente lo soporta.
+
+  Distinto en la versión 3.14: Lock acquisition can now be
+  interrupted by signals on Windows.
+</code></pre></div>
+
+<p>release()</p>
+<div class="codehilite"><pre><span></span><code>  Libera un *lock*. Puede ser llamado desde cualquier hilo, no
+  solo el hilo que ha adquirido el *lock*.
+
+  Cuando el *lock* está cerrado, lo restablece a abierto, y
+  retorna. Si cualquier otro hilo está bloqueado esperando que el
+  *lock* se abra, permite que exactamente uno de ellos proceda.
+
+  Cuando se invoca en un *lock* abierto, se lanza un
+  &quot;RuntimeError&quot;.
+
+  No hay valor de retorno.
+</code></pre></div>
+
+<p>locked()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; si se adquiere el bloqueo.
+</code></pre></div>
+
+<h3 id="rlock-objects">RLock objects<a class="headerlink" href="#rlock-objects" title="Permanent link">#</a></h3>
+<p>Un <em>lock</em> reentrante es una primitiva de sincronización que puede ser
+adquirido múltiples veces por el mismo hilo. Internamente, utiliza el
+concepto de "hilo dueño" y "nivel de recursividad" además del estado
+abierto/cerrado utilizado por las primitivas <em>locks</em>. Si está en
+estado cerrado, algún hilo es dueño del <em>lock</em>; si está en estado
+abierto, ningún hilo es dueño.</p>
+<p>Threads call a lock's "acquire()" method to lock it, and its
+"release()" method to unlock it.</p>
+<p>Nota:</p>
+<p>Reentrant locks support the context management protocol, so it is
+  recommended to use "with" instead of manually calling "acquire()"
+  and "release()" to handle acquiring and releasing the lock for a
+  block of code.</p>
+<p>RLock's "acquire()"/"release()" call pairs may be nested, unlike
+Lock's "acquire()"/"release()". Only the final "release()" (the
+"release()" of the outermost pair) resets the lock to an unlocked
+state and allows another thread blocked in "acquire()" to proceed.</p>
+<p>"acquire()"/"release()" must be used in pairs: each acquire must have
+a release in the thread that has acquired the lock. Failing to call
+release as many times the lock has been acquired can lead to deadlock.</p>
+<p>class threading.RLock</p>
+<p>Esta clase implementa objetos tipo <em>lock</em> reentrantes. Un <em>lock</em>
+   reentrante debe ser liberado por el hilo que lo adquirió. Una vez
+   que un hilo ha adquirido un <em>lock</em> reentrante, el mismo hilo puede
+   adquirirlo otra vez sin bloquearse; el hilo debe liberarlo una vez
+   por vez que lo adquiere.</p>
+<p>Nótese que "RLock" en realidad es una función fábrica que retorna
+   una instancia de la versión más eficiente de la clase RLock
+   concreta que sea soportada por la plataforma.</p>
+<p>acquire(blocking=True, timeout=-1)</p>
+<div class="codehilite"><pre><span></span><code>  Adquirir un *lock*, bloqueante o no bloqueante.
+
+  Ver también:
+
+    Using RLock as a context manager
+       Recommended over manual &quot;acquire()&quot; and &quot;release()&quot; calls
+       whenever practical.
+
+  When invoked with the *blocking* argument set to &quot;True&quot; (the
+  default):
+
+     * If no thread owns the lock, acquire the lock and return
+       immediately.
+
+     * If another thread owns the lock, block until we are able to
+       acquire lock, or *timeout*, if set to a positive float
+       value.
+
+     * If the same thread owns the lock, acquire the lock again,
+       and return immediately. This is the difference between
+       &quot;Lock&quot; and &quot;RLock&quot;; &quot;Lock&quot; handles this case the same as
+       the previous, blocking until the lock can be acquired.
+
+  When invoked with the *blocking* argument set to &quot;False&quot;:
+
+     * If no thread owns the lock, acquire the lock and return
+       immediately.
+
+     * If another thread owns the lock, return immediately.
+
+     * If the same thread owns the lock, acquire the lock again
+       and return immediately.
+
+  In all cases, if the thread was able to acquire the lock, return
+  &quot;True&quot;. If the thread was unable to acquire the lock (i.e. if
+  not blocking or the timeout was reached) return &quot;False&quot;.
+
+  If called multiple times, failing to call &quot;release()&quot; as many
+  times may lead to deadlock. Consider using &quot;RLock&quot; as a context
+  manager rather than calling acquire/release directly.
+
+  Distinto en la versión 3.2: El parámetro *timeout* es nuevo.
+</code></pre></div>
+
+<p>release()</p>
+<div class="codehilite"><pre><span></span><code>  Libera un *lock*, disminuyendo el nivel de recursividad. Si
+  después de la disminución es cero, restablece el *lock* a
+  abierto (no perteneciente a ningún hilo), y si cualquier otro
+  hilo está bloqueado esperando que se abra el *lock*, permite que
+  exactamente uno de ellos proceda. Si luego de la disminución el
+  nivel de recursividad todavía no es cero, el *lock* permanece
+  cerrado y perteneciente al hilo llamador.
+
+  Only call this method when the calling thread owns the lock. A
+  &quot;RuntimeError&quot; is raised if this method is called when the lock
+  is not acquired.
+
+  No hay valor de retorno.
+</code></pre></div>
+
+<p>locked()</p>
+<div class="codehilite"><pre><span></span><code>  Return a boolean indicating whether this object is locked right
+  now.
+
+  Added in version 3.14.
+</code></pre></div>
+
+<h3 id="condition-objects">Condition objects<a class="headerlink" href="#condition-objects" title="Permanent link">#</a></h3>
+<p>Una condición variable siempre va asociada a algún tipo de <em>lock</em>.
+éste puede ser provisto o se creará uno por defecto. Proveer uno es
+útil cuando varias variables de condición deben compartir el mismo
+<em>lock</em>. El <em>lock</em> es parte del objeto condicional: no es necesario
+rastrearlo por separado.</p>
+<p>Una condición variable obedece el protocolo de gestión de contexto: al
+usar la declaración "with" se adquiere el <em>lock</em> asociado por la
+duración del bloque contenido. Los métodos "acquire()" y "release()"
+también llaman los métodos correspondientes del <em>lock</em> asociado.</p>
+<p>Otros métodos deben llamarse con el <em>lock</em> asociado conservado. El
+método "wait()" libera el <em>lock</em>, y luego bloquea hasta que otro hilo
+lo despierte llamando "notify()" o "notify_all()". Una vez que ha sido
+despertado, "wait()" re-adquiere el <em>lock</em> y retorna. También es
+posible especificar un tiempo de espera.</p>
+<p>El método "notify()" despierta a uno de los hilos que esperan a la
+condición variable, si es que alguno espera. El método "notify_all()"
+despierta a todos los hilos que estén esperando a la condición
+variable.</p>
+<p>Nota: Los métodos "notify()" y "notify_all()" no liberan el <em>lock</em>;
+esto significa que el hilo o los hilos que han sido despertados no
+retornaran de su llamada de "wait()" inmediatamente, sino solo una vez
+que el hilo que haya llamado a "notify()" o "notify_all()" renuncie
+finalmente a la propiedad del <em>lock</em>.</p>
+<p>El estilo típico de programación con variables condicionales utiliza
+el <em>lock</em> para sincronizar el acceso a algún estado compartido; hilos
+que estén interesados en un cambio de estado en particular llamarán a
+"wait()" reiteradamente hasta que vean el estado deseado, mientras que
+los hilos que modifiquen el estado llamarán a "notify()" o a
+"notify_all()" cuando cambien el estado de modo que pudiera ser que el
+el estado sea el deseado por alguno de los hilos en espera. Por
+ejemplo, el siguiente código es una situación genérica de productor-
+consumidor con capacidad de búfer ilimitada:</p>
+<p># Consume one item
+   with cv:
+       while not an_item_is_available():
+           cv.wait()
+       get_an_available_item()</p>
+<p># Produce one item
+   with cv:
+       make_an_item_available()
+       cv.notify()</p>
+<p>El bucle "while" que verifica la condición de la aplicación es
+necesario porque "wait()" puede retornar después de una cantidad
+arbitraria de tiempo, y la condición que dio pie a la llamada de
+"notify()" puede ya no ser verdadera. Esto es inherente a la
+programación multi-hilo. El método "wait_for()" puede usarse para
+automatizar la revisión de condiciones, y facilita la computación de
+tiempos de espera:</p>
+<p># Consume an item
+   with cv:
+       cv.wait_for(an_item_is_available)
+       get_an_available_item()</p>
+<p>Para elegir entre "notify()" y "notify_all()", considérese si un
+cambio de estado puede ser interesante para uno o varios hilos en
+espera. Por ejemplo en una típica situación productor-consumidor,
+agregar un elemento al búfer sólo necesita despertar un hilo
+consumidor.</p>
+<p>class threading.Condition(lock=None)</p>
+<p>Esta clase implementa objetos de condición variable. Una condición
+   variable permite que uno o más hilos esperen hasta que sean
+   notificados por otro hilo.</p>
+<p>Si se provee un argumento <em>lock</em> distinto de "None", debe ser un
+   objeto "Lock" o "RLock", y se utiliza como el <em>lock</em> subyacente. De
+   otro modo, se crea un nuevo objeto "RLock" y se utiliza como el
+   <em>lock</em> subyacente.</p>
+<p>Distinto en la versión 3.3: cambiado de función de fábrica a una
+   clase.</p>
+<p>acquire(*args)</p>
+<div class="codehilite"><pre><span></span><code>  Adquiere el *lock* subyacente. Este método llama al método
+  correspondiente sobre el *lock* subyacente; el valor de retorno
+  es lo que retorne aquel método.
+</code></pre></div>
+
+<p>release()</p>
+<div class="codehilite"><pre><span></span><code>  Libera el *lock* subyacente. Este método llama al método
+  correspondiente en el *lock* subyacente; no tiene valor de
+  retorno.
+</code></pre></div>
+
+<p>locked()</p>
+<div class="codehilite"><pre><span></span><code>  Return a boolean indicating whether this object is locked right
+  now.
+
+  Added in version 3.14.
+</code></pre></div>
+
+<p>wait(timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Espera hasta ser notificado o hasta que el tiempo de espera
+  caduque. Si el hilo invocador no ha adquirido el *lock* cuando
+  este método es llamado, se lanza un &quot;RuntimeError&quot;.
+
+  Este método libera el *lock* subyacente, y luego bloquea hasta
+  ser despertado por una llamada a &quot;notify()&quot; o &quot;notify_all()&quot;
+  para la misma condición variable en otro hilo, o hasta que el
+  tiempo de espera opcional se cumpla. Una vez que ha sido
+  despertado o el tiempo de espera ha pasado, re-adquiere el
+  *lock* y retorna.
+
+  When the *timeout* argument is present and not &quot;None&quot;, it should
+  be a floating-point number specifying a timeout for the
+  operation in seconds (or fractions thereof).
+
+  Cuando el *lock* subyacente es un  &quot;RLock&quot;, no se libera
+  utilizando su método &quot;release()&quot;, ya que esto podría no abrir
+  realmente el *lock* cuando haya sido adquirido múltiples veces
+  recursivamente. En cambio, se usa una interfaz interna de la
+  clase &quot;RLock&quot;, que lo abre realmente incluso cuando haya sido
+  adquirido múltiples veces recursivamente. Otra interfaz interna
+  se usa luego para restablecer el nivel de recursividad cuando el
+  *lock* es readquirido.
+
+  El valor de retorno es &quot;True&quot; a menos que un *timeout* dado haya
+  expirado, en cuyo caso será &quot;False&quot;.
+
+  Distinto en la versión 3.2: Previamente, el método siempre
+  retornaba &quot;None&quot;.
+</code></pre></div>
+
+<p>wait_for(predicate, timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Espera a que una condición se evalúe como verdadera. *predicate*
+  debe ser un invocable cuyo resultado se interpretará como un
+  valor booleano. Se puede proveer un *timeout* que especifique el
+  máximo tiempo de espera.
+
+  Este método utilitario puede llamar a &quot;wait()&quot; reiteradas veces
+  hasta que se satisfaga el predicado, o hasta que la espera
+  caduque. El valor de retorno es el último valor de retorno del
+  predicado y se evaluará a &quot;False&quot; si el método ha caducado.
+
+  Al ignorar la propiedad *feature*, llamar a este método equivale
+  vagamente a escribir:
+
+     while not predicate():
+         cv.wait()
+
+  Por ende, aplican las mismas reglas que con &quot;wait()&quot;: El *lock*
+  debe ser conservado cuando se llame y es re-adquirido al momento
+  del retorno. El predicado se evalúa con el *lock* conservado.
+
+  Added in version 3.2.
+</code></pre></div>
+
+<p>notify(n=1)</p>
+<div class="codehilite"><pre><span></span><code>  Por defecto, despierta a un hilo que esté esperando por esta
+  condición, si lo existe. Si el hilo llamador no ha adquirido el
+  *lock* cuando se llama este método, se lanza un &quot;RuntimeError&quot;.
+
+  Este método despierta como máximo *n* de los hilos que estén
+  esperando por la condición variable; no es una opción si no hay
+  hilos esperando.
+
+  La implementación actual despierta exactamente *n* hilos, si hay
+  por lo menos *n* hilos esperando. Sin embargo, no es seguro
+  apoyarse en este comportamiento. A futuro, una implementación
+  optimizada podría ocasionalmente despertar a más de *n* hilos.
+
+  Nota: un hilo que ha sido despertado no retorna realmente de su
+  llamada a &quot;wait()&quot; hasta que pueda readquirir el *lock*. Ya que
+  &quot;notify()&quot; no libera el *lock*, su llamador debiera hacerlo.
+</code></pre></div>
+
+<p>notify_all()</p>
+<div class="codehilite"><pre><span></span><code>  Despierta a todos los hilos que esperen por esta condición. Este
+  método actúa como &quot;notify()&quot;, pero despierta a todos los hilos
+  en espera en vez de a uno. Si el hilo llamador no ha adquirido
+  el *lock* cuando se llama a este método, se lanza un
+  &quot;RuntimeError&quot;.
+
+  El método &quot;notifyAll&quot; es un alias obsoleto para este método.
+</code></pre></div>
+
+<h3 id="semaphore-objects">Semaphore objects<a class="headerlink" href="#semaphore-objects" title="Permanent link">#</a></h3>
+<p>Éste es uno de las primitivas de sincronización más antiguos en la
+historia de las ciencias de la computación, inventado por el pionero
+en ciencias de la computación holandés Edsger W. Dijkstra (él utilizó
+los nombres "P()" y "V()" en lugar de "acquire()" y "release()")</p>
+<p>Un semáforo administra un contador interno que se disminuye por cada
+llamada a "acquire()" y se incrementa por cada llamada a "release()".
+El contador no puede bajar de cero; cuando "acquire()" lo encuentra en
+cero, bloquea, esperando hasta que otro hilo llame "release()".</p>
+<p>Los semáforos también tienen soporte para el protocolo de gestión de
+contexto.</p>
+<p>class threading.Semaphore(value=1)</p>
+<p>Esta clase implementa los objetos semáforo. Un semáforo gestiona un
+   contador atómico que representa el número de llamadas a "release()"
+   menos el número de llamadas a "acquire()", más un valor inicial. El
+   método "acquire()" bloquea si es necesario, hasta que pueda
+   retornar sin volver el contador negativo. Si no es provisto, el
+   valor por defecto de <em>value</em> será 1.</p>
+<p>El argumento opcional da el <em>value</em> inicial al contador interno;
+   por defecto es "1". Si el <em>value</em> provisto es menor a 0; se lanza
+   un "ValueError".</p>
+<p>Distinto en la versión 3.3: cambiado de función de fábrica a una
+   clase.</p>
+<p>acquire(blocking=True, timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Adquirir un semáforo.
+
+  Cuando se invoca sin argumentos:
+
+  * Si el contador interno es mayor a cero de entrada, lo
+    disminuye en uno y retorna &quot;True&quot; inmediatamente.
+
+  * Si el contador interno es cero de entrada, bloquea hasta ser
+    despertado por una llamada a &quot;release()&quot;. Una vez despierto (y
+    el contador sea mayor a 0), disminuye el contador en 1 y
+    retorna &quot;True&quot;. Se despertará exactamente un hilo por cada
+    llamada a &quot;release()&quot;. No debiese confiarse en el orden en que
+    los hilos sean despertados.
+
+  Cuando se invoca con *blocking* fijado en &quot;False&quot;, no bloquea.
+  Si una llamada sin un argumento bloquease, retorna &quot;False&quot;
+  inmediatamente; de otro modo, hace lo mismo que cuando se llama
+  sin argumentos, y retorna &quot;True&quot;.
+
+  Cuando se invoca con *timeout* distinto de &quot;None&quot;, bloqueará por
+  un tiempo máximo en segundos fijados en *timeout*. Si *acquire*
+  no se completa exitosamente en ese intervalo, retorna &quot;False&quot;.
+  De otro modo retorna &quot;True&quot;.
+
+  Distinto en la versión 3.2: El parámetro *timeout* es nuevo.
+</code></pre></div>
+
+<p>release(n=1)</p>
+<div class="codehilite"><pre><span></span><code>  Suelta un semáforo, incrementando el contador interno por *n*.
+  Cuando era cero en la entrada y otros subprocesos están
+  esperando que vuelva a ser mayor que cero, active *n* de esos
+  subprocesos.
+
+  Distinto en la versión 3.9: Se agregó el parámetro *n* para
+  liberar varios subprocesos en espera a la vez.
+</code></pre></div>
+
+<p>class threading.BoundedSemaphore(value=1)</p>
+<p>Clase que implementa objetos de semáforo delimitados. Un semáforo
+   delimitado verifica que su valor actual no exceda su valor inicial.
+   Si lo hace, se lanza un "ValueError". En la mayoría de las
+   situaciones se utilizan los semáforos para cuidar recursos con
+   capacidad limitada. Si se libera el semáforo demasiadas veces es
+   signo de un <em>bug</em>. Si no se provee, el valor por defecto de <em>value</em>
+   será 1.</p>
+<p>Distinto en la versión 3.3: cambiado de función de fábrica a una
+   clase.</p>
+<h3 id="semaphore-example">"Semaphore" example<a class="headerlink" href="#semaphore-example" title="Permanent link">#</a></h3>
+<p>Los semáforos suelen utilizarse para cuidar recursos con capacidad
+limitada, por ejemplo, un servidor de base de datos. En cualquier
+situación en que el tamaño de los recursos sea fijo, se debe usar un
+semáforo delimitado. Antes de generar cualquier hilo de trabajo, tu
+hilo principal debe inicializar el semáforo:</p>
+<p>maxconnections = 5
+   # ...
+   pool_sema = BoundedSemaphore(value=maxconnections)</p>
+<p>Una vez que han sido generados, los hilos de trabajo llaman a los
+métodos <em>acquire</em> y <em>release</em> cuando necesitan conectarse al servidor:</p>
+<p>with pool_sema:
+       conn = connectdb()
+       try:
+           # ... use connection ...
+       finally:
+           conn.close()</p>
+<p>El uso de semáforos delimitados reduce la posibilidad de que pase
+inadvertido un error de programación que cause que el semáforo sea
+liberado más veces de las que sea adquirido.</p>
+<h3 id="event-objects">Event objects<a class="headerlink" href="#event-objects" title="Permanent link">#</a></h3>
+<p>Éste es uno de los mecanismos más simples de comunicación entre hilos:
+un hilo señala un evento y otro hilo lo espera.</p>
+<p>Un objeto de evento maneja una marca interna que puede ser establecida
+como verdadera mediante el método "set()" y restablecida a falsa
+mediante el método "clear()". El método "wait()" bloquea hasta que la
+marca sea <em>true</em>.</p>
+<p>class threading.Event</p>
+<p>Clase que implementa los objetos de evento. Un evento gestiona un
+   indicador que puede ser establecido a verdadero mediante el método
+   "set()" y restablecido a falso con el método "clear()". El método
+   "wait()" bloquea hasta que el indicador sea verdadero. El indicador
+   es inicialmente falso.</p>
+<p>Distinto en la versión 3.3: cambiado de función de fábrica a una
+   clase.</p>
+<p>is_set()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna &quot;True&quot; exclusivamente si el indicador interno es
+  verdadero.
+
+  El método &quot;isSet&quot; es un alias obsoleto para este método.
+</code></pre></div>
+
+<p>set()</p>
+<div class="codehilite"><pre><span></span><code>  Establece el indicador interno a verdadero. Todos los hilos que
+  estén esperando que se vuelva verdadero serán despertados. Los
+  hilos que llaman a &quot;wait()&quot; una vez que el indicador marca
+  verdadero no bloquearán.
+</code></pre></div>
+
+<p>clear()</p>
+<div class="codehilite"><pre><span></span><code>  Restablece el indicador a falso. Posteriormente, los hilos que
+  llamen a &quot;wait()&quot; bloquearán hasta que se llame a &quot;set()&quot; para
+  establecer el indicador interno a verdadero nuevamente.
+</code></pre></div>
+
+<p>wait(timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Block as long as the internal flag is false and the timeout, if
+  given, has not expired. The return value represents the reason
+  that this blocking method returned; &quot;True&quot; if returning because
+  the internal flag is set to true, or &quot;False&quot; if a timeout is
+  given and the internal flag did not become true within the given
+  wait time.
+
+  When the timeout argument is present and not &quot;None&quot;, it should
+  be a floating-point number specifying a timeout for the
+  operation in seconds, or fractions thereof.
+
+  Distinto en la versión 3.1: Previamente, el método siempre
+  retornaba &quot;None&quot;.
+</code></pre></div>
+
+<h3 id="timer-objects">Timer objects<a class="headerlink" href="#timer-objects" title="Permanent link">#</a></h3>
+<p>Esta clase representa una acción que sólo debe ejecutarse luego de que
+una cierta cantidad de tiempo transcurra --- un temporizador. "Timer"
+es una subclase de "Thread" y en tanto tal también funciona como un
+ejemplo de creación de hilos personalizados.</p>
+<p>Los temporizadores son iniciados, tal como los hilos, al llamarse su
+método "Timer.start". El temporizador puede ser detenido (antes de que
+su acción haya comenzado) al llamar al método "cancel()". El intervalo
+que el temporizador esperará antes de ejecutar su acción puede no ser
+exactamente el mismo que el intervalo especificado por el usuario.</p>
+<p>Por ejemplo:</p>
+<p>def hello():
+       print("hello, world")</p>
+<p>t = Timer(30.0, hello)
+   t.start()  # after 30 seconds, "hello, world" will be printed</p>
+<p>class threading.Timer(interval, function, args=None, kwargs=None)</p>
+<p>Crear un temporizador que ejecutará <em>function</em> con los argumentos
+   <em>args</em> y los argumentos de palabra clave <em>kwargs</em>, luego de que una
+   cantidad <em>interval</em> de segundos hayan transcurrido. Si <em>args</em> es
+   "None" (por defecto) se utilizará una lista vacía. Si <em>kwargs</em> es
+   "None" (por defecto) se utilizará un <em>dict</em> vacío.</p>
+<p>Distinto en la versión 3.3: cambiado de función de fábrica a una
+   clase.</p>
+<p>cancel()</p>
+<div class="codehilite"><pre><span></span><code>  Detiene el temporizador, y cancela la ejecución de la acción del
+  temporizador. Esto sólo funcionará si el temporizador está en
+  etapa de espera.
+</code></pre></div>
+
+<h3 id="barrier-objects">Barrier objects<a class="headerlink" href="#barrier-objects" title="Permanent link">#</a></h3>
+<p>Added in version 3.2.</p>
+<p>Esta clase provee una primitiva de sincronización simple para ser
+usado por un número fijo de hilos que necesitan esperarse entre ellos.
+Cada uno de los hilos intenta pasar la barrera llamando al método
+"wait()" y bloqueará hasta que todos los hilos hayan hecho sus
+respectivas llamadas a "wait()". En este punto, los hilos son
+liberados simultáneamente.</p>
+<p>La barrera puede ser reutilizada cualquier número de veces para el
+mismo número de hilos.</p>
+<p>Como ejemplo, aquí hay una manera simple de sincronizar un hilo
+cliente con uno servidor:</p>
+<p>b = Barrier(2, timeout=5)</p>
+<p>def server():
+       start_server()
+       b.wait()
+       while True:
+           connection = accept_connection()
+           process_server_connection(connection)</p>
+<p>def client():
+       b.wait()
+       while True:
+           connection = make_connection()
+           process_client_connection(connection)</p>
+<p>class threading.Barrier(parties, action=None, timeout=None)</p>
+<p>Crear un objeto de barrera para un número <em>parties</em> de hilos. Una
+   <em>action</em>, si es provista, es un invocable a ser llamado por uno de
+   los hilos cuando sean liberados. <em>timeout</em> es el valor de tiempo de
+   espera máximo por defecto si no se especifica uno en el método
+   "wait()".</p>
+<p>wait(timeout=None)</p>
+<div class="codehilite"><pre><span></span><code>  Pasa la barrera. Cuando todos los hilos involucrados en el
+  objeto barrera han llamado esta función, se liberan todos
+  simultáneamente. Si se provee un valor *timeout*, se utilizará
+  con preferencia sobre cualquiera que haya sido suministrado al
+  constructor de la clase.
+
+  El valor de retorno es un entero en el rango desde 0 hasta
+  *parties* -- 1, diferente para cada hilo. Puede ser utilizado
+  para seleccionar a un hilo para que haga alguna limpieza
+  especial, por ejemplo:
+
+     i = barrier.wait()
+     if i == 0:
+         # Only one thread needs to print this
+         print(&quot;passed the barrier&quot;)
+
+  Se se provee una *action* al constructor, uno de los hilos la
+  habrá llamado antes de ser liberado. Si acaso esta llamada
+  lanzara un error, la barrera entra en estado *broken* (roto).
+
+  Si se agota el tiempo de llamada, la barrera pasa al estado
+  roto.
+
+  Este método podría lanzar una excepción &quot;BrokenBarrierError&quot; si
+  la barrera está rota o si se reinicia mientras el hilo está
+  esperando.
+</code></pre></div>
+
+<p>reset()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna la barrera al estado por defecto, vacío. Cualquier hilo
+  que esté a su espera recibirá la excepción &quot;BrokenBarrierError&quot;.
+
+  Nótese que utilizar esta función podría requerir alguna
+  sincronización externa si existen otros hilos cuyos estados sean
+  desconocidos. Si una barrera se rompe puede ser mejor
+  abandonarla y crear una nueva.
+</code></pre></div>
+
+<p>abort()</p>
+<div class="codehilite"><pre><span></span><code>  Coloca la barrera en estado roto. Esto causa que cualquier
+  llamada activa o futura a &quot;wait()&quot; falle con el error
+  &quot;BrokenBarrierError&quot;. Úsese por ejemplo si uno de los hilos
+  necesita abortar, para evitar que la aplicación quede en punto
+  muerto.
+
+  Puede ser preferible simplemente crear la barrera con un valor
+  *timeout* sensato para cuidarse automáticamente de que uno de
+  los hilos falle.
+</code></pre></div>
+
+<p>parties</p>
+<div class="codehilite"><pre><span></span><code>  El número de hilos requeridos para pasar la barrera.
+</code></pre></div>
+
+<p>n_waiting</p>
+<div class="codehilite"><pre><span></span><code>  El número de hilos actualmente esperando en la barrera.
+</code></pre></div>
+
+<p>broken</p>
+<div class="codehilite"><pre><span></span><code>  Un valor booleano que será &quot;True&quot; si la barrera está en el
+  estado roto.
+</code></pre></div>
+
+<p>exception threading.BrokenBarrierError</p>
+<p>Esta excepción, una subclase de "RuntimeError", se lanza cuando el
+   objeto "Barrier" se restablece o se rompe.</p>
+<h2 id="uso-de-locks-condiciones-y-semaforos-en-la-declaracion-with">Uso de <em>locks</em>, condiciones y semáforos en la declaración "with"<a class="headerlink" href="#uso-de-locks-condiciones-y-semaforos-en-la-declaracion-with" title="Permanent link">#</a></h2>
+<p>Todos los objetos provistos por este módulo que tienen métodos
+"acquire" y "release" pueden ser utilizados como administradores de
+contexto para una declaración "with". El método "acquire" será llamado
+cuando se ingresa al bloque y el método "release" será llamado cuando
+se abandona el bloque. De ahí que, el siguiente fragmento:</p>
+<p>with some_lock:
+       # do something...</p>
+<p>sea equivalente a:</p>
+<p>some_lock.acquire()
+   try:
+       # do something...
+   finally:
+       some_lock.release()</p>
+<p>Actualmente, los objetos "Lock", "RLock", "Condition", "Semaphore", y
+"BoundedSemaphore" pueden ser utilizados como gestores de contexto con
+declaraciones "with".</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/textwrap.html">
+          <span class="muted">Anterior</span>&#34;textwrap&#34; --- Text wrapping and filling
+        </a>
+        <a class="pager-next" href="../library/threadsafety.html">
+          <span class="muted">Siguiente</span>Thread Safety Guarantees
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

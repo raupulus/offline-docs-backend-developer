@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vendor binaries and the vendor/bin directory · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+>Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+>Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+>Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+>Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+>Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+>Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+class="is-current" aria-current="page">Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Vendor binaries and the vendor/bin directory</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#what-is-a-vendor-binary">What is a vendor binary?#</a></li>
+              <li class="lvl-2"><a href="#how-is-it-defined">How is it defined?#</a></li>
+              <li class="lvl-2"><a href="#what-does-defining-a-vendor-binary-in-composerjson-do">What does defining a vendor binary in composer.json do?#</a></li>
+              <li class="lvl-2"><a href="#what-happens-when-composer-is-run-on-a-composerjson-that-defines-vendor-binaries">What happens when Composer is run on a composer.json that defines vendor binaries?#</a></li>
+              <li class="lvl-2"><a href="#what-happens-when-composer-is-run-on-a-composerjson-that-has-dependencies-with-vendor-binaries-listed">What happens when Composer is run on a composer.json that has dependencies with vendor binaries listed?#</a></li>
+              <li class="lvl-2"><a href="#finding-the-composer-autoloader-from-a-binary">Finding the Composer autoloader from a binary#</a></li>
+              <li class="lvl-2"><a href="#finding-the-composer-bin-dir-from-a-binary">Finding the Composer bin-dir from a binary#</a></li>
+              <li class="lvl-2"><a href="#what-about-windows-and-bat-files">What about Windows and .bat files?#</a></li>
+              <li class="lvl-2"><a href="#can-vendor-binaries-be-installed-somewhere-other-than-vendorbin">Can vendor binaries be installed somewhere other than vendor/bin?#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: Expose command-line scripts from packages
+-->
+
+<h1 id="vendor-binaries-and-the-vendorbin-directory">Vendor binaries and the <code>vendor/bin</code> directory<a class="headerlink" href="#vendor-binaries-and-the-vendorbin-directory" title="Permanent link">#</a></h1>
+<h2 id="what-is-a-vendor-binary">What is a vendor binary?<a class="headerlink" href="#what-is-a-vendor-binary" title="Permanent link">#</a></h2>
+<p>Any command line script that a Composer package would like to pass along
+to a user who installs the package should be listed as a vendor binary.</p>
+<p>If a package contains other scripts that are not needed by the package
+users (like build or compile scripts) that code should not be listed
+as a vendor binary.</p>
+<h2 id="how-is-it-defined">How is it defined?<a class="headerlink" href="#how-is-it-defined" title="Permanent link">#</a></h2>
+<p>It is defined by adding the <code>bin</code> key to a project's <code>composer.json</code>.
+It is specified as an array of files so multiple binaries can be added
+for any given project.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bin&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;bin/my-script&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bin/my-other-script&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="what-does-defining-a-vendor-binary-in-composerjson-do">What does defining a vendor binary in composer.json do?<a class="headerlink" href="#what-does-defining-a-vendor-binary-in-composerjson-do" title="Permanent link">#</a></h2>
+<p>It instructs Composer to install the package's binaries to <code>vendor/bin</code>
+for any project that <strong>depends</strong> on that project.</p>
+<p>This is a convenient way to expose useful scripts that would
+otherwise be hidden deep in the <code>vendor/</code> directory.</p>
+<h2 id="what-happens-when-composer-is-run-on-a-composerjson-that-defines-vendor-binaries">What happens when Composer is run on a composer.json that defines vendor binaries?<a class="headerlink" href="#what-happens-when-composer-is-run-on-a-composerjson-that-defines-vendor-binaries" title="Permanent link">#</a></h2>
+<p>For the binaries that a package defines directly, nothing happens.</p>
+<h2 id="what-happens-when-composer-is-run-on-a-composerjson-that-has-dependencies-with-vendor-binaries-listed">What happens when Composer is run on a composer.json that has dependencies with vendor binaries listed?<a class="headerlink" href="#what-happens-when-composer-is-run-on-a-composerjson-that-has-dependencies-with-vendor-binaries-listed" title="Permanent link">#</a></h2>
+<p>Composer looks for the binaries defined in all of the dependencies. A
+proxy file (or two on Windows/WSL) is created from each dependency's
+binaries to <code>vendor/bin</code>.</p>
+<p>Say package <code>my-vendor/project-a</code> has binaries setup like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-vendor/project-a&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;bin&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;bin/project-a-bin&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Running <code>composer install</code> for this <code>composer.json</code> will not do
+anything with <code>bin/project-a-bin</code>.</p>
+<p>Say project <code>my-vendor/project-b</code> has requirements setup like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-vendor/project-b&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;my-vendor/project-a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Running <code>composer install</code> for this <code>composer.json</code> will look at
+all of project-a's binaries and install them to <code>vendor/bin</code>.</p>
+<p>In this case, Composer will make <code>vendor/my-vendor/project-a/bin/project-a-bin</code>
+available as <code>vendor/bin/project-a-bin</code>.</p>
+<h2 id="finding-the-composer-autoloader-from-a-binary">Finding the Composer autoloader from a binary<a class="headerlink" href="#finding-the-composer-autoloader-from-a-binary" title="Permanent link">#</a></h2>
+<p>As of Composer 2.2, a new <code>$_composer_autoload_path</code> global variable
+is defined by the bin proxy file, so that when your binary gets executed
+it can use it to easily locate the project's autoloader.</p>
+<p>This global will not be available however when running binaries defined
+by the root package itself, so you need to have a fallback in place.</p>
+<p>This can look like this for example:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">include</span> <span class="nv">$_composer_autoload_path</span> <span class="o">??</span> <span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/../vendor/autoload.php&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>If you want to rely on this in your package you should however make sure to
+also require <code>"composer-runtime-api": "^2.2"</code> to ensure that the package
+gets installed with a Composer version supporting the feature.</p>
+<h2 id="finding-the-composer-bin-dir-from-a-binary">Finding the Composer bin-dir from a binary<a class="headerlink" href="#finding-the-composer-bin-dir-from-a-binary" title="Permanent link">#</a></h2>
+<p>As of Composer 2.2.2, a new <code>$_composer_bin_dir</code> global variable
+is defined by the bin proxy file, so that when your binary gets executed
+it can use it to easily locate the project's Composer bin directory.</p>
+<p>For non-PHP binaries, as of Composer 2.2.6, the bin proxy sets a
+<code>COMPOSER_RUNTIME_BIN_DIR</code> environment variable.</p>
+<p>This global variable will not be available however when running binaries defined
+by the root package itself, so you need to have a fallback in place.</p>
+<p>This can look like this for example:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$binDir</span> <span class="o">=</span> <span class="nv">$_composer_bin_dir</span> <span class="o">??</span> <span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/../vendor/bin&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="x">#!/bin/bash</span>
+
+<span class="x">if [[ -z &quot;$COMPOSER_RUNTIME_BIN_DIR&quot; ]]; then</span>
+<span class="x">  BIN_DIR=&quot;$( cd &quot;$( dirname &quot;${BASH_SOURCE[0]}&quot; )&quot; &amp;&amp; pwd )&quot;</span>
+<span class="x">else</span>
+<span class="x">  BIN_DIR=&quot;$COMPOSER_RUNTIME_BIN_DIR&quot;</span>
+<span class="x">fi</span>
+</code></pre></div>
+
+<p>If you want to rely on this in your package you should however make sure to
+also require <code>"composer-runtime-api": "^2.2.2"</code> to ensure that the package
+gets installed with a Composer version supporting the feature.</p>
+<h2 id="what-about-windows-and-bat-files">What about Windows and .bat files?<a class="headerlink" href="#what-about-windows-and-bat-files" title="Permanent link">#</a></h2>
+<p>Packages managed entirely by Composer do not <em>need</em> to contain any
+<code>.bat</code> files for Windows compatibility. Composer handles installation
+of binaries in a special way when run in a Windows environment:</p>
+<ul>
+<li>A <code>.bat</code> file is generated automatically to reference the binary</li>
+<li>A Unix-style proxy file with the same name as the binary is also
+   generated, which is useful for WSL, Linux VMs, etc.</li>
+</ul>
+<p>Packages that need to support workflows that may not include Composer
+are welcome to maintain custom <code>.bat</code> files. In this case, the package
+should <strong>not</strong> list the <code>.bat</code> file as a binary as it is not needed.</p>
+<h2 id="can-vendor-binaries-be-installed-somewhere-other-than-vendorbin">Can vendor binaries be installed somewhere other than vendor/bin?<a class="headerlink" href="#can-vendor-binaries-be-installed-somewhere-other-than-vendorbin" title="Permanent link">#</a></h2>
+<p>Yes, there are two ways an alternate vendor binary location can be specified:</p>
+<ol>
+<li>Setting the <code>bin-dir</code> configuration setting in <code>composer.json</code></li>
+<li>Setting the environment variable <code>COMPOSER_BIN_DIR</code></li>
+</ol>
+<p>An example of the former looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;bin-dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scripts&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Running <code>composer install</code> for this <code>composer.json</code> will result in
+all of the vendor binaries being installed in <code>scripts/</code> instead of
+<code>vendor/bin/</code>.</p>
+<p>You can set <code>bin-dir</code> to <code>./</code> to put binaries in your project root.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/troubleshooting.html">
+          <span class="muted">Anterior</span>Troubleshooting
+        </a>
+        <a class="pager-next" href="../articles/versions.html">
+          <span class="muted">Siguiente</span>Versions and constraints
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

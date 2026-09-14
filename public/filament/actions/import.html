@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Import action · Filament</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Filament</a>
+<span class="badge">4.x</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="filament" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Filament…"
+         aria-label="Buscar en Filament" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Filament
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Filament">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Actions
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../actions/overview.html"
+>Overview</a>
+              </li>
+              <li>
+                <a href="../actions/modals.html"
+>Modals</a>
+              </li>
+              <li>
+                <a href="../actions/grouping-actions.html"
+>Grouping actions</a>
+              </li>
+              <li>
+                <a href="../actions/create.html"
+>Create action</a>
+              </li>
+              <li>
+                <a href="../actions/edit.html"
+>Edit action</a>
+              </li>
+              <li>
+                <a href="../actions/view.html"
+>View action</a>
+              </li>
+              <li>
+                <a href="../actions/delete.html"
+>Delete action</a>
+              </li>
+              <li>
+                <a href="../actions/replicate.html"
+>Replicate action</a>
+              </li>
+              <li>
+                <a href="../actions/force-delete.html"
+>Force-delete action</a>
+              </li>
+              <li>
+                <a href="../actions/restore.html"
+>Restore action</a>
+              </li>
+              <li>
+                <a href="../actions/import.html"
+class="is-current" aria-current="page">Import action</a>
+              </li>
+              <li>
+                <a href="../actions/export.html"
+>Export action</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../forms/overview.html">Forms</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../infolists/overview.html">Infolists</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../notifications/overview.html">Notifications</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../schemas/overview.html">Schemas</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tables/overview.html">Tables</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../widgets/overview.html">Widgets</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Import action</h1>
+
+      <p class="doc-meta">
+<span class="badge">4.x</span>          <a href="https://filamentphp.com/docs" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#creating-an-importer">Creating an importer#</a></li>
+              <li class="lvl-3"><a href="#automatically-generating-importer-columns">Automatically generating importer columns#</a></li>
+              <li class="lvl-2"><a href="#defining-importer-columns">Defining importer columns#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-label-of-an-import-column">Customizing the label of an import column#</a></li>
+              <li class="lvl-3"><a href="#requiring-an-importer-column-to-be-mapped-to-a-csv-column">Requiring an importer column to be mapped to a CSV column#</a></li>
+              <li class="lvl-3"><a href="#validating-csv-data">Validating CSV data#</a></li>
+              <li class="lvl-3"><a href="#casting-state">Casting state#</a></li>
+              <li class="lvl-3"><a href="#handling-multiple-values-in-a-single-column">Handling multiple values in a single column#</a></li>
+              <li class="lvl-3"><a href="#importing-relationships">Importing relationships#</a></li>
+              <li class="lvl-3"><a href="#marking-column-data-as-sensitive">Marking column data as sensitive#</a></li>
+              <li class="lvl-3"><a href="#customizing-how-a-column-is-filled-into-a-record">Customizing how a column is filled into a record#</a></li>
+              <li class="lvl-3"><a href="#adding-helper-text-below-the-import-column">Adding helper text below the import column#</a></li>
+              <li class="lvl-2"><a href="#updating-existing-records-when-importing">Updating existing records when importing#</a></li>
+              <li class="lvl-3"><a href="#updating-existing-records-when-importing-only">Updating existing records when importing only#</a></li>
+              <li class="lvl-3"><a href="#ignoring-blank-state-for-an-import-column">Ignoring blank state for an import column#</a></li>
+              <li class="lvl-2"><a href="#using-import-options">Using import options#</a></li>
+              <li class="lvl-2"><a href="#improving-import-column-mapping-guesses">Improving import column mapping guesses#</a></li>
+              <li class="lvl-2"><a href="#providing-example-csv-data">Providing example CSV data#</a></li>
+              <li class="lvl-2"><a href="#using-a-custom-user-model">Using a custom user model#</a></li>
+              <li class="lvl-3"><a href="#using-a-polymorphic-user-relationship">Using a polymorphic user relationship#</a></li>
+              <li class="lvl-2"><a href="#limiting-the-maximum-number-of-rows-that-can-be-imported">Limiting the maximum number of rows that can be imported#</a></li>
+              <li class="lvl-2"><a href="#changing-the-import-chunk-size">Changing the import chunk size#</a></li>
+              <li class="lvl-2"><a href="#changing-the-csv-delimiter">Changing the CSV delimiter#</a></li>
+              <li class="lvl-2"><a href="#changing-the-column-header-offset">Changing the column header offset#</a></li>
+              <li class="lvl-2"><a href="#customizing-the-completion-notification">Customizing the completion notification#</a></li>
+              <li class="lvl-2"><a href="#customizing-the-import-job">Customizing the import job#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-import-queue-and-connection">Customizing the import queue and connection#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-import-job-middleware">Customizing the import job middleware#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-import-job-retries">Customizing the import job retries#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-import-job-tags">Customizing the import job tags#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-import-job-batch-name">Customizing the import job batch name#</a></li>
+              <li class="lvl-2"><a href="#customizing-import-validation-messages">Customizing import validation messages#</a></li>
+              <li class="lvl-3"><a href="#customizing-import-validation-attributes">Customizing import validation attributes#</a></li>
+              <li class="lvl-2"><a href="#customizing-import-file-validation">Customizing import file validation#</a></li>
+              <li class="lvl-2"><a href="#lifecycle-hooks">Lifecycle hooks#</a></li>
+              <li class="lvl-2"><a href="#authorization">Authorization#</a></li>
+              <li class="lvl-2"><a href="#security">Security#</a></li>
+              <li class="lvl-3"><a href="#per-record-authorization">Per-record authorization#</a></li>
+              <li class="lvl-3"><a href="#csv-formula-injection">CSV formula injection#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>import Aside from "@components/Aside.astro"
+import AutoScreenshot from "@components/AutoScreenshot.astro"
+import UtilityInjection from "@components/UtilityInjection.astro"</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>Filament includes an action that is able to import rows from a CSV. When the trigger button is clicked, a modal asks the user for a file. Once they upload one, they are able to map each column in the CSV to a real column in the database. If any rows fail validation, they will be compiled into a downloadable CSV for the user to review after the rest of the rows have been imported. Users can also download an example CSV file containing all the columns that can be imported.</p>
+<p>This feature uses <a href="https://laravel.com/docs/queues#job-batching">job batches</a> and <a href="../notifications/database-notifications">database notifications</a>, so you need to publish those migrations from Laravel. Also, you need to publish the migrations for tables that Filament uses to store information about imports:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:queue-batches-table
+php<span class="w"> </span>artisan<span class="w"> </span>make:notifications-table
+php<span class="w"> </span>artisan<span class="w"> </span>vendor:publish<span class="w"> </span>--tag<span class="o">=</span>filament-actions-migrations
+php<span class="w"> </span>artisan<span class="w"> </span>migrate
+</code></pre></div>
+
+<p>If you'd like to receive import notifications in a panel, you can enable them in the <a href="../notifications/database-notifications#enabling-database-notifications-in-a-panel">panel configuration</a>.</p>
+<Aside variant="info">
+    If you're using PostgreSQL, make sure that the `data` column in the notifications migration is using `json()`: `$table->json('data')`.
+</Aside>
+
+<Aside variant="info">
+    If you're using UUIDs for your `User` model, make sure that your `notifiable` column in the notifications migration is using `uuidMorphs()`: `$table->uuidMorphs('notifiable')`.
+</Aside>
+
+<p>You may use the <code>ImportAction</code> like so:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="actions/import-action/modal" alt="Import action modal" version="4.x" /></p>
+<p>If you want to add this action to the header of a table, you may do so like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+<span class="x">use Filament\Tables\Table;</span>
+
+<span class="x">public function table(Table $table): Table</span>
+<span class="x">{</span>
+<span class="x">    return $table</span>
+<span class="x">        -&gt;headerActions([</span>
+<span class="x">            ImportAction::make()</span>
+<span class="x">                -&gt;importer(ProductImporter::class)</span>
+<span class="x">        ]);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The <a href="#creating-an-importer">"importer" class needs to be created</a> to tell Filament how to import each row of the CSV.</p>
+<p>If you have more than one <code>ImportAction</code> in the same place, you should give each a unique name in the <code>make()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make(&#39;importProducts&#39;)</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+
+<span class="x">ImportAction::make(&#39;importBrands&#39;)</span>
+<span class="x">    -&gt;importer(BrandImporter::class)</span>
+</code></pre></div>
+
+<h2 id="creating-an-importer">Creating an importer<a class="headerlink" href="#creating-an-importer" title="Permanent link">#</a></h2>
+<p>To create an importer class for a model, you may use the <code>make:filament-importer</code> command, passing the name of a model:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:filament-importer<span class="w"> </span>Product
+</code></pre></div>
+
+<p>This will create a new class in the <code>app/Filament/Imports</code> directory. You now need to define the <a href="#defining-importer-columns">columns</a> that can be imported.</p>
+<h3 id="automatically-generating-importer-columns">Automatically generating importer columns<a class="headerlink" href="#automatically-generating-importer-columns" title="Permanent link">#</a></h3>
+<p>If you'd like to save time, Filament can automatically generate the <a href="#defining-importer-columns">columns</a> for you, based on your model's database columns, using <code>--generate</code>:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:filament-importer<span class="w"> </span>Product<span class="w"> </span>--generate
+</code></pre></div>
+
+<h2 id="defining-importer-columns">Defining importer columns<a class="headerlink" href="#defining-importer-columns" title="Permanent link">#</a></h2>
+<p>To define the columns that can be imported, you need to override the <code>getColumns()</code> method on your importer class, returning an array of <code>ImportColumn</code> objects:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">public static function getColumns(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        ImportColumn::make(&#39;name&#39;)</span>
+<span class="x">            -&gt;requiredMapping()</span>
+<span class="x">            -&gt;rules([&#39;required&#39;, &#39;max:255&#39;]),</span>
+<span class="x">        ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">            -&gt;label(&#39;SKU&#39;)</span>
+<span class="x">            -&gt;requiredMapping()</span>
+<span class="x">            -&gt;rules([&#39;required&#39;, &#39;max:32&#39;]),</span>
+<span class="x">        ImportColumn::make(&#39;price&#39;)</span>
+<span class="x">            -&gt;numeric()</span>
+<span class="x">            -&gt;rules([&#39;numeric&#39;, &#39;min:0&#39;]),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="customizing-the-label-of-an-import-column">Customizing the label of an import column<a class="headerlink" href="#customizing-the-label-of-an-import-column" title="Permanent link">#</a></h3>
+<p>The label for each column will be generated automatically from its name, but you can override it by calling the <code>label()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;label(&#39;SKU&#39;)</span>
+</code></pre></div>
+
+<h3 id="requiring-an-importer-column-to-be-mapped-to-a-csv-column">Requiring an importer column to be mapped to a CSV column<a class="headerlink" href="#requiring-an-importer-column-to-be-mapped-to-a-csv-column" title="Permanent link">#</a></h3>
+<p>You can call the <code>requiredMapping()</code> method to make a column required to be mapped to a column in the CSV. Columns that are required in the database should be required to be mapped:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;requiredMapping()</span>
+</code></pre></div>
+
+<p>If you require a column in the database, you also need to make sure that it has a <a href="#validating-csv-data"><code>rules(['required'])</code> validation rule</a>.</p>
+<p>If a column is not mapped, it will not be validated since there is no data to validate.</p>
+<p>If you allow an import to create records as well as <a href="#updating-existing-records-when-importing">update existing ones</a>, but only require a column to be mapped when creating records as it's a required field, you can use the <code>requiredMappingForNewRecordsOnly()</code> method instead of <code>requiredMapping()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;requiredMappingForNewRecordsOnly()</span>
+</code></pre></div>
+
+<p>If the <code>resolveRecord()</code> method returns a model instance that is not saved in the database yet, the column will be required to be mapped, just for that row. If the user does not map the column, and one of the rows in the import does not yet exist in the database, just that row will fail and a message will be added to the failed rows CSV after every row has been analyzed.</p>
+<h3 id="validating-csv-data">Validating CSV data<a class="headerlink" href="#validating-csv-data" title="Permanent link">#</a></h3>
+<p>You can call the <code>rules()</code> method to add validation rules to a column. These rules will check the data in each row from the CSV before it is saved to the database:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;rules([&#39;required&#39;, &#39;max:32&#39;])</span>
+</code></pre></div>
+
+<p>Any rows that do not pass validation will not be imported. Instead, they will be compiled into a new CSV of "failed rows", which the user can download after the import has finished. The user will be shown a list of validation errors for each row that failed.</p>
+<p><UtilityInjection set="importColumns" version="4.x">As well as allowing a static value, the <code>rules()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<h3 id="casting-state">Casting state<a class="headerlink" href="#casting-state" title="Permanent link">#</a></h3>
+<p>Before <a href="#validating-csv-data">validation</a>, data from the CSV can be cast. This is useful for converting strings into the correct data type, otherwise validation may fail. For example, if you have a <code>price</code> column in your CSV, you may want to cast it to a float:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;price&#39;)</span>
+<span class="x">    -&gt;castStateUsing(function (string $state): ?float {</span>
+<span class="x">        if (blank($state)) {</span>
+<span class="x">            return null;</span>
+<span class="x">        }</span>
+
+<span class="x">        $state = preg_replace(&#39;/[^0-9.]/&#39;, &#39;&#39;, $state);</span>
+<span class="x">        $state = floatval($state);</span>
+
+<span class="x">        return round($state, precision: 2);</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p><UtilityInjection set="importColumns" version="4.x" extras="State;;mixed;;$state;;The state to cast, after it has been processed by other casting methods.||Original state;;mixed;;$originalState;;The state to cast, before it was processed by other casting methods.">As well as <code>$state</code>, the <code>castStateUsing()</code> method allows you to inject various utilities into the function as parameters.</UtilityInjection></p>
+<p>In this example, we pass in a function that is used to cast the <code>$state</code>. This function removes any non-numeric characters from the string, casts it to a float, and rounds it to two decimal places.</p>
+<Aside variant="info">
+    If a column is not [required by validation](#validating-csv-data), and it is empty, it will not be cast.
+</Aside>
+
+<p>Filament also ships with some built-in casting methods:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;price&#39;)</span>
+<span class="x">    -&gt;numeric() // Casts the state to a float.</span>
+
+<span class="x">ImportColumn::make(&#39;price&#39;)</span>
+<span class="x">    -&gt;numeric(decimalPlaces: 2) // Casts the state to a float, and rounds it to 2 decimal places.</span>
+
+<span class="x">ImportColumn::make(&#39;quantity&#39;)</span>
+<span class="x">    -&gt;integer() // Casts the state to an integer.</span>
+
+<span class="x">ImportColumn::make(&#39;is_visible&#39;)</span>
+<span class="x">    -&gt;boolean() // Casts the state to a boolean.</span>
+</code></pre></div>
+
+<h4 id="mutating-the-state-after-it-has-been-cast">Mutating the state after it has been cast<a class="headerlink" href="#mutating-the-state-after-it-has-been-cast" title="Permanent link">#</a></h4>
+<p>If you're using a <a href="#casting-state">built-in casting method</a> or <a href="#handling-multiple-values-in-a-single-column">array cast</a>, you can mutate the state after it has been cast by passing a function to the <code>castStateUsing()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;price&#39;)</span>
+<span class="x">    -&gt;numeric()</span>
+<span class="x">    -&gt;castStateUsing(function (float $state): ?float {</span>
+<span class="x">        if (blank($state)) {</span>
+<span class="x">            return null;</span>
+<span class="x">        }</span>
+
+<span class="x">        return round($state * 100);</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p>You can even access the original state before it was cast, by defining an <code>$originalState</code> argument in the function:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;price&#39;)</span>
+<span class="x">    -&gt;numeric()</span>
+<span class="x">    -&gt;castStateUsing(function (float $state, mixed $originalState): ?float {</span>
+<span class="x">        // ...</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p><UtilityInjection set="importColumns" version="4.x" extras="State;;mixed;;$state;;The state to cast, after it has been processed by other casting methods.||Original state;;mixed;;$originalState;;The state to cast, before it was processed by other casting methods.">As well as <code>$state</code>, the <code>castStateUsing()</code> method allows you to inject various utilities into the function as parameters.</UtilityInjection></p>
+<h3 id="handling-multiple-values-in-a-single-column">Handling multiple values in a single column<a class="headerlink" href="#handling-multiple-values-in-a-single-column" title="Permanent link">#</a></h3>
+<p>You may use the <code>multiple()</code> method to cast the values in a column to an array. It accepts a delimiter as its first argument, which is used to split the values in the column into an array. For example, if you have a <code>documentation_urls</code> column in your CSV, you may want to cast it to an array of URLs:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;documentation_urls&#39;)</span>
+<span class="x">    -&gt;multiple(&#39;,&#39;)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="importColumns" version="4.x">As well as allowing a static value, the <code>multiple()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<p>In this example, we pass in a comma as the delimiter, so the values in the column will be split by commas, and cast to an array.</p>
+<h4 id="casting-each-item-in-an-array">Casting each item in an array<a class="headerlink" href="#casting-each-item-in-an-array" title="Permanent link">#</a></h4>
+<p>If you want to cast each item in the array to a different data type, you can chain the <a href="#casting-state">built-in casting methods</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;customer_ratings&#39;)</span>
+<span class="x">    -&gt;multiple(&#39;,&#39;)</span>
+<span class="x">    -&gt;integer() // Casts each item in the array to an integer.</span>
+</code></pre></div>
+
+<h4 id="validating-each-item-in-an-array">Validating each item in an array<a class="headerlink" href="#validating-each-item-in-an-array" title="Permanent link">#</a></h4>
+<p>If you want to validate each item in the array, you can chain the <code>nestedRecursiveRules()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;customer_ratings&#39;)</span>
+<span class="x">    -&gt;multiple(&#39;,&#39;)</span>
+<span class="x">    -&gt;integer()</span>
+<span class="x">    -&gt;rules([&#39;array&#39;])</span>
+<span class="x">    -&gt;nestedRecursiveRules([&#39;integer&#39;, &#39;min:1&#39;, &#39;max:5&#39;])</span>
+</code></pre></div>
+
+<p><UtilityInjection set="importColumns" version="4.x">As well as allowing a static value, the <code>nestedRecursiveRules()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<h3 id="importing-relationships">Importing relationships<a class="headerlink" href="#importing-relationships" title="Permanent link">#</a></h3>
+<p>You may use the <code>relationship()</code> method to import a relationship. At the moment, <code>BelongsTo</code> and <code>BelongsToMany</code> relationships are supported. For example, if you have a <code>category</code> column in your CSV, you may want to import the category <code>BelongsTo</code> relationship:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;author&#39;)</span>
+<span class="x">    -&gt;relationship()</span>
+</code></pre></div>
+
+<p>In this example, the <code>author</code> column in the CSV will be mapped to the <code>author_id</code> column in the database. The CSV should contain the primary keys of authors, usually <code>id</code>.</p>
+<p>If the column has a value, but the author cannot be found, the import will fail validation. Filament automatically adds validation to all relationship columns, to ensure that the relationship is not empty when it is required.</p>
+<p>If you want to import a <code>BelongsToMany</code> relationship, make sure that the column is set to <a href="#handling-multiple-values-in-a-single-column"><code>multiple()</code></a>, with the correct separator between values:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;authors&#39;)</span>
+<span class="x">    -&gt;relationship()</span>
+<span class="x">    -&gt;multiple(&#39;,&#39;)</span>
+</code></pre></div>
+
+<h4 id="customizing-the-relationship-import-resolution">Customizing the relationship import resolution<a class="headerlink" href="#customizing-the-relationship-import-resolution" title="Permanent link">#</a></h4>
+<p>If you want to find a related record using a different column, you can pass the column name as <code>resolveUsing</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;author&#39;)</span>
+<span class="x">    -&gt;relationship(resolveUsing: &#39;email&#39;)</span>
+</code></pre></div>
+
+<p>You can pass in multiple columns to <code>resolveUsing</code>, and they will be used to find the author, in an "or" fashion. For example, if you pass in <code>['email', 'username']</code>, the record can be found by either their email or username:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;author&#39;)</span>
+<span class="x">    -&gt;relationship(resolveUsing: [&#39;email&#39;, &#39;username&#39;])</span>
+</code></pre></div>
+
+<p>You can also customize the resolution process, by passing in a function to <code>resolveUsing</code>, which should return a record to associate with the relationship:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Author;</span>
+<span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;author&#39;)</span>
+<span class="x">    -&gt;relationship(resolveUsing: function (string $state): ?Author {</span>
+<span class="x">        return Author::query()</span>
+<span class="x">            -&gt;where(&#39;email&#39;, $state)</span>
+<span class="x">            -&gt;orWhere(&#39;username&#39;, $state)</span>
+<span class="x">            -&gt;first();</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p><UtilityInjection set="importColumns" version="4.x" extras="State;;mixed;;$state;;The state to resolve into a record.">The function passed to <code>resolveUsing</code> allows you to inject various utilities into the function as parameters.</UtilityInjection></p>
+<p>If you are using a <code>BelongsToMany</code> relationship, the <code>$state</code> will be an array, and you should return a collection of records that you have resolved:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Author;</span>
+<span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+<span class="x">use Illuminate\Database\Eloquent\Collection;</span>
+
+<span class="x">ImportColumn::make(&#39;authors&#39;)</span>
+<span class="x">    -&gt;relationship(resolveUsing: function (array $state): Collection {</span>
+<span class="x">        return Author::query()</span>
+<span class="x">            -&gt;whereIn(&#39;email&#39;, $state)</span>
+<span class="x">            -&gt;orWhereIn(&#39;username&#39;, $state)</span>
+<span class="x">            -&gt;get();</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p>You could even use this function to dynamically determine which columns to use to resolve the record:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Author;</span>
+<span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;author&#39;)</span>
+<span class="x">    -&gt;relationship(resolveUsing: function (string $state): ?Author {</span>
+<span class="x">        if (filter_var($state, FILTER_VALIDATE_EMAIL)) {</span>
+<span class="x">            return &#39;email&#39;;</span>
+<span class="x">        }</span>
+
+<span class="x">        return &#39;username&#39;;</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<h3 id="marking-column-data-as-sensitive">Marking column data as sensitive<a class="headerlink" href="#marking-column-data-as-sensitive" title="Permanent link">#</a></h3>
+<p>When import rows fail validation, they are logged to the database, ready for export when the import completes. You may want to exclude certain columns from this logging to avoid storing sensitive data in plain text. To achieve this, you can use the <code>sensitive()</code> method on the <code>ImportColumn</code> to prevent its data from being logged:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;ssn&#39;)</span>
+<span class="x">    -&gt;label(&#39;Social security number&#39;)</span>
+<span class="x">    -&gt;sensitive()</span>
+<span class="x">    -&gt;rules([&#39;required&#39;, &#39;digits:9&#39;])</span>
+</code></pre></div>
+
+<h3 id="customizing-how-a-column-is-filled-into-a-record">Customizing how a column is filled into a record<a class="headerlink" href="#customizing-how-a-column-is-filled-into-a-record" title="Permanent link">#</a></h3>
+<p>If you want to customize how column state is filled into a record, you can pass a function to the <code>fillRecordUsing()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Product;</span>
+<span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;fillRecordUsing(function (Product $record, string $state): void {</span>
+<span class="x">        $record-&gt;sku = strtoupper($state);</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p><UtilityInjection set="importColumns" version="4.x" extras="State;;mixed;;$state;;The state to fill into the record.">The function passed to the <code>fillRecordUsing()</code> method allows you to inject various utilities into the function as parameters.</UtilityInjection></p>
+<h3 id="adding-helper-text-below-the-import-column">Adding helper text below the import column<a class="headerlink" href="#adding-helper-text-below-the-import-column" title="Permanent link">#</a></h3>
+<p>Sometimes, you may wish to provide extra information for the user before validation. You can do this by adding <code>helperText()</code> to a column, which gets displayed below the mapping select:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;skus&#39;)</span>
+<span class="x">    -&gt;multiple(&#39;,&#39;)</span>
+<span class="x">    -&gt;helperText(&#39;A comma-separated list of SKUs.&#39;)</span>
+</code></pre></div>
+
+<h2 id="updating-existing-records-when-importing">Updating existing records when importing<a class="headerlink" href="#updating-existing-records-when-importing" title="Permanent link">#</a></h2>
+<p>When generating an importer class, you will see this <code>resolveRecord()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Product;</span>
+
+<span class="x">public function resolveRecord(): ?Product</span>
+<span class="x">{</span>
+<span class="x">    // return Product::firstOrNew([</span>
+<span class="x">    //     // Update existing records, matching them by `$this-&gt;data[&#39;column_name&#39;]`</span>
+<span class="x">    //     &#39;email&#39; =&gt; $this-&gt;data[&#39;email&#39;],</span>
+<span class="x">    // ]);</span>
+
+<span class="x">    return new Product();</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>This method is called for each row in the CSV, and is responsible for returning a model instance that will be filled with the data from the CSV, and saved to the database. By default, it will create a new record for each row. However, you can customize this behavior to update existing records instead. For example, you might want to update a product if it already exists, and create a new one if it doesn't. To do this, you can uncomment the <code>firstOrNew()</code> line, and pass the column name that you want to match on. For a product, we might want to match on the <code>sku</code> column:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Product;</span>
+
+<span class="x">public function resolveRecord(): ?Product</span>
+<span class="x">{</span>
+<span class="x">    return Product::firstOrNew([</span>
+<span class="x">        &#39;sku&#39; =&gt; $this-&gt;data[&#39;sku&#39;],</span>
+<span class="x">    ]);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="updating-existing-records-when-importing-only">Updating existing records when importing only<a class="headerlink" href="#updating-existing-records-when-importing-only" title="Permanent link">#</a></h3>
+<p>If you want to write an importer that only updates existing records, and does not create new ones, you can return <code>null</code> if no record is found:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Product;</span>
+
+<span class="x">public function resolveRecord(): ?Product</span>
+<span class="x">{</span>
+<span class="x">    return Product::query()</span>
+<span class="x">        -&gt;where(&#39;sku&#39;, $this-&gt;data[&#39;sku&#39;])</span>
+<span class="x">        -&gt;first();</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you'd like to fail the import row if no record is found, you can throw a <code>RowImportFailedException</code> with a message:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Product;</span>
+<span class="x">use Filament\Actions\Imports\Exceptions\RowImportFailedException;</span>
+
+<span class="x">public function resolveRecord(): ?Product</span>
+<span class="x">{</span>
+<span class="x">    $product = Product::query()</span>
+<span class="x">        -&gt;where(&#39;sku&#39;, $this-&gt;data[&#39;sku&#39;])</span>
+<span class="x">        -&gt;first();</span>
+
+<span class="x">    if (! $product) {</span>
+<span class="x">        throw new RowImportFailedException(&quot;No product found with SKU [{$this-&gt;data[&#39;sku&#39;]}].&quot;);</span>
+<span class="x">    }</span>
+
+<span class="x">    return $product;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>When the import is completed, the user will be able to download a CSV of failed rows, which will contain the error messages.</p>
+<h3 id="ignoring-blank-state-for-an-import-column">Ignoring blank state for an import column<a class="headerlink" href="#ignoring-blank-state-for-an-import-column" title="Permanent link">#</a></h3>
+<p>By default, if a column in the CSV is blank, and mapped by the user, and it's not required by validation, the column will be imported as <code>null</code> in the database. If you'd like to ignore blank state, and use the existing value in the database instead, you can call the <code>ignoreBlankState()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;price&#39;)</span>
+<span class="x">    -&gt;ignoreBlankState()</span>
+</code></pre></div>
+
+<h2 id="using-import-options">Using import options<a class="headerlink" href="#using-import-options" title="Permanent link">#</a></h2>
+<p>The import action can render extra form components that the user can interact with when importing a CSV. This can be useful to allow the user to customize the behavior of the importer. For instance, you might want a user to be able to choose whether to update existing records when importing, or only create new ones. To do this, you can return options form components from the <code>getOptionsFormComponents()</code> method on your importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Forms\Components\Checkbox;</span>
+
+<span class="x">public static function getOptionsFormComponents(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Checkbox::make(&#39;updateExisting&#39;)</span>
+<span class="x">            -&gt;label(&#39;Update existing records&#39;),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Alternatively, you can pass a set of static options to the importer through the <code>options()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+<span class="x">    -&gt;options([</span>
+<span class="x">        &#39;updateExisting&#39; =&gt; true,</span>
+<span class="x">    ])</span>
+</code></pre></div>
+
+<p>Now, you can access the data from these options inside the importer class, by calling <code>$this-&gt;options</code>. For example, you might want to use it inside <code>resolveRecord()</code> to <a href="#updating-existing-records-when-importing">update an existing product</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Product;</span>
+
+<span class="x">public function resolveRecord(): ?Product</span>
+<span class="x">{</span>
+<span class="x">    if ($this-&gt;options[&#39;updateExisting&#39;] ?? false) {</span>
+<span class="x">        return Product::firstOrNew([</span>
+<span class="x">            &#39;sku&#39; =&gt; $this-&gt;data[&#39;sku&#39;],</span>
+<span class="x">        ]);</span>
+<span class="x">    }</span>
+
+<span class="x">    return new Product();</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="improving-import-column-mapping-guesses">Improving import column mapping guesses<a class="headerlink" href="#improving-import-column-mapping-guesses" title="Permanent link">#</a></h2>
+<p>By default, Filament will attempt to "guess" which columns in the CSV match which columns in the database, to save the user time. It does this by attempting to find different combinations of the column name, with spaces, <code>-</code>, <code>_</code>, all cases insensitively. However, if you'd like to improve the guesses, you can call the <code>guess()</code> method with more examples of the column name that could be present in the CSV:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;guess([&#39;id&#39;, &#39;number&#39;, &#39;stock-keeping unit&#39;])</span>
+</code></pre></div>
+
+<h2 id="providing-example-csv-data">Providing example CSV data<a class="headerlink" href="#providing-example-csv-data" title="Permanent link">#</a></h2>
+<p>Before the user uploads a CSV, they have an option to download an example CSV file, containing all the available columns that can be imported. This is useful, as it allows the user to import this file directly into their spreadsheet software, and fill it out.</p>
+<p>You can also add an example row to the CSV, to show the user what the data should look like. To fill in this example row, you can pass in an example column value to the <code>example()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;example(&#39;ABC123&#39;)</span>
+</code></pre></div>
+
+<p>Or if you want to add more than one example row, you can pass an array to the <code>examples()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;examples([&#39;ABC123&#39;, &#39;DEF456&#39;])</span>
+</code></pre></div>
+
+<p>By default, the name of the column is used in the header of the example CSV. You can customize the header per-column using <code>exampleHeader()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;exampleHeader(&#39;SKU&#39;)</span>
+</code></pre></div>
+
+<h2 id="using-a-custom-user-model">Using a custom user model<a class="headerlink" href="#using-a-custom-user-model" title="Permanent link">#</a></h2>
+<p>By default, the <code>imports</code> table has a <code>user_id</code> column. That column is constrained to the <code>users</code> table:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$table-&gt;foreignId(&#39;user_id&#39;)-&gt;constrained()-&gt;cascadeOnDelete();</span>
+</code></pre></div>
+
+<p>In the <code>Import</code> model, the <code>user()</code> relationship is defined as a <code>BelongsTo</code> relationship to the <code>App\Models\User</code> model. If the <code>App\Models\User</code> model does not exist, or you want to use a different one, you can bind a new <code>Authenticatable</code> model to the container in a service provider's <code>register()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Admin;</span>
+<span class="x">use Illuminate\Contracts\Auth\Authenticatable;</span>
+
+<span class="x">$this-&gt;app-&gt;bind(Authenticatable::class, Admin::class);</span>
+</code></pre></div>
+
+<p>If your authenticatable model uses a different table to <code>users</code>, you should pass that table name to <code>constrained()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$table-&gt;foreignId(&#39;user_id&#39;)-&gt;constrained(&#39;admins&#39;)-&gt;cascadeOnDelete();</span>
+</code></pre></div>
+
+<h3 id="using-a-polymorphic-user-relationship">Using a polymorphic user relationship<a class="headerlink" href="#using-a-polymorphic-user-relationship" title="Permanent link">#</a></h3>
+<p>If you want to associate imports with multiple user models, you can use a polymorphic <code>MorphTo</code> relationship instead. To do this, you need to replace the <code>user_id</code> column in the <code>imports</code> table:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$table-&gt;morphs(&#39;user&#39;);</span>
+</code></pre></div>
+
+<p>Then, in a service provider's <code>boot()</code> method, you should call <code>Import::polymorphicUserRelationship()</code> to swap the <code>user()</code> relationship on the <code>Import</code> model to a <code>MorphTo</code> relationship:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\Models\Import;</span>
+
+<span class="x">Import::polymorphicUserRelationship();</span>
+</code></pre></div>
+
+<h2 id="limiting-the-maximum-number-of-rows-that-can-be-imported">Limiting the maximum number of rows that can be imported<a class="headerlink" href="#limiting-the-maximum-number-of-rows-that-can-be-imported" title="Permanent link">#</a></h2>
+<p>To prevent server overload, you may wish to limit the maximum number of rows that can be imported from one CSV file. You can do this by calling the <code>maxRows()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+<span class="x">    -&gt;maxRows(100000)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>maxRows()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<h2 id="changing-the-import-chunk-size">Changing the import chunk size<a class="headerlink" href="#changing-the-import-chunk-size" title="Permanent link">#</a></h2>
+<p>Filament will chunk the CSV, and process each chunk in a different queued job. By default, chunks are 100 rows at a time. You can change this by calling the <code>chunkSize()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+<span class="x">    -&gt;chunkSize(250)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>chunkSize()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<Aside variant="tip">
+    If you are encountering memory or timeout issues when importing large CSV files, you may wish to reduce the chunk size.
+</Aside>
+
+<h2 id="changing-the-csv-delimiter">Changing the CSV delimiter<a class="headerlink" href="#changing-the-csv-delimiter" title="Permanent link">#</a></h2>
+<p>The default delimiter for CSVs is the comma (<code>,</code>). If your import uses a different delimiter, you may call the <code>csvDelimiter()</code> method on the action, passing a new one:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+<span class="x">    -&gt;csvDelimiter(&#39;;&#39;)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>csvDelimiter()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<p>You can only specify a single character, otherwise an exception will be thrown.</p>
+<h2 id="changing-the-column-header-offset">Changing the column header offset<a class="headerlink" href="#changing-the-column-header-offset" title="Permanent link">#</a></h2>
+<p>If your column headers are not on the first row of the CSV, you can call the <code>headerOffset()</code> method on the action, passing the number of rows to skip:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+<span class="x">    -&gt;headerOffset(5)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>headerOffset()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<h2 id="customizing-the-completion-notification">Customizing the completion notification<a class="headerlink" href="#customizing-the-completion-notification" title="Permanent link">#</a></h2>
+<p>When an import finishes, Filament sends a notification to the user who started it. You can customize the title and body of that notification by overriding <code>getCompletedNotificationTitle()</code> and <code>getCompletedNotificationBody()</code> on your importer:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\Models\Import;</span>
+
+<span class="x">public static function getCompletedNotificationTitle(Import $import): string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;Your product import has finished&#39;;</span>
+<span class="x">}</span>
+
+<span class="x">public static function getCompletedNotificationBody(Import $import): string</span>
+<span class="x">{</span>
+<span class="x">    return $import-&gt;successful_rows . &#39; products were imported.&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>For anything beyond the title and body — for example, changing the notification color, adding extra actions, or replacing the icon — override <code>modifyCompletedNotification()</code>. You can either mutate the <code>Notification</code> passed in and return it, or build and return a completely new one:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+<span class="x">use Filament\Actions\Imports\Models\Import;</span>
+<span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">public static function modifyCompletedNotification(Notification $notification, Import $import): Notification</span>
+<span class="x">{</span>
+<span class="x">    $notification-&gt;icon(&#39;heroicon-o-shopping-bag&#39;);</span>
+
+<span class="x">    if ($import-&gt;getOptions()[&#39;sendWelcomeEmails&#39;] ?? false) {</span>
+<span class="x">        $notification-&gt;actions([</span>
+<span class="x">            ...$notification-&gt;getActions(),</span>
+<span class="x">            Action::make(&#39;viewWelcomeEmails&#39;)</span>
+<span class="x">                -&gt;url(route(&#39;emails.sent&#39;)),</span>
+<span class="x">        ]);</span>
+<span class="x">    }</span>
+
+<span class="x">    return $notification;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The <code>Import</code> model exposes the column mapping and options the user selected via <code>$import-&gt;getColumnMap()</code> and <code>$import-&gt;getOptions()</code>, so you can tailor the notification based on what the user imported.</p>
+<h2 id="customizing-the-import-job">Customizing the import job<a class="headerlink" href="#customizing-the-import-job" title="Permanent link">#</a></h2>
+<p>The default job for processing imports is <code>Filament\Actions\Imports\Jobs\ImportCsv</code>. If you want to extend this class and override any of its methods, you may replace the original class in the <code>register()</code> method of a service provider:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Jobs\ImportCsv;</span>
+<span class="x">use Filament\Actions\Imports\Jobs\ImportCsv as BaseImportCsv;</span>
+
+<span class="x">$this-&gt;app-&gt;bind(BaseImportCsv::class, ImportCsv::class);</span>
+</code></pre></div>
+
+<p>Or, you can pass the new job class to the <code>job()</code> method on the action, to customize the job for a specific import:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Imports\ProductImporter;</span>
+<span class="x">use App\Jobs\ImportCsv;</span>
+<span class="x">use Filament\Actions\ImportAction;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+<span class="x">    -&gt;job(ImportCsv::class)</span>
+</code></pre></div>
+
+<h3 id="customizing-the-import-queue-and-connection">Customizing the import queue and connection<a class="headerlink" href="#customizing-the-import-queue-and-connection" title="Permanent link">#</a></h3>
+<p>By default, the import system will use the default queue and connection. If you'd like to customize the queue used for jobs of a certain importer, you may override the <code>getJobQueue()</code> method in your importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobQueue(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;imports&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You can also customize the connection used for jobs of a certain importer, by overriding the <code>getJobConnection()</code> method in your importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobConnection(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;sqs&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="customizing-the-import-job-middleware">Customizing the import job middleware<a class="headerlink" href="#customizing-the-import-job-middleware" title="Permanent link">#</a></h3>
+<p>By default, the import system will only process one job at a time from each import. This is to prevent the server from being overloaded, and other jobs from being delayed by large imports. That functionality is defined in the <code>WithoutOverlapping</code> middleware on the importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Queue\Middleware\WithoutOverlapping;</span>
+
+<span class="x">public function getJobMiddleware(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        (new WithoutOverlapping(&quot;import{$this-&gt;import-&gt;getKey()}&quot;))-&gt;expireAfter(600),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you'd like to customize the middleware that is applied to jobs of a certain importer, you may override this method in your importer class. You can read more about job middleware in the <a href="https://laravel.com/docs/queues#job-middleware">Laravel docs</a>.</p>
+<h3 id="customizing-the-import-job-retries">Customizing the import job retries<a class="headerlink" href="#customizing-the-import-job-retries" title="Permanent link">#</a></h3>
+<p>By default, the import system will retry a job for 24 hours, or until it fails 5 times with unhandled exceptions, whichever happens first. This is to allow for temporary issues, such as the database being unavailable, to be resolved. You may change the time period for the job to retry, which is defined in the <code>getJobRetryUntil()</code> method on the importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Carbon\CarbonInterface;</span>
+
+<span class="x">public function getJobRetryUntil(): ?CarbonInterface</span>
+<span class="x">{</span>
+<span class="x">    return now()-&gt;addHours(12);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You can read more about job retries in the <a href="https://laravel.com/docs/queues#max-job-attempts-and-timeout">Laravel docs</a>.</p>
+<h4 id="customizing-the-import-job-backoff-strategy">Customizing the import job backoff strategy<a class="headerlink" href="#customizing-the-import-job-backoff-strategy" title="Permanent link">#</a></h4>
+<p>By default, the import system will wait 1 minute, then 2 minutes, then 5 minutes, then 10 minutes thereafter, before retrying a job. This is to prevent the server from being overloaded by a job that is failing repeatedly. That functionality is defined in the <code>getJobBackoff()</code> method on the importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
+<span class="x">* @return int | array&lt;int&gt; | null</span>
+<span class="x"> */</span>
+<span class="x">public function getJobBackoff(): int | array | null</span>
+<span class="x">{</span>
+<span class="x">    return [60, 120, 300, 600];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You can read more about job backoff, including how to configure exponential backoffs, in the <a href="https://laravel.com/docs/queues#dealing-with-failed-jobs">Laravel docs</a>.</p>
+<h3 id="customizing-the-import-job-tags">Customizing the import job tags<a class="headerlink" href="#customizing-the-import-job-tags" title="Permanent link">#</a></h3>
+<p>By default, the import system will tag each job with the ID of the import. This is to allow you to easily find all jobs related to a certain import. That functionality is defined in the <code>getJobTags()</code> method on the importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobTags(): array</span>
+<span class="x">{</span>
+<span class="x">    return [&quot;import{$this-&gt;import-&gt;getKey()}&quot;];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you'd like to customize the tags that are applied to jobs of a certain importer, you may override this method in your importer class.</p>
+<h3 id="customizing-the-import-job-batch-name">Customizing the import job batch name<a class="headerlink" href="#customizing-the-import-job-batch-name" title="Permanent link">#</a></h3>
+<p>By default, the import system doesn't define any name for the job batches. If you'd like to customize the name that is applied to job batches of a certain importer, you may override the <code>getJobBatchName()</code> method in your importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobBatchName(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;product-import&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="customizing-import-validation-messages">Customizing import validation messages<a class="headerlink" href="#customizing-import-validation-messages" title="Permanent link">#</a></h2>
+<p>The import system will automatically validate the CSV file before it is imported. If there are any errors, the user will be shown a list of them, and the import will not be processed. If you'd like to override any default validation messages, you may do so by overriding the <code>getValidationMessages()</code> method on your importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getValidationMessages(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;name.required&#39; =&gt; &#39;The name column must not be empty.&#39;,</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>To learn more about customizing validation messages, read the <a href="https://laravel.com/docs/validation#customizing-the-error-messages">Laravel docs</a>.</p>
+<h3 id="customizing-import-validation-attributes">Customizing import validation attributes<a class="headerlink" href="#customizing-import-validation-attributes" title="Permanent link">#</a></h3>
+<p>When columns fail validation, their label is used in the error message. To customize the label used in field error messages, use the <code>validationAttribute()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\ImportColumn;</span>
+
+<span class="x">ImportColumn::make(&#39;name&#39;)</span>
+<span class="x">    -&gt;validationAttribute(&#39;full name&#39;)</span>
+</code></pre></div>
+
+<h2 id="customizing-import-file-validation">Customizing import file validation<a class="headerlink" href="#customizing-import-file-validation" title="Permanent link">#</a></h2>
+<p>You can add new <a href="https://laravel.com/docs/validation#available-validation-rules">Laravel validation rules</a> for the import file using the <code>fileRules()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\ImportAction;</span>
+<span class="x">use Illuminate\Validation\Rules\File;</span>
+
+<span class="x">ImportAction::make()</span>
+<span class="x">    -&gt;importer(ProductImporter::class)</span>
+<span class="x">    -&gt;fileRules([</span>
+<span class="x">        &#39;max:1024&#39;,</span>
+<span class="x">        // or</span>
+<span class="x">        File::types([&#39;csv&#39;, &#39;txt&#39;])-&gt;max(1024),</span>
+<span class="x">    ]),</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>fileRules()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<h2 id="lifecycle-hooks">Lifecycle hooks<a class="headerlink" href="#lifecycle-hooks" title="Permanent link">#</a></h2>
+<p>Hooks may be used to execute code at various points within an importer's lifecycle, like before a record is saved. To set up a hook, create a protected method on the importer class with the name of the hook:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected function beforeSave(): void</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>In this example, the code in the <code>beforeSave()</code> method will be called before the validated data from the CSV is saved to the database.</p>
+<p>There are several available hooks for importers:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\Importer;</span>
+
+<span class="x">class ProductImporter extends Importer</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+
+<span class="x">    protected function beforeValidate(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Runs before the CSV data for a row is validated.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function afterValidate(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Runs after the CSV data for a row is validated.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function beforeFill(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Runs before the validated CSV data for a row is filled into a model instance.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function afterFill(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Runs after the validated CSV data for a row is filled into a model instance.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function beforeSave(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Runs before a record is saved to the database.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function beforeCreate(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Similar to `beforeSave()`, but only runs when creating a new record.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function beforeUpdate(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Similar to `beforeSave()`, but only runs when updating an existing record.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function afterSave(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Runs after a record is saved to the database.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function afterCreate(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Similar to `afterSave()`, but only runs when creating a new record.</span>
+<span class="x">    }</span>
+
+<span class="x">    protected function afterUpdate(): void</span>
+<span class="x">    {</span>
+<span class="x">        // Similar to `afterSave()`, but only runs when updating an existing record.</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Inside these hooks, you can access the current row's data using <code>$this-&gt;data</code>. You can also access the original row of data from the CSV, before it was <a href="#casting-state">cast</a> or mapped, using <code>$this-&gt;originalData</code>.</p>
+<p>The current record (if it exists yet) is accessible in <code>$this-&gt;record</code>, and the <a href="#using-import-options">import form options</a> using <code>$this-&gt;options</code>.</p>
+<h2 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">#</a></h2>
+<p>By default, only the user who started the import may access the failure CSV file that gets generated if part of an import fails. If you'd like to customize the authorization logic, you may create an <code>ImportPolicy</code> class, and <a href="https://laravel.com/docs/authorization#registering-policies">register it in your <code>AuthServiceProvider</code></a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Policies\ImportPolicy;</span>
+<span class="x">use Filament\Actions\Imports\Models\Import;</span>
+
+<span class="x">protected $policies = [</span>
+<span class="x">    Import::class =&gt; ImportPolicy::class,</span>
+<span class="x">];</span>
+</code></pre></div>
+
+<p>The <code>view()</code> method of the policy will be used to authorize access to the failure CSV file.</p>
+<p>Please note that if you define a policy, the existing logic of ensuring only the user who started the import can access the failure CSV file will be removed. You will need to add that logic to your policy if you want to keep it:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\User;</span>
+<span class="x">use Filament\Actions\Imports\Models\Import;</span>
+
+<span class="x">public function view(User $user, Import $import): bool</span>
+<span class="x">{</span>
+<span class="x">    return $import-&gt;user()-&gt;is($user);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">#</a></h2>
+<h3 id="per-record-authorization">Per-record authorization<a class="headerlink" href="#per-record-authorization" title="Permanent link">#</a></h3>
+<p>The import system does not perform per-record authorization checks when creating or updating records. Each row from the CSV is processed by the importer's <code>resolveRecord()</code>, <code>fillRecord()</code>, and <code>saveRecord()</code> methods without consulting your application's <a href="https://laravel.com/docs/authorization#creating-policies">Laravel policies</a>. This means that if a user is allowed to trigger an import, they can create or update any record that the importer supports, regardless of whether they would normally be authorized to do so through your application's UI.</p>
+<p>If you need per-record authorization during import, you should add checks in your importer's <a href="#lifecycle-hooks">lifecycle hooks</a>, such as <code>beforeCreate()</code> or <code>beforeUpdate()</code>, to authorize the current user against the record.</p>
+<Aside variant="danger">
+    If your application allows untrusted users to trigger imports, you should implement per-record authorization checks to prevent unauthorized record creation or modification.
+</Aside>
+
+<h3 id="csv-formula-injection">CSV formula injection<a class="headerlink" href="#csv-formula-injection" title="Permanent link">#</a></h3>
+<p>When rows fail validation during import, Filament compiles them into a downloadable CSV for the user to review. This failure CSV contains the original data from the uploaded file exactly as it was submitted, without any transformation. If the uploaded CSV contains values beginning with characters like <code>=</code>, <code>+</code>, <code>-</code>, or <code>@</code>, they will appear unchanged in the failure CSV. When opened in spreadsheet software such as Microsoft Excel or Google Sheets, these values may be interpreted as formulas, which could pose a security risk if the original CSV was provided by an untrusted source. You should ensure that your users are aware of this risk when reviewing failure CSVs, or implement sanitization in your importer's lifecycle hooks to neutralize potentially dangerous values before they are stored as failed rows.</p>
+<p>Alternatively, you may opt in to Filament's built-in protection for the failure CSV. When enabled, any cell that begins with a formula-triggering character (<code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, a tab, or a carriage return) is prefixed with a single quote (<code>'</code>) so that spreadsheet software treats it as plain text. Because the failure CSV includes every column from the uploaded file — even columns that are not mapped to an <code>ImportColumn</code> — this protection is applied to the whole file rather than to individual columns.</p>
+<p>To enable it for a single importer, set the <code>$shouldPreventFormulaInjection</code> property on your importer class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\Importer;</span>
+
+<span class="x">class ProductImporter extends Importer</span>
+<span class="x">{</span>
+<span class="x">    protected static bool $shouldPreventFormulaInjection = true;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>To enable it for every importer across your application, call the <code>preventFormulaInjection()</code> method inside the <code>boot()</code> method of a service provider:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Imports\Importer;</span>
+
+<span class="x">Importer::preventFormulaInjection();</span>
+</code></pre></div>
+
+<Aside variant="warning">
+    This protection is **opt in** and disabled by default, because the failure CSV is intended to be corrected and re-uploaded. Prefixing a single quote alters legitimate data — for example, values such as `-5` or a phone number like `+44 1234 567890` are valid formula triggers and would be rewritten to `'-5` and `'+44 1234 567890`, which would then be imported with the leading quote intact. Only enable it when the uploaded files may come from an untrusted source.
+</Aside>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../actions/restore.html">
+          <span class="muted">Anterior</span>Restore action
+        </a>
+        <a class="pager-next" href="../actions/export.html">
+          <span class="muted">Siguiente</span>Export action
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

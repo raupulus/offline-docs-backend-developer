@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estadísticas · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Mysqlnd
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../mysqlnd/plugin.html"
+>API del plugin del controlador nativo MySQL</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/persist.html"
+>Conexiones persistentes</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/config.html"
+>Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/stats.html"
+class="is-current" aria-current="page">Estadísticas</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/memory.html"
+>Gestión de la memoria</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/incompatibilities.html"
+>Incompatibilidades</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/install.html"
+>Instalación</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/overview.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/notes.html"
+>Notas</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Estadísticas</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/mysqlnd.stats.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#estadisticas">Estadísticas#</a></li>
+              <li class="lvl-2"><a href="#recuperacion-de-las-estadisticas">Recuperación de las estadísticas#</a></li>
+              <li class="lvl-2"><a href="#estadisticas-del-controlador-nativo-de-mysql">Estadísticas del controlador nativo de MySQL#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="estadisticas">Estadísticas<a class="headerlink" href="#estadisticas" title="Permanent link">#</a></h2>
+<p>El controlador nativo de MySQL contiene soporte para la recolección de estadísticas sobre la comunicación entre el cliente y el servidor. Las estadísticas recolectadas son de dos tipos principales:</p>
+<ul>
+<li>
+<p>Estadísticas del cliente</p>
+</li>
+<li>
+<p>Estadísticas de la conexión</p>
+</li>
+</ul>
+<p>Cuando se utiliza la extensión <a href="#book.mysqli">mysqli</a>, estas estadísticas pueden obtenerse mediante dos llamadas API:</p>
+<ul>
+<li>
+<p><code>mysqli_get_client_stats</code></p>
+</li>
+<li>
+<p><code>mysqli_get_connection_stats</code></p>
+</li>
+</ul>
+<blockquote>
+<p>[!NOTE]
+Las estadísticas se agrupan entre todas las extensiones que utilizan el controlador nativo de MySQL. Por ejemplo, si la extensión <a href="#book.mysqli">mysqli</a> y el controlador PDO MySQL están ambos configurados para usar MySQLnd, entonces las llamadas de funciones de <a href="#book.mysqli">mysqli</a> y las llamadas de métodos de PDO afectarán las estadísticas.</p>
+<p>No hay manera de saber cuánto impacto ha tenido una cierta llamada API de una extensión que ha sido compilada sin el controlador nativo de MySQL en una cierta estadística.</p>
+</blockquote>
+<h2 id="recuperacion-de-las-estadisticas">Recuperación de las estadísticas<a class="headerlink" href="#recuperacion-de-las-estadisticas" title="Permanent link">#</a></h2>
+<p>Las estadísticas del cliente pueden recuperarse llamando a la función <code>mysqli_get_client_stats</code>.</p>
+<p>Las estadísticas de conexión pueden recuperarse llamando a la función <code>mysqli_get_connection_stats</code>.</p>
+<p>Las dos funciones devuelven un array asociativo, donde el nombre de una estadística es la clave para los datos estadísticos correspondientes.</p>
+<h2 id="estadisticas-del-controlador-nativo-de-mysql">Estadísticas del controlador nativo de MySQL<a class="headerlink" href="#estadisticas-del-controlador-nativo-de-mysql" title="Permanent link">#</a></h2>
+<p>La mayoría de las estadísticas están asociadas a una conexión, pero algunas están asociadas al proceso, en cuyo caso esto será mencionado.</p>
+<p>Las siguientes estadísticas son producidas por el controlador nativo de MySQL:</p>
+<p><code>bytes_sent</code><br>
+El número de bytes enviados de PHP al servidor MySQL.</p>
+<p><code>bytes_received</code><br>
+El número de bytes recibidos del servidor MySQL.</p>
+<p><code>packets_sent</code><br>
+El número de paquetes enviados por el protocolo cliente-servidor MySQL.</p>
+<p><code>packets_received</code><br>
+El número de paquetes recibidos del protocolo cliente-servidor MySQL.</p>
+<p><code>protocol_overhead_in</code><br>
+La sobrecarga del protocolo cliente-servidor MySQL en bytes para el tráfico entrante. Actualmente, solo el encabezado de paquete (4 bytes) se considera como sobrecarga. <code>protocol_overhead_in = packets_received * 4</code></p>
+<p><code>protocol_overhead_out</code><br>
+La sobrecarga del protocolo cliente-servidor MySQL en bytes para el tráfico saliente. Actualmente, solo el encabezado de paquete (4 bytes) se considera como sobrecarga. <code>protocol_overhead_out = packets_received * 4</code></p>
+<p><code>bytes_received_ok_packet</code><br>
+El tamaño total en bytes de los paquetes OK del protocolo cliente-servidor MySQL recibidos. Los paquetes OK pueden contener un mensaje de estado. La longitud del mensaje de estado puede variar y por lo tanto el tamaño de un paquete OK no es fijo.</p>
+<blockquote>
+<p>[!NOTE]
+El tamaño total en bytes incluye el tamaño del encabezado del paquete (4 bytes, ver la sobrecarga del protocolo).</p>
+</blockquote>
+<p><code>packets_received_ok</code><br>
+El número de paquetes OK del protocolo cliente-servidor MySQL recibidos.</p>
+<p><code>bytes_received_eof_packet</code><br>
+El tamaño total en bytes de los paquetes EOF del protocolo cliente-servidor MySQL recibidos. El tamaño de un paquete EOF puede variar dependiendo de la versión del servidor. Además, un paquete EOF puede transportar un mensaje de error.</p>
+<p><code>packets_received_eof</code><br>
+El número de paquetes EOF del protocolo cliente-servidor MySQL recibidos.</p>
+<p>Al igual que con otras estadísticas de paquetes, el número de paquetes será incrementado incluso si PHP no recibe el paquete esperado, sino, por ejemplo, un mensaje de error.</p>
+<p><code>bytes_received_rset_header_packet</code><br>
+El tamaño total en bytes de los encabezados de paquetes de resultados del protocolo cliente-servidor MySQL recibidos. El tamaño del encabezado del paquete puede variar dependiendo de la carga útil (<code>LOAD LOCAL INFILE</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>SELECT</code>, mensaje de error).</p>
+<p><code>packets_received_rset_header</code><br>
+El número de paquetes de encabezados de resultados del protocolo cliente-servidor MySQL recibidos.</p>
+<p><code>bytes_received_rset_field_meta_packet</code><br>
+El tamaño total en bytes de los paquetes de metadatos de resultados del protocolo cliente-servidor (información de campo). Por supuesto, el tamaño varía con los campos del resultado. El paquete también puede transportar un error o un paquete EOF en caso de COM_LIST_FIELDS.</p>
+<p><code>packets_received_rset_field_meta</code><br>
+El número de paquetes de metadatos de resultados del protocolo cliente-servidor recibidos (información de campo).</p>
+<p><code>bytes_received_rset_row_packet</code><br>
+El tamaño total en bytes de los datos de fila de resultados del protocolo cliente-servidor MySQL recibidos. El paquete también puede transportar un error o un paquete EOF. Se puede calcular el número de errores y paquetes EOF restando <code>rows_fetched_from_server_normal</code> y <code>rows_fetched_from_server_ps</code> de <code>bytes_received_rset_row_packet</code>.</p>
+<p><code>packets_received_rset_row</code><br>
+El número de paquetes de datos de fila de resultados del protocolo cliente-servidor MySQL recibidos.</p>
+<p><code>bytes_received_prepare_response_packet</code><br>
+El tamaño total en bytes de los paquetes OK del protocolo cliente-servidor MySQL recibidos para la inicialización de declaraciones preparadas (paquetes de inicialización de declaración preparada). El paquete también puede transportar un error. El tamaño del paquete depende de la versión de MySQL.</p>
+<p><code>packets_received_prepare_response</code><br>
+El número de paquetes OK del protocolo cliente-servidor MySQL recibidos para la inicialización de declaraciones preparadas (paquetes de inicialización de declaración preparada).</p>
+<p><code>bytes_received_change_user_packet</code><br>
+El tamaño total en bytes de los paquetes COM_CHANGE_USER del protocolo cliente-servidor MySQL recibidos. El paquete también puede transportar un error o un paquete EOF.</p>
+<p><code>packets_received_change_user</code><br>
+El número de paquetes COM_CHANGE_USER del protocolo cliente-servidor MySQL recibidos.</p>
+<p><code>packets_sent_command</code><br>
+El número de comandos MySQL enviados por PHP al servidor MySQL.</p>
+<p>No hay manera de saber qué comandos específicos y cuántos de ellos han sido enviados.</p>
+<p><code>bytes_received_real_data_normal</code><br>
+El número de bytes de carga útil recuperados por el cliente PHP desde <code>mysqlnd</code> usando el protocolo de texto.</p>
+<p>Esto es el tamaño de los datos reales contenidos en los conjuntos de resultados que no provienen de declaraciones preparadas y que han sido recuperados por el cliente PHP.</p>
+<p>Es de notar que aunque un conjunto de resultados completo haya podido ser extraído de MySQL por <code>mysqlnd</code>, esta estadística solo cuenta los datos reales extraídos de <code>mysqlnd</code> por el cliente PHP.</p>
+<p>Un ejemplo de secuencia de código que incrementará el valor es el siguiente:</p>
+<div class="codehilite"><pre><span></span><code>$mysqli = new mysqli();
+$res = $mysqli-&gt;query(&quot;SELECT &#39;abc&#39;&quot;);
+$res-&gt;fetch_assoc();
+$res-&gt;close();
+</code></pre></div>
+
+<p>Cada operación de recuperación incrementará el valor.</p>
+<p>Sin embargo, la estadística no será incrementada si el conjunto de resultados es solo almacenado en búfer en el cliente, pero no extraído, como en el siguiente ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>$mysqli = new mysqli();
+$res = $mysqli-&gt;query(&quot;SELECT &#39;abc&#39;&quot;);
+$res-&gt;close();
+</code></pre></div>
+
+<p><code>bytes_received_real_data_ps</code><br>
+El número de bytes de carga útil recuperados por el cliente PHP desde <code>mysqlnd</code> usando el protocolo de declaración preparada.</p>
+<p>Esto es el tamaño de los datos reales contenidos en los conjuntos de resultados que provienen de declaraciones preparadas y que han sido recuperados por el cliente PHP.</p>
+<p>El valor no será incrementado si el conjunto de resultados no es leído por el cliente PHP.</p>
+<p>Es de notar que aunque un conjunto de resultados completo haya podido ser extraído de MySQL por <code>mysqlnd</code>, esta estadística solo cuenta los datos reales extraídos de <code>mysqlnd</code> por el cliente PHP.</p>
+<p>Ver también <code>bytes_received_real_data_normal</code>.</p>
+<!-- -->
+
+<p><code>result_set_queries</code><br>
+El número de consultas que han generado un conjunto de resultados. Ejemplos de consultas que generan un conjunto de resultados: <code>SELECT</code>, <code>SHOW</code>.</p>
+<p>La estadística no será incrementada si hay un error al leer el encabezado del paquete del conjunto de resultados.</p>
+<blockquote>
+<p>[!NOTE]
+Esta estadística puede ser utilizada como medida indirecta del número de Esto puede ayudar a identificar un cliente que provoca una carga alta en la base de datos. consultas que PHP ha enviado a MySQL.</p>
+</blockquote>
+<p><code>non_result_set_queries</code><br>
+El número de consultas que no han generado un conjunto de resultados. Ejemplos de consultas que no generan un conjunto de resultados: <code>INSERT</code>, <code>UPDATE</code>, <code>LOAD DATA</code>.</p>
+<p>Esta estadística no será incrementada si hay un error al leer el encabezado del paquete del conjunto de resultados.</p>
+<p><code>no_index_used</code><br>
+El número de consultas que han generado un conjunto de resultados pero no han utilizado un índice. (Ver también la opción de inicio de mysqld <code>--log-queries-not-using-indexes</code>).</p>
+<blockquote>
+<p>[!NOTE]
+Estas consultas pueden ser reportadas mediante una excepción llamando <code>mysqli_report(MYSQLI_REPORT_INDEX);</code>. Es posible reportarlas mediante un aviso llamando <code>mysqli_report(MYSQLI_REPORT_INDEX ^ MYSQLI_REPORT_STRICT);</code>.</p>
+</blockquote>
+<p><code>bad_index_used</code><br>
+El número de consultas que han generado un conjunto de resultados y no han utilizado un buen índice. (Ver también la opción de inicio de mysqld <code>--log-slow-queries</code>).</p>
+<p><code>slow_queries</code><br>
+Las declaraciones SQL que han tomado más de <code>long_query_time</code> segundos para ejecutarse y han necesitado al menos <code>min_examined_row_limit</code> filas para examinar.</p>
+<blockquote>
+<p>[!CAUTION]
+No reportado mediante <code>mysqli_report</code>.</p>
+</blockquote>
+<p><code>buffered_sets</code><br>
+El número de conjuntos de resultados almacenados en búfer devueltos por consultas normales (es decir, no mediante una declaración preparada).</p>
+<p>Ejemplos de llamadas API que almacenarán en búfer los conjuntos de resultados en el cliente: <code>mysqli_query</code>, <code>mysqli_store_result</code>, <code>mysqli_stmt_get_result</code></p>
+<p><code>unbuffered_sets</code><br>
+El número de conjuntos de resultados no almacenados en búfer devueltos por consultas normales (es decir, no mediante una declaración preparada).</p>
+<p>Ejemplos de llamadas API que no almacenarán en búfer los conjuntos de resultados en el cliente: <code>mysqli_use_result</code></p>
+<p><code>ps_buffered_sets</code><br>
+El número de conjuntos de resultados almacenados en búfer devueltos por declaraciones preparadas.</p>
+<p>Ejemplos de llamadas API que almacenarán en búfer los conjuntos de resultados en el cliente: <code>mysqli_stmt_store_result</code></p>
+<p><code>ps_unbuffered_sets</code><br>
+El número de conjuntos de resultados no almacenados en búfer devueltos por declaraciones preparadas.</p>
+<p>Por omisión, las declaraciones preparadas no son almacenadas en búfer, por lo que la mayoría de las declaraciones preparadas serán contabilizadas en esta estadística.</p>
+<p><code>flushed_normal_sets</code><br>
+El número de juegos de resultados devueltos por consultas normales (es decir, no mediante una declaración preparada) con datos no leídos que han sido silenciosamente vaciados.</p>
+<blockquote>
+<p>[!NOTE]
+El vaciado solo ocurre con conjuntos de resultados no almacenados en búfer.</p>
+<p>Los conjuntos de resultados no almacenados en búfer deben ser recuperados completamente antes de que una nueva consulta pueda ser ejecutada en la conexión, de lo contrario MySQL lanzará un error. Si la aplicación no recupera todas las filas de un conjunto de resultados no almacenado en búfer, mysqlnd recupera implícitamente el conjunto de resultados para vaciar la fila.</p>
+<p>Ver también <code>rows_skipped_normal</code>, <code>rows_skipped_ps</code>.</p>
+<p>Algunas causas posibles para un vaciado implícito:</p>
+<ul>
+<li>
+<p>Aplicación cliente defectuosa</p>
+</li>
+<li>
+<p>Cliente se detuvo de leer después de encontrar lo que buscaba pero hizo que MySQL calculara más filas de las necesarias</p>
+</li>
+<li>
+<p>La aplicación cliente se detuvo de manera inesperada</p>
+</li>
+</ul>
+</blockquote>
+<p><code>flushed_ps_sets</code><br>
+El número de juegos de resultados devueltos por declaraciones preparadas con datos no leídos que han sido silenciosamente vaciados.</p>
+<p><code>ps_prepared_never_executed</code><br>
+El número de declaraciones preparadas preparadas pero nunca ejecutadas.</p>
+<p><code>ps_prepared_once_executed</code><br>
+El número de declaraciones preparadas ejecutadas una sola vez.</p>
+<p><code>rows_fetched_from_server_normal</code>; <code>rows_fetched_from_server_ps</code><br>
+El número total de filas de conjunto de resultados recuperadas del servidor. Esto incluye las filas que no han sido leídas por el cliente pero han sido recuperadas implícitamente debido a conjuntos de resultados no almacenados en búfer vaciados.</p>
+<p>Ver también <code>packets_received_rset_row</code>.</p>
+<p><code>rows_buffered_from_client_normal</code><br>
+El número total de filas almacenadas en búfer provenientes de una consulta normal.</p>
+<p>Esto es el número de filas que han sido recuperadas de MySQL y almacenadas en búfer en el cliente.</p>
+<p>Ejemplos de consultas que almacenarán en búfer los conjuntos de resultados: <code>mysqli_query</code>, <code>mysqli_store_result</code></p>
+<p><code>rows_buffered_from_client_ps</code><br>
+Equivalente a <code>rows_buffered_from_client_normal</code> pero para las declaraciones preparadas.</p>
+<p><code>rows_fetched_from_client_normal_buffered</code><br>
+El número total de filas recuperadas por el cliente desde un conjunto de resultados almacenado en búfer creado por una consulta normal.</p>
+<p><code>rows_fetched_from_client_ps_buffered</code><br>
+El número total de filas recuperadas por el cliente desde un conjunto de resultados almacenado en búfer creado por una declaración preparada.</p>
+<p><code>rows_fetched_from_client_normal_unbuffered</code><br>
+El número total de filas recuperadas por el cliente desde un conjunto de resultados no almacenado en búfer creado por una consulta normal.</p>
+<p><code>rows_fetched_from_client_ps_unbuffered</code><br>
+El número total de filas recuperadas por el cliente desde un conjunto de resultados no almacenado en búfer creado por una declaración preparada.</p>
+<p><code>rows_fetched_from_client_ps_cursor</code><br>
+El número total de filas recuperadas por el cliente desde un cursor creado por una declaración preparada.</p>
+<p><code>rows_skipped_normal</code>; <code>rows_skipped_ps</code><br>
+Reservado para uso futuro (actualmente no soportado).</p>
+<p><code>copy_on_write_saved</code>; <code>copy_on_write_performed</code><br>
+Esto es una estadística de alcance de proceso.</p>
+<p>Con mysqlnd, las variables devueltas por las extensiones apuntan a mysqlnd búferes de resultados internos. Si los datos no son modificados, los datos extraídos solo se conservan una vez en memoria. Sin embargo, cualquier modificación de los datos requerirá que mysqlnd realice una operación de copia-al-escribir.</p>
+<p><code>explicit_free_result</code>; <code>implicit_free_result</code><br>
+Esto es una estadística de alcance de conexión y de proceso.</p>
+<p>El número total de resultados liberados.</p>
+<p><code>proto_text_fetched_null</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_NULL</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_null</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_NULL</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_bit</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_BIT</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_bit</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_BIT</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_tinyint</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TINY</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_tinyint</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TINY</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_short</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_SHORT</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_short</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_SHORT</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_int24</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_INT24</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_int24</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_INT24</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_int</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_LONG</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_int</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_LONG</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_bigint</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_LONGLONG</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_bigint</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_LONGLONG</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_decimal</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DECIMAL</code>, o <code>MYSQL_TYPE_NEWDECIMAL</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_decimal</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DECIMAL</code>, o <code>MYSQL_TYPE_NEWDECIMAL</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_float</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_FLOAT</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_float</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_FLOAT</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_double</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DOUBLE</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_double</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DOUBLE</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_date</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DATE</code>, o <code>MYSQL_TYPE_NEWDATE</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_date</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DATE</code>, o <code>MYSQL_TYPE_NEWDATE</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_year</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_YEAR</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_year</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_YEAR</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_time</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TIME</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_time</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TIME</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_datetime</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DATETIME</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_datetime</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_DATETIME</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_timestamp</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TIMESTAMP</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_timestamp</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TIMESTAMP</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_string</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_STRING</code>, <code>MYSQL_TYPE_VARSTRING</code> o <code>MYSQL_TYPE_VARCHAR</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_string</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_STRING</code>, <code>MYSQL_TYPE_VARSTRING</code> o <code>MYSQL_TYPE_VARCHAR</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_blob</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TINY_BLOB</code>, <code>MYSQL_TYPE_MEDIUM_BLOB</code>, <code>MYSQL_TYPE_LONG_BLOB</code>, o <code>MYSQL_TYPE_BLOB</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_blob</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_TINY_BLOB</code>, <code>MYSQL_TYPE_MEDIUM_BLOB</code>, <code>MYSQL_TYPE_LONG_BLOB</code>, o <code>MYSQL_TYPE_BLOB</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_enum</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_ENUM</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_enum</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_ENUM</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_set</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_SET</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_set</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_SET</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_geometry</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_GEOMETRY</code> recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<p><code>proto_binary_fetched_geometry</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_GEOMETRY</code> recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<p><code>proto_text_fetched_other</code><br>
+El número total de columnas de tipos <code>MYSQL_TYPE_*</code> no listados anteriormente recuperadas desde una consulta normal (protocolo de texto MySQL).</p>
+<blockquote>
+<p>[!NOTE]
+En teoría, esto debería ser siempre <code>0</code>.</p>
+</blockquote>
+<p><code>proto_binary_fetched_other</code><br>
+El número total de columnas de tipo <code>MYSQL_TYPE_*</code> no listados anteriormente recuperadas desde una declaración preparada (protocolo binario MySQL).</p>
+<blockquote>
+<p>[!NOTE]
+En teoría, esto debería ser siempre <code>0</code>.</p>
+</blockquote>
+<!-- -->
+
+<p><code>connect_success</code><br>
+El número total de intentos de conexión exitosos.</p>
+<blockquote>
+<p>[!NOTE]
+<code>connect_success</code> contiene la suma de los intentos de conexión persistentes y no persistentes exitosos. Por lo tanto, el número de intentos de conexión no persistentes exitosos es <code>connect_success - pconnect_success</code>.</p>
+</blockquote>
+<p><code>pconnect_success</code><br>
+El número total de intentos de conexión persistentes exitosos.</p>
+<p><code>connect_failure</code><br>
+El número total de intentos de conexión fallidos.</p>
+<p><code>reconnect</code><br>
+Esto es una estadística de alcance de proceso.</p>
+<p><code>active_connections</code><br>
+Esto es una estadística de alcance de proceso.</p>
+<p>El número total de conexiones persistentes y no persistentes activas.</p>
+<blockquote>
+<p>[!NOTE]
+El número total de conexiones no persistentes activas es <code>active_connections - active_persistent_connections</code>.</p>
+</blockquote>
+<p><code>active_persistent_connections</code><br>
+Esto es una estadística de alcance de proceso.</p>
+<p>El número total de conexiones persistentes activas.</p>
+<p><code>explicit_close</code><br>
+El número total de conexiones cerradas explícitamente.</p>
+<p>Ejemplos de fragmentos de código que provocan un cierre explícito</p>
+<ul>
+<li>
+<p>$link = new mysqli(/<em> ... </em>/);
+      $link-&gt;close(/<em> ... </em>/);</p>
+</li>
+<li>
+<p>$link = new mysqli(/<em> ... </em>/);
+      $link-&gt;connect(/<em> ... </em>/);</p>
+</li>
+</ul>
+<p><code>implicit_close</code><br>
+El número total de conexiones cerradas implícitamente.</p>
+<p>Ejemplos de fragmentos de código que provocan un cierre implícito</p>
+<ul>
+<li>
+<p>$link = new mysqli(/<em> ... </em>/);
+      $link-&gt;real_connect(/<em> ... </em>/);</p>
+</li>
+<li>
+<p>unset($link)</p>
+</li>
+<li>
+<p>Conexión persistente: una conexión agrupada ha sido creada con real_connect y puede haber opciones desconocidas definidas - cerrar implícitamente para evitar devolver una conexión con opciones desconocidas</p>
+</li>
+<li>
+<p>Conexión persistente: ping/change_user falla y ext/mysqli cierra la conexión</p>
+</li>
+<li>
+<p>Fin de la ejecución del script: cerrar conexiones que no han sido cerradas por el usuario</p>
+</li>
+</ul>
+<p><code>disconnect_close</code><br>
+Fallos de conexión indicados por la llamada de API C <code>mysql_real_connect</code> durante un intento de establecer una conexión.</p>
+<p><code>in_middle_of_command_close</code><br>
+Esto es una estadística de alcance de proceso.</p>
+<p>Una conexión ha sido cerrada en medio de la ejecución de un comando (conjuntos de resultados no recuperados, después de enviar una consulta y antes de recuperar una respuesta, durante la recuperación de datos, durante la transferencia de datos con LOAD DATA).</p>
+<blockquote>
+<p>[!WARNING]
+A menos que se usen consultas asíncronas, esto solo debería ocurrir si la aplicación PHP terminó inesperadamente y PHP cierra automáticamente la conexión.</p>
+</blockquote>
+<p><code>init_command_executed_count</code><br>
+El número total de ejecuciones de comandos de inicialización. Por ejemplo: <code>mysqli_options(MYSQLI_INIT_COMMAND , $value)</code>.</p>
+<p>El número de ejecuciones exitosas es <code>init_command_executed_count - init_command_failed_count</code>.</p>
+<p><code>init_command_failed_count</code><br>
+El número total de fallos en la ejecución de comandos de inicialización.</p>
+<!-- -->
+
+<p><code>com_quit</code>; <code>com_init_db</code>; <code>com_query</code>; <code>com_field_list</code>; <code>com_create_db</code>; <code>com_drop_db</code>; <code>com_refresh</code>; <code>com_shutdown</code>; <code>com_statistics</code>; <code>com_process_info</code>; <code>com_connect</code>; <code>com_process_kill</code>; <code>com_debug</code>; <code>com_ping</code>; <code>com_time</code>; <code>com_delayed_insert</code>; <code>com_change_user</code>; <code>com_binlog_dump</code>; <code>com_table_dump</code>; <code>com_connect_out</code>; <code>com_register_slave</code>; <code>com_stmt_prepare</code>; <code>com_stmt_execute</code>; <code>com_stmt_send_long_data</code>; <code>com_stmt_close</code>; <code>com_stmt_reset</code>; <code>com_stmt_set_option</code>; <code>com_stmt_fetch</code>; <code>com_daemon</code><br>
+El número total de intentos de enviar un cierto comando <code>COM_*</code> de PHP a MySQL.</p>
+<p>La estadística es incrementada después de verificar la línea y justo antes de enviar el paquete de protocolo cliente-servidor MySQL correspondiente.</p>
+<blockquote>
+<p>[!CAUTION]
+Si MySQLnd falla al enviar el paquete en la red, las estadísticas no serán decrementadas. En caso de fallo, MySQLnd emite un aviso PHP “Error while sending %s packet. PID=%d.”</p>
+</blockquote>
+<p>Ejemplos de uso</p>
+<ul>
+<li>
+<p>Verificar si PHP envía ciertos comandos a MySQL, por ejemplo, verificar si un cliente envía <code>COM_PROCESS_KILL</code></p>
+</li>
+<li>
+<p>Calcular el número promedio de ejecuciones de comandos preparados comparando <code>COM_EXECUTE</code> con <code>COM_PREPARE</code></p>
+</li>
+<li>
+<p>Verificar si PHP ha ejecutado declaraciones SQL no preparadas verificando si <code>COM_QUERY</code> es cero</p>
+</li>
+<li>
+<p>Identificar los scripts PHP que ejecutan un número excesivo de declaraciones SQL verificando <code>COM_QUERY</code> y <code>COM_EXECUTE</code></p>
+</li>
+</ul>
+<!-- -->
+
+<p><code>explicit_stmt_close</code>; <code>implicit_stmt_close</code><br>
+Esto es una estadística de alcance de proceso.</p>
+<p>El número total de declaraciones preparadas cerradas explícitamente.</p>
+<blockquote>
+<p>[!NOTE]
+Una declaración preparada siempre es cerrada explícitamente. La única vez que es cerrada implícitamente es cuando su preparación falla.</p>
+</blockquote>
+<p><code>mem_emalloc_count</code>; <code>mem_emalloc_ammount</code>; <code>mem_ecalloc_count</code>; <code>mem_ecalloc_ammount</code>; <code>mem_realloc_count</code>; <code>mem_realloc_ammount</code>; <code>mem_efree_count</code>; <code>mem_malloc_count</code>; <code>mem_malloc_ammount</code>; <code>mem_calloc_count</code>; <code>mem_calloc_ammount</code>; <code>mem_ealloc_count</code>; <code>mem_ealloc_ammount</code>; <code>mem_free_count</code><br>
+Esto es una estadística de alcance de proceso.</p>
+<p>Llamadas a la gestión de memoria.</p>
+<p><code>command_buffer_too_small</code><br>
+El número de extensiones de búfer de comando de red al enviar comandos de PHP a MySQL.</p>
+<p>MySQLnd asigna un búfer de comando/red interno de <a href="#ini.mysqlnd.net-cmd-buffer-size">mysqlnd.net_cmd_buffer_size</a> bytes para cada conexión.</p>
+<p>Si un protocolo de comando de servidor MySQL, por ejemplo <code>COM_QUERY</code> (consulta normal), no cabe en el búfer, MyQSLnd extenderá el búfer a lo que sea necesario para enviar el comando. Cada vez que el búfer es extendido para una conexión <code>command_buffer_too_small</code> será incrementado en uno.</p>
+<p>Si mysql es obligado a hacer crecer el búfer más allá de su tamaño inicial de <a href="#ini.mysqlnd.net-cmd-buffer-size">mysqlnd.net_cmd_buffer_size</a> bytes para casi cada conexión, se deberían considerar aumentar el tamaño por defecto para evitar las reasignaciones.</p>
+<p><code>connection_reused</code><br>
+El número total de veces que una conexión persistente ha sido reutilizada.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../mysqlnd/config.html">
+          <span class="muted">Anterior</span>Configuración en tiempo de ejecución
+        </a>
+        <a class="pager-next" href="../mysqlnd/memory.html">
+          <span class="muted">Siguiente</span>Gestión de la memoria
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>register_shutdown_function · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Funchand
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../funchand/call-user-func.html"
+>call_user_func</a>
+              </li>
+              <li>
+                <a href="../funchand/call-user-func-array.html"
+>call_user_func_array</a>
+              </li>
+              <li>
+                <a href="../funchand/create-function.html"
+>create_function</a>
+              </li>
+              <li>
+                <a href="../funchand/forward-static-call.html"
+>forward_static_call</a>
+              </li>
+              <li>
+                <a href="../funchand/forward-static-call-array.html"
+>forward_static_call_array</a>
+              </li>
+              <li>
+                <a href="../funchand/func-get-arg.html"
+>func_get_arg</a>
+              </li>
+              <li>
+                <a href="../funchand/func-get-args.html"
+>func_get_args</a>
+              </li>
+              <li>
+                <a href="../funchand/func-num-args.html"
+>func_num_args</a>
+              </li>
+              <li>
+                <a href="../funchand/function-exists.html"
+>function_exists</a>
+              </li>
+              <li>
+                <a href="../funchand/get-defined-functions.html"
+>get_defined_functions</a>
+              </li>
+              <li>
+                <a href="../funchand/register-shutdown-function.html"
+class="is-current" aria-current="page">register_shutdown_function</a>
+              </li>
+              <li>
+                <a href="../funchand/register-tick-function.html"
+>register_tick_function</a>
+              </li>
+              <li>
+                <a href="../funchand/unregister-tick-function.html"
+>unregister_tick_function</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">register_shutdown_function</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/function.register-shutdown-function.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#descripcion">Descripción#</a></li>
+              <li class="lvl-2"><a href="#notas">Notas#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>register_shutdown_function</p>
+<p>Registra una función de retrollamada para ejecución al cierre</p>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="x">register_shutdown_function(callable $callback, mixed ...$args): void</span>
+<span class="x">```php</span>
+
+<span class="x">Registra una función de retrollamada `callback` para ejecución al cierre o cuando `exit` es llamado.</span>
+
+<span class="x">Varios llamados a `register_shutdown_function` son posibles en el mismo script, y las funciones serán llamadas en el mismo orden en que son registradas. Si se llama `exit` durante una de las funciones de cierre, el proceso será definitivamente detenido, sin que las otras funciones sean llamadas.</span>
+
+<span class="x">&gt; [!CAUTION]</span>
+<span class="x">&gt; Desde PHP 8.4.0, una llamada a `exit` sin parámetros dentro de una función de cierre registrada restablece el código de salida a `0`. Llamar a `exit` con un estado explícito sobrescribe el código de salida anterior en todas las versiones.</span>
+
+<span class="x">Las funciones de cierre pueden también llamar a la función `register_shutdown_function` ellas mismas para añadir una función de cierre al final de la cola.</span>
+
+<span class="x">## Parámetros</span>
+
+<span class="x">`callback`  </span>
+<span class="x">La función de retrollamada a registrar.</span>
+
+<span class="x">La función de retrollamada es ejecutada como parte de la petición, por lo tanto, es posible enviar algo a la salida desde esta última, así como acceder a los buffers de salida.</span>
+
+<span class="x">`args`  </span>
+<span class="x">Es posible pasar argumentos a las funciones de cierre configurando estos argumentos adicionales.</span>
+
+<span class="x">## Valores devueltos</span>
+
+<span class="x">No se retorna ningún valor.</span>
+
+<span class="x">## Ejemplos</span>
+
+<span class="x">Ejemplo con `register_shutdown_function`</span>
+</code></pre></div>
+
+<?php
+function shutdown()
+{
+    // Aquí está nuestra función shutdown
+    // en la cual podemos realizar
+    // todas las últimas operaciones
+    // antes del fin del script.
+
+    echo 'Script ejecutado con éxito', PHP_EOL;
+}
+
+register_shutdown_function('shutdown');
+?>
+
+<p>```php</p>
+<h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">#</a></h2>
+<blockquote>
+<p>[!NOTE]
+El directorio de trabajo del script puede cambiar en la función de cierre bajo algunos servidores web, por ejemplo Apache.</p>
+<p>[!NOTE]
+Las funciones de cierre no serán ejecutadas si el proceso es terminado con un señal SIGTERM o SIGKILL. Aunque no se puede interceptar un SIGKILL, se puede usar la función <code>pcntl_signal</code> para instalar un manejador para un SIGTERM que utilice la función <code>exit</code> para terminar correctamente.</p>
+<p>[!NOTE]
+Las funciones de cierre se ejecutan por separado del tiempo seguido por <a href="#ini.max-execution-time">max_execution_time</a>. Esto significa que incluso si un proceso es terminado por haber funcionado demasiado tiempo, las funciones de cierre serán siempre llamadas. Además, si el <code>max_execution_time</code> alcanza su límite mientras una función de cierre está en ejecución, no será interrumpida.</p>
+</blockquote>
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p><a href="#ini.auto-append-file">auto_append_file</a>, <code>exit</code>, <code>fastcgi_finish_request</code>, La sección sobre la <a href="#features.connection-handling">gestión de conexiones</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../funchand/get-defined-functions.html">
+          <span class="muted">Anterior</span>get_defined_functions
+        </a>
+        <a class="pager-next" href="../funchand/register-tick-function.html">
+          <span class="muted">Siguiente</span>register_tick_function
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

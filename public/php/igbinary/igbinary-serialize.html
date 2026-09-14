@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>igbinary_serialize · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Igbinary
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../igbinary/ini.html"
+>Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../igbinary/igbinary-serialize.html"
+class="is-current" aria-current="page">igbinary_serialize</a>
+              </li>
+              <li>
+                <a href="../igbinary/igbinary-unserialize.html"
+>igbinary_unserialize</a>
+              </li>
+              <li>
+                <a href="../igbinary/setup.html"
+>Instalación/Configuración</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">igbinary_serialize</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/function.igbinary-serialize.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#descripcion">Descripción#</a></li>
+              <li class="lvl-2"><a href="#notas">Notas#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>igbinary_serialize</p>
+<p>Genera una representación binaria almacenable y compacta de un valor</p>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="x">igbinary_serialize(mixed $value): string</span>
+<span class="x">```php</span>
+
+<span class="x">Genera una representación almacenable de un valor.</span>
+
+<span class="x">Es una técnica práctica para almacenar o pasar valores PHP entre scripts, sin perder su estructura ni su tipo.</span>
+
+<span class="x">Para reconvertir la cadena sérializada en un valor PHP, la función `igbinary_unserialize` puede ser utilizada.</span>
+
+<span class="x">## Parámetros</span>
+
+<span class="x">`value`  </span>
+<span class="x">El valor a serializar. `igbinary_serialize` gestiona todos los tipos excepto los `recurso`s y ciertos `objeto`s (confiere la nota a continuación). Incluso los `array`x que contienen referencias a sí mismos pueden ser serializados con `igbinary_serialize`. Las referencias circulares dentro de un `array` o de un `object` a serializar serán igualmente almacenadas. Cualquier otra referencia será perdida.</span>
+
+<span class="x">Al serializar objetos, igbinary intentará llamar a los métodos mágicos [\_\_serialize()](#object.serialize) o [\_\_sleep()](#object.sleep) antes de la serialización. Esto permitirá al objeto realizar una limpieza de último momento, etc., antes de ser serializado. De igual manera, cuando el objeto es restaurado utilizando la función `igbinary_unserialize`, uno de los métodos mágicos [\_\_unserialize()](#object.unserialize) o [\_\_wakeup()](#object.wakeup) es llamado.</span>
+
+<span class="x">&gt; [!NOTE]</span>
+<span class="x">&gt; Los atributos privados de un objeto tendrán el nombre de la clase prefijado al nombre del atributo; los atributos protegidos serán prefijados con un asterisco `&#39;*&#39;`. Estos valores prefijados tienen caracteres nulos en ambos lados.</span>
+
+<span class="x">## Valores devueltos</span>
+
+<span class="x">Retorna una cadena de caracteres que contiene una representación del parámetro `value` en forma de flujo de bytes que puede ser almacenado en cualquier lugar.</span>
+
+<span class="x">Es de notar que es una cadena binaria que puede incluir caracteres nulos, y debe por lo tanto ser almacenada y gestionada como tal. Por ejemplo, en una base de datos, la salida de la función `igbinary_serialize` debe, en general, ser almacenada en un campo de tipo `BLOB` en lugar de en un campo de tipo `CHAR` o `TEXT`.</span>
+
+<span class="x">## Ejemplos</span>
+
+<span class="x">Ejemplo con `igbinary_serialize`</span>
+</code></pre></div>
+
+<?php
+$ser = igbinary_serialize(['test', 'test']);
+echo urlencode($ser), "\n";
+var_export(igbinary_unserialize($ser));
+?>
+
+<p>```php</p>
+<p>El ejemplo anterior mostrará:</p>
+<div class="codehilite"><pre><span></span><code>%00%00%00%02%14%02%06%00%11%04test%06%01%0E%00
+array (
+  0 =&gt; &#39;test&#39;,
+  1 =&gt; &#39;test&#39;,
+)
+</code></pre></div>
+
+<h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">#</a></h2>
+<blockquote>
+<p>[!NOTE]
+Es de notar que muchos objetos internos de PHP no pueden ser serializados. Sin embargo, aquellos que pueden implementan ya sea la interfaz Serializable o los métodos mágicos <a href="#object.serialize">__serialize()</a>/<a href="#object.unserialize">__unserialize()</a> o <a href="#object.sleep">__sleep()</a>/<a href="#object.wakeup">__wakeup()</a>. Si una clase interna no cumple ninguna de estas condiciones, no puede ser serializada de manera fiable.</p>
+<p>Existen excepciones históricas a esta regla, donde objetos internos pueden ser serializados sin implementar ni la interfaz ni los métodos mágicos.</p>
+</blockquote>
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p>serialize</p>
+<p>igbinary_unserialize</p>
+<p>var_export</p>
+<p>json_encode</p>
+<p>Serialización de objetos</p>
+<p>__sleep()</p>
+<p>__wakeup()</p>
+<p>__serialize()</p>
+<p>__unserialize()</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../igbinary/ini.html">
+          <span class="muted">Anterior</span>Configuración en tiempo de ejecución
+        </a>
+        <a class="pager-next" href="../igbinary/igbinary-unserialize.html">
+          <span class="muted">Siguiente</span>igbinary_unserialize
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

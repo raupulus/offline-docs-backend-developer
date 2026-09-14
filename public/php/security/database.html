@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seguridad en bases de datos · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Security
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../security/general.html"
+>Consideraciones generales</a>
+              </li>
+              <li>
+                <a href="../security/variables.html"
+>Datos Enviados por el Usuario</a>
+              </li>
+              <li>
+                <a href="../security/cgi-bin.html"
+>Instalado como CGI binario</a>
+              </li>
+              <li>
+                <a href="../security/apache.html"
+>Instalado como módulo de Apache</a>
+              </li>
+              <li>
+                <a href="../security/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../security/current.html"
+>Mantenerse al día</a>
+              </li>
+              <li>
+                <a href="../security/hiding.html"
+>Ocultar PHP</a>
+              </li>
+              <li>
+                <a href="../security/errors.html"
+>Reportando errores</a>
+              </li>
+              <li>
+                <a href="../security/sessions.html"
+>Seguridad de una Sesión</a>
+              </li>
+              <li>
+                <a href="../security/filesystem.html"
+>Seguridad del Sistema de Archivos</a>
+              </li>
+              <li>
+                <a href="../security/database.html"
+class="is-current" aria-current="page">Seguridad en bases de datos</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Seguridad en bases de datos</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/security.database.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#seguridad-en-bases-de-datos">Seguridad en bases de datos#</a></li>
+              <li class="lvl-2"><a href="#diseno-de-bases-de-datos">Diseño de bases de datos#</a></li>
+              <li class="lvl-2"><a href="#conexion-a-una-base-de-datos">Conexión a una base de datos#</a></li>
+              <li class="lvl-2"><a href="#modelo-de-almacenamiento-cifrado">Modelo de almacenamiento cifrado#</a></li>
+              <li class="lvl-3"><a href="#hashing">&#39;Hashing&#39;#</a></li>
+              <li class="lvl-2"><a href="#inyeccion-de-sql">Inyección de SQL#</a></li>
+              <li class="lvl-3"><a href="#tecnicas-de-evitacion">Técnicas de evitación#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="seguridad-en-bases-de-datos">Seguridad en bases de datos<a class="headerlink" href="#seguridad-en-bases-de-datos" title="Permanent link">#</a></h2>
+<p>Hoy en día, las bases de datos son componentes esenciales de cualquier aplicación web, permitiendo a los sitios web proveer variedad de contenido dinámico. Puesto que se puede almacenar información muy delicada o secreta en una base de datos, debería considerarse ampliamente proteger las bases de datos.</p>
+<p>Para obtener o almacenar cualquier información, es necesario conectarse a la base de datos, enviar una consulta válida, obtener el resultado, y cerrar la conexión. Hoy en día, el lenguaje de consultas más utilizado en esta interacción es el Lenguaje Estructurado de Consultas (SQL, por sus siglas en inglés). Vea como un atacante puede <a href="#security.database.sql-injection">realizar manipulaciones maliciosas con una consulta SQL</a>.</p>
+<p>Como es de suponer, PHP no puede proteger una base de datos por sí mismo. Las siguientes secciones tienen como objetivo ser una introducción básica de cómo acceder y manipular bases de datos dentro de scripts de PHP.</p>
+<p>Tenga en mente esta sencilla regla: Protección en profundidad. En cuantos más sitios se tomen acciones para aumentar la protección de una base de datos, menor es la probabilidad de que un atacante tenga éxito en exponer o abusar de cualquier información que tenga almacenada. Un buen diseño del esquema de la base de datos y de la aplicación se ocupará de sus mayores temores.</p>
+<h2 id="diseno-de-bases-de-datos">Diseño de bases de datos<a class="headerlink" href="#diseno-de-bases-de-datos" title="Permanent link">#</a></h2>
+<p>El primer paso es siempre crear una base de datos, a menos que se quiera utilizar una de un tercero. Cuando se crea una base de datos, esta es asignada a un propietario, aquel que ejecutó la sentencia de creación. Usualmente, sólo el propietario (o un superusuario) puede hacer cualquier cosa con los objetos de esa base de datos. Para que otros usuarios puedan utilizarla, se les deben conceder privilegios.</p>
+<p>Las aplicaciones nunca deberían conectarse a la base de datos como su propietario o como un superusuario, porque estos usuarios pueden ejecutar cualquier consulta a su antojo; por ejemplo, modificar el esquema (p.ej., eliminar tablas) o borrar su contenido por completo.</p>
+<p>Se pueden crear distintos usuarios de una base de datos para cada aspecto de la aplicación con permisos muy limitados a los objetos de dicha base de datos. Solamente deberían otorgarse los privilegios necesarios, evitando así que el mismo usuario pueda interactuar con la base de datos en diferentes casos y uso. Esto significa que si un intruso obtiene acceso a una base de datos utilizando las credenciales de la aplicación, solamente puede efectuar los cambios que la aplicación permita.</p>
+<h2 id="conexion-a-una-base-de-datos">Conexión a una base de datos<a class="headerlink" href="#conexion-a-una-base-de-datos" title="Permanent link">#</a></h2>
+<p>Se pueden establecer las conexiones sobre SSL para cifrar las comunicaciones cliente/servidor y aumentar la seguridad, o también emplear ssh para cifrar la conexión de red entre los clientes y el servidor de bases de datos. Si se utiliza algunas de estas opciones, será difícil para un posible atacante la monitorización del tráfico y la obtención de información de la base de datos.</p>
+<h2 id="modelo-de-almacenamiento-cifrado">Modelo de almacenamiento cifrado<a class="headerlink" href="#modelo-de-almacenamiento-cifrado" title="Permanent link">#</a></h2>
+<p>SSL/SSH protege los datos que viajan desde el cliente al servidor: SSL/SSH no protege los datos persistentes almacenados en una base de datos. SSL es un protocolo que protege los datos mientras viajan por el cable.</p>
+<p>Una vez que un atacante obtiene acceso directo a una base de datos (eludiendo el servidor web), los datos sensibles almacenados podrían ser divulgados o mal utilizados, a menos que la información esté protegida por la base de datos misma. Cifrar los datos es una buena forma de mitigar esta amenaza, pero muy pocas bases de datos ofrecen este tipo de cifrado de datos.</p>
+<p>La forma más sencilla para evitar este problema es crear primero un paquete de cifrado propio y utilizarlo en los scripts de PHP. Hay muchas extensiones de PHP que pueden ser de ayuda para esto, tales como <a href="#book.openssl">OpenSSL</a> y <a href="#book.sodium">Sodium</a>, cubriendo así una amplia variedad de algoritmos de cifrado. El script cifra los datos antes de insertarlos en la base de datos, y los descifra al obtenerlos. Véanse las referencias para ejemplos adicionales del funcionamiento del cifrado.</p>
+<h3 id="hashing">'Hashing'<a class="headerlink" href="#hashing" title="Permanent link">#</a></h3>
+<p>En caso de datos que deban estar realmente ocultos, si no fuera necesaria su representación real, (es decir, que no sean mostrados), quizás convenga utilizar algoritmos hash. El ejemplo más típico del uso del hash es a la hora de almacenar el hash criptográfico de una contraseña en una base de datos, en lugar de almacenar la contraseña en sí.</p>
+<p>Las funciones de <a href="#ref.password">password</a> proporcionan una forma adecuada de utilizar hash con datos delicados y trabajar con estos hash.</p>
+<p><code>password_hash</code> se emplea para usar un hash con una cadena dada utilizando el algoritmo más fuerte actualmente disponible, mientras que <code>password_verify</code> comprueba si la contraseña dada coincide con el hash almacenado en la base de datos.</p>
+<p>Campo de contraseña con hash</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="c1">// Almacenar el hash de la contraseña</span>
+<span class="nv">$query</span>  <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s2">&quot;INSERT INTO users(name,pwd) VALUES(&#39;%s&#39;,&#39;%s&#39;);&quot;</span><span class="p">,</span>
+            <span class="nb">pg_escape_string</span><span class="p">(</span><span class="nv">$nombre_usuario</span><span class="p">),</span>
+            <span class="nb">password_hash</span><span class="p">(</span><span class="nv">$password</span><span class="p">,</span> <span class="nx">PASSWORD_DEFAULT</span><span class="p">));</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">pg_query</span><span class="p">(</span><span class="nv">$connection</span><span class="p">,</span> <span class="nv">$query</span><span class="p">);</span>
+
+<span class="c1">// Consultar si el usuario envió la contraseña correcta</span>
+<span class="nv">$query</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s2">&quot;SELECT pwd FROM users WHERE name=&#39;%s&#39;;&quot;</span><span class="p">,</span>
+                <span class="nb">pg_escape_string</span><span class="p">(</span><span class="nv">$nombre_usuario</span><span class="p">));</span>
+<span class="nv">$row</span> <span class="o">=</span> <span class="nb">pg_fetch_assoc</span><span class="p">(</span><span class="nb">pg_query</span><span class="p">(</span><span class="nv">$connection</span><span class="p">,</span> <span class="nv">$query</span><span class="p">));</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nv">$row</span> <span class="o">&amp;&amp;</span> <span class="nb">password_verify</span><span class="p">(</span><span class="nv">$contraseña</span><span class="p">,</span> <span class="nv">$row</span><span class="p">[</span><span class="s1">&#39;pwd&#39;</span><span class="p">]))</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s1">&#39;Bienvenido, &#39;</span> <span class="o">.</span> <span class="nb">htmlspecialchars</span><span class="p">(</span><span class="nv">$username</span><span class="p">)</span> <span class="o">.</span> <span class="s1">&#39;!&#39;</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s1">&#39;La autenticación ha fallado para &#39;</span> <span class="o">.</span> <span class="nb">htmlspecialchars</span><span class="p">(</span><span class="nv">$username</span><span class="p">)</span> <span class="o">.</span> <span class="s1">&#39;.&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<h2 id="inyeccion-de-sql">Inyección de SQL<a class="headerlink" href="#inyeccion-de-sql" title="Permanent link">#</a></h2>
+<p>La inyección SQL es una técnica en la que un atacante aprovecha fallas en el código de la aplicación encargado de construir consultas SQL dinámicas. El atacante puede obtener acceso a secciones privilegiadas de la aplicación, recuperar toda la información de la base de datos, manipular datos existentes o incluso ejecutar comandos peligrosos a nivel del sistema en el host de la base de datos. La vulnerabilidad ocurre cuando los desarrolladores concatenan o interpolan entrada arbitraria en sus declaraciones SQL.</p>
+<p>Dividir el conjunto de resultados en páginas ... y crear superusuarios (PostgreSQL)</p>
+<p>En el siguiente ejemplo, la entrada del usuario se interpola directamente en la consulta SQL, lo que permite al atacante obtener una cuenta de superusuario en la base de datos.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$offset</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">];</span> <span class="c1">// ¡Cuidado, no hay validación en la entrada de datos!</span>
+<span class="nv">$query</span>  <span class="o">=</span> <span class="s2">&quot;SELECT id, name FROM products ORDER BY name LIMIT 20 OFFSET </span><span class="si">$offset</span><span class="s2">;&quot;</span><span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">pg_query</span><span class="p">(</span><span class="nv">$conn</span><span class="p">,</span> <span class="nv">$query</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Un usuario común hace clic en los enlaces 'siguiente' o 'atrás' donde el <code>$índice</code> está codificado en el URL. El script espera que el <code>$índice</code> entrante sea un número. Sin embargo, Qué sucede si alguien intenta ingresar al añadir lo siguiente a la URL?</p>
+<div class="codehilite"><pre><span></span><code><span class="x">0;</span>
+<span class="x">insert into pg_shadow(usename,usesysid,usesuper,usecatupd,passwd)</span>
+<span class="x">    select &#39;crack&#39;, usesysid, &#39;t&#39;,&#39;t&#39;,&#39;crack&#39;</span>
+<span class="x">    from pg_shadow where usename=&#39;postgres&#39;;</span>
+<span class="x">--</span>
+</code></pre></div>
+
+<p>Si ocurriera, el script presentaría un acceso de superusuario al atacante. Observe que <code>0;</code> es para proveer un índcie válido a la consulta original y así finalizarla.</p>
+<blockquote>
+<p>[!NOTE]
+Es una técnica común forzar al analizador SQL a ignorar el resto de la consulta escrita por el desarrollador con <code>--</code>, lo cual representa un comentario en SQL.</p>
+</blockquote>
+<p>Una forma factible de obtener contraseñas es burlar las páginas de búsqueda de resultados. Lo único que el atacante necesita hacer es ver si hay variables que hayan sido enviadas y sean empleadas en sentencias SQL que no sean manejadas apropiadamente. Estos filtros se pueden establecer comunmente en un formulario anterior para personalizar las cláusulas <code>WHERE, ORDER BY, LIMIT</code> y <code>OFFSET</code> en las sentencias <code>SELECT</code>. Si la base de datos admite el constructor <code>UNION</code>, el atacante podría intentar anteponer una consulta entera a la consulta original para enumerar las contraseñas de una tabla arbitraria. Se recomienda encarecidamente almacenar solo hashes seguros de contraseñas en lugar de las contraseñas mismas.</p>
+<p>Enumerar artículos ... y algunas contraseñas (cualquier servidor de bases de datos)</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$query</span>  <span class="o">=</span> <span class="s2">&quot;SELECT id, name, inserted, size FROM products</span>
+<span class="s2">           WHERE size = &#39;</span><span class="si">$size</span><span class="s2">&#39;&quot;</span><span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">odbc_exec</span><span class="p">(</span><span class="nv">$conexión</span><span class="p">,</span> <span class="nv">$query</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>La parte estática de la consulta se puede combinar con otra sentencia <code>SELECT</code> la cual revelará todas las contraseñas:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;</span>
+<span class="x">union select &#39;1&#39;, concat(uname||&#39;-&#39;||passwd) as name, &#39;1971-01-01&#39;, &#39;0&#39; from usertable;</span>
+<span class="x">--</span>
+</code></pre></div>
+
+<p>Las declaraciones <code>UPDATE</code> e <code>INSERT</code> también son susceptibles a este tipo de ataques.</p>
+<p>Desde restablecer una contraseña ... hasta obtener más privilegios (cualquier servidor de bases de datos)</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$query</span> <span class="o">=</span> <span class="s2">&quot;UPDATE usertable SET pwd=&#39;</span><span class="si">$pwd</span><span class="s2">&#39; WHERE uid=&#39;</span><span class="si">$uid</span><span class="s2">&#39;;&quot;</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Si un usuario malicioso podría enviar el valor <code>' or uid like'%admin%</code> a <code>$uid</code> para cambiar la contraseña del administrador, o simplemente cambiar <code>$pwd</code> a <code>jejeje', trusted=100, admin='yes</code> para obtener más privilegios, entonces la consulta se tornaría:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="c1">// $uid: &#39; or uid like &#39;%admin%</span>
+<span class="nv">$query</span> <span class="o">=</span> <span class="s2">&quot;UPDATE usertable SET pwd=&#39;...&#39; WHERE uid=&#39;&#39; or uid like &#39;%admin%&#39;;&quot;</span><span class="p">;</span>
+
+<span class="c1">// $pwd: jejeje&#39;, trusted=100, admin=&#39;yes</span>
+<span class="nv">$query</span> <span class="o">=</span> <span class="s2">&quot;UPDATE usertable SET pwd=&#39;jejeje&#39;, trusted=100, admin=&#39;yes&#39; WHERE</span>
+<span class="s2">...;&quot;</span><span class="p">;</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Aunque sigue siendo evidente que un atacante debe poseer al menos cierto conocimiento de la arquitectura de la base de datos para llevar a cabo un ataque exitoso, obtener esta información a menudo es muy simple. Por ejemplo, el código puede ser parte de un software de código abierto y estar disponible públicamente. Esta información también puede ser revelada por código fuente cerrado, incluso si está codificado, ofuscado o compilado, e incluso por tu propio código a través de la visualización de mensajes de error. Otros métodos incluyen el uso de nombres de tablas y columnas típicos. Por ejemplo, un formulario de inicio de sesión que utiliza una tabla 'users' con nombres de columnas 'id', 'username' y 'password'.</p>
+<p>Atacar el sistema operativo del host de la base de datos (MSSQL Server)</p>
+<p>Un ejemplo alarmante de cómo los comandos a nivel del sistema operativo pueden ser accedidos en algunos hosts de bases de datos.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$query</span>  <span class="o">=</span> <span class="s2">&quot;SELECT * FROM products WHERE id LIKE &#39;%</span><span class="si">$prod</span><span class="s2">%&#39;&quot;</span><span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nx">mssql_query</span><span class="p">(</span><span class="nv">$query</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Si un atacante envía el valor <code>a%' exec master..xp_cmdshell 'net user test testpass /ADD' --</code> a <code>$prod</code>, la <code>$query</code> será:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$query</span>  <span class="o">=</span> <span class="s2">&quot;SELECT * FROM products</span>
+<span class="s2">              WHERE id LIKE &#39;%a%&#39;</span>
+<span class="s2">              exec master..xp_cmdshell &#39;net user test testpass /ADD&#39; --%&#39;&quot;</span><span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nx">mssql_query</span><span class="p">(</span><span class="nv">$query</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>El servidor MSSQL ejecuta la sentencia SQL en el lote incluyendo un comando para añadir un usuario nuevo a la base de datos de cuentas local. Si esta aplicación estaban siendo ejecutados como <code>sa</code> y el servicio MSSQLSERVER estaba ejecutando con los privilegios suficientes, el atacante ahora podría tener una cuenta con la cual acceder a esta máquina.</p>
+<blockquote>
+<p>[!NOTE]
+Algunos ejemplos anteriores están vinculados a un servidor de bases de datos específico, pero esto no significa que un ataque similar sea imposible contra otros productos. Tu servidor de bases de datos puede ser igualmente vulnerable de otra manera.</p>
+</blockquote>
+<p><img alt="Un ejemplo divertido de los problemas relacionados con la inyección SQL." src="en/security/figures/xkcd-bobby-tables.png"></p>
+<h3 id="tecnicas-de-evitacion">Técnicas de evitación<a class="headerlink" href="#tecnicas-de-evitacion" title="Permanent link">#</a></h3>
+<p>La forma recomendada de evitar la inyección SQL es vincular todos los datos mediante declaraciones preparadas. Utilizar consultas parametrizadas no es suficiente para evitar por completo la inyección SQL, pero es la manera más fácil y segura de proporcionar datos a las declaraciones SQL. Todas las literales de datos dinámicos en las cláusulas <code>WHERE</code>, <code>SET</code>, y <code>VALUES</code> deben ser reemplazadas con marcadores de posición. Los datos reales se vincularán durante la ejecución y se enviarán por separado del comando SQL.</p>
+<p>La vinculación de parámetros solo puede utilizarse para datos. Otras partes dinámicas de la consulta SQL deben filtrarse contra una lista conocida de valores permitidos.</p>
+<p>Evitar la inyección SQL mediante el uso de declaraciones preparadas con PDO</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="c1">// La parte dinámica del SQL se valida contra valores esperados</span>
+<span class="nv">$sortingOrder</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;sortingOrder&#39;</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;DESC&#39;</span> <span class="o">?</span> <span class="s1">&#39;DESC&#39;</span> <span class="o">:</span> <span class="s1">&#39;ASC&#39;</span><span class="p">;</span>
+<span class="nv">$productId</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;productId&#39;</span><span class="p">];</span>
+<span class="c1">// El SQL se prepara con un marcador de posición</span>
+<span class="nv">$stmt</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM products WHERE id LIKE ? ORDER BY price </span><span class="si">{</span><span class="nv">$sortingOrder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="c1">// El valor se proporciona con comodines LIKE</span>
+<span class="nv">$stmt</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">([</span><span class="s2">&quot;%</span><span class="si">{</span><span class="nv">$productId</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">]);</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Las declaraciones preparadas son proporcionadas por <a href="#pdo.prepared-statements">PDO</a>, <a href="#mysqli.quickstart.prepared-statements">MySQLi</a> y otras bibliotecas de bases de datos.</p>
+<p>Los ataques de inyección SQL se basan principalmente en explotar código que no ha sido escrito teniendo en cuenta la seguridad. Nunca confíes en ninguna entrada, especialmente desde el lado del cliente, incluso si proviene de un cuadro de selección, un campo de entrada oculto o una cookie. El primer ejemplo muestra que una consulta tan simple puede causar desastres.</p>
+<p>Una estrategia de defensa en profundidad implica varias buenas prácticas de codificación:</p>
+<ul>
+<li>
+<p>Nunca te conectes a la base de datos como un superusuario o como el propietario de la base de datos. Utiliza siempre usuarios personalizados con privilegios mínimos.</p>
+</li>
+<li>
+<p>Verifica si la entrada proporcionada tiene el tipo de datos esperado. PHP tiene una amplia gama de funciones de validación de entrada, desde las más simples encontradas en <a href="#ref.var">Funciones de Variables</a> y en <a href="#ref.ctype">Funciones de Tipo de Carácter</a> (por ejemplo, <code>is_numeric</code>, <code>ctype_digit</code> respectivamente) hasta el soporte de <a href="#ref.pcre">Expresiones Regulares Compatibles con Perl</a>.</p>
+</li>
+<li>
+<p>Si la aplicación espera una entrada numérica, considera verificar los datos con <code>ctype_digit</code>, cambiar silenciosamente su tipo usando <code>settype</code>, o usar su representación numérica con <code>sprintf</code>.</p>
+</li>
+<li>
+<p>Si la capa de la base de datos no admite la vinculación de variables, entonces coloca comillas alrededor de cada valor proporcionado por el usuario que no sea numérico y que se pase a la base de datos con la función de escape de cadena específica de la base de datos (por ejemplo, <code>mysql_real_escape_string</code>, <code>sqlite_escape_string</code>, etc.). Las funciones genéricas como <code>addslashes</code> son útiles solo en un entorno muy específico (por ejemplo, MySQL en un conjunto de caracteres de un solo byte con <code>NO_BACKSLASH_ESCAPES</code> deshabilitado), así que es mejor evitarlas.</p>
+</li>
+<li>
+<p>No imprimas ninguna información específica de la base de datos, especialmente sobre el esquema, por las buenas o por las malas. Consulta también <a href="#security.errors">Informes de Errores</a> y <a href="#ref.errorfunc">Funciones de Manejo y Registro de Errores</a>.</p>
+</li>
+</ul>
+<p>Además, se puede beneficiar del registro de consultas, ya sea dentro de un script o mediante la base de datos en sí misma, si es que lo soporta. Obviamente, llevar un registro no previene los intentos dañinos, aunque puede ser útil para realizar un seguimiento de las aplicación que han sido eludidas. El registro no es útil por sí mismo sino por la información que contiene. Normalmente cuantos más detalles, mejor.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../security/filesystem.html">
+          <span class="muted">Anterior</span>Seguridad del Sistema de Archivos
+        </a>
+        <a class="pager-next" href="../sem/ini.html">
+          <span class="muted">Siguiente</span>Configuración en tiempo de ejecución
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

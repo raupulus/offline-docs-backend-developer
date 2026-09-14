@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Priority D Rules: Use with Caution · Vue 3</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Vue 3</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="vue" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Vue 3…"
+         aria-label="Buscar en Vue 3" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Vue 3
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Vue 3">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about/coc.html">About</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../api/application.html">Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../ecosystem/newsletters.html">Ecosystem</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../guide/best-practices/accessibility.html">Guide</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../partners/[partnerid].html">Partners</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Style Guide
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../style-guide/rules-essential.html"
+>Priority A Rules: Essential</a>
+              </li>
+              <li>
+                <a href="../style-guide/rules-recommended.html"
+>Priority C Rules: Recommended</a>
+              </li>
+              <li>
+                <a href="../style-guide/rules-strongly-recommended.html"
+>Priority B Rules: Strongly Recommended</a>
+              </li>
+              <li>
+                <a href="../style-guide/rules-use-with-caution.html"
+class="is-current" aria-current="page">Priority D Rules: Use with Caution</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/src/step-1/description.html">Tutorial</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Priority D Rules: Use with Caution</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://vuejs.org/guide/introduction.html" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#element-selectors-with-scoped">Element selectors with scoped#</a></li>
+              <li class="lvl-2"><a href="#implicit-parent-child-communication">Implicit parent-child communication#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="priority-d-rules-use-with-caution">Priority D Rules: Use with Caution<a class="headerlink" href="#priority-d-rules-use-with-caution" title="Permanent link">#</a></h1>
+<p>Some features of Vue exist to accommodate rare edge cases or smoother migrations from a legacy code base. When overused however, they can make your code more difficult to maintain or even become a source of bugs. These rules shine a light on potentially risky features, describing when and why they should be avoided.</p>
+<h2 id="element-selectors-with-scoped">Element selectors with <code>scoped</code><a class="headerlink" href="#element-selectors-with-scoped" title="Permanent link">#</a></h2>
+<p><strong>Element selectors should be avoided with <code>scoped</code>.</strong></p>
+<p>Prefer class selectors over element selectors in <code>scoped</code> styles, because large numbers of element selectors are slow.</p>
+<p>::: details Detailed Explanation
+To scope styles, Vue adds a unique attribute to component elements, such as <code>data-v-f3f3eg9</code>. Then selectors are modified so that only matching elements with this attribute are selected (e.g. <code>button[data-v-f3f3eg9]</code>).</p>
+<p>The problem is that large numbers of element-attribute selectors (e.g. <code>button[data-v-f3f3eg9]</code>) will be considerably slower than class-attribute selectors (e.g. <code>.btn-close[data-v-f3f3eg9]</code>), so class selectors should be preferred whenever possible.
+:::</p>
+<div class="style-example style-example-bad">
+<h3>Bad</h3>
+
+
+<div class="codehilite"><pre><span></span><code>&lt;template&gt;
+  &lt;button&gt;×&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+button {
+  background-color: red;
+}
+&lt;/style&gt;
+</code></pre></div>
+
+
+
+</div>
+
+<div class="style-example style-example-good">
+<h3>Good</h3>
+
+
+<div class="codehilite"><pre><span></span><code>&lt;template&gt;
+  &lt;button class=&quot;btn btn-close&quot;&gt;×&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+.btn-close {
+  background-color: red;
+}
+&lt;/style&gt;
+</code></pre></div>
+
+
+
+</div>
+
+<h2 id="implicit-parent-child-communication">Implicit parent-child communication<a class="headerlink" href="#implicit-parent-child-communication" title="Permanent link">#</a></h2>
+<p><strong>Props and events should be preferred for parent-child component communication, instead of <code>this.$parent</code> or mutating props.</strong></p>
+<p>An ideal Vue application is props down, events up. Sticking to this convention makes your components much easier to understand. However, there are edge cases where prop mutation or <code>this.$parent</code> can simplify two components that are already deeply coupled.</p>
+<p>The problem is, there are also many <em>simple</em> cases where these patterns may offer convenience. Beware: do not be seduced into trading simplicity (being able to understand the flow of your state) for short-term convenience (writing less code).</p>
+<div class="options-api">
+
+<div class="style-example style-example-bad">
+<h3>Bad</h3>
+
+
+<div class="codehilite"><pre><span></span><code><span class="nx">app</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;TodoItem&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">props</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+
+<span class="w">  </span><span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;&lt;input v-model=&quot;todo.text&quot;&gt;&#39;</span>
+<span class="p">})</span>
+</code></pre></div>
+
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="nx">app</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;TodoItem&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">props</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+
+<span class="w">  </span><span class="nx">methods</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">removeTodo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">$parent</span><span class="p">.</span><span class="nx">todos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">$parent</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span>
+<span class="w">        </span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">todo</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">vm</span><span class="p">.</span><span class="nx">todo</span><span class="p">.</span><span class="nx">id</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+
+<span class="w">  </span><span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="sb">`</span>
+<span class="sb">    &lt;span&gt;</span>
+<span class="sb">      {{ todo.text }}</span>
+<span class="sb">      &lt;button @click=&quot;removeTodo&quot;&gt;</span>
+<span class="sb">        ×</span>
+<span class="sb">      &lt;/button&gt;</span>
+<span class="sb">    &lt;/span&gt;</span>
+<span class="sb">  `</span>
+<span class="p">})</span>
+</code></pre></div>
+
+
+
+</div>
+
+<div class="style-example style-example-good">
+<h3>Good</h3>
+
+
+<div class="codehilite"><pre><span></span><code><span class="nx">app</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;TodoItem&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">props</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+
+<span class="w">  </span><span class="nx">emits</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">],</span>
+
+<span class="w">  </span><span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="sb">`</span>
+<span class="sb">    &lt;input</span>
+<span class="sb">      :value=&quot;todo.text&quot;</span>
+<span class="sb">      @input=&quot;$emit(&#39;input&#39;, $event.target.value)&quot;</span>
+<span class="sb">    &gt;</span>
+<span class="sb">  `</span>
+<span class="p">})</span>
+</code></pre></div>
+
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="nx">app</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;TodoItem&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">props</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+
+<span class="w">  </span><span class="nx">emits</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;delete&#39;</span><span class="p">],</span>
+
+<span class="w">  </span><span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="sb">`</span>
+<span class="sb">    &lt;span&gt;</span>
+<span class="sb">      {{ todo.text }}</span>
+<span class="sb">      &lt;button @click=&quot;$emit(&#39;delete&#39;)&quot;&gt;</span>
+<span class="sb">        ×</span>
+<span class="sb">      &lt;/button&gt;</span>
+<span class="sb">    &lt;/span&gt;</span>
+<span class="sb">  `</span>
+<span class="p">})</span>
+</code></pre></div>
+
+
+
+</div>
+
+</div>
+
+<div class="composition-api">
+
+<div class="style-example style-example-bad">
+<h3>Bad</h3>
+
+
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">setup</span><span class="p">&gt;</span>
+<span class="nx">defineProps</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">})</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">v-model</span><span class="o">=</span><span class="s">&quot;</span><span class="nx">todo</span><span class="p">.</span><span class="nx">text</span><span class="s">&quot;</span> <span class="p">/&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div>
+
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">setup</span><span class="p">&gt;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">props</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">defineProps</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">})</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">renameTodo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Mutates the parent&#39;s reactive object via the prop</span>
+<span class="w">  </span><span class="c1">// In other words, the child is reaching into and changing parent-owned state.</span>
+<span class="w">  </span><span class="nx">props</span><span class="p">.</span><span class="nx">todo</span><span class="p">.</span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;renamed by child&#39;</span>
+<span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>
+    <span class="cp">{{</span><span class="w"> </span><span class="nx">todo</span><span class="p">.</span><span class="nx">text</span><span class="w"> </span><span class="cp">}}</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="p">@</span><span class="na">click</span><span class="o">=</span><span class="s">&quot;</span><span class="nx">renameTodo</span><span class="s">&quot;</span><span class="p">&gt;</span>rename<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div>
+
+
+
+</div>
+
+<div class="style-example style-example-good">
+<h3>Good</h3>
+
+
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">setup</span><span class="p">&gt;</span>
+<span class="nx">defineProps</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">})</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">emit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">defineEmits</span><span class="p">([</span><span class="s1">&#39;input&#39;</span><span class="p">])</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="p">:</span><span class="na">value</span><span class="o">=</span><span class="s">&quot;</span><span class="nx">todo</span><span class="p">.</span><span class="nx">text</span><span class="s">&quot;</span> <span class="p">@</span><span class="na">input</span><span class="o">=</span><span class="s">&quot;</span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">$event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span><span class="s">&quot;</span> <span class="p">/&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div>
+
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">setup</span><span class="p">&gt;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">props</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">defineProps</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">todo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">})</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">emit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">defineEmits</span><span class="p">([</span><span class="s1">&#39;update:todo&#39;</span><span class="p">])</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">renameTodo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Emit a new object — the parent owns the update.</span>
+<span class="w">  </span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;update:todo&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">props</span><span class="p">.</span><span class="nx">todo</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;renamed by parent&#39;</span><span class="w"> </span><span class="p">})</span>
+<span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>
+    <span class="cp">{{</span><span class="w"> </span><span class="nx">todo</span><span class="p">.</span><span class="nx">text</span><span class="w"> </span><span class="cp">}}</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="p">@</span><span class="na">click</span><span class="o">=</span><span class="s">&quot;</span><span class="nx">renameTodo</span><span class="s">&quot;</span><span class="p">&gt;</span>rename<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div>
+
+
+
+</div>
+
+</div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../style-guide/rules-strongly-recommended.html">
+          <span class="muted">Anterior</span>Priority B Rules: Strongly Recommended
+        </a>
+        <a class="pager-next" href="../tutorial/src/step-1/description.html">
+          <span class="muted">Siguiente</span>Getting Started
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

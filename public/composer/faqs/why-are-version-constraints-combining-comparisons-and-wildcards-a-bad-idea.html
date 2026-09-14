@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why are version constraints combining comparisons and wildcards a bad idea? · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../articles/aliases.html">Articles</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Faqs
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html"
+>How do I install a package to a custom path for my framework?</a>
+              </li>
+              <li>
+                <a href="../faqs/how-to-install-composer-programmatically.html"
+>How do I install Composer programmatically?</a>
+              </li>
+              <li>
+                <a href="../faqs/how-to-install-untrusted-packages-safely.html"
+>How do I install untrusted packages safely? Is it safe to run Composer as superuser or root?</a>
+              </li>
+              <li>
+                <a href="../faqs/how-to-use-composer-behind-a-proxy.html"
+>How to use Composer behind a proxy</a>
+              </li>
+              <li>
+                <a href="../faqs/should-i-commit-the-dependencies-in-my-vendor-directory.html"
+>Should I commit the dependencies in my vendor directory?</a>
+              </li>
+              <li>
+                <a href="../faqs/which-version-numbering-system-does-composer-itself-use.html"
+>Which version numbering system does Composer itself use?</a>
+              </li>
+              <li>
+                <a href="../faqs/why-are-unbound-version-constraints-a-bad-idea.html"
+>Why are unbound version constraints a bad idea?</a>
+              </li>
+              <li>
+                <a href="../faqs/why-are-version-constraints-combining-comparisons-and-wildcards-a-bad-idea.html"
+class="is-current" aria-current="page">Why are version constraints combining comparisons and wildcards a bad idea?</a>
+              </li>
+              <li>
+                <a href="../faqs/why-cant-composer-load-repositories-recursively.html"
+>Why can&#39;t Composer load repositories recursively?</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Why are version constraints combining comparisons and wildcards a bad idea?</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+
+      <div class="doc-body">
+        <h1 id="why-are-version-constraints-combining-comparisons-and-wildcards-a-bad-idea">Why are version constraints combining comparisons and wildcards a bad idea?<a class="headerlink" href="#why-are-version-constraints-combining-comparisons-and-wildcards-a-bad-idea" title="Permanent link">#</a></h1>
+<p>This is a fairly common mistake people make, defining version constraints in
+their package requires like <code>&gt;=2.*</code> or <code>&gt;=1.1.*</code>.</p>
+<p>If you think about it and what it really means though, you will quickly
+realize that it does not make much sense. If we decompose <code>&gt;=2.*</code>, you
+have two parts:</p>
+<ul>
+<li><code>&gt;=2</code> which says the package should be in version 2.0.0 or above.</li>
+<li><code>2.*</code> which says the package should be between version 2.0.0 (inclusive)
+  and 3.0.0 (exclusive).</li>
+</ul>
+<p>As you see, both rules agree on the fact that the package must be &gt;=2.0.0,
+but it is not possible to determine if when you wrote that you were thinking
+of a package in version 3.0.0 or not. Should it match because you asked for
+<code>&gt;=2</code> or should it not match because you asked for a <code>2.*</code>?</p>
+<p>For this reason, Composer throws an error and says that this is invalid.
+The way to fix it is to think about what you really mean, and use only
+one of those rules.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../faqs/why-are-unbound-version-constraints-a-bad-idea.html">
+          <span class="muted">Anterior</span>Why are unbound version constraints a bad idea?
+        </a>
+        <a class="pager-next" href="../faqs/why-cant-composer-load-repositories-recursively.html">
+          <span class="muted">Siguiente</span>Why can&#39;t Composer load repositories recursively?
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

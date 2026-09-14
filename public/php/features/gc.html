@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recolección de basura (Garbage Collection) · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Features
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../features/persistent-connections.html"
+>Conexiones persistentes a bases de datos</a>
+              </li>
+              <li>
+                <a href="../features/cookies.html"
+>Cookies</a>
+              </li>
+              <li>
+                <a href="../features/file-upload.html"
+>Gestión de cargas de ficheros</a>
+              </li>
+              <li>
+                <a href="../features/connection-handling.html"
+>Gestión de las conexiones</a>
+              </li>
+              <li>
+                <a href="../features/http-auth.html"
+>Identificación HTTP con PHP</a>
+              </li>
+              <li>
+                <a href="../features/dtrace.html"
+>Rastreo dinámico de DTrace</a>
+              </li>
+              <li>
+                <a href="../features/gc.html"
+class="is-current" aria-current="page">Recolección de basura (Garbage Collection)</a>
+              </li>
+              <li>
+                <a href="../features/sessions.html"
+>Sesiones</a>
+              </li>
+              <li>
+                <a href="../features/remote-files.html"
+>Uso de ficheros a distancia</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Recolección de basura (Garbage Collection)</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.gc.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#recoleccion-de-basura-garbage-collection">Recolección de basura (Garbage Collection)#</a></li>
+              <li class="lvl-2"><a href="#bases-sobre-el-conteo-de-referencias">Bases sobre el conteo de referencias#</a></li>
+              <li class="lvl-3"><a href="#tipos-compuestos">Tipos compuestos#</a></li>
+              <li class="lvl-3"><a href="#problemas-de-limpieza">Problemas de limpieza#</a></li>
+              <li class="lvl-2"><a href="#limpieza-de-ciclos">Limpieza de Ciclos#</a></li>
+              <li class="lvl-2"><a href="#consideraciones-sobre-el-rendimiento">Consideraciones sobre el rendimiento#</a></li>
+              <li class="lvl-3"><a href="#huella-de-memoria-reducida">Huella de memoria reducida#</a></li>
+              <li class="lvl-3"><a href="#ralentizaciones-durante-la-ejecucion">Ralentizaciones durante la ejecución#</a></li>
+              <li class="lvl-3"><a href="#estadisticas-internas-del-gc-de-php">Estadísticas internas del GC de PHP#</a></li>
+              <li class="lvl-3"><a href="#conclusion">Conclusión#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="recoleccion-de-basura-garbage-collection">Recolección de basura (Garbage Collection)<a class="headerlink" href="#recoleccion-de-basura-garbage-collection" title="Permanent link">#</a></h2>
+<p>Esta sección explica los méritos del nuevo mecanismo de recolección de basura (también llamado GC, del término inglés Garbage Collection) disponible a partir de PHP 5.3.</p>
+<h2 id="bases-sobre-el-conteo-de-referencias">Bases sobre el conteo de referencias<a class="headerlink" href="#bases-sobre-el-conteo-de-referencias" title="Permanent link">#</a></h2>
+<p>Una variable PHP se almacena internamente en un contenedor llamado "zval". Un contenedor zval contiene, además del tipo de la variable y su valor, dos informaciones adicionales. La primera se llama "is_ref" y es un valor booléano que indica si una variable forma parte de una referencia o no. Gracias a esta información, el motor de PHP sabe diferenciar las variables normales de las referencias. Como PHP permite al programador utilizar referencias, mediante el operador &amp;, un contenedor zval posee también un mecanismo de conteo de referencias para optimizar el uso de la memoria. Esta segunda información, llamada "refcount", contiene el número de variables (también llamadas símbolos) que apuntan a este contenedor zval. Todos los símbolos se almacenan en una tabla de símbolos, y hay una tabla por ámbito de visibilidad (scope). Hay un ámbito global para el script principal (el que se llama, por ejemplo, a través del navegador) y un ámbito por función o método.</p>
+<p>Un contenedor zval se crea cuando se crea una nueva variable con un valor constante, como por ejemplo:</p>
+<p>Creación de un nuevo contenedor zval</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="s2">&quot;new string&quot;</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>En este caso, el nuevo símbolo <code>a</code> se crea en el ámbito global, y se crea un nuevo contenedor con el tipo <code>string</code> y el valor <code>new string</code>. El bit "is_ref" se establece por omisión en <code>false</code> ya que ninguna referencia ha sido creada por el programador. El contador de referencias "refcount" se establece en <code>1</code> ya que solo hay un símbolo que utiliza este contenedor. Es de destacar que las referencias (es decir, "is_ref" es <code>true</code>) con "refcount" <code>1</code>, se tratan como si no fueran referencias (es decir, como si "is_ref" fuera <code>false</code>). Si ha instalado <a href="http://xdebug.org/">Xdebug</a>, puede mostrar esta información llamando a <code>xdebug_debug_zval</code>.</p>
+<p>Mostrar información zval</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="s2">&quot;new string&quot;</span><span class="p">;</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>El ejemplo anterior mostrará:</p>
+<div class="codehilite"><pre><span></span><code>a: (refcount=1, is_ref=0)=&#39;new string&#39;
+</code></pre></div>
+
+<p>Asignar esta variable a otro símbolo incrementará el refcount.</p>
+<p>Incrementar el refcount de una zval</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="s2">&quot;new string&quot;</span><span class="p">;</span>
+<span class="nv">$b</span> <span class="o">=</span> <span class="nv">$a</span><span class="p">;</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>El ejemplo anterior mostrará:</p>
+<div class="codehilite"><pre><span></span><code>a: (refcount=2, is_ref=0)=&#39;new string&#39;
+</code></pre></div>
+
+<p>El refcount vale <code>2</code> aquí, ya que el mismo contenedor está ligado tanto a <code>a</code> como a <code>b</code>. PHP es lo suficientemente inteligente como para no duplicar el contenedor cuando no es necesario. Los contenedores se destruyen cuando su "refcount" llega a cero. El "refcount" se decrementa en uno cuando cualquier símbolo ligado a un contenedor sale del ámbito (por ejemplo: cuando la función termina) o cuando un símbolo se desasigna (por ejemplo: por la llamada a <code>unset</code>). El siguiente ejemplo lo demuestra:</p>
+<p>Decrementar el refcount de una zval</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="s2">&quot;new string&quot;</span><span class="p">;</span>
+<span class="nv">$c</span> <span class="o">=</span> <span class="nv">$b</span> <span class="o">=</span> <span class="nv">$a</span><span class="p">;</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="nv">$b</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="nb">unset</span><span class="p">(</span> <span class="nv">$c</span> <span class="p">);</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>El ejemplo anterior mostrará:</p>
+<div class="codehilite"><pre><span></span><code>a: (refcount=3, is_ref=0)=&#39;new string&#39;
+a: (refcount=2, is_ref=0)=&#39;new string&#39;
+a: (refcount=1, is_ref=0)=&#39;new string&#39;
+</code></pre></div>
+
+<p>Si ahora se llama a <code>unset($a);</code>, el contenedor zval, incluyendo el tipo y el valor, será eliminado de la memoria.</p>
+<h3 id="tipos-compuestos">Tipos compuestos<a class="headerlink" href="#tipos-compuestos" title="Permanent link">#</a></h3>
+<p>Las cosas se complican en el caso de tipos compuestos como <code>array</code> y <code>object</code>. A diferencia de los valores escalares, los <code>array</code> y <code>object</code> almacenan sus propiedades en una tabla de símbolos que les es propia. Esto significa que el siguiente ejemplo crea tres contenedores zval:</p>
+<p>Creación de una zval <code>array</code></p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span> <span class="s1">&#39;meaning&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;life&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span> <span class="o">=&gt;</span> <span class="mi">42</span> <span class="p">);</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Resultado del ejemplo anterior es similar a:</p>
+<div class="codehilite"><pre><span></span><code>a: (refcount=1, is_ref=0)=array (
+   &#39;meaning&#39; =&gt; (refcount=1, is_ref=0)=&#39;life&#39;,
+   &#39;number&#39; =&gt; (refcount=1, is_ref=0)=42
+)
+</code></pre></div>
+
+<p>O gráficamente</p>
+<p><img alt="Zvals de un array simple" src="en/features/figures/simple-array.png"></p>
+<p>Los tres contenedores zval son: <code>a</code>, <code>meaning</code>, y <code>number</code>. Las mismas reglas se aplican para el incremento y la decrementación de los "refcounts". A continuación, se añade otro elemento al array, y se asigna su valor con el contenido de un elemento ya existente del array:</p>
+<p>Añadir un elemento ya existente al array</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span> <span class="s1">&#39;meaning&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;life&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span> <span class="o">=&gt;</span> <span class="mi">42</span> <span class="p">);</span>
+<span class="nv">$a</span><span class="p">[</span><span class="s1">&#39;life&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$a</span><span class="p">[</span><span class="s1">&#39;meaning&#39;</span><span class="p">];</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Resultado del ejemplo anterior es similar a:</p>
+<div class="codehilite"><pre><span></span><code>a: (refcount=1, is_ref=0)=array (
+   &#39;meaning&#39; =&gt; (refcount=2, is_ref=0)=&#39;life&#39;,
+   &#39;number&#39; =&gt; (refcount=1, is_ref=0)=42,
+   &#39;life&#39; =&gt; (refcount=2, is_ref=0)=&#39;life&#39;
+)
+</code></pre></div>
+
+<p>O gráficamente</p>
+<p><img alt="Zvals para un array simple con una referencia" src="en/features/figures/simple-array2.png"></p>
+<p>La salida Xdebug que vemos indica que el antiguo y el nuevo elemento del array apuntan ahora ambos a un contenedor zval cuyo "refcount" vale <code>2</code>. Aunque la salida XDebug muestra dos contenedores zval con el valor 'life', son los mismos. La función <code>xdebug_debug_zval</code> no muestra esto, pero se podría ver mostrando también el puntero de memoria.</p>
+<p>Eliminar un elemento del array es asimilable a la eliminación de un símbolo desde un espacio. Al hacerlo, el "refcount" del contenedor al que apunta el elemento del array se decrementa. Una vez más, si llega a cero, el contenedor zval se elimina de la memoria. El siguiente ejemplo lo demuestra:</p>
+<p>Eliminación de un elemento de array</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span> <span class="s1">&#39;meaning&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;life&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span> <span class="o">=&gt;</span> <span class="mi">42</span> <span class="p">);</span>
+<span class="nv">$a</span><span class="p">[</span><span class="s1">&#39;life&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$a</span><span class="p">[</span><span class="s1">&#39;meaning&#39;</span><span class="p">];</span>
+<span class="nb">unset</span><span class="p">(</span> <span class="nv">$a</span><span class="p">[</span><span class="s1">&#39;meaning&#39;</span><span class="p">],</span> <span class="nv">$a</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">]</span> <span class="p">);</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Resultado del ejemplo anterior es similar a:</p>
+<div class="codehilite"><pre><span></span><code>a: (refcount=1, is_ref=0)=array (
+   &#39;life&#39; =&gt; (refcount=1, is_ref=0)=&#39;life&#39;
+)
+</code></pre></div>
+
+<p>Ahora, las cosas se vuelven interesantes si añadimos el array como elemento de sí mismo. Hacemos esto en el siguiente ejemplo, utilizando un operador de referencia para evitar que PHP cree una copia:</p>
+<p>Añadir el array como referencia a sí mismo como elemento</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$a</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span> <span class="s1">&#39;one&#39;</span> <span class="p">);</span>
+<span class="nv">$a</span><span class="p">[]</span> <span class="o">=&amp;</span> <span class="nv">$a</span><span class="p">;</span>
+<span class="nx">xdebug_debug_zval</span><span class="p">(</span> <span class="s1">&#39;a&#39;</span> <span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Resultado del ejemplo anterior es similar a:</p>
+<div class="codehilite"><pre><span></span><code>a: (refcount=2, is_ref=1)=array (
+   0 =&gt; (refcount=1, is_ref=0)=&#39;one&#39;,
+   1 =&gt; (refcount=2, is_ref=1)=...
+)
+</code></pre></div>
+
+<p>O gráficamente</p>
+<p><img alt="Zvals en un array con referencia circular" src="en/features/figures/loop-array.png"></p>
+<p>Se puede ver que la variable array (<code>a</code>) así como el segundo elemento (<code>1</code>) apuntan ahora a un contenedor cuyo "refcount" vale <code>2</code>. Los "..." en la visualización indican una recursión, que, en este caso, significa que el "..." apunta al array mismo.</p>
+<p>Como antes, eliminar una variable elimina su símbolo, y el refcount del contenedor al que apuntaba se decrementa. Por lo tanto, si eliminamos la variable <code>$a</code> después de ejecutar el código anterior, el contador de referencias del contenedor al que apuntan <code>$a</code> y el elemento "1" se decrementará en uno, pasando de "2" a "1". Esto se puede representar como:</p>
+<p>Eliminación de <code>$a</code></p>
+<div class="codehilite"><pre><span></span><code>(refcount=1, is_ref=1)=array (
+   0 =&gt; (refcount=1, is_ref=0)=&#39;one&#39;,
+   1 =&gt; (refcount=1, is_ref=1)=...
+)
+</code></pre></div>
+
+<p>O gráficamente</p>
+<p><img alt="Zvals después de la eliminación del array que contiene una referencia circular, fuga de memoria" src="en/features/figures/leak-array.png"></p>
+<h3 id="problemas-de-limpieza">Problemas de limpieza<a class="headerlink" href="#problemas-de-limpieza" title="Permanent link">#</a></h3>
+<p>Aunque ya no haya ningún símbolo en el espacio de variables actual que apunte a esta estructura, no puede ser limpiada, ya que el elemento "1" del array sigue apuntando a este mismo array. Como ya no hay ningún símbolo externo que apunte a esta estructura, el usuario no puede limpiarla manualmente; por lo tanto, hay una fuga de memoria. Afortunadamente, PHP destruirá esta estructura al final de la solicitud, pero antes de esta etapa, la memoria no se libera. Esta situación ocurre a menudo si se implementa un algoritmo de análisis u otras ideas donde se tiene un hijo que apunta a su padre. Lo mismo puede ocurrir, por supuesto, con los objetos, y es incluso más probable, ya que siempre se utilizan implícitamente por "<a href="#language.oop5.references">referencia</a>".</p>
+<p>Esto puede no ser molesto si ocurre solo una o dos veces, pero si hay miles, o incluso millones, de estas fugas de memoria, entonces obviamente esto puede convertirse en un problema importante. Esto es particularmente problemático para los scripts que duran mucho tiempo, como los demonios para los cuales la solicitud nunca termina, o incluso en grandes suites de pruebas unitarias. Este último caso se encontró al lanzar las pruebas unitarias del componente Template de la biblioteca eZ Components. En algunos casos, la suite de pruebas requería más de 2Go de memoria, que el servidor de prueba no tenía realmente disponible.</p>
+<h2 id="limpieza-de-ciclos">Limpieza de Ciclos<a class="headerlink" href="#limpieza-de-ciclos" title="Permanent link">#</a></h2>
+<p>Tradicionalmente, los mecanismos de conteo de referencias, como los utilizados anteriormente en PHP, no saben manejar las fugas de memoria debidas a referencias circulares; sin embargo, desde PHP 5.3.0, un algoritmo síncrono derivado del análisis <a href="https://pages.cs.wisc.edu/~cymen/misc/interests/Bacon01Concurrent.pdf">Concurrent Cycle Collection in Reference Counted Systems</a> se utiliza para abordar este problema en particular.</p>
+<p>Una explicación completa del funcionamiento del algoritmo iría un poco más allá del alcance de esta sección, pero aquí presentaremos los principios básicos. En primer lugar, estableceremos algunas reglas básicas. Si un refcount se incrementa, el contenedor siempre se utiliza, por lo tanto, no se limpia. Si el refcount se decrementa y llega a cero, el contenedor zval puede ser eliminado y la memoria liberada. En primer lugar, esto significa que los ciclos perturbadores solo pueden crearse cuando el refcount se decrementa a un valor diferente de cero. Luego, en un ciclo problemático, es posible detectar la basura verificando si es posible o no decrementar su refcount en uno, verificando luego qué zvals tienen un refcount a cero.</p>
+<p><img alt="Algoritmo de recolección de basura" src="en/features/figures/gc-algorithm.png"></p>
+<p>Para evitar tener que llamar a la rutina de limpieza en cada decrementación de refcount posible, el algoritmo coloca todas las raíces zval en un "búfer de raíces" (marcándolas en "violeta"). También se asegura de que cada raíz aparezca solo una vez en el búfer. El mecanismo de limpieza solo interviene cuando el búfer está lleno. Vea el paso A en la figura anterior.</p>
+<p>En el paso B, el algoritmo lanza una búsqueda en todas las raíces posibles, para decrementar en una unidad los refcounts de todas las zvals que encuentra, teniendo mucho cuidado de no decrementar dos veces el refcount de la misma zval (marcándolas como "grises"). En el paso C, el algoritmo relanza una búsqueda en todas las raíces posibles y escanea el valor de refcount de cada zval. Si encuentra un refcount a cero, la zval se marca como "blanca" (azul en la figura). Si encuentra un valor superior a cero, cancela la decrementación del refcount realizando una búsqueda desde este nodo, y las marca como "negras" nuevamente. En el último paso, D, el algoritmo recorre todo el búfer de raíces y las elimina, escaneando cada zval; cualquier zval marcada como "blanca" en el paso anterior será entonces eliminada de la memoria.</p>
+<p>Ahora que se sabe globalmente cómo funciona el algoritmo, se verá cómo se ha integrado en PHP. Por omisión, el recolector de basura de PHP está activado. Sin embargo, hay una opción de <code>php.ini</code> para cambiar esto: <a href="#ini.zend.enable-gc">zend.enable_gc</a>.</p>
+<p>Cuando el recolector de basura está activado, el algoritmo de búsqueda de ciclos descrito anteriormente se ejecuta cada vez que el búfer está lleno. El búfer de raíces tiene un tamaño fijado a 10.000 raíces (este parámetro es modificable gracias a <code>GC_THRESHOLD_DEFAULT</code> en <code>Zend/zend_gc.c</code> en el código fuente de PHP, por lo tanto, se necesita una recompilación). Si el recolector de basura está desactivado, la búsqueda de ciclos también lo está. Sin embargo, las raíces posibles siempre se registrarán en el búfer, esto no depende de la activación del recolector de basura.</p>
+<p>Si el búfer está lleno mientras el mecanismo de limpieza está desactivado, las raíces ya no se registrarán. Estas raíces nunca serán analizadas por el algoritmo, y si formaban parte de referencias circulares, nunca se limpiarán, y causarán fugas de memoria.</p>
+<p>La razón por la que las raíces posibles se registran en el búfer incluso si el mecanismo está desactivado es que habría sido demasiado costoso verificar la posible activación del mecanismo en cada intento de agregar una raíz al búfer. El mecanismo de recolección de basura y análisis puede, por su parte, ser muy costoso en tiempo.</p>
+<p>Además de poder cambiar el valor del parámetro de configuración <a href="#ini.zend.enable-gc">zend.enable_gc</a>, también se puede activar o desactivar el mecanismo de recolección de basura llamando a las funciones <code>gc_enable</code> o <code>gc_disable</code> respectivamente. Utilizar estas funciones tendrá el mismo efecto que modificar el parámetro de configuración. También se tiene la posibilidad de forzar la ejecución del recolector de basura en un momento dado en el script, incluso si el búfer aún no está completamente lleno. Para ello, utilice la función <code>gc_collect_cycles</code>, que devolverá el número de ciclos recolectados.</p>
+<p>Se puede tomar el control desactivando el recolector de basura o forzándolo a pasar en un momento dado porque algunas partes de la aplicación podrían depender fuertemente del tiempo de procesamiento, en cuyo caso se podría desear que el recolector de basura no se inicie. Por supuesto, al desactivar el recolector de basura para algunas partes de la aplicación, se corre el riesgo de crear fugas de memoria, ya que algunas raíces probables podrían no registrarse en el búfer de memoria de tamaño limitado. En consecuencia, generalmente se recomienda desencadenar manualmente el proceso gracias a <code>gc_collect_cycles</code> justo antes de la llamada a <code>gc_disable</code>, para liberar memoria. Esto dejará un búfer vacío, y habrá más espacio para raíces probables cuando el mecanismo esté desactivado.</p>
+<h2 id="consideraciones-sobre-el-rendimiento">Consideraciones sobre el rendimiento<a class="headerlink" href="#consideraciones-sobre-el-rendimiento" title="Permanent link">#</a></h2>
+<p>Ya se ha visto en las secciones anteriores que la recolección de raíces probables tenía un impacto muy ligero en el rendimiento, pero esto es en comparación con PHP 5.2 a PHP 5.3. Aunque el registro de raíces probables es más lento que no registrarlas en absoluto, como en PHP 5.2, otras mejoras aportadas por PHP 5.3 hacen que esta operación no se sienta a nivel de rendimiento.</p>
+<p>Hay principalmente dos niveles para los cuales se afecta el rendimiento. El primero es la huella de memoria reducida, y el segundo es el retraso en la ejecución, cuando el mecanismo de limpieza realiza su operación de liberación de memoria. Se estudiarán estos dos ejes.</p>
+<h3 id="huella-de-memoria-reducida">Huella de memoria reducida<a class="headerlink" href="#huella-de-memoria-reducida" title="Permanent link">#</a></h3>
+<p>En primer lugar, la razón principal de la implementación del mecanismo de recolección de basura es la reducción de la memoria consumida, limpiando las referencias circulares cuando se cumplen las condiciones requeridas. Con PHP, esto ocurre tan pronto como el búfer de raíces está lleno, o cuando se llama a la función <code>gc_collect_cycles</code>. En el gráfico a continuación, se muestra el uso de memoria del siguiente script, con PHP 5.2 y con PHP 5.3, excluyendo la memoria obligatoria que PHP consume por sí mismo al inicio.</p>
+<p>Ejemplo de uso de memoria</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">Foo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$var</span> <span class="o">=</span> <span class="s1">&#39;3.14159265359&#39;</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nv">$self</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$baseMemory</span> <span class="o">=</span> <span class="nb">memory_get_usage</span><span class="p">();</span>
+
+<span class="k">for</span> <span class="p">(</span> <span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;=</span> <span class="mi">100000</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">;</span>
+    <span class="nv">$a</span><span class="o">-&gt;</span><span class="na">self</span> <span class="o">=</span> <span class="nv">$a</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nv">$i</span> <span class="o">%</span> <span class="mi">500</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">echo</span> <span class="nb">sprintf</span><span class="p">(</span> <span class="s1">&#39;%8d: &#39;</span><span class="p">,</span> <span class="nv">$i</span> <span class="p">),</span> <span class="nb">memory_get_usage</span><span class="p">()</span> <span class="o">-</span> <span class="nv">$baseMemory</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p><img alt="Comparación del consumo de memoria entre PHP 5.2 y PHP 5.3" src="en/features/figures/gc-benchmark.png"></p>
+<p>En este ejemplo algo académico, se crea un objeto que tiene un atributo que se referencia a sí mismo. Cuando la variable <code>$a</code> en el script se reasigna a la siguiente iteración, aparecerá una fuga de memoria. En este caso, los dos contenedores zval se fugan (el zval del objeto y el del atributo), pero solo se encuentra una raíz probable: la variable que ha sido eliminada. Cuando el búfer de raíces está lleno después de 10.000 iteraciones (con un total de 10.000 raíces probables), el mecanismo de recolección de basura entra en juego y libera la memoria asociada a estas raíces probables. Esto se ve muy claramente en los gráficos de uso de memoria de PHP 5.3. Después de cada 10.000 iteraciones, el mecanismo se desencadena y libera la memoria asociada a las variables circularmente referenciadas. El mecanismo en cuestión no tiene mucho trabajo en este ejemplo, porque la estructura que se fugó es extremadamente simple. El diagrma muestra que el uso máximo de memoria de PHP 5.3 es de aproximadamente 9Mo, mientras que sigue aumentando con PHP 5.2.</p>
+<h3 id="ralentizaciones-durante-la-ejecucion">Ralentizaciones durante la ejecución<a class="headerlink" href="#ralentizaciones-durante-la-ejecucion" title="Permanent link">#</a></h3>
+<p>El segundo punto donde el mecanismo de recolección de basura (GC) afecta el rendimiento es cuando se ejecuta para liberar la memoria "desperdiciada". Para cuantificar este impacto, se modifica ligeramente el script anterior para tener un número de iteraciones más alto y eliminar la recolección del uso de memoria intermedia. El segundo script se reproduce a continuación:</p>
+<p>Impacto de GC en el rendimiento</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">Foo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$var</span> <span class="o">=</span> <span class="s1">&#39;3.14159265359&#39;</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nv">$self</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="p">(</span> <span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;=</span> <span class="mi">1000000</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">;</span>
+    <span class="nv">$a</span><span class="o">-&gt;</span><span class="na">self</span> <span class="o">=</span> <span class="nv">$a</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">echo</span> <span class="nb">memory_get_peak_usage</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Se lanzará este script 2 veces, una vez con <a href="#ini.zend.enable-gc">zend.enable_gc</a> en on, y una vez en off:</p>
+<p>Ejecución del script anterior</p>
+<div class="codehilite"><pre><span></span><code><span class="x">time php -dzend.enable_gc=0 -dmemory_limit=-1 -n example2.php</span>
+<span class="x">## y</span>
+<span class="x">time php -dzend.enable_gc=1 -dmemory_limit=-1 -n example2.php</span>
+</code></pre></div>
+
+<p>En mi máquina, el primer comando parece durar siempre 10,7 segundos, mientras que el segundo comando tarda aproximadamente 11,4 segundos. Esto corresponde a un retraso de aproximadamente el 7%. Sin embargo, la cantidad total de memoria utilizada por el script se reduce en un 98%, pasando de 931Mo a 10Mo. Este benchmark no es muy científico ni representativo de aplicaciones reales, pero demuestra concretamente en qué medida el mecanismo de recolección de basura puede ser útil en términos de consumo de memoria. El punto positivo es que el retraso es siempre del 7%, en el caso particular de este script, mientras que la memoria preservada será cada vez más importante a medida que aparezcan referencias circulares durante la ejecución.</p>
+<h3 id="estadisticas-internas-del-gc-de-php">Estadísticas internas del GC de PHP<a class="headerlink" href="#estadisticas-internas-del-gc-de-php" title="Permanent link">#</a></h3>
+<p>Es posible obtener algunas informaciones adicionales concernientes al mecanismo de recolección de basura interno de PHP. Pero para ello, se debe recompilar PHP con el soporte de benchmarking y recolección de datos. Se debe establecer la variable de entorno <code>CFLAGS</code> con <code>-DGC_BENCH=1</code> antes de lanzar <code>./configure</code> con las opciones que interesan. El siguiente ejemplo lo demuestra:</p>
+<p>Recompilar PHP para activar el soporte de benchmark del GC</p>
+<div class="codehilite"><pre><span></span><code><span class="x">export CFLAGS=-DGC_BENCH=1</span>
+<span class="x">./config.nice</span>
+<span class="x">make clean</span>
+<span class="x">make</span>
+</code></pre></div>
+
+<p>Cuando se re-ejecuta el código del script anterior con el binario PHP recién reconstruido, se debería ver el siguiente resultado después de la ejecución:</p>
+<p>Estadísticas GC</p>
+<div class="codehilite"><pre><span></span><code><span class="x">GC Statistics</span>
+<span class="x">-------------</span>
+<span class="x">Runs:               110</span>
+<span class="x">Collected:          2072204</span>
+<span class="x">Root buffer length: 0</span>
+<span class="x">Root buffer peak:   10000</span>
+
+<span class="x">      Possible            Remove from  Marked</span>
+<span class="x">        Root    Buffered     buffer     grey</span>
+<span class="x">      --------  --------  -----------  ------</span>
+<span class="x">ZVAL   7175487   1491291    1241690   3611871</span>
+<span class="x">ZOBJ  28506264   1527980     677581   1025731</span>
+</code></pre></div>
+
+<p>Las estadísticas más interesantes se muestran en el primer bloque. Se ve aquí que el mecanismo de recolección de basura se ha desencadenado 110 veces, y que en total son más de 2 millones de asignaciones de memoria las que se han liberado durante estos 110 pasos. Tan pronto como el mecanismo haya intervenido al menos una vez, el pico del búfer de raíces es siempre de 10000.</p>
+<h3 id="conclusion">Conclusión<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h3>
+<p>En general, la recolección de basura de PHP solo causará un retraso cuando el algoritmo de recolección de ciclos se ejecute, lo que significa que en los scripts normales (más cortos), no debería haber ningún impacto en el rendimiento.</p>
+<p>Sin embargo, cuando el mecanismo de recolección de ciclos se desencadene en scripts normales, la reducción de la huella de memoria permitirá la ejecución paralela de un número mayor de estos scripts, ya que se utilizará menos memoria en total.</p>
+<p>Las ventajas se sienten más claramente en el caso de scripts demonio o que deben ejecutarse durante mucho tiempo. Así, para las aplicaciones <a href="http://gtk.php.net/">PHP-GTK</a> que a menudo duran más que los scripts web, el nuevo mecanismo debería reducir significativamente las fugas de memoria a largo plazo.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../features/dtrace.html">
+          <span class="muted">Anterior</span>Rastreo dinámico de DTrace
+        </a>
+        <a class="pager-next" href="../features/sessions.html">
+          <span class="muted">Siguiente</span>Sesiones
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

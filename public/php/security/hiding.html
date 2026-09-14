@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ocultar PHP · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Security
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../security/general.html"
+>Consideraciones generales</a>
+              </li>
+              <li>
+                <a href="../security/variables.html"
+>Datos Enviados por el Usuario</a>
+              </li>
+              <li>
+                <a href="../security/cgi-bin.html"
+>Instalado como CGI binario</a>
+              </li>
+              <li>
+                <a href="../security/apache.html"
+>Instalado como módulo de Apache</a>
+              </li>
+              <li>
+                <a href="../security/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../security/current.html"
+>Mantenerse al día</a>
+              </li>
+              <li>
+                <a href="../security/hiding.html"
+class="is-current" aria-current="page">Ocultar PHP</a>
+              </li>
+              <li>
+                <a href="../security/errors.html"
+>Reportando errores</a>
+              </li>
+              <li>
+                <a href="../security/sessions.html"
+>Seguridad de una Sesión</a>
+              </li>
+              <li>
+                <a href="../security/filesystem.html"
+>Seguridad del Sistema de Archivos</a>
+              </li>
+              <li>
+                <a href="../security/database.html"
+>Seguridad en bases de datos</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Ocultar PHP</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/security.hiding.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#ocultar-php">Ocultar PHP#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="ocultar-php">Ocultar PHP<a class="headerlink" href="#ocultar-php" title="Permanent link">#</a></h2>
+<p>En general, la seguridad por ocultación es una de las formas más débiles de seguridad. Aunque en algunos casos, es aconsejable cada pequeño elemento extra de seguridad.</p>
+<p>Unas cuantas técnicas simples pueden ayudar a ocultar PHP, posiblemente retrasando a un atacante que esté tratando de descubrir debilidades en el sistema. Al establecer expose_php a <code>off</code> en el fichero <code>php.ini</code>, se reduce la cantidad de información disponible.</p>
+<p>Otra táctica es configurar servidores web como Apache para interpretar diferentes tipos de ficheros por medio de PHP, ya sea con una directiva de <code>.htaccess</code> o en el propio fichero de configuración de Apache. Así se pueden utilizar extensiones de ficheros engañosas:</p>
+<p>Ocultando PHP como si fuera otro lenguaje</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## Hacer que el código de PHP parezca otro tipo de código</span>
+<span class="x">AddType application/x-httpd-php .asp .py .pl</span>
+</code></pre></div>
+
+<p>U ocultarlo completamente:</p>
+<p>Utilizar tipos desconocidos para extensiones de PHP</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## Hacer que el código de PHP parezca de tipo desconocido</span>
+<span class="x">AddType application/x-httpd-php .bop .foo .133t</span>
+</code></pre></div>
+
+<p>U ocultarlo como código HTML, lo cual tiene un pequeño impacto de rendimiento debido a que todos los ficheros HTML serán procesados por el motor de PHP:</p>
+<p>Utilizar tipos HTML para extensiones de PHP</p>
+<div class="codehilite"><pre><span></span><code><span class="x">## Hacer que el código de PHP parezca HTML</span>
+<span class="x">AddType application/x-httpd-php .htm .html</span>
+</code></pre></div>
+
+<p>Para que esto funcione eficazmente, se debe cambiar el nombre de los ficheros PHP con las extensiones de arriba. Si bien es una forma de seguridad por ocultamiento, es una medida preventiva menor con pocos inconvenientes.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../security/current.html">
+          <span class="muted">Anterior</span>Mantenerse al día
+        </a>
+        <a class="pager-next" href="../security/errors.html">
+          <span class="muted">Siguiente</span>Reportando errores
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conexiones persistentes a bases de datos · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Features
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../features/persistent-connections.html"
+class="is-current" aria-current="page">Conexiones persistentes a bases de datos</a>
+              </li>
+              <li>
+                <a href="../features/cookies.html"
+>Cookies</a>
+              </li>
+              <li>
+                <a href="../features/file-upload.html"
+>Gestión de cargas de ficheros</a>
+              </li>
+              <li>
+                <a href="../features/connection-handling.html"
+>Gestión de las conexiones</a>
+              </li>
+              <li>
+                <a href="../features/http-auth.html"
+>Identificación HTTP con PHP</a>
+              </li>
+              <li>
+                <a href="../features/dtrace.html"
+>Rastreo dinámico de DTrace</a>
+              </li>
+              <li>
+                <a href="../features/gc.html"
+>Recolección de basura (Garbage Collection)</a>
+              </li>
+              <li>
+                <a href="../features/sessions.html"
+>Sesiones</a>
+              </li>
+              <li>
+                <a href="../features/remote-files.html"
+>Uso de ficheros a distancia</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Conexiones persistentes a bases de datos</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.persistent-connections.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#conexiones-persistentes-a-bases-de-datos">Conexiones persistentes a bases de datos#</a></li>
+              <li class="lvl-2"><a href="#que-son-las-conexiones-persistentes">¿Qué son las conexiones persistentes?#</a></li>
+              <li class="lvl-2"><a href="#solicitudes-web">Solicitudes web#</a></li>
+              <li class="lvl-2"><a href="#procesos-de-linea-de-comandos">Procesos de línea de comandos#</a></li>
+              <li class="lvl-2"><a href="#por-que-usarlas">¿Por qué usarlas?#</a></li>
+              <li class="lvl-2"><a href="#posibles-inconvenientes-limites-de-conexion">Posibles inconvenientes: Límites de conexión#</a></li>
+              <li class="lvl-2"><a href="#posibles-inconvenientes-mantenimiento-del-estado-de-la-conexion">Posibles inconvenientes: Mantenimiento del estado de la conexión#</a></li>
+              <li class="lvl-2"><a href="#palabras-finales">Palabras finales#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="conexiones-persistentes-a-bases-de-datos">Conexiones persistentes a bases de datos<a class="headerlink" href="#conexiones-persistentes-a-bases-de-datos" title="Permanent link">#</a></h2>
+<h2 id="que-son-las-conexiones-persistentes">¿Qué son las conexiones persistentes?<a class="headerlink" href="#que-son-las-conexiones-persistentes" title="Permanent link">#</a></h2>
+<p>Las conexiones persistentes son enlaces que no se cierran al finalizar la ejecución de un script. Cuando se solicita una conexión persistente, PHP comprueba si ya hay una idéntica (que ya estuviera abierta antes), utilizándola si existe. Si no, crea el enlace. Una conexión «idéntica» es una conexión que fue abierta por el mismo host, con el mismo usuario y la misma contraseña (donde sea aplicable).</p>
+<p>No hay ningún método para solicitar una conexión específica, o garantizar si obtendrá una conexión existente o una nueva (si todas las conexiones existentes están en uso, o la solicitud está siendo atendida por un trabajador diferente, el cual tiene un grupo separado de conexiones).</p>
+<p>Esto significa que no puedes usar las conexiones persistentes de PHP para, por ejemplo:</p>
+<p>asignar una sesión de base de datos específica a un usuario web específico</p>
+<p>crear una transacción grande en múltiples solicitudes</p>
+<p>iniciar una consulta en una solicitud y recopilar los resultados en otra</p>
+<p>Las conexiones persistentes no le brindan <em>ninguna</em> funcionalidad que no fuera posible con las conexiones no persistentes.</p>
+<h2 id="solicitudes-web">Solicitudes web<a class="headerlink" href="#solicitudes-web" title="Permanent link">#</a></h2>
+<p>Hay dos formas las cuales su servidor web puede utilizar PHP para generar páginas web:</p>
+<p>El primer método es emplear PHP como una «envoltura» CGI. Cuando se ejecuta de esta forma, se crea y se destruye una instancia del intérprete de PHP por cada solicitud de página (para una página de PHP) al servidor web. Debido a que esta instancia se destruye después de cada solicitud, cualquier recurso que adquiera (tal como un enlace a un servidor de base de datos SQL) es cerrado en la destrucción de dicha instancia. En este caso, no se gana nada utilizando conexiones persistentes: simplemente no persisten.</p>
+<p>El segundo método, y más popular, es ejecutar PHP-FPM, o PHP como módulo en un servidor web multiproceso, lo que actualmente solo incluye a Apache. Estas configuraciones suelen tener un proceso (el padre) que coordina un grupo de procesos (sus hijos) los cuales son los que realmente hacen el trabajo de servir páginas web. Cuando una solicitud proviene de un cliente, esta es cedida a uno de los hijos que no esté ya sirviendo a otro cliente. Esto significa que cuando el mismo cliente hace una segunda solicitud al servidor, esta podría ser servida por un proceso hijo diferente a la primera vez. Una vez que se ha abierto una conexión persistente, cualquier solicitud posterior servida por el mismo proceso hijo puede reusar la conexión ya establecida al servidor SQL.</p>
+<blockquote>
+<p>[!NOTE]
+Puede comprobar qué método utilizan sus solicitudes web consultando el valor de "Server API" en la salida de <code>phpinfo</code> o el valor de <code>PHP_SAPI</code>, ejecutado desde una solicitud web.</p>
+<p>Si la API del servidor es "Apache 2 Handler" o "FPM/FastCGI", se usarán conexiones persistentes en todas las solicitudes atendidas por el mismo trabajador. Con cualquier otro valor, las conexiones persistentes no persistirán después de cada solicitud.</p>
+</blockquote>
+<h2 id="procesos-de-linea-de-comandos">Procesos de línea de comandos<a class="headerlink" href="#procesos-de-linea-de-comandos" title="Permanent link">#</a></h2>
+<p>Dado que PHP de línea de comandos utiliza un nuevo proceso para cada script, las conexiones persistentes no se comparten entre scripts de línea de comandos, por lo que no tiene sentido usarlas en scripts transitorios como crons o comandos. Sin embargo, pueden ser útiles si, por ejemplo, se está desarrollando un servidor de aplicaciones de larga duración que atiende muchas solicitudes o tareas, y cada una puede necesitar su propia conexión a la base de datos.</p>
+<h2 id="por-que-usarlas">¿Por qué usarlas?<a class="headerlink" href="#por-que-usarlas" title="Permanent link">#</a></h2>
+<p>Las conexiones persistentes son recomendables si la sobrecarga para crear un enlace a su servidor SQL es alta. Que esta sobrecarga sea realmente alta o no depende de muchos factores, como el tipo de base de datos que se emplea, si esta se encuentra en la misma computadora en la que está el servidor web, la carga de la máquina donde está el servidor SQL, etc. En resumidas cuentas, si la sobrecarga de una conexión es alta, las conexiones persistentes ayudan considerablemente, haciendo que un proceso hijo únicamente se conecte una vez durante su vida útil, en lugar de hacerlo cada vez que procese una página que requiera una conexión al servidor SQL. Esto significa que cada hijo que abra una conexión persistente tendrá su propia conexión persistente abierta al servidor. Por ejemplo, si se tienen 20 procesos hijos diferentes que ejecutan un script que realiza una conexión persistente al servidor SQL, se tendrán 20 conexiones diferentes al servidor SQL, una por cada hijo.</p>
+<h2 id="posibles-inconvenientes-limites-de-conexion">Posibles inconvenientes: Límites de conexión<a class="headerlink" href="#posibles-inconvenientes-limites-de-conexion" title="Permanent link">#</a></h2>
+<p>Observe, sin embargo, que esto puede tener algunos inconvenientes si se está usando una base de datos con un limite de conexiones que sea excedido por las conexiones persistentes hijas. Si la base de datos tiene un limite de 16 conexiones simultáneas, y en el curso de una sesión de un servidor ocupado 17 hilos hijos intentan conectarse, uno de ellos no será capaz de hacerlo. Si un script contiene errores que impidan el cierre de las conexiones (como un bucle infinito), la mencionada base de datos con solamente 16 conexiones podría saturarse rápidamente.</p>
+<p>Las conexiones persistentes suelen aumentar el número de conexiones abiertas en un momento dado, ya que los procesos inactivos mantienen las conexiones utilizadas en las solicitudes anteriores que atendieron. Si se inicia un gran número de procesos para manejar una oleada de solicitudes, las conexiones que estos abrieron permanecerán activas hasta que el proceso sea finalizado o el servidor de base de datos cierre la conexión.</p>
+<p>Asegúrate de que el número máximo de conexiones permitidas por el servidor de base de datos sea superior al número máximo de procesos que atienden solicitudes web (más cualquier otro uso adicional, como tareas programadas o conexiones administrativas).</p>
+<p>Consulta la documentación de tu base de datos para obtener información sobre cómo manejar conexiones abandonadas o inactivas (timeouts). Los timeouts largos pueden aumentar significativamente el número de conexiones persistentes abiertas en un momento dado.</p>
+<h2 id="posibles-inconvenientes-mantenimiento-del-estado-de-la-conexion">Posibles inconvenientes: Mantenimiento del estado de la conexión<a class="headerlink" href="#posibles-inconvenientes-mantenimiento-del-estado-de-la-conexion" title="Permanent link">#</a></h2>
+<p>Algunas extensiones de base de datos realizan limpieza automática al reutilizar la conexión; otras delegan esta tarea en el desarrollador de la aplicación. Según la extensión utilizada y el diseño de la aplicación, puede ser necesario realizar una limpieza manual antes de que el script finalice. Los cambios que pueden dejar la conexión en un estado inesperado incluyen:</p>
+<p>Base de datos seleccionada o por defecto</p>
+<p>Bloqueos de tablas</p>
+<p>Transacciones no confirmadas</p>
+<p>Tablas temporales</p>
+<p>Configuraciones o características específicas de la conexión, como el perfilado</p>
+<p>Los bloqueos de tablas y las transacciones que no se limpian ni cierran pueden provocar que otras consultas queden bloqueadas indefinidamente o que la reutilización posterior de la conexión genere cambios inesperados.</p>
+<p>Tener seleccionada una base de datos incorrecta puede impedir que la conexión reutilizada ejecute las consultas como se espera (o que las ejecute sobre la base de datos equivocada si los esquemas son suficientemente similares).</p>
+<p>Si no se eliminan las tablas temporales, las solicitudes posteriores no podrán recrear la misma tabla.</p>
+<p>Puede implementar la limpieza utilizando destructores de clase o la función <code>register_shutdown_function</code>. También puede considerar el uso de proxies dedicados para agrupación de conexiones que incluyan esta funcionalidad.</p>
+<h2 id="palabras-finales">Palabras finales<a class="headerlink" href="#palabras-finales" title="Permanent link">#</a></h2>
+<p>Dado su comportamiento y los posibles inconvenientes descritos anteriormente, no debería utilizar conexiones persistentes sin una evaluación cuidadosa. No deben emplearse sin realizar cambios adicionales en su aplicación y sin una configuración meticulosa del servidor de base de datos, del servidor web y/o de PHP-FPM.</p>
+<p>Considere soluciones alternativas, como investigar y corregir las causas del sobrecoste en la creación de conexiones (por ejemplo, desactivar las búsquedas inversas de DNS en el servidor de base de datos), o utilizar proxies dedicados para agrupación de conexiones.</p>
+<p>Para APIs web de alto volumen, considere el uso de entornos de ejecución alternativos o servidores de aplicaciones de larga duración.</p>
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p>ibase_pconnect</p>
+<p>oci_pconnect</p>
+<p>odbc_pconnect</p>
+<p>pfsockopen</p>
+<p>pg_connect</p>
+<p>Mysqli y conexiones persistentes</p>
+<p>Gestor de conexiones PDO</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../fdf/setup.html">
+          <span class="muted">Anterior</span>Instalación/Configuración
+        </a>
+        <a class="pager-next" href="../features/cookies.html">
+          <span class="muted">Siguiente</span>Cookies
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

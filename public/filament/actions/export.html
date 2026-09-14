@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Export action · Filament</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Filament</a>
+<span class="badge">4.x</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="filament" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Filament…"
+         aria-label="Buscar en Filament" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Filament
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Filament">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Actions
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../actions/overview.html"
+>Overview</a>
+              </li>
+              <li>
+                <a href="../actions/modals.html"
+>Modals</a>
+              </li>
+              <li>
+                <a href="../actions/grouping-actions.html"
+>Grouping actions</a>
+              </li>
+              <li>
+                <a href="../actions/create.html"
+>Create action</a>
+              </li>
+              <li>
+                <a href="../actions/edit.html"
+>Edit action</a>
+              </li>
+              <li>
+                <a href="../actions/view.html"
+>View action</a>
+              </li>
+              <li>
+                <a href="../actions/delete.html"
+>Delete action</a>
+              </li>
+              <li>
+                <a href="../actions/replicate.html"
+>Replicate action</a>
+              </li>
+              <li>
+                <a href="../actions/force-delete.html"
+>Force-delete action</a>
+              </li>
+              <li>
+                <a href="../actions/restore.html"
+>Restore action</a>
+              </li>
+              <li>
+                <a href="../actions/import.html"
+>Import action</a>
+              </li>
+              <li>
+                <a href="../actions/export.html"
+class="is-current" aria-current="page">Export action</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../forms/overview.html">Forms</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../infolists/overview.html">Infolists</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../notifications/overview.html">Notifications</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../schemas/overview.html">Schemas</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tables/overview.html">Tables</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../widgets/overview.html">Widgets</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Export action</h1>
+
+      <p class="doc-meta">
+<span class="badge">4.x</span>          <a href="https://filamentphp.com/docs" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#creating-an-exporter">Creating an exporter#</a></li>
+              <li class="lvl-3"><a href="#automatically-generating-exporter-columns">Automatically generating exporter columns#</a></li>
+              <li class="lvl-2"><a href="#defining-exporter-columns">Defining exporter columns#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-label-of-an-export-column">Customizing the label of an export column#</a></li>
+              <li class="lvl-3"><a href="#configuring-the-default-column-selection">Configuring the default column selection#</a></li>
+              <li class="lvl-3"><a href="#hiding-an-export-column">Hiding an export column#</a></li>
+              <li class="lvl-3"><a href="#configuring-the-column-selection-form-layout">Configuring the column selection form layout#</a></li>
+              <li class="lvl-3"><a href="#disabling-column-selection">Disabling column selection#</a></li>
+              <li class="lvl-3"><a href="#calculated-export-column-state">Calculated export column state#</a></li>
+              <li class="lvl-3"><a href="#formatting-the-value-of-an-export-column">Formatting the value of an export column#</a></li>
+              <li class="lvl-3"><a href="#exporting-multiple-values-in-a-cell">Exporting multiple values in a cell#</a></li>
+              <li class="lvl-3"><a href="#displaying-data-from-relationships">Displaying data from relationships#</a></li>
+              <li class="lvl-3"><a href="#counting-relationships">Counting relationships#</a></li>
+              <li class="lvl-3"><a href="#determining-relationship-existence">Determining relationship existence#</a></li>
+              <li class="lvl-3"><a href="#aggregating-relationships">Aggregating relationships#</a></li>
+              <li class="lvl-2"><a href="#configuring-the-export-formats">Configuring the export formats#</a></li>
+              <li class="lvl-2"><a href="#modifying-the-export-query">Modifying the export query#</a></li>
+              <li class="lvl-2"><a href="#configuring-the-export-filesystem">Configuring the export filesystem#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-storage-disk">Customizing the storage disk#</a></li>
+              <li class="lvl-3"><a href="#configuring-the-export-file-names">Configuring the export file names#</a></li>
+              <li class="lvl-2"><a href="#using-export-options">Using export options#</a></li>
+              <li class="lvl-2"><a href="#using-a-custom-user-model">Using a custom user model#</a></li>
+              <li class="lvl-3"><a href="#using-a-polymorphic-user-relationship">Using a polymorphic user relationship#</a></li>
+              <li class="lvl-2"><a href="#limiting-the-maximum-number-of-rows-that-can-be-exported">Limiting the maximum number of rows that can be exported#</a></li>
+              <li class="lvl-2"><a href="#changing-the-export-chunk-size">Changing the export chunk size#</a></li>
+              <li class="lvl-2"><a href="#changing-the-csv-delimiter">Changing the CSV delimiter#</a></li>
+              <li class="lvl-2"><a href="#customizing-xlsx-files">Customizing XLSX files#</a></li>
+              <li class="lvl-3"><a href="#styling-xlsx-rows">Styling XLSX rows#</a></li>
+              <li class="lvl-3"><a href="#styling-xlsx-columns">Styling XLSX columns#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-xlsx-writer">Customizing the XLSX writer#</a></li>
+              <li class="lvl-2"><a href="#customizing-the-completion-notification">Customizing the completion notification#</a></li>
+              <li class="lvl-2"><a href="#customizing-the-export-job">Customizing the export job#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-export-queue-and-connection">Customizing the export queue and connection#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-export-job-middleware">Customizing the export job middleware#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-export-job-retries">Customizing the export job retries#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-export-job-tags">Customizing the export job tags#</a></li>
+              <li class="lvl-3"><a href="#customizing-the-export-job-batch-name">Customizing the export job batch name#</a></li>
+              <li class="lvl-2"><a href="#authorization">Authorization#</a></li>
+              <li class="lvl-2"><a href="#security">Security#</a></li>
+              <li class="lvl-3"><a href="#per-record-authorization">Per-record authorization#</a></li>
+              <li class="lvl-3"><a href="#csv-formula-injection">CSV formula injection#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>import Aside from "@components/Aside.astro"
+import AutoScreenshot from "@components/AutoScreenshot.astro"
+import UtilityInjection from "@components/UtilityInjection.astro"</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>Filament includes an action that is able to export rows to a CSV or XLSX file. When the trigger button is clicked, a modal asks for the columns that they want to export, and what they should be labeled. This feature uses <a href="https://laravel.com/docs/queues#job-batching">job batches</a> and <a href="../notifications/database-notifications">database notifications</a>, so you need to publish those migrations from Laravel. Also, you need to publish the migrations for tables that Filament uses to store information about exports:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:queue-batches-table
+php<span class="w"> </span>artisan<span class="w"> </span>make:notifications-table
+php<span class="w"> </span>artisan<span class="w"> </span>vendor:publish<span class="w"> </span>--tag<span class="o">=</span>filament-actions-migrations
+php<span class="w"> </span>artisan<span class="w"> </span>migrate
+</code></pre></div>
+
+<p>If you'd like to receive export notifications in a panel, you can enable them in the <a href="../notifications/database-notifications#enabling-database-notifications-in-a-panel">panel configuration</a>.</p>
+<Aside variant="info">
+    If you're using PostgreSQL, make sure that the `data` column in the notifications migration is using `json()`: `$table->json('data')`.
+</Aside>
+
+<Aside variant="info">
+    If you're using UUIDs for your `User` model, make sure that your `notifiable` column in the notifications migration is using `uuidMorphs()`: `$table->uuidMorphs('notifiable')`.
+</Aside>
+
+<p>You may use the <code>ExportAction</code> like so:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="actions/export-action/modal" alt="Export action modal" version="4.x" /></p>
+<p>If you want to add this action to the header of a table, you may do so like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+<span class="x">use Filament\Tables\Table;</span>
+
+<span class="x">public function table(Table $table): Table</span>
+<span class="x">{</span>
+<span class="x">    return $table</span>
+<span class="x">        -&gt;headerActions([</span>
+<span class="x">            ExportAction::make()</span>
+<span class="x">                -&gt;exporter(ProductExporter::class),</span>
+<span class="x">        ]);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Or if you want to add it as a table bulk action, so that the user can choose which rows to export, they can use <code>Filament\Actions\ExportBulkAction</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportBulkAction;</span>
+<span class="x">use Filament\Tables\Table;</span>
+
+<span class="x">public function table(Table $table): Table</span>
+<span class="x">{</span>
+<span class="x">    return $table</span>
+<span class="x">        -&gt;toolbarActions([</span>
+<span class="x">            ExportBulkAction::make()</span>
+<span class="x">                -&gt;exporter(ProductExporter::class),</span>
+<span class="x">        ]);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The <a href="#creating-an-exporter">"exporter" class needs to be created</a> to tell Filament how to export each row.</p>
+<h2 id="creating-an-exporter">Creating an exporter<a class="headerlink" href="#creating-an-exporter" title="Permanent link">#</a></h2>
+<p>To create an exporter class for a model, you may use the <code>make:filament-exporter</code> command, passing the name of a model:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:filament-exporter<span class="w"> </span>Product
+</code></pre></div>
+
+<p>This will create a new class in the <code>app/Filament/Exports</code> directory. You now need to define the <a href="#defining-exporter-columns">columns</a> that can be exported.</p>
+<h3 id="automatically-generating-exporter-columns">Automatically generating exporter columns<a class="headerlink" href="#automatically-generating-exporter-columns" title="Permanent link">#</a></h3>
+<p>If you'd like to save time, Filament can automatically generate the <a href="#defining-exporter-columns">columns</a> for you, based on your model's database columns, using <code>--generate</code>:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:filament-exporter<span class="w"> </span>Product<span class="w"> </span>--generate
+</code></pre></div>
+
+<h2 id="defining-exporter-columns">Defining exporter columns<a class="headerlink" href="#defining-exporter-columns" title="Permanent link">#</a></h2>
+<p>To define the columns that can be exported, you need to override the <code>getColumns()</code> method on your exporter class, returning an array of <code>ExportColumn</code> objects:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">public static function getColumns(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        ExportColumn::make(&#39;name&#39;),</span>
+<span class="x">        ExportColumn::make(&#39;sku&#39;)</span>
+<span class="x">            -&gt;label(&#39;SKU&#39;),</span>
+<span class="x">        ExportColumn::make(&#39;price&#39;),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="customizing-the-label-of-an-export-column">Customizing the label of an export column<a class="headerlink" href="#customizing-the-label-of-an-export-column" title="Permanent link">#</a></h3>
+<p>The label for each column will be generated automatically from its name, but you can override it by calling the <code>label()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;label(&#39;SKU&#39;)</span>
+</code></pre></div>
+
+<h3 id="configuring-the-default-column-selection">Configuring the default column selection<a class="headerlink" href="#configuring-the-default-column-selection" title="Permanent link">#</a></h3>
+<p>By default, all columns will be selected when the user is asked which columns they would like to export. You can customize the default selection state for a column with the <code>enabledByDefault()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;description&#39;)</span>
+<span class="x">    -&gt;enabledByDefault(false)</span>
+</code></pre></div>
+
+<p>You can use the <code>enableVisibleTableColumnsByDefault()</code> method on the <code>ExportAction</code> to enable only the columns that are currently visible in the table by default. Columns that use <code>enabledByDefault(false)</code> will also be disabled by default:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;enableVisibleTableColumnsByDefault()</span>
+</code></pre></div>
+
+<h3 id="hiding-an-export-column">Hiding an export column<a class="headerlink" href="#hiding-an-export-column" title="Permanent link">#</a></h3>
+<p>You may hide a column entirely by using the <code>hidden()</code> or <code>visible()</code> method. A hidden column is not shown in the column selection form, and is never written to the exported file:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;hidden()</span>
+
+<span class="x">ExportColumn::make(&#39;sku&#39;)</span>
+<span class="x">    -&gt;visible()</span>
+</code></pre></div>
+
+<p>To hide a column conditionally, you may pass a boolean value to either method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;cost_price&#39;)</span>
+<span class="x">    -&gt;hidden(fn (): bool =&gt; ! auth()-&gt;user()-&gt;isAdmin())</span>
+
+<span class="x">ExportColumn::make(&#39;cost_price&#39;)</span>
+<span class="x">    -&gt;visible(fn (): bool =&gt; auth()-&gt;user()-&gt;isAdmin())</span>
+</code></pre></div>
+
+<Aside variant="info">
+    Unlike table columns, export columns are resolved without a record, so a `hidden()` or `visible()` closure cannot depend on row data. Use it for schema-level conditions such as the authenticated user, feature flags, or configuration.
+
+    To keep a column selectable but unchecked by default instead of hiding it entirely, use [`enabledByDefault(false)`](#configuring-the-default-column-selection).
+</Aside>
+
+<h3 id="configuring-the-column-selection-form-layout">Configuring the column selection form layout<a class="headerlink" href="#configuring-the-column-selection-form-layout" title="Permanent link">#</a></h3>
+<p>By default, the column selection form uses a single column layout. You can change this using the <code>columnMappingColumns()</code> method, passing the number of columns you would like to use for the layout on large screens:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;columnMappingColumns(3)</span>
+</code></pre></div>
+
+<p>This will display the column selection checkboxes and label inputs in a 3-column layout, making better use of available space when you have many exportable columns. Note that while there will be three columns in the layout on large screens, the layout will still be responsive and there will be fewer columns displayed on smaller screens.</p>
+<h3 id="disabling-column-selection">Disabling column selection<a class="headerlink" href="#disabling-column-selection" title="Permanent link">#</a></h3>
+<p>By default, user will be asked which columns they would like to export. You can disable this functionality using <code>columnMapping(false)</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;columnMapping(false)</span>
+</code></pre></div>
+
+<h3 id="calculated-export-column-state">Calculated export column state<a class="headerlink" href="#calculated-export-column-state" title="Permanent link">#</a></h3>
+<p>Sometimes you need to calculate the state of a column, instead of directly reading it from a database column.</p>
+<p>By passing a callback function to the <code>state()</code> method, you can customize the returned state for that column based on the <code>$record</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Order;</span>
+<span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;amount_including_vat&#39;)</span>
+<span class="x">    -&gt;state(function (Order $record): float {</span>
+<span class="x">        return $record-&gt;amount * (1 + $record-&gt;vat_rate);</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p><UtilityInjection set="exportColumns" version="4.x">As well as <code>$record</code>, the <code>state()</code> function can inject various utilities as parameters.</UtilityInjection></p>
+<h3 id="formatting-the-value-of-an-export-column">Formatting the value of an export column<a class="headerlink" href="#formatting-the-value-of-an-export-column" title="Permanent link">#</a></h3>
+<p>You may instead pass a custom formatting callback to <code>formatStateUsing()</code>, which accepts the <code>$state</code> of the cell, and optionally the Eloquent <code>$record</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;status&#39;)</span>
+<span class="x">    -&gt;formatStateUsing(fn (string $state): string =&gt; __(&quot;statuses.{$state}&quot;))</span>
+</code></pre></div>
+
+<p><UtilityInjection set="exportColumns" version="4.x" extras="State;;mixed;;$state;;The state to format.">As well as <code>$state</code>, the <code>formatStateUsing()</code> function can inject various utilities as parameters.</UtilityInjection></p>
+<p>If there are <a href="#exporting-multiple-values-in-a-cell">multiple values</a> in the column, the function will be called for each value.</p>
+<h4 id="limiting-text-length">Limiting text length<a class="headerlink" href="#limiting-text-length" title="Permanent link">#</a></h4>
+<p>You may <code>limit()</code> the length of the cell's value:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;description&#39;)</span>
+<span class="x">    -&gt;limit(50)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="exportColumns" version="4.x">As well as allowing a static value, the <code>limit()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<h4 id="limiting-word-count">Limiting word count<a class="headerlink" href="#limiting-word-count" title="Permanent link">#</a></h4>
+<p>You may limit the number of <code>words()</code> displayed in the cell:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;description&#39;)</span>
+<span class="x">    -&gt;words(10)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="exportColumns" version="4.x">As well as allowing a static value, the <code>words()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<h4 id="adding-a-prefix-or-suffix">Adding a prefix or suffix<a class="headerlink" href="#adding-a-prefix-or-suffix" title="Permanent link">#</a></h4>
+<p>You may add a <code>prefix()</code> or <code>suffix()</code> to the cell's value:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;domain&#39;)</span>
+<span class="x">    -&gt;prefix(&#39;https://&#39;)</span>
+<span class="x">    -&gt;suffix(&#39;.com&#39;)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="exportColumns" version="4.x">As well as allowing static values, the <code>prefix()</code> and <code>suffix()</code> methods also accept functions to dynamically calculate them. You can inject various utilities into the functions as parameters.</UtilityInjection></p>
+<h3 id="exporting-multiple-values-in-a-cell">Exporting multiple values in a cell<a class="headerlink" href="#exporting-multiple-values-in-a-cell" title="Permanent link">#</a></h3>
+<p>By default, if there are multiple values in the column, they will be comma-separated. You may use the <code>listAsJson()</code> method to list them as a JSON array instead:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;tags&#39;)</span>
+<span class="x">    -&gt;listAsJson()</span>
+</code></pre></div>
+
+<h3 id="displaying-data-from-relationships">Displaying data from relationships<a class="headerlink" href="#displaying-data-from-relationships" title="Permanent link">#</a></h3>
+<p>You may use "dot notation" to access columns within relationships. The name of the relationship comes first, followed by a period, followed by the name of the column to display:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;author.name&#39;)</span>
+</code></pre></div>
+
+<h3 id="counting-relationships">Counting relationships<a class="headerlink" href="#counting-relationships" title="Permanent link">#</a></h3>
+<p>If you wish to count the number of related records in a column, you may use the <code>counts()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;users_count&#39;)</span>
+<span class="x">    -&gt;counts(&#39;users&#39;)</span>
+</code></pre></div>
+
+<p>In this example, <code>users</code> is the name of the relationship to count from. The name of the column must be <code>users_count</code>, as this is the convention that <a href="https://laravel.com/docs/eloquent-relationships#counting-related-models">Laravel uses</a> for storing the result.</p>
+<p>If you'd like to scope the relationship before counting, you can pass an array to the method, where the key is the relationship name and the value is the function to scope the Eloquent query with:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+<span class="x">use Illuminate\Database\Eloquent\Builder;</span>
+
+<span class="x">ExportColumn::make(&#39;users_count&#39;)</span>
+<span class="x">    -&gt;counts([</span>
+<span class="x">        &#39;users&#39; =&gt; fn (Builder $query) =&gt; $query-&gt;where(&#39;is_active&#39;, true),</span>
+<span class="x">    ])</span>
+</code></pre></div>
+
+<h3 id="determining-relationship-existence">Determining relationship existence<a class="headerlink" href="#determining-relationship-existence" title="Permanent link">#</a></h3>
+<p>If you simply wish to indicate whether related records exist in a column, you may use the <code>exists()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;users_exists&#39;)</span>
+<span class="x">    -&gt;exists(&#39;users&#39;)</span>
+</code></pre></div>
+
+<p>In this example, <code>users</code> is the name of the relationship to check for existence. The name of the column must be <code>users_exists</code>, as this is the convention that <a href="https://laravel.com/docs/eloquent-relationships#other-aggregate-functions">Laravel uses</a> for storing the result.</p>
+<p>If you'd like to scope the relationship before checking existence, you can pass an array to the method, where the key is the relationship name and the value is the function to scope the Eloquent query with:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+<span class="x">use Illuminate\Database\Eloquent\Builder;</span>
+
+<span class="x">ExportColumn::make(&#39;users_exists&#39;)</span>
+<span class="x">    -&gt;exists([</span>
+<span class="x">        &#39;users&#39; =&gt; fn (Builder $query) =&gt; $query-&gt;where(&#39;is_active&#39;, true),</span>
+<span class="x">    ])</span>
+</code></pre></div>
+
+<h3 id="aggregating-relationships">Aggregating relationships<a class="headerlink" href="#aggregating-relationships" title="Permanent link">#</a></h3>
+<p>Filament provides several methods for aggregating a relationship field, including <code>avg()</code>, <code>max()</code>, <code>min()</code> and <code>sum()</code>. For instance, if you wish to show the average of a field on all related records in a column, you may use the <code>avg()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;users_avg_age&#39;)</span>
+<span class="x">    -&gt;avg(&#39;users&#39;, &#39;age&#39;)</span>
+</code></pre></div>
+
+<p>In this example, <code>users</code> is the name of the relationship, while <code>age</code> is the field that is being averaged. The name of the column must be <code>users_avg_age</code>, as this is the convention that <a href="https://laravel.com/docs/eloquent-relationships#other-aggregate-functions">Laravel uses</a> for storing the result.</p>
+<p>If you'd like to scope the relationship before aggregating, you can pass an array to the method, where the key is the relationship name and the value is the function to scope the Eloquent query with:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+<span class="x">use Illuminate\Database\Eloquent\Builder;</span>
+
+<span class="x">ExportColumn::make(&#39;users_avg_age&#39;)</span>
+<span class="x">    -&gt;avg([</span>
+<span class="x">        &#39;users&#39; =&gt; fn (Builder $query) =&gt; $query-&gt;where(&#39;is_active&#39;, true),</span>
+<span class="x">    ], &#39;age&#39;)</span>
+</code></pre></div>
+
+<h2 id="configuring-the-export-formats">Configuring the export formats<a class="headerlink" href="#configuring-the-export-formats" title="Permanent link">#</a></h2>
+<p>By default, the export action will generate both CSV and XLSX formats and allow user to choose between them in the notification. You can use the <code>ExportFormat</code> enum to customize this, by passing an array of formats to the <code>formats()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+<span class="x">use Filament\Actions\Exports\Enums\ExportFormat;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;formats([</span>
+<span class="x">        ExportFormat::Csv,</span>
+<span class="x">    ])</span>
+<span class="x">    // or</span>
+<span class="x">    -&gt;formats([</span>
+<span class="x">        ExportFormat::Xlsx,</span>
+<span class="x">    ])</span>
+<span class="x">    // or</span>
+<span class="x">    -&gt;formats([</span>
+<span class="x">        ExportFormat::Xlsx,</span>
+<span class="x">        ExportFormat::Csv,</span>
+<span class="x">    ])</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>getFormats()</code> method on the exporter class, which will set the default formats for all actions that use that exporter:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\Enums\ExportFormat;</span>
+
+<span class="x">public function getFormats(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        ExportFormat::Csv,</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="modifying-the-export-query">Modifying the export query<a class="headerlink" href="#modifying-the-export-query" title="Permanent link">#</a></h2>
+<p>By default, if you are using the <code>ExportAction</code> with a table, the action will use the table's currently filtered and sorted query to export the data. If you don't have a table, it will use the model's default query. To modify the query builder before exporting, you can use the <code>modifyQueryUsing()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+<span class="x">use Illuminate\Database\Eloquent\Builder;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;modifyQueryUsing(fn (Builder $query) =&gt; $query-&gt;where(&#39;is_active&#39;, true))</span>
+</code></pre></div>
+
+<p>You may inject the <code>$options</code> argument into the function, which is an array of <a href="#using-export-options">options</a> for that export:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Illuminate\Database\Eloquent\Builder;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;modifyQueryUsing(fn (Builder $query, array $options) =&gt; $query-&gt;where(&#39;is_active&#39;, $options[&#39;isActive&#39;] ?? true))</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>modifyQuery()</code> method on the exporter class, which will modify the query for all actions that use that exporter:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Builder;</span>
+<span class="x">use Illuminate\Database\Eloquent\Relations\MorphTo;</span>
+
+<span class="x">public static function modifyQuery(Builder $query): Builder</span>
+<span class="x">{</span>
+<span class="x">    return $query-&gt;with([</span>
+<span class="x">        &#39;purchasable&#39; =&gt; fn (MorphTo $morphTo) =&gt; $morphTo-&gt;morphWith([</span>
+<span class="x">            ProductPurchase::class =&gt; [&#39;product&#39;],</span>
+<span class="x">            ServicePurchase::class =&gt; [&#39;service&#39;],</span>
+<span class="x">            Subscription::class =&gt; [&#39;plan&#39;],</span>
+<span class="x">        ]),</span>
+<span class="x">    ]);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="configuring-the-export-filesystem">Configuring the export filesystem<a class="headerlink" href="#configuring-the-export-filesystem" title="Permanent link">#</a></h2>
+<h3 id="customizing-the-storage-disk">Customizing the storage disk<a class="headerlink" href="#customizing-the-storage-disk" title="Permanent link">#</a></h3>
+<p>By default, exported files will be uploaded to the storage disk defined in the <a href="../introduction/installation#publishing-configuration">configuration file</a>, which is <code>public</code> by default. You can set the <code>FILESYSTEM_DISK</code> environment variable to change this.</p>
+<p>While using the <code>public</code> disk a good default for many parts of Filament, using it for exports would result in exported files being stored in a public location. As such, if the default filesystem disk is <code>public</code> and a <code>local</code> disk exists in your <code>config/filesystems.php</code>, Filament will use the <code>local</code> disk for exports instead. If you override the disk to be <code>public</code> for an <code>ExportAction</code> or inside an exporter class, Filament will use that.</p>
+<p>In production, you should use a disk such as <code>s3</code> with a private access policy, to prevent unauthorized access to the exported files.</p>
+<p>If you want to use a different disk for a specific export, you can pass the disk name to the <code>disk()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;fileDisk(&#39;s3&#39;)</span>
+</code></pre></div>
+
+<p>You may set the disk for all export actions at once in the <code>boot()</code> method of a service provider such as <code>AppServiceProvider</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::configureUsing(fn (ExportAction $action) =&gt; $action-&gt;fileDisk(&#39;s3&#39;));</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>getFileDisk()</code> method on the exporter class, returning the name of the disk:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getFileDisk(): string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;s3&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Export files that are created are the developer's responsibility to delete if they wish. Filament does not delete these files in case the exports need to be downloaded again at a later date.</p>
+<h3 id="configuring-the-export-file-names">Configuring the export file names<a class="headerlink" href="#configuring-the-export-file-names" title="Permanent link">#</a></h3>
+<p>By default, exported files are given a name generated based on the export's ID and type. You can customize the file name by using the <code>fileName()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\ExportAction;</span>
+<span class="x">use Filament\Actions\Exports\Models\Export;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;fileName(fn (Export $export): string =&gt; &quot;products-{$export-&gt;getKey()}&quot;)</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>getFileName()</code> method on the exporter class and return a custom string:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\Models\Export;</span>
+
+<span class="x">public function getFileName(Export $export): string</span>
+<span class="x">{</span>
+<span class="x">    return &quot;products-{$export-&gt;getKey()}&quot;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="using-export-options">Using export options<a class="headerlink" href="#using-export-options" title="Permanent link">#</a></h2>
+<p>The export action can render extra form components that the user can interact with when exporting a CSV. This can be useful to allow the user to customize the behavior of the exporter. For instance, you might want a user to be able to choose the format of specific columns when exporting. To do this, you can return options form components from the <code>getOptionsFormComponents()</code> method on your exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Forms\Components\TextInput;</span>
+
+<span class="x">public static function getOptionsFormComponents(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        TextInput::make(&#39;descriptionLimit&#39;)</span>
+<span class="x">            -&gt;label(&#39;Limit the length of the description column content&#39;)</span>
+<span class="x">            -&gt;integer(),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Alternatively, you can pass a set of static options to the exporter through the <code>options()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;options([</span>
+<span class="x">        &#39;descriptionLimit&#39; =&gt; 250,</span>
+<span class="x">    ])</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>options()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<p>Now, you can access the data from these options inside the exporter class, by injecting the <code>$options</code> argument into any closure function. For example, you might want to use it inside <code>formatStateUsing()</code> to <a href="#formatting-the-value-of-an-export-column">format a column's value</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;description&#39;)</span>
+<span class="x">    -&gt;formatStateUsing(function (string $state, array $options): string {</span>
+<span class="x">        return (string) str($state)-&gt;limit($options[&#39;descriptionLimit&#39;] ?? 100);</span>
+<span class="x">    })</span>
+</code></pre></div>
+
+<p>Alternatively, since the <code>$options</code> argument is passed to all closure functions, you can access it inside <code>limit()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;description&#39;)</span>
+<span class="x">    -&gt;limit(fn (array $options): int =&gt; $options[&#39;descriptionLimit&#39;] ?? 100)</span>
+</code></pre></div>
+
+<h2 id="using-a-custom-user-model">Using a custom user model<a class="headerlink" href="#using-a-custom-user-model" title="Permanent link">#</a></h2>
+<p>By default, the <code>exports</code> table has a <code>user_id</code> column. That column is constrained to the <code>users</code> table:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$table-&gt;foreignId(&#39;user_id&#39;)-&gt;constrained()-&gt;cascadeOnDelete();</span>
+</code></pre></div>
+
+<p>In the <code>Export</code> model, the <code>user()</code> relationship is defined as a <code>BelongsTo</code> relationship to the <code>App\Models\User</code> model. If the <code>App\Models\User</code> model does not exist, or you want to use a different one, you can bind a new <code>Authenticatable</code> model to the container in a service provider's <code>register()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Admin;</span>
+<span class="x">use Illuminate\Contracts\Auth\Authenticatable;</span>
+
+<span class="x">$this-&gt;app-&gt;bind(Authenticatable::class, Admin::class);</span>
+</code></pre></div>
+
+<p>If your authenticatable model uses a different table to <code>users</code>, you should pass that table name to <code>constrained()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$table-&gt;foreignId(&#39;user_id&#39;)-&gt;constrained(&#39;admins&#39;)-&gt;cascadeOnDelete();</span>
+</code></pre></div>
+
+<h3 id="using-a-polymorphic-user-relationship">Using a polymorphic user relationship<a class="headerlink" href="#using-a-polymorphic-user-relationship" title="Permanent link">#</a></h3>
+<p>If you want to associate exports with multiple user models, you can use a polymorphic <code>MorphTo</code> relationship instead. To do this, you need to replace the <code>user_id</code> column in the <code>exports</code> table:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$table-&gt;morphs(&#39;user&#39;);</span>
+</code></pre></div>
+
+<p>Then, in a service provider's <code>boot()</code> method, you should call <code>Export::polymorphicUserRelationship()</code> to swap the <code>user()</code> relationship on the <code>Export</code> model to a <code>MorphTo</code> relationship:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\Models\Export;</span>
+
+<span class="x">Export::polymorphicUserRelationship();</span>
+</code></pre></div>
+
+<h2 id="limiting-the-maximum-number-of-rows-that-can-be-exported">Limiting the maximum number of rows that can be exported<a class="headerlink" href="#limiting-the-maximum-number-of-rows-that-can-be-exported" title="Permanent link">#</a></h2>
+<p>To prevent server overload, you may wish to limit the maximum number of rows that can be exported from one CSV file. You can do this by calling the <code>maxRows()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;maxRows(100000)</span>
+</code></pre></div>
+
+<h2 id="changing-the-export-chunk-size">Changing the export chunk size<a class="headerlink" href="#changing-the-export-chunk-size" title="Permanent link">#</a></h2>
+<p>Filament will chunk the CSV, and process each chunk in a different queued job. By default, chunks are 100 rows at a time. You can change this by calling the <code>chunkSize()</code> method on the action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;chunkSize(250)</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>chunkSize()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<Aside variant="tip">
+    If you are encountering memory or timeout issues when importing large CSV files, you may wish to reduce the chunk size.
+</Aside>
+
+<h2 id="changing-the-csv-delimiter">Changing the CSV delimiter<a class="headerlink" href="#changing-the-csv-delimiter" title="Permanent link">#</a></h2>
+<p>The default delimiter for CSVs is the comma (<code>,</code>). If you want to export using a different delimiter, you may override the <code>getCsvDelimiter()</code> method on the exporter class, returning a new one:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public static function getCsvDelimiter(): string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;;&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><UtilityInjection set="actions" version="4.x">As well as allowing a static value, the <code>csvDelimiter()</code> method also accepts a function to dynamically calculate it. You can inject various utilities into the function as parameters.</UtilityInjection></p>
+<p>You can only specify a single character, otherwise an exception will be thrown.</p>
+<h2 id="customizing-xlsx-files">Customizing XLSX files<a class="headerlink" href="#customizing-xlsx-files" title="Permanent link">#</a></h2>
+<h3 id="styling-xlsx-rows">Styling XLSX rows<a class="headerlink" href="#styling-xlsx-rows" title="Permanent link">#</a></h3>
+<p>If you want to style the cells of the XLSX file, you may override the <code>getXlsxCellStyle()</code> method on the exporter class, returning an <a href="https://github.com/openspout/openspout/blob/4.x/docs/documentation.md#styling">OpenSpout <code>Style</code> object</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use OpenSpout\Common\Entity\Style\Style;</span>
+
+<span class="x">public function getXlsxCellStyle(): ?Style</span>
+<span class="x">{</span>
+<span class="x">    return (new Style())</span>
+<span class="x">        -&gt;setFontSize(12)</span>
+<span class="x">        -&gt;setFontName(&#39;Consolas&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you want to use a different style for the header cells of the XLSX file only, you may override the <code>getXlsxHeaderCellStyle()</code> method on the exporter class, returning an <a href="https://github.com/openspout/openspout/blob/4.x/docs/documentation.md#styling">OpenSpout <code>Style</code> object</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use OpenSpout\Common\Entity\Style\CellAlignment;</span>
+<span class="x">use OpenSpout\Common\Entity\Style\CellVerticalAlignment;</span>
+<span class="x">use OpenSpout\Common\Entity\Style\Color;</span>
+<span class="x">use OpenSpout\Common\Entity\Style\Style;</span>
+
+<span class="x">public function getXlsxHeaderCellStyle(): ?Style</span>
+<span class="x">{</span>
+<span class="x">    return (new Style())</span>
+<span class="x">        -&gt;setFontBold()</span>
+<span class="x">        -&gt;setFontItalic()</span>
+<span class="x">        -&gt;setFontSize(14)</span>
+<span class="x">        -&gt;setFontName(&#39;Consolas&#39;)</span>
+<span class="x">        -&gt;setFontColor(Color::rgb(255, 255, 77))</span>
+<span class="x">        -&gt;setBackgroundColor(Color::rgb(0, 0, 0))</span>
+<span class="x">        -&gt;setCellAlignment(CellAlignment::CENTER)</span>
+<span class="x">        -&gt;setCellVerticalAlignment(CellVerticalAlignment::CENTER);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="styling-xlsx-columns">Styling XLSX columns<a class="headerlink" href="#styling-xlsx-columns" title="Permanent link">#</a></h3>
+<p>The <code>makeXlsxRow()</code> and <code>makeXlsxHeaderRow()</code> methods on the exporter class allow you to customize the styling of individual cells within a row. By default, the methods are implemented like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use OpenSpout\Common\Entity\Row;</span>
+<span class="x">use OpenSpout\Common\Entity\Style\Style;</span>
+
+<span class="x">/**</span>
+<span class="x"> * @param array&lt;mixed&gt; $values</span>
+<span class="x"> */</span>
+<span class="x">public function makeXlsxRow(array $values, ?Style $style = null): Row</span>
+<span class="x">{</span>
+<span class="x">    return Row::fromValues($values, $style);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>When a user exports, they can choose which columns to export. As such, the <code>$this-&gt;columnMap</code> property may be used to determine which columns are being exported and in which order. You can replace <code>Row::fromValues()</code> with an array of <code>Cell</code> objects, which allow you to style them individually using <a href="https://github.com/openspout/openspout/blob/4.x/docs/documentation.md#styling">OpenSpout <code>Style</code> objects</a>. A <code>StyleMerger</code> can be used to merge the default style with the custom style for a cell, allowing you to apply additional styles on top of the default ones:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use OpenSpout\Common\Entity\Cell;</span>
+<span class="x">use OpenSpout\Common\Entity\Row;</span>
+<span class="x">use OpenSpout\Common\Entity\Style\Style;</span>
+<span class="x">use OpenSpout\Writer\Common\Manager\Style\StyleMerger;</span>
+
+<span class="x">/**</span>
+<span class="x"> * @param array&lt;mixed&gt; $values</span>
+<span class="x"> */</span>
+<span class="x">public function makeXlsxRow(array $values, ?Style $style = null): Row</span>
+<span class="x">{</span>
+<span class="x">    $styleMerger = new StyleMerger();</span>
+
+<span class="x">    $cells = [];</span>
+
+<span class="x">    foreach (array_keys($this-&gt;columnMap) as $columnIndex =&gt; $column) {</span>
+<span class="x">        $cells[] = match ($column) {</span>
+<span class="x">            &#39;name&#39; =&gt; Cell::fromValue(</span>
+<span class="x">                $values[$columnIndex],</span>
+<span class="x">                $styleMerger-&gt;merge(</span>
+<span class="x">                    (new Style())-&gt;setFontUnderline(),</span>
+<span class="x">                    $style,</span>
+<span class="x">                ),</span>
+<span class="x">            ),</span>
+<span class="x">            &#39;price&#39; =&gt; Cell::fromValue(</span>
+<span class="x">                $values[$columnIndex],</span>
+<span class="x">                (new Style())-&gt;setFontSize(12),</span>
+<span class="x">            ),</span>
+<span class="x">            default =&gt; Cell::fromValue($values[$columnIndex]),</span>
+<span class="x">        },</span>
+<span class="x">    }</span>
+
+<span class="x">    return new Row($cells, $style);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="customizing-the-xlsx-writer">Customizing the XLSX writer<a class="headerlink" href="#customizing-the-xlsx-writer" title="Permanent link">#</a></h3>
+<p>If you want to pass "options" to the <a href="https://github.com/openspout/openspout/blob/4.x/docs/documentation.md#column-widths">OpenSpout XLSX <code>Writer</code></a>, you can return an <code>OpenSpout\Writer\XLSX\Options</code> instance from the <code>getXlsxWriterOptions()</code> method of the exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use OpenSpout\Writer\XLSX\Options;</span>
+
+<span class="x">public function getXlsxWriterOptions(): ?Options</span>
+<span class="x">{</span>
+<span class="x">    $options = new Options();</span>
+<span class="x">    $options-&gt;setColumnWidth(10, 1);</span>
+<span class="x">    $options-&gt;setColumnWidthForRange(12, 2, 3);</span>
+
+<span class="x">    return $options;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you want to customize the XLSX writer immediately after it is opened, before any rows have been written, you can override the <code>configureXlsxWriterAfterOpen()</code> method on the exporter class. This method receives the <code>Writer</code> instance as a parameter, and you can modify it before the header and data rows are written. This is useful for adding custom rows, such as a title or sub-header, above the exported table:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use OpenSpout\Common\Entity\Row;</span>
+<span class="x">use OpenSpout\Common\Entity\Style\Style;</span>
+<span class="x">use OpenSpout\Writer\XLSX\Writer;</span>
+
+<span class="x">public function configureXlsxWriterAfterOpen(Writer $writer): Writer</span>
+<span class="x">{</span>
+<span class="x">    $writer-&gt;addRow(Row::fromValues(</span>
+<span class="x">        [&#39;This is a custom header added after opening the XLSX writer.&#39;],</span>
+<span class="x">        (new Style())-&gt;setShouldWrapText(false),</span>
+<span class="x">    ));</span>
+
+<span class="x">    return $writer;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<Aside variant="warning">
+    Any rows you add here appear above the header row, shifting the exported table down. If you also use `configureXlsxWriterBeforeClose()` to freeze rows, remember to account for the extra rows in `setFreezeRow()`.
+</Aside>
+
+<p>If you want to customize the XLSX writer before it is closed, you can override the <code>configureXlsxWriterBeforeClose()</code> method on the exporter class. This method receives the <code>Writer</code> instance as a parameter, and you can modify it before it is closed:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use OpenSpout\Writer\XLSX\Entity\SheetView;</span>
+<span class="x">use OpenSpout\Writer\XLSX\Writer;</span>
+
+<span class="x">public function configureXlsxWriterBeforeClose(Writer $writer): Writer</span>
+<span class="x">{</span>
+<span class="x">    $sheetView = new SheetView();</span>
+<span class="x">    $sheetView-&gt;setFreezeRow(2);</span>
+<span class="x">    $sheetView-&gt;setFreezeColumn(&#39;B&#39;);</span>
+
+<span class="x">    $sheet = $writer-&gt;getCurrentSheet();</span>
+<span class="x">    $sheet-&gt;setSheetView($sheetView);</span>
+<span class="x">    $sheet-&gt;setName(&#39;export&#39;);</span>
+
+<span class="x">    return $writer;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="customizing-the-completion-notification">Customizing the completion notification<a class="headerlink" href="#customizing-the-completion-notification" title="Permanent link">#</a></h2>
+<p>When an export finishes, Filament sends a notification to the user who started it. You can customize the title and body of that notification by overriding <code>getCompletedNotificationTitle()</code> and <code>getCompletedNotificationBody()</code> on your exporter:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\Models\Export;</span>
+
+<span class="x">public static function getCompletedNotificationTitle(Export $export): string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;Your product export is ready&#39;;</span>
+<span class="x">}</span>
+
+<span class="x">public static function getCompletedNotificationBody(Export $export): string</span>
+<span class="x">{</span>
+<span class="x">    return $export-&gt;successful_rows . &#39; products were exported.&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>For anything beyond the title and body — for example, changing the notification color, adding extra actions, or replacing the icon — override <code>modifyCompletedNotification()</code>. You can either mutate the <code>Notification</code> passed in and return it, or build and return a completely new one:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+<span class="x">use Filament\Actions\Exports\Models\Export;</span>
+<span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">public static function modifyCompletedNotification(Notification $notification, Export $export): Notification</span>
+<span class="x">{</span>
+<span class="x">    $notification-&gt;icon(&#39;heroicon-o-shopping-bag&#39;);</span>
+
+<span class="x">    if ($export-&gt;getOptions()[&#39;notifyTeam&#39;] ?? false) {</span>
+<span class="x">        $notification-&gt;actions([</span>
+<span class="x">            ...$notification-&gt;getActions(),</span>
+<span class="x">            Action::make(&#39;shareWithTeam&#39;)</span>
+<span class="x">                -&gt;url(route(&#39;exports.share&#39;, $export)),</span>
+<span class="x">        ]);</span>
+<span class="x">    }</span>
+
+<span class="x">    return $notification;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The <code>Export</code> model exposes the column mapping and options the user selected via <code>$export-&gt;getColumnMap()</code> and <code>$export-&gt;getOptions()</code>, so you can tailor the notification based on what the user exported.</p>
+<h2 id="customizing-the-export-job">Customizing the export job<a class="headerlink" href="#customizing-the-export-job" title="Permanent link">#</a></h2>
+<p>The default job for processing exports is <code>Filament\Actions\Exports\Jobs\PrepareCsvExport</code>. If you want to extend this class and override any of its methods, you may replace the original class in the <code>register()</code> method of a service provider:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Jobs\PrepareCsvExport;</span>
+<span class="x">use Filament\Actions\Exports\Jobs\PrepareCsvExport as BasePrepareCsvExport;</span>
+
+<span class="x">$this-&gt;app-&gt;bind(BasePrepareCsvExport::class, PrepareCsvExport::class);</span>
+</code></pre></div>
+
+<p>Or, you can pass the new job class to the <code>job()</code> method on the action, to customize the job for a specific export:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Filament\Exports\ProductExporter;</span>
+<span class="x">use App\Jobs\PrepareCsvExport;</span>
+<span class="x">use Filament\Actions\ExportAction;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;job(PrepareCsvExport::class)</span>
+</code></pre></div>
+
+<h3 id="customizing-the-export-queue-and-connection">Customizing the export queue and connection<a class="headerlink" href="#customizing-the-export-queue-and-connection" title="Permanent link">#</a></h3>
+<p>By default, the export system will use the default queue and connection. If you'd like to customize the queue used for jobs of a certain exporter, you may override the <code>getJobQueue()</code> method in your exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobQueue(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;exports&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You can also customize the connection used for jobs of a certain exporter, by overriding the <code>getJobConnection()</code> method in your exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobConnection(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;sqs&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="customizing-the-export-job-middleware">Customizing the export job middleware<a class="headerlink" href="#customizing-the-export-job-middleware" title="Permanent link">#</a></h3>
+<p>By default, the export system will only process one job at a time from each export. This is to prevent the server from being overloaded, and other jobs from being delayed by large exports. That functionality is defined in the <code>WithoutOverlapping</code> middleware on the exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobMiddleware(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        (new WithoutOverlapping(&quot;export{$this-&gt;export-&gt;getKey()}&quot;))-&gt;expireAfter(600),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you'd like to customize the middleware that is applied to jobs of a certain exporter, you may override this method in your exporter class. You can read more about job middleware in the <a href="https://laravel.com/docs/queues#job-middleware">Laravel docs</a>.</p>
+<h3 id="customizing-the-export-job-retries">Customizing the export job retries<a class="headerlink" href="#customizing-the-export-job-retries" title="Permanent link">#</a></h3>
+<p>By default, the export system will retry a job for 24 hours, or until it fails with 5 unhandled exceptions, whichever happens first. This is to allow for temporary issues, such as the database being unavailable, to be resolved. You may change the time period for the job to retry, which is defined in the <code>getJobRetryUntil()</code> method on the exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Carbon\CarbonInterface;</span>
+
+<span class="x">public function getJobRetryUntil(): ?CarbonInterface</span>
+<span class="x">{</span>
+<span class="x">    return now()-&gt;addHours(12);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You can read more about job retries in the <a href="https://laravel.com/docs/queues#max-job-attempts-and-timeout">Laravel docs</a>.</p>
+<h4 id="customizing-the-export-job-backoff-strategy">Customizing the export job backoff strategy<a class="headerlink" href="#customizing-the-export-job-backoff-strategy" title="Permanent link">#</a></h4>
+<p>By default, the export system will wait 1 minute, then 2 minutes, then 5 minutes, then 10 minutes thereafter before retrying a job. This is to prevent the server from being overloaded by a job that is failing repeatedly. That functionality is defined in the <code>getJobBackoff()</code> method on the exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
+<span class="x">* @return int | array&lt;int&gt; | null</span>
+<span class="x"> */</span>
+<span class="x">public function getJobBackoff(): int | array | null</span>
+<span class="x">{</span>
+<span class="x">    return [60, 120, 300, 600];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You can read more about job backoff, including how to configure exponential backoffs, in the <a href="https://laravel.com/docs/queues#dealing-with-failed-jobs">Laravel docs</a>.</p>
+<h3 id="customizing-the-export-job-tags">Customizing the export job tags<a class="headerlink" href="#customizing-the-export-job-tags" title="Permanent link">#</a></h3>
+<p>By default, the export system will tag each job with the ID of the export. This is to allow you to easily find all jobs related to a certain export. That functionality is defined in the <code>getJobTags()</code> method on the exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobTags(): array</span>
+<span class="x">{</span>
+<span class="x">    return [&quot;export{$this-&gt;export-&gt;getKey()}&quot;];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you'd like to customize the tags that are applied to jobs of a certain exporter, you may override this method in your exporter class.</p>
+<h3 id="customizing-the-export-job-batch-name">Customizing the export job batch name<a class="headerlink" href="#customizing-the-export-job-batch-name" title="Permanent link">#</a></h3>
+<p>By default, the export system doesn't define any name for the job batches. If you'd like to customize the name that is applied to job batches of a certain exporter, you may override the <code>getJobBatchName()</code> method in your exporter class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getJobBatchName(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;product-export&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">#</a></h2>
+<p>By default, only the user who started the export may download files that get generated. If you'd like to customize the authorization logic, you may create an <code>ExportPolicy</code> class, and <a href="https://laravel.com/docs/authorization#registering-policies">register it in your <code>AuthServiceProvider</code></a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Policies\ExportPolicy;</span>
+<span class="x">use Filament\Actions\Exports\Models\Export;</span>
+
+<span class="x">protected $policies = [</span>
+<span class="x">    Export::class =&gt; ExportPolicy::class,</span>
+<span class="x">];</span>
+</code></pre></div>
+
+<p>The <code>view()</code> method of the policy will be used to authorize access to the downloads.</p>
+<p>Please note that if you define a policy, the existing logic of ensuring only the user who started the export can access it will be removed. You will need to add that logic to your policy if you want to keep it:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\User;</span>
+<span class="x">use Filament\Actions\Exports\Models\Export;</span>
+
+<span class="x">public function view(User $user, Export $export): bool</span>
+<span class="x">{</span>
+<span class="x">    return $export-&gt;user()-&gt;is($user);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">#</a></h2>
+<h3 id="per-record-authorization">Per-record authorization<a class="headerlink" href="#per-record-authorization" title="Permanent link">#</a></h3>
+<p>The export system does not perform per-record authorization checks. When an export is triggered, all records matching the table query (or the model's full dataset, if used outside a table) are included in the export without consulting your application's <a href="https://laravel.com/docs/authorization#creating-policies">Laravel policies</a>. This means that if a user is allowed to trigger an export, they may receive records they would not normally be authorized to view through your application's UI.</p>
+<p>If you need to restrict which records are exported, you should scope the query using the <a href="#modifying-the-eloquent-query"><code>modifyQueryUsing()</code> method</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Builder;</span>
+
+<span class="x">ExportAction::make()</span>
+<span class="x">    -&gt;exporter(ProductExporter::class)</span>
+<span class="x">    -&gt;modifyQueryUsing(fn (Builder $query) =&gt; $query-&gt;whereBelongsTo(auth()-&gt;user()))</span>
+</code></pre></div>
+
+<p>You could also apply <a href="https://laravel.com/docs/eloquent#global-scopes">global scopes</a> to your model to ensure that only authorized records are ever queried.</p>
+<Aside variant="danger">
+    If your application has per-record visibility rules, you should scope the export query to ensure users only receive records they are authorized to view.
+</Aside>
+
+<h3 id="csv-formula-injection">CSV formula injection<a class="headerlink" href="#csv-formula-injection" title="Permanent link">#</a></h3>
+<p>Filament's export system writes data to CSV and XLSX files exactly as it is stored in the database, without any transformation. This means that if your database contains values beginning with characters like <code>=</code>, <code>+</code>, <code>-</code>, or <code>@</code>, they will appear unchanged in the exported file. When opened in spreadsheet software such as Microsoft Excel or Google Sheets, these values may be interpreted as formulas, which could pose a security risk if your data includes untrusted or user-submitted content. You should ensure that your users are aware of this risk, or sanitize the data before export using the <a href="export#formatting-the-value-of-an-export-column"><code>formatStateUsing()</code> method</a> on each column, for example by prefixing values with a single quote (<code>'</code>) to prevent formula interpretation.</p>
+<p>Alternatively, you may opt in to Filament's built-in protection. When enabled on a column, any value that begins with a formula-triggering character (<code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, a tab, or a carriage return) is automatically prefixed with a single quote (<code>'</code>) so that spreadsheet software treats it as plain text. Enable it using the <code>preventFormulaInjection()</code> method on the column:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::make(&#39;description&#39;)</span>
+<span class="x">    -&gt;preventFormulaInjection()</span>
+</code></pre></div>
+
+<p>If you would like to enable this protection for every export column across your application, you can use the <code>configureUsing()</code> method inside the <code>boot()</code> method of a service provider. Since this is applied to all columns, you can opt an individual column back out by passing <code>false</code> to <code>preventFormulaInjection()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Exports\ExportColumn;</span>
+
+<span class="x">ExportColumn::configureUsing(function (ExportColumn $column): void {</span>
+<span class="x">    $column-&gt;preventFormulaInjection();</span>
+<span class="x">});</span>
+
+<span class="x">// Opt a specific column back out:</span>
+<span class="x">ExportColumn::make(&#39;temperature&#39;)</span>
+<span class="x">    -&gt;preventFormulaInjection(false)</span>
+</code></pre></div>
+
+<Aside variant="warning">
+    This protection is **opt in** and disabled by default, because prefixing a single quote alters legitimate data. For example, values such as `-5` or a phone number like `+44 1234 567890` are valid formula triggers and would be rewritten to `'-5` and `'+44 1234 567890`. Only enable it when you are exporting untrusted or user-submitted content, and make sure the transformation is acceptable for the columns you enable it on.
+</Aside>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../actions/import.html">
+          <span class="muted">Anterior</span>Import action
+        </a>
+        <a class="pager-next" href="../forms/overview.html">
+          <span class="muted">Siguiente</span>Overview
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5. Creación de extensiones C y C++ en Windows · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Extending
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../extending/building.html"
+>4. Construyendo extensiones C y C++</a>
+              </li>
+              <li>
+                <a href="../extending/embedding.html"
+>1. Incrustando Python en otra aplicación</a>
+              </li>
+              <li>
+                <a href="../extending/extending.html"
+>1. Extendiendo Python con C o C++</a>
+              </li>
+              <li>
+                <a href="../extending/index.html"
+>Ampliación e incrustación del intérprete de Python</a>
+              </li>
+              <li>
+                <a href="../extending/newtypes.html"
+>3. Definición de tipos de extensión: temas variados</a>
+              </li>
+              <li>
+                <a href="../extending/newtypes_tutorial.html"
+>2. Definición de tipos de extensión: Tutorial</a>
+              </li>
+              <li>
+                <a href="../extending/windows.html"
+class="is-current" aria-current="page">5. Creación de extensiones C y C++ en Windows</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../library/__future__.html">Library</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">5. Creación de extensiones C y C++ en Windows</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#51-un-enfoque-de-libro-de-cocina">5.1. Un enfoque de libro de cocina#</a></li>
+              <li class="lvl-2"><a href="#52-diferencias-entre-unix-y-windows">5.2. Diferencias entre Unix y Windows#</a></li>
+              <li class="lvl-2"><a href="#53-usar-dll-en-la-practica">5.3. Usar DLL en la práctica#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="5-creacion-de-extensiones-c-y-c-en-windows">5. Creación de extensiones C y C++ en Windows<a class="headerlink" href="#5-creacion-de-extensiones-c-y-c-en-windows" title="Permanent link">#</a></h1>
+<p>Este capítulo explica brevemente cómo crear un módulo de extensión de
+Windows para Python usando Microsoft Visual C++, y sigue con
+información de fondo más detallada sobre cómo funciona. El material
+explicativo es útil tanto para el programador de Windows que está
+aprendiendo a construir extensiones de Python como para el programador
+de Unix interesado en producir software que se pueda construir con
+éxito tanto en Unix como en Windows.</p>
+<p>Se alienta a los autores de módulos a utilizar el enfoque distutils
+para construir módulos de extensión, en lugar del descrito en esta
+sección. Aún necesitará el compilador de C que se utilizó para
+construir Python; típicamente Microsoft Visual C++.</p>
+<p>Nota:</p>
+<p>Este capítulo menciona varios nombres de archivo que incluyen un
+  número de versión codificado de Python. Estos nombres de archivo se
+  representan con el número de versión que se muestra como "XY"; en la
+  práctica, "'X'" será el número de versión principal y "'Y'" será el
+  número de versión menor de la versión de Python con la que está
+  trabajando. Por ejemplo, si está utilizando Python 2.2.1, "XY" en
+  realidad será "22".</p>
+<h2 id="51-un-enfoque-de-libro-de-cocina">5.1. Un enfoque de libro de cocina<a class="headerlink" href="#51-un-enfoque-de-libro-de-cocina" title="Permanent link">#</a></h2>
+<p>There are two approaches to building extension modules on Windows,
+just as there are on Unix: use the "setuptools" package to control the
+build process, or do things manually.  The setuptools approach works
+well for most extensions; documentation on using "setuptools" to build
+and package extension modules is available in Building C and C++
+Extensions with setuptools.  If you find you really need to do things
+manually, it may be instructive to study the project file for the
+winsound standard library module.</p>
+<h2 id="52-diferencias-entre-unix-y-windows">5.2. Diferencias entre Unix y Windows<a class="headerlink" href="#52-diferencias-entre-unix-y-windows" title="Permanent link">#</a></h2>
+<p>Unix y Windows usan paradigmas completamente diferentes para la carga
+de código en tiempo de ejecución. Antes de intentar construir un
+módulo que se pueda cargar dinámicamente, tenga en cuenta cómo
+funciona su sistema.</p>
+<p>En Unix, un archivo de objeto compartido (".so") contiene código para
+ser utilizado por el programa, y también los nombres de funciones y
+datos que espera encontrar en el programa. Cuando el archivo se une al
+programa, todas las referencias a esas funciones y datos en el código
+del archivo se cambian para apuntar a las ubicaciones reales en el
+programa donde las funciones y los datos se colocan en la memoria.
+Esto es básicamente una operación de enlace.</p>
+<p>En Windows, un archivo de biblioteca de enlace dinámico (".dll") no
+tiene referencias colgantes. En cambio, un acceso a funciones o datos
+pasa por una tabla de búsqueda. Por lo tanto, el código DLL no tiene
+que repararse en tiempo de ejecución para referirse a la memoria del
+programa; en cambio, el código ya usa la tabla de búsqueda de la DLL,
+y la tabla de búsqueda se modifica en tiempo de ejecución para apuntar
+a las funciones y los datos.</p>
+<p>En Unix, solo hay un tipo de archivo de biblioteca (".a") que contiene
+código de varios archivos de objeto (".o"). Durante el paso de enlace
+para crear un archivo de objeto compartido (".so"), el enlazador puede
+encontrar que no sabe dónde se define un identificador. El enlazador
+lo buscará en los archivos de objetos en las bibliotecas; si lo
+encuentra, incluirá todo el código de ese archivo de objeto.</p>
+<p>En Windows, hay dos tipos de biblioteca, una biblioteca estática y una
+biblioteca de importación (ambas llamadas ".lib"). Una biblioteca
+estática es como un archivo Unix ".a"; Contiene código para ser
+incluido según sea necesario. Una biblioteca de importación se usa
+básicamente solo para asegurarle al enlazador que cierto identificador
+es legal y estará presente en el programa cuando se cargue la DLL. Por
+lo tanto, el enlazador utiliza la información de la biblioteca de
+importación para crear la tabla de búsqueda para usar identificadores
+que no están incluidos en la DLL. Cuando se vincula una aplicación o
+una DLL, se puede generar una biblioteca de importación, que deberá
+usarse para todas las DLL futuras que dependan de los símbolos en la
+aplicación o DLL.</p>
+<p>Suponga que está creando dos módulos de carga dinámica, B y C, que
+deberían compartir otro bloque de código A. En Unix, <em>no</em> pasaría
+"A.a" al enlazador para "B.so" y "C.so"; eso haría que se incluyera
+dos veces, de modo que B y C tengan cada uno su propia copia. En
+Windows, compilar "A.dll" también compilará "A.lib". Usted <em>si</em> pasa
+"A.lib" al enlazador para B y C. "A.lib" no contiene código; solo
+contiene información que se usará en tiempo de ejecución para acceder
+al código de A.</p>
+<p>En Windows, usar una biblioteca de importación es como usar "importar
+spam"; le da acceso a los nombres de spam, pero no crea una copia
+separada. En Unix, vincular con una biblioteca es más como "from spam
+import*"; crea una copia separada.</p>
+<p>Py_NO_LINK_LIB</p>
+<p>Turn off the implicit, "#pragma"-based linkage with the Python
+   library, performed inside CPython header files.</p>
+<p>Added in version 3.14.</p>
+<h2 id="53-usar-dll-en-la-practica">5.3. Usar DLL en la práctica<a class="headerlink" href="#53-usar-dll-en-la-practica" title="Permanent link">#</a></h2>
+<p>Windows Python is built in Microsoft Visual C++; using other compilers
+may or may not work.  The rest of this section is MSVC++ specific.</p>
+<p>When creating DLLs in Windows, you can use the CPython library in two
+ways:</p>
+<ol>
+<li>By default, inclusion of "PC/pyconfig.h" directly or via "Python.h"
+   triggers an implicit, configure-aware link with the library.  The
+   header file chooses "pythonXY_d.lib" for Debug, "pythonXY.lib" for
+   Release, and "pythonX.lib" for Release with the Limited API
+   enabled.</li>
+</ol>
+<p>To build two DLLs, spam and ni (which uses C functions found in
+   spam), you could use these commands:</p>
+<div class="codehilite"><pre><span></span><code>  cl /LD /I/python/include spam.c
+  cl /LD /I/python/include ni.c spam.lib
+</code></pre></div>
+
+<p>The first command created three files: "spam.obj", "spam.dll" and
+   "spam.lib".  "Spam.dll" does not contain any Python functions (such
+   as "PyArg_ParseTuple()"), but it does know how to find the Python
+   code thanks to the implicitly linked "pythonXY.lib".</p>
+<p>El segundo comando creó "ni.dll" (y ".obj" y ".lib"), que sabe cómo
+   encontrar las funciones necesarias del spam, y también del
+   ejecutable de Python.</p>
+<ol start="2">
+<li>Manually by defining "Py_NO_LINK_LIB" macro before including
+   "Python.h". You must pass "pythonXY.lib" to the linker.</li>
+</ol>
+<p>To build two DLLs, spam and ni (which uses C functions found in
+   spam), you could use these commands:</p>
+<div class="codehilite"><pre><span></span><code>  cl /LD /DPy_NO_LINK_LIB /I/python/include spam.c ../libs/pythonXY.lib
+  cl /LD /DPy_NO_LINK_LIB /I/python/include ni.c spam.lib ../libs/pythonXY.lib
+</code></pre></div>
+
+<p>El primer comando creó tres archivos: "spam.obj", "spam.dll" y
+   "spam.lib". "Spam.dll" no contiene ninguna función de Python (como
+   "PyArg_ParseTuple()"), pero sabe cómo encontrar el código de Python
+   gracias a "pythonXY.lib".</p>
+<p>El segundo comando creó "ni.dll" (y ".obj" y ".lib"), que sabe cómo
+   encontrar las funciones necesarias del spam, y también del
+   ejecutable de Python.</p>
+<p>No todos los identificadores se exportan a la tabla de búsqueda. Si
+desea que cualquier otro módulo (incluido Python) pueda ver sus
+identificadores, debe decir "_declspec(dllexport)", como en "void
+_declspec(dllexport) initspam(void)" o "PyObject_declspec(dllexport)
+*NiGetSpamData(void)".</p>
+<p>Developer Studio will throw in a lot of import libraries that you do
+not really need, adding about 100K to your executable.  To get rid of
+them, use the Project Settings dialog, Link tab, to specify <em>ignore
+default libraries</em>.  Add the correct "msvcrt<em>xx</em>.lib" to the list of
+libraries.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../extending/newtypes_tutorial.html">
+          <span class="muted">Anterior</span>2. Definición de tipos de extensión: Tutorial
+        </a>
+        <a class="pager-next" href="../faq/design.html">
+          <span class="muted">Siguiente</span>Preguntas frecuentes sobre diseño e historia
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

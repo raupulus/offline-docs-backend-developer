@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Runtime Composer utilities · Composer</title>
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./articles/aliases.html">Articles</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Composer
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="./basic-usage.html"
+>Basic usage</a>
+              </li>
+              <li>
+                <a href="./libraries.html"
+>Libraries</a>
+              </li>
+              <li>
+                <a href="./cli.html"
+>Command-line interface / Commands</a>
+              </li>
+              <li>
+                <a href="./schema.html"
+>The composer.json schema</a>
+              </li>
+              <li>
+                <a href="./repositories.html"
+>Repositories</a>
+              </li>
+              <li>
+                <a href="./config.html"
+>Config</a>
+              </li>
+              <li>
+                <a href="./runtime.html"
+class="is-current" aria-current="page">Runtime Composer utilities</a>
+              </li>
+              <li>
+                <a href="./community.html"
+>Community</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Runtime Composer utilities</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#autoload">Autoload#</a></li>
+              <li class="lvl-2"><a href="#installed-versions">Installed versions#</a></li>
+              <li class="lvl-3"><a href="#knowing-whether-package-x-or-virtual-package-is-present">Knowing whether package X (or virtual package) is present#</a></li>
+              <li class="lvl-3"><a href="#knowing-whether-package-x-is-installed-in-version-y">Knowing whether package X is installed in version Y#</a></li>
+              <li class="lvl-3"><a href="#knowing-the-version-of-package-x">Knowing the version of package X#</a></li>
+              <li class="lvl-3"><a href="#knowing-a-packages-own-installed-version">Knowing a package&#39;s own installed version#</a></li>
+              <li class="lvl-3"><a href="#knowing-the-path-in-which-a-package-is-installed">Knowing the path in which a package is installed#</a></li>
+              <li class="lvl-3"><a href="#knowing-which-packages-of-a-given-type-are-installed">Knowing which packages of a given type are installed#</a></li>
+              <li class="lvl-2"><a href="#platform-check">Platform check#</a></li>
+              <li class="lvl-2"><a href="#autoloader-path-in-binaries">Autoloader path in binaries#</a></li>
+              <li class="lvl-2"><a href="#binary-bin-dir-path-in-binaries">Binary (bin-dir) path in binaries#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="runtime-composer-utilities">Runtime Composer utilities<a class="headerlink" href="#runtime-composer-utilities" title="Permanent link">#</a></h1>
+<p>While Composer is mostly used around your project to install its dependencies,
+there are a few things which are made available to you at runtime.</p>
+<p>If you need to rely on some of these in a specific version, you can require
+the <code>composer-runtime-api</code> package.</p>
+<h2 id="autoload">Autoload<a class="headerlink" href="#autoload" title="Permanent link">#</a></h2>
+<p>The autoloader is the most used one, and is already covered in our
+<a href="basic-usage.html#autoloading">basic usage guide</a>. It is available in all
+Composer versions.</p>
+<h2 id="installed-versions">Installed versions<a class="headerlink" href="#installed-versions" title="Permanent link">#</a></h2>
+<p>composer-runtime-api 2.0 introduced a new <code>Composer\InstalledVersions</code> class which offers
+a few static methods to inspect which versions are currently installed. This is
+automatically available to your code as long as you include the Composer autoloader.</p>
+<p>The main use cases for this class are the following:</p>
+<h3 id="knowing-whether-package-x-or-virtual-package-is-present">Knowing whether package X (or virtual package) is present<a class="headerlink" href="#knowing-whether-package-x-or-virtual-package-is-present" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="x">\Composer\InstalledVersions::isInstalled(&#39;vendor/package&#39;); // returns bool</span>
+<span class="x">\Composer\InstalledVersions::isInstalled(&#39;psr/log-implementation&#39;); // returns bool</span>
+</code></pre></div>
+
+<p>As of Composer 2.1, you may also check if something was installed via require-dev or not by
+passing false as second argument:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">\Composer\InstalledVersions::isInstalled(&#39;vendor/package&#39;); // returns true assuming this package is installed</span>
+<span class="x">\Composer\InstalledVersions::isInstalled(&#39;vendor/package&#39;, false); // returns true if vendor/package is in require, false if in require-dev</span>
+</code></pre></div>
+
+<p>Note that this can not be used to check whether platform packages are installed.</p>
+<h3 id="knowing-whether-package-x-is-installed-in-version-y">Knowing whether package X is installed in version Y<a class="headerlink" href="#knowing-whether-package-x-is-installed-in-version-y" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Note:</strong> To use this, your package must require <code>"composer/semver": "^3.0"</code>.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="x">use Composer\Semver\VersionParser;</span>
+
+<span class="x">\Composer\InstalledVersions::satisfies(new VersionParser, &#39;vendor/package&#39;, &#39;2.0.*&#39;);</span>
+<span class="x">\Composer\InstalledVersions::satisfies(new VersionParser, &#39;psr/log-implementation&#39;, &#39;^1.0&#39;);</span>
+</code></pre></div>
+
+<p>This will return true if e.g. vendor/package is installed in a version matching
+<code>2.0.*</code>, but also if the given package name is replaced or provided by some other
+package.</p>
+<h3 id="knowing-the-version-of-package-x">Knowing the version of package X<a class="headerlink" href="#knowing-the-version-of-package-x" title="Permanent link">#</a></h3>
+<blockquote>
+<p><strong>Note:</strong> This will return <code>null</code> if the package name you ask for is not itself installed
+but merely provided or replaced by another package. We therefore recommend using satisfies()
+in library code at least. In application code you have a bit more control and it is less
+important.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="x">// returns a normalized version (e.g. 1.2.3.0) if vendor/package is installed,</span>
+<span class="x">// or null if it is provided/replaced,</span>
+<span class="x">// or throws OutOfBoundsException if the package is not installed at all</span>
+<span class="x">\Composer\InstalledVersions::getVersion(&#39;vendor/package&#39;);</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="x">// returns the original version (e.g. v1.2.3) if vendor/package is installed,</span>
+<span class="x">// or null if it is provided/replaced,</span>
+<span class="x">// or throws OutOfBoundsException if the package is not installed at all</span>
+<span class="x">\Composer\InstalledVersions::getPrettyVersion(&#39;vendor/package&#39;);</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="x">// returns the package dist or source reference (e.g. a git commit hash) if vendor/package is installed,</span>
+<span class="x">// or null if it is provided/replaced,</span>
+<span class="x">// or throws OutOfBoundsException if the package is not installed at all</span>
+<span class="x">\Composer\InstalledVersions::getReference(&#39;vendor/package&#39;);</span>
+</code></pre></div>
+
+<h3 id="knowing-a-packages-own-installed-version">Knowing a package's own installed version<a class="headerlink" href="#knowing-a-packages-own-installed-version" title="Permanent link">#</a></h3>
+<p>If you are only interested in getting a package's own version, e.g. in the source of acme/foo you want
+to know which version acme/foo is currently running to display that to the user, then it is
+acceptable to use getVersion/getPrettyVersion/getReference.</p>
+<p>The warning in the section above does not apply in this case as you are sure the package is present
+and not being replaced if your code is running.</p>
+<p>It is nonetheless a good idea to make sure you handle the <code>null</code> return value as gracefully as
+possible for safety.</p>
+<hr>
+<p>A few other methods are available for more complex usages, please refer to the
+source/docblocks of <a href="https://github.com/composer/composer/blob/main/src/Composer/InstalledVersions.php">the class itself</a>.</p>
+<h3 id="knowing-the-path-in-which-a-package-is-installed">Knowing the path in which a package is installed<a class="headerlink" href="#knowing-the-path-in-which-a-package-is-installed" title="Permanent link">#</a></h3>
+<p>The <code>getInstallPath</code> method to retrieve a package's absolute install path.</p>
+<blockquote>
+<p><strong>Note:</strong> The path, while absolute, may contain <code>../</code> or symlinks. It is
+not guaranteed to be equivalent to a <code>realpath()</code> so you should run a
+realpath on it if that matters to you.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="x">// returns an absolute path to the package installation location if vendor/package is installed,</span>
+<span class="x">// or null if it is provided/replaced, or the package is a metapackage</span>
+<span class="x">// or throws OutOfBoundsException if the package is not installed at all</span>
+<span class="x">\Composer\InstalledVersions::getInstallPath(&#39;vendor/package&#39;);</span>
+</code></pre></div>
+
+<blockquote>
+<p>Available as of Composer 2.1 (i.e. <code>composer-runtime-api ^2.1</code>)</p>
+</blockquote>
+<h3 id="knowing-which-packages-of-a-given-type-are-installed">Knowing which packages of a given type are installed<a class="headerlink" href="#knowing-which-packages-of-a-given-type-are-installed" title="Permanent link">#</a></h3>
+<p>The <code>getInstalledPackagesByType</code> method accepts a package type (e.g. foo-plugin) and lists
+the packages of that type which are installed. You can then use the methods above to retrieve
+more information about each package if needed.</p>
+<p>This method should alleviate the need for custom installers placing plugins in a specific path
+instead of leaving them in the vendor dir. You can then find plugins to initialize at runtime
+via InstalledVersions, including their paths via getInstallPath if needed.</p>
+<div class="codehilite"><pre><span></span><code><span class="x">\Composer\InstalledVersions::getInstalledPackagesByType(&#39;foo-plugin&#39;);</span>
+</code></pre></div>
+
+<blockquote>
+<p>Available as of Composer 2.1 (i.e. <code>composer-runtime-api ^2.1</code>)</p>
+</blockquote>
+<h2 id="platform-check">Platform check<a class="headerlink" href="#platform-check" title="Permanent link">#</a></h2>
+<p>composer-runtime-api 2.0 introduced a new <code>vendor/composer/platform_check.php</code> file, which
+is included automatically when you include the Composer autoloader.</p>
+<p>It verifies that platform requirements (i.e. php and php extensions) are fulfilled
+by the PHP process currently running. If the requirements are not met, the script
+prints a warning with the missing requirements and exits with code 104.</p>
+<p>To avoid an unexpected white page of death with some obscure PHP extension warning in
+production, you can run <code>composer check-platform-reqs</code> as part of your
+deployment/build and if that returns a non-0 code you should abort.</p>
+<p>The default value is <code>php-only</code> which only checks the PHP version.</p>
+<p>If you for some reason do not want to use this safety check, and would rather
+risk runtime errors when your code executes, you can disable this by setting the
+<a href="config.html#platform-check"><code>platform-check</code></a> config option to <code>false</code>.</p>
+<p>If you want the check to include verifying the presence of PHP extensions,
+set the config option to <code>true</code>. <code>ext-*</code> requirements will then be verified
+but for performance reasons Composer only checks the extension is present,
+not its exact version.</p>
+<p><code>lib-*</code> requirements are never supported/checked by the platform check feature.</p>
+<h2 id="autoloader-path-in-binaries">Autoloader path in binaries<a class="headerlink" href="#autoloader-path-in-binaries" title="Permanent link">#</a></h2>
+<p>composer-runtime-api 2.2 introduced a new <code>$_composer_autoload_path</code> global
+variable set when running binaries installed with Composer. Read more
+about this <a href="articles/vendor-binaries.html#finding-the-composer-autoloader-from-a-binary">on the vendor binaries docs</a>.</p>
+<p>This is set by the binary proxy and as such is not made available to projects
+by Composer's <code>vendor/autoload.php</code>, which would be useless as it would point back
+to itself.</p>
+<h2 id="binary-bin-dir-path-in-binaries">Binary (bin-dir) path in binaries<a class="headerlink" href="#binary-bin-dir-path-in-binaries" title="Permanent link">#</a></h2>
+<p>composer-runtime-api 2.2.2 introduced a new <code>$_composer_bin_dir</code> global
+variable set when running binaries installed with Composer. Read more
+about this <a href="articles/vendor-binaries.html#finding-the-composer-bin-dir-from-a-binary">on the vendor binaries docs</a>.</p>
+<p>This is set by the binary proxy and as such is not made available to projects
+by Composer's <code>vendor/autoload.php</code>.</p>
+<p>&larr; <a href="config.html">Config</a>  |  <a href="community.html">Community</a> &rarr;</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./config.html">
+          <span class="muted">Anterior</span>Config
+        </a>
+        <a class="pager-next" href="./community.html">
+          <span class="muted">Siguiente</span>Community
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

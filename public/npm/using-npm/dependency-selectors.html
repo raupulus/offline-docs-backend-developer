@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dependency Selectors · npm</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">npm</a>
+<span class="badge">latest</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="npm" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en npm…"
+         aria-label="Buscar en npm" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de npm
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de npm">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../commands/npm-access.html">Commands</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../configuring-npm/folders.html">Configuring Npm</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Using Npm
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../using-npm/config.html"
+>Config</a>
+              </li>
+              <li>
+                <a href="../using-npm/dependency-selectors.html"
+class="is-current" aria-current="page">Dependency Selectors</a>
+              </li>
+              <li>
+                <a href="../using-npm/developers.html"
+>Developers</a>
+              </li>
+              <li>
+                <a href="../using-npm/logging.html"
+>Logging</a>
+              </li>
+              <li>
+                <a href="../using-npm/orgs.html"
+>Organizations</a>
+              </li>
+              <li>
+                <a href="../using-npm/package-spec.html"
+>Package spec</a>
+              </li>
+              <li>
+                <a href="../using-npm/registry.html"
+>Registry</a>
+              </li>
+              <li>
+                <a href="../using-npm/removal.html"
+>Removal</a>
+              </li>
+              <li>
+                <a href="../using-npm/scope.html"
+>Scope</a>
+              </li>
+              <li>
+                <a href="../using-npm/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../using-npm/workspaces.html"
+>Workspaces</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Dependency Selectors</h1>
+
+      <p class="doc-meta">
+<span class="badge">latest</span>          <a href="https://docs.npmjs.com/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia TODO-VERIFICAR</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#description">Description#</a></li>
+              <li class="lvl-3"><a href="#dependency-selector-syntax">Dependency Selector Syntax#</a></li>
+              <li class="lvl-3"><a href="#groups">Groups#</a></li>
+              <li class="lvl-3"><a href="#programmatic-usage">Programmatic Usage#</a></li>
+              <li class="lvl-2"><a href="#see-also">See Also#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h3>
+<p>The <a href="../commands/npm-query.html"><code>npm query</code></a> command exposes a new dependency selector syntax (informed by &amp; respecting many aspects of the <a href="https://dev.w3.org/csswg/selectors4/#relational">CSS Selectors 4 Spec</a>) which:</p>
+<ul>
+<li>Standardizes the shape of, &amp; querying of, dependency graphs with a robust object model, metadata &amp; selector syntax</li>
+<li>Leverages existing, known language syntax &amp; operators from CSS to make disparate package information broadly accessible</li>
+<li>Unlocks the ability to answer complex, multi-faceted questions about dependencies, their relationships &amp; associative metadata</li>
+<li>Consolidates redundant logic of similar query commands in <code>npm</code> (ex.
+<code>npm fund</code>, <code>npm ls</code>, <code>npm outdated</code>, <code>npm audit</code> ...)</li>
+</ul>
+<h3 id="dependency-selector-syntax">Dependency Selector Syntax<a class="headerlink" href="#dependency-selector-syntax" title="Permanent link">#</a></h3>
+<h4 id="overview">Overview:<a class="headerlink" href="#overview" title="Permanent link">#</a></h4>
+<ul>
+<li>there is no "type" or "tag" selectors (ex.
+<code>div, h1, a</code>) as a dependency/target is the only type of <code>Node</code> that can be queried</li>
+<li>the term "dependencies" is in reference to any <code>Node</code> found in a <code>tree</code> returned by <code>Arborist</code></li>
+</ul>
+<h4 id="combinators">Combinators<a class="headerlink" href="#combinators" title="Permanent link">#</a></h4>
+<ul>
+<li><code>&gt;</code> direct descendant/child</li>
+<li><code></code> any descendant/child</li>
+<li><code>~</code> sibling</li>
+</ul>
+<h4 id="selectors">Selectors<a class="headerlink" href="#selectors" title="Permanent link">#</a></h4>
+<ul>
+<li><code>*</code> universal selector</li>
+<li><code>#&lt;name&gt;</code> dependency selector (equivalent to <code>[name="..."]</code>)</li>
+<li><code>#&lt;name&gt;@&lt;version&gt;</code> (equivalent to <code>[name=&lt;name&gt;]:semver(&lt;version&gt;)</code>)</li>
+<li><code>,</code> selector list delimiter</li>
+<li><code>.</code> dependency type selector</li>
+<li><code>:</code> pseudo selector</li>
+</ul>
+<h4 id="dependency-type-selectors">Dependency Type Selectors<a class="headerlink" href="#dependency-type-selectors" title="Permanent link">#</a></h4>
+<ul>
+<li><code>.prod</code> dependency found in the <code>dependencies</code> section of <code>package.json</code>, or is a child of said dependency</li>
+<li><code>.dev</code> dependency found in the <code>devDependencies</code> section of <code>package.json</code>, or is a child of said dependency</li>
+<li><code>.optional</code> dependency found in the <code>optionalDependencies</code> section of <code>package.json</code>, or has <code>"optional": true</code> set in its entry in the <code>peerDependenciesMeta</code> section of <code>package.json</code>, or a child of said dependency</li>
+<li><code>.peer</code> dependency found in the <code>peerDependencies</code> section of <code>package.json</code></li>
+<li><code>.workspace</code> dependency found in the <a href="https://docs.npmjs.com/cli/v8/using-npm/workspaces"><code>workspaces</code></a> section of <code>package.json</code></li>
+<li><code>.bundled</code> dependency found in the <code>bundleDependencies</code> section of <code>package.json</code>, or is a child of said dependency</li>
+</ul>
+<h4 id="pseudo-selectors">Pseudo Selectors<a class="headerlink" href="#pseudo-selectors" title="Permanent link">#</a></h4>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:not"><code>:not(&lt;selector&gt;)</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:has"><code>:has(&lt;selector&gt;)</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:is"><code>:is(&lt;selector list&gt;)</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:root"><code>:root</code></a> matches the root node/dependency</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:scope"><code>:scope</code></a> matches node/dependency it was queried against</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:empty"><code>:empty</code></a> when a dependency has no dependencies</li>
+<li><a href="https://docs.npmjs.com/cli/v8/configuring-npm/package-json#private"><code>:private</code></a> when a dependency is private</li>
+<li><code>:link</code> when a dependency is linked (for instance, workspaces or packages manually <a href="https://docs.npmjs.com/cli/v8/commands/npm-link"><code>linked</code></a></li>
+<li><code>:deduped</code> when a dependency has been deduped (note that this does <em>not</em> always mean the dependency has been hoisted to the root of node_modules)</li>
+<li><code>:overridden</code> when a dependency has been overridden</li>
+<li><code>:extraneous</code> when a dependency exists but is not defined as a dependency of any node</li>
+<li><code>:invalid</code> when a dependency version is out of its ancestors specified range</li>
+<li><code>:missing</code> when a dependency is not found on disk</li>
+<li><code>:semver(&lt;spec&gt;, [selector], [function])</code> match a valid <a href="https://github.com/npm/node-semver"><code>node-semver</code></a> version or range to a selector</li>
+<li><code>:path(&lt;path&gt;)</code> <a href="https://www.npmjs.com/package/glob">glob</a> matching based on dependencies path relative to the project</li>
+<li><code>:type(&lt;type&gt;)</code> <a href="https://github.com/npm/npm-package-arg#result-object">based on currently recognized types</a>.  You can also use the aggregate type of <code>registry</code> for any registry dependency (e.g. tag, version, range, alias)</li>
+<li><code>:outdated(&lt;type&gt;)</code> when a dependency is outdated</li>
+<li><code>:vuln(&lt;selector&gt;)</code> when a dependency has a known vulnerability</li>
+</ul>
+<h5 id="semverspec-selector-function"><code>:semver(&lt;spec&gt;, [selector], [function])</code><a class="headerlink" href="#semverspec-selector-function" title="Permanent link">#</a></h5>
+<p>The <code>:semver()</code> pseudo selector allows comparing fields from each node's <code>package.json</code> using <a href="https://github.com/npm/node-semver#readme">semver</a> methods.
+It accepts up to 3 parameters, all but the first of which are optional.</p>
+<ul>
+<li><code>spec</code> a semver version or range</li>
+<li><code>selector</code> an attribute selector for each node (default <code>[version]</code>)</li>
+<li><code>function</code> a semver method to apply, one of: <code>satisfies</code>, <code>intersects</code>, <code>subset</code>, <code>gt</code>, <code>gte</code>, <code>gtr</code>, <code>lt</code>, <code>lte</code>, <code>ltr</code>, <code>eq</code>, <code>neq</code> or the special function <code>infer</code> (default <code>infer</code>)</li>
+</ul>
+<p>When the special <code>infer</code> function is used the <code>spec</code> and the actual value from the node are compared.
+If both are versions, according to <code>semver.valid()</code>, <code>eq</code> is used.
+If both values are ranges, according to <code>!semver.valid()</code>, <code>intersects</code> is used.
+If the values are mixed types <code>satisfies</code> is used.</p>
+<p>Some examples:</p>
+<ul>
+<li><code>:semver(^1.0.0)</code> returns every node that has a <code>version</code> satisfied by the provided range <code>^1.0.0</code></li>
+<li><code>:semver(16.0.0, :attr(engines, [node]))</code> returns every node which has an <code>engines.node</code> property satisfying the version <code>16.0.0</code></li>
+<li><code>:semver(1.0.0, [version], lt)</code> every node with a <code>version</code> less than <code>1.0.0</code></li>
+</ul>
+<h5 id="outdatedtype"><code>:outdated(&lt;type&gt;)</code><a class="headerlink" href="#outdatedtype" title="Permanent link">#</a></h5>
+<p>The <code>:outdated</code> pseudo selector retrieves data from the registry and returns information about which of your dependencies are outdated.
+The type parameter may be one of the following:</p>
+<ul>
+<li><code>any</code> (default) a version exists that is greater than the current one</li>
+<li><code>in-range</code> a version exists that is greater than the current one, and satisfies at least one if its parent's dependencies</li>
+<li><code>out-of-range</code> a version exists that is greater than the current one, does not satisfy at least one of its parent's dependencies</li>
+<li><code>major</code> a version exists that is a semver major greater than the current one</li>
+<li><code>minor</code> a version exists that is a semver minor greater than the current one</li>
+<li><code>patch</code> a version exists that is a semver patch greater than the current one</li>
+</ul>
+<p>In addition to the filtering performed by the pseudo selector, some extra data is added to the resulting objects.
+The following data can be found under the <code>queryContext</code> property of each node.</p>
+<ul>
+<li><code>versions</code> an array of every available version of the given node</li>
+<li><code>outdated.inRange</code> an array of objects, each with a <code>from</code> and <code>versions</code>, where <code>from</code> is the on-disk location of the node that depends on the current node and <code>versions</code> is an array of all available versions that satisfies that dependency.
+This is only populated if <code>:outdated(in-range)</code> is used.</li>
+<li><code>outdated.outOfRange</code> an array of objects, identical in shape to <code>inRange</code>, but where the <code>versions</code> array is every available version that does not satisfy the dependency.
+This is only populated if <code>:outdated(out-of-range)</code> is used.</li>
+</ul>
+<p>Some examples:</p>
+<ul>
+<li><code>:root &gt; :outdated(major)</code> returns every direct dependency that has a new semver major release</li>
+<li><code>.prod:outdated(in-range)</code> returns production dependencies that have a new release that satisfies at least one of its parent's dependencies</li>
+</ul>
+<h5 id="vuln"><code>:vuln</code><a class="headerlink" href="#vuln" title="Permanent link">#</a></h5>
+<p>The <code>:vuln</code> pseudo selector retrieves data from the registry and returns information about which if your dependencies has a known vulnerability.
+Only dependencies whose current version matches a vulnerability will be returned.
+For example if you have <code>semver@7.6.0</code> in your tree, a vulnerability for <code>semver</code> which affects versions <code>&lt;=6.3.1</code> will not match.</p>
+<p>You can also filter results by certain attributes in advisories.
+Currently that includes <code>severity</code> and <code>cwe</code>.
+Note that severity filtering is done per severity, it does not include severities "higher" or "lower" than the one specified.</p>
+<p>In addition to the filtering performed by the pseudo selector, info about each relevant advisory will be added to the <code>queryContext</code> attribute of each node under the <code>advisories</code> attribute.</p>
+<p>Some examples:</p>
+<ul>
+<li><code>:root &gt; .prod:vuln</code> returns direct production dependencies with any known vulnerability</li>
+<li><code>:vuln([severity=high])</code> returns only dependencies with a vulnerability with a <code>high</code> severity.</li>
+<li><code>:vuln([severity=high],[severity=moderate])</code> returns only dependencies with a vulnerability with a <code>high</code>  or <code>moderate</code> severity.</li>
+<li><code>:vuln([cwe=1333])</code> returns only dependencies with a vulnerability that includes CWE-1333 (ReDoS)</li>
+</ul>
+<h4 id="attribute-selectors"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors">Attribute Selectors</a><a class="headerlink" href="#attribute-selectors" title="Permanent link">#</a></h4>
+<p>The attribute selector evaluates the key/value pairs in <code>package.json</code> if they are <code>String</code>s.</p>
+<ul>
+<li><code>[]</code> attribute selector (ie.
+existence of attribute)</li>
+<li><code>[attribute=value]</code> attribute value is equivalent...</li>
+<li><code>[attribute~=value]</code> attribute value contains word...</li>
+<li><code>[attribute*=value]</code> attribute value contains string...</li>
+<li><code>[attribute|=value]</code> attribute value is equal to or starts with...</li>
+<li><code>[attribute^=value]</code> attribute value starts with...</li>
+<li><code>[attribute$=value]</code> attribute value ends with...</li>
+</ul>
+<h4 id="array-object-attribute-selectors"><code>Array</code> &amp; <code>Object</code> Attribute Selectors<a class="headerlink" href="#array-object-attribute-selectors" title="Permanent link">#</a></h4>
+<p>The generic <code>:attr()</code> pseudo selector standardizes a pattern which can be used for attribute selection of <code>Object</code>s, <code>Array</code>s or <code>Arrays</code> of <code>Object</code>s accessible via <code>Arborist</code>'s <code>Node.package</code> metadata.
+This allows for iterative attribute selection beyond top-level <code>String</code> evaluation.
+The last argument passed to <code>:attr()</code> must be an <code>attribute</code> selector or a nested <code>:attr()</code>.
+See examples below:</p>
+<h4 id="objects"><code>Objects</code><a class="headerlink" href="#objects" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="c">/* return dependencies that have a `scripts.test` containing `&quot;tap&quot;` */</span>
+<span class="o">*</span><span class="p">:</span><span class="nd">attr</span><span class="o">(</span><span class="nt">scripts</span><span class="o">,</span><span class="w"> </span><span class="o">[</span><span class="nt">test</span><span class="o">~=</span><span class="nt">tap</span><span class="o">])</span>
+</code></pre></div>
+
+<h4 id="nested-objects">Nested <code>Objects</code><a class="headerlink" href="#nested-objects" title="Permanent link">#</a></h4>
+<p>Nested objects are expressed as sequential arguments to <code>:attr()</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="c">/* return dependencies that have a [testling config](https://ci.testling.com/guide/advanced_configuration) for opera browsers */</span>
+<span class="o">*</span><span class="p">:</span><span class="nd">attr</span><span class="o">(</span><span class="nt">testling</span><span class="o">,</span><span class="w"> </span><span class="nt">browsers</span><span class="o">,</span><span class="w"> </span><span class="o">[~=</span><span class="nt">opera</span><span class="o">])</span>
+</code></pre></div>
+
+<h4 id="arrays"><code>Arrays</code><a class="headerlink" href="#arrays" title="Permanent link">#</a></h4>
+<p><code>Array</code>s specifically uses a special/reserved <code>.</code> character in place of a typical attribute name.
+<code>Arrays</code> also support exact <code>value</code> matching when a <code>String</code> is passed to the selector.</p>
+<h5 id="example-of-an-array-attribute-selection">Example of an <code>Array</code> Attribute Selection:<a class="headerlink" href="#example-of-an-array-attribute-selection" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="c">/* removes the distinction between properties &amp; arrays */</span>
+<span class="c">/* ie. we&#39;d have to check the property &amp; iterate to match selection */</span>
+<span class="o">*</span><span class="p">:</span><span class="nd">attr</span><span class="o">([</span><span class="nt">keywords</span><span class="o">^=</span><span class="nt">react</span><span class="o">])</span>
+<span class="o">*</span><span class="p">:</span><span class="nd">attr</span><span class="o">(</span><span class="nt">contributors</span><span class="o">,</span><span class="w"> </span><span class="p">:</span><span class="nd">attr</span><span class="o">([</span><span class="nt">name</span><span class="o">~=</span><span class="nt">Jordan</span><span class="o">]))</span>
+</code></pre></div>
+
+<h5 id="example-of-an-array-matching-directly-to-a-value">Example of an <code>Array</code> matching directly to a value:<a class="headerlink" href="#example-of-an-array-matching-directly-to-a-value" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="c">/* return dependencies that have the exact keyword &quot;react&quot; */</span>
+<span class="c">/* this is equivalent to `*:keywords([value=&quot;react&quot;])` */</span>
+<span class="o">*</span><span class="p">:</span><span class="nd">attr</span><span class="o">([</span><span class="nt">keywords</span><span class="o">=</span><span class="nt">react</span><span class="o">])</span>
+</code></pre></div>
+
+<h5 id="example-of-an-array-of-objects">Example of an <code>Array</code> of <code>Object</code>s:<a class="headerlink" href="#example-of-an-array-of-objects" title="Permanent link">#</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="c">/* returns */</span>
+<span class="o">*</span><span class="p">:</span><span class="nd">attr</span><span class="o">(</span><span class="nt">contributors</span><span class="o">,</span><span class="w"> </span><span class="o">[</span><span class="nt">email</span><span class="o">=</span><span class="nt">ruyadorno</span><span class="p">@</span><span class="k">github</span><span class="p">.</span><span class="nc">com</span><span class="o">])</span>
+</code></pre></div>
+
+<h3 id="groups">Groups<a class="headerlink" href="#groups" title="Permanent link">#</a></h3>
+<p>Dependency groups are defined by the package relationships to their ancestors (ie.
+the dependency types that are defined in <code>package.json</code>).
+This approach is user-centric as the ecosystem has been taught to think about dependencies in these groups first-and-foremost.
+Dependencies are allowed to be included in multiple groups (ex.
+a <code>prod</code> dependency may also be a <code>dev</code> dependency (in that it's also required by another <code>dev</code> dependency) &amp; may also be <code>bundled</code> - a selector for that type of dependency would look like: <code>*.prod.dev.bundled</code>).</p>
+<ul>
+<li><code>.prod</code></li>
+<li><code>.dev</code></li>
+<li><code>.optional</code></li>
+<li><code>.peer</code></li>
+<li><code>.bundled</code></li>
+<li><code>.workspace</code></li>
+</ul>
+<p>Please note that currently <code>workspace</code> deps are always <code>prod</code> dependencies.
+Additionally the <code>.root</code> dependency is also considered a <code>prod</code> dependency.</p>
+<h3 id="programmatic-usage">Programmatic Usage<a class="headerlink" href="#programmatic-usage" title="Permanent link">#</a></h3>
+<ul>
+<li><code>Arborist</code>'s <code>Node</code> Class has a <code>.querySelectorAll()</code> method</li>
+<li>this method will return a filtered, flattened dependency Arborist <code>Node</code> list based on a valid query selector</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">Arborist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;@npmcli/arborist&#39;</span><span class="p">)</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">arb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Arborist</span><span class="p">({})</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1">// root-level</span>
+<span class="nx">arb</span><span class="p">.</span><span class="nx">loadActual</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">tree</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// query all production dependencies</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">tree</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;.prod&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1">// iterative</span>
+<span class="nx">arb</span><span class="p">.</span><span class="nx">loadActual</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">tree</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// query for the deduped version of react</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">tree</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;#react:not(:deduped)&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="c1">// query the deduped react for git deps</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">deps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">results</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;:type(git)&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">deps</span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></div>
+
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../commands/npm-query.html">npm query</a></li>
+<li><a href="https://npm.im/@npmcli/arborist">@npmcli/arborist</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../using-npm/config.html">
+          <span class="muted">Anterior</span>Config
+        </a>
+        <a class="pager-next" href="../using-npm/developers.html">
+          <span class="muted">Siguiente</span>Developers
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

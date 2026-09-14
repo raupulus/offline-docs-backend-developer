@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;mmap&#34; --- Memory-mapped file support · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/imghdr.html"
+>&#34;imghdr&#34; --- Determine the type of an image</a>
+              </li>
+              <li>
+                <a href="../library/imp.html"
+>&#34;imp&#34; --- Access the import internals</a>
+              </li>
+              <li>
+                <a href="../library/importlib.metadata.html"
+>&#34;importlib.metadata&#34; -- Acceso a los metadatos de los paquetes</a>
+              </li>
+              <li>
+                <a href="../library/importlib.resources.abc.html"
+>&#34;importlib.resources.abc&#34; -- Abstract base classes for resources</a>
+              </li>
+              <li>
+                <a href="../library/importlib.resources.html"
+>&#34;importlib.resources&#34; -- Package resource reading, opening and access</a>
+              </li>
+              <li>
+                <a href="../library/importlib.html"
+>&#34;importlib&#34; --- La implementación de &#34;import&#34;</a>
+              </li>
+              <li>
+                <a href="../library/index.html"
+>La biblioteca estándar de Python</a>
+              </li>
+              <li>
+                <a href="../library/inspect.html"
+>&#34;inspect&#34; --- Inspect live objects</a>
+              </li>
+              <li>
+                <a href="../library/internet.html"
+>Protocolos y soporte de Internet</a>
+              </li>
+              <li>
+                <a href="../library/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../library/io.html"
+>&#34;io&#34; --- Core tools for working with streams</a>
+              </li>
+              <li>
+                <a href="../library/ipaddress.html"
+>&#34;ipaddress&#34; --- IPv4/IPv6 manipulation library</a>
+              </li>
+              <li>
+                <a href="../library/ipc.html"
+>Comunicación en redes y entre procesos</a>
+              </li>
+              <li>
+                <a href="../library/itertools.html"
+>&#34;itertools&#34; --- Functions creating iterators for efficient looping</a>
+              </li>
+              <li>
+                <a href="../library/json.html"
+>&#34;json&#34; --- JSON encoder and decoder</a>
+              </li>
+              <li>
+                <a href="../library/keyword.html"
+>&#34;keyword&#34; --- Testing for Python keywords</a>
+              </li>
+              <li>
+                <a href="../library/language.html"
+>Servicios del lenguaje Python</a>
+              </li>
+              <li>
+                <a href="../library/linecache.html"
+>&#34;linecache&#34; --- Random access to text lines</a>
+              </li>
+              <li>
+                <a href="../library/locale.html"
+>&#34;locale&#34; --- Internationalization services</a>
+              </li>
+              <li>
+                <a href="../library/logging.config.html"
+>&#34;logging.config&#34; --- Logging configuration</a>
+              </li>
+              <li>
+                <a href="../library/logging.handlers.html"
+>&#34;logging.handlers&#34; --- Logging handlers</a>
+              </li>
+              <li>
+                <a href="../library/logging.html"
+>&#34;logging&#34; --- Logging facility for Python</a>
+              </li>
+              <li>
+                <a href="../library/lzma.html"
+>&#34;lzma&#34; --- Compression using the LZMA algorithm</a>
+              </li>
+              <li>
+                <a href="../library/mailbox.html"
+>&#34;mailbox&#34; --- Manipulate mailboxes in various formats</a>
+              </li>
+              <li>
+                <a href="../library/mailcap.html"
+>&#34;mailcap&#34; --- Mailcap file handling</a>
+              </li>
+              <li>
+                <a href="../library/markup.html"
+>Herramientas Para Procesar Formatos de Marcado Estructurado</a>
+              </li>
+              <li>
+                <a href="../library/marshal.html"
+>&#34;marshal&#34; --- Internal Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/math.html"
+>&#34;math&#34; --- Mathematical functions</a>
+              </li>
+              <li>
+                <a href="../library/mimetypes.html"
+>&#34;mimetypes&#34; --- Map filenames to MIME types</a>
+              </li>
+              <li>
+                <a href="../library/mm.html"
+>Servicios Multimedia</a>
+              </li>
+              <li>
+                <a href="../library/mmap.html"
+class="is-current" aria-current="page">&#34;mmap&#34; --- Memory-mapped file support</a>
+              </li>
+              <li>
+                <a href="../library/modulefinder.html"
+>&#34;modulefinder&#34; --- Find modules used by a script</a>
+              </li>
+              <li>
+                <a href="../library/modules.html"
+>Importando módulos</a>
+              </li>
+              <li>
+                <a href="../library/msilib.html"
+>&#34;msilib&#34; --- Read and write Microsoft Installer files</a>
+              </li>
+              <li>
+                <a href="../library/msvcrt.html"
+>&#34;msvcrt&#34; --- Useful routines from the MS VC++ runtime</a>
+              </li>
+              <li>
+                <a href="../library/multiprocessing.shared_memory.html"
+>&#34;multiprocessing.shared_memory&#34; --- Shared memory for direct access across processes</a>
+              </li>
+              <li>
+                <a href="../library/multiprocessing.html"
+>&#34;multiprocessing&#34; --- Process-based parallelism</a>
+              </li>
+              <li>
+                <a href="../library/netdata.html"
+>Manejo de datos de internet</a>
+              </li>
+              <li>
+                <a href="../library/netrc.html"
+>&#34;netrc&#34; --- netrc file processing</a>
+              </li>
+              <li>
+                <a href="../library/nis.html"
+>&#34;nis&#34; --- Interface to Sun’s NIS (Yellow Pages)</a>
+              </li>
+              <li>
+                <a href="../library/nntplib.html"
+>&#34;nntplib&#34; --- NNTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/numbers.html"
+>&#34;numbers&#34; --- Numeric abstract base classes</a>
+              </li>
+              <li>
+                <a href="../library/numeric.html"
+>Módulos numéricos y matemáticos</a>
+              </li>
+              <li>
+                <a href="../library/operator.html"
+>&#34;operator&#34; --- Standard operators as functions</a>
+              </li>
+              <li>
+                <a href="../library/optparse.html"
+>&#34;optparse&#34; --- Parser for command line options</a>
+              </li>
+              <li>
+                <a href="../library/os.path.html"
+>&#34;os.path&#34; --- Common pathname manipulations</a>
+              </li>
+              <li>
+                <a href="../library/os.html"
+>&#34;os&#34; --- Interfaces misceláneas del sistema operativo</a>
+              </li>
+              <li>
+                <a href="../library/ossaudiodev.html"
+>&#34;ossaudiodev&#34; --- Access to OSS-compatible audio devices</a>
+              </li>
+              <li>
+                <a href="../library/pathlib.html"
+>&#34;pathlib&#34; --- Rutas de sistemas orientada a objetos</a>
+              </li>
+              <li>
+                <a href="../library/pdb.html"
+>&#34;pdb&#34; --- The Python Debugger</a>
+              </li>
+              <li>
+                <a href="../library/persistence.html"
+>Persistencia de datos</a>
+              </li>
+              <li>
+                <a href="../library/pickle.html"
+>&#34;pickle&#34; --- Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/pickletools.html"
+>&#34;pickletools&#34; --- Tools for pickle developers</a>
+              </li>
+              <li>
+                <a href="../library/pipes.html"
+>&#34;pipes&#34; --- Interface to shell pipelines</a>
+              </li>
+              <li>
+                <a href="../library/pkgutil.html"
+>&#34;pkgutil&#34; --- Package extension utility</a>
+              </li>
+              <li>
+                <a href="../library/platform.html"
+>&#34;platform&#34; ---  Access to underlying platform&#39;s identifying data</a>
+              </li>
+              <li>
+                <a href="../library/plistlib.html"
+>&#34;plistlib&#34; --- Generate and parse Apple &#34;.plist&#34; files</a>
+              </li>
+              <li>
+                <a href="../library/poplib.html"
+>&#34;poplib&#34; --- POP3 protocol client</a>
+              </li>
+              <li>
+                <a href="../library/posix.html"
+>&#34;posix&#34; --- The most common POSIX system calls</a>
+              </li>
+              <li>
+                <a href="../library/pprint.html"
+>&#34;pprint&#34; --- Data pretty printer</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;mmap&#34; --- Memory-mapped file support</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#constantes-madv_">Constantes MADV_*#</a></li>
+              <li class="lvl-2"><a href="#constantes-map_">Constantes MAP_*#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="mmap-memory-mapped-file-support">"mmap" --- Memory-mapped file support<a class="headerlink" href="#mmap-memory-mapped-file-support" title="Permanent link">#</a></h1>
+<p>======================================================================</p>
+<p>Availability: not WASI.</p>
+<p>This module does not work or is not available on WebAssembly. See
+Plataformas WebAssembly for more information.</p>
+<p>Los objetos de archivos mapeados en memoria se comportan como objetos
+de tipo "bytearray" y <em>objetos archivo</em>.  Puedes usar objetos mmap en
+la mayoría de lugares donde se esperen objetos de tipo "bytearray";
+por ejemplo, puedes usar el módulo "re" para buscar entre un archivo
+mapeado en memoria.  También puedes cambiar un solo byte al hacer
+"obj[index]==97", o cambiar una subsecuencia al asignarle una
+rebanada: "obj[i1:i2] = b'...'".  También puedes leer y escribir datos
+que empiezan en la posición del archivo actual, y utilizar el método
+"seek()" a través del archivo para cambiar la posición actual.</p>
+<p>A memory-mapped file is created by the "mmap" constructor, which is
+different on Unix and on Windows.  In either case you must provide a
+file descriptor for a file opened for update. If you wish to map an
+existing Python file object, use its "fileno()" method to obtain the
+correct value for the <em>fileno</em> parameter.  Otherwise, you can open the
+file using the "os.open()" function, which returns a file descriptor
+directly (the file still needs to be closed when done).</p>
+<p>Nota:</p>
+<p>Si quieres crear un mapeado en memoria para un archivo con permisos
+  de escritura y en el búfer, debes ejecutar la función "flush()". Es
+  necesario para asegurar que las modificaciones locales a los búfer
+  estén realmente disponible para el mapeado.</p>
+<p>Para las versiones del constructor de tanto Unix como de Windows,
+<em>access</em> puede ser especificado como un parámetro nombrado opcional.
+<em>access</em> acepta uno de cuatro valores: "ACCESS_READ", "ACCESS_WRITE",
+o "ACCESS_COPY" para especificar una memoria de solo lectura, <em>write-
+through</em>, o <em>copy-on-write</em> respectivamente, o "ACCES_DEFAULT" para
+deferir a <em>prot</em>. El parámetro <em>access</em> se puede usar tanto en Unix
+como en Windows.  Si <em>access</em> no es especificado, el mmap de Windows
+retorna un mapeado <em>write-through</em>.  Los valores de la memoria inicial
+para los tres tipos de acceso son tomados del archivo especificado.
+La asignación a una mapa de memoria "ACCESS_READ" lanza una excepción
+"TypeError".  La asignación a un mapa de memoria "ACCESS_WRITE" afecta
+tanto a la memoria como al archivo subyacente.  La asignación a un
+mapa de memoria "ACCES_COPY" afecta a la memoria pero no actualiza el
+archivo subyacente.</p>
+<p>Distinto en la versión 3.7: Se añadió la constante "ACCESS_DEFAULT".</p>
+<p>Para mapear memoria anónima, se debe pasar -1 como el <em>fileno</em> junto
+con la longitud.</p>
+<p>class mmap.mmap(fileno, length, tagname=None, access=ACCESS_DEFAULT, offset=0)</p>
+<p><strong>(En la versión de Windows)</strong> Mapea <em>length</em> bytes desde el
+   archivo especificado por el gestor de archivo <em>fileno</em>, y crea un
+   objeto mmap. Si <em>length</em> es más largo que el tamaño actual del
+   archivo, el archivo es extendido para contener <em>length</em> bytes. Si
+   <em>length</em> es "0", la longitud máxima del map es la tamaño actual del
+   archivo, salvo que si el archivo está vacío Windows lanza una
+   excepción (no puedes crear un mapeado vacío en Windows)</p>
+<p><em>tagname</em>, if specified and not "None", is a string giving a tag
+   name for the mapping.  Windows allows you to have many different
+   mappings against the same file.  If you specify the name of an
+   existing tag, that tag is opened, otherwise a new tag of this name
+   is created.  If this parameter is omitted or "None", the mapping is
+   created without a name.  Avoiding the use of the <em>tagname</em>
+   parameter will assist in keeping your code portable between Unix
+   and Windows.</p>
+<p><em>offset</em> puede ser especificado como un <em>offset</em> entero no
+   negativo. las referencias de mmap serán relativas al <em>offset</em> desde
+   el comienzo del archivo. <em>offset</em> es por defecto 0. <em>offset</em> debe
+   ser un múltiplo de "ALLOCATIONGRANULARITY".</p>
+<p>Lanza un evento de inspección "mmap.<strong>new</strong>" con los argumentos
+   "fileno", "length", "access", "offset".</p>
+<p>class mmap.mmap(fileno, length, flags=MAP_SHARED, prot=PROT_WRITE | PROT_READ, access=ACCESS_DEFAULT, offset=0, *, trackfd=True)</p>
+<p><strong>(En la versión de Unix)</strong> Mapea <em>length</em> bytes desde el archivo
+   especificado por el descriptor de archivo <em>fileno</em>, y retorna un
+   objeto mmap.  Si <em>length</em> es "0", la longitud máxima del map será
+   el tamaño actual del archivo cuando "mmap" sea llamado.</p>
+<p><em>flags</em> especifica la naturaleza del mapeado. "MAP_PRIVATE" crea un
+   mapeado <em>copy-on-write</em> privado, por lo que los cambios al
+   contenido del objeto mmap serán privados para este proceso, y
+   "MAP_SHARED" crea un mapeado que es compartido con todos los demás
+   procesos que mapean las mismas áreas del archivo.  El valor por
+   defecto es "MAP_SHARED". Algunos tipos tienen posibles banderas
+   adicionales con la lista completa en MAP_* constants.</p>
+<p><em>prot</em>, si se especifica, proporciona la protección de memoria
+   deseado; los dos valores más útiles son "PROT_READ" y "PROT_WRITE",
+   para especificar que las páginas puedan ser escritas o leídas.
+   <em>prot</em> es por defecto "PROT_READ|PROT_WRITE".</p>
+<p><em>access</em> puede ser especificado en lugar de <em>flags</em> y <em>prot</em> como
+   un parámetro nombrado opcional.  Es un error especificar tanto
+   <em>flags</em>, <em>prot</em> como <em>access</em>. Véase la descripción de <em>access</em>
+   arriba por información de cómo usar este parámetro.</p>
+<p><em>offset</em> puede ser especificado como un <em>offset</em> entero no
+   negativo. Las referencias serán relativas al <em>offset</em> desde el
+   comienzo del archivo. <em>offset</em> por defecto es 0. <em>offset</em> debe ser
+   un múltiplo de "ALLOCATIONGRANULARITY" que es igual a "PAGESIZE" en
+   los sistemas Unix.</p>
+<p>If <em>trackfd</em> is "False", the file descriptor specified by <em>fileno</em>
+   will not be duplicated, and the resulting "mmap" object will not be
+   associated with the map's underlying file. This means that the
+   "size()" and "resize()" methods will fail. This mode is useful to
+   limit the number of open file descriptors.</p>
+<p>To ensure validity of the created memory mapping the file specified
+   by the descriptor <em>fileno</em> is internally automatically synchronized
+   with the physical backing store on macOS.</p>
+<p>Distinto en la versión 3.13: The <em>trackfd</em> parameter was added.</p>
+<p>Este ejemplo muestra un forma simple de usar "mmap":</p>
+<div class="codehilite"><pre><span></span><code>  import mmap
+
+  # write a simple example file
+  with open(&quot;hello.txt&quot;, &quot;wb&quot;) as f:
+      f.write(b&quot;Hello Python!\n&quot;)
+
+  with open(&quot;hello.txt&quot;, &quot;r+b&quot;) as f:
+      # memory-map the file, size 0 means whole file
+      mm = mmap.mmap(f.fileno(), 0)
+      # read content via standard file methods
+      print(mm.readline())  # prints b&quot;Hello Python!\n&quot;
+      # read content via slice notation
+      print(mm[:5])  # prints b&quot;Hello&quot;
+      # update content using slice notation;
+      # note that new content must have same size
+      mm[6:] = b&quot; world!\n&quot;
+      # ... and read again using standard file methods
+      mm.seek(0)
+      print(mm.readline())  # prints b&quot;Hello  world!\n&quot;
+      # close the map
+      mm.close()
+</code></pre></div>
+
+<p>"mmap" también puede ser usado como un gestor de contexto en una
+   sentencia "with"</p>
+<div class="codehilite"><pre><span></span><code>  import mmap
+
+  with mmap.mmap(-1, 13) as mm:
+      mm.write(b&quot;Hello world!&quot;)
+</code></pre></div>
+
+<p>Added in version 3.2: Soporte del gestor de contexto.</p>
+<p>El siguiente ejemplo demuestra como crear un mapa anónimo y cambiar
+   los datos entre los procesos padre e hijo:</p>
+<div class="codehilite"><pre><span></span><code>  import mmap
+  import os
+
+  mm = mmap.mmap(-1, 13)
+  mm.write(b&quot;Hello world!&quot;)
+
+  pid = os.fork()
+
+  if pid == 0:  # In a child process
+      mm.seek(0)
+      print(mm.readline())
+
+      mm.close()
+</code></pre></div>
+
+<p>Lanza un evento de inspección "mmap.<strong>new</strong>" con los argumentos
+   "fileno", "length", "access", "offset".</p>
+<p>Los objetos de archivos mapeados en memoria soportan los siguiente
+   métodos:</p>
+<p>close()</p>
+<div class="codehilite"><pre><span></span><code>  Cierra el mmap. Las llamadas posteriores a otros métodos del
+  objeto resultarán en que se lance una excepción *ValueError*.
+  Esto no cerrará el archivo abierto.
+</code></pre></div>
+
+<p>closed</p>
+<div class="codehilite"><pre><span></span><code>  &quot;True&quot; si el archivo está cerrado.
+
+  Added in version 3.2.
+</code></pre></div>
+
+<p>find(sub[, start[, end]])</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el índice mínimo en el objeto donde la subsecuencia
+  *sub* es hallada, tal que *sub* este contenido en el rango
+  [*start*, *end*]. Los argumentos opcionales *start* y *end* son
+  interpretados como en una notación de rebanada. Retorna &quot;-1&quot; si
+  falla.
+
+  Distinto en la versión 3.5: Ahora el objeto *bytes-like object*
+  con permisos de escritura se acepta.
+</code></pre></div>
+
+<p>flush()
+   flush(offset, size, /)</p>
+<div class="codehilite"><pre><span></span><code>  Transmite los cambios hechos a la copia en memoria de una
+  archivo de vuelta al archivo. Sin el uso de esta llamada no hay
+  garantía que los cambios sean escritos de vuelta antes de que
+  los objetos sean destruidos.  Si *offset* y *size* son
+  especificados, solo los cambios al rango de bytes dado serán
+  transmitidos al disco; de otra forma, la extensión completa al
+  mapeado se transmite.  *offset* debe ser un múltiplo de la
+  constante &quot;PAGESIZE&quot; o &quot;ALLOCATIONGRANULARITY&quot;.
+
+  Se retorna &quot;None&quot; para indicar éxito.  Una excepción es lanzada
+  cuando la llamada falla.
+
+  Distinto en la versión 3.8: Anteriormente, se retornaba un valor
+  diferente de cero cuando era exitoso; se retornaba cero cuando
+  pasaba un error en Windows.  Se retornaba un valor de cero
+  cuando era exitoso; se lanzaba una excepción cuando pasaba un
+  error en Unix.
+</code></pre></div>
+
+<p>madvise(option[, start[, length]])</p>
+<div class="codehilite"><pre><span></span><code>  Envía un aviso *option* al kernel sobre la región de la memoria
+  que comienza con *start* y se extiende *length* bytes.  *option*
+  debe ser una de las constantes MADV_* disponibles en el sistema.
+  Si *start* y *end* se omiten, se abarca al mapeo entero.  En
+  algunos sistemas (incluyendo Linux), *start* debe ser un
+  múltiplo de &quot;PAGESIZE&quot;.
+
+  Disponibilidad: Sistemas con la llamada al sistema &quot;madvise()&quot;.
+
+  Added in version 3.8.
+</code></pre></div>
+
+<p>move(dest, src, count)</p>
+<div class="codehilite"><pre><span></span><code>  Copia los *count* bytes empezando en el *offset* *src* al índice
+  de destino *dest*.  Si el mmap fue creado con &quot;ACCESS_READ&quot;,
+  entonces las llamadas lanzaran una excepción &quot;TypeError&quot;.
+</code></pre></div>
+
+<p>read([n])</p>
+<div class="codehilite"><pre><span></span><code>  Retorna una clase &quot;bytes&quot; que contiene hasta *n* bytes empezando
+  desde la posición del archivo actual. Si se omite el argumento,
+  es &quot;None&quot; o negativo, retorna todos los bytes desde la posición
+  actual del archivo hasta el final del mapeado. Se actualiza la
+  posición del archivo para apuntar después de los bytes que se
+  retornaron.
+
+  Distinto en la versión 3.3: El argumento puede ser omitido o ser
+  &quot;None&quot;.
+</code></pre></div>
+
+<p>read_byte()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna un byte en la posición actual del archivo como un
+  entero, y avanza la posición del archivo por 1.
+</code></pre></div>
+
+<p>readline()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna una sola línea, comenzando en la posición actual del
+  archivo y hasta la siguiente nueva línea. La posición del
+  archivo se actualiza para apuntar después de los bytes que se
+  retornaron.
+</code></pre></div>
+
+<p>resize(newsize)</p>
+<div class="codehilite"><pre><span></span><code>  Resizes the map and the underlying file, if any.
+
+  Resizing a map created with *access* of &quot;ACCESS_READ&quot; or
+  &quot;ACCESS_COPY&quot;, will raise a &quot;TypeError&quot; exception. Resizing a
+  map created with *trackfd* set to &quot;False&quot;, will raise a
+  &quot;ValueError&quot; exception.
+
+  **En Windows**: cambiar el tamaño del mapa generará un &quot;OSError&quot;
+  si hay otros mapas contra el archivo con el mismo nombre.
+  Cambiar el tamaño de un mapa anónimo (es decir, contra el
+  archivo de paginación) creará silenciosamente un nuevo mapa con
+  los datos originales copiado hasta la longitud del nuevo tamaño.
+
+  Distinto en la versión 3.11: Falla correctamente si se intenta
+  cambiar el tamaño cuando se sostiene otro mapa. Permite cambiar
+  el tamaño contra un mapa anónimo en Windows
+</code></pre></div>
+
+<p>rfind(sub[, start[, end]])</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el índice más alto en el objeto donde la subsecuencia
+  *sub* se encuentre, tal que *sub* sea contenido en el rango
+  [*start*, *end*]. Los argumentos opcionales *start* y *end* son
+  interpretados como un notación de rebanada. Retorna &quot;-1&quot; si
+  falla.
+
+  Distinto en la versión 3.5: Ahora el objeto *bytes-like object*
+  con permisos de escritura se acepta.
+</code></pre></div>
+
+<p>seek(pos[, whence])</p>
+<div class="codehilite"><pre><span></span><code>  Establece la posición actual del archivo.  El argumento *whence*
+  es opcional y es por defecto &quot;os.SEEK_SET&quot; o &quot;0&quot;
+  (posicionamiento del archivo absoluto); otros valores son
+  &quot;os.SEEK_CUR&quot; o &quot;1&quot; (búsqueda relativa a la posición actual) y
+  &quot;os.SEEK_END&quot; o &quot;2&quot; (búsqueda relativa al final del archivo).
+
+  Distinto en la versión 3.13: Return the new absolute position
+  instead of &quot;None&quot;.
+</code></pre></div>
+
+<p>seekable()</p>
+<div class="codehilite"><pre><span></span><code>  Return whether the file supports seeking, and the return value
+  is always &quot;True&quot;.
+
+  Added in version 3.13.
+</code></pre></div>
+
+<p>size()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna el tamaño del archivo, que puede ser más grande que el
+  tamaño del área mapeado en memoria.
+</code></pre></div>
+
+<p>tell()</p>
+<div class="codehilite"><pre><span></span><code>  Retorna la posición actual del puntero del archivo.
+</code></pre></div>
+
+<p>write(bytes)</p>
+<div class="codehilite"><pre><span></span><code>  Escribe los bytes en *bytes* en memoria en la posición actual
+  del puntero del archivo y retorna el números de bytes escritos
+  (nunca menos que &quot;len(bytes)&quot;, ya que si la escritura falla, una
+  excepción &quot;ValueError&quot; será lanzada).  La posición del archivo
+  es actualizada para apuntar después de los bytes escritos.  Si
+  el mmap fue creado con &quot;ACCESS_READ&quot;, entonces escribirlo
+  lanzará una excepción &quot;TypeError&quot;.
+
+  Distinto en la versión 3.5: Ahora el objeto *bytes-like object*
+  con permisos de escritura se acepta.
+
+  Distinto en la versión 3.6: Ahora se retorna el número de bytes
+  escritos.
+</code></pre></div>
+
+<p>write_byte(byte)</p>
+<div class="codehilite"><pre><span></span><code>  Escribe el entero *byte* en la memoria en la posición actual del
+  puntero del archivo; se avanza la posición del archivo por &quot;1&quot;.
+  Si el mmap es creado con &quot;ACCES_READ&quot;, entonces escribirlo hará
+  que se lance la excepción &quot;TypeError&quot;.
+</code></pre></div>
+
+<h2 id="constantes-madv_">Constantes MADV_*<a class="headerlink" href="#constantes-madv_" title="Permanent link">#</a></h2>
+<p>mmap.MADV_NORMAL
+mmap.MADV_RANDOM
+mmap.MADV_SEQUENTIAL
+mmap.MADV_WILLNEED
+mmap.MADV_DONTNEED
+mmap.MADV_REMOVE
+mmap.MADV_DONTFORK
+mmap.MADV_DOFORK
+mmap.MADV_HWPOISON
+mmap.MADV_MERGEABLE
+mmap.MADV_UNMERGEABLE
+mmap.MADV_SOFT_OFFLINE
+mmap.MADV_HUGEPAGE
+mmap.MADV_NOHUGEPAGE
+mmap.MADV_DONTDUMP
+mmap.MADV_DODUMP
+mmap.MADV_FREE
+mmap.MADV_NOSYNC
+mmap.MADV_AUTOSYNC
+mmap.MADV_NOCORE
+mmap.MADV_CORE
+mmap.MADV_PROTECT
+mmap.MADV_FREE_REUSABLE
+mmap.MADV_FREE_REUSE</p>
+<p>Se pueden pasar estas opciones al método "mmap.madvise()".  No
+   todas las opciones estarán presentes en todos los sistemas.</p>
+<p>Disponibilidad: Sistemas con la llamada al sistema <em>madvise()</em>.</p>
+<p>Added in version 3.8.</p>
+<h2 id="constantes-map_">Constantes MAP_*<a class="headerlink" href="#constantes-map_" title="Permanent link">#</a></h2>
+<p>mmap.MAP_SHARED
+mmap.MAP_PRIVATE
+mmap.MAP_32BIT
+mmap.MAP_ALIGNED_SUPER
+mmap.MAP_ANON
+mmap.MAP_ANONYMOUS
+mmap.MAP_CONCEAL
+mmap.MAP_DENYWRITE
+mmap.MAP_EXECUTABLE
+mmap.MAP_HASSEMAPHORE
+mmap.MAP_JIT
+mmap.MAP_NOCACHE
+mmap.MAP_NOEXTEND
+mmap.MAP_NORESERVE
+mmap.MAP_POPULATE
+mmap.MAP_RESILIENT_CODESIGN
+mmap.MAP_RESILIENT_MEDIA
+mmap.MAP_STACK
+mmap.MAP_TPRO
+mmap.MAP_TRANSLATED_ALLOW_EXECUTE
+mmap.MAP_UNIX03</p>
+<p>These are the various flags that can be passed to "mmap.mmap()".
+   "MAP_ALIGNED_SUPER" is only available at FreeBSD and "MAP_CONCEAL"
+   is only available at OpenBSD.  Note that some options might not be
+   present on some systems.</p>
+<p>Distinto en la versión 3.10: Added "MAP_POPULATE" constant.</p>
+<p>Added in version 3.11: Added "MAP_STACK" constant.</p>
+<p>Added in version 3.12: Added "MAP_ALIGNED_SUPER" and "MAP_CONCEAL"
+   constants.</p>
+<p>Added in version 3.13: Added "MAP_32BIT", "MAP_HASSEMAPHORE",
+   "MAP_JIT", "MAP_NOCACHE", "MAP_NOEXTEND", "MAP_NORESERVE",
+   "MAP_RESILIENT_CODESIGN", "MAP_RESILIENT_MEDIA", "MAP_TPRO",
+   "MAP_TRANSLATED_ALLOW_EXECUTE", and "MAP_UNIX03" constants.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/mm.html">
+          <span class="muted">Anterior</span>Servicios Multimedia
+        </a>
+        <a class="pager-next" href="../library/modulefinder.html">
+          <span class="muted">Siguiente</span>&#34;modulefinder&#34; --- Find modules used by a script
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

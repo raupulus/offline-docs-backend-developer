@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Allocating objects on the heap · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              C Api
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../c-api/abstract.html"
+>Capa de objetos abstractos</a>
+              </li>
+              <li>
+                <a href="../c-api/allocation.html"
+class="is-current" aria-current="page">Allocating objects on the heap</a>
+              </li>
+              <li>
+                <a href="../c-api/apiabiversion.html"
+>Versiones de API y ABI</a>
+              </li>
+              <li>
+                <a href="../c-api/arg.html"
+>Analizando argumentos y construyendo valores</a>
+              </li>
+              <li>
+                <a href="../c-api/bool.html"
+>Objetos booleanos</a>
+              </li>
+              <li>
+                <a href="../c-api/buffer.html"
+>Protocolo búfer</a>
+              </li>
+              <li>
+                <a href="../c-api/bytearray.html"
+>Objetos de arreglos de bytes (*bytearrays*)</a>
+              </li>
+              <li>
+                <a href="../c-api/bytes.html"
+>Objetos bytes</a>
+              </li>
+              <li>
+                <a href="../c-api/call.html"
+>Protocolo de llamada</a>
+              </li>
+              <li>
+                <a href="../c-api/capsule.html"
+>Cápsulas</a>
+              </li>
+              <li>
+                <a href="../c-api/cell.html"
+>Objetos celda</a>
+              </li>
+              <li>
+                <a href="../c-api/code.html"
+>Objetos código</a>
+              </li>
+              <li>
+                <a href="../c-api/codec.html"
+>Registro de códec y funciones de soporte</a>
+              </li>
+              <li>
+                <a href="../c-api/complex.html"
+>Objetos de números complejos</a>
+              </li>
+              <li>
+                <a href="../c-api/concrete.html"
+>Capa de objetos concretos</a>
+              </li>
+              <li>
+                <a href="../c-api/contextvars.html"
+>Objetos de variables de contexto</a>
+              </li>
+              <li>
+                <a href="../c-api/conversion.html"
+>Conversión y formato de cadenas de caracteres</a>
+              </li>
+              <li>
+                <a href="../c-api/coro.html"
+>Objetos corrutina</a>
+              </li>
+              <li>
+                <a href="../c-api/curses.html"
+>Curses C API</a>
+              </li>
+              <li>
+                <a href="../c-api/datetime.html"
+>Objetos *DateTime*</a>
+              </li>
+              <li>
+                <a href="../c-api/descriptor.html"
+>Objetos descriptores</a>
+              </li>
+              <li>
+                <a href="../c-api/dict.html"
+>Objetos diccionario</a>
+              </li>
+              <li>
+                <a href="../c-api/exceptions.html"
+>Manejo de excepciones</a>
+              </li>
+              <li>
+                <a href="../c-api/extension-modules.html"
+>Defining extension modules</a>
+              </li>
+              <li>
+                <a href="../c-api/file.html"
+>File objects</a>
+              </li>
+              <li>
+                <a href="../c-api/float.html"
+>Floating-Point Objects</a>
+              </li>
+              <li>
+                <a href="../c-api/frame.html"
+>Frame objects</a>
+              </li>
+              <li>
+                <a href="../c-api/function.html"
+>Objetos función</a>
+              </li>
+              <li>
+                <a href="../c-api/gcsupport.html"
+>Apoyo a la recolección de basura cíclica</a>
+              </li>
+              <li>
+                <a href="../c-api/gen.html"
+>Objetos generadores</a>
+              </li>
+              <li>
+                <a href="../c-api/hash.html"
+>PyHash API</a>
+              </li>
+              <li>
+                <a href="../c-api/import.html"
+>Importando módulos</a>
+              </li>
+              <li>
+                <a href="../c-api/index.html"
+>Python/C API reference manual</a>
+              </li>
+              <li>
+                <a href="../c-api/init.html"
+>Initialization, finalization, and threads</a>
+              </li>
+              <li>
+                <a href="../c-api/init_config.html"
+>Configuración de inicialización de Python</a>
+              </li>
+              <li>
+                <a href="../c-api/interp-lifecycle.html"
+>Interpreter initialization and finalization</a>
+              </li>
+              <li>
+                <a href="../c-api/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../c-api/iter.html"
+>Protocolo iterador</a>
+              </li>
+              <li>
+                <a href="../c-api/iterator.html"
+>Objetos iteradores</a>
+              </li>
+              <li>
+                <a href="../c-api/lifecycle.html"
+>Object Life Cycle</a>
+              </li>
+              <li>
+                <a href="../c-api/list.html"
+>Objetos lista</a>
+              </li>
+              <li>
+                <a href="../c-api/long.html"
+>Objetos enteros</a>
+              </li>
+              <li>
+                <a href="../c-api/mapping.html"
+>Protocolo de mapeo</a>
+              </li>
+              <li>
+                <a href="../c-api/marshal.html"
+>Soporte de empaquetado (*marshalling*) de datos</a>
+              </li>
+              <li>
+                <a href="../c-api/memory.html"
+>Gestión de la memoria</a>
+              </li>
+              <li>
+                <a href="../c-api/memoryview.html"
+>Objetos de vista de memoria (*MemoryView*)</a>
+              </li>
+              <li>
+                <a href="../c-api/method.html"
+>Objetos de método de instancia</a>
+              </li>
+              <li>
+                <a href="../c-api/module.html"
+>Objetos módulo</a>
+              </li>
+              <li>
+                <a href="../c-api/monitoring.html"
+>Monitoring C API</a>
+              </li>
+              <li>
+                <a href="../c-api/none.html"
+>El objeto &#34;None&#34;</a>
+              </li>
+              <li>
+                <a href="../c-api/number.html"
+>Protocolo de números</a>
+              </li>
+              <li>
+                <a href="../c-api/object.html"
+>Protocolo de objeto</a>
+              </li>
+              <li>
+                <a href="../c-api/objimpl.html"
+>Soporte de implementación de objetos</a>
+              </li>
+              <li>
+                <a href="../c-api/perfmaps.html"
+>Soporte para Mapeo Perf</a>
+              </li>
+              <li>
+                <a href="../c-api/picklebuffer.html"
+>Pickle buffer objects</a>
+              </li>
+              <li>
+                <a href="../c-api/profiling.html"
+>Profiling and tracing</a>
+              </li>
+              <li>
+                <a href="../c-api/refcounting.html"
+>Conteo de referencias</a>
+              </li>
+              <li>
+                <a href="../c-api/reflection.html"
+>Reflexión</a>
+              </li>
+              <li>
+                <a href="../c-api/sequence.html"
+>Protocolo de secuencia</a>
+              </li>
+              <li>
+                <a href="../c-api/set.html"
+>Objetos conjunto</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../library/__future__.html">Library</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Allocating objects on the heap</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#soft-deprecated-aliases">Soft-deprecated aliases#</a></li>
+              <li class="lvl-2"><a href="#pyobject_newtype-typeobj-pyobject_new">| PyObject_NEW(type, typeobj)                        | &#34;PyObject_New&#34;                                     |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_new_vartype-typeobj-n-pyobject_newvar">| PyObject_NEW_VAR(type, typeobj, n)                 | &#34;PyObject_NewVar&#34;                                  |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_initop-typeobj-pyobject_init">| PyObject_INIT(op, typeobj)                         | &#34;PyObject_Init()&#34;                                  |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_init_varop-typeobj-n-pyobject_initvar">| PyObject_INIT_VAR(op, typeobj, n)                  | &#34;PyObject_InitVar()&#34;                               |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_mallocn-pyobject_malloc">| PyObject_MALLOC(n)                                 | &#34;PyObject_Malloc()&#34;                                |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_reallocp-n-pyobject_realloc">| PyObject_REALLOC(p, n)                             | &#34;PyObject_Realloc()&#34;                               |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_freep-pyobject_free">| PyObject_FREE(p)                                   | &#34;PyObject_Free()&#34;                                  |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_delp-pyobject_free">| PyObject_DEL(p)                                    | &#34;PyObject_Free()&#34;                                  |#</a></li>
+              <li class="lvl-2"><a href="#pyobject_delp-pyobject_free_1">| PyObject_Del(p)                                    | &#34;PyObject_Free()&#34;                                  |#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="allocating-objects-on-the-heap">Allocating objects on the heap<a class="headerlink" href="#allocating-objects-on-the-heap" title="Permanent link">#</a></h1>
+<p>PyObject <em>_PyObject_New(PyTypeObject </em>type)
+    <em>Return value: New reference.</em></p>
+<p>PyVarObject <em>_PyObject_NewVar(PyTypeObject </em>type, Py_ssize_t size)
+    <em>Return value: New reference.</em></p>
+<p>PyObject <em>PyObject_Init(PyObject </em>op, PyTypeObject <em>type)
+    </em>Return value: Borrowed reference.*<em> Part of the Stable ABI.</em></p>
+<p>Initialize a newly allocated object <em>op</em> with its type and initial
+   reference.  Returns the initialized object.  Other fields of the
+   object are not initialized.  Despite its name, this function is
+   unrelated to the object's "<strong>init</strong>()" method ("tp_init" slot).
+   Specifically, this function does <strong>not</strong> call the object's
+   "<strong>init</strong>()" method.</p>
+<p>In general, consider this function to be a low-level routine. Use
+   "tp_alloc" where possible. For implementing "tp_alloc" for your
+   type, prefer "PyType_GenericAlloc()" or "PyObject_New()".</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> This function only initializes the object&#39;s memory corresponding
+ to the initial &quot;PyObject&quot; structure.  It does not zero the rest.
+</code></pre></div>
+
+<p>PyVarObject <em>PyObject_InitVar(PyVarObject </em>op, PyTypeObject <em>type, Py_ssize_t size)
+    </em>Return value: Borrowed reference.*<em> Part of the Stable ABI.</em></p>
+<p>Esto hace todo lo que "PyObject_Init()" hace, y también inicializa
+   la información de longitud para un objeto de tamaño variable.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> This function only initializes some of the object&#39;s memory.  It
+ does not zero the rest.
+</code></pre></div>
+
+<p>PyObject_New(TYPE, typeobj)</p>
+<p>Allocates a new Python object using the C structure type <em>TYPE</em> and
+   the Python type object <em>typeobj</em> ("PyTypeObject*") by calling
+   "PyObject_Malloc()" to allocate memory and initializing it like
+   "PyObject_Init()".  The caller will own the only reference to the
+   object (i.e. its reference count will be one).</p>
+<p>Avoid calling this directly to allocate memory for an object; call
+   the type's "tp_alloc" slot instead.</p>
+<p>When populating a type's "tp_alloc" slot, "PyType_GenericAlloc()"
+   is preferred over a custom function that simply calls this macro.</p>
+<p>This macro does not call "tp_alloc", "tp_new" ("<strong>new</strong>()"), or
+   "tp_init" ("<strong>init</strong>()").</p>
+<p>This cannot be used for objects with "Py_TPFLAGS_HAVE_GC" set in
+   "tp_flags"; use "PyObject_GC_New" instead.</p>
+<p>Memory allocated by this macro must be freed with "PyObject_Free()"
+   (usually called via the object's "tp_free" slot).</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> The returned memory is not guaranteed to have been completely
+ zeroed before it was initialized.
+</code></pre></div>
+
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> This macro does not construct a fully initialized object of the
+ given type; it merely allocates memory and prepares it for
+ further initialization by &quot;tp_init&quot;.  To construct a fully
+ initialized object, call *typeobj* instead.  For example:
+
+    PyObject *foo = PyObject_CallNoArgs((PyObject *)&amp;PyFoo_Type);
+</code></pre></div>
+
+<p>Ver también:</p>
+<div class="codehilite"><pre><span></span><code> * &quot;PyObject_Free()&quot;
+
+ * &quot;PyObject_GC_New&quot;
+
+ * &quot;PyType_GenericAlloc()&quot;
+
+ * &quot;tp_alloc&quot;
+</code></pre></div>
+
+<p>PyObject_NewVar(TYPE, typeobj, size)</p>
+<p>Like "PyObject_New" except:</p>
+<ul>
+<li>
+<p>It allocates enough memory for the <em>TYPE</em> structure plus <em>size</em>
+     ("Py_ssize_t") fields of the size given by the "tp_itemsize"
+     field of <em>typeobj</em>.</p>
+</li>
+<li>
+<p>The memory is initialized like "PyObject_InitVar()".</p>
+</li>
+</ul>
+<p>This is useful for implementing objects like tuples, which are able
+   to determine their size at construction time.  Embedding the array
+   of fields into the same allocation decreases the number of
+   allocations, improving the memory management efficiency.</p>
+<p>Avoid calling this directly to allocate memory for an object; call
+   the type's "tp_alloc" slot instead.</p>
+<p>When populating a type's "tp_alloc" slot, "PyType_GenericAlloc()"
+   is preferred over a custom function that simply calls this macro.</p>
+<p>This cannot be used for objects with "Py_TPFLAGS_HAVE_GC" set in
+   "tp_flags"; use "PyObject_GC_NewVar" instead.</p>
+<p>Memory allocated by this function must be freed with
+   "PyObject_Free()" (usually called via the object's "tp_free" slot).</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> The returned memory is not guaranteed to have been completely
+ zeroed before it was initialized.
+</code></pre></div>
+
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> This macro does not construct a fully initialized object of the
+ given type; it merely allocates memory and prepares it for
+ further initialization by &quot;tp_init&quot;.  To construct a fully
+ initialized object, call *typeobj* instead.  For example:
+
+    PyObject *list_instance = PyObject_CallNoArgs((PyObject *)&amp;PyList_Type);
+</code></pre></div>
+
+<p>Ver también:</p>
+<div class="codehilite"><pre><span></span><code> * &quot;PyObject_Free()&quot;
+
+ * &quot;PyObject_GC_NewVar&quot;
+
+ * &quot;PyType_GenericAlloc()&quot;
+
+ * &quot;tp_alloc&quot;
+</code></pre></div>
+
+<p>PyObject _Py_NoneStruct</p>
+<p>Objeto que es visible en Python como "None". Esto solo se debe
+   acceder utilizando el macro "Py_None", que se evalúa como un
+   puntero a este objeto.</p>
+<p>Ver también:</p>
+<p>Objetos módulo
+     Para asignar y crear módulos de extensión.</p>
+<h2 id="soft-deprecated-aliases">Soft-deprecated aliases<a class="headerlink" href="#soft-deprecated-aliases" title="Permanent link">#</a></h2>
+<p>Soft deprecated since version 3.10.</p>
+<p>These are aliases to existing functions and macros. They exist solely
+for backwards compatibility.</p>
+<p>+----------------------------------------------------+----------------------------------------------------+
+| Soft-deprecated alias                              | Function                                           |
+|====================================================|====================================================|</p>
+<h2 id="pyobject_newtype-typeobj-pyobject_new">| PyObject_NEW(type, typeobj)                        | "PyObject_New"                                     |<a class="headerlink" href="#pyobject_newtype-typeobj-pyobject_new" title="Permanent link">#</a></h2>
+<h2 id="pyobject_new_vartype-typeobj-n-pyobject_newvar">| PyObject_NEW_VAR(type, typeobj, n)                 | "PyObject_NewVar"                                  |<a class="headerlink" href="#pyobject_new_vartype-typeobj-n-pyobject_newvar" title="Permanent link">#</a></h2>
+<h2 id="pyobject_initop-typeobj-pyobject_init">| PyObject_INIT(op, typeobj)                         | "PyObject_Init()"                                  |<a class="headerlink" href="#pyobject_initop-typeobj-pyobject_init" title="Permanent link">#</a></h2>
+<h2 id="pyobject_init_varop-typeobj-n-pyobject_initvar">| PyObject_INIT_VAR(op, typeobj, n)                  | "PyObject_InitVar()"                               |<a class="headerlink" href="#pyobject_init_varop-typeobj-n-pyobject_initvar" title="Permanent link">#</a></h2>
+<h2 id="pyobject_mallocn-pyobject_malloc">| PyObject_MALLOC(n)                                 | "PyObject_Malloc()"                                |<a class="headerlink" href="#pyobject_mallocn-pyobject_malloc" title="Permanent link">#</a></h2>
+<h2 id="pyobject_reallocp-n-pyobject_realloc">| PyObject_REALLOC(p, n)                             | "PyObject_Realloc()"                               |<a class="headerlink" href="#pyobject_reallocp-n-pyobject_realloc" title="Permanent link">#</a></h2>
+<h2 id="pyobject_freep-pyobject_free">| PyObject_FREE(p)                                   | "PyObject_Free()"                                  |<a class="headerlink" href="#pyobject_freep-pyobject_free" title="Permanent link">#</a></h2>
+<h2 id="pyobject_delp-pyobject_free">| PyObject_DEL(p)                                    | "PyObject_Free()"                                  |<a class="headerlink" href="#pyobject_delp-pyobject_free" title="Permanent link">#</a></h2>
+<h2 id="pyobject_delp-pyobject_free_1">| PyObject_Del(p)                                    | "PyObject_Free()"                                  |<a class="headerlink" href="#pyobject_delp-pyobject_free_1" title="Permanent link">#</a></h2>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../c-api/abstract.html">
+          <span class="muted">Anterior</span>Capa de objetos abstractos
+        </a>
+        <a class="pager-next" href="../c-api/apiabiversion.html">
+          <span class="muted">Siguiente</span>Versiones de API y ABI
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

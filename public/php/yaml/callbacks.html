@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Callbacks · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Yaml
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../yaml/callbacks.html"
+class="is-current" aria-current="page">Callbacks</a>
+              </li>
+              <li>
+                <a href="../yaml/ini.html"
+>Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../yaml/constants.html"
+>Constantes predefinidas</a>
+              </li>
+              <li>
+                <a href="../yaml/examples.html"
+>Ejemplos</a>
+              </li>
+              <li>
+                <a href="../yaml/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../yaml/yaml-emit.html"
+>yaml_emit</a>
+              </li>
+              <li>
+                <a href="../yaml/yaml-emit-file.html"
+>yaml_emit_file</a>
+              </li>
+              <li>
+                <a href="../yaml/yaml-parse.html"
+>yaml_parse</a>
+              </li>
+              <li>
+                <a href="../yaml/yaml-parse-file.html"
+>yaml_parse_file</a>
+              </li>
+              <li>
+                <a href="../yaml/yaml-parse-url.html"
+>yaml_parse_url</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Callbacks</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/yaml.callbacks.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#callbacks">Callbacks#</a></li>
+              <li class="lvl-2"><a href="#analisis-de-callbacks">Análisis de callbacks#</a></li>
+              <li class="lvl-2"><a href="#emitir-callbacks">Emitir callbacks#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="callbacks">Callbacks<a class="headerlink" href="#callbacks" title="Permanent link">#</a></h2>
+<h2 id="analisis-de-callbacks">Análisis de callbacks<a class="headerlink" href="#analisis-de-callbacks" title="Permanent link">#</a></h2>
+<p>Los análisis de <code>callable</code>s son invocados por las funciones <code>yaml_parse</code>, <code>yaml_parse_file</code> o <code>yaml_parse_url</code> cuando encuentran una etiqueta YAML registrada. Al callback se le pasa el valor de la entidad de la etiqueta, la etiqueta, y los flags que indican el estilo escalar de la entidad. El callback debe devolver los datos que el convertidor YAML debe emitir para esta entidad.</p>
+<p>Ejemplo de análisis de callback</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * Análisis de callback para un tag yaml.</span>
+<span class="sd"> * @param mixed $valor Datos del archivo yaml</span>
+<span class="sd"> * @param string $tag Etiqueta que desencadenó el callback</span>
+<span class="sd"> * @param int $flags Estilo escalar de la entidad (ver YAML_*_SCALAR_STYLE)</span>
+<span class="sd"> * @return mixed Valor que el convertidor YAML debería emitir para el valor dado</span>
+<span class="sd"> */</span>
+<span class="k">function</span> <span class="nf">tag_callback</span> <span class="p">(</span><span class="nv">$valor</span><span class="p">,</span> <span class="nv">$tag</span><span class="p">,</span> <span class="nv">$flags</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nb">var_dump</span><span class="p">(</span><span class="nb">func_get_args</span><span class="p">());</span> <span class="c1">// depurando</span>
+  <span class="k">return</span> <span class="s2">&quot;Hola </span><span class="si">{</span><span class="nv">$valor</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$yaml</span> <span class="o">=</span> <span class="s">&lt;&lt;&lt;</span><span class="dl">YAML</span>
+<span class="s">saludo: !ejemplo/hola Mundo</span>
+<span class="dl">YAML</span><span class="p">;</span>
+
+<span class="nv">$resultado</span> <span class="o">=</span> <span class="nb">yaml_parse</span><span class="p">(</span><span class="nv">$yaml</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$ndocs</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">&#39;!ejemplo/hola&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;tag_callback&#39;</span><span class="p">,</span>
+  <span class="p">));</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$resultado</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Resultado del ejemplo anterior es similar a:</p>
+<div class="codehilite"><pre><span></span><code>array(3) {
+  [0]=&gt;
+  string(5) &quot;Mundo&quot;
+  [1]=&gt;
+  string(14) &quot;!ejemplo/hola&quot;
+  [2]=&gt;
+  int(1)
+}
+array(1) {
+  [&quot;saludo&quot;]=&gt;
+  string(11) &quot;Hola Mundo&quot;
+}
+</code></pre></div>
+
+<h2 id="emitir-callbacks">Emitir callbacks<a class="headerlink" href="#emitir-callbacks" title="Permanent link">#</a></h2>
+<p>Las emisiones de callbacks son invocadas cuando una instancia de una clase registrada es emitida por la función <code>yaml_emit</code> o la función <code>yaml_emit_file</code>. El callback se pasa al objeto a ser emitido. El callback debe devolver un array que contenga dos claves: "<code>tag</code>" y "<code>data</code>". El valor asociado con la clave "<code>tag</code>" debe ser un string a ser usado como la etiqueta YAML en la salida. El valor asociado con la clave "<code>data</code>" será encodeado como YAML y será emitido en lugar del objeto interceptado.</p>
+<p>Ejemplo de emisión de callback</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">EmitExample</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="nv">$data</span><span class="p">;</span>    <span class="c1">// los datos podrían ser ajustables en cualquier tipo de pecl/yaml</span>
+
+  <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span> <span class="p">(</span><span class="nv">$d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">data</span> <span class="o">=</span> <span class="nv">$d</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="sd">/**</span>
+<span class="sd">   * Yaml emite la función de callback, referida a la llamada yaml_emit por el nombre de la clase.</span>
+<span class="sd">   *</span>
+<span class="sd">   * Se espera que devuelva un array con 2 valores:</span>
+<span class="sd">   *   - &#39;tag&#39;: etiqueta personalizada para esta serialización</span>
+<span class="sd">   *   - &#39;data&#39;: valor que se convierte a yaml (ya sea array, string, bool, número)</span>
+<span class="sd">   *</span>
+<span class="sd">   * @param object $obj Objeto a ser emitido</span>
+<span class="sd">   * @return array Etiqueta y datos sustitutivos a emitir</span>
+<span class="sd">   */</span>
+  <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">yamlEmit</span> <span class="p">(</span><span class="nx">EmitExample</span> <span class="nv">$obj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+      <span class="s1">&#39;tag&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;!example/emit&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;data&#39;</span> <span class="o">=&gt;</span> <span class="nv">$obj</span><span class="o">-&gt;</span><span class="na">data</span><span class="p">,</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$emit_callbacks</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+  <span class="s1">&#39;EmitExample&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;EmitExample&#39;</span><span class="p">,</span> <span class="s1">&#39;yamlEmit&#39;</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="nv">$t</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EmitExample</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">));</span>
+<span class="nv">$yaml</span> <span class="o">=</span> <span class="nb">yaml_emit</span><span class="p">(</span>
+  <span class="k">array</span><span class="p">(</span>
+    <span class="s1">&#39;example&#39;</span> <span class="o">=&gt;</span> <span class="nv">$t</span><span class="p">,</span>
+  <span class="p">),</span>
+  <span class="nx">YAML_ANY_ENCODING</span><span class="p">,</span>
+  <span class="nx">YAML_ANY_BREAK</span><span class="p">,</span>
+  <span class="nv">$emit_callbacks</span>
+<span class="p">);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$yaml</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Resultado del ejemplo anterior es similar a:</p>
+<div class="codehilite"><pre><span></span><code>string(43) &quot;---
+example: !example/emit
+- a
+- b
+- c
+...
+&quot;
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../yaf/setscriptpath-2.html">
+          <span class="muted">Anterior</span>Yaf_View_Simple::setScriptPath
+        </a>
+        <a class="pager-next" href="../yaml/ini.html">
+          <span class="muted">Siguiente</span>Configuración en tiempo de ejecución
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

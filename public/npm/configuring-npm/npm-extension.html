@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>.npm-extension · npm</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">npm</a>
+<span class="badge">latest</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="npm" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en npm…"
+         aria-label="Buscar en npm" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de npm
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de npm">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../commands/npm-access.html">Commands</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Configuring Npm
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../configuring-npm/folders.html"
+>Folders</a>
+              </li>
+              <li>
+                <a href="../configuring-npm/install.html"
+>Install</a>
+              </li>
+              <li>
+                <a href="../configuring-npm/npm-extension.html"
+class="is-current" aria-current="page">.npm-extension</a>
+              </li>
+              <li>
+                <a href="../configuring-npm/npmrc.html"
+>.npmrc</a>
+              </li>
+              <li>
+                <a href="../configuring-npm/package-json.html"
+>package.json</a>
+              </li>
+              <li>
+                <a href="../configuring-npm/package-lock-json.html"
+>package-lock.json</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using-npm/config.html">Using Npm</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">.npm-extension</h1>
+
+      <p class="doc-meta">
+<span class="badge">latest</span>          <a href="https://docs.npmjs.com/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia TODO-VERIFICAR</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#description">Description#</a></li>
+              <li class="lvl-3"><a href="#example">Example#</a></li>
+              <li class="lvl-3"><a href="#the-transformmanifest-function">The transformManifest function#</a></li>
+              <li class="lvl-3"><a href="#supported-mutations">Supported mutations#</a></li>
+              <li class="lvl-3"><a href="#discovery-and-extension-file">Discovery and extension-file#</a></li>
+              <li class="lvl-3"><a href="#interaction-with-packageextensions-and-overrides">Interaction with packageExtensions and overrides#</a></li>
+              <li class="lvl-3"><a href="#lockfile-and-npm-ci">Lockfile and npm ci#</a></li>
+              <li class="lvl-3"><a href="#disabling">Disabling#</a></li>
+              <li class="lvl-3"><a href="#publishing">Publishing#</a></li>
+              <li class="lvl-3"><a href="#see-also">See also#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h3>
+<p>A root-owned <code>.npm-extension.mjs</code> or <code>.npm-extension.cjs</code> file lets a project imperatively repair the manifests of third-party dependencies before npm resolves the dependency tree. It exports a <code>transformManifest(pkg, context)</code> function that receives a candidate dependency manifest and returns the effective manifest npm should use.</p>
+<p><code>.npm-extension</code> is the imperative counterpart to the declarative <a href="../configuring-npm/package-json.html#packageextensions"><code>packageExtensions</code></a> field, and runs in the same pre-resolution phase, <strong>before</strong> <code>packageExtensions</code>. Prefer <code>packageExtensions</code> for simple, data-only repairs; reach for <code>.npm-extension</code> when you need comments and links explaining a repair, conditional logic, repeated repairs expressed as code, deletion or range rewrites, stale-repair guards, or a policy location outside <code>package.json</code>.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1">// .npm-extension.mjs</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">transformManifest</span><span class="w"> </span><span class="p">(</span><span class="nx">pkg</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">pkg</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;foo&#39;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">pkg</span><span class="p">.</span><span class="nx">version</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">&#39;1.&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">pkg</span><span class="p">.</span><span class="nx">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">pkg</span><span class="p">.</span><span class="nx">dependencies</span><span class="p">,</span><span class="w"> </span><span class="nx">bar</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;^2.0.0&#39;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">context</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`added bar to </span><span class="si">${</span><span class="nx">pkg</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="sb">@</span><span class="si">${</span><span class="nx">pkg</span><span class="p">.</span><span class="nx">version</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">pkg</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The <code>.cjs</code> form uses CommonJS exports instead:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// .npm-extension.cjs</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">transformManifest</span><span class="w"> </span><span class="p">(</span><span class="nx">pkg</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">pkg</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="the-transformmanifest-function">The <code>transformManifest</code> function<a class="headerlink" href="#the-transformmanifest-function" title="Permanent link">#</a></h3>
+<p><code>transformManifest(pkg, context)</code> receives a deeply isolated copy of a candidate dependency manifest. It may mutate and return that copy, or return a new manifest object. It <strong>must</strong> return a manifest object synchronously; returning <code>null</code>, <code>undefined</code>, a primitive, an array, or a promise fails the install.</p>
+<p>The <code>context</code> argument is intentionally small:</p>
+<ul>
+<li><code>context.log(message)</code> writes an npm debug log message.</li>
+<li><code>context.root</code> is the absolute path to the project root.</li>
+<li><code>context.extensionPoint</code> is the string <code>"transformManifest"</code>.</li>
+</ul>
+<p>npm provides no registry, fetch, lockfile, or extraction helpers. Keep the extension file self-contained or limited to Node builtins; npm does not guarantee that project dependencies are available when the file is loaded.</p>
+<h3 id="supported-mutations">Supported mutations<a class="headerlink" href="#supported-mutations" title="Permanent link">#</a></h3>
+<p>Only the four resolution-affecting fields may change:</p>
+<ul>
+<li><code>dependencies</code></li>
+<li><code>optionalDependencies</code></li>
+<li><code>peerDependencies</code></li>
+<li><code>peerDependenciesMeta</code></li>
+</ul>
+<p>Within those fields you may add, replace, or delete entries. Changing any other field (such as <code>scripts</code>, <code>bin</code>, <code>engines</code>, <code>os</code>, <code>cpu</code>, <code>exports</code>, or <code>main</code>) is rejected, and the install fails with an error naming <code>.npm-extension</code> and the package being processed. The package tarball and the installed <code>node_modules/&lt;pkg&gt;/package.json</code> are never rewritten.</p>
+<h3 id="discovery-and-extension-file">Discovery and <code>extension-file</code><a class="headerlink" href="#discovery-and-extension-file" title="Permanent link">#</a></h3>
+<p>npm looks for a single <code>.npm-extension.mjs</code> or <code>.npm-extension.cjs</code> at the project root (the workspace root in a workspace project). Having both files present is an error. A <code>.npm-extension</code> file in a dependency or in a non-root workspace is ignored; a non-root workspace file produces a warning.</p>
+<p>The <a href="../using-npm/config.html#extension-file"><code>extension-file</code></a> config selects a different project-local file. It must resolve inside the project root and use a <code>.mjs</code> or <code>.cjs</code> extension, and it is honored only from project config or the command line — never from user, global, or builtin config.</p>
+<h3 id="interaction-with-packageextensions-and-overrides">Interaction with <code>packageExtensions</code> and <code>overrides</code><a class="headerlink" href="#interaction-with-packageextensions-and-overrides" title="Permanent link">#</a></h3>
+<p>When both are present, <code>transformManifest</code> runs first and <code>packageExtensions</code> is applied to its output. Avoid targeting the same package with both unless you intend to rely on that ordering. <code>overrides</code> still controls the final resolution target of any edge, including edges created by <code>transformManifest</code>.</p>
+<h3 id="lockfile-and-npm-ci">Lockfile and <code>npm ci</code><a class="headerlink" href="#lockfile-and-npm-ci" title="Permanent link">#</a></h3>
+<p>A lockfile influenced by <code>.npm-extension</code> records an <code>npmExtensionHash</code> (a digest of the selected file's bytes and module format) on its root entry, and minimal <code>npmExtensionApplied</code> provenance on each affected package entry. Extension state requires <code>lockfileVersion: 4</code>.</p>
+<p>Changing the file's contents makes <code>npm install</code> re-resolve the affected packages. <code>npm ci</code> does <strong>not</strong> import or execute <code>.npm-extension</code>; it verifies the recorded hash against the file and reifies the locked graph, failing if the file and lockfile disagree (or if one has extension state and the other does not).</p>
+<p>The hash proves only that the install uses the same extension file bytes that generated the lockfile. It does not make arbitrary JavaScript deterministic: extension output that depends on environment variables, the network, the clock, or files imported by the extension can still produce non-reproducible installs. Treat <code>.npm-extension</code> as trusted, deterministic project code, and only enable it in repositories you trust.</p>
+<h3 id="disabling">Disabling<a class="headerlink" href="#disabling" title="Permanent link">#</a></h3>
+<p>Set <a href="../using-npm/config.html#ignore-extension"><code>ignore-extension</code></a> to skip importing and executing <code>.npm-extension</code>. <a href="../using-npm/config.html#ignore-scripts"><code>ignore-scripts</code></a> implies <code>ignore-extension</code>, since both disable root-owned install-time code. <code>npm ci</code> still verifies the file hash even when execution is disabled.</p>
+<h3 id="publishing">Publishing<a class="headerlink" href="#publishing" title="Permanent link">#</a></h3>
+<p><code>.npm-extension.mjs</code> and <code>.npm-extension.cjs</code> are project configuration, not package contents. npm excludes the root file from the package tarball produced by <code>npm pack</code> and <code>npm publish</code>, even when the package's <code>files</code> list would include it, so a public package can keep <code>.npm-extension</code> in its repository for local use without publishing it.</p>
+<h3 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">#</a></h3>
+<ul>
+<li><a href="../configuring-npm/package-json.html#packageextensions">package.json <code>packageExtensions</code></a></li>
+<li><a href="../configuring-npm/package-lock-json.html">package-lock.json</a></li>
+<li><a href="../using-npm/config.html">config</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../configuring-npm/install.html">
+          <span class="muted">Anterior</span>Install
+        </a>
+        <a class="pager-next" href="../configuring-npm/npmrc.html">
+          <span class="muted">Siguiente</span>.npmrc
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

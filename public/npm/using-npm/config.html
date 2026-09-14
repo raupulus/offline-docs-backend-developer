@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Config · npm</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">npm</a>
+<span class="badge">latest</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="npm" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en npm…"
+         aria-label="Buscar en npm" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de npm
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de npm">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../commands/npm-access.html">Commands</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../configuring-npm/folders.html">Configuring Npm</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Using Npm
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../using-npm/config.html"
+class="is-current" aria-current="page">Config</a>
+              </li>
+              <li>
+                <a href="../using-npm/dependency-selectors.html"
+>Dependency Selectors</a>
+              </li>
+              <li>
+                <a href="../using-npm/developers.html"
+>Developers</a>
+              </li>
+              <li>
+                <a href="../using-npm/logging.html"
+>Logging</a>
+              </li>
+              <li>
+                <a href="../using-npm/orgs.html"
+>Organizations</a>
+              </li>
+              <li>
+                <a href="../using-npm/package-spec.html"
+>Package spec</a>
+              </li>
+              <li>
+                <a href="../using-npm/registry.html"
+>Registry</a>
+              </li>
+              <li>
+                <a href="../using-npm/removal.html"
+>Removal</a>
+              </li>
+              <li>
+                <a href="../using-npm/scope.html"
+>Scope</a>
+              </li>
+              <li>
+                <a href="../using-npm/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../using-npm/workspaces.html"
+>Workspaces</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Config</h1>
+
+      <p class="doc-meta">
+<span class="badge">latest</span>          <a href="https://docs.npmjs.com/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia TODO-VERIFICAR</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#description">Description#</a></li>
+              <li class="lvl-3"><a href="#shorthands-and-other-cli-niceties">Shorthands and Other CLI Niceties#</a></li>
+              <li class="lvl-3"><a href="#config-settings">Config Settings#</a></li>
+              <li class="lvl-3"><a href="#see-also">See also#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h3>
+<p>This article details npm configuration in general.
+To learn about the <code>config</code> command, see <a href="../commands/npm-config.html"><code>npm config</code></a>.</p>
+<p>npm gets its configuration values from the following sources, sorted by priority:</p>
+<h4 id="command-line-flags">Command Line Flags<a class="headerlink" href="#command-line-flags" title="Permanent link">#</a></h4>
+<p>Putting <code>--foo bar</code> on the command line sets the <code>foo</code> configuration parameter to <code>"bar"</code>.
+A <code>--</code> argument tells the cli parser to stop reading flags.
+Using <code>--flag</code> without specifying any value will set the value to <code>true</code>.</p>
+<p>Example: <code>--flag1 --flag2</code> will set both configuration parameters to <code>true</code>, while <code>--flag1 --flag2 bar</code> will set <code>flag1</code> to <code>true</code>, and <code>flag2</code> to <code>bar</code>.
+Finally, <code>--flag1 --flag2 -- bar</code> will set both configuration parameters to <code>true</code>, and the <code>bar</code> is taken as a command argument.</p>
+<p><strong>Common examples:</strong></p>
+<ul>
+<li><code>npm install --prefix /path/to/dir</code> - Runs npm commands in a different directory without changing the current working directory</li>
+<li><code>npm install --global</code> - Installs packages globally (shorthand: <code>-g</code>)</li>
+<li><code>npm install --save-dev</code> - Saves to devDependencies (shorthand: <code>-D</code>)</li>
+</ul>
+<p>Any configuration option documented in the <a href="#config-settings">Config Settings</a> section below can be set via command line flags using <code>--option-name value</code> syntax.</p>
+<h4 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">#</a></h4>
+<p>Any environment variables that start with <code>npm_config_</code> will be interpreted as a configuration parameter.
+For example, putting <code>npm_config_foo=bar</code> in your environment will set the <code>foo</code> configuration parameter to <code>bar</code>.
+Any environment configurations that are not given a value will be given the value of <code>true</code>.
+Config values are case-insensitive, so <code>NPM_CONFIG_FOO=bar</code> will work the same.
+However, please note that inside <a href="../using-npm/scripts.html"><code>scripts</code></a> npm will set its own environment variables and Node will prefer those lowercase versions over any uppercase ones that you might set.
+For details see <a href="https://github.com/npm/npm/issues/14528">this issue</a>.</p>
+<p>Notice that you need to use underscores instead of dashes, so <code>--allow-same-version</code> would become <code>npm_config_allow_same_version=true</code>.</p>
+<p><strong>Important:</strong> When defining custom configuration keys in <code>.npmrc</code> files, use hyphens instead of underscores (e.g., <code>custom-key=value</code>). This ensures they can be overridden by environment variables, since npm automatically converts underscores to hyphens when reading environment variables. Keys with underscores in <code>.npmrc</code> files cannot be overridden via environment variables.</p>
+<h4 id="npmrc-files">npmrc Files<a class="headerlink" href="#npmrc-files" title="Permanent link">#</a></h4>
+<p>The four relevant files are:</p>
+<ul>
+<li>per-project configuration file (<code>/path/to/my/project/.npmrc</code>)</li>
+<li>per-user configuration file (defaults to <code>$HOME/.npmrc</code>; configurable via CLI option <code>--userconfig</code> or environment variable <code>$NPM_CONFIG_USERCONFIG</code>)</li>
+<li>global configuration file (defaults to <code>$PREFIX/etc/npmrc</code>; configurable via CLI option <code>--globalconfig</code> or environment variable <code>$NPM_CONFIG_GLOBALCONFIG</code>)</li>
+<li>npm's built-in configuration file (<code>/path/to/npm/npmrc</code>)</li>
+</ul>
+<p>See <a href="../configuring-npm/npmrc.html">npmrc</a> for more details.</p>
+<h4 id="default-configs">Default Configs<a class="headerlink" href="#default-configs" title="Permanent link">#</a></h4>
+<p>Run <code>npm config ls -l</code> to see a set of configuration parameters that are internal to npm, and are defaults if nothing else is specified.</p>
+<h3 id="shorthands-and-other-cli-niceties">Shorthands and Other CLI Niceties<a class="headerlink" href="#shorthands-and-other-cli-niceties" title="Permanent link">#</a></h3>
+<p>The following shorthands are parsed on the command-line:</p>
+<!-- AUTOGENERATED CONFIG SHORTHANDS -->
+
+<p>If the specified configuration param resolves unambiguously to a known configuration parameter, then it is expanded to that configuration parameter.
+For example:</p>
+<div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>ls<span class="w"> </span>--par
+<span class="c1"># same as:</span>
+npm<span class="w"> </span>ls<span class="w"> </span>--parseable
+</code></pre></div>
+
+<p>If multiple single-character shorthands are strung together, and the resulting combination is unambiguously not some other configuration param, then it is expanded to its various component pieces.
+For example:</p>
+<div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>ls<span class="w"> </span>-gpld
+<span class="c1"># same as:</span>
+npm<span class="w"> </span>ls<span class="w"> </span>--global<span class="w"> </span>--parseable<span class="w"> </span>--long<span class="w"> </span>--loglevel<span class="w"> </span>info
+</code></pre></div>
+
+<h3 id="config-settings">Config Settings<a class="headerlink" href="#config-settings" title="Permanent link">#</a></h3>
+<!-- AUTOGENERATED CONFIG DESCRIPTIONS -->
+
+<h3 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">#</a></h3>
+<ul>
+<li><a href="../commands/npm-config.html">npm config</a></li>
+<li><a href="../configuring-npm/npmrc.html">npmrc</a></li>
+<li><a href="../using-npm/scripts.html">npm scripts</a></li>
+<li><a href="../configuring-npm/folders.html">npm folders</a></li>
+<li><a href="../commands/npm.html">npm</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../configuring-npm/package-lock-json.html">
+          <span class="muted">Anterior</span>package-lock.json
+        </a>
+        <a class="pager-next" href="../using-npm/dependency-selectors.html">
+          <span class="muted">Siguiente</span>Dependency Selectors
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

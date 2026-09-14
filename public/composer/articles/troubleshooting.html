@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshooting · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+>Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+>Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+>Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+>Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+>Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+>Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+class="is-current" aria-current="page">Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+>Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Troubleshooting</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#general">General#</a></li>
+              <li class="lvl-2"><a href="#package-not-found">Package not found#</a></li>
+              <li class="lvl-2"><a href="#package-is-not-updating-to-the-expected-version">Package is not updating to the expected version#</a></li>
+              <li class="lvl-2"><a href="#dependencies-on-the-root-package">Dependencies on the root package#</a></li>
+              <li class="lvl-2"><a href="#root-package-version-detection">Root package version detection#</a></li>
+              <li class="lvl-2"><a href="#network-timeout-issues-curl-error">Network timeout issues, curl error#</a></li>
+              <li class="lvl-2"><a href="#package-not-found-in-a-jenkins-build">Package not found in a Jenkins-build#</a></li>
+              <li class="lvl-2"><a href="#i-have-a-dependency-which-contains-a-repositories-definition-in-its-composerjson-but-it-seems-to-be-ignored">I have a dependency which contains a &#34;repositories&#34; definition in its composer.json, but it seems to be ignored.#</a></li>
+              <li class="lvl-2"><a href="#i-have-locked-a-dependency-to-a-specific-commit-but-get-unexpected-results">I have locked a dependency to a specific commit but get unexpected results.#</a></li>
+              <li class="lvl-2"><a href="#need-to-override-a-package-version">Need to override a package version#</a></li>
+              <li class="lvl-2"><a href="#figuring-out-where-a-config-value-came-from">Figuring out where a config value came from#</a></li>
+              <li class="lvl-2"><a href="#memory-limit-errors">Memory limit errors#</a></li>
+              <li class="lvl-2"><a href="#xdebug-impact-on-composer">Xdebug impact on Composer#</a></li>
+              <li class="lvl-2"><a href="#the-system-cannot-find-the-path-specified-windows">&#34;The system cannot find the path specified&#34; (Windows)#</a></li>
+              <li class="lvl-2"><a href="#ssl-certificate-problem-unable-to-get-local-issuer-certificate">SSL certificate problem: unable to get local issuer certificate#</a></li>
+              <li class="lvl-2"><a href="#api-rate-limit-and-oauth-tokens">API rate limit and OAuth tokens#</a></li>
+              <li class="lvl-2"><a href="#proc_open-fork-failed-errors">proc_open(): fork failed errors#</a></li>
+              <li class="lvl-2"><a href="#proc_open-failed-to-open-stream-errors-windows">proc_open(): failed to open stream errors (Windows)#</a></li>
+              <li class="lvl-2"><a href="#degraded-mode">Degraded Mode#</a></li>
+              <li class="lvl-2"><a href="#operation-timed-out-ipv6-issues">Operation timed out (IPv6 issues)#</a></li>
+              <li class="lvl-2"><a href="#composer-hangs-with-ssh-controlmaster">Composer hangs with SSH ControlMaster#</a></li>
+              <li class="lvl-2"><a href="#zip-archives-are-not-unpacked-correctly">Zip archives are not unpacked correctly.#</a></li>
+              <li class="lvl-2"><a href="#disabling-the-pool-optimizer">Disabling the pool optimizer#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: Solving problems
+-->
+<h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h1>
+<p>This is a list of common pitfalls on using Composer, and how to avoid them.</p>
+<h2 id="general">General<a class="headerlink" href="#general" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>When facing any kind of problems using Composer, be sure to <strong>work with the
+   latest version</strong>. See <a href="../cli.html#self-update">self-update</a> for details.</p>
+</li>
+<li>
+<p>Before asking anyone, run <a href="../cli.html#diagnose"><code>composer diagnose</code></a> to check
+   for common problems. If it all checks out, proceed to the next steps.</p>
+</li>
+<li>
+<p>Make sure you have no problems with your setup by running the installer's
+   checks via <code>curl -sS https://getcomposer.org/installer | php -- --check</code>.</p>
+</li>
+<li>
+<p>Try clearing Composer's cache by running <code>composer clear-cache</code>.</p>
+</li>
+<li>
+<p>Ensure you're <strong>installing vendors straight from your <code>composer.json</code></strong> via
+   <code>rm -rf vendor &amp;&amp; composer update -v</code> when troubleshooting, excluding any
+   possible interferences with existing vendor installations or <code>composer.lock</code>
+   entries.</p>
+</li>
+</ol>
+<h2 id="package-not-found">Package not found<a class="headerlink" href="#package-not-found" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Double-check you <strong>don't have typos</strong> in your <code>composer.json</code> or repository
+   branches and tag names.</p>
+</li>
+<li>
+<p>Be sure to <strong>set the right
+   <a href="../schema.html#minimum-stability">minimum-stability</a></strong>. To get started or be
+   sure this is no issue, set <code>minimum-stability</code> to "dev".</p>
+</li>
+<li>
+<p>Packages <strong>not coming from <a href="https://packagist.org/">Packagist</a></strong> should
+   always be <strong>defined in the root package</strong> (the package depending on all
+   vendors).</p>
+</li>
+<li>
+<p>Use the <strong>same vendor and package name</strong> throughout all branches and tags of
+   your repository, especially when maintaining a third party fork and using
+   <code>replace</code>.</p>
+</li>
+<li>
+<p>If you are updating to a recently published version of a package, be aware that
+   Packagist has a delay of up to 1 minute before new packages are visible to Composer.</p>
+</li>
+<li>
+<p>If you are updating a single package, it may depend on newer versions itself.
+   In this case add the <code>--with-dependencies</code> argument <strong>or</strong> add all dependencies which
+   need an update to the command.</p>
+</li>
+</ol>
+<h2 id="package-is-not-updating-to-the-expected-version">Package is not updating to the expected version<a class="headerlink" href="#package-is-not-updating-to-the-expected-version" title="Permanent link">#</a></h2>
+<p>Try running <code>php composer.phar why-not [package-name] [expected-version]</code>.</p>
+<h2 id="dependencies-on-the-root-package">Dependencies on the root package<a class="headerlink" href="#dependencies-on-the-root-package" title="Permanent link">#</a></h2>
+<p>When your root package depends on a package which ends up depending (directly or
+indirectly) back on the root package itself, issues can occur in two cases:</p>
+<ol>
+<li>
+<p>During development, if you are on a branch like <code>dev-main</code> and the branch has no
+   <a href="aliases.html#branch-alias">branch-alias</a> defined, and the dependency on the root package
+   requires version <code>^2.0</code> for example, the <code>dev-main</code> version will not satisfy it.
+   The best solution here is to make sure you first define a branch alias.</p>
+</li>
+<li>
+<p>In CI (Continuous Integration) runs, the problem might be that Composer is not able
+   to detect the version of the root package properly. If it is a git clone it is
+   generally alright and Composer will detect the version of the current branch,
+   but some CIs do shallow clones so that process can fail when testing pull requests
+   and feature branches. In these cases the branch alias may then not be recognized.
+   The best solution is to define the version you are on via an environment variable
+   called <code>COMPOSER_ROOT_VERSION</code>. You set it to <code>dev-main</code> for example to define
+   the root package's version as <code>dev-main</code>.
+   Use for example: <code>COMPOSER_ROOT_VERSION=dev-main composer install</code> to export
+   the variable only for the call to composer, or you can define it globally in the
+   CI env vars.</p>
+</li>
+</ol>
+<h2 id="root-package-version-detection">Root package version detection<a class="headerlink" href="#root-package-version-detection" title="Permanent link">#</a></h2>
+<p>Composer relies on knowing the version of the root package to resolve
+dependencies effectively. The version of the root package is determined
+using a hierarchical approach:</p>
+<ol>
+<li>
+<p><strong>composer.json Version Field</strong>: Firstly, Composer looks for a <code>version</code>
+   field in the project's root <code>composer.json</code> file. If present, this field
+   specifies the version of the root package directly. This is generally not
+   recommended as it needs to be constantly updated, but it is an option.</p>
+</li>
+<li>
+<p><strong>Environment Variable</strong>: Composer then checks for the <code>COMPOSER_ROOT_VERSION</code>
+   environment variable. This variable can be explicitly set by the user to
+   define the version of the root package, providing a straightforward way to
+   inform Composer of the exact version, especially in CI/CD environments or
+   when the VCS method is not applicable.</p>
+</li>
+<li>
+<p><strong>Version Control System (VCS) Inspection</strong>: Composer then attempts to guess
+   the version by interfacing with the version control system of the project. For
+   instance, in projects versioned with Git, Composer executes specific Git
+   commands to deduce the project's current version based on tags, branches, and
+   commit history. If a <code>.git</code> directory is missing or the history is incomplete
+   because CI is using a shallow clone for example, this detection may fail to find
+   the correct version.</p>
+</li>
+<li>
+<p><strong>Fallback</strong>: If all else fails, Composer uses <code>1.0.0</code> as default version.</p>
+</li>
+</ol>
+<p>Note that relying on the default/fallback version might potentially lead to dependency
+resolution issues, especially when the root package depends on a package which ends up
+depending (directly or indirectly)
+<a href="#dependencies-on-the-root-package">back on the root package itself</a>.</p>
+<h2 id="network-timeout-issues-curl-error">Network timeout issues, curl error<a class="headerlink" href="#network-timeout-issues-curl-error" title="Permanent link">#</a></h2>
+<p>If you see something along the lines of:</p>
+<div class="codehilite"><pre><span></span><code>Failed to download * curl error 28 while downloading * Operation timed out after 300000 milliseconds
+</code></pre></div>
+
+<p>It means your network is probably so slow that a request took over 300seconds to complete. This is the
+minimum timeout Composer will use, but you can increase it by increasing the <code>default_socket_timeout</code>
+value in your php.ini to something higher.</p>
+<h2 id="package-not-found-in-a-jenkins-build">Package not found in a Jenkins-build<a class="headerlink" href="#package-not-found-in-a-jenkins-build" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Check the <a href="#package-not-found">"Package not found"</a> item above.</p>
+</li>
+<li>
+<p>The git-clone / checkout within Jenkins leaves the branch in a "detached HEAD"-state. As
+   a result, Composer may not able to identify the version of the current checked out branch
+   and may not be able to resolve a <a href="#dependencies-on-the-root-package">dependency on the root package</a>.
+   To solve this problem, you can use the "Additional Behaviours" -&gt; "Check out to specific local
+   branch" in your Git-settings for your Jenkins-job, where your "local branch" shall be the same
+   branch as you are checking out. Using this, the checkout will not be in detached state any more
+   and the dependency on the root package should become satisfied.</p>
+</li>
+</ol>
+<h2 id="i-have-a-dependency-which-contains-a-repositories-definition-in-its-composerjson-but-it-seems-to-be-ignored">I have a dependency which contains a "repositories" definition in its composer.json, but it seems to be ignored.<a class="headerlink" href="#i-have-a-dependency-which-contains-a-repositories-definition-in-its-composerjson-but-it-seems-to-be-ignored" title="Permanent link">#</a></h2>
+<p>The <a href="../schema.html#repositories"><code>repositories</code></a> configuration property is defined as <a href="../schema.html#root-package">root-only</a>. It is not inherited. You can read more about the reasons behind this in the "<a href="../faqs/why-cant-composer-load-repositories-recursively.html">why can't
+Composer load repositories recursively?</a>" article.
+The simplest work-around to this limitation, is moving or duplicating the <code>repositories</code> definition into your root
+composer.json.</p>
+<h2 id="i-have-locked-a-dependency-to-a-specific-commit-but-get-unexpected-results">I have locked a dependency to a specific commit but get unexpected results.<a class="headerlink" href="#i-have-locked-a-dependency-to-a-specific-commit-but-get-unexpected-results" title="Permanent link">#</a></h2>
+<p>While Composer supports locking dependencies to a specific commit using the <code>#commit-ref</code> syntax, there are certain
+caveats that one should take into account. The most important one is <a href="../schema.html#package-links">documented</a>, but
+frequently overlooked:</p>
+<blockquote>
+<p><strong>Note:</strong> While this is convenient at times, it should not be how you use
+packages in the long term because it comes with a technical limitation. The
+composer.json metadata will still be read from the branch name you specify
+before the hash. Because of that in some cases it will not be a practical
+workaround, and you should always try to switch to tagged releases as soon
+as you can.</p>
+</blockquote>
+<p>There is no simple work-around to this limitation. It is therefore strongly recommended that you do not use it.</p>
+<h2 id="need-to-override-a-package-version">Need to override a package version<a class="headerlink" href="#need-to-override-a-package-version" title="Permanent link">#</a></h2>
+<p>Let's say your project depends on package A, which in turn depends on a specific
+version of package B (say 0.1). But you need a different version of said package B (say 0.11).</p>
+<p>You can fix this by aliasing version 0.11 to 0.1:</p>
+<p>composer.json:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;A&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;B&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.11 as 0.1&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>See <a href="aliases.html">aliases</a> for more information.</p>
+<h2 id="figuring-out-where-a-config-value-came-from">Figuring out where a config value came from<a class="headerlink" href="#figuring-out-where-a-config-value-came-from" title="Permanent link">#</a></h2>
+<p>Use <code>php composer.phar config --list --source</code> to see where each config value originated from.</p>
+<h2 id="memory-limit-errors">Memory limit errors<a class="headerlink" href="#memory-limit-errors" title="Permanent link">#</a></h2>
+<p>The first thing to do is to make sure you are running Composer 2, and if possible 2.2.0 or above.</p>
+<p>Composer 1 used much more memory and upgrading to the latest version will give you much better and faster results.</p>
+<p>Composer may sometimes fail on some commands with this message:</p>
+<p><code>PHP Fatal error:  Allowed memory size of XXXXXX bytes exhausted &lt;...&gt;</code></p>
+<p>In this case, the PHP <code>memory_limit</code> should be increased.</p>
+<blockquote>
+<p><strong>Note:</strong> Composer internally increases the <code>memory_limit</code> to <code>1.5G</code>.</p>
+</blockquote>
+<p>To get the current <code>memory_limit</code> value, run:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;echo ini_get(&#39;memory_limit&#39;).PHP_EOL;&quot;</span>
+</code></pre></div>
+
+<p>Try increasing the limit in your <code>php.ini</code> file (ex. <code>/etc/php5/cli/php.ini</code> for
+Debian-like systems):</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">; Use -1 for unlimited or define an explicit value like 2G</span>
+<span class="na">memory_limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">-1</span>
+</code></pre></div>
+
+<p>Composer also respects a memory limit defined by the <code>COMPOSER_MEMORY_LIMIT</code> environment variable:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">COMPOSER_MEMORY_LIMIT</span><span class="o">=</span>-1<span class="w"> </span>composer.phar<span class="w"> </span>&lt;...&gt;
+</code></pre></div>
+
+<p>Or, you can increase the limit with a command-line argument:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>-d<span class="w"> </span><span class="nv">memory_limit</span><span class="o">=</span>-1<span class="w"> </span>composer.phar<span class="w"> </span>&lt;...&gt;
+</code></pre></div>
+
+<p>However, please note that setting the memory limit using these methods primarily addresses memory issues within Composer itself and its immediate processes. Child processes or external commands invoked by Composer may still require separate adjustments if they have their own memory requirements.</p>
+<p>This issue can also happen on cPanel instances, when the shell fork bomb protection is activated. For more information, see the <a href="https://documentation.cpanel.net/display/68Docs/Shell+Fork+Bomb+Protection">documentation</a> of the fork bomb feature on the cPanel site.</p>
+<h2 id="xdebug-impact-on-composer">Xdebug impact on Composer<a class="headerlink" href="#xdebug-impact-on-composer" title="Permanent link">#</a></h2>
+<p>To improve performance when the Xdebug extension is enabled, Composer automatically restarts PHP without it.
+You can override this behavior by using an environment variable: <code>COMPOSER_ALLOW_XDEBUG=1</code>.</p>
+<p>Composer will always show a warning if Xdebug is being used, but you can override this with an environment variable:
+<code>COMPOSER_DISABLE_XDEBUG_WARN=1</code>. If you see this warning unexpectedly, then the restart process has failed:
+please report this <a href="https://github.com/composer/composer/issues">issue</a>.</p>
+<h2 id="the-system-cannot-find-the-path-specified-windows">"The system cannot find the path specified" (Windows)<a class="headerlink" href="#the-system-cannot-find-the-path-specified-windows" title="Permanent link">#</a></h2>
+<ol>
+<li>Open regedit.</li>
+<li>Search for an <code>AutoRun</code> key inside <code>HKEY_LOCAL_MACHINE\Software\Microsoft\Command Processor</code>,
+   <code>HKEY_CURRENT_USER\Software\Microsoft\Command Processor</code>
+   or <code>HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\Command Processor</code>.</li>
+<li>Check if it contains any path to a non-existent file, if it's the case, remove them.</li>
+</ol>
+<h2 id="ssl-certificate-problem-unable-to-get-local-issuer-certificate">SSL certificate problem: unable to get local issuer certificate<a class="headerlink" href="#ssl-certificate-problem-unable-to-get-local-issuer-certificate" title="Permanent link">#</a></h2>
+<ol>
+<li>Check that your root certificate store / CA bundle is up to date. Run <code>composer diagnose -vvv</code>
+   and look for <code>Checked CA file ...</code> or <code>Checked directory ...</code> lines in the first lines of output.
+   This will show you where Composer is looking for a CA bundle. You can get a
+   <a href="https://curl.se/docs/caextract.html">new cacert.pem from cURL</a> and store it there.</li>
+<li>If this did not help despite Composer finding a valid CA bundle, try disabling your antivirus and
+   firewall software to see if that helps. We have seen issues where Avast on Windows for example would
+   prevent Composer from functioning correctly. To disable the HTTPS scanning in Avast you can go in
+   "Protection &gt; Core Shields &gt; Web Shield &gt; <strong>uncheck</strong> Enable HTTPS scanning". If this helps you
+   should report it to the software vendor so they can hopefully improve things.</li>
+</ol>
+<h2 id="api-rate-limit-and-oauth-tokens">API rate limit and OAuth tokens<a class="headerlink" href="#api-rate-limit-and-oauth-tokens" title="Permanent link">#</a></h2>
+<p>Because of GitHub's rate limits on their API it can happen that Composer prompts
+for authentication asking your username and password so it can go ahead with its work.</p>
+<p>If you would prefer not to provide your GitHub credentials to Composer you can
+manually create a token using the <a href="authentication-for-private-packages.html#github-oauth">procedure documented here</a>.</p>
+<p>Now Composer should install/update without asking for authentication.</p>
+<h2 id="proc_open-fork-failed-errors">proc_open(): fork failed errors<a class="headerlink" href="#proc_open-fork-failed-errors" title="Permanent link">#</a></h2>
+<p>If Composer shows proc_open() fork failed on some commands:</p>
+<p><code>PHP Fatal error: Uncaught exception 'ErrorException' with message 'proc_open(): fork failed - Cannot allocate memory' in phar</code></p>
+<p>This could be happening because the VPS runs out of memory and has no Swap space enabled.</p>
+<div class="codehilite"><pre><span></span><code>free<span class="w"> </span>-m
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>total used free shared buffers cached
+Mem: 2048 357 1690 0 0 237
+-/+ buffers/cache: 119 1928
+Swap: 0 0 0
+</code></pre></div>
+
+<p>To enable the swap you can use for example:</p>
+<div class="codehilite"><pre><span></span><code>/bin/dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/var/swap.1<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">1024</span>
+/sbin/mkswap<span class="w"> </span>/var/swap.1
+/bin/chmod<span class="w"> </span><span class="m">0600</span><span class="w"> </span>/var/swap.1
+/sbin/swapon<span class="w"> </span>/var/swap.1
+</code></pre></div>
+
+<p>You can make a permanent swap file following this <a href="https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04">tutorial</a>.</p>
+<h2 id="proc_open-failed-to-open-stream-errors-windows">proc_open(): failed to open stream errors (Windows)<a class="headerlink" href="#proc_open-failed-to-open-stream-errors-windows" title="Permanent link">#</a></h2>
+<p>If Composer shows proc_open(NUL) errors on Windows:</p>
+<p><code>proc_open(NUL): failed to open stream: No such file or directory</code></p>
+<p>This could be happening because you are working in a <em>OneDrive</em> directory and
+using a version of PHP that does not support the file system semantics of this
+service. The issue was fixed in PHP 7.2.23 and 7.3.10.</p>
+<p>Alternatively it could be because the Windows Null Service is not enabled. For
+more information, see this <a href="https://github.com/composer/composer/issues/7186#issuecomment-373134916">issue</a>.</p>
+<h2 id="degraded-mode">Degraded Mode<a class="headerlink" href="#degraded-mode" title="Permanent link">#</a></h2>
+<p>Due to some intermittent issues on Travis and other systems, we introduced a
+degraded network mode which helps Composer finish successfully but disables
+a few optimizations. This is enabled automatically when an issue is first
+detected. If you see this issue sporadically you probably don't have to worry
+(a slow or overloaded network can also cause those time outs), but if it
+appears repeatedly you might want to look at the options below to identify
+and resolve it.</p>
+<p>If you have been pointed to this page, you want to check a few things:</p>
+<ul>
+<li>If you are using ESET antivirus, go in "Advanced Settings" and disable "HTTP-scanner"
+  under "web access protection"</li>
+<li>If you are using IPv6, try disabling it. If that solves your issues, get in touch
+  with your ISP or server host, the problem is not at the Packagist level but in the
+  routing rules between you and Packagist (i.e. the internet at large). The best way to get
+  these fixed is to raise awareness to the network engineers that have the power to fix it.
+  Take a look at the next section for IPv6 workarounds.</li>
+<li>If none of the above helped, please report the error.</li>
+</ul>
+<h2 id="operation-timed-out-ipv6-issues">Operation timed out (IPv6 issues)<a class="headerlink" href="#operation-timed-out-ipv6-issues" title="Permanent link">#</a></h2>
+<p>You may run into errors if IPv6 is not configured correctly. A common error is:</p>
+<div class="codehilite"><pre><span></span><code>The &quot;https://getcomposer.org/version&quot; file could not be downloaded: failed to
+open stream: Operation timed out
+</code></pre></div>
+
+<p>We recommend you fix your IPv6 setup. If that is not possible, you can try the
+following workarounds:</p>
+<p><strong>Generic Workaround:</strong></p>
+<p>Set the <a href="../cli.html#composer-ipresolve"><code>COMPOSER_IPRESOLVE=4</code></a> environment variable which will force curl to resolve
+domains using IPv4. This only works when the curl extension is used for downloads.</p>
+<p><strong>Workaround Linux:</strong></p>
+<p>On linux, it seems that running this command helps to make ipv4 traffic have a
+higher priority than ipv6, which is a better alternative than disabling ipv6 entirely:</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;echo &#39;precedence ::ffff:0:0/96 100&#39; &gt;&gt; /etc/gai.conf&quot;</span>
+</code></pre></div>
+
+<p><strong>Workaround Windows:</strong></p>
+<p>On windows the only way is to disable ipv6 entirely I am afraid (either in windows or in your home router).</p>
+<p><strong>Workaround Mac OS X:</strong></p>
+<p>Get name of your network device:</p>
+<div class="codehilite"><pre><span></span><code>networksetup<span class="w"> </span>-listallnetworkservices
+</code></pre></div>
+
+<p>Disable IPv6 on that device (in this case "Wi-Fi"):</p>
+<div class="codehilite"><pre><span></span><code>networksetup<span class="w"> </span>-setv6off<span class="w"> </span>Wi-Fi
+</code></pre></div>
+
+<p>Run Composer ...</p>
+<p>You can enable IPv6 again with:</p>
+<div class="codehilite"><pre><span></span><code>networksetup<span class="w"> </span>-setv6automatic<span class="w"> </span>Wi-Fi
+</code></pre></div>
+
+<p>That said, if this fixes your problem, please talk to your ISP about it to
+try to resolve the routing errors. That's the best way to get things resolved
+for everyone.</p>
+<h2 id="composer-hangs-with-ssh-controlmaster">Composer hangs with SSH ControlMaster<a class="headerlink" href="#composer-hangs-with-ssh-controlmaster" title="Permanent link">#</a></h2>
+<p>When you try to install packages from a Git repository and you use the <code>ControlMaster</code>
+setting for your SSH connection, Composer might hang endlessly and you see a <code>sh</code>
+process in the <code>defunct</code> state in your process list.</p>
+<p>The reason for this is a SSH Bug: https://bugzilla.mindrot.org/show_bug.cgi?id=1988</p>
+<p>As a workaround, open a SSH connection to your Git host before running Composer:</p>
+<div class="codehilite"><pre><span></span><code>ssh<span class="w"> </span>-t<span class="w"> </span>git@mygitserver.tld
+php<span class="w"> </span>composer.phar<span class="w"> </span>update
+</code></pre></div>
+
+<p>See also https://github.com/composer/composer/issues/4180 for more information.</p>
+<h2 id="zip-archives-are-not-unpacked-correctly">Zip archives are not unpacked correctly.<a class="headerlink" href="#zip-archives-are-not-unpacked-correctly" title="Permanent link">#</a></h2>
+<p>Composer can unpack zipballs using either a system-provided <code>unzip</code> or <code>7z</code> (7-Zip) utility, or PHP's
+native <code>ZipArchive</code> class. On OSes where ZIP files can contain permissions and symlinks, we recommend
+installing <code>unzip</code> or <code>7z</code> as these features are not supported by <code>ZipArchive</code>.</p>
+<h2 id="disabling-the-pool-optimizer">Disabling the pool optimizer<a class="headerlink" href="#disabling-the-pool-optimizer" title="Permanent link">#</a></h2>
+<p>In Composer, the <code>Pool</code> class contains all the packages that are relevant for the dependency
+resolving process. That is what is used to generate all the rules which are then
+passed on to the dependency solver.
+In order to improve performance, Composer tries to optimize this <code>Pool</code> by removing useless
+package information early on.</p>
+<p>If all goes well, you should never notice any issues with it but in case you run into
+an unexpected result such as an unresolvable set of dependencies or conflicts where you
+think Composer is wrong, you might want to disable the optimizer by using the environment
+variable <code>COMPOSER_POOL_OPTIMIZER</code> and run the update again like so:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">COMPOSER_POOL_OPTIMIZER</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>php<span class="w"> </span>composer.phar<span class="w"> </span>update
+</code></pre></div>
+
+<p>Now double check if the result is still the same. It will take significantly longer and use
+a lot more memory to run the dependency resolving process.</p>
+<p>If the result is different, you likely hit a problem in the pool optimizer.
+Please <a href="https://github.com/composer/composer/issues">report this issue</a> so it can be fixed.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/scripts.html">
+          <span class="muted">Anterior</span>Scripts
+        </a>
+        <a class="pager-next" href="../articles/vendor-binaries.html">
+          <span class="muted">Siguiente</span>Vendor binaries and the vendor/bin directory
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

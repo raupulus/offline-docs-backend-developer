@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>exif_read_data · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Exif
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../exif/ini.html"
+>Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../exif/constants.html"
+>Constantes predefinidas</a>
+              </li>
+              <li>
+                <a href="../exif/exif-imagetype.html"
+>exif_imagetype</a>
+              </li>
+              <li>
+                <a href="../exif/exif-read-data.html"
+class="is-current" aria-current="page">exif_read_data</a>
+              </li>
+              <li>
+                <a href="../exif/exif-tagname.html"
+>exif_tagname</a>
+              </li>
+              <li>
+                <a href="../exif/exif-thumbnail.html"
+>exif_thumbnail</a>
+              </li>
+              <li>
+                <a href="../exif/configure.html"
+>Instalación</a>
+              </li>
+              <li>
+                <a href="../exif/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../exif/read-exif-data.html"
+>read_exif_data</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">exif_read_data</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/function.exif-read-data.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#descripcion">Descripción#</a></li>
+              <li class="lvl-2"><a href="#notas">Notas#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>exif_read_data</p>
+<p>Lee los encabezados</p>
+<p>EXIF</p>
+<p>en las imágenes</p>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="x">exif_read_data(resource $file, [string $required_sections], [bool $as_arrays], [bool $read_thumbnail]): array</span>
+<span class="x">```php</span>
+
+<span class="x">`exif_read_data` lee los encabezados EXIF de las imágenes. Con esta función, se pueden leer los datos meta generados por las cámaras digitales.</span>
+
+<span class="x">Los encabezados EXIF tienden a estar presentes en las imágenes JPEG/TIFF generadas por las cámaras digitales, pero desafortunadamente, cada cámara digital tiene una idea diferente de cómo sus imágenes deben ser marcadas, por lo que no siempre se puede contar con un encabezado EXIF específico, aunque esté presente.</span>
+
+<span class="x">Los parámetros `Height` y `Width` se calculan de la misma manera que para la función `getimagesize`, por lo que sus valores no formarán parte de ningún encabezado devuelto. De igual manera, el índice `html` es la representación textual de la altura/ancho utilizada en una etiqueta de imagen HTML clásica.</span>
+
+<span class="x">Cuando un encabezado EXIF contiene una nota de Copyright, este encabezado puede contener a su vez dos valores. Como esta solución es inconsistente con los estándares EXIF 2.10, la sección `COMPUTED` devolverá los dos encabezados, `Copyright.Photographer` y `Copyright.Editor`, mientras que las secciones `IFD0` contienen el array de bytes con caracteres NULL para separar las dos entradas; o bien, solo la primera entrada si el tipo de datos era incorrecto (comportamiento por defecto de EXIF). La sección `COMPUTED` también contendrá una entrada `Copyright`, que será ya sea la cadena original de copyright, o una lista de valores separados por comas de fotos y copyright del autor.</span>
+
+<span class="x">La etiqueta `UserComment` presenta el mismo problema que la etiqueta Copyright. Puede almacenar dos valores: primero, el juego de caracteres utilizado, luego el valor en sí. Si es así, la sección `IFD` contendrá solo el juego de caracteres, o un array de bytes. La sección `COMPUTED` almacenará las dos entradas `UserCommentEncoding` y `UserComment`. El índice `UserComment` está disponible en ambos casos, y es preferible usarlo, en lugar del valor de la sección `IFD0`.</span>
+
+<span class="x">`exif_read_data` valida los datos de las etiquetas EXIF de acuerdo con la especificación EXIF (&lt;http://exif.org/Exif2-2.PDF&gt;, página 20).</span>
+
+<span class="x">## Parámetros</span>
+
+<span class="x">`file`  </span>
+<span class="x">La ubicación del archivo de imagen. Puede ser ya sea una ruta de acceso al archivo (los wrappers de flujo también son soportados como de costumbre), o un flujo `resource`.</span>
+
+<span class="x">`required_sections`  </span>
+<span class="x">Lista de valores separados por comas de las secciones que deben presentarse en el array de resultado. Si ninguna de las secciones solicitadas se encuentra, el valor devuelto es `false`.</span>
+
+<span class="x">|  |  |</span>
+<span class="x">|----|----|</span>
+<span class="x">| FILE | FileName (nombre del archivo), FileSize (tamaño del archivo), FileDateTime (fecha de modificación del archivo), SectionsFound (secciones encontradas) |</span>
+<span class="x">| COMPUTED | Atributo Html, ancho, altura, color o blanco y negro y más si está disponible. El ancho y la altura se calculan de la misma manera que la función `getimagesize`, por lo que sus valores nunca deberían diferir. De igual manera, el índice `html` es la representación textual de la altura/ancho utilizada en una etiqueta de imagen HTML clásica. |</span>
+<span class="x">| ANY_TAG | Toda la información concerniente a esta etiqueta, como `IFD0`, `EXIF`, ... |</span>
+<span class="x">| IFD0 | Todas las etiquetas `IFD0`. En imágenes normales, contienen las dimensiones de la imagen, etc. |</span>
+<span class="x">| THUMBNAIL | Un archivo que contiene una miniatura, si hay un segundo `IFD`. Toda la información etiquetada sobre esta miniatura será almacenada en esta sección. |</span>
+<span class="x">| COMMENT | Encabezado de comentario de las imágenes JPEG. |</span>
+<span class="x">| EXIF | La sección EXIF es una subsección de la sección `IFD0`. Ella contiene información más detallada sobre las imágenes. La mayoría de estos índices están relacionados con las cámaras digitales. |</span>
+
+<span class="x">`as_arrays`  </span>
+<span class="x">Especifica si cada sección debe convertirse en un array o no. Las `required_sections` `COMPUTED`, `THUMBNAIL` y `COMMENT` siempre serán convertidas en arrays, ya que contienen nombres que podrían entrar en conflicto.</span>
+
+<span class="x">`read_thumbnail`  </span>
+<span class="x">Cuando se define como `true`, la miniatura misma es leída. De lo contrario, solo se leen los datos contenidos en el archivo.</span>
+
+<span class="x">## Valores devueltos</span>
+
+<span class="x">Devuelve un array asociativo donde los índices son los nombres de los encabezados y los valores son los valores asociados a estos encabezados. Si no se puede devolver ningún dato, `exif_read_data` devolverá `false`.</span>
+
+<span class="x">## Errores/Excepciones</span>
+
+<span class="x">Pueden generarse errores de nivel `E_WARNING` y/o `E_NOTICE` para etiquetas no soportadas u otras condiciones de error potencial, pero la función intenta leer toda la información comprensible.</span>
+
+<span class="x">## Historial de cambios</span>
+
+<span class="x">| Versión | Descripción |</span>
+<span class="x">|----|----|</span>
+<span class="x">| 8.0.0 | `required_sections` ahora es nullable. |</span>
+<span class="x">| 7.2.0 | Se ha añadido el soporte para los siguientes formatos EXIF: Samsung, DJI, Panasonic, Sony, Pentax, Minolta, Sigma/Foveon, AGFA, Kyocera, Ricoh, Epson |</span>
+
+<span class="x">## Ejemplos</span>
+
+<span class="x">Ejemplo con `exif_read_data`</span>
+</code></pre></div>
+
+<?php
+echo "test1.jpg:<br />\n";
+$exif = exif_read_data('tests/test1.jpg', 'IFD0');
+echo $exif===false ? "No se encontraron encabezados de datos.<br />\n" : "La imagen contiene encabezados<br />\n";
+
+$exif = exif_read_data('tests/test2.jpg', 0, true);
+echo "test2.jpg:<br />\n";
+foreach ($exif as $key => $section) {
+    foreach ($section as $name => $val) {
+        echo "$key.$name: $val<br />\n";
+    }
+}
+?>
+
+<div class="codehilite"><pre><span></span><code><span class="x">La primera llamada falla porque la imagen no tiene encabezado de información.</span>
+
+<span class="x">Resultado del ejemplo anterior es similar a:</span>
+</code></pre></div>
+
+<p>test1.jpg:
+No se encontraron encabezados de datos.
+test2.jpg:
+FILE.FileName: test2.jpg
+FILE.FileDateTime: 1017666176
+FILE.FileSize: 1240
+FILE.FileType: 2
+FILE.SectionsFound: ANY_TAG, IFD0, THUMBNAIL, COMMENT
+COMPUTED.html: width="1" height="1"
+COMPUTED.Height: 1
+COMPUTED.Width: 1
+COMPUTED.IsColor: 1
+COMPUTED.ByteOrderMotorola: 1
+COMPUTED.UserComment: Exif test image.
+COMPUTED.UserCommentEncoding: ASCII
+COMPUTED.Copyright: Photo (c) M.Boerger, Edited by M.Boerger.
+COMPUTED.Copyright.Photographer: Photo (c) M.Boerger
+COMPUTED.Copyright.Editor: Edited by M.Boerger.
+IFD0.Copyright: Photo (c) M.Boerger
+IFD0.UserComment: ASCII
+THUMBNAIL.JPEGInterchangeFormat: 134
+THUMBNAIL.JPEGInterchangeFormatLength: 523
+COMMENT.0: Comment #1.
+COMMENT.1: Comment #2.
+COMMENT.2: Comment #3end
+THUMBNAIL.JPEGInterchangeFormat: 134
+THUMBNAIL.Thumbnail.Height: 1
+THUMBNAIL.Thumbnail.Height: 1</p>
+<div class="codehilite"><pre><span></span><code><span class="x">`exif_read_data` con flujos disponibles desde PHP 7.2.0</span>
+</code></pre></div>
+
+<?php
+// Abrir el archivo, esto debería ser en modo binario
+$fp = fopen('/path/to/image.jpg', 'rb');
+
+if (!$fp) {
+    echo 'Error: No se pudo abrir la imagen para lectura';
+    exit;
+}
+
+// Intentar leer los encabezados EXIF
+$headers = exif_read_data($fp);
+
+if (!$headers) {
+    echo 'Error: No se pudieron leer los encabezados exif';
+    exit;
+}
+
+// Mostrar los encabezados 'COMPUTED'
+echo 'EXIF Headers:' . PHP_EOL;
+
+foreach ($headers['COMPUTED'] as $header => $value) {
+    printf(' %s => %s%s', $header, $value, PHP_EOL);
+}
+?>
+
+<div class="codehilite"><pre><span></span><code><span class="x">Resultado del ejemplo anterior es similar a:</span>
+</code></pre></div>
+
+<p>EXIF Headers:
+ Height =&gt; 576
+ Width =&gt; 1024
+ IsColor =&gt; 1
+ ByteOrderMotorola =&gt; 0
+ ApertureFNumber =&gt; f/5.6
+ UserComment =&gt;
+ UserCommentEncoding =&gt; UNDEFINED
+ Copyright =&gt; Denis
+ Thumbnail.FileType =&gt; 2
+ Thumbnail.MimeType =&gt; image/jpeg</p>
+<p>```php</p>
+<h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">#</a></h2>
+<blockquote>
+<p>[!NOTE]
+Si <a href="#ref.mbstring">mbstring</a> está activado, EXIF intentará tratar el Unicode y elegir un juego de caracteres como se especifica por <a href="#ini.exif.decode-unicode-motorola">exif.decode_unicode_motorola</a> y <a href="#ini.exif.decode-unicode-intel">exif.decode_unicode_intel</a>. La extensión EXIF no intentará determinar el codificado por sí misma, y es responsabilidad del usuario especificar correctamente el codificado a usar para el decodificado definiendo una de las dos directivas INI antes de llamar a <code>exif_read_data</code>.</p>
+<p>[!NOTE]
+Si el parámetro <code>file</code> se usa para pasar un flujo a la función, entonces el flujo debe ser reposicionable. Tenga en cuenta que la posición del puntero de un archivo no se modifica después del retorno de esta función.</p>
+</blockquote>
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p>exif_thumbnail</p>
+<p>getimagesize</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../exif/exif-imagetype.html">
+          <span class="muted">Anterior</span>exif_imagetype
+        </a>
+        <a class="pager-next" href="../exif/exif-tagname.html">
+          <span class="muted">Siguiente</span>exif_tagname
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

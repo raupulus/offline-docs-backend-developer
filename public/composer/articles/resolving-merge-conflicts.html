@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resolving merge conflicts · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+>Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+>Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+>Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+>Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+>Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+class="is-current" aria-current="page">Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+>Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Resolving merge conflicts</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#1-reapplying-changes">1. Reapplying changes#</a></li>
+              <li class="lvl-2"><a href="#2-validating-your-merged-files">2. Validating your merged files#</a></li>
+              <li class="lvl-2"><a href="#automating-merge-conflict-resolving-with-git">Automating merge conflict resolving with git#</a></li>
+              <li class="lvl-3"><a href="#handling-the-trivial-case">Handling the trivial case#</a></li>
+              <li class="lvl-2"><a href="#important-considerations">Important considerations#</a></li>
+              <li class="lvl-2"><a href="#a-start-from-scratch">A. Start from scratch#</a></li>
+              <li class="lvl-2"><a href="#b-reconstruct-from-the-git-history">B. Reconstruct from the git history#</a></li>
+              <li class="lvl-2"><a href="#c-resolve-issues-manually">C. Resolve issues manually#</a></li>
+              <li class="lvl-3"><a href="#1-detecting-and-fixing-missing-required-packages">1. Detecting and fixing missing required packages#</a></li>
+              <li class="lvl-3"><a href="#2-detecting-and-fixing-superfluous-packages">2. Detecting and fixing superfluous packages#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: On gracefully resolving conflicts while merging
+-->
+
+<h1 id="resolving-merge-conflicts">Resolving merge conflicts<a class="headerlink" href="#resolving-merge-conflicts" title="Permanent link">#</a></h1>
+<p>When working as a team on the same Composer project, you will eventually run into a scenario
+where multiple people added, updated or removed something in the <code>composer.json</code> and
+<code>composer.lock</code> files in multiple branches. When those branches are eventually merged
+together, you will get merge conflicts. Resolving these merge conflicts is not as straight
+forward as on other files, especially not regarding the <code>composer.lock</code> file.</p>
+<blockquote>
+<p><strong>Note:</strong> It might not immediately be obvious why text based merging is not possible for
+lock files, so let's imagine the following example where we want to merge two branches;</p>
+<ul>
+<li>Branch 1 has added package A which requires package B. Package B is locked at version <code>1.0.0</code>.</li>
+<li>Branch 2 has added package C which conflicts with all versions below <code>1.2.0</code> of package B.</li>
+</ul>
+<p>A text based merge would result in package A version <code>1.0.0</code>, package B version <code>1.0.0</code>
+and package C version <code>1.0.0</code>. This is an invalid result, as the conflict of package C
+was not considered and would require an upgrade of package B.</p>
+</blockquote>
+<h2 id="1-reapplying-changes">1. Reapplying changes<a class="headerlink" href="#1-reapplying-changes" title="Permanent link">#</a></h2>
+<p>The safest method to merge Composer files is to accept the version from one branch and apply
+the changes from the other branch.</p>
+<p>An example where we have two branches:</p>
+<ol>
+<li>Package 'A' has been added</li>
+<li>Package 'B' has been removed and package 'C' is added.</li>
+</ol>
+<p>To resolve the conflict when we merge these two branches:</p>
+<ul>
+<li>We choose the branch that has the most changes, and accept the <code>composer.json</code> and <code>composer.lock</code>
+  files from that branch. In this case, we choose the Composer files from branch 2.</li>
+<li>We reapply the changes from the other branch (branch 1). In this case we have to run
+  <code>composer require package/A</code> again.</li>
+</ul>
+<h2 id="2-validating-your-merged-files">2. Validating your merged files<a class="headerlink" href="#2-validating-your-merged-files" title="Permanent link">#</a></h2>
+<p>Before committing, make sure the resulting <code>composer.json</code> and <code>composer.lock</code> files are valid.
+To do this, run the following commands:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>validate
+php<span class="w"> </span>composer.phar<span class="w"> </span>install<span class="w"> </span><span class="o">[</span>--dry-run<span class="o">]</span>
+</code></pre></div>
+
+<h2 id="automating-merge-conflict-resolving-with-git">Automating merge conflict resolving with git<a class="headerlink" href="#automating-merge-conflict-resolving-with-git" title="Permanent link">#</a></h2>
+<p>Some improvement <em>could</em> be made to git's conflict resolving by using a custom git merge driver.</p>
+<p>An example of this can be found at <a href="https://github.com/balbuf/composer-git-merge-driver">balbuf's composer git merge driver</a>.</p>
+<h3 id="handling-the-trivial-case">Handling the trivial case<a class="headerlink" href="#handling-the-trivial-case" title="Permanent link">#</a></h3>
+<p>In a small number of cases, only the <code>content-hash</code> will show as being conflicted as the version control system may
+be able to cleanly merge the remaining text in the file. This typically happens when two different packages have
+been added or updated in each side of the merge, with no overlapping nor conflicting dependencies. When this occurs,
+running <code>composer update --lock</code> may be enough to remove the conflict marker and update the lock file hash. You may
+also run any other variant of <code>composer update</code> to remove the conflict marker and potentially update packages.</p>
+<h2 id="important-considerations">Important considerations<a class="headerlink" href="#important-considerations" title="Permanent link">#</a></h2>
+<p>Keep in mind that whenever merge conflicts occur on the lock file, the information, about the exact version
+new packages were locked on for one of the branches, is lost. When package A in branch 1 is constrained
+as <code>^1.2.0</code> and locked as <code>1.2.0</code>, it might get updated when branch 2 is used as baseline and a new
+<code>composer require package/A:^1.2.0</code> is executed, as that will use the most recent version that the
+constraint allows when possible. There might be a version 1.3.0 for that package available by now, which
+will now be used instead.</p>
+<p>Choosing the correct <a href="versions.html">version constraints</a> and making sure the packages adhere
+to <a href="https://semver.org/">semantic versioning</a> when using
+<a href="versions.html#next-significant-release-operators">next significant release operators</a> should make sure
+that merging branches does not break anything by accidentally updating a dependency.</p>
+<h1 id="recovering-from-incorrectly-resolved-merge-conflicts">Recovering from incorrectly resolved merge conflicts<a class="headerlink" href="#recovering-from-incorrectly-resolved-merge-conflicts" title="Permanent link">#</a></h1>
+<p>If the above steps aren't followed and text based merges have been done anyway,
+your Composer project might be in a state where unexpected behaviour is observed
+because the <code>composer.lock</code> file is not (fully) in sync with the <code>composer.json</code> file.</p>
+<p>There are two things that can happen here:</p>
+<ol>
+<li>There are packages in the <code>require</code> or <code>require-dev</code> section of the <code>composer.json</code> file that are not in the lock file and as a result never installed</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> Starting from Composer release 2.5, having packages that are required but not present in <code>composer.lock</code> results in an error when running <code>install</code></p>
+</blockquote>
+<ol start="2">
+<li>There are packages in the <code>composer.lock</code> file that are not a direct or indirect dependency of any of the packages required. As a result, a package is installed, even though running <code>composer why vendor/package</code> says it is not required.</li>
+</ol>
+<p>There are several ways to fix these issues;</p>
+<h2 id="a-start-from-scratch">A. Start from scratch<a class="headerlink" href="#a-start-from-scratch" title="Permanent link">#</a></h2>
+<p>The easiest but most impactful option is run a <code>composer update</code> to resolve to a correct state from scratch.</p>
+<p>A drawback to this is that previously locked package versions are now updated, as the information about previous package versions has been lost. If all your dependencies follow <a href="https://semver.org/">semantic versioning</a> and your <a href="versions.html">version constraints</a> are using <a href="versions.html#next-significant-release-operators">next significant release operators</a> this should not be an issue, otherwise you might inadvertently break your application.</p>
+<h2 id="b-reconstruct-from-the-git-history">B. Reconstruct from the git history<a class="headerlink" href="#b-reconstruct-from-the-git-history" title="Permanent link">#</a></h2>
+<p>An option that is probably not very feasible in a lot of situations but that deserves an honorable mention;</p>
+<p>It might be possible to reconstruct the correct package state by going back into the git history and finding the most recent valid <code>composer.lock</code> file, and re-requiring the new dependencies from there.</p>
+<h2 id="c-resolve-issues-manually">C. Resolve issues manually<a class="headerlink" href="#c-resolve-issues-manually" title="Permanent link">#</a></h2>
+<p>There is an option to recover from a discrepancy between the <code>composer.json</code> and <code>composer.lock</code> file without having to dig through the git history or starting from scratch. For that, we need to solve issue 1 and 2 separately.</p>
+<h3 id="1-detecting-and-fixing-missing-required-packages">1. Detecting and fixing missing required packages<a class="headerlink" href="#1-detecting-and-fixing-missing-required-packages" title="Permanent link">#</a></h3>
+<p>To detect any package that is required but not installed, you can simply run:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>validate
+</code></pre></div>
+
+<p>If there are packages that are required but not installed, you should get output similar to this:</p>
+<div class="codehilite"><pre><span></span><code>./composer.json<span class="w"> </span>is<span class="w"> </span>valid<span class="w"> </span>but<span class="w"> </span>your<span class="w"> </span>composer.lock<span class="w"> </span>has<span class="w"> </span>some<span class="w"> </span>errors
+<span class="c1"># Lock file errors</span>
+-<span class="w"> </span>Required<span class="w"> </span>package<span class="w"> </span><span class="s2">&quot;vendor/package-name&quot;</span><span class="w"> </span>is<span class="w"> </span>not<span class="w"> </span>present<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>lock<span class="w"> </span>file.
+This<span class="w"> </span>usually<span class="w"> </span>happens<span class="w"> </span>when<span class="w"> </span>composer<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>incorrectly<span class="w"> </span>merged<span class="w"> </span>or<span class="w"> </span>the<span class="w"> </span>composer.json<span class="w"> </span>file<span class="w"> </span>is<span class="w"> </span>manually<span class="w"> </span>edited.
+Read<span class="w"> </span>more<span class="w"> </span>about<span class="w"> </span>correctly<span class="w"> </span>resolving<span class="w"> </span>merge<span class="w"> </span>conflicts<span class="w"> </span>https://getcomposer.org/doc/articles/resolving-merge-conflicts.md
+and<span class="w"> </span>prefer<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span><span class="s2">&quot;require&quot;</span><span class="w"> </span><span class="nb">command</span><span class="w"> </span>over<span class="w"> </span>editing<span class="w"> </span>the<span class="w"> </span>composer.json<span class="w"> </span>file<span class="w"> </span>directly<span class="w"> </span>https://getcomposer.org/doc/03-cli.md#require
+</code></pre></div>
+
+<p>To recover from this, simply run <code>composer update vendor/package-name</code> for each package listed here. After doing this for each package listed here, running <code>composer validate</code> again should result in no lock file errors:</p>
+<div class="codehilite"><pre><span></span><code>./composer.json<span class="w"> </span>is<span class="w"> </span>valid
+</code></pre></div>
+
+<h3 id="2-detecting-and-fixing-superfluous-packages">2. Detecting and fixing superfluous packages<a class="headerlink" href="#2-detecting-and-fixing-superfluous-packages" title="Permanent link">#</a></h3>
+<p>To detect and fix packages that are locked but not a direct/indirect dependency, you can run the following command:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>composer.phar<span class="w"> </span>remove<span class="w"> </span>--unused
+</code></pre></div>
+
+<p>If there are no packages locked that are not a dependency, the command will have the following output:</p>
+<div class="codehilite"><pre><span></span><code>No<span class="w"> </span>unused<span class="w"> </span>packages<span class="w"> </span>to<span class="w"> </span>remove
+</code></pre></div>
+
+<p>If there are packages to be cleaned up, the output will be as follows:</p>
+<div class="codehilite"><pre><span></span><code>vendor/package-name<span class="w"> </span>is<span class="w"> </span>not<span class="w"> </span>required<span class="w"> </span><span class="k">in</span><span class="w"> </span>your<span class="w"> </span>composer.json<span class="w"> </span>and<span class="w"> </span>has<span class="w"> </span>not<span class="w"> </span>been<span class="w"> </span>removed
+./composer.json<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>updated
+Running<span class="w"> </span>composer<span class="w"> </span>update<span class="w"> </span>vendor/package-name
+Loading<span class="w"> </span>composer<span class="w"> </span>repositories<span class="w"> </span>with<span class="w"> </span>package<span class="w"> </span>information
+Updating<span class="w"> </span>dependencies
+Lock<span class="w"> </span>file<span class="w"> </span>operations:<span class="w"> </span><span class="m">0</span><span class="w"> </span>installs,<span class="w"> </span><span class="m">0</span><span class="w"> </span>updates,<span class="w"> </span><span class="m">1</span><span class="w"> </span>removal
+<span class="w">  </span>-<span class="w"> </span>Removing<span class="w"> </span>vendor/package-name<span class="w"> </span><span class="o">(</span><span class="m">1</span>.0<span class="o">)</span>
+Writing<span class="w"> </span>lock<span class="w"> </span>file
+Installing<span class="w"> </span>dependencies<span class="w"> </span>from<span class="w"> </span>lock<span class="w"> </span>file<span class="w"> </span><span class="o">(</span>including<span class="w"> </span>require-dev<span class="o">)</span>
+Nothing<span class="w"> </span>to<span class="w"> </span>install,<span class="w"> </span>update<span class="w"> </span>or<span class="w"> </span>remove
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/repository-priorities.html">
+          <span class="muted">Anterior</span>Repository priorities
+        </a>
+        <a class="pager-next" href="../articles/scripts.html">
+          <span class="muted">Siguiente</span>Scripts
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

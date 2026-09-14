@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composer platform dependencies · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+>Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+class="is-current" aria-current="page">Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+>Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+>Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+>Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+>Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+>Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Composer platform dependencies</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#what-are-platform-dependencies">What are platform dependencies#</a></li>
+              <li class="lvl-3"><a href="#different-types-of-platform-packages">Different types of platform packages#</a></li>
+              <li class="lvl-2"><a href="#plugin-package-composer-plugin-api">Plugin package composer-plugin-api#</a></li>
+              <li class="lvl-2"><a href="#runtime-package-composer-runtime-api">Runtime package composer-runtime-api#</a></li>
+              <li class="lvl-2"><a href="#composer-package-composer">Composer package composer#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: Making your package depend on specific Composer versions
+-->
+
+<h1 id="composer-platform-dependencies">Composer platform dependencies<a class="headerlink" href="#composer-platform-dependencies" title="Permanent link">#</a></h1>
+<h2 id="what-are-platform-dependencies">What are platform dependencies<a class="headerlink" href="#what-are-platform-dependencies" title="Permanent link">#</a></h2>
+<p>Composer makes information about the environment Composer runs in available as virtual packages. This allows other
+packages to define dependencies (<a href="../schema.html#require">require</a>, <a href="../schema.html#conflict">conflict</a>,
+<a href="../schema.html#provide">provide</a>, <a href="../schema.html#replace">replace</a>) on different aspects of the platform, like PHP,
+extensions or system libraries, including version constraints.</p>
+<p>When you require one of the platform packages no code is installed. The version numbers of platform packages are
+derived from the environment Composer is executed in and they cannot be updated or removed. They can however be
+overwritten for the purposes of dependency resolution with a <a href="../config.html#platform">platform configuration</a>.</p>
+<p><strong>For example:</strong> If you are executing <code>composer update</code> with a PHP interpreter in version
+<code>7.4.42</code>, then Composer automatically adds a package to the pool of available packages
+called <code>php</code> and assigns version <code>7.4.42</code> to it.</p>
+<p>That's how packages can add a dependency on the used PHP version:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;php&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&gt;=7.4&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Composer will check this requirement against the currently used PHP version when running the composer command.</p>
+<h3 id="different-types-of-platform-packages">Different types of platform packages<a class="headerlink" href="#different-types-of-platform-packages" title="Permanent link">#</a></h3>
+<p>The following types of platform packages exist and can be depended on:</p>
+<ol>
+<li>PHP (<code>php</code> and the subtypes: <code>php-64bit</code>, <code>php-ipv6</code>, <code>php-zts</code> <code>php-debug</code>)</li>
+<li>PHP Extensions (<code>ext-*</code>, e.g. <code>ext-mbstring</code>)</li>
+<li>PHP Libraries (<code>lib-*</code>, e.g. <code>lib-curl</code>)</li>
+<li>Composer (<code>composer</code>, <code>composer-plugin-api</code>, <code>composer-runtime-api</code>)</li>
+</ol>
+<p>To see the complete list of platform packages available in your environment
+you can run <code>php composer.phar show --platform</code> (or <code>show -p</code> for short).</p>
+<p>The differences between the various Composer platform packages are explained further in this document.</p>
+<h2 id="plugin-package-composer-plugin-api">Plugin package <code>composer-plugin-api</code><a class="headerlink" href="#plugin-package-composer-plugin-api" title="Permanent link">#</a></h2>
+<p>You can modify Composer's behavior with <a href="plugins.html">plugin</a> packages. Composer provides a set of versioned APIs for
+plugins. Because internal Composer changes may <strong>not</strong> change the plugin APIs, the API version may not increase every
+time the Composer version increases. E.g. In Composer version <code>2.3.12</code>, the <code>composer-plugin-api</code> version could still
+be <code>2.2.0</code>.</p>
+<h2 id="runtime-package-composer-runtime-api">Runtime package <code>composer-runtime-api</code><a class="headerlink" href="#runtime-package-composer-runtime-api" title="Permanent link">#</a></h2>
+<p>When applications which were installed with Composer are run (either on CLI or through a web request), they require the
+<code>vendor/autoload.php</code> file, typically as one of the first lines of executed code. Invocations of the Composer
+autoloader are considered the application "runtime".</p>
+<p>Starting with version 2.0, Composer makes <a href="../runtime.html">additional features</a> (besides registering the class autoloader) available to the application runtime environment.</p>
+<p>Similar to <code>composer-plugin-api</code>, not every Composer release adds new runtime features,
+thus the version of <code>composer-runtime-api</code> is also increased independently from Composer's version.</p>
+<h2 id="composer-package-composer">Composer package <code>composer</code><a class="headerlink" href="#composer-package-composer" title="Permanent link">#</a></h2>
+<p>Starting with Composer 2.2.0, a new platform package called <code>composer</code> is available, which represents the exact
+Composer version that is executed. Packages depending on this platform package can therefore depend on (or conflict
+with) individual Composer versions to cover edge cases where neither the <code>composer-runtime-api</code> version nor the
+<code>composer-plugin-api</code> was changed.</p>
+<p>Because this option was introduced with Composer 2.2.0, it is recommended to add a <code>composer-plugin-api</code> dependency on
+at least <code>&gt;=2.2.0</code> to provide a more meaningful error message for users running older Composer versions.</p>
+<p>In general, depending on <code>composer-plugin-api</code> or <code>composer-runtime-api</code> is always recommended
+over depending on concrete Composer versions with the <code>composer</code> platform package.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/autoloader-optimization.html">
+          <span class="muted">Anterior</span>Autoloader optimization
+        </a>
+        <a class="pager-next" href="../articles/custom-installers.html">
+          <span class="muted">Siguiente</span>Setting up and using custom installers
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

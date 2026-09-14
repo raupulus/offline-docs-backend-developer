@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workspaces · npm</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">npm</a>
+<span class="badge">latest</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="npm" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en npm…"
+         aria-label="Buscar en npm" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de npm
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de npm">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../commands/npm-access.html">Commands</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../configuring-npm/folders.html">Configuring Npm</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Using Npm
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../using-npm/config.html"
+>Config</a>
+              </li>
+              <li>
+                <a href="../using-npm/dependency-selectors.html"
+>Dependency Selectors</a>
+              </li>
+              <li>
+                <a href="../using-npm/developers.html"
+>Developers</a>
+              </li>
+              <li>
+                <a href="../using-npm/logging.html"
+>Logging</a>
+              </li>
+              <li>
+                <a href="../using-npm/orgs.html"
+>Organizations</a>
+              </li>
+              <li>
+                <a href="../using-npm/package-spec.html"
+>Package spec</a>
+              </li>
+              <li>
+                <a href="../using-npm/registry.html"
+>Registry</a>
+              </li>
+              <li>
+                <a href="../using-npm/removal.html"
+>Removal</a>
+              </li>
+              <li>
+                <a href="../using-npm/scope.html"
+>Scope</a>
+              </li>
+              <li>
+                <a href="../using-npm/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../using-npm/workspaces.html"
+class="is-current" aria-current="page">Workspaces</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Workspaces</h1>
+
+      <p class="doc-meta">
+<span class="badge">latest</span>          <a href="https://docs.npmjs.com/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia TODO-VERIFICAR</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#description">Description#</a></li>
+              <li class="lvl-3"><a href="#defining-workspaces">Defining workspaces#</a></li>
+              <li class="lvl-3"><a href="#getting-started-with-workspaces">Getting started with workspaces#</a></li>
+              <li class="lvl-3"><a href="#adding-dependencies-to-a-workspace">Adding dependencies to a workspace#</a></li>
+              <li class="lvl-3"><a href="#using-workspaces">Using workspaces#</a></li>
+              <li class="lvl-3"><a href="#running-commands-in-the-context-of-workspaces">Running commands in the context of workspaces#</a></li>
+              <li class="lvl-3"><a href="#ignoring-missing-scripts">Ignoring missing scripts#</a></li>
+              <li class="lvl-3"><a href="#see-also">See also#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h3>
+<p><strong>Workspaces</strong> is a generic term that refers to the set of features in the npm cli that provides support for managing multiple packages from your local file system from within a singular top-level, root package.</p>
+<p>This set of features makes up for a much more streamlined workflow handling linked packages from the local file system.
+It automates the linking process as part of <code>npm install</code> and removes the need to manually use <code>npm link</code> in order to add references to packages that should be symlinked into the current <code>node_modules</code> folder.</p>
+<p>We also refer to these packages being auto-symlinked during <code>npm install</code> as a single <strong>workspace</strong>, meaning it's a nested package within the current local file system that is explicitly defined in the <a href="../configuring-npm/package-json.html#workspaces"><code>package.json</code></a>
+<code>workspaces</code> configuration.</p>
+<h3 id="defining-workspaces">Defining workspaces<a class="headerlink" href="#defining-workspaces" title="Permanent link">#</a></h3>
+<p>Workspaces are usually defined via the <code>workspaces</code> property of the <a href="../configuring-npm/package-json.html#workspaces"><code>package.json</code></a> file, e.g:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-workspaces-powered-project&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;workspaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;packages/a&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Given the above <code>package.json</code> example living at a current working directory <code>.</code> that contains a folder named <code>packages/a</code> that itself contains a <code>package.json</code> inside it, defining a Node.js package, e.g:</p>
+<div class="codehilite"><pre><span></span><code>.
++-- package.json
+`-- packages
+   +-- a
+   |   `-- package.json
+</code></pre></div>
+
+<p>The expected result once running <code>npm install</code> in this current working directory <code>.</code> is that the folder <code>packages/a</code> will get symlinked to the <code>node_modules</code> folder of the current working dir.</p>
+<p>Below is a post <code>npm install</code> example, given that same previous example structure of files and folders:</p>
+<div class="codehilite"><pre><span></span><code>.
++-- node_modules
+|  `-- a -&gt; ../packages/a
++-- package-lock.json
++-- package.json
+`-- packages
+   +-- a
+   |   `-- package.json
+</code></pre></div>
+
+<h3 id="getting-started-with-workspaces">Getting started with workspaces<a class="headerlink" href="#getting-started-with-workspaces" title="Permanent link">#</a></h3>
+<p>You may automate the required steps to define a new workspace using <a href="../commands/npm-init.html">npm init</a>.
+For example in a project that already has a <code>package.json</code> defined you can run:</p>
+<div class="codehilite"><pre><span></span><code>npm init -w ./packages/a
+</code></pre></div>
+
+<p>This command will create the missing folders and a new <code>package.json</code> file (if needed) while also making sure to properly configure the
+<code>"workspaces"</code> property of your root project <code>package.json</code>.</p>
+<h3 id="adding-dependencies-to-a-workspace">Adding dependencies to a workspace<a class="headerlink" href="#adding-dependencies-to-a-workspace" title="Permanent link">#</a></h3>
+<p>It's possible to directly add/remove/update dependencies of your workspaces using the <a href="../using-npm/config.html#workspace"><code>workspace</code> config</a>.</p>
+<p>For example, assuming the following structure:</p>
+<div class="codehilite"><pre><span></span><code>.
++-- package.json
+`-- packages
+   +-- a
+   |   `-- package.json
+   `-- b
+       `-- package.json
+</code></pre></div>
+
+<p>If you want to add a dependency named <code>abbrev</code> from the registry as a dependency of your workspace <strong>a</strong>, you may use the workspace config to tell the npm installer that package should be added as a dependency of the provided workspace:</p>
+<div class="codehilite"><pre><span></span><code>npm install abbrev -w a
+</code></pre></div>
+
+<p><strong>Adding a workspace as a dependency of another workspace:</strong></p>
+<p>The same approach works when adding one workspace as a dependency of another.
+If you want to add workspace <strong>b</strong> as a dependency of workspace <strong>a</strong>, run:</p>
+<div class="codehilite"><pre><span></span><code>npm install b -w a
+</code></pre></div>
+
+<p>npm will detect that <strong>b</strong> is a workspace and automatically symlink it rather
+than fetching it from the registry. The resulting entry in workspace <strong>a</strong>'s
+<code>package.json</code> will use a standard version range:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.0.0&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Note: other installing commands such as <code>uninstall</code>, <code>ci</code>, etc will also respect the provided <code>workspace</code> configuration.</p>
+<h3 id="using-workspaces">Using workspaces<a class="headerlink" href="#using-workspaces" title="Permanent link">#</a></h3>
+<p>Given the <a href="https://nodejs.org/dist/latest-v14.x/docs/api/modules.html#modules_all_together">specifics of how Node.js handles module resolution</a> it's possible to consume any defined workspace by its declared <code>package.json</code> <code>name</code>.
+Continuing from the example defined above, let's also create a Node.js script that will require the workspace <code>a</code> example module, e.g:</p>
+<div class="codehilite"><pre><span></span><code>// ./packages/a/index.js
+module.exports = &#39;a&#39;
+
+// ./lib/index.js
+const moduleA = require(&#39;a&#39;)
+console.log(moduleA) // -&gt; a
+</code></pre></div>
+
+<p>When running it with:</p>
+<p><code>node lib/index.js</code></p>
+<p>This demonstrates how the nature of <code>node_modules</code> resolution allows for
+<strong>workspaces</strong> to enable a portable workflow for requiring each <strong>workspace</strong> in such a way that is also easy to <a href="../commands/npm-publish.html">publish</a> these nested workspaces to be consumed elsewhere.</p>
+<h3 id="running-commands-in-the-context-of-workspaces">Running commands in the context of workspaces<a class="headerlink" href="#running-commands-in-the-context-of-workspaces" title="Permanent link">#</a></h3>
+<p>You can use the <code>workspace</code> configuration option to run commands in the context of a configured workspace.
+Additionally, if your current directory is in a workspace, the <code>workspace</code> configuration is implicitly set, and <code>prefix</code> is set to the root workspace.</p>
+<p>Following is a quick example on how to use the <code>npm run</code> command in the context of nested workspaces.
+For a project containing multiple workspaces, e.g:</p>
+<div class="codehilite"><pre><span></span><code>.
++-- package.json
+`-- packages
+   +-- a
+   |   `-- package.json
+   `-- b
+       `-- package.json
+</code></pre></div>
+
+<p>By running a command using the <code>workspace</code> option, it's possible to run the given command in the context of that specific workspace.
+e.g:</p>
+<div class="codehilite"><pre><span></span><code>npm run test --workspace=a
+</code></pre></div>
+
+<p>You could also run the command within the workspace.</p>
+<div class="codehilite"><pre><span></span><code>cd packages/a &amp;&amp; npm run test
+</code></pre></div>
+
+<p>Either will run the <code>test</code> script defined within the
+<code>./packages/a/package.json</code> file.</p>
+<p>Please note that you can also specify this argument multiple times in the command-line in order to target multiple workspaces, e.g:</p>
+<div class="codehilite"><pre><span></span><code>npm run test --workspace=a --workspace=b
+</code></pre></div>
+
+<p>Or run the command for each workspace within the 'packages' folder:</p>
+<div class="codehilite"><pre><span></span><code>npm run test --workspace=packages
+</code></pre></div>
+
+<p>It's also possible to use the <code>workspaces</code> (plural) configuration option to enable the same behavior but running that command in the context of <strong>all</strong> configured workspaces.
+e.g:</p>
+<div class="codehilite"><pre><span></span><code>npm run test --workspaces
+</code></pre></div>
+
+<p>Will run the <code>test</code> script in both <code>./packages/a</code> and <code>./packages/b</code>.</p>
+<p>Commands will be run in each workspace in the order they appear in your <code>package.json</code></p>
+<div class="codehilite"><pre><span></span><code>{
+  &quot;workspaces&quot;: [ &quot;packages/a&quot;, &quot;packages/b&quot; ]
+}
+</code></pre></div>
+
+<p>Order of run is different with:</p>
+<div class="codehilite"><pre><span></span><code>{
+  &quot;workspaces&quot;: [ &quot;packages/b&quot;, &quot;packages/a&quot; ]
+}
+</code></pre></div>
+
+<h3 id="ignoring-missing-scripts">Ignoring missing scripts<a class="headerlink" href="#ignoring-missing-scripts" title="Permanent link">#</a></h3>
+<p>It is not required for all of the workspaces to implement scripts run with the <code>npm run</code> command.</p>
+<p>By running the command with the <code>--if-present</code> flag, npm will ignore workspaces missing target script.</p>
+<div class="codehilite"><pre><span></span><code>npm run test --workspaces --if-present
+</code></pre></div>
+
+<h3 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">#</a></h3>
+<ul>
+<li><a href="../commands/npm-install.html">npm install</a></li>
+<li><a href="../commands/npm-publish.html">npm publish</a></li>
+<li><a href="../commands/npm-run.html">npm run</a></li>
+<li><a href="../using-npm/config.html">config</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../using-npm/scripts.html">
+          <span class="muted">Anterior</span>Scripts
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

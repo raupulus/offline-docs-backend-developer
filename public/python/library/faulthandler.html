@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;faulthandler&#34; --- Dump the Python traceback · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/debug.html"
+>Depuración y perfilado</a>
+              </li>
+              <li>
+                <a href="../library/decimal.html"
+>&#34;decimal&#34; --- Decimal fixed-point and floating-point arithmetic</a>
+              </li>
+              <li>
+                <a href="../library/development.html"
+>Herramientas de desarrollo</a>
+              </li>
+              <li>
+                <a href="../library/devmode.html"
+>Modo de desarrollo de Python</a>
+              </li>
+              <li>
+                <a href="../library/dialog.html"
+>Tkinter dialogs</a>
+              </li>
+              <li>
+                <a href="../library/difflib.html"
+>&#34;difflib&#34; --- Helpers for computing deltas</a>
+              </li>
+              <li>
+                <a href="../library/dis.html"
+>&#34;dis&#34; --- Desensamblador para bytecode de Python</a>
+              </li>
+              <li>
+                <a href="../library/distribution.html"
+>Empaquetado y distribución de software</a>
+              </li>
+              <li>
+                <a href="../library/distutils.html"
+>&#34;distutils&#34; --- Building and installing Python modules</a>
+              </li>
+              <li>
+                <a href="../library/doctest.html"
+>&#34;doctest&#34; --- Test interactive Python examples</a>
+              </li>
+              <li>
+                <a href="../library/email.charset.html"
+>&#34;email.charset&#34;: Representing character sets</a>
+              </li>
+              <li>
+                <a href="../library/email.compat32-message.html"
+>&#34;email.message.Message&#34;: Representar un mensaje de correo electrónico usando la API &#34;compat32&#34;</a>
+              </li>
+              <li>
+                <a href="../library/email.contentmanager.html"
+>&#34;email.contentmanager&#34;: Managing MIME Content</a>
+              </li>
+              <li>
+                <a href="../library/email.encoders.html"
+>&#34;email.encoders&#34;: Encoders</a>
+              </li>
+              <li>
+                <a href="../library/email.errors.html"
+>&#34;email.errors&#34;: Exception and Defect classes</a>
+              </li>
+              <li>
+                <a href="../library/email.examples.html"
+>&#34;email&#34;: Ejemplos</a>
+              </li>
+              <li>
+                <a href="../library/email.generator.html"
+>&#34;email.generator&#34;: Generating MIME documents</a>
+              </li>
+              <li>
+                <a href="../library/email.header.html"
+>&#34;email.header&#34;: Internationalized headers</a>
+              </li>
+              <li>
+                <a href="../library/email.headerregistry.html"
+>&#34;email.headerregistry&#34;: Custom Header Objects</a>
+              </li>
+              <li>
+                <a href="../library/email.iterators.html"
+>&#34;email.iterators&#34;: Iterators</a>
+              </li>
+              <li>
+                <a href="../library/email.message.html"
+>&#34;email.message&#34;: Representing an email message</a>
+              </li>
+              <li>
+                <a href="../library/email.mime.html"
+>&#34;email.mime&#34;: Creating email and MIME objects from scratch</a>
+              </li>
+              <li>
+                <a href="../library/email.parser.html"
+>&#34;email.parser&#34;: Parsing email messages</a>
+              </li>
+              <li>
+                <a href="../library/email.policy.html"
+>&#34;email.policy&#34;: Policy Objects</a>
+              </li>
+              <li>
+                <a href="../library/email.html"
+>&#34;email&#34; --- An email and MIME handling package</a>
+              </li>
+              <li>
+                <a href="../library/email.utils.html"
+>&#34;email.utils&#34;: Miscellaneous utilities</a>
+              </li>
+              <li>
+                <a href="../library/ensurepip.html"
+>&#34;ensurepip&#34; --- Bootstrapping the &#34;pip&#34; installer</a>
+              </li>
+              <li>
+                <a href="../library/enum.html"
+>&#34;enum&#34; --- Support for enumerations</a>
+              </li>
+              <li>
+                <a href="../library/errno.html"
+>&#34;errno&#34; --- Standard errno system symbols</a>
+              </li>
+              <li>
+                <a href="../library/exceptions.html"
+>Excepciones incorporadas</a>
+              </li>
+              <li>
+                <a href="../library/faulthandler.html"
+class="is-current" aria-current="page">&#34;faulthandler&#34; --- Dump the Python traceback</a>
+              </li>
+              <li>
+                <a href="../library/fcntl.html"
+>&#34;fcntl&#34; --- The &#34;fcntl&#34; and &#34;ioctl&#34; system calls</a>
+              </li>
+              <li>
+                <a href="../library/filecmp.html"
+>&#34;filecmp&#34; --- File and Directory Comparisons</a>
+              </li>
+              <li>
+                <a href="../library/fileformats.html"
+>Formatos de archivo</a>
+              </li>
+              <li>
+                <a href="../library/fileinput.html"
+>&#34;fileinput&#34; --- Iterate over lines from multiple input streams</a>
+              </li>
+              <li>
+                <a href="../library/filesys.html"
+>Acceso a archivos y directorios</a>
+              </li>
+              <li>
+                <a href="../library/fnmatch.html"
+>&#34;fnmatch&#34; --- Unix filename pattern matching</a>
+              </li>
+              <li>
+                <a href="../library/fractions.html"
+>&#34;fractions&#34; --- Rational numbers</a>
+              </li>
+              <li>
+                <a href="../library/frameworks.html"
+>Program frameworks</a>
+              </li>
+              <li>
+                <a href="../library/ftplib.html"
+>&#34;ftplib&#34; --- FTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/functional.html"
+>Módulos de programación funcional</a>
+              </li>
+              <li>
+                <a href="../library/functions.html"
+>Funciones incorporadas</a>
+              </li>
+              <li>
+                <a href="../library/functools.html"
+>&#34;functools&#34; --- Higher-order functions and operations on callable objects</a>
+              </li>
+              <li>
+                <a href="../library/gc.html"
+>&#34;gc&#34; --- Garbage Collector interface</a>
+              </li>
+              <li>
+                <a href="../library/getopt.html"
+>&#34;getopt&#34; --- C-style parser for command line options</a>
+              </li>
+              <li>
+                <a href="../library/getpass.html"
+>&#34;getpass&#34; --- Portable password input</a>
+              </li>
+              <li>
+                <a href="../library/gettext.html"
+>&#34;gettext&#34; --- Multilingual internationalization services</a>
+              </li>
+              <li>
+                <a href="../library/glob.html"
+>&#34;glob&#34; --- Unix style pathname pattern expansion</a>
+              </li>
+              <li>
+                <a href="../library/graphlib.html"
+>&#34;graphlib&#34; --- Functionality to operate with graph-like structures</a>
+              </li>
+              <li>
+                <a href="../library/grp.html"
+>&#34;grp&#34; --- The group database</a>
+              </li>
+              <li>
+                <a href="../library/gzip.html"
+>&#34;gzip&#34; --- Support for **gzip** files</a>
+              </li>
+              <li>
+                <a href="../library/hashlib.html"
+>&#34;hashlib&#34; --- Secure hashes and message digests</a>
+              </li>
+              <li>
+                <a href="../library/heapq.html"
+>&#34;heapq&#34; --- Heap queue algorithm</a>
+              </li>
+              <li>
+                <a href="../library/hmac.html"
+>&#34;hmac&#34; --- Keyed-Hashing for Message Authentication</a>
+              </li>
+              <li>
+                <a href="../library/html.entities.html"
+>&#34;html.entities&#34; --- Definitions of HTML general entities</a>
+              </li>
+              <li>
+                <a href="../library/html.parser.html"
+>&#34;html.parser&#34; --- Simple HTML and XHTML parser</a>
+              </li>
+              <li>
+                <a href="../library/html.html"
+>&#34;html&#34; --- HyperText Markup Language support</a>
+              </li>
+              <li>
+                <a href="../library/http.client.html"
+>&#34;http.client&#34; --- HTTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/http.cookiejar.html"
+>&#34;http.cookiejar&#34; --- Cookie handling for HTTP clients</a>
+              </li>
+              <li>
+                <a href="../library/http.cookies.html"
+>&#34;http.cookies&#34; --- HTTP state management</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;faulthandler&#34; --- Dump the Python traceback</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#volcar-el-rastreo">Volcar el rastreo#</a></li>
+              <li class="lvl-2"><a href="#dumping-the-c-stack">Dumping the C stack#</a></li>
+              <li class="lvl-3"><a href="#c-stack-compatibility">C Stack Compatibility#</a></li>
+              <li class="lvl-2"><a href="#estado-del-gestor-de-fallos">Estado del gestor de fallos#</a></li>
+              <li class="lvl-2"><a href="#volcar-los-rastreos-despues-de-un-tiempo-de-espera">Volcar los rastreos después de un tiempo de espera#</a></li>
+              <li class="lvl-2"><a href="#volcar-el-rastreo-en-una-senal-del-usuario">Volcar el rastreo en una señal del usuario#</a></li>
+              <li class="lvl-2"><a href="#problema-con-descriptores-de-archivo">Problema con descriptores de archivo#</a></li>
+              <li class="lvl-2"><a href="#ejemplo">Ejemplo#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="faulthandler-dump-the-python-traceback">"faulthandler" --- Dump the Python traceback<a class="headerlink" href="#faulthandler-dump-the-python-traceback" title="Permanent link">#</a></h1>
+<p>Added in version 3.3.</p>
+<p>======================================================================</p>
+<p>This module contains functions to dump Python tracebacks explicitly,
+on a fault, after a timeout, or on a user signal. Call
+"faulthandler.enable()" to install fault handlers for the "SIGSEGV",
+"SIGFPE", "SIGABRT", "SIGBUS", and "SIGILL" signals. You can also
+enable them at startup by setting the "PYTHONFAULTHANDLER" environment
+variable or by using the "-X" "faulthandler" command line option.</p>
+<p>The fault handler is compatible with system fault handlers like Apport
+or the Windows fault handler. The module uses an alternative stack for
+signal handlers if the "sigaltstack()" function is available. This
+allows it to dump the traceback even on a stack overflow.</p>
+<p>El gestor de fallos se llama en casos catastróficos y, por lo tanto,
+solo puede utilizar funciones seguras en señales (por ejemplo, no
+puede asignar memoria en el heap). Debido a esta limitación, el
+volcado del rastreo es mínimo comparado a los rastreos normales de
+Python:</p>
+<ul>
+<li>
+<p>Solo se soporta ASCII. El gestor de errores "backslashreplace" se
+  utiliza en la codificación.</p>
+</li>
+<li>
+<p>Cada cadena de caracteres está limitada a 500 caracteres.</p>
+</li>
+<li>
+<p>Solo se muestran el nombre de archivo, el nombre de la función y el
+  número de línea. (sin código fuente)</p>
+</li>
+<li>
+<p>Está limitado a 100 frames y 100 hilos.</p>
+</li>
+<li>
+<p>El orden se invierte: la llamada más reciente se muestra primero.</p>
+</li>
+</ul>
+<p>Por defecto, el rastreo de Python se escribe en "sys.stderr". Para ver
+los rastreos, las aplicaciones deben ejecutarse en la terminal.
+Alternativamente se puede pasar un archivo de registro a
+"faulthandler.enable()".</p>
+<p>El módulo está implementado en C, así los rastreos se pueden volcar en
+un fallo o cuando Python está en bloqueo mutuo.</p>
+<p>El Modo de Desarrollo Python llama a "failurehandler.enable()" al
+inicio de Python.</p>
+<p>Ver también:</p>
+<p>Módulo "pdb"
+     Depurador interactivo de código fuente para programas en Python.</p>
+<p>Módulo "traceback"
+     Interfaz estándar para extraer, formatear e imprimir trazas de
+     pila de programas en Python.</p>
+<h2 id="volcar-el-rastreo">Volcar el rastreo<a class="headerlink" href="#volcar-el-rastreo" title="Permanent link">#</a></h2>
+<p>faulthandler.dump_traceback(file=sys.stderr, all_threads=True)</p>
+<p>Vuelca los rastreos de todos los hilos en el archivo <em>file</em>. Si
+   <em>all_threads</em> es "False", vuelca solo el hilo actual.</p>
+<p>Ver también:</p>
+<div class="codehilite"><pre><span></span><code> &quot;traceback.print_tb()&quot;, que se puede utilizar para imprimir un
+ objeto de traza de pila.
+</code></pre></div>
+
+<p>Distinto en la versión 3.5: Se añadió soporte para pasar el
+   descriptor de archivo a esta función.</p>
+<h2 id="dumping-the-c-stack">Dumping the C stack<a class="headerlink" href="#dumping-the-c-stack" title="Permanent link">#</a></h2>
+<p>Added in version 3.14.</p>
+<p>faulthandler.dump_c_stack(file=sys.stderr)</p>
+<p>Dump the C stack trace of the current thread into <em>file</em>.</p>
+<p>If the Python build does not support it or the operating system
+   does not provide a stack trace, then this prints an error in place
+   of a dumped C stack.</p>
+<h3 id="c-stack-compatibility">C Stack Compatibility<a class="headerlink" href="#c-stack-compatibility" title="Permanent link">#</a></h3>
+<p>If the system does not support the C-level <em>backtrace(3)</em> or
+<em>dladdr1(3)</em>, then C stack dumps will not work. An error will be
+printed instead of the stack.</p>
+<p>Additionally, some compilers do not support <em>CPython's</em> implementation
+of C stack dumps. As a result, a different error may be printed
+instead of the stack, even if the operating system supports dumping
+stacks.</p>
+<p>Nota:</p>
+<p>Dumping C stacks can be arbitrarily slow, depending on the DWARF
+  level of the binaries in the call stack.</p>
+<h2 id="estado-del-gestor-de-fallos">Estado del gestor de fallos<a class="headerlink" href="#estado-del-gestor-de-fallos" title="Permanent link">#</a></h2>
+<p>faulthandler.enable(file=sys.stderr, all_threads=True, c_stack=True)</p>
+<p>Enable the fault handler: install handlers for the "SIGSEGV",
+   "SIGFPE", "SIGABRT", "SIGBUS" and "SIGILL" signals to dump the
+   Python traceback. If <em>all_threads</em> is "True", produce tracebacks
+   for every running thread. Otherwise, dump only the current thread.</p>
+<p>El archivo <em>file</em> se debe mantener abierto hasta que se desactive
+   el gestor de fallos: ver problema con descriptores de archivo.</p>
+<p>If <em>c_stack</em> is "True", then the C stack trace is printed after the
+   Python traceback, unless the system does not support it. See
+   "dump_c_stack()" for more information on compatibility.</p>
+<p>Distinto en la versión 3.5: Se añadió soporte para pasar el
+   descriptor de archivo a esta función.</p>
+<p>Distinto en la versión 3.6: En Windows, también se instaló un
+   gestor para la excepción de Windows.</p>
+<p>Distinto en la versión 3.10: Ahora el volcado menciona si se está
+   ejecutando una colección de recolectores de basura si <em>all_threads</em>
+   es verdadero.</p>
+<p>Distinto en la versión 3.14: Only the current thread is dumped if
+   the <em>GIL</em> is disabled to prevent the risk of data races.</p>
+<p>Distinto en la versión 3.14: The dump now displays the C stack
+   trace if <em>c_stack</em> is true.</p>
+<p>faulthandler.disable()</p>
+<p>Desactiva el gestor de fallos: desinstala los gestores de señales
+   instalados por "enable()".</p>
+<p>faulthandler.is_enabled()</p>
+<p>Comprueba si el gestor de fallos está activado.</p>
+<h2 id="volcar-los-rastreos-despues-de-un-tiempo-de-espera">Volcar los rastreos después de un tiempo de espera<a class="headerlink" href="#volcar-los-rastreos-despues-de-un-tiempo-de-espera" title="Permanent link">#</a></h2>
+<p>faulthandler.dump_traceback_later(timeout, repeat=False, file=sys.stderr, exit=False)</p>
+<p>Dump the tracebacks of all threads, after a timeout of <em>timeout</em>
+   seconds, or every <em>timeout</em> seconds if <em>repeat</em> is "True".  If
+   <em>exit</em> is "True", call "_exit()" with status=1 after dumping the
+   tracebacks.  (Note "_exit()" exits the process immediately, which
+   means it doesn't do any cleanup like flushing file buffers.) If the
+   function is called twice, the new call replaces previous parameters
+   and resets the timeout. The timer has a sub-second resolution.</p>
+<p>El archivo <em>file</em> se debe mantener abierto hasta que se vuelque el
+   rastreo o se llame a "cancel_dump_traceback_later()": ver problema
+   con descriptores de archivo.</p>
+<p>Esta función está implementada utilizando un hilo vigilante.</p>
+<p>Distinto en la versión 3.5: Se añadió soporte para pasar el
+   descriptor de archivo a esta función.</p>
+<p>Distinto en la versión 3.7: Ahora esta función está siempre
+   disponible.</p>
+<p>faulthandler.cancel_dump_traceback_later()</p>
+<p>Cancela la última llamada a "dump_traceback_later()".</p>
+<h2 id="volcar-el-rastreo-en-una-senal-del-usuario">Volcar el rastreo en una señal del usuario<a class="headerlink" href="#volcar-el-rastreo-en-una-senal-del-usuario" title="Permanent link">#</a></h2>
+<p>faulthandler.register(signum, file=sys.stderr, all_threads=True, chain=False)</p>
+<p>Registra una señal del usuario: instala un gestor para la señal
+   <em>signum</em> para volcar el rastreo de todos los hilos, o del hilo
+   actual si <em>all_threads</em> es "False", en el archivo file. Llama al
+   gestor previo si chain es "True".</p>
+<p>El archivo <em>file</em> se debe mantener abierto hasta que la señal sea
+   anulada por "unregister()": ver problema con descriptores de
+   archivo.</p>
+<p>No está disponible en Windows.</p>
+<p>Distinto en la versión 3.5: Se añadió soporte para pasar el
+   descriptor de archivo a esta función.</p>
+<p>faulthandler.unregister(signum)</p>
+<p>Anula una señal del usuario: desinstala el gestor de la señal
+   <em>signum</em> instalada por "register()". Retorna "True" si la señal fue
+   registrada, "False" en otro caso.</p>
+<p>No está disponible en Windows.</p>
+<h2 id="problema-con-descriptores-de-archivo">Problema con descriptores de archivo<a class="headerlink" href="#problema-con-descriptores-de-archivo" title="Permanent link">#</a></h2>
+<p>"enable()", "dump_traceback_later()" y "register()" guardan el
+descriptor de archivo de su argumento <em>file</em>. Si se cierra el archivo
+y su descriptor de archivo es reutilizado por un nuevo archivo, o si
+se usa "os.dup2()" para reemplazar el descriptor de archivo, el
+rastreo se escribirá en un archivo diferente. Llame a estas funciones
+nuevamente cada vez que se reemplace el archivo.</p>
+<h2 id="ejemplo">Ejemplo<a class="headerlink" href="#ejemplo" title="Permanent link">#</a></h2>
+<p>Ejemplo de un fallo de segmentación en Linux con y sin activar el
+gestor de fallos:</p>
+<p>$ python -c "import ctypes; ctypes.string_at(0)"
+   Segmentation fault</p>
+<p>$ python -q -X faulthandler</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>import ctypes
+ctypes.string_at(0)
+   Fatal Python error: Segmentation fault</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Current thread 0x00007fb899f39700 (most recent call first):
+     File "/opt/python/Lib/ctypes/<strong>init</strong>.py", line 486 in string_at
+     File "<stdin>", line 1 in <module></p>
+<p>Current thread's C stack trace (most recent call first):
+     Binary file "/opt/python/python", at _Py_DumpStack+0x42 [0x5b27f7d7147e]
+     Binary file "/opt/python/python", at +0x32dcbd [0x5b27f7d85cbd]
+     Binary file "/opt/python/python", at +0x32df8a [0x5b27f7d85f8a]
+     Binary file "/usr/lib/libc.so.6", at +0x3def0 [0x77b73226bef0]
+     Binary file "/usr/lib/libc.so.6", at +0x17ef9c [0x77b7323acf9c]
+     Binary file "/opt/python/build/lib.linux-x86_64-3.14/_ctypes.cpython-314d-x86_64-linux-gnu.so", at +0xcdf6 [0x77b7315dddf6]
+     Binary file "/usr/lib/libffi.so.8", at +0x7976 [0x77b73158f976]
+     Binary file "/usr/lib/libffi.so.8", at +0x413c [0x77b73158c13c]
+     Binary file "/usr/lib/libffi.so.8", at ffi_call+0x12e [0x77b73158ef0e]
+     Binary file "/opt/python/build/lib.linux-x86_64-3.14/_ctypes.cpython-314d-x86_64-linux-gnu.so", at +0x15a33 [0x77b7315e6a33]
+     Binary file "/opt/python/build/lib.linux-x86_64-3.14/_ctypes.cpython-314d-x86_64-linux-gnu.so", at +0x164fa [0x77b7315e74fa]
+     Binary file "/opt/python/build/lib.linux-x86_64-3.14/_ctypes.cpython-314d-x86_64-linux-gnu.so", at +0xc624 [0x77b7315dd624]
+     Binary file "/opt/python/python", at _PyObject_MakeTpCall+0xce [0x5b27f7b73883]
+     Binary file "/opt/python/python", at +0x11bab6 [0x5b27f7b73ab6]
+     Binary file "/opt/python/python", at PyObject_Vectorcall+0x23 [0x5b27f7b73b04]
+     Binary file "/opt/python/python", at _PyEval_EvalFrameDefault+0x490c [0x5b27f7cbb302]
+     Binary file "/opt/python/python", at +0x2818e6 [0x5b27f7cd98e6]
+     Binary file "/opt/python/python", at +0x281aab [0x5b27f7cd9aab]
+     Binary file "/opt/python/python", at PyEval_EvalCode+0xc5 [0x5b27f7cd9ba3]
+     Binary file "/opt/python/python", at +0x255957 [0x5b27f7cad957]
+     Binary file "/opt/python/python", at +0x255ab4 [0x5b27f7cadab4]
+     Binary file "/opt/python/python", at _PyEval_EvalFrameDefault+0x6c3e [0x5b27f7cbd634]
+     Binary file "/opt/python/python", at +0x2818e6 [0x5b27f7cd98e6]
+     Binary file "/opt/python/python", at +0x281aab [0x5b27f7cd9aab]
+     Binary file "/opt/python/python", at +0x11b6e1 [0x5b27f7b736e1]
+     Binary file "/opt/python/python", at +0x11d348 [0x5b27f7b75348]
+     Binary file "/opt/python/python", at +0x11d626 [0x5b27f7b75626]
+     Binary file "/opt/python/python", at PyObject_Call+0x20 [0x5b27f7b7565e]
+     Binary file "/opt/python/python", at +0x32a67a [0x5b27f7d8267a]
+     Binary file "/opt/python/python", at +0x32a7f8 [0x5b27f7d827f8]
+     Binary file "/opt/python/python", at +0x32ac1b [0x5b27f7d82c1b]
+     Binary file "/opt/python/python", at Py_RunMain+0x31 [0x5b27f7d82ebe]
+     <truncated rest of calls>
+   Segmentation fault</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/exceptions.html">
+          <span class="muted">Anterior</span>Excepciones incorporadas
+        </a>
+        <a class="pager-next" href="../library/fcntl.html">
+          <span class="muted">Siguiente</span>&#34;fcntl&#34; --- The &#34;fcntl&#34; and &#34;ioctl&#34; system calls
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

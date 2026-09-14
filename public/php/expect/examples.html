@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejemplos · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Expect
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../expect/ini.html"
+>Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../expect/constants.html"
+>Constantes predefinidas</a>
+              </li>
+              <li>
+                <a href="../expect/examples.html"
+class="is-current" aria-current="page">Ejemplos</a>
+              </li>
+              <li>
+                <a href="../expect/expect-expectl.html"
+>expect_expectl</a>
+              </li>
+              <li>
+                <a href="../expect/expect-popen.html"
+>expect_popen</a>
+              </li>
+              <li>
+                <a href="../expect/configure.html"
+>Instalación</a>
+              </li>
+              <li>
+                <a href="../expect/setup.html"
+>Instalación/Configuración</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Ejemplos</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/expect.examples.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#ejemplos">Ejemplos#</a></li>
+              <li class="lvl-2"><a href="#ejemplos-de-uso-de-expect">Ejemplos de uso de Expect#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="ejemplos">Ejemplos<a class="headerlink" href="#ejemplos" title="Permanent link">#</a></h2>
+<h2 id="ejemplos-de-uso-de-expect">Ejemplos de uso de Expect<a class="headerlink" href="#ejemplos-de-uso-de-expect" title="Permanent link">#</a></h2>
+<p>Ejemplo de uso de Expect</p>
+<p>Este ejemplo conecta a un host remoto mediante SSH, y muestra el tiempo que lleva en funcionamiento dicho host con uptime.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nb">ini_set</span><span class="p">(</span><span class="s2">&quot;expect.loguser&quot;</span><span class="p">,</span> <span class="s2">&quot;Off&quot;</span><span class="p">);</span>
+
+<span class="nv">$stream</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s2">&quot;expect://ssh root@remotehost uptime&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">);</span>
+
+<span class="nv">$cases</span> <span class="o">=</span> <span class="k">array</span> <span class="p">(</span>
+    <span class="k">array</span> <span class="p">(</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="s2">&quot;password:&quot;</span><span class="p">,</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="nx">PASSWORD</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">switch</span> <span class="p">(</span><span class="nb">expect_expectl</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="nv">$cases</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">PASSWORD</span><span class="o">:</span>
+        <span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="s2">&quot;password</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">default</span><span class="o">:</span>
+        <span class="k">die</span> <span class="p">(</span><span class="s2">&quot;Error al tratar de conectar con el host remoto</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="nv">$line</span> <span class="o">=</span> <span class="nb">fgets</span><span class="p">(</span><span class="nv">$stream</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">print</span> <span class="nv">$line</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nb">fclose</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>El siguiente ejemplo conecta con un host remoto, determina si el SO instalado es de 32 o de 64 bits, y finalmente actualiza el paquete que corresponda.</p>
+<p>Otro ejemplo de uso de Expect</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nb">ini_set</span><span class="p">(</span><span class="s2">&quot;expect.timeout&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="nb">ini_set</span><span class="p">(</span><span class="s2">&quot;expect.loguser&quot;</span><span class="p">,</span> <span class="s2">&quot;Off&quot;</span><span class="p">);</span>
+
+<span class="nv">$stream</span> <span class="o">=</span> <span class="nb">expect_popen</span><span class="p">(</span><span class="s2">&quot;ssh root@remotehost&quot;</span><span class="p">);</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="nb">expect_expectl</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="k">array</span> <span class="p">(</span>
+            <span class="k">array</span> <span class="p">(</span><span class="s2">&quot;password:&quot;</span><span class="p">,</span> <span class="nx">PASSWORD</span><span class="p">),</span> <span class="c1">// SSH pide contraseña</span>
+            <span class="k">array</span> <span class="p">(</span><span class="s2">&quot;yes/no)?&quot;</span><span class="p">,</span> <span class="nx">YESNO</span><span class="p">),</span> <span class="c1">// SSH pide si almacenar o no el host</span>
+            <span class="k">array</span> <span class="p">(</span><span class="s2">&quot;~$ &quot;</span><span class="p">,</span> <span class="nx">SHELL</span><span class="p">,</span> <span class="nx">EXP_EXACT</span><span class="p">),</span> <span class="c1">// ¡Hemos conectado!</span>
+    <span class="p">)))</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="nx">PASSWORD</span><span class="o">:</span>
+            <span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="s2">&quot;secret</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+
+        <span class="k">case</span> <span class="nx">YESNO</span><span class="o">:</span>
+            <span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="s2">&quot;yes</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+
+        <span class="k">case</span> <span class="nx">SHELL</span><span class="o">:</span>
+            <span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="s2">&quot;uname -a</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+            <span class="k">while</span> <span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">switch</span> <span class="p">(</span><span class="nb">expect_expectl</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="k">array</span> <span class="p">(</span>
+                            <span class="k">array</span> <span class="p">(</span><span class="s2">&quot;~$ &quot;</span><span class="p">,</span> <span class="nx">SHELL</span><span class="p">,</span> <span class="nx">EXP_EXACT</span><span class="p">),</span> <span class="c1">// ¡Hemos conectado!</span>
+                            <span class="k">array</span> <span class="p">(</span><span class="s2">&quot;^Linux.*$&quot;</span><span class="p">,</span> <span class="nx">UNAME</span><span class="p">,</span> <span class="nx">EXP_REGEXP</span><span class="p">),</span> <span class="c1">// salida de uname -a</span>
+                    <span class="p">),</span> <span class="nv">$match</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="k">case</span> <span class="nx">UNAME</span><span class="o">:</span>
+                            <span class="nv">$uname</span> <span class="o">.=</span> <span class="nv">$match</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+                            <span class="k">break</span><span class="p">;</span>
+
+                        <span class="k">case</span> <span class="nx">SHELL</span><span class="o">:</span>
+                            <span class="c1">// Ejecutar la actualización:</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="nb">strstr</span> <span class="p">(</span><span class="nv">$uname</span><span class="p">,</span> <span class="s2">&quot;x86_64&quot;</span><span class="p">))</span> <span class="p">{</span>
+                                    <span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="s2">&quot;rpm -Uhv http://mirrorsite/somepath/some_64bit.rpm</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+                            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                                    <span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="s2">&quot;rpm -Uhv http://mirrorsite/somepath/some_32bit.rpm</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+                            <span class="p">}</span>
+                            <span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">,</span> <span class="s2">&quot;exit</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+                            <span class="k">break</span> <span class="mi">2</span><span class="p">;</span>
+
+                        <span class="k">case</span> <span class="nx">EXP_TIMEOUT</span><span class="o">:</span>
+                        <span class="k">case</span> <span class="nx">EXP_EOF</span><span class="o">:</span>
+                            <span class="k">break</span> <span class="mi">2</span><span class="p">;</span>
+
+                        <span class="k">default</span><span class="o">:</span>
+                            <span class="k">die</span> <span class="p">(</span><span class="s2">&quot;Ha ocurrido un error</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+                    <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">break</span> <span class="mi">2</span><span class="p">;</span>
+
+        <span class="k">case</span> <span class="nx">EXP_TIMEOUT</span><span class="o">:</span>
+        <span class="k">case</span> <span class="nx">EXP_EOF</span><span class="o">:</span>
+            <span class="k">break</span> <span class="mi">2</span><span class="p">;</span>
+
+        <span class="k">default</span><span class="o">:</span>
+            <span class="k">die</span> <span class="p">(</span><span class="s2">&quot;Ha ocurrido un error</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">fclose</span> <span class="p">(</span><span class="nv">$stream</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../expect/constants.html">
+          <span class="muted">Anterior</span>Constantes predefinidas
+        </a>
+        <a class="pager-next" href="../expect/expect-expectl.html">
+          <span class="muted">Siguiente</span>expect_expectl
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

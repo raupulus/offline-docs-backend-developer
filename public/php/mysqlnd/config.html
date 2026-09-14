@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuración en tiempo de ejecución · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Mysqlnd
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../mysqlnd/plugin.html"
+>API del plugin del controlador nativo MySQL</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/persist.html"
+>Conexiones persistentes</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/config.html"
+class="is-current" aria-current="page">Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/stats.html"
+>Estadísticas</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/memory.html"
+>Gestión de la memoria</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/incompatibilities.html"
+>Incompatibilidades</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/install.html"
+>Instalación</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/overview.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../mysqlnd/notes.html"
+>Notas</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Configuración en tiempo de ejecución</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/mysqlnd.config.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#configuracion-en-tiempo-de-ejecucion">Configuración en tiempo de ejecución#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="configuracion-en-tiempo-de-ejecucion">Configuración en tiempo de ejecución<a class="headerlink" href="#configuracion-en-tiempo-de-ejecucion" title="Permanent link">#</a></h2>
+<p>El comportamiento de estas funciones es afectado por la configuración en el archivo <code>php.ini</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Por defecto</th>
+<th>Cambiable</th>
+<th>Historial de cambios</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ini.mysqlnd.collect-statistics">mysqlnd.collect_statistics</a></td>
+<td>"1"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.collect-memory-statistics">mysqlnd.collect_memory_statistics</a></td>
+<td>"0"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.debug">mysqlnd.debug</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.log-mask">mysqlnd.log_mask</a></td>
+<td>0</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.mempool-default-size">mysqlnd.mempool_default_size</a></td>
+<td>16000</td>
+<td><code>INI_ALL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.net-read-timeout">mysqlnd.net_read_timeout</a></td>
+<td>"86400"</td>
+<td><code>INI_ALL</code></td>
+<td>Antes de PHP 7.2.0 el valor por omisión era "31536000" y la variabilidad era <code>INI_SYSTEM</code></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.net-cmd-buffer-size">mysqlnd.net_cmd_buffer_size</a></td>
+<td>"4096"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.net-read-buffer-size">mysqlnd.net_read_buffer_size</a></td>
+<td>"32768"</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.sha256-server-public-key">mysqlnd.sha256_server_public_key</a></td>
+<td>""</td>
+<td><code>INI_PERDIR</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.trace-alloc">mysqlnd.trace_alloc</a></td>
+<td>""</td>
+<td><code>INI_SYSTEM</code></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#ini.mysqlnd.fetch_data_copy">mysqlnd.fetch_data_copy</a></td>
+<td>0</td>
+<td><code>INI_ALL</code></td>
+<td>Eliminado a partir de PHP 8.1.0</td>
+</tr>
+</tbody>
+</table>
+<p>Opciones de configuración de MySQL Native Driver {#mysqlnd.config.options}</p>
+<p>Para más detalles sobre los modos INI_*, refiérase a <a href="#configuration.changes.modes">???</a>.</p>
+<p>Aquí hay una aclaración sobre el uso de las directivas de configuración.</p>
+<p><code>mysqlnd.collect_statistics</code> <code>bool</code><br>
+Activa la recolección de diferentes estadísticas del cliente a las cuales se puede acceder mediante <code>mysqli_get_client_stats</code>, <code>mysqli_get_connection_stats</code>, y que también se describen en la sección <code>mysqlnd</code> de la salida de la función <code>phpinfo</code>.</p>
+<p>Este parámetro activa todas <a href="#mysqlnd.stats"> las estadísticas de MySQL Native Driver </a> excepto las relativas a la gestión de la memoria.</p>
+<p><code>mysqlnd.collect_memory_statistics</code> <code>bool</code><br>
+Activa la recolección de diferentes estadísticas concernientes a la memoria que pueden ser consultadas mediante <code>mysqli_get_client_stats</code>, <code>mysqli_get_connection_stats</code>, y que también se muestran en la sección <code>mysqlnd</code> de la salida de la función <code>phpinfo</code>.</p>
+<p>Este parámetro activa las estadísticas de gestión de la memoria entre <a href="#mysqlnd.stats">las estadísticas proporcionadas por MySQL Native Driver</a>.</p>
+<p><code>mysqlnd.debug</code> <code>string</code><br>
+Registra las comunicaciones provenientes de cualquier extensión que utilice <code>mysqlnd</code>.</p>
+<p>El formato de esta directiva es <code>mysqlnd.debug = "option1[,parameter_option1][:option2[,parameter_option2]]"</code>.</p>
+<p>Las opciones de formato de strings son las siguientes:</p>
+<ul>
+<li>
+<p>A[,file] - Añade la traza a un fichero. Asegura que los datos son escritos después de cada escritura cerrando y volviendo a abrir el fichero de traza (lento). Esto ayuda a asegurar que el fichero de trazas será completo incluso si la aplicación falla.</p>
+</li>
+<li>
+<p>a[,file] - Añade la traza a un fichero.</p>
+</li>
+<li>
+<p>d - Activa la salida desde las macros DBUG_\&lt;N&gt; para el estado actual. Puede ser seguido de una lista de palabras clave que seleccionan la salida solo para las macros DBUG con esa palabra clave (filtro). Una lista vacía de palabras clave seleccionará todo.</p>
+</li>
+<li>
+<p>f[,functions] - Limita las acciones del depurador a una lista específica de funciones. Una lista vacía hará que todas las funciones sean utilizadas.</p>
+</li>
+<li>
+<p>F - Marca cada línea de depuración con el nombre del fichero fuente que contiene la macro que causa esta salida.</p>
+</li>
+<li>
+<p>i - Marca cada línea de depuración con el PID.</p>
+</li>
+<li>
+<p>L - Marca cada línea de depuración con el nombre del fichero fuente así como la línea de la macro que causa esta salida.</p>
+</li>
+<li>
+<p>n - Marca cada línea de depuración con la profundidad actual de la función.</p>
+</li>
+<li>
+<p>o[,file] - Similar a a[,file] pero sobrescribe los ficheros en lugar de complementarlos.</p>
+</li>
+<li>
+<p>O[,file] - Similar a A[,file] pero sobrescribe los ficheros en lugar de complementarlos.</p>
+</li>
+<li>
+<p>t[,N] - Activa el trazado del flujo de control de las funciones. La profundidad máxima se especifica mediante N, por omisión 200.</p>
+</li>
+<li>
+<p>x - Activa el perfilado.</p>
+</li>
+<li>
+<p>m - Trazar las asignaciones y desasignaciones de memoria.</p>
+</li>
+</ul>
+<p>Ejemplo:</p>
+<div class="codehilite"><pre><span></span><code>d:t:x:O,/tmp/mysqlnd.trace
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]
+Esta característica solo está disponible para las versiones de depuración de PHP.</p>
+</blockquote>
+<p><code>mysqlnd.log_mask</code> <code>int</code><br>
+Define qué consulta será historizada. Por omisión, vale 0, lo que significa que los logs están desactivados. Conviene definir esta opción utilizando un entero, y no una constante PHP. Por ejemplo, un valor de 48 (16 + 32) historizará las consultas lentas que utilicen 'no good index' (SERVER_QUERY_NO_GOOD_INDEX_USED = 16) o ningún índice en absoluto (SERVER_QUERY_NO_INDEX_USED = 32). Un valor de 2043 (1 + 2 + 8 + ... + 1024) historizará todo tipo de consultas lentas.</p>
+<p>Los tipos son los siguientes: SERVER_STATUS_IN_TRANS=1, SERVER_STATUS_AUTOCOMMIT=2, SERVER_MORE_RESULTS_EXISTS=8, SERVER_QUERY_NO_GOOD_INDEX_USED=16, SERVER_QUERY_NO_INDEX_USED=32, SERVER_STATUS_CURSOR_EXISTS=64, SERVER_STATUS_LAST_ROW_SENT=128, SERVER_STATUS_DB_DROPPED=256, SERVER_STATUS_NO_BACKSLASH_ESCAPES=512, y SERVER_QUERY_WAS_SLOW=1024.</p>
+<p><code>mysqlnd.mempool_default_size</code> <code>int</code><br>
+Tamaño por omisión de la cola de memoria mysqlnd, utilizada por los juegos de resultados.</p>
+<p><code>mysqlnd.net_read_timeout</code> <code>int</code><br>
+<code>mysqlnd</code> y la MySQL Client Library, <code>libmysqlclient</code> utilizan API de red diferentes. <code>mysqlnd</code> utiliza los flujos PHP, mientras que <code>libmysqlclient</code> utiliza su propia implementación basada en el sistema. PHP, por omisión, utiliza un timeout de lectura de 60s. Esto utilizando el parámetro de <code>php.ini</code>, <code>default_socket_timeout</code>. Esto se aplica a todos los flujos que no especifican un timeout por omisión. <code>mysqlnd</code> no afecta ningún otro valor y por lo tanto las consultas largas pueden verse desconectadas después de <code>default_socket_timeout</code> segundos con el resultado de un mensaje de error “2006 - MySQL Server has gone away”. La MySQL Client Library afecta un timeout por omisión de 24 * 3600 segundos (1 día) y espera otros timeouts, como los de TCP/IP. <code>mysqlnd</code> utiliza ahora el mismo timeout muy largo. El valor es configurable mediante el parámetro <code>php.ini</code> <code>mysqlnd.net_read_timeout</code>. <code>mysqlnd.net_read_timeout</code> es por lo tanto utilizado por cualquier extensión (<code>ext/mysql</code>, <code>ext/mysqli</code>, <code>PDO_MySQL</code>) que se basa en <code>mysqlnd</code>. <code>mysqlnd</code> indica a los flujos PHP utilizar <code>mysqlnd.net_read_timeout</code>. Tenga en cuenta que puede haber diferencias sutiles entre <code>MYSQL_OPT_READ_TIMEOUT</code> de la MySQL Client Library y los flujos PHP, por ejemplo <code>MYSQL_OPT_READ_TIMEOUT</code> se dice funcional únicamente con conexiones TCP/IP y, antes de MySQL 5.1.2, solo en Windows. Los flujos PHP, ellos, no tienen esta limitación. Consulte la documentación de los flujos en caso de duda.</p>
+<p><code>mysqlnd.net_cmd_buffer_size</code> <code>int</code><br>
+<code>mysqlnd</code> asigna un buffer interno para la red de un tamaño de <code>mysqlnd.net_cmd_buffer_size</code> (en <code>php.ini</code>) bytes para cada conexión. Si una orden del protocolo MySQL Client Server, por ejemplo, <code>COM_QUERY</code> (consulta “normal”), no cabe en el buffer, <code>mysqlnd</code> aumentará aquel a la tamaño requerido. Cada vez que el buffer es aumentado para una conexión, <code>command_buffer_too_small</code> será incrementado en uno.</p>
+<p>Si <code>mysqlnd</code> debe aumentar el buffer más allá de su tamaño inicial de <code>mysqlnd.net_cmd_buffer_size</code> bytes para casi todas las conexiones, entonces debería aumentar este tamaño por omisión para evitar las reasignaciones.</p>
+<p>El tamaño por omisión del buffer es de 4096 bytes.</p>
+<p>El valor también puede ser cambiado mediante <code>mysqli_options(link, MYSQLI_OPT_NET_CMD_BUFFER_SIZE, size)</code>.</p>
+<p><code>mysqlnd.net_read_buffer_size</code> <code>int</code><br>
+Tamaño máximo del segmento en lectura al leer el cuerpo de un paquete de orden MySQL. El protocolo servidor de MySQL encapsula todas sus órdenes en paquetes. Los paquetes consisten en un encabezado corto seguido de un cuerpo que contiene las informaciones. El tamaño del cuerpo está codificado en el encabezado. <code>mysqlnd</code> lee el cuerpo en forma de segmentos de <code>MIN(header.size, mysqlnd.net_read_buffer_size)</code> bytes. Si el cuerpo de un paquete es más grande que <code>mysqlnd.net_read_buffer_size</code> bytes, <code>mysqlnd</code> debe entonces llamar a <code>read()</code> varias veces.</p>
+<p>El valor también puede ser cambiado mediante <code>mysqli_options(link, MYSQLI_OPT_NET_READ_BUFFER_SIZE, size)</code>.</p>
+<p><code>mysqlnd.sha256_server_public_key</code> <code>string</code><br>
+Relacionado con el plugin de autenticación SHA-256. Fichero que contiene la clave pública RSA en el servidor MySQL.</p>
+<p>Los clientes pueden omitir definir una clave pública RSA y especificar la clave mediante la directiva de configuración PHP, o bien, definir la clave en el momento de la ejecución utilizando la función <code>mysqli_options</code>. Si ningún fichero de clave pública RSA es proporcionado por el cliente, entonces la clave será intercambiada conforme al procedimiento del plugin de autenticación estándar SHA-256.</p>
+<p><code>mysqlnd.trace_alloc</code> <code>string</code>  </p>
+<p><code>mysqlnd.fetch_data_copy</code> <code>int</code><br>
+Obliga a copiar los juegos de resultados desde los buffers internos hacia variables PHP en lugar de utilizar el mecanismo por omisión de referencia y copia al escribir. Consulte las, <a href="#mysqlnd.memory">notas de implementación sobre la gestión de memoria</a> para más detalles.</p>
+<p>Copiar los juegos de resultados en lugar de tener variables PHP que los referencian permite liberar más pronto la memoria ocupada por las variables PHP. Dependiendo del código de la API cliente, las consultas actuales y el tamaño de sus juegos de resultados, esto puede reducir la huella de memoria de mysqlnd.</p>
+<p>No activar con PDO_MySQL. PDO_MySQL no soporta aún este modo.</p>
+<blockquote>
+<p>[!NOTE]
+Eliminado a partir de PHP 8.1.0</p>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../mysqlnd/persist.html">
+          <span class="muted">Anterior</span>Conexiones persistentes
+        </a>
+        <a class="pager-next" href="../mysqlnd/stats.html">
+          <span class="muted">Siguiente</span>Estadísticas
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

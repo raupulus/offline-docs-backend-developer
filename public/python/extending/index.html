@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ampliación e incrustación del intérprete de Python · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Extending
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../extending/building.html"
+>4. Construyendo extensiones C y C++</a>
+              </li>
+              <li>
+                <a href="../extending/embedding.html"
+>1. Incrustando Python en otra aplicación</a>
+              </li>
+              <li>
+                <a href="../extending/extending.html"
+>1. Extendiendo Python con C o C++</a>
+              </li>
+              <li>
+                <a href="../extending/index.html"
+class="is-current" aria-current="page">Ampliación e incrustación del intérprete de Python</a>
+              </li>
+              <li>
+                <a href="../extending/newtypes.html"
+>3. Definición de tipos de extensión: temas variados</a>
+              </li>
+              <li>
+                <a href="../extending/newtypes_tutorial.html"
+>2. Definición de tipos de extensión: Tutorial</a>
+              </li>
+              <li>
+                <a href="../extending/windows.html"
+>5. Creación de extensiones C y C++ en Windows</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../library/__future__.html">Library</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Ampliación e incrustación del intérprete de Python</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#herramientas-de-terceros-recomendadas">Herramientas de terceros recomendadas#</a></li>
+              <li class="lvl-2"><a href="#crear-extensiones-sin-herramientas-de-terceros">Crear extensiones sin herramientas de terceros#</a></li>
+              <li class="lvl-2"><a href="#incrustar-el-tiempo-de-ejecucion-de-cpython-en-una-aplicacion-mas-grande">Incrustar el tiempo de ejecución de CPython en una aplicación más grande#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="ampliacion-e-incrustacion-del-interprete-de-python">Ampliación e incrustación del intérprete de Python<a class="headerlink" href="#ampliacion-e-incrustacion-del-interprete-de-python" title="Permanent link">#</a></h1>
+<p>Este documento describe cómo escribir módulos en C o C++ para extender
+el intérprete de Python con nuevos módulos. Esos módulos no solo
+pueden definir nuevas funciones sino también nuevos tipos de objetos y
+sus métodos. El documento también describe cómo incrustar el
+intérprete de Python en otra aplicación, para usarlo como un lenguaje
+de extensión. Finalmente, muestra cómo compilar y vincular módulos de
+extensión para que puedan cargarse dinámicamente (en tiempo de
+ejecución) en el intérprete, si el sistema operativo subyacente admite
+esta característica.</p>
+<p>Este documento asume conocimientos básicos sobre Python. Para una
+introducción informal al lenguaje, consulte El tutorial de Python.
+Referencia del Lenguaje Python da una definición más formal del
+lenguaje. La biblioteca estándar de Python documenta los tipos de
+objetos, funciones y módulos existentes (tanto incorporados como
+escritos en Python) que le dan al lenguaje su amplio rango de
+aplicaciones.</p>
+<p>Para obtener una descripción detallada de toda la API de Python/C,
+consulte el apartado separado Python/C API reference manual.</p>
+<h2 id="herramientas-de-terceros-recomendadas">Herramientas de terceros recomendadas<a class="headerlink" href="#herramientas-de-terceros-recomendadas" title="Permanent link">#</a></h2>
+<p>This guide only covers the basic tools for creating extensions
+provided as part of this version of CPython. Some third party tools
+offer both simpler and more sophisticated approaches to creating C and
+C++ extensions for Python.</p>
+<h2 id="crear-extensiones-sin-herramientas-de-terceros">Crear extensiones sin herramientas de terceros<a class="headerlink" href="#crear-extensiones-sin-herramientas-de-terceros" title="Permanent link">#</a></h2>
+<p>Esta sección de la guía cubre la creación de extensiones C y C++ sin
+la ayuda de herramientas de terceros. Está destinado principalmente a
+los creadores de esas herramientas, en lugar de ser una forma
+recomendada de crear sus propias extensiones C.</p>
+<p>Ver también:</p>
+<p><strong>PEP 489</strong> -- Multi-phase extension module initialization</p>
+<ul>
+<li>
+<ol>
+<li>Extendiendo Python con C o C++</li>
+</ol>
+</li>
+<li>
+<p>1.1. Un ejemplo simple</p>
+</li>
+<li>
+<p>1.2. Intermezzo: errores y excepciones</p>
+</li>
+<li>
+<p>1.3. De vuelta al ejemplo</p>
+</li>
+<li>
+<p>1.4. La tabla de métodos del módulo y la función de inicialización</p>
+</li>
+<li>
+<p>1.5. Compilación y enlazamiento</p>
+</li>
+<li>
+<p>1.6. Llamando funciones Python desde C</p>
+</li>
+<li>
+<p>1.7. Extracción de parámetros en funciones de extensión</p>
+</li>
+<li>
+<p>1.8. Parámetros de palabras clave para funciones de extensión</p>
+</li>
+<li>
+<p>1.9. Construyendo valores arbitrarios</p>
+</li>
+<li>
+<p>1.10. Conteo de referencias</p>
+</li>
+<li>
+<p>1.11. Escribiendo extensiones en C++</p>
+</li>
+<li>
+<p>1.12. Proporcionar una API C para un módulo de extensión</p>
+</li>
+<li>
+<ol start="2">
+<li>Definición de tipos de extensión: Tutorial</li>
+</ol>
+</li>
+<li>
+<p>2.1. Lo básico</p>
+</li>
+<li>
+<p>2.2. Agregar datos y métodos al ejemplo básico</p>
+</li>
+<li>
+<p>2.3. Proporcionar un control más preciso sobre los atributos de
+    datos</p>
+</li>
+<li>
+<p>2.4. Apoyo a la recolección de basura cíclica</p>
+</li>
+<li>
+<p>2.5. Subclases de otros tipos</p>
+</li>
+<li>
+<ol start="3">
+<li>Definición de tipos de extensión: temas variados</li>
+</ol>
+</li>
+<li>
+<p>3.1. Finalización y desasignación</p>
+</li>
+<li>
+<p>3.2. Presentación de objetos</p>
+</li>
+<li>
+<p>3.3. Gestión de atributos</p>
+</li>
+<li>
+<p>3.4. Comparación de Objetos</p>
+</li>
+<li>
+<p>3.5. Soporte de protocolo abstracto</p>
+</li>
+<li>
+<p>3.6. Soporte de referencia débil</p>
+</li>
+<li>
+<p>3.7. Más Sugerencias</p>
+</li>
+<li>
+<ol start="4">
+<li>Construyendo extensiones C y C++</li>
+</ol>
+</li>
+<li>
+<p>4.1. Building C and C++ Extensions with setuptools</p>
+</li>
+<li>
+<ol start="5">
+<li>Creación de extensiones C y C++ en Windows</li>
+</ol>
+</li>
+<li>
+<p>5.1. Un enfoque de libro de cocina</p>
+</li>
+<li>
+<p>5.2. Diferencias entre Unix y Windows</p>
+</li>
+<li>
+<p>5.3. Usar DLL en la práctica</p>
+</li>
+</ul>
+<h2 id="incrustar-el-tiempo-de-ejecucion-de-cpython-en-una-aplicacion-mas-grande">Incrustar el tiempo de ejecución de CPython en una aplicación más grande<a class="headerlink" href="#incrustar-el-tiempo-de-ejecucion-de-cpython-en-una-aplicacion-mas-grande" title="Permanent link">#</a></h2>
+<p>A veces, en lugar de crear una extensión que se ejecute dentro del
+intérprete de Python como la aplicación principal, es conveniente
+incorporar el tiempo de ejecución de CPython dentro de una aplicación
+más grande. Esta sección cubre algunos de los detalles involucrados en
+hacerlo con éxito.</p>
+<ul>
+<li>
+<ol>
+<li>Incrustando Python en otra aplicación</li>
+</ol>
+</li>
+<li>
+<p>1.1. Incrustación de muy alto nivel</p>
+</li>
+<li>
+<p>1.2. Más allá de la incrustación de muy alto nivel: una visión
+    general</p>
+</li>
+<li>
+<p>1.3. Incrustación pura</p>
+</li>
+<li>
+<p>1.4. Extendiendo Python incrustado</p>
+</li>
+<li>
+<p>1.5. Incrustando Python en C++</p>
+</li>
+<li>
+<p>1.6. Compilar y enlazar bajo sistemas tipo Unix</p>
+</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../extending/extending.html">
+          <span class="muted">Anterior</span>1. Extendiendo Python con C o C++
+        </a>
+        <a class="pager-next" href="../extending/newtypes.html">
+          <span class="muted">Siguiente</span>3. Definición de tipos de extensión: temas variados
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

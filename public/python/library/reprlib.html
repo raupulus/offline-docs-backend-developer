@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;reprlib&#34; --- Alternate &#34;repr()&#34; implementation · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/optparse.html"
+>&#34;optparse&#34; --- Parser for command line options</a>
+              </li>
+              <li>
+                <a href="../library/os.path.html"
+>&#34;os.path&#34; --- Common pathname manipulations</a>
+              </li>
+              <li>
+                <a href="../library/os.html"
+>&#34;os&#34; --- Interfaces misceláneas del sistema operativo</a>
+              </li>
+              <li>
+                <a href="../library/ossaudiodev.html"
+>&#34;ossaudiodev&#34; --- Access to OSS-compatible audio devices</a>
+              </li>
+              <li>
+                <a href="../library/pathlib.html"
+>&#34;pathlib&#34; --- Rutas de sistemas orientada a objetos</a>
+              </li>
+              <li>
+                <a href="../library/pdb.html"
+>&#34;pdb&#34; --- The Python Debugger</a>
+              </li>
+              <li>
+                <a href="../library/persistence.html"
+>Persistencia de datos</a>
+              </li>
+              <li>
+                <a href="../library/pickle.html"
+>&#34;pickle&#34; --- Python object serialization</a>
+              </li>
+              <li>
+                <a href="../library/pickletools.html"
+>&#34;pickletools&#34; --- Tools for pickle developers</a>
+              </li>
+              <li>
+                <a href="../library/pipes.html"
+>&#34;pipes&#34; --- Interface to shell pipelines</a>
+              </li>
+              <li>
+                <a href="../library/pkgutil.html"
+>&#34;pkgutil&#34; --- Package extension utility</a>
+              </li>
+              <li>
+                <a href="../library/platform.html"
+>&#34;platform&#34; ---  Access to underlying platform&#39;s identifying data</a>
+              </li>
+              <li>
+                <a href="../library/plistlib.html"
+>&#34;plistlib&#34; --- Generate and parse Apple &#34;.plist&#34; files</a>
+              </li>
+              <li>
+                <a href="../library/poplib.html"
+>&#34;poplib&#34; --- POP3 protocol client</a>
+              </li>
+              <li>
+                <a href="../library/posix.html"
+>&#34;posix&#34; --- The most common POSIX system calls</a>
+              </li>
+              <li>
+                <a href="../library/pprint.html"
+>&#34;pprint&#34; --- Data pretty printer</a>
+              </li>
+              <li>
+                <a href="../library/profile.html"
+>Los perfiladores de Python</a>
+              </li>
+              <li>
+                <a href="../library/pty.html"
+>&#34;pty&#34; --- Pseudo-terminal utilities</a>
+              </li>
+              <li>
+                <a href="../library/pwd.html"
+>&#34;pwd&#34; --- The password database</a>
+              </li>
+              <li>
+                <a href="../library/py_compile.html"
+>&#34;py_compile&#34; --- Compile Python source files</a>
+              </li>
+              <li>
+                <a href="../library/pyclbr.html"
+>&#34;pyclbr&#34; --- Python module browser support</a>
+              </li>
+              <li>
+                <a href="../library/pydoc.html"
+>&#34;pydoc&#34; --- Documentation generator and online help system</a>
+              </li>
+              <li>
+                <a href="../library/pyexpat.html"
+>&#34;xml.parsers.expat&#34; --- Fast XML parsing using Expat</a>
+              </li>
+              <li>
+                <a href="../library/python.html"
+>Servicios en tiempo de ejecución de Python</a>
+              </li>
+              <li>
+                <a href="../library/queue.html"
+>&#34;queue&#34; --- A synchronized queue class</a>
+              </li>
+              <li>
+                <a href="../library/quopri.html"
+>&#34;quopri&#34; --- Encode and decode MIME quoted-printable data</a>
+              </li>
+              <li>
+                <a href="../library/random.html"
+>&#34;random&#34; --- Generate pseudo-random numbers</a>
+              </li>
+              <li>
+                <a href="../library/re.html"
+>&#34;re&#34; --- Regular expression operations</a>
+              </li>
+              <li>
+                <a href="../library/readline.html"
+>&#34;readline&#34; --- GNU readline interface</a>
+              </li>
+              <li>
+                <a href="../library/removed.html"
+>Removed Modules</a>
+              </li>
+              <li>
+                <a href="../library/reprlib.html"
+class="is-current" aria-current="page">&#34;reprlib&#34; --- Alternate &#34;repr()&#34; implementation</a>
+              </li>
+              <li>
+                <a href="../library/resource.html"
+>&#34;resource&#34; --- Resource usage information</a>
+              </li>
+              <li>
+                <a href="../library/rlcompleter.html"
+>&#34;rlcompleter&#34; --- Completion function for GNU readline</a>
+              </li>
+              <li>
+                <a href="../library/runpy.html"
+>&#34;runpy&#34; --- Localización y ejecución de módulos Python</a>
+              </li>
+              <li>
+                <a href="../library/sched.html"
+>&#34;sched&#34; --- Event scheduler</a>
+              </li>
+              <li>
+                <a href="../library/secrets.html"
+>&#34;secrets&#34; --- Generate secure random numbers for managing secrets</a>
+              </li>
+              <li>
+                <a href="../library/security_warnings.html"
+>Consideraciones de seguridad</a>
+              </li>
+              <li>
+                <a href="../library/select.html"
+>&#34;select&#34; --- Waiting for I/O completion</a>
+              </li>
+              <li>
+                <a href="../library/selectors.html"
+>&#34;selectors&#34; --- High-level I/O multiplexing</a>
+              </li>
+              <li>
+                <a href="../library/shelve.html"
+>&#34;shelve&#34; --- Python object persistence</a>
+              </li>
+              <li>
+                <a href="../library/shlex.html"
+>&#34;shlex&#34; --- Simple lexical analysis</a>
+              </li>
+              <li>
+                <a href="../library/shutil.html"
+>&#34;shutil&#34; --- High-level file operations</a>
+              </li>
+              <li>
+                <a href="../library/signal.html"
+>&#34;signal&#34; --- Set handlers for asynchronous events</a>
+              </li>
+              <li>
+                <a href="../library/site.html"
+>&#34;site&#34; --- Site-specific configuration hook</a>
+              </li>
+              <li>
+                <a href="../library/smtpd.html"
+>&#34;smtpd&#34; --- SMTP Server</a>
+              </li>
+              <li>
+                <a href="../library/smtplib.html"
+>&#34;smtplib&#34; --- SMTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/sndhdr.html"
+>&#34;sndhdr&#34; --- Determine type of sound file</a>
+              </li>
+              <li>
+                <a href="../library/socket.html"
+>&#34;socket&#34; --- Low-level networking interface</a>
+              </li>
+              <li>
+                <a href="../library/socketserver.html"
+>&#34;socketserver&#34; --- A framework for network servers</a>
+              </li>
+              <li>
+                <a href="../library/spwd.html"
+>&#34;spwd&#34; --- The shadow password database</a>
+              </li>
+              <li>
+                <a href="../library/sqlite3.html"
+>&#34;sqlite3&#34; --- DB-API 2.0 interfaz para bases de datos SQLite</a>
+              </li>
+              <li>
+                <a href="../library/ssl.html"
+>&#34;ssl&#34; --- TLS/SSL wrapper for socket objects</a>
+              </li>
+              <li>
+                <a href="../library/stat.html"
+>&#34;stat&#34; --- Interpreting &#34;stat()&#34; results</a>
+              </li>
+              <li>
+                <a href="../library/statistics.html"
+>&#34;statistics&#34; --- Mathematical statistics functions</a>
+              </li>
+              <li>
+                <a href="../library/stdtypes.html"
+>Tipos integrados</a>
+              </li>
+              <li>
+                <a href="../library/string.templatelib.html"
+>&#34;string.templatelib&#34; --- Support for template string literals</a>
+              </li>
+              <li>
+                <a href="../library/string.html"
+>&#34;string&#34; --- Common string operations</a>
+              </li>
+              <li>
+                <a href="../library/stringprep.html"
+>&#34;stringprep&#34; --- Internet String Preparation</a>
+              </li>
+              <li>
+                <a href="../library/struct.html"
+>&#34;struct&#34; --- Interpret bytes as packed binary data</a>
+              </li>
+              <li>
+                <a href="../library/subprocess.html"
+>&#34;subprocess&#34; --- Subprocess management</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;reprlib&#34; --- Alternate &#34;repr()&#34; implementation</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#objetos-repr">Objetos Repr#</a></li>
+              <li class="lvl-2"><a href="#subclasificando-objetos-repr">Subclasificando Objetos Repr#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="reprlib-alternate-repr-implementation">"reprlib" --- Alternate "repr()" implementation<a class="headerlink" href="#reprlib-alternate-repr-implementation" title="Permanent link">#</a></h1>
+<p><strong>Código fuente:</strong> Lib/reprlib.py</p>
+<p>======================================================================</p>
+<p>The "reprlib" module provides a means for producing object
+representations with limits on the size of the resulting strings. This
+is used in the Python debugger and may be useful in other contexts as
+well.</p>
+<p>Este módulo provee una clase, una instancia y una función:</p>
+<p>class reprlib.Repr(*, maxlevel=6, maxtuple=6, maxlist=6, maxarray=5, maxdict=4, maxset=6, maxfrozenset=6, maxdeque=6, maxstring=30, maxlong=40, maxother=30, fillvalue='...', indent=None)</p>
+<p>Clase que provee de servicios de formateo útiles en la
+   implementación de funciones similar a la integrada "repr()"; los
+   límites de tamaño para diferentes tipos de objetos son añadidos
+   para evitar la generación de representaciones que son excesivamente
+   largas.</p>
+<p>The keyword arguments of the constructor can be used as a shortcut
+   to set the attributes of the "Repr" instance. Which means that the
+   following initialization:</p>
+<div class="codehilite"><pre><span></span><code>  aRepr = reprlib.Repr(maxlevel=3)
+</code></pre></div>
+
+<p>Is equivalent to:</p>
+<div class="codehilite"><pre><span></span><code>  aRepr = reprlib.Repr()
+  aRepr.maxlevel = 3
+</code></pre></div>
+
+<p>See section Repr Objects for more information about "Repr"
+   attributes.</p>
+<p>Distinto en la versión 3.12: Allow attributes to be set via keyword
+   arguments.</p>
+<p>reprlib.aRepr</p>
+<p>Esta es una instancia de "Repr" que es usada para proveer la
+   función "repr()" descrita debajo. Cambiar los atributos de este
+   objeto afectará los límites de tamaño usados por "repr()" y el
+   depurador de Python.</p>
+<p>reprlib.repr(obj)</p>
+<p>Este es el método "repr()" de "aRepr". Retorna una cadena similar a
+   la retornada por la función integrada del mismo nombre, pero con
+   límites en la mayoría de tamaños.</p>
+<p>In addition to size-limiting tools, the module also provides a
+decorator for detecting recursive calls to "<strong>repr</strong>()" and
+substituting a placeholder string instead.</p>
+<p>@reprlib.recursive_repr(fillvalue='...')</p>
+<p>Decorator for "<strong>repr</strong>()" methods to detect recursive calls within
+   the same thread.  If a recursive call is made, the <em>fillvalue</em> is
+   returned, otherwise, the usual "<strong>repr</strong>()" call is made.  For
+   example:</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; from reprlib import recursive_repr
+  &gt;&gt;&gt; class MyList(list):
+  ...     @recursive_repr()
+  ...     def __repr__(self):
+  ...         return &#39;&lt;&#39; + &#39;|&#39;.join(map(repr, self)) + &#39;&gt;&#39;
+  ...
+  &gt;&gt;&gt; m = MyList(&#39;abc&#39;)
+  &gt;&gt;&gt; m.append(m)
+  &gt;&gt;&gt; m.append(&#39;x&#39;)
+  &gt;&gt;&gt; print(m)
+  &lt;&#39;a&#39;|&#39;b&#39;|&#39;c&#39;|...|&#39;x&#39;&gt;
+</code></pre></div>
+
+<p>Added in version 3.2.</p>
+<h2 id="objetos-repr">Objetos Repr<a class="headerlink" href="#objetos-repr" title="Permanent link">#</a></h2>
+<p>Las instancias "Repr" proveen varios atributos que pueden ser usados
+para proporcionar límites de tamaño para las representaciones de
+diferentes tipos de objetos, y métodos que formatean tipos de objetos
+específicos.</p>
+<p>Repr.fillvalue</p>
+<p>Esta cadena se muestra para referencias recursivas. El valor
+   predeterminado es "...".</p>
+<p>Added in version 3.11.</p>
+<p>Repr.maxlevel</p>
+<p>Límite de profundidad en la creación de representaciones
+   recursivas. El valor por defecto es "6".</p>
+<p>Repr.maxdict
+Repr.maxlist
+Repr.maxtuple
+Repr.maxset
+Repr.maxfrozenset
+Repr.maxdeque
+Repr.maxarray</p>
+<p>Límites en el número de entradas representadas por el tipo de
+   objeto nombrado. El valor por defecto es "4" para "maxdict", "5"
+   para  "maxarray", y "6" para los otros.</p>
+<p>Repr.maxlong</p>
+<p>Máximo número de caracteres en la representación para un entero.
+   Los dígitos son eliminados desde el medio. El valor por defecto es
+   "40".</p>
+<p>Repr.maxstring</p>
+<p>Límite en el número de caracteres en la representación de la
+   cadena. Fíjese que la representación "normal" de la cadena  es la
+   usada como la fuente de caracteres: si se necesitan secuencias de
+   escape en la representación, estas pueden ser desordenadas cuando
+   la representación se ha acortado. El valor por defecto es "30".</p>
+<p>Repr.maxother</p>
+<p>Este límite es usado para controlar el tamaño de los tipos de
+   objetos para los cuales no hay ningún método de formateo específico
+   en el objeto "Repr". Se aplica de una manera similar a "maxstring".
+   El valor por defecto es "20".</p>
+<p>Repr.indent</p>
+<p>If this attribute is set to "None" (the default), the output is
+   formatted with no line breaks or indentation, like the standard
+   "repr()". For example:</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; example = [
+  ...     1, &#39;spam&#39;, {&#39;a&#39;: 2, &#39;b&#39;: &#39;spam eggs&#39;, &#39;c&#39;: {3: 4.5, 6: []}}, &#39;ham&#39;]
+  &gt;&gt;&gt; import reprlib
+  &gt;&gt;&gt; aRepr = reprlib.Repr()
+  &gt;&gt;&gt; print(aRepr.repr(example))
+  [1, &#39;spam&#39;, {&#39;a&#39;: 2, &#39;b&#39;: &#39;spam eggs&#39;, &#39;c&#39;: {3: 4.5, 6: []}}, &#39;ham&#39;]
+</code></pre></div>
+
+<p>If "indent" is set to a string, each recursion level is placed on
+   its own line, indented by that string:</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; aRepr.indent = &#39;--&gt;&#39;
+  &gt;&gt;&gt; print(aRepr.repr(example))
+  [
+  --&gt;1,
+  --&gt;&#39;spam&#39;,
+  --&gt;{
+  --&gt;--&gt;&#39;a&#39;: 2,
+  --&gt;--&gt;&#39;b&#39;: &#39;spam eggs&#39;,
+  --&gt;--&gt;&#39;c&#39;: {
+  --&gt;--&gt;--&gt;3: 4.5,
+  --&gt;--&gt;--&gt;6: [],
+  --&gt;--&gt;},
+  --&gt;},
+  --&gt;&#39;ham&#39;,
+  ]
+</code></pre></div>
+
+<p>Setting "indent" to a positive integer value behaves as if it was
+   set to a string with that number of spaces:</p>
+<div class="codehilite"><pre><span></span><code>  &gt;&gt;&gt; aRepr.indent = 4
+  &gt;&gt;&gt; print(aRepr.repr(example))
+  [
+      1,
+      &#39;spam&#39;,
+      {
+          &#39;a&#39;: 2,
+          &#39;b&#39;: &#39;spam eggs&#39;,
+          &#39;c&#39;: {
+              3: 4.5,
+              6: [],
+          },
+      },
+      &#39;ham&#39;,
+  ]
+</code></pre></div>
+
+<p>Added in version 3.12.</p>
+<p>Repr.repr(obj)</p>
+<p>El equivalente a la función integrada "repr()" que usa el formateo
+   impuesto por la instancia.</p>
+<p>Repr.repr1(obj, level)</p>
+<p>Implementación recursiva usada por "repr()". Este usa el tipo de
+   <em>obj</em> para determinar qué método invocar, pasándole <em>obj</em> y
+   <em>level</em>. Los métodos de tipo específico deben invocar "repr1()"
+   para realizar formateo recursivo, con "level - 1" para el valor de
+   <em>level</em> en la invocación recursiva.</p>
+<p>Repr.repr_TYPE(obj, level)</p>
+<p>Métodos de formateo para tipos específicos son implementados como
+   métodos con un nombre basado en el nombre del tipo. En el nombre
+   del método, <strong>TYPE</strong> es reemplazado por
+   "'_'.join(type(obj).<strong>name</strong>.split())". El envío a estos métodos es
+   gestionado por "repr1()". Los métodos de tipo específico que
+   necesitan formatear recursivamente un valor deben invocar
+   "self.repr1(subobj, level - 1)".</p>
+<h2 id="subclasificando-objetos-repr">Subclasificando Objetos Repr<a class="headerlink" href="#subclasificando-objetos-repr" title="Permanent link">#</a></h2>
+<p>The use of dynamic dispatching by "Repr.repr1()" allows subclasses of
+"Repr" to add support for additional built-in object types or to
+modify the handling of types already supported. This example shows how
+special support for file objects could be added:</p>
+<p>import reprlib
+   import sys</p>
+<p>class MyRepr(reprlib.Repr):</p>
+<div class="codehilite"><pre><span></span><code>   def repr_TextIOWrapper(self, obj, level):
+       if obj.name in {&#39;&lt;stdin&gt;&#39;, &#39;&lt;stdout&gt;&#39;, &#39;&lt;stderr&gt;&#39;}:
+           return obj.name
+       return repr(obj)
+</code></pre></div>
+
+<p>aRepr = MyRepr()
+   print(aRepr.repr(sys.stdin))         # prints '<stdin>'</p>
+<p><stdin></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/removed.html">
+          <span class="muted">Anterior</span>Removed Modules
+        </a>
+        <a class="pager-next" href="../library/resource.html">
+          <span class="muted">Siguiente</span>&#34;resource&#34; --- Resource usage information
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setting up and using custom installers · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+>Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+>Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+class="is-current" aria-current="page">Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+>Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+>Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+>Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+>Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Setting up and using custom installers</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#synopsis">Synopsis#</a></li>
+              <li class="lvl-2"><a href="#alternative-to-custom-installers-with-composer-21">Alternative to custom installers with Composer 2.1+#</a></li>
+              <li class="lvl-2"><a href="#calling-a-custom-installer">Calling a Custom Installer#</a></li>
+              <li class="lvl-2"><a href="#creating-an-installer">Creating an Installer#</a></li>
+              <li class="lvl-3"><a href="#composerjson">composer.json#</a></li>
+              <li class="lvl-3"><a href="#the-plugin-class">The Plugin class#</a></li>
+              <li class="lvl-3"><a href="#the-custom-installer-class">The Custom Installer class#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: Modify the way certain types of packages are installed
+-->
+
+<h1 id="setting-up-and-using-custom-installers">Setting up and using custom installers<a class="headerlink" href="#setting-up-and-using-custom-installers" title="Permanent link">#</a></h1>
+<h2 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">#</a></h2>
+<p>At times, it may be necessary for a package to require additional actions during
+installation, such as installing packages outside of the default <code>vendor</code>
+library.</p>
+<p>In these cases you could consider creating a Custom Installer to handle your
+specific logic.</p>
+<h2 id="alternative-to-custom-installers-with-composer-21">Alternative to custom installers with Composer 2.1+<a class="headerlink" href="#alternative-to-custom-installers-with-composer-21" title="Permanent link">#</a></h2>
+<p>As of Composer 2.1, the <code>Composer\InstalledVersions</code> class has a
+<a href="../runtime.html#knowing-which-packages-of-a-given-type-are-installed"><code>getInstalledPackagesByType</code></a>
+method which can let you figure out at runtime which plugins/modules/extensions are installed.</p>
+<p>It is highly recommended to use that instead of building new custom
+installers if you are building a new application. This has the advantage of leaving
+all vendor code in the vendor directory, and not requiring custom installer code.</p>
+<h2 id="calling-a-custom-installer">Calling a Custom Installer<a class="headerlink" href="#calling-a-custom-installer" title="Permanent link">#</a></h2>
+<p>Suppose that your project already has a Custom Installer for specific modules
+then invoking that installer is a matter of defining the correct <a href="../schema.html#type">type</a> in
+your package file.</p>
+<blockquote>
+<p><em>See the next chapter for an instruction how to create Custom Installers.</em></p>
+</blockquote>
+<p>Every Custom Installer defines which <a href="../schema.html#type">type</a> string it will recognize. Once
+recognized it will completely override the default installer and only apply its
+own logic.</p>
+<p>An example use-case would be:</p>
+<blockquote>
+<p>phpDocumentor features Templates that need to be installed outside of the
+default /vendor folder structure. As such they have chosen to adopt the
+<code>phpdocumentor-template</code> <a href="../schema.html#type">type</a> and create a plugin providing the Custom
+Installer to send these templates to the correct folder.</p>
+</blockquote>
+<p>An example composer.json of such a template package would be:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phpdocumentor/template-responsive&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phpdocumentor-template&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;phpdocumentor/template-installer-plugin&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>IMPORTANT</strong>: to make sure that the template installer is present at the
+time the template package is installed, template packages should require
+the plugin package.</p>
+</blockquote>
+<h2 id="creating-an-installer">Creating an Installer<a class="headerlink" href="#creating-an-installer" title="Permanent link">#</a></h2>
+<p>A Custom Installer is defined as a class that implements the
+<a href="https://github.com/composer/composer/blob/main/src/Composer/Installer/InstallerInterface.php"><code>Composer\Installer\InstallerInterface</code></a> and is usually distributed in a
+Composer Plugin.</p>
+<p>A basic Installer Plugin would thus compose of three files:</p>
+<ol>
+<li>the package file: composer.json</li>
+<li>The Plugin class, e.g.: <code>My\Project\Composer\Plugin.php</code>, containing a class that implements <code>Composer\Plugin\PluginInterface</code>.</li>
+<li>The Installer class, e.g.: <code>My\Project\Composer\Installer.php</code>, containing a class that implements <code>Composer\Installer\InstallerInterface</code>.</li>
+</ol>
+<h3 id="composerjson">composer.json<a class="headerlink" href="#composerjson" title="Permanent link">#</a></h3>
+<p>The package file is the same as any other package file but with the following
+requirements:</p>
+<ol>
+<li>the <a href="../schema.html#type">type</a> attribute must be <code>composer-plugin</code>.</li>
+<li>the <a href="../schema.html#extra">extra</a> attribute must contain an element <code>class</code> defining the
+   class name of the plugin (including namespace). If a package contains
+   multiple plugins, this can be an array of class names.</li>
+</ol>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phpdocumentor/template-installer-plugin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer-plugin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;license&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;autoload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;psr-0&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;phpDocumentor\\Composer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phpDocumentor\\Composer\\TemplateInstallerPlugin&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;composer-plugin-api&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.0&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;require-dev&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;composer/composer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.3&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The example above has Composer itself in its require-dev, which allows you to use
+the Composer classes in your test suite for example.</p>
+<h3 id="the-plugin-class">The Plugin class<a class="headerlink" href="#the-plugin-class" title="Permanent link">#</a></h3>
+<p>The class defining the Composer plugin must implement the
+<a href="https://github.com/composer/composer/blob/main/src/Composer/Plugin/PluginInterface.php"><code>Composer\Plugin\PluginInterface</code></a>. It can then register the Custom
+Installer in its <code>activate()</code> method.</p>
+<p>The class may be placed in any location and have any name, as long as it is
+autoloadable and matches the <code>extra.class</code> element in the package definition.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">phpDocumentor\Composer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Composer\Composer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\IO\IOInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Plugin\PluginInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">TemplateInstallerPlugin</span> <span class="k">implements</span> <span class="nx">PluginInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">Composer</span> <span class="nv">$composer</span><span class="p">,</span> <span class="nx">IOInterface</span> <span class="nv">$io</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$installer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TemplateInstaller</span><span class="p">(</span><span class="nv">$io</span><span class="p">,</span> <span class="nv">$composer</span><span class="p">);</span>
+        <span class="nv">$composer</span><span class="o">-&gt;</span><span class="na">getInstallationManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">addInstaller</span><span class="p">(</span><span class="nv">$installer</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="the-custom-installer-class">The Custom Installer class<a class="headerlink" href="#the-custom-installer-class" title="Permanent link">#</a></h3>
+<p>The class that executes the custom installation should implement the
+<a href="https://github.com/composer/composer/blob/main/src/Composer/Installer/InstallerInterface.php"><code>Composer\Installer\InstallerInterface</code></a> (or extend another installer that
+implements that interface). It defines the <a href="../schema.html#type">type</a> string as it will be
+recognized by packages that will use this installer in the <code>supports()</code> method.</p>
+<blockquote>
+<p><strong>NOTE</strong>: <em>choose your <a href="../schema.html#type">type</a> name carefully, it is recommended to follow
+the format: <code>vendor-type</code></em>. For example: <code>phpdocumentor-template</code>.</p>
+</blockquote>
+<p>The InstallerInterface class defines the following methods (please see the
+source for the exact signature):</p>
+<ul>
+<li><strong>supports()</strong>, here you test whether the passed <a href="../schema.html#type">type</a> matches the name
+  that you declared for this installer (see the example).</li>
+<li><strong>isInstalled()</strong>, determines whether a supported package is installed or not.</li>
+<li><strong>install()</strong>, here you can determine the actions that need to be executed
+  upon installation.</li>
+<li><strong>update()</strong>, here you define the behavior that is required when Composer is
+  invoked with the update argument.</li>
+<li><strong>uninstall()</strong>, here you can determine the actions that need to be executed
+  when the package needs to be removed.</li>
+<li><strong>getInstallPath()</strong>, this method should return the absolute path where the
+  package is to be installed. The path <em>must not end with a slash.</em></li>
+</ul>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">phpDocumentor\Composer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Composer\Package\PackageInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Composer\Installer\LibraryInstaller</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">TemplateInstaller</span> <span class="k">extends</span> <span class="nx">LibraryInstaller</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @inheritDoc</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getInstallPath</span><span class="p">(</span><span class="nx">PackageInterface</span> <span class="nv">$package</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$prefix</span> <span class="o">=</span> <span class="nb">substr</span><span class="p">(</span><span class="nv">$package</span><span class="o">-&gt;</span><span class="na">getPrettyName</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">23</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;phpdocumentor/template-&#39;</span> <span class="o">!==</span> <span class="nv">$prefix</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\InvalidArgumentException</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to install template, phpdocumentor templates &#39;</span>
+                <span class="o">.</span><span class="s1">&#39;should always start their package name with &#39;</span>
+                <span class="o">.</span><span class="s1">&#39;&quot;phpdocumentor/template-&quot;&#39;</span>
+            <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="s1">&#39;data/templates/&#39;</span><span class="o">.</span><span class="nb">substr</span><span class="p">(</span><span class="nv">$package</span><span class="o">-&gt;</span><span class="na">getPrettyName</span><span class="p">(),</span> <span class="mi">23</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @inheritDoc</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supports</span><span class="p">(</span><span class="nv">$packageType</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;phpdocumentor-template&#39;</span> <span class="o">===</span> <span class="nv">$packageType</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The example demonstrates that it is possible to extend the
+<a href="https://github.com/composer/composer/blob/main/src/Composer/Installer/LibraryInstaller.php"><code>Composer\Installer\LibraryInstaller</code></a> class to strip a prefix
+(<code>phpdocumentor/template-</code>) and use the remaining part to assemble a completely
+different installation path.</p>
+<blockquote>
+<p><em>Instead of being installed in <code>/vendor</code> any package installed using this
+Installer will be put in the <code>/data/templates/&lt;stripped name&gt;</code> folder.</em></p>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/composer-platform-dependencies.html">
+          <span class="muted">Anterior</span>Composer platform dependencies
+        </a>
+        <a class="pager-next" href="../articles/handling-private-packages.html">
+          <span class="muted">Siguiente</span>Handling private packages
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

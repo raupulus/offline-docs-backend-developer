@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reportando errores · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Security
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../security/general.html"
+>Consideraciones generales</a>
+              </li>
+              <li>
+                <a href="../security/variables.html"
+>Datos Enviados por el Usuario</a>
+              </li>
+              <li>
+                <a href="../security/cgi-bin.html"
+>Instalado como CGI binario</a>
+              </li>
+              <li>
+                <a href="../security/apache.html"
+>Instalado como módulo de Apache</a>
+              </li>
+              <li>
+                <a href="../security/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../security/current.html"
+>Mantenerse al día</a>
+              </li>
+              <li>
+                <a href="../security/hiding.html"
+>Ocultar PHP</a>
+              </li>
+              <li>
+                <a href="../security/errors.html"
+class="is-current" aria-current="page">Reportando errores</a>
+              </li>
+              <li>
+                <a href="../security/sessions.html"
+>Seguridad de una Sesión</a>
+              </li>
+              <li>
+                <a href="../security/filesystem.html"
+>Seguridad del Sistema de Archivos</a>
+              </li>
+              <li>
+                <a href="../security/database.html"
+>Seguridad en bases de datos</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Reportando errores</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/security.errors.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#reportando-errores">Reportando errores#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="reportando-errores">Reportando errores<a class="headerlink" href="#reportando-errores" title="Permanent link">#</a></h2>
+<p>Con la seguridad de PHP, hay dos formas para reportar errores. Una es en beneficio, para incrementar la seguridad, y la otra es para perjudicar.</p>
+<p>Una táctica estándar de ataque conlleva a perfilar un sistema; llenándolo de datos incorrectos, revisando los tipos y contextos de los errores que son devueltos. Esto le permite al atacante recolectar información acerca del servidor, para determinar posibles debilidades. Por ejemplo, si un atacante ha recogido información sobre una página basada en un envío previo, él podría intentar sobrescribir las variables, o modificarlas:</p>
+<p>Atacando variables con una página HTML personalizada</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;form method=&quot;post&quot; action=&quot;objetivodelataque?username=badfoo&amp;amp;password=badfoo&quot;&gt;</span>
+<span class="x">&lt;input type=&quot;hidden&quot; name=&quot;username&quot; value=&quot;badfoo&quot; /&gt;</span>
+<span class="x">&lt;input type=&quot;hidden&quot; name=&quot;password&quot; value=&quot;badfoo&quot; /&gt;</span>
+<span class="x">&lt;/form&gt;</span>
+</code></pre></div>
+
+<p>Los errores de PHP que normalmente son devueltos, pueden ser muy útiles para el desarrollador que está intentando depurar un script, indicando qué cosas, como por ejemplo, qué función o qué fichero de PHP falló, y el número de línea en donde la falla ocurrió. Toda esta es la información que puede ser explotada. Esto no es algo raro para un desarrollador de PHP que utilice las funciones <code>show_source</code>, <code>highlight_string</code>, o <code>highlight_file</code> como una medida de depuración, pero en un sitio en escena, esto puede exponer variables ocultas, sintáxis sin revisar, y otra información peligrosa. Es especialmente peligroso el código en ejecución de fuentes conocidas con manejadores de depuración incluidos, o utilizar técnicas comunes de depuración. Si los atacantes pueden determinar qué técnica en general usted está utilizando, ellos podrían tratar de usar fuerza bruta en una página, enviando varias cadenas comunes de depuración:</p>
+<p>Explotando variables comunes de depuración</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;form method=&quot;post&quot; action=&quot;objetivodelataque?errors=Y&amp;amp;showerrors=1&amp;amp;debug=1&quot;&gt;</span>
+<span class="x">&lt;input type=&quot;hidden&quot; name=&quot;errors&quot; value=&quot;Y&quot; /&gt;</span>
+<span class="x">&lt;input type=&quot;hidden&quot; name=&quot;showerrors&quot; value=&quot;1&quot; /&gt;</span>
+<span class="x">&lt;input type=&quot;hidden&quot; name=&quot;debug&quot; value=&quot;1&quot; /&gt;</span>
+<span class="x">&lt;/form&gt;</span>
+</code></pre></div>
+
+<p>Sin importar el método de manejo de errores, la capacidad de probar errores en un sistema conlleva a proveer a un atacante con mas información.</p>
+<p>Por ejemplo, el estilo común de un error genérico de PHP indica que un sistema ciertamente está ejecutando PHP. Si un atacante está en una página <code>.html</code>, y quiere probar qué motor hay tras de ese servidor (para buscar debilidades en el sistema), lo alimenta con datos erróneos que lo podrían habilitar a que determine que ese sistema fue construido con PHP.</p>
+<p>El error de una función puede indicar ya sea, un sistema que puede estar ejecutando un motor específico de base de datos, o dar las pistas de cómo una página web puede estar programada o diseñada. Esto permite una investigación más profunda dentro de los puertos abiertos de la base de datos, o buscar errores específicos o debilidades en una página web. Pasando diferentes porciones de datos erróneos, por ejemplo, un atacante puede determinar el orden de autenticación en un script, (por medio del número de línea de los errores) como también probar exploits que pueden ser utilizados en diferentes ubicaciones del script.</p>
+<p>Un error del sistema de archivos o un error general de PHP puede indicar qué permisos tiene el servidor web, así también la estructura y organización de ficheros en el servidor web. El código de error escrito por el desarrollador puede agravar este problema, conllevando a la explotación fácil de la, hasta entonces, información "oculta".</p>
+<p>Hay tres grandes soluciones a este problema. La primera consiste en examinar todas las funciones, e intentar arreglar la mayoría de los errores. La segunda es deshabilitar completamente la notificación de errores de el código en ejecución. La tercera es utilizar las funciones de manejo de error propias de PHP para crear su propio manejador de errores. Dependiendo de su política de seguridad, puede ser que encuentre que las tres sean aplicables a su situación.</p>
+<p>Una forma de detectar este problema por adelantado es hacer uso de la función propia de PHP <code>error_reporting</code>, para ayudarle a asegurar su código y encontrar el uso de variables que podrían ser peligrosas. Al probar su código, antes de distribuirlo, con <code>E_ALL</code>, usted puede encontrar rapidamente áreas donde sus variables pueden ser abiertas para envenenamiento o modificación en otras maneras. Una vez usted está listo para distribuirlo, debería deshabilitar completamente el reporte de errores poniendo el valor de <code>error_reporting</code> a 0, o apagar el visor de errores utilizando la opción <code>display_errors</code> del fichero <code>php.ini</code> para aislar su código de ataques. Si decide hacer esto último, también debería definir la ruta de acceso a su archivo de registros utilizando la directiva <code>error_log</code>, y poner <code>log_errors</code> en "on".</p>
+<p>Buscando variables peligrosas con E_ALL</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$username</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// No se ha inicializado o revisado antes de utilizar</span>
+    <span class="nv">$good_login</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$good_login</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Si la prueba anterior falla, los que no estén inicializados o comprobados antes de utilizar, tendrán acceso</span>
+    <span class="nb">readfile</span><span class="p">(</span><span class="s2">&quot;/ruta/hacia/datos/altamente/sensibles/index.html&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../security/hiding.html">
+          <span class="muted">Anterior</span>Ocultar PHP
+        </a>
+        <a class="pager-next" href="../security/sessions.html">
+          <span class="muted">Siguiente</span>Seguridad de una Sesión
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

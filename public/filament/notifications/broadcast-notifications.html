@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Broadcast notifications · Filament</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Filament</a>
+<span class="badge">4.x</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="filament" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Filament…"
+         aria-label="Buscar en Filament" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Filament
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Filament">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../actions/overview.html">Actions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../forms/overview.html">Forms</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../infolists/overview.html">Infolists</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Notifications
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../notifications/overview.html"
+>Overview</a>
+              </li>
+              <li>
+                <a href="../notifications/database-notifications.html"
+>Database notifications</a>
+              </li>
+              <li>
+                <a href="../notifications/broadcast-notifications.html"
+class="is-current" aria-current="page">Broadcast notifications</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../schemas/overview.html">Schemas</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tables/overview.html">Tables</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../widgets/overview.html">Widgets</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Broadcast notifications</h1>
+
+      <p class="doc-meta">
+<span class="badge">4.x</span>          <a href="https://filamentphp.com/docs" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#sending-broadcast-notifications">Sending broadcast notifications#</a></li>
+              <li class="lvl-2"><a href="#setting-up-websockets-in-a-panel">Setting up websockets in a panel#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>By default, Filament will send flash notifications via the Laravel session. However, you may wish that your notifications are "broadcast" to a user in real-time, instead. This could be used to send a temporary success notification from a queued job after it has finished processing.</p>
+<p>We have a native integration with <a href="https://laravel.com/docs/broadcasting#client-side-installation">Laravel Echo</a>. Make sure Echo is installed, as well as a <a href="https://laravel.com/docs/broadcasting#server-side-installation">server-side websockets integration</a> like Pusher.</p>
+<h2 id="sending-broadcast-notifications">Sending broadcast notifications<a class="headerlink" href="#sending-broadcast-notifications" title="Permanent link">#</a></h2>
+<p>There are several ways to send broadcast notifications, depending on which one suits you best.</p>
+<p>You may use our fluent API:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">$recipient = auth()-&gt;user();</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;broadcast($recipient);</span>
+</code></pre></div>
+
+<p>Or, use the <code>notify()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">$recipient = auth()-&gt;user();</span>
+
+<span class="x">$recipient-&gt;notify(</span>
+<span class="x">    Notification::make()</span>
+<span class="x">        -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">        -&gt;toBroadcast(),</span>
+<span class="x">)</span>
+</code></pre></div>
+
+<p>Alternatively, use a traditional <a href="https://laravel.com/docs/notifications#generating-notifications">Laravel notification class</a> by returning the notification from the <code>toBroadcast()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\User;</span>
+<span class="x">use Filament\Notifications\Notification;</span>
+<span class="x">use Illuminate\Notifications\Messages\BroadcastMessage;</span>
+
+<span class="x">public function toBroadcast(User $notifiable): BroadcastMessage</span>
+<span class="x">{</span>
+<span class="x">    return Notification::make()</span>
+<span class="x">        -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">        -&gt;getBroadcastMessage();</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="setting-up-websockets-in-a-panel">Setting up websockets in a panel<a class="headerlink" href="#setting-up-websockets-in-a-panel" title="Permanent link">#</a></h2>
+<p>The Panel Builder comes with a level of inbuilt support for real-time broadcast and database notifications. However there are a number of areas you will need to install and configure to wire everything up and get it working.</p>
+<ol>
+<li>If you haven't already, read up on <a href="https://laravel.com/docs/broadcasting">broadcasting</a> in the Laravel documentation.</li>
+<li>Install and configure broadcasting to use a <a href="https://laravel.com/docs/broadcasting#server-side-installation">server-side websockets integration</a> like Pusher.</li>
+<li>If you haven't already, you will need to publish the Filament package configuration:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>vendor:publish<span class="w"> </span>--tag<span class="o">=</span>filament-config
+</code></pre></div>
+
+<ol start="4">
+<li>Edit the configuration at <code>config/filament.php</code> and uncomment the <code>broadcasting.echo</code> section - ensuring the settings are correctly configured according to your broadcasting installation.</li>
+<li>Ensure the <a href="https://laravel.com/docs/broadcasting#client-pusher-channels">relevant <code>VITE_*</code> entries</a> exist in your <code>.env</code> file.</li>
+<li>Clear relevant caches with <code>php artisan route:clear</code> and <code>php artisan config:clear</code> to ensure your new configuration takes effect.</li>
+</ol>
+<p>Your panel should now be connecting to your broadcasting service. For example, if you log into the Pusher debug console you should see an incoming connection each time you load a page.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../notifications/database-notifications.html">
+          <span class="muted">Anterior</span>Database notifications
+        </a>
+        <a class="pager-next" href="../schemas/overview.html">
+          <span class="muted">Siguiente</span>Overview
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

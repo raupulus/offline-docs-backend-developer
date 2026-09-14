@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&#34;stat&#34; --- Interpreting &#34;stat()&#34; results · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Library
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../library/pyexpat.html"
+>&#34;xml.parsers.expat&#34; --- Fast XML parsing using Expat</a>
+              </li>
+              <li>
+                <a href="../library/python.html"
+>Servicios en tiempo de ejecución de Python</a>
+              </li>
+              <li>
+                <a href="../library/queue.html"
+>&#34;queue&#34; --- A synchronized queue class</a>
+              </li>
+              <li>
+                <a href="../library/quopri.html"
+>&#34;quopri&#34; --- Encode and decode MIME quoted-printable data</a>
+              </li>
+              <li>
+                <a href="../library/random.html"
+>&#34;random&#34; --- Generate pseudo-random numbers</a>
+              </li>
+              <li>
+                <a href="../library/re.html"
+>&#34;re&#34; --- Regular expression operations</a>
+              </li>
+              <li>
+                <a href="../library/readline.html"
+>&#34;readline&#34; --- GNU readline interface</a>
+              </li>
+              <li>
+                <a href="../library/removed.html"
+>Removed Modules</a>
+              </li>
+              <li>
+                <a href="../library/reprlib.html"
+>&#34;reprlib&#34; --- Alternate &#34;repr()&#34; implementation</a>
+              </li>
+              <li>
+                <a href="../library/resource.html"
+>&#34;resource&#34; --- Resource usage information</a>
+              </li>
+              <li>
+                <a href="../library/rlcompleter.html"
+>&#34;rlcompleter&#34; --- Completion function for GNU readline</a>
+              </li>
+              <li>
+                <a href="../library/runpy.html"
+>&#34;runpy&#34; --- Localización y ejecución de módulos Python</a>
+              </li>
+              <li>
+                <a href="../library/sched.html"
+>&#34;sched&#34; --- Event scheduler</a>
+              </li>
+              <li>
+                <a href="../library/secrets.html"
+>&#34;secrets&#34; --- Generate secure random numbers for managing secrets</a>
+              </li>
+              <li>
+                <a href="../library/security_warnings.html"
+>Consideraciones de seguridad</a>
+              </li>
+              <li>
+                <a href="../library/select.html"
+>&#34;select&#34; --- Waiting for I/O completion</a>
+              </li>
+              <li>
+                <a href="../library/selectors.html"
+>&#34;selectors&#34; --- High-level I/O multiplexing</a>
+              </li>
+              <li>
+                <a href="../library/shelve.html"
+>&#34;shelve&#34; --- Python object persistence</a>
+              </li>
+              <li>
+                <a href="../library/shlex.html"
+>&#34;shlex&#34; --- Simple lexical analysis</a>
+              </li>
+              <li>
+                <a href="../library/shutil.html"
+>&#34;shutil&#34; --- High-level file operations</a>
+              </li>
+              <li>
+                <a href="../library/signal.html"
+>&#34;signal&#34; --- Set handlers for asynchronous events</a>
+              </li>
+              <li>
+                <a href="../library/site.html"
+>&#34;site&#34; --- Site-specific configuration hook</a>
+              </li>
+              <li>
+                <a href="../library/smtpd.html"
+>&#34;smtpd&#34; --- SMTP Server</a>
+              </li>
+              <li>
+                <a href="../library/smtplib.html"
+>&#34;smtplib&#34; --- SMTP protocol client</a>
+              </li>
+              <li>
+                <a href="../library/sndhdr.html"
+>&#34;sndhdr&#34; --- Determine type of sound file</a>
+              </li>
+              <li>
+                <a href="../library/socket.html"
+>&#34;socket&#34; --- Low-level networking interface</a>
+              </li>
+              <li>
+                <a href="../library/socketserver.html"
+>&#34;socketserver&#34; --- A framework for network servers</a>
+              </li>
+              <li>
+                <a href="../library/spwd.html"
+>&#34;spwd&#34; --- The shadow password database</a>
+              </li>
+              <li>
+                <a href="../library/sqlite3.html"
+>&#34;sqlite3&#34; --- DB-API 2.0 interfaz para bases de datos SQLite</a>
+              </li>
+              <li>
+                <a href="../library/ssl.html"
+>&#34;ssl&#34; --- TLS/SSL wrapper for socket objects</a>
+              </li>
+              <li>
+                <a href="../library/stat.html"
+class="is-current" aria-current="page">&#34;stat&#34; --- Interpreting &#34;stat()&#34; results</a>
+              </li>
+              <li>
+                <a href="../library/statistics.html"
+>&#34;statistics&#34; --- Mathematical statistics functions</a>
+              </li>
+              <li>
+                <a href="../library/stdtypes.html"
+>Tipos integrados</a>
+              </li>
+              <li>
+                <a href="../library/string.templatelib.html"
+>&#34;string.templatelib&#34; --- Support for template string literals</a>
+              </li>
+              <li>
+                <a href="../library/string.html"
+>&#34;string&#34; --- Common string operations</a>
+              </li>
+              <li>
+                <a href="../library/stringprep.html"
+>&#34;stringprep&#34; --- Internet String Preparation</a>
+              </li>
+              <li>
+                <a href="../library/struct.html"
+>&#34;struct&#34; --- Interpret bytes as packed binary data</a>
+              </li>
+              <li>
+                <a href="../library/subprocess.html"
+>&#34;subprocess&#34; --- Subprocess management</a>
+              </li>
+              <li>
+                <a href="../library/sunau.html"
+>&#34;sunau&#34; --- Read and write Sun AU files</a>
+              </li>
+              <li>
+                <a href="../library/superseded.html"
+>Módulos reemplazados</a>
+              </li>
+              <li>
+                <a href="../library/symtable.html"
+>&#34;symtable&#34; --- Access to the compiler&#39;s symbol tables</a>
+              </li>
+              <li>
+                <a href="../library/sys.monitoring.html"
+>&#34;sys.monitoring&#34; --- Execution event monitoring</a>
+              </li>
+              <li>
+                <a href="../library/sys.html"
+>&#34;sys&#34; --- System-specific parameters and functions</a>
+              </li>
+              <li>
+                <a href="../library/sys_path_init.html"
+>La inicialización de la ruta de búsqueda de módulo de &#34;sys.path&#34;</a>
+              </li>
+              <li>
+                <a href="../library/sysconfig.html"
+>&#34;sysconfig&#34; --- Provide access to Python&#39;s configuration information</a>
+              </li>
+              <li>
+                <a href="../library/syslog.html"
+>&#34;syslog&#34; --- Unix syslog library routines</a>
+              </li>
+              <li>
+                <a href="../library/tabnanny.html"
+>&#34;tabnanny&#34; --- Detection of ambiguous indentation</a>
+              </li>
+              <li>
+                <a href="../library/tarfile.html"
+>&#34;tarfile&#34; --- Read and write tar archive files</a>
+              </li>
+              <li>
+                <a href="../library/telnetlib.html"
+>&#34;telnetlib&#34; --- Telnet client</a>
+              </li>
+              <li>
+                <a href="../library/tempfile.html"
+>&#34;tempfile&#34; --- Generate temporary files and directories</a>
+              </li>
+              <li>
+                <a href="../library/termios.html"
+>&#34;termios&#34; --- POSIX style tty control</a>
+              </li>
+              <li>
+                <a href="../library/test.html"
+>&#34;test&#34; --- Regression tests package for Python</a>
+              </li>
+              <li>
+                <a href="../library/text.html"
+>Servicios de procesamiento de texto</a>
+              </li>
+              <li>
+                <a href="../library/textwrap.html"
+>&#34;textwrap&#34; --- Text wrapping and filling</a>
+              </li>
+              <li>
+                <a href="../library/threading.html"
+>&#34;threading&#34; --- Thread-based parallelism</a>
+              </li>
+              <li>
+                <a href="../library/threadsafety.html"
+>Thread Safety Guarantees</a>
+              </li>
+              <li>
+                <a href="../library/time.html"
+>&#34;time&#34; --- Time access and conversions</a>
+              </li>
+              <li>
+                <a href="../library/timeit.html"
+>&#34;timeit&#34; --- Measure execution time of small code snippets</a>
+              </li>
+              <li>
+                <a href="../library/tk.html"
+>Graphical user interfaces with Tk</a>
+              </li>
+              <li>
+                <a href="../library/tkinter.colorchooser.html"
+>&#34;tkinter.colorchooser&#34; --- Color choosing dialog</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../reference/compound_stmts.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 536 documentos de Python</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">&#34;stat&#34; --- Interpreting &#34;stat()&#34; results</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+
+      <div class="doc-body">
+        <h1 id="stat-interpreting-stat-results">"stat" --- Interpreting "stat()" results<a class="headerlink" href="#stat-interpreting-stat-results" title="Permanent link">#</a></h1>
+<p><strong>Código fuente:</strong> Lib/stat.py</p>
+<p>======================================================================</p>
+<p>The "stat" module defines constants and functions for interpreting the
+results of "os.stat()", "os.fstat()" and "os.lstat()" (if they exist).
+For complete details about the "stat()", "fstat()" and "lstat()"
+calls, consult the documentation for your system.</p>
+<p>Distinto en la versión 3.4: El módulo <em>stat</em> se apoya en una
+implementación en C.</p>
+<p>The "stat" module defines the following functions to test for specific
+file types:</p>
+<p>stat.S_ISDIR(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un directorio.</p>
+<p>stat.S_ISCHR(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un archivo de un
+   dispositivo especial de caracteres.</p>
+<p>stat.S_ISBLK(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un archivo de un
+   dispositivo especial de bloques.</p>
+<p>stat.S_ISREG(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un archivo normal.</p>
+<p>stat.S_ISFIFO(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un <em>FIFO</em> (tubería con
+   nombre).</p>
+<p>stat.S_ISLNK(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un enlace simbólico.</p>
+<p>stat.S_ISSOCK(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un socket.</p>
+<p>stat.S_ISDOOR(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un <em>door</em>.</p>
+<p>Added in version 3.4.</p>
+<p>stat.S_ISPORT(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un <em>event port</em>.</p>
+<p>Added in version 3.4.</p>
+<p>stat.S_ISWHT(mode)</p>
+<p>Retorna un valor no nulo si el modo es de un <em>whiteout</em>.</p>
+<p>Added in version 3.4.</p>
+<p>Se definen dos funciones adicionales para una manipulación más general
+del modo del archivo:</p>
+<p>stat.S_IMODE(mode)</p>
+<p>Retorna la porción del modo del archivo que puede ser establecida
+   por "os.chmod()"--- esto es, los bits de los permisos del archivo
+   más los bits <em>sticky bit</em>, <em>set-group-id</em> y <em>set-user-id</em> (en los
+   sistemas que lo soporten).</p>
+<p>stat.S_IFMT(mode)</p>
+<p>Retorna la porción del modo del archivo que describe el tipo de
+   archivo (usado por las funciones "S_IS*()" de más arriba).</p>
+<p>Normalmente se usarían las funciones "os.path.is*()" para comprobar el
+tipo de un archivo; estas funciones de aquí son útiles cuando se hacen
+múltiples comprobaciones sobre el mismo archivo y se desea evitar la
+sobrecarga causada por la llamada al sistema "stat()" en cada
+comprobación. También son útiles cuando se comprueba información de un
+archivo que no es gestionada por "os.path", como buscar dispositivos
+de bloques o caracteres.</p>
+<p>Ejemplo:</p>
+<p>import os, sys
+   from stat import *</p>
+<p>def walktree(top, callback):
+       '''recursively descend the directory tree rooted at top,
+          calling the callback function for each regular file'''</p>
+<div class="codehilite"><pre><span></span><code>   for f in os.listdir(top):
+       pathname = os.path.join(top, f)
+       mode = os.lstat(pathname).st_mode
+       if S_ISDIR(mode):
+           # It&#39;s a directory, recurse into it
+           walktree(pathname, callback)
+       elif S_ISREG(mode):
+           # It&#39;s a file, call the callback function
+           callback(pathname)
+       else:
+           # Unknown file type, print a message
+           print(&#39;Skipping %s&#39; % pathname)
+</code></pre></div>
+
+<p>def visitfile(file):
+       print('visiting', file)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+       walktree(sys.argv[1], visitfile)</p>
+<p>Se proporciona una función de utilidad adicional para convertir el
+modo del archivo en una cadena de caracteres legible por humanos:</p>
+<p>stat.filemode(mode)</p>
+<p>Convierte el modo del archivo a una cadena de caracteres de la
+   forma '-rwxrwxrwx'.</p>
+<p>Added in version 3.3.</p>
+<p>Distinto en la versión 3.4: La función soporta "S_IFDOOR",
+   "S_IFPORT" y "S_IFWHT".</p>
+<p>Todas las variables de debajo son simplemente índices simbólicos sobre
+la tupla de 10 elementos retornada por "os.stat()", "os.fstat()" o
+"os.lstat()".</p>
+<p>stat.ST_MODE</p>
+<p>Modo de protección del <em>inode</em>.</p>
+<p>stat.ST_INO</p>
+<p>Número del <em>inode</em>.</p>
+<p>stat.ST_DEV</p>
+<p>Dispositivo en el que reside el <em>inode</em>.</p>
+<p>stat.ST_NLINK</p>
+<p>Número de enlaces al <em>inode</em>.</p>
+<p>stat.ST_UID</p>
+<p><em>Id</em> de usuario del propietario.</p>
+<p>stat.ST_GID</p>
+<p><em>Id</em> del grupo del propietario.</p>
+<p>stat.ST_SIZE</p>
+<p>Tamaño en bytes de un archivo normal; cantidad de datos esperando
+   en algunos archivos especiales.</p>
+<p>stat.ST_ATIME</p>
+<p>Momento del último acceso.</p>
+<p>stat.ST_MTIME</p>
+<p>Momento de la última modificación.</p>
+<p>stat.ST_CTIME</p>
+<p>El "ctime" reportado por el sistema operativo. En algunos sistemas
+   (como Unix) es el momento del último cambio en los metadatos, y en
+   otros (como Windows), es el momento de creación (véase la
+   documentación de la plataforma para más detalles).</p>
+<p>La interpretación de "tamaño de archivo" cambia dependiendo del tipo
+de archivo. Para archivos normales es el tamaño del archivo en bytes.
+En la mayoría de sistemas Unix (incluyendo Linux en particular), para
+<em>FIFOs</em> y sockets es el número de bytes que esperan ser leídos en el
+momento de la llamada a "os.stat()", "os.fstat()", o "os.lstat()"; en
+ocasiones, esto puede ser útil, especialmente para sondear uno de
+estos archivos especiales después de una apertura no bloqueante. Para
+otros dispositivos de caracteres y bloques el significado del campo
+<em>size</em> es más variado, dependiendo de la implementación de la llamada
+al sistema subyacente.</p>
+<p>Las variables de debajo definen los flags usados en el campo
+"ST_MODE".</p>
+<p>El uso de las funciones de arriba es más portable que el uso del
+primer juego de flags:</p>
+<p>stat.S_IFSOCK</p>
+<p><em>Socket</em>.</p>
+<p>stat.S_IFLNK</p>
+<p>Enlace simbólico.</p>
+<p>stat.S_IFREG</p>
+<p>Archivo normal.</p>
+<p>stat.S_IFBLK</p>
+<p>Dispositivo de bloques.</p>
+<p>stat.S_IFDIR</p>
+<p>Directorio.</p>
+<p>stat.S_IFCHR</p>
+<p>Dispositivo de caracteres.</p>
+<p>stat.S_IFIFO</p>
+<p><em>FIFO</em>.</p>
+<p>stat.S_IFDOOR</p>
+<p><em>Door</em>.</p>
+<p>Added in version 3.4.</p>
+<p>stat.S_IFPORT</p>
+<p><em>Event port</em>.</p>
+<p>Added in version 3.4.</p>
+<p>stat.S_IFWHT</p>
+<p><em>Whiteout</em>.</p>
+<p>Added in version 3.4.</p>
+<p>Nota:</p>
+<p>"S_IFDOOR", "S_IFPORT" o "S_IFWHT" se definen como 0 cuando la
+  plataforma no soporta los tipos de archivo.</p>
+<p>Los siguientes flags también pueden usarse en el argumento <em>mode</em> de
+"os.chmod()":</p>
+<p>stat.S_ISUID</p>
+<p>Establecer el bit <em>UID</em>.</p>
+<p>stat.S_ISGID</p>
+<p>Bit <em>Set-group-ID</em>. Este bit tiene varios usos especiales. Para un
+   directorio indica que la semántica BSD debe usarse para ese
+   directorio: los archivos creados ahí heredan el <em>ID</em> de grupo del
+   directorio, no del <em>ID</em> de grupo efectivo del proceso que los crea,
+   y los directorios creados ahí también tendrán activado el bit
+   "S_ISGID". Para un archivo que no tiene activado el bit de
+   ejecución de grupo ("S_IXGRP"), el bit <em>Set-group-ID</em> indica el
+   bloqueo obligatorio del archivo/registro (véase también "S_ENFMT").</p>
+<p>stat.S_ISVTX</p>
+<p><em>Sticky bit</em>. Cuando este bit está activado en un directorio,
+   significa que un archivo dentro de ese directorio puede ser
+   renombrado o borrado sólo por el propietario del archivo, por el
+   propietario del directorio, o por un proceso con privilegios.</p>
+<p>stat.S_IRWXU</p>
+<p>Máscara para los permisos del propietario del archivo.</p>
+<p>stat.S_IRUSR</p>
+<p>El propietario tiene permiso de lectura.</p>
+<p>stat.S_IWUSR</p>
+<p>El propietario tiene permiso de escritura.</p>
+<p>stat.S_IXUSR</p>
+<p>El propietario tiene permiso de ejecución.</p>
+<p>stat.S_IRWXG</p>
+<p>Máscara para los permisos del grupo.</p>
+<p>stat.S_IRGRP</p>
+<p>El grupo tiene permiso de lectura.</p>
+<p>stat.S_IWGRP</p>
+<p>El grupo tiene permiso de escritura.</p>
+<p>stat.S_IXGRP</p>
+<p>El grupo tiene permiso de ejecución.</p>
+<p>stat.S_IRWXO</p>
+<p>Máscara para permisos de los otros (no en el grupo).</p>
+<p>stat.S_IROTH</p>
+<p>Los otros tienen permiso de lectura.</p>
+<p>stat.S_IWOTH</p>
+<p>Los otros tienen permiso de escritura.</p>
+<p>stat.S_IXOTH</p>
+<p>Los otros tienen permiso de ejecución.</p>
+<p>stat.S_ENFMT</p>
+<p>Imposición del bloqueo de archivos de System V. Este flag se
+   comparte con "S_ISGID": se impone el bloqueo de archivos/registros
+   en archivos que no tengan activado el bit de ejecución por el grupo
+   ("S_IXGRP").</p>
+<p>stat.S_IREAD</p>
+<p>Sinónimo de "S_IRUSR" en Unix V7.</p>
+<p>stat.S_IWRITE</p>
+<p>Sinónimo de "S_IWUSR" en Unix V7.</p>
+<p>stat.S_IEXEC</p>
+<p>Sinónimo de "S_IXUSR" en Unix V7.</p>
+<p>Los siguientes flags pueden usarse como argumento <em>flags</em> de
+"os.chflags()":</p>
+<p>stat.UF_SETTABLE</p>
+<p>All user settable flags.</p>
+<p>Added in version 3.13.</p>
+<p>stat.UF_NODUMP</p>
+<p>No volcar el archivo.</p>
+<p>stat.UF_IMMUTABLE</p>
+<p>El archivo no puede ser modificado.</p>
+<p>stat.UF_APPEND</p>
+<p>Sólo se puede añadir al archivo.</p>
+<p>stat.UF_OPAQUE</p>
+<p>El directorio es opaco cuando se mira a través de un <em>union stack</em>.</p>
+<p>stat.UF_NOUNLINK</p>
+<p>El archivo no puede ser renombrado o borrado.</p>
+<p>stat.UF_COMPRESSED</p>
+<p>El archivo se almacena comprimido (macOS 10.6+).</p>
+<p>stat.UF_TRACKED</p>
+<p>Used for handling document IDs (macOS)</p>
+<p>Added in version 3.13.</p>
+<p>stat.UF_DATAVAULT</p>
+<p>The file needs an entitlement for reading or writing (macOS 10.13+)</p>
+<p>Added in version 3.13.</p>
+<p>stat.UF_HIDDEN</p>
+<p>El archivo no debe ser mostrado en una GUI (macOS 10.5+).</p>
+<p>stat.SF_SETTABLE</p>
+<p>All super-user changeable flags</p>
+<p>Added in version 3.13.</p>
+<p>stat.SF_SUPPORTED</p>
+<p>All super-user supported flags</p>
+<p>Availability: macOS</p>
+<p>Added in version 3.13.</p>
+<p>stat.SF_SYNTHETIC</p>
+<p>All super-user read-only synthetic flags</p>
+<p>Availability: macOS</p>
+<p>Added in version 3.13.</p>
+<p>stat.SF_ARCHIVED</p>
+<p>El archivo puede ser archivado.</p>
+<p>stat.SF_IMMUTABLE</p>
+<p>El archivo no puede ser modificado.</p>
+<p>stat.SF_APPEND</p>
+<p>Sólo se puede añadir al archivo.</p>
+<p>stat.SF_RESTRICTED</p>
+<p>The file needs an entitlement to write to (macOS 10.13+)</p>
+<p>Added in version 3.13.</p>
+<p>stat.SF_NOUNLINK</p>
+<p>El archivo no puede ser renombrado o borrado.</p>
+<p>stat.SF_SNAPSHOT</p>
+<p>El archivo es una instantánea.</p>
+<p>stat.SF_FIRMLINK</p>
+<p>The file is a firmlink (macOS 10.15+)</p>
+<p>Added in version 3.13.</p>
+<p>stat.SF_DATALESS</p>
+<p>The file is a dataless object (macOS 10.15+)</p>
+<p>Added in version 3.13.</p>
+<p>Consulte la página de manual de sistemas * BSD o macOS <em>chflags(2)</em>
+para obtener más información.</p>
+<p>En Windows, las siguientes constantes de atributos de fichero están
+disponibles para ser usadas al comprobar los bits del miembro
+"st_file_attributes" retornado por "os.stat()". Véase Windows API
+documentation para más detalles sobre el significado de estas
+constantes.</p>
+<p>stat.FILE_ATTRIBUTE_ARCHIVE
+stat.FILE_ATTRIBUTE_COMPRESSED
+stat.FILE_ATTRIBUTE_DEVICE
+stat.FILE_ATTRIBUTE_DIRECTORY
+stat.FILE_ATTRIBUTE_ENCRYPTED
+stat.FILE_ATTRIBUTE_HIDDEN
+stat.FILE_ATTRIBUTE_INTEGRITY_STREAM
+stat.FILE_ATTRIBUTE_NORMAL
+stat.FILE_ATTRIBUTE_NOT_CONTENT_INDEXED
+stat.FILE_ATTRIBUTE_NO_SCRUB_DATA
+stat.FILE_ATTRIBUTE_OFFLINE
+stat.FILE_ATTRIBUTE_READONLY
+stat.FILE_ATTRIBUTE_REPARSE_POINT
+stat.FILE_ATTRIBUTE_SPARSE_FILE
+stat.FILE_ATTRIBUTE_SYSTEM
+stat.FILE_ATTRIBUTE_TEMPORARY
+stat.FILE_ATTRIBUTE_VIRTUAL</p>
+<p>Added in version 3.5.</p>
+<p>En Windows, las siguientes constantes están disponibles para la
+comparación con el miembro "st_reparse_tag" retornado por
+"os.lstat()". Estas constantes son muy conocidas, pero no se trata de
+una lista exhaustiva.</p>
+<p>stat.IO_REPARSE_TAG_SYMLINK
+stat.IO_REPARSE_TAG_MOUNT_POINT
+stat.IO_REPARSE_TAG_APPEXECLINK</p>
+<p>Added in version 3.8.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../library/ssl.html">
+          <span class="muted">Anterior</span>&#34;ssl&#34; --- TLS/SSL wrapper for socket objects
+        </a>
+        <a class="pager-next" href="../library/statistics.html">
+          <span class="muted">Siguiente</span>&#34;statistics&#34; --- Mathematical statistics functions
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

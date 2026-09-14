@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chart widgets · Filament</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Filament</a>
+<span class="badge">4.x</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="filament" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Filament…"
+         aria-label="Buscar en Filament" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Filament
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Filament">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../actions/overview.html">Actions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../forms/overview.html">Forms</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../infolists/overview.html">Infolists</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../notifications/overview.html">Notifications</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../schemas/overview.html">Schemas</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tables/overview.html">Tables</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Widgets
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../widgets/overview.html"
+>Overview</a>
+              </li>
+              <li>
+                <a href="../widgets/stats-overview.html"
+>Stats overview widgets</a>
+              </li>
+              <li>
+                <a href="../widgets/charts.html"
+class="is-current" aria-current="page">Chart widgets</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Chart widgets</h1>
+
+      <p class="doc-meta">
+<span class="badge">4.x</span>          <a href="https://filamentphp.com/docs" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#available-chart-types">Available chart types#</a></li>
+              <li class="lvl-2"><a href="#customizing-the-chart-color">Customizing the chart color#</a></li>
+              <li class="lvl-2"><a href="#generating-chart-data-from-an-eloquent-model">Generating chart data from an Eloquent model#</a></li>
+              <li class="lvl-2"><a href="#filtering-chart-data">Filtering chart data#</a></li>
+              <li class="lvl-3"><a href="#basic-select-filter">Basic Select filter#</a></li>
+              <li class="lvl-3"><a href="#custom-filters">Custom filters#</a></li>
+              <li class="lvl-2"><a href="#empty-state">Empty state#</a></li>
+              <li class="lvl-3"><a href="#setting-the-empty-state-heading">Setting the empty state heading#</a></li>
+              <li class="lvl-3"><a href="#setting-the-empty-state-description">Setting the empty state description#</a></li>
+              <li class="lvl-3"><a href="#setting-the-empty-state-icon">Setting the empty state icon#</a></li>
+              <li class="lvl-3"><a href="#adding-empty-state-actions">Adding empty state actions#</a></li>
+              <li class="lvl-3"><a href="#using-a-custom-empty-state-view">Using a custom empty state view#</a></li>
+              <li class="lvl-2"><a href="#live-updating-chart-data-polling">Live updating chart data (polling)#</a></li>
+              <li class="lvl-2"><a href="#setting-a-maximum-chart-height">Setting a maximum chart height#</a></li>
+              <li class="lvl-2"><a href="#setting-chart-configuration-options">Setting chart configuration options#</a></li>
+              <li class="lvl-2"><a href="#adding-a-description">Adding a description#</a></li>
+              <li class="lvl-2"><a href="#disabling-lazy-loading">Disabling lazy loading#</a></li>
+              <li class="lvl-2"><a href="#making-the-chart-collapsible">Making the chart collapsible#</a></li>
+              <li class="lvl-2"><a href="#using-custom-chartjs-plugins">Using custom Chart.js plugins#</a></li>
+              <li class="lvl-3"><a href="#step-1-install-the-plugin-with-npm">Step 1: Install the plugin with NPM#</a></li>
+              <li class="lvl-3"><a href="#step-2-create-a-javascript-file-importing-the-plugin">Step 2: Create a JavaScript file importing the plugin#</a></li>
+              <li class="lvl-3"><a href="#step-3-compile-the-javascript-file-with-vite">Step 3: Compile the JavaScript file with Vite#</a></li>
+              <li class="lvl-3"><a href="#step-4-register-the-javascript-file-in-filament">Step 4: Register the JavaScript file in Filament#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>import AutoScreenshot from "@components/AutoScreenshot.astro"
+import Aside from "@components/Aside.astro"</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>Filament comes with many "chart" widget templates, which you can use to display real-time, interactive charts.</p>
+<p>Start by creating a widget with the command:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:filament-widget<span class="w"> </span>BlogPostsChart<span class="w"> </span>--chart
+</code></pre></div>
+
+<p>There is a single <code>ChartWidget</code> class that is used for all charts. The type of chart is set by the <code>getType()</code> method. In this example, that method returns the string <code>'line'</code>.</p>
+<p>The <code>protected ?string $heading</code> variable is used to set the heading that describes the chart. If you need to set the heading dynamically, you can override the <code>getHeading()</code> method.</p>
+<p>The <code>getData()</code> method is used to return an array of datasets and labels. Each dataset is a labeled array of points to plot on the chart, and each label is a string. This structure is identical to the <a href="https://www.chartjs.org/docs">Chart.js</a> library, which Filament uses to render charts. You may use the <a href="https://www.chartjs.org/docs">Chart.js documentation</a> to fully understand the possibilities to return from <code>getData()</code>, based on the chart type.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Filament\Widgets</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Filament\Widgets\ChartWidget</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">BlogPostsChart</span> <span class="k">extends</span> <span class="nx">ChartWidget</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="o">?</span><span class="nx">string</span> <span class="nv">$heading</span> <span class="o">=</span> <span class="s1">&#39;Blog Posts&#39;</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getData</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;datasets&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="s1">&#39;label&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Blog posts created&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;data&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">89</span><span class="p">],</span>
+                <span class="p">],</span>
+            <span class="p">],</span>
+            <span class="s1">&#39;labels&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;Jan&#39;</span><span class="p">,</span> <span class="s1">&#39;Feb&#39;</span><span class="p">,</span> <span class="s1">&#39;Mar&#39;</span><span class="p">,</span> <span class="s1">&#39;Apr&#39;</span><span class="p">,</span> <span class="s1">&#39;May&#39;</span><span class="p">,</span> <span class="s1">&#39;Jun&#39;</span><span class="p">,</span> <span class="s1">&#39;Jul&#39;</span><span class="p">,</span> <span class="s1">&#39;Aug&#39;</span><span class="p">,</span> <span class="s1">&#39;Sep&#39;</span><span class="p">,</span> <span class="s1">&#39;Oct&#39;</span><span class="p">,</span> <span class="s1">&#39;Nov&#39;</span><span class="p">,</span> <span class="s1">&#39;Dec&#39;</span><span class="p">],</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getType</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;line&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now, check out your widget in the dashboard.</p>
+<p><AutoScreenshot name="widgets/chart/line" alt="Line chart" version="4.x" /></p>
+<h2 id="available-chart-types">Available chart types<a class="headerlink" href="#available-chart-types" title="Permanent link">#</a></h2>
+<p>Below is a list of available chart widget classes which you may extend, and their corresponding <a href="https://www.chartjs.org/docs">Chart.js</a> documentation page, for inspiration on what to return from <code>getData()</code>:</p>
+<ul>
+<li>Bar chart - <a href="https://www.chartjs.org/docs/latest/charts/bar">Chart.js documentation</a></li>
+<li>Bubble chart - <a href="https://www.chartjs.org/docs/latest/charts/bubble">Chart.js documentation</a></li>
+<li>Doughnut chart - <a href="https://www.chartjs.org/docs/latest/charts/doughnut">Chart.js documentation</a></li>
+<li>Line chart - <a href="https://www.chartjs.org/docs/latest/charts/line">Chart.js documentation</a></li>
+<li>Pie chart - <a href="https://www.chartjs.org/docs/latest/charts/doughnut.html#pie">Chart.js documentation</a></li>
+<li>Polar area chart - <a href="https://www.chartjs.org/docs/latest/charts/polar">Chart.js documentation</a></li>
+<li>Radar chart - <a href="https://www.chartjs.org/docs/latest/charts/radar">Chart.js documentation</a></li>
+<li>Scatter chart - <a href="https://www.chartjs.org/docs/latest/charts/scatter">Chart.js documentation</a></li>
+</ul>
+<p>For example, you could use a bar chart by returning <code>'bar'</code> from the <code>getType()</code> method:</p>
+<p><AutoScreenshot name="widgets/chart/bar" alt="Bar chart" version="4.x" /></p>
+<p>Here are examples of the other available chart types:</p>
+<p><AutoScreenshot name="widgets/chart/pie" alt="Pie chart" version="4.x" /></p>
+<p><AutoScreenshot name="widgets/chart/doughnut" alt="Doughnut chart" version="4.x" /></p>
+<p><AutoScreenshot name="widgets/chart/radar" alt="Radar chart" version="4.x" /></p>
+<p><AutoScreenshot name="widgets/chart/polar-area" alt="Polar area chart" version="4.x" /></p>
+<p><AutoScreenshot name="widgets/chart/scatter" alt="Scatter chart" version="4.x" /></p>
+<p><AutoScreenshot name="widgets/chart/bubble" alt="Bubble chart" version="4.x" /></p>
+<h2 id="customizing-the-chart-color">Customizing the chart color<a class="headerlink" href="#customizing-the-chart-color" title="Permanent link">#</a></h2>
+<p>You can customize the <a href="../styling/colors">color</a> of the chart data by setting the <code>$color</code> property:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected string $color = &#39;info&#39;;</span>
+</code></pre></div>
+
+<p>If you're looking to customize the color further, or use multiple colors across multiple datasets, you can still make use of Chart.js's <a href="https://www.chartjs.org/docs/latest/general/colors.html">color options</a> in the data:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected function getData(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;datasets&#39; =&gt; [</span>
+<span class="x">            [</span>
+<span class="x">                &#39;label&#39; =&gt; &#39;Blog posts created&#39;,</span>
+<span class="x">                &#39;data&#39; =&gt; [0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89],</span>
+<span class="x">                &#39;backgroundColor&#39; =&gt; &#39;#36A2EB&#39;,</span>
+<span class="x">                &#39;borderColor&#39; =&gt; &#39;#9BD0F5&#39;,</span>
+<span class="x">            ],</span>
+<span class="x">        ],</span>
+<span class="x">        &#39;labels&#39; =&gt; [&#39;Jan&#39;, &#39;Feb&#39;, &#39;Mar&#39;, &#39;Apr&#39;, &#39;May&#39;, &#39;Jun&#39;, &#39;Jul&#39;, &#39;Aug&#39;, &#39;Sep&#39;, &#39;Oct&#39;, &#39;Nov&#39;, &#39;Dec&#39;],</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="generating-chart-data-from-an-eloquent-model">Generating chart data from an Eloquent model<a class="headerlink" href="#generating-chart-data-from-an-eloquent-model" title="Permanent link">#</a></h2>
+<p>To generate chart data from an Eloquent model, Filament recommends that you install the <code>flowframe/laravel-trend</code> package. You can view the <a href="https://github.com/Flowframe/laravel-trend">documentation</a>.</p>
+<p>Here is an example of generating chart data from a model using the <code>laravel-trend</code> package:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Flowframe\Trend\Trend;</span>
+<span class="x">use Flowframe\Trend\TrendValue;</span>
+
+<span class="x">protected function getData(): array</span>
+<span class="x">{</span>
+<span class="x">    $data = Trend::model(BlogPost::class)</span>
+<span class="x">        -&gt;between(</span>
+<span class="x">            start: now()-&gt;startOfYear(),</span>
+<span class="x">            end: now()-&gt;endOfYear(),</span>
+<span class="x">        )</span>
+<span class="x">        -&gt;perMonth()</span>
+<span class="x">        -&gt;count();</span>
+
+<span class="x">    return [</span>
+<span class="x">        &#39;datasets&#39; =&gt; [</span>
+<span class="x">            [</span>
+<span class="x">                &#39;label&#39; =&gt; &#39;Blog posts&#39;,</span>
+<span class="x">                &#39;data&#39; =&gt; $data-&gt;map(fn (TrendValue $value) =&gt; $value-&gt;aggregate),</span>
+<span class="x">            ],</span>
+<span class="x">        ],</span>
+<span class="x">        &#39;labels&#39; =&gt; $data-&gt;map(fn (TrendValue $value) =&gt; $value-&gt;date),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="filtering-chart-data">Filtering chart data<a class="headerlink" href="#filtering-chart-data" title="Permanent link">#</a></h2>
+<h3 id="basic-select-filter">Basic Select filter<a class="headerlink" href="#basic-select-filter" title="Permanent link">#</a></h3>
+<p>You can set up chart filters to change the data that is presented. Commonly, this is used to change the time period that chart data is rendered for.</p>
+<p>To set a default filter value, set the <code>$filter</code> property:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public ?string $filter = &#39;today&#39;;</span>
+</code></pre></div>
+
+<p>Then, define the <code>getFilters()</code> method to return an array of values and labels for your filter:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected function getFilters(): ?array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;today&#39; =&gt; &#39;Today&#39;,</span>
+<span class="x">        &#39;week&#39; =&gt; &#39;Last week&#39;,</span>
+<span class="x">        &#39;month&#39; =&gt; &#39;Last month&#39;,</span>
+<span class="x">        &#39;year&#39; =&gt; &#39;This year&#39;,</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You can use the active filter value within your <code>getData()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected function getData(): array</span>
+<span class="x">{</span>
+<span class="x">    $activeFilter = $this-&gt;filter;</span>
+
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/chart/filter" alt="Chart with filter" version="4.x" /></p>
+<Aside variant="danger">
+    The `$filter` property is user-controllable. Although the `<select>` element only offers the keys returned from `getFilters()`, a crafted request can set `$this->filter` to any string, so it is not limited to those keys. You must ensure the value is valid before using it in a query — for example, by checking it against the keys of `getFilters()`, or by using a `match` expression with a safe default. Never interpolate `$this->filter` directly into a raw query.
+</Aside>
+
+<h3 id="custom-filters">Custom filters<a class="headerlink" href="#custom-filters" title="Permanent link">#</a></h3>
+<p>You can use <a href="../schemas">schema components</a> to build custom filters for your chart widget. This approach offers a more flexible way to define filters.</p>
+<p>To get started, use the <code>HasFiltersSchema</code> trait and implement the <code>filtersSchema()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Forms\Components\DatePicker;</span>
+<span class="x">use Filament\Schemas\Schema;</span>
+<span class="x">use Filament\Widgets\ChartWidget\Concerns\HasFiltersSchema;</span>
+
+<span class="x">class BlogPostsChart extends ChartWidget</span>
+<span class="x">{</span>
+<span class="x">    use HasFiltersSchema;</span>
+
+<span class="x">    // ...</span>
+
+<span class="x">    public function filtersSchema(Schema $schema): Schema</span>
+<span class="x">    {</span>
+<span class="x">        return $schema-&gt;components([</span>
+<span class="x">            DatePicker::make(&#39;startDate&#39;)</span>
+<span class="x">                -&gt;default(now()-&gt;subDays(30)),</span>
+<span class="x">            DatePicker::make(&#39;endDate&#39;)</span>
+<span class="x">                -&gt;default(now()),</span>
+<span class="x">        ]);</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The filter values are accessible via the <code>$this-&gt;filters</code> array. You can use these values inside your <code>getData()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected function getData(): array</span>
+<span class="x">{</span>
+<span class="x">    $startDate = $this-&gt;filters[&#39;startDate&#39;] ?? null;</span>
+<span class="x">    $endDate = $this-&gt;filters[&#39;endDate&#39;] ?? null;</span>
+
+<span class="x">    return [</span>
+<span class="x">        // ...</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The <code>$this-&gt;filters</code> array will always reflect the current form data. Please note that this data is not validated, as it is available live and not intended to be used for anything other than querying the database. You must ensure that the data is valid before using it.</p>
+<p><AutoScreenshot name="widgets/chart/custom-filters" alt="Chart with custom filters" version="4.x" /></p>
+<Aside variant="info">
+    If you want to add filters that apply to multiple widgets at once, see [filtering widget data](overview#filtering-widget-data) in the dashboard.
+</Aside>
+
+<h4 id="deferring-filter-updates">Deferring filter updates<a class="headerlink" href="#deferring-filter-updates" title="Permanent link">#</a></h4>
+<p>By default, filters using the <code>filtersSchema()</code> method update the chart data immediately as they are changed. However, for complex queries or better user experience, you may want to <strong>defer</strong> filter updates until the user clicks an "Apply" button.</p>
+<p>When deferred, filter changes are only applied when the user clicks the "Apply" button. This ensures that the chart only re-renders when the user has finished adjusting all of their filters.</p>
+<p>The chart will display data using the default filter values when the page first loads, ensuring users see meaningful data immediately without needing to take action.</p>
+<p>To enable deferred filters, set the <code>$hasDeferredFilters</code> property to <code>true</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Widgets\ChartWidget\Concerns\HasFiltersSchema;</span>
+
+<span class="x">class BlogPostsChart extends ChartWidget</span>
+<span class="x">{</span>
+<span class="x">    use HasFiltersSchema;</span>
+
+<span class="x">    protected bool $hasDeferredFilters = true;</span>
+
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you need dynamic control over whether filters are deferred, you may override the <code>hasDeferredFilters()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function hasDeferredFilters(): bool</span>
+<span class="x">{</span>
+<span class="x">    return auth()-&gt;user()-&gt;prefersDeferredFilters();</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h4 id="resetting-filters-to-defaults">Resetting filters to defaults<a class="headerlink" href="#resetting-filters-to-defaults" title="Permanent link">#</a></h4>
+<p>When using deferred filters, a "Reset" link appears in the filter dropdown footer alongside the "Apply" button. Clicking this link restores all filters to their default values as defined in the <code>filtersSchema()</code> method. For example, if you set <code>-&gt;default(now()-&gt;subDays(30))</code> on a <code>DatePicker</code>, the reset action will restore that default date, not an empty value.</p>
+<h4 id="customizing-filter-actions">Customizing filter actions<a class="headerlink" href="#customizing-filter-actions" title="Permanent link">#</a></h4>
+<p>You may customize the apply and reset actions that appear when using deferred filters. All methods that are available to <a href="../actions/overview">customize action trigger buttons</a> can be used:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+
+<span class="x">public function filtersApplyAction(Action $action): Action</span>
+<span class="x">{</span>
+<span class="x">    return $action</span>
+<span class="x">        -&gt;label(&#39;Update Chart&#39;)</span>
+<span class="x">        -&gt;color(&#39;success&#39;);</span>
+<span class="x">}</span>
+
+<span class="x">public function filtersResetAction(Action $action): Action</span>
+<span class="x">{</span>
+<span class="x">    return $action</span>
+<span class="x">        -&gt;label(&#39;Clear Filters&#39;)</span>
+<span class="x">        -&gt;color(&#39;danger&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="empty-state">Empty state<a class="headerlink" href="#empty-state" title="Permanent link">#</a></h2>
+<p>When the <code>getData()</code> method returns an empty array, the chart widget renders an "empty state" instead of the chart.</p>
+<p>To customize when the empty state is rendered, override the <code>isEmpty()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function isEmpty(): bool</span>
+<span class="x">{</span>
+<span class="x">    $data = $this-&gt;getCachedData();</span>
+
+<span class="x">    return empty($data[&#39;datasets&#39;][0][&#39;data&#39;] ?? []);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="setting-the-empty-state-heading">Setting the empty state heading<a class="headerlink" href="#setting-the-empty-state-heading" title="Permanent link">#</a></h3>
+<p>To customize the heading of the empty state, set the <code>$emptyStateHeading</code> property:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $emptyStateHeading = &#39;No data available&#39;;</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>getEmptyStateHeading()</code> method to return a dynamic heading:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Contracts\Support\Htmlable;</span>
+
+<span class="x">public function getEmptyStateHeading(): string | Htmlable</span>
+<span class="x">{</span>
+<span class="x">    return &quot;No sales yet for {$this-&gt;filter}&quot;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="setting-the-empty-state-description">Setting the empty state description<a class="headerlink" href="#setting-the-empty-state-description" title="Permanent link">#</a></h3>
+<p>To customize the description of the empty state, set the <code>$emptyStateDescription</code> property:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $emptyStateDescription = &#39;Check back later once data has been collected.&#39;;</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>getEmptyStateDescription()</code> method to return a dynamic description:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Contracts\Support\Htmlable;</span>
+
+<span class="x">public function getEmptyStateDescription(): string | Htmlable | null</span>
+<span class="x">{</span>
+<span class="x">    return &#39;Sales data will appear here once orders are placed.&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="setting-the-empty-state-icon">Setting the empty state icon<a class="headerlink" href="#setting-the-empty-state-icon" title="Permanent link">#</a></h3>
+<p>To customize the <a href="../styling/icons">icon</a> of the empty state, set the <code>$emptyStateIcon</code> property:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Support\Icons\Heroicon;</span>
+
+<span class="x">protected string | BackedEnum | null $emptyStateIcon = Heroicon::OutlinedChartBar;</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>getEmptyStateIcon()</code> method to return a dynamic icon:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use BackedEnum;</span>
+<span class="x">use Filament\Support\Icons\Heroicon;</span>
+<span class="x">use Illuminate\Contracts\Support\Htmlable;</span>
+
+<span class="x">public function getEmptyStateIcon(): string | BackedEnum | Htmlable</span>
+<span class="x">{</span>
+<span class="x">    return Heroicon::OutlinedShoppingCart;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="adding-empty-state-actions">Adding empty state actions<a class="headerlink" href="#adding-empty-state-actions" title="Permanent link">#</a></h3>
+<p>You can add <a href="../actions/overview">actions</a> to the empty state to prompt users to take action by overriding the <code>getEmptyStateActions()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+
+<span class="x">public function getEmptyStateActions(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Action::make(&#39;refresh&#39;)</span>
+<span class="x">            -&gt;label(&#39;Refresh&#39;)</span>
+<span class="x">            -&gt;action(&#39;refresh&#39;),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h3 id="using-a-custom-empty-state-view">Using a custom empty state view<a class="headerlink" href="#using-a-custom-empty-state-view" title="Permanent link">#</a></h3>
+<p>You may use a completely custom empty state view by overriding the <code>getEmptyState()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Contracts\Support\Htmlable;</span>
+<span class="x">use Illuminate\Contracts\View\View;</span>
+
+<span class="x">public function getEmptyState(): View | Htmlable | null</span>
+<span class="x">{</span>
+<span class="x">    return view(&#39;widgets.charts.custom-empty-state&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="live-updating-chart-data-polling">Live updating chart data (polling)<a class="headerlink" href="#live-updating-chart-data-polling" title="Permanent link">#</a></h2>
+<p>By default, chart widgets refresh their data every 5 seconds.</p>
+<p>To customize this, you may override the <code>$pollingInterval</code> property on the class to a new interval:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $pollingInterval = &#39;10s&#39;;</span>
+</code></pre></div>
+
+<p>Alternatively, you may disable polling altogether:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $pollingInterval = null;</span>
+</code></pre></div>
+
+<h2 id="setting-a-maximum-chart-height">Setting a maximum chart height<a class="headerlink" href="#setting-a-maximum-chart-height" title="Permanent link">#</a></h2>
+<p>You may place a maximum height on the chart to ensure that it doesn't get too big, using the <code>$maxHeight</code> property:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?string $maxHeight = &#39;300px&#39;;</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/chart/max-height" alt="Chart with maximum height" version="4.x" /></p>
+<h2 id="setting-chart-configuration-options">Setting chart configuration options<a class="headerlink" href="#setting-chart-configuration-options" title="Permanent link">#</a></h2>
+<p>You may specify an <code>$options</code> variable on the chart class to control the many configuration options that the Chart.js library provides. For instance, you could turn off the <a href="https://www.chartjs.org/docs/latest/configuration/legend.html">legend</a> for a line chart:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected ?array $options = [</span>
+<span class="x">    &#39;plugins&#39; =&gt; [</span>
+<span class="x">        &#39;legend&#39; =&gt; [</span>
+<span class="x">            &#39;display&#39; =&gt; false,</span>
+<span class="x">        ],</span>
+<span class="x">    ],</span>
+<span class="x">];</span>
+</code></pre></div>
+
+<p>Alternatively, you can override the <code>getOptions()</code> method to return a dynamic array of options:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected function getOptions(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;plugins&#39; =&gt; [</span>
+<span class="x">            &#39;legend&#39; =&gt; [</span>
+<span class="x">                &#39;display&#39; =&gt; false,</span>
+<span class="x">            ],</span>
+<span class="x">        ],</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>These PHP arrays will get transformed into JSON objects when the chart is rendered. If you want to return raw JavaScript from this method instead, you can return a <code>RawJs</code> object. This is useful if you want to use a JavaScript callback function, for example:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Support\RawJs;</span>
+
+<span class="x">protected function getOptions(): RawJs</span>
+<span class="x">{</span>
+<span class="x">    return RawJs::make(&lt;&lt;&lt;JS</span>
+<span class="x">        {</span>
+<span class="x">            scales: {</span>
+<span class="x">                y: {</span>
+<span class="x">                    ticks: {</span>
+<span class="x">                        callback: (value) =&gt; &#39;€&#39; + value,</span>
+<span class="x">                    },</span>
+<span class="x">                },</span>
+<span class="x">            },</span>
+<span class="x">        }</span>
+<span class="x">    JS);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<h2 id="adding-a-description">Adding a description<a class="headerlink" href="#adding-a-description" title="Permanent link">#</a></h2>
+<p>You may add a description, below the heading of the chart, using the <code>getDescription()</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function getDescription(): ?string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;The number of blog posts published per month.&#39;;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/chart/description" alt="Chart with description" version="4.x" /></p>
+<h2 id="disabling-lazy-loading">Disabling lazy loading<a class="headerlink" href="#disabling-lazy-loading" title="Permanent link">#</a></h2>
+<p>By default, widgets are lazy-loaded. This means that they will only be loaded when they are visible on the page.</p>
+<p>To disable this behavior, you may override the <code>$isLazy</code> property on the widget class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected static bool $isLazy = false;</span>
+</code></pre></div>
+
+<h2 id="making-the-chart-collapsible">Making the chart collapsible<a class="headerlink" href="#making-the-chart-collapsible" title="Permanent link">#</a></h2>
+<p>You may allow the chart to be collapsible by setting the <code>$isCollapsible</code> property on the widget class to be <code>true</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">protected bool $isCollapsible = true;</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="widgets/chart/collapsible" alt="Collapsible chart" version="4.x" /></p>
+<h2 id="using-custom-chartjs-plugins">Using custom Chart.js plugins<a class="headerlink" href="#using-custom-chartjs-plugins" title="Permanent link">#</a></h2>
+<p>Chart.js offers a powerful plugin system that allows you to extend its functionality and create custom chart behaviors. This guide details how to use them in a chart widget.</p>
+<h3 id="step-1-install-the-plugin-with-npm">Step 1: Install the plugin with NPM<a class="headerlink" href="#step-1-install-the-plugin-with-npm" title="Permanent link">#</a></h3>
+<p>To start with, install the plugin using NPM into your project. In this guide, we will install <a href="https://chartjs-plugin-datalabels.netlify.app/guide/getting-started.html#installation"><code>chartjs-plugin-datalabels</code></a>:</p>
+<div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>chartjs-plugin-datalabels<span class="w"> </span>--save-dev
+</code></pre></div>
+
+<h3 id="step-2-create-a-javascript-file-importing-the-plugin">Step 2: Create a JavaScript file importing the plugin<a class="headerlink" href="#step-2-create-a-javascript-file-importing-the-plugin" title="Permanent link">#</a></h3>
+<p>Create a new JavaScript file where you will define your custom plugin. In this guide, we'll call it <code>filament-chart-js-plugins.js</code>. Import the plugin, and add it to the <code>window.filamentChartJsPlugins</code> array:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">ChartDataLabels</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;chartjs-plugin-datalabels&#39;</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nx">filamentChartJsPlugins</span><span class="w"> </span><span class="o">??=</span><span class="w"> </span><span class="p">[]</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">filamentChartJsPlugins</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">ChartDataLabels</span><span class="p">)</span>
+</code></pre></div>
+
+<p>This is equivalent to including the plugins "inline" via <code>new Chart(..., { plugins: [...] })</code> when instantiating a Chart.js chart.</p>
+<p>It's important to initialise the array if it has not been already, before pushing onto it. This ensures that multiple JavaScript files (especially those from Filament plugins) that register Chart.js plugins do not overwrite each other, regardless of the order they are booted in.</p>
+<p>You can push as many plugins to the array as you would like to install, you do not need a separate file to import each plugin.</p>
+<p>Additionally, you can also register any "global plugins" which will use <code>Chart.register([...])</code> in the <code>window.filamentChartJsGlobalPlugins</code> array:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">ChartDataLabels</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;chartjs-plugin-datalabels&#39;</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nx">filamentChartJsGlobalPlugins</span><span class="w"> </span><span class="o">??=</span><span class="w"> </span><span class="p">[]</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">filamentChartJsGlobalPlugins</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">ChartDataLabels</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="step-3-compile-the-javascript-file-with-vite">Step 3: Compile the JavaScript file with Vite<a class="headerlink" href="#step-3-compile-the-javascript-file-with-vite" title="Permanent link">#</a></h3>
+<p>Now, you need to build the JavaScript file with Vite, or your bundler of choice. Include the file in your Vite configuration (usually <code>vite.config.js</code>). For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">defineConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;vite&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">laravel</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;laravel-vite-plugin&#39;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">defineConfig</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">plugins</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="nx">laravel</span><span class="p">({</span>
+<span class="w">            </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s1">&#39;resources/css/app.css&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="s1">&#39;resources/js/app.js&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="s1">&#39;resources/css/filament/admin/theme.css&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="s1">&#39;resources/js/filament-chart-js-plugins.js&#39;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Include the new file in the `input` array so it is built</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">        </span><span class="p">}),</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>Build the file with <code>npm run build</code>.</p>
+<h3 id="step-4-register-the-javascript-file-in-filament">Step 4: Register the JavaScript file in Filament<a class="headerlink" href="#step-4-register-the-javascript-file-in-filament" title="Permanent link">#</a></h3>
+<p>Filament needs to know to include this JavaScript file when rendering chart widgets. You can do this in the <code>boot()</code> method of a service provider like <code>AppServiceProvider</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Support\Assets\Js;</span>
+<span class="x">use Filament\Support\Facades\FilamentAsset;</span>
+<span class="x">use Illuminate\Support\Facades\Vite;</span>
+
+<span class="x">FilamentAsset::register([</span>
+<span class="x">    Js::make(&#39;chart-js-plugins&#39;, Vite::asset(&#39;resources/js/filament-chart-js-plugins.js&#39;))-&gt;module(),</span>
+<span class="x">]);</span>
+</code></pre></div>
+
+<p>You can find out more about <a href="../advanced/assets">asset registration</a>, and even <a href="../panel-configuration#registering-assets-for-a-panel">register assets for a specific panel</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../widgets/stats-overview.html">
+          <span class="muted">Anterior</span>Stats overview widgets
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

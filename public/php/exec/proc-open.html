@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>proc_open · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Exec
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../exec/escapeshellarg.html"
+>escapeshellarg</a>
+              </li>
+              <li>
+                <a href="../exec/escapeshellcmd.html"
+>escapeshellcmd</a>
+              </li>
+              <li>
+                <a href="../exec/exec.html"
+>exec</a>
+              </li>
+              <li>
+                <a href="../exec/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../exec/passthru.html"
+>passthru</a>
+              </li>
+              <li>
+                <a href="../exec/proc-close.html"
+>proc_close</a>
+              </li>
+              <li>
+                <a href="../exec/proc-get-status.html"
+>proc_get_status</a>
+              </li>
+              <li>
+                <a href="../exec/proc-nice.html"
+>proc_nice</a>
+              </li>
+              <li>
+                <a href="../exec/proc-open.html"
+class="is-current" aria-current="page">proc_open</a>
+              </li>
+              <li>
+                <a href="../exec/proc-terminate.html"
+>proc_terminate</a>
+              </li>
+              <li>
+                <a href="../exec/shell-exec.html"
+>shell_exec</a>
+              </li>
+              <li>
+                <a href="../exec/system.html"
+>system</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">proc_open</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/function.proc-open.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#descripcion">Descripción#</a></li>
+              <li class="lvl-2"><a href="#notas">Notas#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>proc_open</p>
+<p>Ejecuta un comando y abre los punteros de ficheros para las entradas / salidas</p>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="x">proc_open(array $command, array $descriptor_spec, array $pipes, [string $cwd], [array $env_vars], [array $options]): resource</span>
+<span class="x">```php</span>
+
+<span class="x">`proc_open` es similar a `popen` pero proporciona un mayor grado de control sobre la ejecución del programa.</span>
+
+<span class="x">## Parámetros</span>
+
+<span class="x">`command`  </span>
+<span class="x">El comando a ejecutar como `string`. Los caracteres especiales deben ser escapados correctamente, y una aplicación correcta de las comillas debe ser aplicada.</span>
+
+<span class="x">&gt; [!NOTE]</span>
+<span class="x">&gt; En *Windows*, a menos que `bypass_shell` esté definida a `true` en `options`, `command` es pasado a `cmd.exe` (en realidad, `%ComSpec%`) con el flag `/c` como un `string` *sin comillas* (es decir, exactamente como fue proporcionado a `proc_open`). Esto puede causar `cmd.exe` para eliminar las comillas que rodean `command` (para más detalles ver la documentación de `cmd.exe`), resultando en un comportamiento inesperado, y potencialmente peligroso, ya que los mensajes de error de `cmd.exe` pueden contener (una parte de) la `command` pasada (ver ejemplo a continuación).</span>
+
+<span class="x">A partir de PHP 7.4.0, `command` puede ser pasado como un `array` de argumentos de comandos. En este caso el proceso será abierto directamente (sin pasar por un shell) y PHP se encargará de escapar los argumentos necesarios.</span>
+
+<span class="x">&gt; [!NOTE]</span>
+<span class="x">&gt; En Windows, el escape de los argumentos de los elementos del `array` asume que el procesamiento de la línea de comandos del comando ejecutado es compatible con el procesamiento de argumentos de línea de comandos realizado por el runtime VC.</span>
+
+<span class="x">`descriptor_spec`  </span>
+<span class="x">Un array indexado, donde las claves representan el número de descriptor y el valor el método con el cual PHP pasará este descriptor al proceso hijo. 0 es stdin, 1 es stdout, y 2 es stderr.</span>
+
+<span class="x">Cada elemento puede ser: Un array que describe el pipe a pasar al proceso. El primer elemento es el tipo del descriptor y los elementos siguientes son opciones para el tipo dado. Los tipos válidos son `pipe` (el segundo elemento es `r` para pasar el extremo de lectura del pipe al proceso, o `w` para pasar el extremo de escritura) y `file` (el segundo elemento es el nombre de fichero, y el tercer elemento es el modo de apertura del fichero, igual que `fopen`). Se debe notar que cualquier otro elemento diferente de `w` es tratado como `r`., Un recurso de flujo que representa un descriptor de fichero (por ejemplo, un fichero abierto, un socket, o bien `STDIN`).</span>
+
+<span class="x">Los números de punteros de ficheros no están limitados a 0, 1 y 2 - se puede especificar cualquier número de descriptor válido, y será pasado al proceso hijo. Esto permitirá que su script interactúe con otros scripts, y que sea ejecutado como &quot;co-proceso&quot;. En particular, es muy práctico para pasar contraseñas a programas como PGP, GPG y openssl, con un método muy protegido. También es práctico para leer información de estado proporcionada por estos programas, en descriptores auxiliares.</span>
+
+<span class="x">`pipes`  </span>
+<span class="x">Debe ser definido como un array indexado de punteros de ficheros que corresponden al extremo de cualquier descriptor PHP que sean creados.</span>
+
+<span class="x">`cwd`  </span>
+<span class="x">El directorio inicial de trabajo del comando. Esto debe ser una ruta **absoluta** al directorio o `null` si se quiere utilizar el valor por omisión (el directorio de trabajo del proceso PHP actual)</span>
+
+<span class="x">`env_vars`  </span>
+<span class="x">Un array que contiene las variables de entorno para el comando que debe ser ejecutado, o `null` para utilizar el mismo entorno que el proceso PHP actual</span>
+
+<span class="x">`options`  </span>
+<span class="x">Permite especificar opciones adicionales. Las opciones actualmente soportadas son: `suppress_errors` (solo Windows): supresión de errores generados por esta función cuando está definida a `true`, `bypass_shell` (solo Windows): omisión del shell `cmd.exe` cuando está definida a `true`, `blocking_pipes` (solo Windows): fuerza los pipes bloqueantes cuando está definida a `true`, `create_process_group` (solo Windows): permite al proceso hijo manejar los eventos `CTRL` cuando está a `true`, `create_new_console` (solo Windows): el nuevo proceso tiene una nueva consola, en lugar de heredar la consola de su padre.</span>
+
+<span class="x">## Valores devueltos</span>
+
+<span class="x">Retorna un recurso que representa el proceso, que podrá ser utilizado por la función `proc_close` cuando ya no sea necesario. En caso de fallo, `false` será retornado.</span>
+
+<span class="x">## Errores/Excepciones</span>
+
+<span class="x">A partir de PHP 8.3.0, se lanza una excepción ValueError si `command` es un array sin al menos un elemento no vacío.</span>
+
+<span class="x">## Historial de cambios</span>
+
+<span class="x">| Versión | Descripción |</span>
+<span class="x">|----|----|</span>
+<span class="x">| 8.3.0 | Se lanzará una excepción ValueError si `command` es un array sin al menos un elemento no vacío. |</span>
+<span class="x">| 7.4.4 | Se añadió la opción `create_new_console` al parámetro `options`. |</span>
+<span class="x">| 7.4.0 | `proc_open` ahora acepta un `array` para `command`. |</span>
+<span class="x">| 7.4.0 | Se añadió la opción `create_process_group` al parámetro `options`. |</span>
+
+<span class="x">## Ejemplos</span>
+
+<span class="x">Ejemplo con `proc_open`</span>
+</code></pre></div>
+
+<?php
+$descriptorspec = array(
+   0 => array("pipe", "r"),  // stdin es un pipe donde el proceso leerá
+   1 => array("pipe", "w"),  // stdout es un pipe donde el proceso escribirá
+   2 => array("file", "/tmp/error-output.txt", "a") // stderr es un fichero
+);
+
+$cwd = '/tmp';
+$env = array('some_option' => 'aeiou');
+
+$process = proc_open('php', $descriptorspec, $pipes, $cwd, $env);
+
+if (is_resource($process)) {
+    // $pipes se parece a:
+    // 0 => fichero accesible en escritura, conectado a la entrada estándar del proceso hijo
+    // 1 => fichero accesible en lectura, conectado a la salida estándar del proceso hijo
+    // Cualquier error será añadido al fichero /tmp/error-output.txt
+
+    fwrite($pipes[0], '<?php print_r($_ENV); ?>
+<p>');
+    fclose($pipes[0]);</p>
+<div class="codehilite"><pre><span></span><code>echo stream_get_contents($pipes[1]);
+fclose($pipes[1]);
+
+// Es importante que cierre los pipes antes de llamar
+// a proc_close para evitar un bloqueo.
+$return_value = proc_close($process);
+
+echo &quot;El comando retornó $return_value\n&quot;;
+</code></pre></div>
+
+<p>}
+?&gt;</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Resultado del ejemplo anterior es similar a:</span>
+
+<span class="x">    Array</span>
+<span class="x">    (</span>
+<span class="x">        [some_option] =&gt; aeiou</span>
+<span class="x">        [PWD] =&gt; /tmp</span>
+<span class="x">        [SHLVL] =&gt; 1</span>
+<span class="x">        [_] =&gt; /usr/local/bin/php</span>
+<span class="x">    )</span>
+<span class="x">    El comando retornó 0</span>
+
+<span class="x">Comportamiento extraño de `proc_open` en Windows</span>
+
+<span class="x">Aunque se podría esperar que el siguiente programa busque el fichero `filename.txt` para el texto `search` y muestre los resultados, se comporta de manera diferente.</span>
+</code></pre></div>
+
+<?php
+$descriptorspec = [STDIN, STDOUT, STDOUT];
+$cmd = '"findstr" "search" "filename.txt"';
+$proc = proc_open($cmd, $descriptorspec, $pipes);
+proc_close($proc);
+?>
+
+<div class="codehilite"><pre><span></span><code><span class="x">El ejemplo anterior mostrará:</span>
+
+<span class="x">    &#39;findstr&quot; &quot;search&quot; &quot;filename.txt&#39; no se reconoce como un comando interno o externo,</span>
+<span class="x">    programa ejecutable o archivo por lotes.</span>
+
+
+
+<span class="x">Para evitar este comportamiento, generalmente es suficiente rodear `command` con comillas adicionales:</span>
+</code></pre></div>
+
+<p>$cmd = '""findstr" "search" "filename.txt""';</p>
+<p>```php</p>
+<h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">#</a></h2>
+<blockquote>
+<p>[!NOTE]
+Compatibilidad Windows: los descriptores más allá de 2 (stderr) son accesibles al proceso hijo, en forma de punteros heredados, pero como la arquitectura Windows no asocia números a los descriptores de bajo nivel, el proceso hijo no tiene, actualmente, ningún medio para acceder a ellos. Por otro lado, stdin, stdout y stderr funcionan como de costumbre.</p>
+<p>[!NOTE]
+Si solo se necesita un proceso unidireccional, <code>popen</code> será más práctico, ya que es más sencillo de utilizar.</p>
+</blockquote>
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p><code>popen</code>, <code>exec</code>, <code>system</code>, <code>passthru</code>, <code>stream_select</code>, <a href="#language.operators.execution">Las comillas invertidas</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../exec/proc-nice.html">
+          <span class="muted">Anterior</span>proc_nice
+        </a>
+        <a class="pager-next" href="../exec/proc-terminate.html">
+          <span class="muted">Siguiente</span>proc_terminate
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

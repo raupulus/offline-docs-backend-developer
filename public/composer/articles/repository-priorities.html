@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repository priorities · Composer</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Composer</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="composer" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Composer…"
+         aria-label="Buscar en Composer" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Composer
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Composer">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Articles
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../articles/aliases.html"
+>Aliases</a>
+              </li>
+              <li>
+                <a href="../articles/authentication-for-private-packages.html"
+>Authentication for privately hosted packages and repositories</a>
+              </li>
+              <li>
+                <a href="../articles/autoloader-optimization.html"
+>Autoloader optimization</a>
+              </li>
+              <li>
+                <a href="../articles/composer-platform-dependencies.html"
+>Composer platform dependencies</a>
+              </li>
+              <li>
+                <a href="../articles/custom-installers.html"
+>Setting up and using custom installers</a>
+              </li>
+              <li>
+                <a href="../articles/handling-private-packages.html"
+>Handling private packages</a>
+              </li>
+              <li>
+                <a href="../articles/plugins.html"
+>Setting up and using plugins</a>
+              </li>
+              <li>
+                <a href="../articles/repository-priorities.html"
+class="is-current" aria-current="page">Repository priorities</a>
+              </li>
+              <li>
+                <a href="../articles/resolving-merge-conflicts.html"
+>Resolving merge conflicts</a>
+              </li>
+              <li>
+                <a href="../articles/scripts.html"
+>Scripts</a>
+              </li>
+              <li>
+                <a href="../articles/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../articles/vendor-binaries.html"
+>Vendor binaries and the vendor/bin directory</a>
+              </li>
+              <li>
+                <a href="../articles/versions.html"
+>Versions and constraints</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../dev/defaultpolicy.html">Dev</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faqs/how-do-i-install-a-package-to-a-custom-path-for-my-framework.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../fixtures/fixtures.html">Fixtures</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../intro.html">Composer</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Repository priorities</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://getcomposer.org/doc/" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#canonical-repositories">Canonical repositories#</a></li>
+              <li class="lvl-2"><a href="#default-behavior">Default behavior#</a></li>
+              <li class="lvl-2"><a href="#making-repositories-non-canonical">Making repositories non-canonical#</a></li>
+              <li class="lvl-2"><a href="#filtering-packages">Filtering packages#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!--
+    tagline: Configure which packages are found in which repositories
+-->
+
+<h1 id="repository-priorities">Repository priorities<a class="headerlink" href="#repository-priorities" title="Permanent link">#</a></h1>
+<h2 id="canonical-repositories">Canonical repositories<a class="headerlink" href="#canonical-repositories" title="Permanent link">#</a></h2>
+<p>When Composer resolves dependencies, it will look up a given package in the
+topmost repository. If that repository does not contain the package, it
+goes on to the next one, until one repository contains it and the process ends.</p>
+<p>Canonical repositories are better for a few reasons:</p>
+<ul>
+<li>Performance wise, it is more efficient to stop looking for a package once it
+  has been found somewhere. It also avoids loading duplicate packages in case
+  the same package is present in several of your repositories.</li>
+<li>Security wise, it is safer to treat them canonically as it means that packages you
+  expect to come from your most important repositories will never be loaded from
+  another repository instead. Let's
+  say you have a private repository which is not canonical, and you require your
+  private package <code>foo/bar ^2.0</code> for example. Now if someone publishes
+  <code>foo/bar 2.999</code> to packagist.org, suddenly Composer will pick that package as it
+  has a higher version than your latest release (say 2.4.3), and you end up installing
+  something you may not have meant to. However, if the private repository is canonical,
+  that 2.999 version from packagist.org will not be considered at all.</li>
+</ul>
+<p>There are however a few cases where you may want to specifically load some packages
+from a given repository, but not all. Or you may want a given repository to not be
+canonical, and to be only preferred if it has higher package versions than the
+repositories defined below.</p>
+<h2 id="default-behavior">Default behavior<a class="headerlink" href="#default-behavior" title="Permanent link">#</a></h2>
+<p>By default in Composer 2.x all repositories are canonical. Composer 1.x treated
+all repositories as non-canonical.</p>
+<p>Another default is that the packagist.org repository is always added implicitly
+as the last repository, unless you <a href="../repositories.html#disabling-packagist-org">disable it</a>.</p>
+<h2 id="making-repositories-non-canonical">Making repositories non-canonical<a class="headerlink" href="#making-repositories-non-canonical" title="Permanent link">#</a></h2>
+<p>You can add the canonical option to any repository to disable this default behavior
+and make sure Composer keeps looking in other repositories, even if that repository
+contains a given package.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;repositories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;canonical&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="filtering-packages">Filtering packages<a class="headerlink" href="#filtering-packages" title="Permanent link">#</a></h2>
+<p>You can also filter packages which a repository will be able to load, either by
+selecting which ones you want, or by excluding those you do not want.</p>
+<p>For example here we want to pick only the package <code>foo/bar</code> and all the packages from
+<code>some-vendor/</code> from this Composer repository.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;repositories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;only&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;foo/bar&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;some-vendor/*&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>And in this other example we exclude <code>toy/package</code> from a repository, which
+we may not want to load in this project.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;repositories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;composer&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;exclude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;toy/package&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Both <code>only</code> and <code>exclude</code> should be arrays of package names, which can also
+contain wildcards (<code>*</code>), which will match any character.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../articles/plugins.html">
+          <span class="muted">Anterior</span>Setting up and using plugins
+        </a>
+        <a class="pager-next" href="../articles/resolving-merge-conflicts.html">
+          <span class="muted">Siguiente</span>Resolving merge conflicts
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

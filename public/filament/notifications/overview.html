@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview · Filament</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Filament</a>
+<span class="badge">4.x</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="filament" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Filament…"
+         aria-label="Buscar en Filament" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Filament
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Filament">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../actions/overview.html">Actions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../forms/overview.html">Forms</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../infolists/overview.html">Infolists</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Notifications
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../notifications/overview.html"
+class="is-current" aria-current="page">Overview</a>
+              </li>
+              <li>
+                <a href="../notifications/database-notifications.html"
+>Database notifications</a>
+              </li>
+              <li>
+                <a href="../notifications/broadcast-notifications.html"
+>Broadcast notifications</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../schemas/overview.html">Schemas</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tables/overview.html">Tables</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../widgets/overview.html">Widgets</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Overview</h1>
+
+      <p class="doc-meta">
+<span class="badge">4.x</span>          <a href="https://filamentphp.com/docs" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#setting-a-title">Setting a title#</a></li>
+              <li class="lvl-2"><a href="#setting-an-icon">Setting an icon#</a></li>
+              <li class="lvl-2"><a href="#setting-a-background-color">Setting a background color#</a></li>
+              <li class="lvl-2"><a href="#setting-a-duration">Setting a duration#</a></li>
+              <li class="lvl-2"><a href="#setting-body-text">Setting body text#</a></li>
+              <li class="lvl-2"><a href="#adding-actions-to-notifications">Adding actions to notifications#</a></li>
+              <li class="lvl-3"><a href="#opening-urls-from-notification-actions">Opening URLs from notification actions#</a></li>
+              <li class="lvl-3"><a href="#dispatching-livewire-events-from-notification-actions">Dispatching Livewire events from notification actions#</a></li>
+              <li class="lvl-3"><a href="#closing-notifications-from-actions">Closing notifications from actions#</a></li>
+              <li class="lvl-2"><a href="#using-the-javascript-objects">Using the JavaScript objects#</a></li>
+              <li class="lvl-2"><a href="#closing-a-notification-with-javascript">Closing a notification with JavaScript#</a></li>
+              <li class="lvl-2"><a href="#positioning-notifications">Positioning notifications#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>import Aside from "@components/Aside.astro"
+import AutoScreenshot from "@components/AutoScreenshot.astro"</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>Notifications are sent using a <code>Notification</code> object that's constructed through a fluent API. Calling the <code>send()</code> method on the <code>Notification</code> object will dispatch the notification and display it in your application. As the session is used to flash notifications, they can be sent from anywhere in your code, including JavaScript, not just Livewire components.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Livewire</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Filament\Notifications\Notification</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Livewire\Component</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">EditPost</span> <span class="k">extends</span> <span class="nx">Component</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">save</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+
+        <span class="nx">Notification</span><span class="o">::</span><span class="na">make</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">success</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="notifications/success" alt="Success notification" version="4.x" /></p>
+<h2 id="setting-a-title">Setting a title<a class="headerlink" href="#setting-a-title" title="Permanent link">#</a></h2>
+<p>The main message of the notification is shown in the title. You can set the title as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>The title text can contain basic, safe HTML elements. To generate safe HTML with Markdown, you can use the <a href="https://laravel.com/docs/strings#method-str-markdown"><code>Str::markdown()</code> helper</a>: <code>title(Str::markdown('Saved **successfully**'))</code></p>
+<Aside variant="danger">
+    Filament's built-in HTML sanitizer permits inline `style` attributes in order to support rich text formatting features such as font colors, text highlighting, and image sizing. This means that CSS properties like `background: url(...)` or `position: fixed` will not be stripped from sanitized HTML. If your content comes from untrusted users, you should consider restricting the default configuration. See the [security documentation](../advanced/security#customizing-the-sanitizer) for details on how to customize the sanitizer.
+</Aside>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<h2 id="setting-an-icon">Setting an icon<a class="headerlink" href="#setting-an-icon" title="Permanent link">#</a></h2>
+<p>Optionally, a notification can have an <a href="../styling/icons">icon</a> that's displayed in front of its content. You may also set a color for the icon, which is gray by default:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;icon(&#39;heroicon-o-document-text&#39;)</span>
+<span class="x">    -&gt;iconColor(&#39;success&#39;)</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">icon</span><span class="p">(</span><span class="s1">&#39;heroicon-o-document-text&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">iconColor</span><span class="p">(</span><span class="s1">&#39;success&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="notifications/icon" alt="Notification with icon" version="4.x" /></p>
+<p>Notifications often have a status like <code>success</code>, <code>warning</code>, <code>danger</code> or <code>info</code>. Instead of manually setting the corresponding <a href="../styling/icons">icons</a> and <a href="../styling/colors">colors</a>, there's a <code>status()</code> method which you can pass the status. You may also use the dedicated <code>success()</code>, <code>warning()</code>, <code>danger()</code> and <code>info()</code> methods instead. So, cleaning up the above example would look like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="notifications/statuses" alt="Notifications with various statuses" version="4.x" /></p>
+<h2 id="setting-a-background-color">Setting a background color<a class="headerlink" href="#setting-a-background-color" title="Permanent link">#</a></h2>
+<p>Notifications have no background color by default. You may want to provide additional context to your notification by setting a color as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;color(&#39;success&#39;)</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">&#39;success&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="notifications/color" alt="Notification with background color" version="4.x" /></p>
+<h2 id="setting-a-duration">Setting a duration<a class="headerlink" href="#setting-a-duration" title="Permanent link">#</a></h2>
+<p>By default, notifications are shown for 6 seconds before they're automatically closed. You may specify a custom duration value in milliseconds as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;duration(5000)</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mf">5000</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p>If you prefer setting a duration in seconds instead of milliseconds, you can do so:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;seconds(5)</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">seconds</span><span class="p">(</span><span class="mf">5</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p>You might want some notifications to not automatically close and require the user to close them manually. This can be achieved by making the notification persistent:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;persistent()</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">persistent</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<h2 id="setting-body-text">Setting body text<a class="headerlink" href="#setting-body-text" title="Permanent link">#</a></h2>
+<p>Additional notification text can be shown in the <code>body()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;body(&#39;Changes to the post have been saved.&#39;)</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>The body text can contain basic, safe HTML elements. To generate safe HTML with Markdown, you can use the <a href="https://laravel.com/docs/strings#method-str-markdown"><code>Str::markdown()</code> helper</a>: <code>body(Str::markdown('Changes to the **post** have been saved.'))</code></p>
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">body</span><span class="p">(</span><span class="s1">&#39;Changes to the post have been saved.&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="notifications/body" alt="Notification with body text" version="4.x" /></p>
+<h2 id="adding-actions-to-notifications">Adding actions to notifications<a class="headerlink" href="#adding-actions-to-notifications" title="Permanent link">#</a></h2>
+<p>Notifications support <a href="../actions/overview">Actions</a>, which are buttons that render below the content of the notification. They can open a URL or dispatch a Livewire event. Actions can be defined as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+<span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;body(&#39;Changes to the post have been saved.&#39;)</span>
+<span class="x">    -&gt;actions([</span>
+<span class="x">        Action::make(&#39;view&#39;)</span>
+<span class="x">            -&gt;button(),</span>
+<span class="x">        Action::make(&#39;undo&#39;)</span>
+<span class="x">            -&gt;color(&#39;gray&#39;),</span>
+<span class="x">    ])</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">body</span><span class="p">(</span><span class="s1">&#39;Changes to the post have been saved.&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">actions</span><span class="p">([</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;view&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">button</span><span class="p">(),</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="notifications/actions" alt="Notification with actions" version="4.x" /></p>
+<p>You can learn more about how to style action buttons <a href="../actions/overview">here</a>.</p>
+<h3 id="opening-urls-from-notification-actions">Opening URLs from notification actions<a class="headerlink" href="#opening-urls-from-notification-actions" title="Permanent link">#</a></h3>
+<p>You can open a URL, optionally in a new tab, when clicking on an action:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+<span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;body(&#39;Changes to the post have been saved.&#39;)</span>
+<span class="x">    -&gt;actions([</span>
+<span class="x">        Action::make(&#39;view&#39;)</span>
+<span class="x">            -&gt;button()</span>
+<span class="x">            -&gt;url(route(&#39;posts.show&#39;, $post), shouldOpenInNewTab: true),</span>
+<span class="x">        Action::make(&#39;undo&#39;)</span>
+<span class="x">            -&gt;color(&#39;gray&#39;),</span>
+<span class="x">    ])</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">body</span><span class="p">(</span><span class="s1">&#39;Changes to the post have been saved.&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">actions</span><span class="p">([</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;view&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">button</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/view&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">openUrlInNewTab</span><span class="p">(),</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<Aside variant="danger">
+    If you are passing user-controlled data to the `url()` method, you should validate that the URL does not use a dangerous scheme such as `javascript:` or `data:`. Failing to do so could expose your application to XSS attacks. The simplest way to guard against this is to wrap the value in Filament's [`Str::sanitizeUrl()`](../advanced/security#validating-user-input) helper, which returns `null` for any URL that does not use `http`/`https` (or a relative path).
+</Aside>
+
+<h3 id="dispatching-livewire-events-from-notification-actions">Dispatching Livewire events from notification actions<a class="headerlink" href="#dispatching-livewire-events-from-notification-actions" title="Permanent link">#</a></h3>
+<p>Sometimes you want to execute additional code when a notification action is clicked. This can be achieved by setting a Livewire event which should be dispatched on clicking the action. You may optionally pass an array of data, which will be available as parameters in the event listener on your Livewire component:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+<span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;body(&#39;Changes to the post have been saved.&#39;)</span>
+<span class="x">    -&gt;actions([</span>
+<span class="x">        Action::make(&#39;view&#39;)</span>
+<span class="x">            -&gt;button()</span>
+<span class="x">            -&gt;url(route(&#39;posts.show&#39;, $post), shouldOpenInNewTab: true),</span>
+<span class="x">        Action::make(&#39;undo&#39;)</span>
+<span class="x">            -&gt;color(&#39;gray&#39;)</span>
+<span class="x">            -&gt;dispatch(&#39;undoEditingPost&#39;, [$post-&gt;id]),</span>
+<span class="x">    ])</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>You can also <code>dispatchSelf</code> and <code>dispatchTo</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Action::make(&#39;undo&#39;)</span>
+<span class="x">    -&gt;color(&#39;gray&#39;)</span>
+<span class="x">    -&gt;dispatchSelf(&#39;undoEditingPost&#39;, [$post-&gt;id])</span>
+
+<span class="x">Action::make(&#39;undo&#39;)</span>
+<span class="x">    -&gt;color(&#39;gray&#39;)</span>
+<span class="x">    -&gt;dispatchTo(&#39;another_component&#39;, &#39;undoEditingPost&#39;, [$post-&gt;id])</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">body</span><span class="p">(</span><span class="s1">&#39;Changes to the post have been saved.&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">actions</span><span class="p">([</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;view&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">button</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/view&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">openUrlInNewTab</span><span class="p">(),</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">&#39;undoEditingPost&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">])</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Similarly, <code>dispatchSelf</code> and <code>dispatchTo</code> are also available:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">dispatchSelf</span><span class="p">(</span><span class="s1">&#39;undoEditingPost&#39;</span><span class="p">)</span>
+
+<span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">dispatchTo</span><span class="p">(</span><span class="s1">&#39;another_component&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;undoEditingPost&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="closing-notifications-from-actions">Closing notifications from actions<a class="headerlink" href="#closing-notifications-from-actions" title="Permanent link">#</a></h3>
+<p>After opening a URL or dispatching an event from your action, you may want to close the notification right away:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Actions\Action;</span>
+<span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Saved successfully&#39;)</span>
+<span class="x">    -&gt;success()</span>
+<span class="x">    -&gt;body(&#39;Changes to the post have been saved.&#39;)</span>
+<span class="x">    -&gt;actions([</span>
+<span class="x">        Action::make(&#39;view&#39;)</span>
+<span class="x">            -&gt;button()</span>
+<span class="x">            -&gt;url(route(&#39;posts.show&#39;, $post), shouldOpenInNewTab: true),</span>
+<span class="x">        Action::make(&#39;undo&#39;)</span>
+<span class="x">            -&gt;color(&#39;gray&#39;)</span>
+<span class="x">            -&gt;dispatch(&#39;undoEditingPost&#39;, [$post-&gt;id])</span>
+<span class="x">            -&gt;close(),</span>
+<span class="x">    ])</span>
+<span class="x">    -&gt;send();</span>
+</code></pre></div>
+
+<p>Or with JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotification</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">title</span><span class="p">(</span><span class="s1">&#39;Saved successfully&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">success</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">body</span><span class="p">(</span><span class="s1">&#39;Changes to the post have been saved.&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">actions</span><span class="p">([</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;view&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">button</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/view&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">openUrlInNewTab</span><span class="p">(),</span>
+<span class="w">        </span><span class="ow">new</span><span class="w"> </span><span class="nx">FilamentNotificationAction</span><span class="p">(</span><span class="s1">&#39;undo&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">&#39;undoEditingPost&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nx">close</span><span class="p">(),</span>
+<span class="w">    </span><span class="p">])</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">send</span><span class="p">()</span>
+</code></pre></div>
+
+<h2 id="using-the-javascript-objects">Using the JavaScript objects<a class="headerlink" href="#using-the-javascript-objects" title="Permanent link">#</a></h2>
+<p>The JavaScript objects (<code>FilamentNotification</code> and <code>FilamentNotificationAction</code>) are assigned to <code>window.FilamentNotification</code> and <code>window.FilamentNotificationAction</code>, so they are available in on-page scripts.</p>
+<p>You may also import them in a bundled JavaScript file:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Notification</span><span class="p">,</span><span class="w"> </span><span class="nx">NotificationAction</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../../vendor/filament/notifications/dist/index.js&#39;</span>
+
+<span class="c1">// ...</span>
+</code></pre></div>
+
+<h2 id="closing-a-notification-with-javascript">Closing a notification with JavaScript<a class="headerlink" href="#closing-a-notification-with-javascript" title="Permanent link">#</a></h2>
+<p>Once a notification has been sent, you can close it on demand by dispatching a browser event on the window called <code>close-notification</code>.</p>
+<p>The event needs to contain the ID of the notification you sent. To get the ID, you can use the <code>getId()</code> method on the <code>Notification</code> object:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">$notification = Notification::make()</span>
+<span class="x">    -&gt;title(&#39;Hello&#39;)</span>
+<span class="x">    -&gt;persistent()</span>
+<span class="x">    -&gt;send()</span>
+
+<span class="x">$notificationId = $notification-&gt;getId()</span>
+</code></pre></div>
+
+<p>To close the notification, you can dispatch the event from Livewire:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$this-&gt;dispatch(&#39;close-notification&#39;, id: $notificationId);</span>
+</code></pre></div>
+
+<p>Or from JavaScript, in this case Alpine.js:</p>
+<div class="codehilite"><pre><span></span><code>&lt;button x-on:click=&quot;$dispatch(&#39;close-notification&#39;, { id: notificationId })&quot; type=&quot;button&quot;&gt;
+    Close Notification
+&lt;/button&gt;
+</code></pre></div>
+
+<p>If you are able to retrieve the notification ID, persist it, and then use it to close the notification, that is the recommended approach, as IDs are generated uniquely, and you will not risk closing the wrong notification. However, if it is not possible to persist the random ID, you can pass in a custom ID when sending the notification:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Notification;</span>
+
+<span class="x">Notification::make(&#39;greeting&#39;)</span>
+<span class="x">    -&gt;title(&#39;Hello&#39;)</span>
+<span class="x">    -&gt;persistent()</span>
+<span class="x">    -&gt;send()</span>
+</code></pre></div>
+
+<p>In this case, you can close the notification by dispatching the event with the custom ID:</p>
+<div class="codehilite"><pre><span></span><code>&lt;button x-on:click=&quot;$dispatch(&#39;close-notification&#39;, { id: &#39;greeting&#39; })&quot; type=&quot;button&quot;&gt;
+    Close Notification
+&lt;/button&gt;
+</code></pre></div>
+
+<p>Please be aware that if you send multiple notifications with the same ID, you may experience unexpected side effects, so random IDs are recommended.</p>
+<h2 id="positioning-notifications">Positioning notifications<a class="headerlink" href="#positioning-notifications" title="Permanent link">#</a></h2>
+<p>You can configure the alignment of the notifications in a service provider or middleware, by calling <code>Notifications::alignment()</code> and <code>Notifications::verticalAlignment()</code>. You can pass <code>Alignment::Start</code>, <code>Alignment::Center</code>, <code>Alignment::End</code>, <code>VerticalAlignment::Start</code>, <code>VerticalAlignment::Center</code> or <code>VerticalAlignment::End</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Filament\Notifications\Livewire\Notifications;</span>
+<span class="x">use Filament\Support\Enums\Alignment;</span>
+<span class="x">use Filament\Support\Enums\VerticalAlignment;</span>
+
+<span class="x">Notifications::alignment(Alignment::Start);</span>
+<span class="x">Notifications::verticalAlignment(VerticalAlignment::End);</span>
+</code></pre></div>
+
+<p><AutoScreenshot name="notifications/positioning" alt="Notification positioned at the bottom start of the page" version="4.x" /></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../infolists/custom-entries.html">
+          <span class="muted">Anterior</span>Custom entries
+        </a>
+        <a class="pager-next" href="../notifications/database-notifications.html">
+          <span class="muted">Siguiente</span>Database notifications
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

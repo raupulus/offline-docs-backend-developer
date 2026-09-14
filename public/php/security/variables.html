@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datos Enviados por el Usuario · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Security
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../security/general.html"
+>Consideraciones generales</a>
+              </li>
+              <li>
+                <a href="../security/variables.html"
+class="is-current" aria-current="page">Datos Enviados por el Usuario</a>
+              </li>
+              <li>
+                <a href="../security/cgi-bin.html"
+>Instalado como CGI binario</a>
+              </li>
+              <li>
+                <a href="../security/apache.html"
+>Instalado como módulo de Apache</a>
+              </li>
+              <li>
+                <a href="../security/intro.html"
+>Introducción</a>
+              </li>
+              <li>
+                <a href="../security/current.html"
+>Mantenerse al día</a>
+              </li>
+              <li>
+                <a href="../security/hiding.html"
+>Ocultar PHP</a>
+              </li>
+              <li>
+                <a href="../security/errors.html"
+>Reportando errores</a>
+              </li>
+              <li>
+                <a href="../security/sessions.html"
+>Seguridad de una Sesión</a>
+              </li>
+              <li>
+                <a href="../security/filesystem.html"
+>Seguridad del Sistema de Archivos</a>
+              </li>
+              <li>
+                <a href="../security/database.html"
+>Seguridad en bases de datos</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Datos Enviados por el Usuario</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/security.variables.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#datos-enviados-por-el-usuario">Datos Enviados por el Usuario#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="datos-enviados-por-el-usuario">Datos Enviados por el Usuario<a class="headerlink" href="#datos-enviados-por-el-usuario" title="Permanent link">#</a></h2>
+<p>Las mayores debilidades de muchos programas PHP no son inherentes al lenguaje mismo, sino simplemente un problema generado cuando se escribe código sin pensar en la seguridad. Por esta razón, usted debería tomarse siempre el tiempo para considerar las implicaciones de cada pedazo de código, para averiguar el posible peligro involucrado cuando una variable inesperada es enviada.</p>
+<p>Uso Peligroso de Variables</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="c1">// eliminar un archivo del directorio personal del usuario .. ¿o</span>
+<span class="c1">// quizás de alguien más?</span>
+
+<span class="nb">unlink</span> <span class="p">(</span><span class="nv">$evil_var</span><span class="p">);</span>
+
+<span class="c1">// Imprimir el registro del acceso... ¿o quizás una entrada de /etc/passwd?</span>
+<span class="nb">fwrite</span> <span class="p">(</span><span class="nv">$fp</span><span class="p">,</span> <span class="nv">$evil_var</span><span class="p">);</span>
+
+<span class="c1">// Ejecutar algo trivial.. ¿o rm -rf *?</span>
+<span class="nb">system</span> <span class="p">(</span><span class="nv">$evil_var</span><span class="p">);</span>
+<span class="nb">exec</span> <span class="p">(</span><span class="nv">$evil_var</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Usted debería examinar siempre, y cuidadosamente su código para asegurarse de que cualquier variable siendo enviada desde un navegador web sea chequeada apropiadamente, y preguntarse a sí mismo:</p>
+<ul>
+<li>
+<p>¿Este script afectará únicamente los archivos que se pretende?</p>
+</li>
+<li>
+<p>¿Puede tomarse acción sobre datos inusuales o indeseados?</p>
+</li>
+<li>
+<p>¿Puede ser usado este script en formas malintencionadas?</p>
+</li>
+<li>
+<p>¿Puede ser usado en conjunto con otros scripts en forma negativa?</p>
+</li>
+<li>
+<p>¿Serán adecuadamente registradas las transacciones?</p>
+</li>
+</ul>
+<p>Al preguntarse adecuadamente estas preguntas mientras escribe su script, en lugar de hacerlo posteriormente, usted previene una desafortunada re-implementación del programa cuando desee incrementar el nivel de seguridad. Al comenzar con esta mentalidad, no garantizará la seguridad de su sistema, pero puede ayudar a mejorarla.</p>
+<p>Mejore la seguridad deshabilitando las configuraciones de conveniencia que oscurecen el origen, la validez o la integridad de los datos de entrada. La creación implícita de variables y la entrada no verificada pueden llevar a vulnerabilidades como ataques de inyección y manipulación de datos.</p>
+<p>Características como <code>register_globals</code> y <code>magic_quotes</code> (ambas eliminadas en PHP 5.4.0) contribuyeron a estos riesgos al crear automáticamente variables a partir de la entrada del usuario y escapar datos de manera inconsistente. Aunque ya no están en PHP, riesgos similares persisten si la gestión de la entrada es incorrecta.</p>
+<p>Habilite <a href="#function.error-reporting">error_reporting(E_ALL)</a> para ayudar a detectar variables no inicializadas y validar la entrada. Utilice tipos estrictos (<a href="#language.types.declarations.strict">declare(strict_types=1)</a>, introducido en PHP 7) para imponer la seguridad de tipos, prevenir conversiones de tipos no intencionadas y mejorar la seguridad general.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../security/general.html">
+          <span class="muted">Anterior</span>Consideraciones generales
+        </a>
+        <a class="pager-next" href="../security/cgi-bin.html">
+          <span class="muted">Siguiente</span>Instalado como CGI binario
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

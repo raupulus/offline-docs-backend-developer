@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>apache_note · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Apache
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../apache/apache-child-terminate.html"
+>apache_child_terminate</a>
+              </li>
+              <li>
+                <a href="../apache/apache-get-modules.html"
+>apache_get_modules</a>
+              </li>
+              <li>
+                <a href="../apache/apache-get-version.html"
+>apache_get_version</a>
+              </li>
+              <li>
+                <a href="../apache/apache-getenv.html"
+>apache_getenv</a>
+              </li>
+              <li>
+                <a href="../apache/apache-lookup-uri.html"
+>apache_lookup_uri</a>
+              </li>
+              <li>
+                <a href="../apache/apache-note.html"
+class="is-current" aria-current="page">apache_note</a>
+              </li>
+              <li>
+                <a href="../apache/apache-request-headers.html"
+>apache_request_headers</a>
+              </li>
+              <li>
+                <a href="../apache/apache-response-headers.html"
+>apache_response_headers</a>
+              </li>
+              <li>
+                <a href="../apache/apache-setenv.html"
+>apache_setenv</a>
+              </li>
+              <li>
+                <a href="../apache/ini.html"
+>Configuración en tiempo de ejecución</a>
+              </li>
+              <li>
+                <a href="../apache/getallheaders.html"
+>getallheaders</a>
+              </li>
+              <li>
+                <a href="../apache/setup.html"
+>Instalación/Configuración</a>
+              </li>
+              <li>
+                <a href="../apache/virtual.html"
+>virtual</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">apache_note</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/function.apache-note.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#descripcion">Descripción#</a></li>
+              <li class="lvl-2"><a href="#recuperacion-del-objeto-de-peticion-apache">Recuperación del objeto de petición Apache#</a></li>
+              <li class="lvl-2"><a href="#recuperacion-de-los-datos-pasados">Recuperación de los datos pasados#</a></li>
+              <li class="lvl-2"><a href="#procesamiento">Procesamiento#</a></li>
+              <li class="lvl-2"><a href="#envio-del-resultado-hacia-php">Envío del resultado hacia PHP#</a></li>
+              <li class="lvl-2"><a href="#sessionidn-puede-ser-utilizado-en-la-directiva-logformat">&#34;%{sessionID}n&#34; puede ser utilizado en la directiva LogFormat#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>apache_note</p>
+<p>Muestra o asigna la tabla de notas de Apache</p>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="x">apache_note(string $note_name, [string $note_value]): string</span>
+<span class="x">```php</span>
+
+<span class="x">Esta función es una abstracción de los comandos `table_get` y `table_set` de Apache. Edita la tabla de notas que existe durante una petición. El propósito de esta tabla es permitir que los módulos de Apache se comuniquen.</span>
+
+<span class="x">La utilidad de la función `apache_note` es pasar información de un módulo a otro, durante la misma petición.</span>
+
+<span class="x">## Parámetros</span>
+
+<span class="x">`note_name`  </span>
+<span class="x">El nombre de la nota.</span>
+
+<span class="x">`note_value`  </span>
+<span class="x">El valor de la nota.</span>
+
+<span class="x">## Valores devueltos</span>
+
+<span class="x">Si `note_value` es omitido o `null`, devuelve el valor actual de la variable `note_name`. De lo contrario, asigna a la nota `note_name` el valor `note_value` y devolverá el valor anterior de la variable `note_name`. Si la nota no puede ser recuperada, `false` es devuelto.</span>
+
+<span class="x">## Historial de cambios</span>
+
+<span class="x">| Versión | Descripción                     |</span>
+<span class="x">|---------|---------------------------------|</span>
+<span class="x">| 8.0.0   | `note_value` ahora es nullable. |</span>
+
+<span class="x">## Ejemplos</span>
+
+<span class="x">Pasaje de información entre PHP y Perl</span>
+</code></pre></div>
+
+<?php
+
+apache_note('name', 'Fredrik Ekengren');
+
+// Llamada al script Perl
+virtual("/perl/some_script.pl");
+
+$result = apache_note("resultdata");
+?>
+
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<h2 id="recuperacion-del-objeto-de-peticion-apache">Recuperación del objeto de petición Apache<a class="headerlink" href="#recuperacion-del-objeto-de-peticion-apache" title="Permanent link">#</a></h2>
+<p>my $r = Apache-&gt;request()-&gt;main();</p>
+<h2 id="recuperacion-de-los-datos-pasados">Recuperación de los datos pasados<a class="headerlink" href="#recuperacion-de-los-datos-pasados" title="Permanent link">#</a></h2>
+<p>my $name = $r-&gt;notes('name');</p>
+<h2 id="procesamiento">Procesamiento<a class="headerlink" href="#procesamiento" title="Permanent link">#</a></h2>
+<h2 id="envio-del-resultado-hacia-php">Envío del resultado hacia PHP<a class="headerlink" href="#envio-del-resultado-hacia-php" title="Permanent link">#</a></h2>
+<p>$r-&gt;notes('resultdata', $result);</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Valores de identificación en el archivo access.log</span>
+</code></pre></div>
+
+<?php
+
+apache_note('sessionID', session_id());
+
+?>
+
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<h2 id="sessionidn-puede-ser-utilizado-en-la-directiva-logformat">"%{sessionID}n" puede ser utilizado en la directiva LogFormat<a class="headerlink" href="#sessionidn-puede-ser-utilizado-en-la-directiva-logformat" title="Permanent link">#</a></h2>
+<p>```php</p>
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p><code>virtual</code></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../apache/apache-lookup-uri.html">
+          <span class="muted">Anterior</span>apache_lookup_uri
+        </a>
+        <a class="pager-next" href="../apache/apache-request-headers.html">
+          <span class="muted">Siguiente</span>apache_request_headers
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

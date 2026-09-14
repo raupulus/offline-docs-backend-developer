@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestión de cargas de ficheros · PHP</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">PHP</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="php" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PHP…"
+         aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PHP
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PHP">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Features
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../features/persistent-connections.html"
+>Conexiones persistentes a bases de datos</a>
+              </li>
+              <li>
+                <a href="../features/cookies.html"
+>Cookies</a>
+              </li>
+              <li>
+                <a href="../features/file-upload.html"
+class="is-current" aria-current="page">Gestión de cargas de ficheros</a>
+              </li>
+              <li>
+                <a href="../features/connection-handling.html"
+>Gestión de las conexiones</a>
+              </li>
+              <li>
+                <a href="../features/http-auth.html"
+>Identificación HTTP con PHP</a>
+              </li>
+              <li>
+                <a href="../features/dtrace.html"
+>Rastreo dinámico de DTrace</a>
+              </li>
+              <li>
+                <a href="../features/gc.html"
+>Recolección de basura (Garbage Collection)</a>
+              </li>
+              <li>
+                <a href="../features/sessions.html"
+>Sesiones</a>
+              </li>
+              <li>
+                <a href="../features/remote-files.html"
+>Uso de ficheros a distancia</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 11000 documentos de PHP</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Gestión de cargas de ficheros</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.file-upload.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#gestion-de-cargas-de-ficheros">Gestión de cargas de ficheros#</a></li>
+              <li class="lvl-2"><a href="#cargas-de-ficheros-por-metodo-post">Cargas de ficheros por método POST#</a></li>
+              <li class="lvl-2"><a href="#explicacion-sobre-los-mensajes-de-errores-de-carga-de-ficheros">Explicación sobre los mensajes de errores de carga de ficheros#</a></li>
+              <li class="lvl-2"><a href="#errores-clasicos">Errores clásicos#</a></li>
+              <li class="lvl-2"><a href="#cargar-multiples-ficheros-simultaneamente">Cargar múltiples ficheros simultáneamente#</a></li>
+              <li class="lvl-2"><a href="#carga-por-metodo-put">Carga por método PUT#</a></li>
+              <li class="lvl-2"><a href="#vease-tambien">Véase también#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="gestion-de-cargas-de-ficheros">Gestión de cargas de ficheros<a class="headerlink" href="#gestion-de-cargas-de-ficheros" title="Permanent link">#</a></h2>
+<h2 id="cargas-de-ficheros-por-metodo-post">Cargas de ficheros por método POST<a class="headerlink" href="#cargas-de-ficheros-por-metodo-post" title="Permanent link">#</a></h2>
+<p>Esta funcionalidad permite a las personas subir tanto texto como ficheros binarios. Con las funciones de identificación y manipulación de ficheros de PHP, se tiene el control total para definir quién tiene derecho a subir, pero también qué se hará con el fichero una vez que se haya subido.</p>
+<p>PHP es capaz de recibir ficheros emitidos por un navegador conforme a la norma RFC-1867.</p>
+<blockquote>
+<p>[!NOTE]
+Véase también las directivas <a href="#ini.file-uploads">file_uploads</a>, <a href="#ini.upload-max-filesize">upload_max_filesize</a>, <a href="#ini.upload-tmp-dir">upload_tmp_dir</a>, <a href="#ini.post-max-size">post_max_size</a> y <a href="#ini.max-input-time">max_input_time</a> en <code>php.ini</code></p>
+</blockquote>
+<p>PHP también soporta la carga por el método PUT como en el navegador Netscape Composer y Amaya del W3C. Consulte el capítulo sobre el <a href="#features.file-upload.put-method">soporte del método PUT</a>.</p>
+<p>Formulario de carga de fichero</p>
+<p>Un formulario de carga de ficheros puede ser construido creando un formulario específico como este:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;!-- El tipo de codificación de datos, enctype, DEBE ser especificado como se indica a continuación --&gt;</span>
+<span class="x">&lt;form enctype=&quot;multipart/form-data&quot; action=&quot;_URL_&quot; method=&quot;post&quot;&gt;</span>
+<span class="x">  &lt;!-- MAX_FILE_SIZE debe preceder al campo input de tipo file --&gt;</span>
+<span class="x">  &lt;input type=&quot;hidden&quot; name=&quot;MAX_FILE_SIZE&quot; value=&quot;30000&quot; /&gt;</span>
+<span class="x">  &lt;!-- El nombre del elemento input determina el nombre en el array $_FILES --&gt;</span>
+<span class="x">  Envíe este fichero: &lt;input name=&quot;userfile&quot; type=&quot;file&quot; /&gt;</span>
+<span class="x">  &lt;input type=&quot;submit&quot; value=&quot;Enviar el fichero&quot; /&gt;</span>
+<span class="x">&lt;/form&gt;</span>
+</code></pre></div>
+
+<p><code>_URL_</code> en el ejemplo anterior debe ser reemplazado y apuntar a un fichero PHP.</p>
+<p>El campo oculto <code>MAX_FILE_SIZE</code> (medido en bytes) debe preceder al campo input de tipo file y su valor representa el tamaño máximo aceptado del fichero por PHP. Este elemento de formulario debe ser siempre utilizado, ya que permite informar al usuario que la transferencia deseada es demasiado grande antes de llegar al final de la carga. Tenga en cuenta que este parámetro puede ser "engañado" fácilmente desde el lado del navegador, por lo que no se debe confiar en él, tratándose finalmente de una funcionalidad de conveniencia del lado del cliente. El parámetro PHP (del lado del servidor) sobre el tamaño máximo de un fichero cargado, no puede ser engañado.</p>
+<blockquote>
+<p>[!NOTE]
+Asegúrese de que su formulario de carga de fichero contenga <code>enctype="multipart/form-data"</code>, de lo contrario, el fichero no será cargado.</p>
+</blockquote>
+<p>La variable global <code>$_FILES</code> contendrá toda la información sobre el fichero cargado. Su contenido se detalla en nuestro ejemplo a continuación. Tenga en cuenta que se supone que el nombre de la variable del fichero cargado es <em>userfile</em>, tal como se define en el formulario anterior, pero puede ser cualquier nombre.</p>
+<p><code>$_FILES['userfile']['name']</code><br>
+El nombre original del fichero, tal como en la máquina del cliente web.</p>
+<p><code>$_FILES['userfile']['type']</code><br>
+El tipo MIME del fichero, si el navegador ha proporcionado esta información. Por ejemplo, esto podría ser <code>"image/gif"</code>. Este tipo mime no es verificado por PHP y, por lo tanto, no se debe tomar su valor para sincronizarse.</p>
+<p><code>$_FILES['userfile']['size']</code><br>
+El tamaño, en bytes, del fichero cargado.</p>
+<p><code>$_FILES['userfile']['tmp_name']</code><br>
+El nombre temporal del fichero que será cargado en la máquina servidor.</p>
+<p><code>$_FILES['userfile']['error']</code><br>
+El <a href="#features.file-upload.errors">código de error</a> asociado a la carga del fichero.</p>
+<p><code>$_FILES['userfile']['full_path']</code><br>
+La ruta completa tal como se envía por el navegador. Este valor no contiene siempre una verdadera jerarquía de carpetas, y no se debe confiar en él. Disponible a partir de PHP 8.1.0.</p>
+<p>El fichero cargado será almacenado temporalmente en el directorio temporal del sistema, a menos que se proporcione otro directorio con la directiva <a href="#ini.upload-tmp-dir">upload_tmp_dir</a> del <code>php.ini</code>. El directorio por defecto del servidor puede ser cambiado en el entorno a través de la variable <code>TMPDIR</code>. Modificar el valor de esta variable con la función <code>putenv</code> en un script PHP será sin efecto. Esta variable de entorno también puede ser utilizada para asegurarse de que otras operaciones funcionen también en los ficheros cargados.</p>
+<p>Validación de carga de ficheros</p>
+<p>Véase también las funciones <code>is_uploaded_file</code> y <code>move_uploaded_file</code> para más información. El siguiente ejemplo cargará un fichero desde un formulario.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="nv">$uploaddir</span> <span class="o">=</span> <span class="s1">&#39;/var/www/uploads/&#39;</span><span class="p">;</span>
+<span class="nv">$uploadfile</span> <span class="o">=</span> <span class="nv">$uploaddir</span> <span class="o">.</span> <span class="nb">basename</span><span class="p">(</span><span class="nv">$_FILES</span><span class="p">[</span><span class="s1">&#39;userfile&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]);</span>
+
+<span class="k">echo</span> <span class="s1">&#39;&lt;pre&gt;&#39;</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">move_uploaded_file</span><span class="p">(</span><span class="nv">$_FILES</span><span class="p">[</span><span class="s1">&#39;userfile&#39;</span><span class="p">][</span><span class="s1">&#39;tmp_name&#39;</span><span class="p">],</span> <span class="nv">$uploadfile</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">&quot;El fichero es válido, y ha sido cargado con éxito. Aquí hay más información :</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">&quot;Ataque potencial por carga de ficheros. Aquí hay más información :</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">echo</span> <span class="s1">&#39;Aquí hay algunas informaciones de depuración :&#39;</span><span class="p">;</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$_FILES</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="s1">&#39;&lt;/pre&gt;&#39;</span><span class="p">;</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>El script PHP que recibe el fichero cargado debe poder gestionar el fichero de manera apropiada. Se puede utilizar la variable <code>$_FILES['userfile']['size']</code> para recalar todos los ficheros que son demasiado grandes o demasiado pequeños. Se puede utilizar la variable <code>$_FILES['userfile']['type']</code> para descartar los ficheros que no tienen el tipo correcto, pero utilizarla únicamente para una serie de verificaciones, ya que este valor está completamente bajo el control del cliente y no es verificado por PHP. Se puede utilizar la información en <code>$_FILES['userfile']['error']</code> y adaptar su política en función de los <a href="#features.file-upload.errors">códigos de error</a>. Sea cual sea su política, se debe borrar el fichero del directorio temporal o moverlo.</p>
+<p>Si no se selecciona ningún fichero en el formulario, PHP devolverá <code>0</code> en <code>$_FILES['userfile']['size']</code> y nada en <code>$_FILES['userfile']['tmp_name']</code>.</p>
+<p>El fichero será borrado automáticamente del directorio temporal al final del script, si no ha sido movido o renombrado.</p>
+<p>Envío de un array de ficheros</p>
+<p>PHP soporta los <a href="#faq.html.arrays">arrays en HTML</a> así como con los ficheros.</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;form action=&quot;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</span>
+<span class="x">&lt;p&gt;Imágenes:</span>
+<span class="x">&lt;input type=&quot;file&quot; name=&quot;pictures[]&quot; /&gt;</span>
+<span class="x">&lt;input type=&quot;file&quot; name=&quot;pictures[]&quot; /&gt;</span>
+<span class="x">&lt;input type=&quot;file&quot; name=&quot;pictures[]&quot; /&gt;</span>
+<span class="x">&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot; /&gt;</span>
+<span class="x">&lt;/p&gt;</span>
+<span class="x">&lt;/form&gt;</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$_FILES</span><span class="p">[</span><span class="s2">&quot;pictures&quot;</span><span class="p">][</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$error</span> <span class="o">==</span> <span class="nx">UPLOAD_ERR_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$tmp_name</span> <span class="o">=</span> <span class="nv">$_FILES</span><span class="p">[</span><span class="s2">&quot;pictures&quot;</span><span class="p">][</span><span class="s2">&quot;tmp_name&quot;</span><span class="p">][</span><span class="nv">$key</span><span class="p">];</span>
+        <span class="c1">// basename() puede prevenir los ataques &quot;filesystem traversal&quot;;</span>
+        <span class="c1">// otra validación/limpieza del nombre de fichero puede ser apropiada</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nb">basename</span><span class="p">(</span><span class="nv">$_FILES</span><span class="p">[</span><span class="s2">&quot;pictures&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">][</span><span class="nv">$key</span><span class="p">]);</span>
+        <span class="nb">move_uploaded_file</span><span class="p">(</span><span class="nv">$tmp_name</span><span class="p">,</span> <span class="s2">&quot;data/</span><span class="si">$name</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>La barra de progreso de carga puede ser implementada utilizando <a href="#session.upload-progress">la progresión de la carga a través de las sesiones</a>.</p>
+<h2 id="explicacion-sobre-los-mensajes-de-errores-de-carga-de-ficheros">Explicación sobre los mensajes de errores de carga de ficheros<a class="headerlink" href="#explicacion-sobre-los-mensajes-de-errores-de-carga-de-ficheros" title="Permanent link">#</a></h2>
+<p>PHP devuelve un código de error apropiado en el array de ficheros. Este código de error es accesible en el índice <code>['error']</code> del array, que es creado durante la carga por PHP. En otras palabras, el mensaje de error es accesible en la variable <code>$_FILES['userfile']['error']</code>.</p>
+<p>El valor de este código de error es una de las constantes <code>UPLOAD_ERR_*</code>.</p>
+<h2 id="errores-clasicos">Errores clásicos<a class="headerlink" href="#errores-clasicos" title="Permanent link">#</a></h2>
+<p>La variable <code>MAX_FILE_SIZE</code> no puede especificar un tamaño de fichero mayor que el tamaño que ha sido fijado por <a href="#ini.upload-max-filesize">upload_max_filesize</a>, en el <code>php.ini</code>. El valor por defecto es 2 megaoctetos.</p>
+<p>Si se activa un límite de memoria, puede ser necesario un valor mayor de <a href="#ini.memory-limit">memory_limit</a>. Asegúrese de haber definido un valor para <a href="#ini.memory-limit">memory_limit</a> lo suficientemente grande.</p>
+<p>Si el valor de <a href="#ini.max-execution-time">max_execution_time</a> es demasiado pequeño, el tiempo de ejecución del script puede exceder este valor. Asegúrese de haber definido un valor para <code>max_execution_time</code> lo suficientemente grande.</p>
+<blockquote>
+<p>[!NOTE]
+<a href="#ini.max-execution-time">max_execution_time</a> afecta únicamente al tiempo de ejecución del script. El tiempo pasado en la actividad que aparece fuera de la ejecución del script como las llamadas al sistema con la función <code>system</code>, la función <code>sleep</code>, las consultas a las bases de datos, el tiempo empleado para realizar la carga del fichero, etc. no está incluido en el cálculo del tiempo máximo de ejecución del script.</p>
+<p>[!WARNING]
+<a href="#ini.max-input-time">max_input_time</a> define el tiempo máximo, en segundos, para que el script reciba los datos; esto incluye la carga del fichero. Para múltiples ficheros, o ficheros grandes, o incluso para usuarios en conexiones lentas, el valor por defecto de <code>60</code> segundos puede ser superado.</p>
+</blockquote>
+<p>Si <a href="#ini.post-max-size">post_max_size</a> está definido de manera demasiado baja, los ficheros grandes no podrán ser cargados. Asegúrese de definir <code>post_max_size</code> con un tamaño suficiente.</p>
+<p>La configuración de <a href="#ini.max-file-uploads">max_file_uploads</a> controla el número máximo de ficheros que pueden ser enviados en una solicitud. Si el número de ficheros enviados supera este límite, entonces <code>$_FILES</code> dejará de recibir. Por ejemplo, si <a href="#ini.max-file-uploads">max_file_uploads</a> vale <code>10</code>, entonces <code>$_FILES</code> nunca contendrá más de 10 entidades.</p>
+<p>No validar los ficheros que se manipulan puede dar acceso a los usuarios a ficheros sensibles en otras carpetas.</p>
+<p>Debido a la gran diversidad de sistemas, no se puede garantizar que los ficheros con nombres exóticos (por ejemplo, aquellos que contienen espacios) sean tratados correctamente.</p>
+<p>El desarrollador no debe mezclar los campos <code>input</code> normales y los campos de carga en una misma variable (utilizando un nombre de <code>input</code> como <code>foo[]</code>).</p>
+<h2 id="cargar-multiples-ficheros-simultaneamente">Cargar múltiples ficheros simultáneamente<a class="headerlink" href="#cargar-multiples-ficheros-simultaneamente" title="Permanent link">#</a></h2>
+<p>La carga de múltiples ficheros es posible utilizando diferentes nombres en el atributo <code>name</code> de la etiqueta <code>input</code>.</p>
+<p>También es posible cargar múltiples ficheros simultáneamente y obtener la información en forma de array. Para ello, se debe utilizar la sintaxis de array en los nombres de las etiquetas HTML, como se ha hecho con las selecciones múltiples y las casillas de verificación.</p>
+<p>Cargar múltiples ficheros simultáneamente</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;form action=&quot;file-upload.php&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</span>
+<span class="x">  Envíe múltiples ficheros: &lt;br /&gt;</span>
+<span class="x">  &lt;input name=&quot;userfile[]&quot; type=&quot;file&quot; /&gt;&lt;br /&gt;</span>
+<span class="x">  &lt;input name=&quot;userfile[]&quot; type=&quot;file&quot; /&gt;&lt;br /&gt;</span>
+<span class="x">  &lt;input type=&quot;submit&quot; value=&quot;Enviar los ficheros&quot; /&gt;</span>
+<span class="x">&lt;/form&gt;</span>
+</code></pre></div>
+
+<p>Cuando el formulario anterior ha sido enviado, los arrays <code>$_FILES['userfile']</code>, <code>$_FILES['userfile']['name']</code>, y <code>$_FILES['userfile']['size']</code> serán inicializados.</p>
+<p>Por ejemplo, supongamos que los ficheros <code>/home/test/review.html</code> y <code>/home/test/xwp.out</code> han sido cargados. En este caso, <code>$_FILES['userfile']['name'][0]</code> contiene <code>review.html</code> y <code>$_FILES['userfile']['name'][1]</code> contiene <code>xwp.out</code>. De manera similar, <code>$_FILES['userfile']['size'][0]</code> contendrá el tamaño del fichero <code>review.html</code>, etc.</p>
+<p><code>$_FILES['userfile']['name'][0]</code>, <code>$_FILES['userfile']['tmp_name'][0]</code>, <code>$_FILES['userfile']['size'][0]</code> y <code>$_FILES['userfile']['type'][0]</code> también son creados.</p>
+<blockquote>
+<p>[!WARNING]
+El parámetro <a href="#ini.max-file-uploads">max_file_uploads</a> limita el número de ficheros que pueden ser enviados en una solicitud. Se debe verificar que su formulario no intente enviar más ficheros en la solicitud de lo que permite este límite.</p>
+</blockquote>
+<p>Cargar un directorio entero</p>
+<p>En los campos de carga de fichero HTML, es posible cargar un directorio entero con el atributo <code>webkitdirectory</code>. Esta funcionalidad es soportada en la mayoría de los navegadores modernos.</p>
+<p>Con la información <code>full_path</code>, es posible almacenar las rutas relativas o reconstruir la misma jerarquía de directorios en el directorio.</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&lt;form action=&quot;file-upload.php&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</span>
+<span class="x">  Envíe este directorio:&lt;br /&gt;</span>
+<span class="x">  &lt;input name=&quot;userfile[]&quot; type=&quot;file&quot; webkitdirectory multiple /&gt;</span>
+<span class="x">  &lt;input type=&quot;submit&quot; value=&quot;Enviar ficheros&quot; /&gt;</span>
+<span class="x">&lt;/form&gt;</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!WARNING]
+El atributo <code>webkitdirectory</code> no es estándar y no está actualmente en proceso de estandarización. Esto no debe ser utilizado en sitios de producción orientados al Web: no funcionará para todos los usuarios. Puede haber grandes incompatibilidades entre las implementaciones y el comportamiento puede cambiar en el futuro.</p>
+<p>PHP analiza únicamente la información de las rutas relativas enviadas por el navegador/user-agent y transmite la información en el array <code>$_FILES</code>. No hay garantías de que los valores en el array <code>full_path</code> contengan una verdadera estructura de directorios y la aplicación PHP no debe confiar en esta información.</p>
+</blockquote>
+<h2 id="carga-por-metodo-put">Carga por método PUT<a class="headerlink" href="#carga-por-metodo-put" title="Permanent link">#</a></h2>
+<p>PHP soporta el método HTTP PUT utilizado por los navegadores para almacenar ficheros en un servidor. Las solicitudes de tipo PUT son mucho más simples que las cargas de ficheros utilizando el tipo POST, y se parecen a:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">PUT /path/filename.html HTTP/1.1</span>
+</code></pre></div>
+
+<p>Normalmente, esto significa que el servidor remoto guardará los datos que siguen en el fichero: <code>/path/filename.html</code> de su disco. Esto no es, por supuesto, muy seguro permitir que Apache o PHP sobrescriban cualquier fichero de la arborescencia. Para evitar esto, primero se debe indicar al servidor que se desea que un script PHP dado gestione la solicitud. Con Apache, hay una directiva para ello: <em>Script</em>. Puede ser colocada en cualquier lugar del fichero de configuración de Apache. En general, los webmasters la colocan en el bloque <code>&lt;Directory&gt;</code>, o tal vez en el bloque <code>&lt;VirtualHost&gt;</code>. La siguiente línea hará muy bien el trabajo:</p>
+<div class="codehilite"><pre><span></span><code>Script PUT /put.php
+</code></pre></div>
+
+<p>Indica a Apache que debe enviar las solicitudes de carga por método PUT al script <code>put.php</code>. Por supuesto, esto presupone que se ha activado PHP para que maneje los ficheros de tipo <code>.php</code>, y que PHP está activo. El recurso de destino para todas las solicitudes PUT de este script debe ser el script mismo, y no el nombre del fichero que el fichero cargado debe tener.</p>
+<p>Con PHP, se querría hacer algo como lo siguiente en su put.php. Esto copiará el contenido del fichero cargado en el fichero <code>myputfile.ext</code> en el servidor. Probablemente se querrá realizar algunas verificaciones y/o identificar al usuario antes de realizar esta copia de fichero.</p>
+<p>Guardado de ficheros HTTP PUT</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="cm">/* Los datos PUT llegan del flujo */</span>
+<span class="nv">$putdata</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s2">&quot;php://input&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">);</span>
+
+<span class="cm">/* Abre un fichero para escritura */</span>
+<span class="nv">$fp</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s2">&quot;myputfile.ext&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">);</span>
+
+<span class="cm">/* Lectura de los datos, 1 Ko a la vez y escritura en el fichero */</span>
+<span class="k">while</span> <span class="p">(</span><span class="nv">$data</span> <span class="o">=</span> <span class="nb">fread</span><span class="p">(</span><span class="nv">$putdata</span><span class="p">,</span> <span class="mi">1024</span><span class="p">))</span>
+<span class="nb">fwrite</span><span class="p">(</span><span class="nv">$fp</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
+
+<span class="cm">/* Cierre del flujo */</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$fp</span><span class="p">);</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$putdata</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+
+<h2 id="vease-tambien">Véase también<a class="headerlink" href="#vease-tambien" title="Permanent link">#</a></h2>
+<p><a href="#security.filesystem">Seguridad de los ficheros</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../features/cookies.html">
+          <span class="muted">Anterior</span>Cookies
+        </a>
+        <a class="pager-next" href="../features/connection-handling.html">
+          <span class="muted">Siguiente</span>Gestión de las conexiones
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

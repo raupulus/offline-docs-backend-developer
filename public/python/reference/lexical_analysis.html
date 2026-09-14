@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Análisis léxico · Python</title>
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Python</a>
+<span class="badge">3.14</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="python" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Python…"
+         aria-label="Buscar en Python" autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Python
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Python">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/abstract.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../deprecations/c-api-pending-removal-in-3.14.html">Deprecations</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../distributing/index.html">Distributing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../extending/building.html">Extending</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../faq/design.html">Faq</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../howto/a-conceptual-overview-of-asyncio.html">Howto</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../installing/index.html">Installing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../library/__future__.html">Library</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Reference
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../reference/compound_stmts.html"
+>8. Sentencias compuestas</a>
+              </li>
+              <li>
+                <a href="../reference/datamodel.html"
+>3. Modelo de datos</a>
+              </li>
+              <li>
+                <a href="../reference/executionmodel.html"
+>4. Modelo de ejecución</a>
+              </li>
+              <li>
+                <a href="../reference/expressions.html"
+>6. Expresiones</a>
+              </li>
+              <li>
+                <a href="../reference/grammar.html"
+>10. Especificación completa de la gramática</a>
+              </li>
+              <li>
+                <a href="../reference/import.html"
+>5. El sistema de importación</a>
+              </li>
+              <li>
+                <a href="../reference/index.html"
+>Referencia del Lenguaje Python</a>
+              </li>
+              <li>
+                <a href="../reference/introduction.html"
+>1. Introducción</a>
+              </li>
+              <li>
+                <a href="../reference/lexical_analysis.html"
+class="is-current" aria-current="page">2. Análisis léxico</a>
+              </li>
+              <li>
+                <a href="../reference/simple_stmts.html"
+>7. Declaraciones simples</a>
+              </li>
+              <li>
+                <a href="../reference/toplevel_components.html"
+>9. Componentes de nivel superior</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tutorial/appendix.html">Tutorial</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../using/android.html">Using</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../whatsnew/0.html">Whatsnew</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../about.html">Python</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">2. Análisis léxico</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.14</span>          <a href="https://docs.python.org/es/3" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PSF-2.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#espacio-tabulador-formfeed-whitespace">| * espacio  * tabulador  * formfeed                 | * Whitespace                                       |#</a></li>
+              <li class="lvl-2"><a href="#cr-lf-new-line-indentation">| * CR, LF                                           | * New line  * Indentation                          |#</a></li>
+              <li class="lvl-2"><a href="#string-escape-sequences">|                                                    | string escape sequences)                           |#</a></li>
+              <li class="lvl-2"><a href="#hash-comment">| * hash (&#34;#&#34;)                                       | * Comment                                          |#</a></li>
+              <li class="lvl-2"><a href="#quote-string-literal">| * quote (&#34;&#39;&#34;, &#34;&#34;&#34;)                                 | * String literal                                   |#</a></li>
+              <li class="lvl-2"><a href="#character">| character                                          |                                                    |#</a></li>
+              <li class="lvl-2"><a href="#underscore-_-name-can-also-be-part-of-numeric-literals">| * underscore (&#34;_&#34;)                                 | * Name  * (Can also be part of numeric literals)   |#</a></li>
+              <li class="lvl-2"><a href="#number-0-9-numeric-literal">| * number (&#34;0&#34;-&#34;9&#34;)                                 | * Numeric literal                                  |#</a></li>
+              <li class="lvl-2"><a href="#dot-numeric-literal-operator">| * dot (&#34;.&#34;)                                        | * Numeric literal  * Operator                      |#</a></li>
+              <li class="lvl-2"><a href="#control-character">| (&#34;​`​&#34;)  * control character                       |                                                    |#</a></li>
+              <li class="lvl-2"><a href="#other-printing-character-operator-or-delimiter">| * other printing character                         | * Operator or delimiter                            |#</a></li>
+              <li class="lvl-2"><a href="#end-of-file-end-marker">| * end of file                                      | * End marker                                       |#</a></li>
+              <li class="lvl-2"><a href="#21-estructura-de-linea">2.1. Estructura de línea#</a></li>
+              <li class="lvl-3"><a href="#211-lineas-logicas">2.1.1. Líneas lógicas#</a></li>
+              <li class="lvl-3"><a href="#212-lineas-fisicas">2.1.2. Líneas físicas#</a></li>
+              <li class="lvl-3"><a href="#213-comentarios">2.1.3. Comentarios#</a></li>
+              <li class="lvl-3"><a href="#214-declaracion-de-codificacion">2.1.4. Declaración de Codificación#</a></li>
+              <li class="lvl-3"><a href="#215-union-explicita-de-lineas">2.1.5. Unión explícita de líneas#</a></li>
+              <li class="lvl-3"><a href="#216-union-implicita-de-lineas">2.1.6. Unión implícita de líneas#</a></li>
+              <li class="lvl-3"><a href="#217-lineas-en-blanco">2.1.7. Líneas en blanco#</a></li>
+              <li class="lvl-3"><a href="#218-sangria">2.1.8. Sangría#</a></li>
+              <li class="lvl-3"><a href="#219-espacios-en-blanco-entre-tokens">2.1.9. Espacios en blanco entre tokens#</a></li>
+              <li class="lvl-3"><a href="#2110-end-marker">2.1.10. End marker#</a></li>
+              <li class="lvl-2"><a href="#22-otros-tokens">2.2. Otros tokens#</a></li>
+              <li class="lvl-2"><a href="#23-names-identifiers-and-keywords">2.3. Names (identifiers and keywords)#</a></li>
+              <li class="lvl-3"><a href="#231-palabras-clave">2.3.1. Palabras clave#</a></li>
+              <li class="lvl-3"><a href="#232-palabras-clave-suaves">2.3.2. Palabras clave suaves#</a></li>
+              <li class="lvl-3"><a href="#233-clases-reservadas-de-identificadores">2.3.3. Clases reservadas de identificadores#</a></li>
+              <li class="lvl-3"><a href="#234-non-ascii-characters-in-names">2.3.4. Non-ASCII characters in names#</a></li>
+              <li class="lvl-2"><a href="#24-literales">2.4. Literales#</a></li>
+              <li class="lvl-2"><a href="#25-literales-de-cadenas-y-bytes">2.5. Literales de cadenas y bytes#</a></li>
+              <li class="lvl-3"><a href="#251-triple-quoted-strings">2.5.1. Triple-quoted strings#</a></li>
+              <li class="lvl-3"><a href="#252-string-prefixes">2.5.2. String prefixes#</a></li>
+              <li class="lvl-3"><a href="#253-formal-grammar">2.5.3. Formal grammar#</a></li>
+              <li class="lvl-3"><a href="#254-secuencias-de-escape">2.5.4. Secuencias de escape#</a></li>
+              <li class="lvl-2"><a href="#ignored-end-of-line">| &#34;\&#34;                                       | Ignored end of line                                |#</a></li>
+              <li class="lvl-2"><a href="#backslash">| &#34;\&#34;                                               | Backslash                                          |#</a></li>
+              <li class="lvl-2"><a href="#single-quote">| &#34;\&#39;&#34;                                               | Single quote                                       |#</a></li>
+              <li class="lvl-2"><a href="#double-quote">| &#34;\&#34;&#34;                                               | Double quote                                       |#</a></li>
+              <li class="lvl-2"><a href="#a-ascii-bell-bel">| &#34;\a&#34;                                               | ASCII Bell (BEL)                                   |#</a></li>
+              <li class="lvl-2"><a href="#b-ascii-retroceso-bs">| &#34;\b&#34;                                               | ASCII Retroceso (BS)                               |#</a></li>
+              <li class="lvl-2"><a href="#f-ascii-formfeed-ff">| &#34;\f&#34;                                               | ASCII Formfeed (FF)                                |#</a></li>
+              <li class="lvl-2"><a href="#n-ascii-linefeed-lf">| &#34;\n&#34;                                               | ASCII Linefeed (LF)                                |#</a></li>
+              <li class="lvl-2"><a href="#r-ascii-retorno-de-carro-cr">| &#34;\r&#34;                                               | ASCII Retorno de carro (CR)                        |#</a></li>
+              <li class="lvl-2"><a href="#t-ascii-sangria-horizontal-tab">| &#34;\t&#34;                                               | ASCII Sangría horizontal (TAB)                     |#</a></li>
+              <li class="lvl-2"><a href="#v-ascii-sangria-vertical-vt">| &#34;\v&#34;                                               | ASCII Sangría vertical (VT)                        |#</a></li>
+              <li class="lvl-2"><a href="#ooo-octal-character">| &#34;*ooo*&#34;                                           | Octal character                                    |#</a></li>
+              <li class="lvl-2"><a href="#xhh-hexadecimal-character">| &#34;\xhh&#34;                                           | Hexadecimal character                              |#</a></li>
+              <li class="lvl-2"><a href="#nname-named-unicode-character">| &#34;\N{name}&#34;                                       | Named Unicode character                            |#</a></li>
+              <li class="lvl-2"><a href="#uxxxx-hexadecimal-unicode-character">| &#34;\uxxxx&#34;                                         | Hexadecimal Unicode character                      |#</a></li>
+              <li class="lvl-2"><a href="#uxxxxxxxx-hexadecimal-unicode-character">| &#34;\Uxxxxxxxx&#34;                                     | Hexadecimal Unicode character                      |#</a></li>
+              <li class="lvl-3"><a href="#255-bytes-literals">2.5.5. Bytes literals#</a></li>
+              <li class="lvl-3"><a href="#256-raw-string-literals">2.5.6. Raw string literals#</a></li>
+              <li class="lvl-3"><a href="#257-f-strings">2.5.7. f-strings#</a></li>
+              <li class="lvl-3"><a href="#258-t-strings">2.5.8. t-strings#</a></li>
+              <li class="lvl-3"><a href="#259-formal-grammar-for-f-strings">2.5.9. Formal grammar for f-strings#</a></li>
+              <li class="lvl-2"><a href="#26-literales-numericos">2.6. Literales numéricos#</a></li>
+              <li class="lvl-3"><a href="#261-literales-enteros">2.6.1. Literales enteros#</a></li>
+              <li class="lvl-3"><a href="#262-literales-de-punto-flotante">2.6.2. Literales de punto flotante#</a></li>
+              <li class="lvl-3"><a href="#263-literales-imaginarios">2.6.3. Literales imaginarios#</a></li>
+              <li class="lvl-2"><a href="#27-operators-and-delimiters">2.7. Operators and delimiters#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="2-analisis-lexico">2. Análisis léxico<a class="headerlink" href="#2-analisis-lexico" title="Permanent link">#</a></h1>
+<p>A Python program is read by a <em>parser</em>.  Input to the parser is a
+stream of <em>tokens</em>, generated by the <em>lexical analyzer</em> (also known as
+the <em>tokenizer</em>). This chapter describes how the lexical analyzer
+produces these tokens.</p>
+<p>The lexical analyzer determines the program text's encoding (UTF-8 by
+default), and decodes the text into source characters. If the text
+cannot be decoded, a "SyntaxError" is raised.</p>
+<p>Next, the lexical analyzer uses the source characters to generate a
+stream of tokens. The type of a generated token generally depends on
+the next source character to be processed. Similarly, other special
+behavior of the analyzer depends on the first source character that
+hasn't yet been processed. The following table gives a quick summary
+of these source characters, with links to sections that contain more
+information.</p>
+<p>+----------------------------------------------------+----------------------------------------------------+
+| Character                                          | Next token (or other relevant documentation)       |
+|====================================================|====================================================|</p>
+<h2 id="espacio-tabulador-formfeed-whitespace">| * espacio  * tabulador  * formfeed                 | * Whitespace                                       |<a class="headerlink" href="#espacio-tabulador-formfeed-whitespace" title="Permanent link">#</a></h2>
+<h2 id="cr-lf-new-line-indentation">| * CR, LF                                           | * New line  * Indentation                          |<a class="headerlink" href="#cr-lf-new-line-indentation" title="Permanent link">#</a></h2>
+<p>| * backslash ("\")                                  | * Explicit line joining  * (Also significant in    |</p>
+<h2 id="string-escape-sequences">|                                                    | string escape sequences)                           |<a class="headerlink" href="#string-escape-sequences" title="Permanent link">#</a></h2>
+<h2 id="hash-comment">| * hash ("#")                                       | * Comment                                          |<a class="headerlink" href="#hash-comment" title="Permanent link">#</a></h2>
+<h2 id="quote-string-literal">| * quote ("'", """)                                 | * String literal                                   |<a class="headerlink" href="#quote-string-literal" title="Permanent link">#</a></h2>
+<p>| * ASCII letter ("a"-"z", "A"-"Z")  * non-ASCII     | * Name  * Prefixed string or bytes literal         |</p>
+<h2 id="character">| character                                          |                                                    |<a class="headerlink" href="#character" title="Permanent link">#</a></h2>
+<h2 id="underscore-_-name-can-also-be-part-of-numeric-literals">| * underscore ("_")                                 | * Name  * (Can also be part of numeric literals)   |<a class="headerlink" href="#underscore-_-name-can-also-be-part-of-numeric-literals" title="Permanent link">#</a></h2>
+<h2 id="number-0-9-numeric-literal">| * number ("0"-"9")                                 | * Numeric literal                                  |<a class="headerlink" href="#number-0-9-numeric-literal" title="Permanent link">#</a></h2>
+<h2 id="dot-numeric-literal-operator">| * dot (".")                                        | * Numeric literal  * Operator                      |<a class="headerlink" href="#dot-numeric-literal-operator" title="Permanent link">#</a></h2>
+<p>| * question mark ("?")  * dollar ("$")  * backquote | * Error (outside string literals and comments)     |</p>
+<h2 id="control-character">| ("​`​")  * control character                       |                                                    |<a class="headerlink" href="#control-character" title="Permanent link">#</a></h2>
+<h2 id="other-printing-character-operator-or-delimiter">| * other printing character                         | * Operator or delimiter                            |<a class="headerlink" href="#other-printing-character-operator-or-delimiter" title="Permanent link">#</a></h2>
+<h2 id="end-of-file-end-marker">| * end of file                                      | * End marker                                       |<a class="headerlink" href="#end-of-file-end-marker" title="Permanent link">#</a></h2>
+<h2 id="21-estructura-de-linea">2.1. Estructura de línea<a class="headerlink" href="#21-estructura-de-linea" title="Permanent link">#</a></h2>
+<p>Un programa Python se divide en un número de <em>líneas lógicas</em>.</p>
+<h3 id="211-lineas-logicas">2.1.1. Líneas lógicas<a class="headerlink" href="#211-lineas-logicas" title="Permanent link">#</a></h3>
+<p>The end of a logical line is represented by the token "NEWLINE".
+Statements cannot cross logical line boundaries except where "NEWLINE"
+is allowed by the syntax (e.g., between statements in compound
+statements). A logical line is constructed from one or more <em>physical
+lines</em> by following the explicit or implicit <em>line joining</em> rules.</p>
+<h3 id="212-lineas-fisicas">2.1.2. Líneas físicas<a class="headerlink" href="#212-lineas-fisicas" title="Permanent link">#</a></h3>
+<p>A physical line is a sequence of characters terminated by one the
+following end-of-line sequences:</p>
+<ul>
+<li>
+<p>the Unix form using ASCII LF (linefeed),</p>
+</li>
+<li>
+<p>the Windows form using the ASCII sequence CR LF (return followed by
+  linefeed),</p>
+</li>
+<li>
+<p>the 'Classic Mac OS' form using the ASCII CR (return) character.</p>
+</li>
+</ul>
+<p>Regardless of platform, each of these sequences is replaced by a
+single ASCII LF (linefeed) character. (This is done even inside string
+literals.) Each line can use any of the sequences; they do not need to
+be consistent within a file.</p>
+<p>The end of input also serves as an implicit terminator for the final
+physical line.</p>
+<p>Formally:</p>
+<p>newline: <ASCII LF> | <ASCII CR> <ASCII LF> | <ASCII CR></p>
+<h3 id="213-comentarios">2.1.3. Comentarios<a class="headerlink" href="#213-comentarios" title="Permanent link">#</a></h3>
+<p>Un comentario comienza con un carácter de almohadilla ("#") que no es
+parte de un literal de cadena, y termina al final de la línea física.
+Un comentario implica el final de la línea lógica, a menos que se
+invoque la regla implícita de unión de líneas. Los comentarios son
+ignorados por la sintaxis.</p>
+<h3 id="214-declaracion-de-codificacion">2.1.4. Declaración de Codificación<a class="headerlink" href="#214-declaracion-de-codificacion" title="Permanent link">#</a></h3>
+<p>Si un comentario en la primera o segunda línea del script de Python
+coincide con la expresión regular "coding[=:]\s*([-\w.]+)", este
+comentario se procesa como una declaración de codificación; el primer
+grupo de esta expresión denomina la codificación del archivo de código
+fuente. La declaración de codificación debe aparecer en una línea
+propia. Si se trata de la segunda línea, la primera línea debe ser
+también una línea solamente de comentario. Las formas recomendadas de
+una expresión de codificación son</p>
+<p># -<em>- coding: <encoding-name> -</em>-</p>
+<p>que también es reconocido por GNU Emacs y</p>
+<p># vim:fileencoding=<encoding-name></p>
+<p>que es reconocido por el VIM de Bram Moolenaar.</p>
+<p>If no encoding declaration is found, the default encoding is UTF-8.
+If the implicit or explicit encoding of a file is UTF-8, an initial
+UTF-8 byte-order mark ("b'\xef\xbb\xbf'") is ignored rather than being
+a syntax error.</p>
+<p>Si se declara una codificación, Python debe reconocer el nombre de la
+codificación (ver Codificaciones estándar). La codificación se utiliza
+para todos los análisis léxicos, incluidos las cadenas literales, los
+comentarios y los identificadores.</p>
+<p>All lexical analysis, including string literals, comments and
+identifiers, works on Unicode text decoded using the source encoding.
+Any Unicode code point, except the NUL control character, can appear
+in Python source.</p>
+<p>source_character:  <any Unicode code point, except NUL></p>
+<h3 id="215-union-explicita-de-lineas">2.1.5. Unión explícita de líneas<a class="headerlink" href="#215-union-explicita-de-lineas" title="Permanent link">#</a></h3>
+<p>Dos o más líneas físicas pueden unirse en líneas lógicas utilizando
+caracteres de barra invertida ("\"), de la siguiente manera: cuando
+una línea física termina en una barra invertida que no es parte de
+literal de cadena o de un comentario, se une con la siguiente formando
+una sola línea lógica, borrando la barra invertida y el siguiente
+carácter de fin de línea.  Por ejemplo:</p>
+<p>if 1900 &lt; year &lt; 2100 and 1 &lt;= month &lt;= 12 \
+      and 1 &lt;= day &lt;= 31 and 0 &lt;= hour &lt; 24 \
+      and 0 &lt;= minute &lt; 60 and 0 &lt;= second &lt; 60:   # Looks like a valid date
+           return 1</p>
+<p>Una línea que termina en una barra invertida no puede llevar un
+comentario.  Una barra invertida no continúa un comentario.  Una barra
+invertida no continúa un token excepto para los literales de la cadena
+(es decir, los tokens que no sean literales de la cadena no pueden ser
+divididos a través de líneas físicas usando una barra invertida).  La
+barra invertida es ilegal en cualquier parte de una línea fuera del
+literal de la cadena.</p>
+<h3 id="216-union-implicita-de-lineas">2.1.6. Unión implícita de líneas<a class="headerlink" href="#216-union-implicita-de-lineas" title="Permanent link">#</a></h3>
+<p>Las expresiones entre paréntesis, entre corchetes o entre rizos pueden
+dividirse en más de una línea física sin usar barras invertidas. Por
+ejemplo:</p>
+<p>month_names = ['Januari', 'Februari', 'Maart',      # Son los
+                  'April',   'Mei',      'Juni',       # nombres holandeses
+                  'Juli',    'Augustus', 'September',  # para los meses
+                  'Oktober', 'November', 'December']   # del año</p>
+<p>Las líneas continuas implícitas pueden llevar comentarios.  La sangría
+de las líneas de continuación no es importante.  Se permiten líneas de
+continuación en blanco. No hay ningún token NEWLINE (nueva línea)
+entre las líneas de continuación implícitas.  Las líneas de
+continuación implícitas también pueden aparecer dentro de cadenas de
+triple comilla ( ver más adelante); en ese caso no pueden llevar
+comentarios.</p>
+<h3 id="217-lineas-en-blanco">2.1.7. Líneas en blanco<a class="headerlink" href="#217-lineas-en-blanco" title="Permanent link">#</a></h3>
+<p>A logical line that contains only spaces, tabs, formfeeds and possibly
+a comment, is ignored (i.e., no "NEWLINE" token is generated). During
+interactive input of statements, handling of a blank line may differ
+depending on the implementation of the read-eval-print loop. In the
+standard interactive interpreter, an entirely blank logical line (that
+is, one containing not even whitespace or a comment) terminates a
+multi-line statement.</p>
+<h3 id="218-sangria">2.1.8. Sangría<a class="headerlink" href="#218-sangria" title="Permanent link">#</a></h3>
+<p>El espacio en blanco ( espacios y tabulaciones) al principio de una
+línea lógica se utiliza para calcular el nivel de sangría de la línea,
+que a su vez se utiliza para determinar la agrupación de las
+declaraciones.</p>
+<p>Los tabuladores se sustituyen (de izquierda a derecha) por uno a ocho
+espacios, de manera que el número total de caracteres hasta el
+reemplazo inclusive es un múltiplo de ocho (se pretende que sea la
+misma regla que la utilizada por Unix).  El número total de espacios
+que preceden al primer carácter no en blanco determina entonces la
+sangría de la línea.  La sangría no puede dividirse en múltiples
+líneas físicas utilizando barras invertidas; el espacio en blanco
+hasta la primera barra invertida determina la sangría.</p>
+<p>La indentación se rechaza como inconsistente si un archivo fuente
+mezcla tabulaciones y espacios de manera que el significado depende
+del valor de una tabulación en los espacios; un "TabError" se produce
+en ese caso.</p>
+<p><strong>Nota de compatibilidad entre plataformas:</strong> debido a la naturaleza
+de los editores de texto en plataformas que no sean UNIX, no es
+aconsejable utilizar una mezcla de espacios y tabuladores para la
+sangría en un solo archivo de origen.  También debe tenerse en cuenta
+que las diferentes plataformas pueden limitar explícitamente el nivel
+máximo de sangría.</p>
+<p>Un carácter <em>formfeed</em> puede estar presente al comienzo de la línea;
+será ignorado para los cálculos de sangría anteriores.  Los caracteres
+<em>formfeed</em> que aparecen en otras partes del espacio en blanco inicial
+tienen un efecto indefinido (por ejemplo, pueden poner a cero el
+recuento de espacio).</p>
+<p>The indentation levels of consecutive lines are used to generate
+"INDENT" and "DEDENT" tokens, using a stack, as follows.</p>
+<p>Before the first line of the file is read, a single zero is pushed on
+the stack; this will never be popped off again.  The numbers pushed on
+the stack will always be strictly increasing from bottom to top.  At
+the beginning of each logical line, the line's indentation level is
+compared to the top of the stack. If it is equal, nothing happens. If
+it is larger, it is pushed on the stack, and one "INDENT" token is
+generated.  If it is smaller, it <em>must</em> be one of the numbers
+occurring on the stack; all numbers on the stack that are larger are
+popped off, and for each number popped off a "DEDENT" token is
+generated. At the end of the file, a "DEDENT" token is generated for
+each number remaining on the stack that is larger than zero.</p>
+<p>Aquí hay un ejemplo de un código de Python con una correcta (aunque no
+tan clara) sangría:</p>
+<p>def perm(l):
+           # Calcular la lista de todas las permutaciones de l
+       if len(l) &lt;= 1:
+                     return [l]
+       r = []
+       for i in range(len(l)):
+                s = l[:i] + l[i+1:]
+                p = perm(s)
+                for x in p:
+                 r.append(l[i:i+1] + x)
+       return r</p>
+<p>El siguiente ejemplo muestra varios errores de sangría:</p>
+<div class="codehilite"><pre><span></span><code>def perm(l):                       # error: first line indented
+</code></pre></div>
+
+<p>for i in range(len(l)):             # error: not indented
+       s = l[:i] + l[i+1:]
+           p = perm(l[:i] + l[i+1:])   # error: unexpected indent
+           for x in p:
+                   r.append(l[i:i+1] + x)
+               return r                # error: inconsistent dedent</p>
+<p>(En realidad, los tres primeros errores son detectados por el
+analizador; sólo el último error es encontrado por el analizador
+léxico --- la sangría de "return r" no coincide con un nivel sacado de
+la pila.)</p>
+<h3 id="219-espacios-en-blanco-entre-tokens">2.1.9. Espacios en blanco entre tokens<a class="headerlink" href="#219-espacios-en-blanco-entre-tokens" title="Permanent link">#</a></h3>
+<p>Except at the beginning of a logical line or in string literals, the
+whitespace characters space, tab and formfeed can be used
+interchangeably to separate tokens:</p>
+<p>whitespace:  ' ' | tab | formfeed</p>
+<p>Whitespace is needed between two tokens only if their concatenation
+could otherwise be interpreted as a different token. For example, "ab"
+is one token, but "a b" is two tokens. However, "+a" and "+ a" both
+produce two tokens, "+" and "a", as "+a" is not a valid token.</p>
+<h3 id="2110-end-marker">2.1.10. End marker<a class="headerlink" href="#2110-end-marker" title="Permanent link">#</a></h3>
+<p>At the end of non-interactive input, the lexical analyzer generates an
+"ENDMARKER" token.</p>
+<h2 id="22-otros-tokens">2.2. Otros tokens<a class="headerlink" href="#22-otros-tokens" title="Permanent link">#</a></h2>
+<p>Besides "NEWLINE", "INDENT" and "DEDENT", the following categories of
+tokens exist: <em>identifiers</em> and <em>keywords</em> ("NAME"), <em>literals</em> (such
+as "NUMBER" and "STRING"), and other symbols (<em>operators</em> and
+<em>delimiters</em>, "OP"). Whitespace characters (other than logical line
+terminators, discussed earlier) are not tokens, but serve to delimit
+tokens. Where ambiguity exists, a token comprises the longest possible
+string that forms a legal token, when read from left to right.</p>
+<h2 id="23-names-identifiers-and-keywords">2.3. Names (identifiers and keywords)<a class="headerlink" href="#23-names-identifiers-and-keywords" title="Permanent link">#</a></h2>
+<p>"NAME" tokens represent <em>identifiers</em>, <em>keywords</em>, and <em>soft
+keywords</em>.</p>
+<p>Names are composed of the following characters:</p>
+<ul>
+<li>
+<p>uppercase and lowercase letters ("A-Z" and "a-z"),</p>
+</li>
+<li>
+<p>the underscore ("_"),</p>
+</li>
+<li>
+<p>digits ("0" through "9"), which cannot appear as the first
+  character, and</p>
+</li>
+<li>
+<p>non-ASCII characters. Valid names may only contain "letter-like" and
+  "digit-like" characters; see Non-ASCII characters in names for
+  details.</p>
+</li>
+</ul>
+<p>Names must contain at least one character, but have no upper length
+limit. Case is significant.</p>
+<p>Formally, names are described by the following lexical definitions:</p>
+<p>NAME:          name_start name_continue*
+   name_start:    "a"..."z" | "A"..."Z" | "_" | <non-ASCII character>
+   name_continue: name_start | "0"..."9"
+   identifier:    <NAME, except keywords></p>
+<p>Note that not all names matched by this grammar are valid; see Non-
+ASCII characters in names for details.</p>
+<h3 id="231-palabras-clave">2.3.1. Palabras clave<a class="headerlink" href="#231-palabras-clave" title="Permanent link">#</a></h3>
+<p>The following names are used as reserved words, or <em>keywords</em> of the
+language, and cannot be used as ordinary identifiers.  They must be
+spelled exactly as written here:</p>
+<p>False      await      else       import     pass
+   None       break      except     in         raise
+   True       class      finally    is         return
+   and        continue   for        lambda     try
+   as         def        from       nonlocal   while
+   assert     del        global     not        with
+   async      elif       if         or         yield</p>
+<h3 id="232-palabras-clave-suaves">2.3.2. Palabras clave suaves<a class="headerlink" href="#232-palabras-clave-suaves" title="Permanent link">#</a></h3>
+<p>Added in version 3.10.</p>
+<p>Some names are only reserved under specific contexts. These are known
+as <em>soft keywords</em>:</p>
+<ul>
+<li>
+<p>"match", "case", and "_", when used in the "match" statement.</p>
+</li>
+<li>
+<p>"type", when used in the "type" statement.</p>
+</li>
+</ul>
+<p>These syntactically act as keywords in their specific contexts, but
+this distinction is done at the parser level, not when tokenizing.</p>
+<p>Como palabras clave suaves, su uso en la gramática es posible sin
+dejar de preservar la compatibilidad con el código existente que usa
+esos nombres como nombres de identificadores.</p>
+<p>Distinto en la versión 3.12: "type" ahora es un palabra clave suave.</p>
+<h3 id="233-clases-reservadas-de-identificadores">2.3.3. Clases reservadas de identificadores<a class="headerlink" href="#233-clases-reservadas-de-identificadores" title="Permanent link">#</a></h3>
+<p>Ciertas clases de identificadores (además de las palabras clave)
+tienen significados especiales.  Estas clases se identifican por los
+patrones de los caracteres de guión bajo que van delante y detrás:</p>
+<p>"_<em>"
+   No importado por "from module import </em>".</p>
+<p>"<em>"
+   En un patrón "case" dentro de una declaración "match", "</em>" es una
+   palabra clave suave que denota un comodín wildcard.</p>
+<p>Por separado, el intérprete interactivo pone a disposición el
+   resultado de la última evaluación en la variable "_". (Se almacena
+   en el módulo "builtins", junto con funciones incorporadas como
+   "print").</p>
+<p>En otros lugares, "_" es un identificador regular. A menudo se usa
+   para nombrar elementos "especiales", pero no es especial para
+   Python en sí.</p>
+<p>Nota:</p>
+<div class="codehilite"><pre><span></span><code> El nombre &quot;_&quot; se usa a menudo en conjunción con la
+ internacionalización; consultar la documentación del módulo
+ &quot;gettext`&quot; para más información sobre esta convención.También se
+ usa comúnmente para variables no utilizadas.
+</code></pre></div>
+
+<p>"<strong><em>__"
+   Nombres definidos por el sistema, conocidos informalmente como
+   nombres "</em>dunder<em>". Estos nombres son definidos por el intérprete y
+   su aplicación (incluida la biblioteca estándar). Los nombres
+   actuales del sistema se discuten en la sección Nombres especiales
+   de método y en otros lugares. Es probable que se definan más en
+   futuras versiones de Python.  </em>Cualquier<em> uso de nombres "__</em></strong>",
+   en cualquier contexto, que no siga un uso explícitamente
+   documentado, está sujeto a que se rompa sin previo aviso.</p>
+<p>"__*"
+   Nombres de clase privada.  Los nombres de esta categoría, cuando se
+   utilizan en el contexto de una definición de clase, se reescriben
+   para utilizar una forma desfigurada que ayude a evitar conflictos
+   de nombres entre los atributos "privados" de las clases base y
+   derivadas. Ver la sección Identificadores (Nombres).</p>
+<h3 id="234-non-ascii-characters-in-names">2.3.4. Non-ASCII characters in names<a class="headerlink" href="#234-non-ascii-characters-in-names" title="Permanent link">#</a></h3>
+<p>Names that contain non-ASCII characters need additional normalization
+and validation beyond the rules and grammar explained above. For
+example, "ř_1", "蛇", or "साँप"  are valid names, but "r〰2", "€", or
+"🐍" are not.</p>
+<p>This section explains the exact rules.</p>
+<p>All names are converted into the normalization form NFKC while
+parsing. This means that, for example, some typographic variants of
+characters are converted to their "basic" form. For example,
+"ﬁⁿₐˡᵢᶻₐᵗᵢᵒₙ" normalizes to "finalization", so Python treats them as
+the same name:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>ﬁⁿₐˡᵢᶻₐᵗᵢᵒₙ = 3
+finalization
+   3</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Nota:</p>
+<p>Normalization is done at the lexical level only. Run-time functions
+  that take names as <em>strings</em> generally do not normalize their
+  arguments. For example, the variable defined above is accessible at
+  run time in the "globals()" dictionary as
+  "globals()["finalization"]" but not "globals()["ﬁⁿₐˡᵢᶻₐᵗᵢᵒₙ"]".</p>
+<p>Similarly to how ASCII-only names must contain only letters, digits
+and the underscore, and cannot start with a digit, a valid name must
+start with a character in the "letter-like" set "xid_start", and the
+remaining characters must be in the "letter- and digit-like" set
+"xid_continue".</p>
+<p>These sets are based on the <em>XID_Start</em> and <em>XID_Continue</em> sets as
+defined by the Unicode standard annex UAX-31. Python's "xid_start"
+additionally includes the underscore ("_"). Note that Python does not
+necessarily conform to UAX-31.</p>
+<p>A non-normative listing of characters in the <em>XID_Start</em> and
+<em>XID_Continue</em> sets as defined by Unicode is available in the
+DerivedCoreProperties.txt file in the Unicode Character Database. For
+reference, the construction rules for the "xid_*" sets are given
+below.</p>
+<p>The set "id_start" is defined as the union of:</p>
+<ul>
+<li>
+<p>Unicode category "<Lu>" - uppercase letters (includes "A" to "Z")</p>
+</li>
+<li>
+<p>Unicode category "<Ll>" - lowercase letters (includes "a" to "z")</p>
+</li>
+<li>
+<p>Unicode category "<Lt>" - titlecase letters</p>
+</li>
+<li>
+<p>Unicode category "<Lm>" - modifier letters</p>
+</li>
+<li>
+<p>Unicode category "<Lo>" - other letters</p>
+</li>
+<li>
+<p>Unicode category "<Nl>" - letter numbers</p>
+</li>
+<li>
+<p>{""_""} - the underscore</p>
+</li>
+<li>
+<p>"<Other_ID_Start>" - an explicit set of characters in PropList.txt
+  to support backwards compatibility</p>
+</li>
+</ul>
+<p>The set "xid_start" then closes this set under NFKC normalization, by
+removing all characters whose normalization is not of the form
+"id_start id_continue*".</p>
+<p>The set "id_continue" is defined as the union of:</p>
+<ul>
+<li>
+<p>"id_start" (see above)</p>
+</li>
+<li>
+<p>Unicode category "<Nd>" - decimal numbers (includes "0" to "9")</p>
+</li>
+<li>
+<p>Unicode category "<Pc>" - connector punctuations</p>
+</li>
+<li>
+<p>Unicode category "<Mn>" - nonspacing marks</p>
+</li>
+<li>
+<p>Unicode category "<Mc>" - spacing combining marks</p>
+</li>
+<li>
+<p>"<Other_ID_Continue>" - another explicit set of characters in
+  PropList.txt to support backwards compatibility</p>
+</li>
+</ul>
+<p>Again, "xid_continue" closes this set under NFKC normalization.</p>
+<p>Unicode categories use the version of the Unicode Character Database
+as included in the "unicodedata" module.</p>
+<p>Ver también:</p>
+<ul>
+<li>
+<p><strong>PEP 3131</strong> -- Supporting Non-ASCII Identifiers</p>
+</li>
+<li>
+<p><strong>PEP 672</strong> -- Unicode-related Security Considerations for Python</p>
+</li>
+</ul>
+<h2 id="24-literales">2.4. Literales<a class="headerlink" href="#24-literales" title="Permanent link">#</a></h2>
+<p>Los literales son notaciones para los valores constantes de algunos
+tipos incorporados.</p>
+<p>In terms of lexical analysis, Python has string, bytes and numeric
+literals.</p>
+<p>Other "literals" are lexically denoted using keywords ("None", "True",
+"False") and the special ellipsis token ("...").</p>
+<h2 id="25-literales-de-cadenas-y-bytes">2.5. Literales de cadenas y bytes<a class="headerlink" href="#25-literales-de-cadenas-y-bytes" title="Permanent link">#</a></h2>
+<p>String literals are text enclosed in single quotes ("'") or double
+quotes ("""). For example:</p>
+<p>"spam"
+   'eggs'</p>
+<p>The quote used to start the literal also terminates it, so a string
+literal can only contain the other quote (except with escape
+sequences, see below). For example:</p>
+<p>'Say "Hello", please.'
+   "Don't do that!"</p>
+<p>Except for this limitation, the choice of quote character ("'" or """)
+does not affect how the literal is parsed.</p>
+<p>Inside a string literal, the backslash ("\") character introduces an
+<em>escape sequence</em>, which has special meaning depending on the
+character after the backslash. For example, "\"" denotes the double
+quote character, and does <em>not</em> end the string:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>print("Say \"Hello\" to everyone!")
+   Say "Hello" to everyone!</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>See escape sequences below for a full list of such sequences, and more
+details.</p>
+<h3 id="251-triple-quoted-strings">2.5.1. Triple-quoted strings<a class="headerlink" href="#251-triple-quoted-strings" title="Permanent link">#</a></h3>
+<p>Strings can also be enclosed in matching groups of three single or
+double quotes. These are generally referred to as <em>triple-quoted
+strings</em>:</p>
+<p>"""This is a triple-quoted string."""</p>
+<p>In triple-quoted literals, unescaped quotes are allowed (and are
+retained), except that three unescaped quotes in a row terminate the
+literal, if they are of the same kind ("'" or """) used at the start:</p>
+<p>"""This string has "quotes" inside."""</p>
+<p>Unescaped newlines are also allowed and retained:</p>
+<p>'''This triple-quoted string
+   continues on the next line.'''</p>
+<h3 id="252-string-prefixes">2.5.2. String prefixes<a class="headerlink" href="#252-string-prefixes" title="Permanent link">#</a></h3>
+<p>String literals can have an optional <em>prefix</em> that influences how the
+content of the literal is parsed, for example:</p>
+<p>b"data"
+   f'{result=}'</p>
+<p>The allowed prefixes are:</p>
+<ul>
+<li>
+<p>"b": Bytes literal</p>
+</li>
+<li>
+<p>"r": Raw string</p>
+</li>
+<li>
+<p>"f": Formatted string literal ("f-string")</p>
+</li>
+<li>
+<p>"t": Template string literal ("t-string")</p>
+</li>
+<li>
+<p>"u": No effect (allowed for backwards compatibility)</p>
+</li>
+</ul>
+<p>See the linked sections for details on each type.</p>
+<p>Prefixes are case-insensitive (for example, '"B"' works the same as
+'"b"'). The '"r"' prefix can be combined with '"f"', '"t"' or '"b"',
+so '"fr"', '"rf"', '"tr"', '"rt"', '"br"', and '"rb"' are also valid
+prefixes.</p>
+<p>Added in version 3.3: El prefijo "'rb'" de literales de bytes raw se
+ha añadido como sinónimo de "'br'".Se reintrodujo el soporte para el
+legado unicode literal ("u'value'") para simplificar el mantenimiento
+de las bases de código dual Python 2.x y 3.x. Ver <strong>PEP 414</strong> para más
+información.</p>
+<h3 id="253-formal-grammar">2.5.3. Formal grammar<a class="headerlink" href="#253-formal-grammar" title="Permanent link">#</a></h3>
+<p>String literals, except "f-strings" and "t-strings", are described by
+the following lexical definitions.</p>
+<p>These definitions use negative lookaheads ("!") to indicate that an
+ending quote ends the literal.</p>
+<p>STRING:          [stringprefix] (stringcontent)
+   stringprefix:    &lt;("r" | "u" | "b" | "br" | "rb"), case-insensitive&gt;
+   stringcontent:
+      | "'''" ( !"'''" longstringitem)<em> "'''"
+      | '"""' ( !'"""' longstringitem)</em> '"""'
+      | "'" ( !"'" stringitem)<em> "'"
+      | '"' ( !'"' stringitem)</em> '"'
+   stringitem:      stringchar | stringescapeseq
+   stringchar:      <any source_character, except backslash and newline>
+   longstringitem:  stringitem | newline
+   stringescapeseq: "\" <any source_character></p>
+<p>Note that as in all lexical definitions, whitespace is significant. In
+particular, the prefix (if any) must be immediately followed by the
+starting quote.</p>
+<h3 id="254-secuencias-de-escape">2.5.4. Secuencias de escape<a class="headerlink" href="#254-secuencias-de-escape" title="Permanent link">#</a></h3>
+<p>Unless an '"r"' or '"R"' prefix is present, escape sequences in string
+and bytes literals are interpreted according to rules similar to those
+used by Standard C.  The recognized escape sequences are:</p>
+<p>+----------------------------------------------------+----------------------------------------------------+
+| Secuencia de escape                                | Significado                                        |
+|====================================================|====================================================|</p>
+<h2 id="ignored-end-of-line">| "\"<newline>                                       | Ignored end of line                                |<a class="headerlink" href="#ignored-end-of-line" title="Permanent link">#</a></h2>
+<h2 id="backslash">| "\"                                               | Backslash                                          |<a class="headerlink" href="#backslash" title="Permanent link">#</a></h2>
+<h2 id="single-quote">| "\'"                                               | Single quote                                       |<a class="headerlink" href="#single-quote" title="Permanent link">#</a></h2>
+<h2 id="double-quote">| "\""                                               | Double quote                                       |<a class="headerlink" href="#double-quote" title="Permanent link">#</a></h2>
+<h2 id="a-ascii-bell-bel">| "\a"                                               | ASCII Bell (BEL)                                   |<a class="headerlink" href="#a-ascii-bell-bel" title="Permanent link">#</a></h2>
+<h2 id="b-ascii-retroceso-bs">| "\b"                                               | ASCII Retroceso (BS)                               |<a class="headerlink" href="#b-ascii-retroceso-bs" title="Permanent link">#</a></h2>
+<h2 id="f-ascii-formfeed-ff">| "\f"                                               | ASCII Formfeed (FF)                                |<a class="headerlink" href="#f-ascii-formfeed-ff" title="Permanent link">#</a></h2>
+<h2 id="n-ascii-linefeed-lf">| "\n"                                               | ASCII Linefeed (LF)                                |<a class="headerlink" href="#n-ascii-linefeed-lf" title="Permanent link">#</a></h2>
+<h2 id="r-ascii-retorno-de-carro-cr">| "\r"                                               | ASCII Retorno de carro (CR)                        |<a class="headerlink" href="#r-ascii-retorno-de-carro-cr" title="Permanent link">#</a></h2>
+<h2 id="t-ascii-sangria-horizontal-tab">| "\t"                                               | ASCII Sangría horizontal (TAB)                     |<a class="headerlink" href="#t-ascii-sangria-horizontal-tab" title="Permanent link">#</a></h2>
+<h2 id="v-ascii-sangria-vertical-vt">| "\v"                                               | ASCII Sangría vertical (VT)                        |<a class="headerlink" href="#v-ascii-sangria-vertical-vt" title="Permanent link">#</a></h2>
+<h2 id="ooo-octal-character">| "*ooo*"                                           | Octal character                                    |<a class="headerlink" href="#ooo-octal-character" title="Permanent link">#</a></h2>
+<h2 id="xhh-hexadecimal-character">| "\x<em>hh</em>"                                           | Hexadecimal character                              |<a class="headerlink" href="#xhh-hexadecimal-character" title="Permanent link">#</a></h2>
+<h2 id="nname-named-unicode-character">| "\N{<em>name</em>}"                                       | Named Unicode character                            |<a class="headerlink" href="#nname-named-unicode-character" title="Permanent link">#</a></h2>
+<h2 id="uxxxx-hexadecimal-unicode-character">| "\u<em>xxxx</em>"                                         | Hexadecimal Unicode character                      |<a class="headerlink" href="#uxxxx-hexadecimal-unicode-character" title="Permanent link">#</a></h2>
+<h2 id="uxxxxxxxx-hexadecimal-unicode-character">| "\U<em>xxxxxxxx</em>"                                     | Hexadecimal Unicode character                      |<a class="headerlink" href="#uxxxxxxxx-hexadecimal-unicode-character" title="Permanent link">#</a></h2>
+<h4 id="2541-ignored-end-of-line">2.5.4.1. Ignored end of line<a class="headerlink" href="#2541-ignored-end-of-line" title="Permanent link">#</a></h4>
+<p>Se puede agregar una barra invertida al final de una línea para
+ignorar la nueva línea:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>'Esta cadena no incluirá \
+   ... caracteres de barra invertida o nueva linea.'
+   'Esta cadena no incluirá caracteres de barra invertida o nueva linea.'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Se puede lograr el mismo resultado usando triple-quoted strings, o
+paréntesis y string literal concatenation.</p>
+<h4 id="2542-escaped-characters">2.5.4.2. Escaped characters<a class="headerlink" href="#2542-escaped-characters" title="Permanent link">#</a></h4>
+<p>To include a backslash in a non-raw Python string literal, it must be
+doubled. The "\" escape sequence denotes a single backslash
+character:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>print('C:\Program Files')
+   C:\Program Files</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Similarly, the "\'" and "\"" sequences denote the single and double
+quote character, respectively:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>print('\' and \"')
+   ' and "</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4 id="2543-octal-character">2.5.4.3. Octal character<a class="headerlink" href="#2543-octal-character" title="Permanent link">#</a></h4>
+<p>The sequence "*ooo<em>" denotes a </em>character<em> with the octal (base 8)
+value </em>ooo*:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>'\120'
+   'P'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Up to three octal digits (0 through 7) are accepted.</p>
+<p>In a bytes literal, <em>character</em> means a <em>byte</em> with the given value.
+In a string literal, it means a Unicode character with the given
+value.</p>
+<p>Distinto en la versión 3.11: Octal escapes with value larger than
+"0o377" (255) produce a "DeprecationWarning".</p>
+<p>Distinto en la versión 3.12: Octal escapes with value larger than
+"0o377" (255) produce a "SyntaxWarning". In a future Python version
+they will raise a "SyntaxError".</p>
+<h4 id="2544-hexadecimal-character">2.5.4.4. Hexadecimal character<a class="headerlink" href="#2544-hexadecimal-character" title="Permanent link">#</a></h4>
+<p>The sequence "\x<em>hh</em>" denotes a <em>character</em> with the hex (base 16)
+value <em>hh</em>:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>'\x50'
+   'P'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>A diferencia de C estándar, se requieren exactamente dos dígitos
+hexadecimales.</p>
+<p>In a bytes literal, <em>character</em> means a <em>byte</em> with the given value.
+In a string literal, it means a Unicode character with the given
+value.</p>
+<h4 id="2545-named-unicode-character">2.5.4.5. Named Unicode character<a class="headerlink" href="#2545-named-unicode-character" title="Permanent link">#</a></h4>
+<p>The sequence "\N{<em>name</em>}" denotes a Unicode character with the given
+<em>name</em>:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>'\N{LATIN CAPITAL LETTER P}'
+   'P'
+'\N{SNAKE}'
+   '🐍'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>This sequence cannot appear in bytes literals.</p>
+<p>Distinto en la versión 3.3: Support for name aliases has been added.</p>
+<h4 id="2546-hexadecimal-unicode-characters">2.5.4.6. Hexadecimal Unicode characters<a class="headerlink" href="#2546-hexadecimal-unicode-characters" title="Permanent link">#</a></h4>
+<p>These sequences "\u<em>xxxx</em>" and "\U<em>xxxxxxxx</em>" denote the Unicode
+character with the given hex (base 16) value. Exactly four digits are
+required for "\u"; exactly eight digits are required for "\U". The
+latter can encode any Unicode character.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>'\u1234'
+   'ሴ'
+'\U0001f40d'
+   '🐍'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>These sequences cannot appear in bytes literals.</p>
+<h4 id="2547-unrecognized-escape-sequences">2.5.4.7. Unrecognized escape sequences<a class="headerlink" href="#2547-unrecognized-escape-sequences" title="Permanent link">#</a></h4>
+<p>Unlike in Standard C, all unrecognized escape sequences are left in
+the string unchanged, that is, <em>the backslash is left in the result</em>:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>print('\q')
+   \q
+list('\q')
+   ['\', 'q']</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Note that for bytes literals, the escape sequences only recognized in
+string literals ("\N...", "\u...", "\U...") fall into the category of
+unrecognized escapes.</p>
+<p>Distinto en la versión 3.6: Secuencias de escape no conocidas producen
+un "DeprecationWarning".</p>
+<p>Distinto en la versión 3.12: Unrecognized escape sequences produce a
+"SyntaxWarning". In a future Python version they will raise a
+"SyntaxError".</p>
+<h3 id="255-bytes-literals">2.5.5. Bytes literals<a class="headerlink" href="#255-bytes-literals" title="Permanent link">#</a></h3>
+<p><em>Bytes literals</em> are always prefixed with '"b"' or '"B"'; they produce
+an instance of the "bytes" type instead of the "str" type. They may
+only contain ASCII characters; bytes with a numeric value of 128 or
+greater must be expressed with escape sequences (typically Hexadecimal
+character or Octal character):</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>b'\x89PNG\r\n\x1a\n'
+   b'\x89PNG\r\n\x1a\n'
+list(b'\x89PNG\r\n\x1a\n')
+   [137, 80, 78, 71, 13, 10, 26, 10]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Similarly, a zero byte must be expressed using an escape sequence
+(typically "\0" or "\x00").</p>
+<h3 id="256-raw-string-literals">2.5.6. Raw string literals<a class="headerlink" href="#256-raw-string-literals" title="Permanent link">#</a></h3>
+<p>Both string and bytes literals may optionally be prefixed with a
+letter '"r"' or '"R"'; such constructs are called <em>raw string
+literals</em> and <em>raw bytes literals</em> respectively and treat backslashes
+as literal characters. As a result, in raw string literals, escape
+sequences are not treated specially:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>r'\d{4}-\d{2}-\d{2}'
+   '\d{4}-\d{2}-\d{2}'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Incluso en un literal <em>raw</em>, las comillas se pueden escapar con una
+barra inversa, pero la barra inversa permanece en el resultado; por
+ejemplo, "r"\""" es un literal de cadena válido que consiste en dos
+caracteres: una barra inversa y una comilla doble; "r"\"" no es un
+literal de cadena válido (incluso una cadena en bruto no puede
+terminar en un número impar de barras inversas).  Específicamente, <em>un
+literal raw no puede terminar en una sola barra inversa</em> (ya que la
+barra inversa se escaparía del siguiente carácter de comillas). Nótese
+también que una sola barra inversa seguida de una nueva línea se
+interpreta como esos dos caracteres como parte del literal, <em>no</em> como
+una continuación de línea.</p>
+<h3 id="257-f-strings">2.5.7. f-strings<a class="headerlink" href="#257-f-strings" title="Permanent link">#</a></h3>
+<p>Added in version 3.6.</p>
+<p>Distinto en la versión 3.7: The "await" and "async for" can be used in
+expressions within f-strings.</p>
+<p>Distinto en la versión 3.8: Added the debug specifier ("=")</p>
+<p>Distinto en la versión 3.12: Many restrictions on expressions within
+f-strings have been removed. Notably, nested strings, comments, and
+backslashes are now permitted.</p>
+<p>A <em>formatted string literal</em> or <em>f-string</em> is a string literal that is
+prefixed with '"f"' or '"F"'. Unlike other string literals, f-strings
+do not have a constant value. They may contain <em>replacement fields</em>
+delimited by curly braces "{}". Replacement fields contain expressions
+which are evaluated at run time. For example:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>who = 'nobody'
+nationality = 'Spanish'
+f'{who.title()} expects the {nationality} Inquisition!'
+   'Nobody expects the Spanish Inquisition!'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Any doubled curly braces ("{{" or "}}") outside replacement fields are
+replaced with the corresponding single curly brace:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p class="..">print(f'{{...}}')</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Other characters outside replacement fields are treated like in
+ordinary string literals. This means that escape sequences are decoded
+(except when a literal is also marked as a raw string), and newlines
+are possible in triple-quoted f-strings:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>name = 'Galahad'
+favorite_color = 'blue'
+print(f'{name}:\t{favorite_color}')
+   Galahad:       blue
+print(rf"C:\Users{name}")
+   C:\Users\Galahad
+print(f'''Three shall be the number of the counting
+   ... and the number of the counting shall be three.''')
+   Three shall be the number of the counting
+   and the number of the counting shall be three.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Expressions in formatted string literals are treated like regular
+Python expressions. Each expression is evaluated in the context where
+the formatted string literal appears, in order from left to right. An
+empty expression is not allowed, and both "lambda" and assignment
+expressions ":=" must be surrounded by explicit parentheses:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>f'{(half := 1/2)}, {half * 42}'
+   '0.5, 21.0'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Se puede reutilizar el tipo de comilla del f-string exterior dentro de
+un campo de reemplazo:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>a = dict(x=2)
+f"abc {a["x"]} def"
+   'abc 2 def'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>También se permiten barras invertidas en campos de reemplazo y se
+evalúan de la misma manera que cualquier otro contexto:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>a = ["a", "b", "c"]
+print(f"Lista a contiene:\n{"\n".join(a)}")
+   Lista a contiene:
+   a
+   b
+   c</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>It is possible to nest f-strings:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>name = 'world'
+f'Repeated:{f' hello {name}' * 3}'
+   'Repeated: hello world hello world hello world'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Portable Python programs should not use more than 5 levels of nesting.</p>
+<p><strong>Detalles de implementación de CPython:</strong> CPython does not limit
+nesting of f-strings.</p>
+<p>Replacement expressions can contain newlines in both single-quoted and
+triple-quoted f-strings and they can contain comments. Everything that
+comes after a "#" inside a replacement field is a comment (even
+closing braces and quotes). This means that replacement fields with
+comments must be closed in a different line:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>a = 2
+f"abc{a  # This comment  }"  continues until the end of the line
+   ...       + 3}"
+   'abc5'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>After the expression, replacement fields may optionally contain:</p>
+<ul>
+<li>
+<p>a <em>debug specifier</em> -- an equal sign ("="), optionally surrounded by
+  whitespace on one or both sides;</p>
+</li>
+<li>
+<p>a <em>conversion specifier</em> -- "!s", "!r" or "!a"; and/or</p>
+</li>
+<li>
+<p>a <em>format specifier</em> prefixed with a colon (":").</p>
+</li>
+</ul>
+<p>See the Standard Library section on f-strings for details on how these
+fields are evaluated.</p>
+<p>As that section explains, <em>format specifiers</em> are passed as the second
+argument to the "format()" function to format a replacement field
+value. For example, they can be used to specify a field width and
+padding characters using the Format Specification Mini-Language:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>number = 14.3
+f'{number:20.7f}'
+   '          14.3000000'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Top-level format specifiers may include nested replacement fields:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>field_size = 20
+precision = 7
+f'{number:{field_size}.{precision}f}'
+   '          14.3000000'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>These nested fields may include their own conversion fields and format
+specifiers:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>number = 3
+f'{number:{field_size}}'
+   '                   3'
+f'{number:{field_size:05}}'
+   '00000000000000000003'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>However, these nested fields may not include more deeply nested
+replacement fields.</p>
+<p>Formatted string literals cannot be used as <em>docstrings</em>, even if they
+do not include expressions:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>def foo():
+   ...     f"Not a docstring"
+   ...
+print(foo.<strong>doc</strong>)
+   None</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Ver también:</p>
+<ul>
+<li>
+<p><strong>PEP 498</strong> -- Literal String Interpolation</p>
+</li>
+<li>
+<p><strong>PEP 701</strong> -- Syntactic formalization of f-strings</p>
+</li>
+<li>
+<p>"str.format()", which uses a related format string mechanism.</p>
+</li>
+</ul>
+<h3 id="258-t-strings">2.5.8. t-strings<a class="headerlink" href="#258-t-strings" title="Permanent link">#</a></h3>
+<p>Added in version 3.14.</p>
+<p>A <em>template string literal</em> or <em>t-string</em> is a string literal that is
+prefixed with '"t"' or '"T"'. These strings follow the same syntax
+rules as formatted string literals. For differences in evaluation
+rules, see the Standard Library section on t-strings</p>
+<h3 id="259-formal-grammar-for-f-strings">2.5.9. Formal grammar for f-strings<a class="headerlink" href="#259-formal-grammar-for-f-strings" title="Permanent link">#</a></h3>
+<p>F-strings are handled partly by the <em>lexical analyzer</em>, which produces
+the tokens "FSTRING_START", "FSTRING_MIDDLE" and "FSTRING_END", and
+partly by the parser, which handles expressions in the replacement
+field. The exact way the work is split is a CPython implementation
+detail.</p>
+<p>Correspondingly, the f-string grammar is a mix of lexical and
+syntactic definitions.</p>
+<p>Whitespace is significant in these situations:</p>
+<ul>
+<li>
+<p>There may be no whitespace in "FSTRING_START" (between the prefix
+  and quote).</p>
+</li>
+<li>
+<p>Whitespace in "FSTRING_MIDDLE" is part of the literal string
+  contents.</p>
+</li>
+<li>
+<p>In "fstring_replacement_field", if "f_debug_specifier" is present,
+  all whitespace after the opening brace until the
+  "f_debug_specifier", as well as whitespace immediately following
+  "f_debug_specifier", is retained as part of the expression.</p>
+</li>
+</ul>
+<p><strong>Detalles de implementación de CPython:</strong> The expression is not
+  handled in the tokenization phase; it is retrieved from the source
+  code using locations of the "{" token and the token after "=".</p>
+<p>The "FSTRING_MIDDLE" definition uses negative lookaheads ("!") to
+indicate special characters (backslash, newline, "{", "}") and
+sequences ("f_quote").</p>
+<p>fstring:    FSTRING_START fstring_middle* FSTRING_END</p>
+<p>FSTRING_START:      fstringprefix ("'" | '"' | "'''" | '"""')
+   FSTRING_END:        f_quote
+   fstringprefix:      &lt;("f" | "fr" | "rf"), case-insensitive&gt;
+   f_debug_specifier:  '='
+   f_quote:            <the quote character(s) used in FSTRING_START></p>
+<p>fstring_middle:
+      | fstring_replacement_field
+      | FSTRING_MIDDLE
+   FSTRING_MIDDLE:
+      | (!"\" !newline !'{' !'}' !f_quote) source_character
+      | stringescapeseq
+      | "{{"
+      | "}}"
+      | <newline, in triple-quoted f-strings only>
+   fstring_replacement_field:
+      | '{' f_expression [f_debug_specifier] [fstring_conversion]
+            [fstring_full_format_spec] '}'
+   fstring_conversion:
+      | "!" ("s" | "r" | "a")
+   fstring_full_format_spec:
+      | ':' fstring_format_spec<em>
+   fstring_format_spec:
+      | FSTRING_MIDDLE
+      | fstring_replacement_field
+   f_expression:
+      | ','.(conditional_expression | "</em>" or_expr)+ [","]
+      | yield_expression</p>
+<p>Nota:</p>
+<p>In the above grammar snippet, the "f_quote" and "FSTRING_MIDDLE"
+  rules are context-sensitive -- they depend on the contents of
+  "FSTRING_START" of the nearest enclosing "fstring".Constructing a
+  more traditional formal grammar from this template is left as an
+  exercise for the reader.</p>
+<p>The grammar for t-strings is identical to the one for f-strings, with
+<em>t</em> instead of <em>f</em> at the beginning of rule and token names and in the
+prefix.</p>
+<p>tstring:    TSTRING_START tstring_middle* TSTRING_END</p>
+<p><rest of the t-string grammar is omitted; see above></p>
+<h2 id="26-literales-numericos">2.6. Literales numéricos<a class="headerlink" href="#26-literales-numericos" title="Permanent link">#</a></h2>
+<p>"NUMBER" tokens represent numeric literals, of which there are three
+types: integers, floating-point numbers, and imaginary numbers.</p>
+<p>NUMBER: integer | floatnumber | imagnumber</p>
+<p>The numeric value of a numeric literal is the same as if it were
+passed as a string to the "int", "float" or "complex" class
+constructor, respectively. Note that not all valid inputs for those
+constructors are also valid literals.</p>
+<p>Numeric literals do not include a sign; a phrase like "-1" is actually
+an expression composed of the unary operator '"-"' and the literal
+"1".</p>
+<h3 id="261-literales-enteros">2.6.1. Literales enteros<a class="headerlink" href="#261-literales-enteros" title="Permanent link">#</a></h3>
+<p>Integer literals denote whole numbers. For example:</p>
+<p>7
+   3
+   2147483647</p>
+<p>There is no limit for the length of integer literals apart from what
+can be stored in available memory:</p>
+<p>7922816251426433759354395033679228162514264337593543950336</p>
+<p>Underscores can be used to group digits for enhanced readability, and
+are ignored for determining the numeric value of the literal. For
+example, the following literals are equivalent:</p>
+<p>100_000_000_000
+   100000000000
+   1_00_00_00_00_000</p>
+<p>Underscores can only occur between digits. For example, "<em>123",
+"321</em>", and "123__321" are <em>not</em> valid literals.</p>
+<p>Integers can be specified in binary (base 2), octal (base 8), or
+hexadecimal (base 16) using the prefixes "0b", "0o" and "0x",
+respectively. Hexadecimal digits 10 through 15 are represented by
+letters "A"-"F", case-insensitive.  For example:</p>
+<p>0b100110111
+   0b_1110_0101
+   0o177
+   0o377
+   0xdeadbeef
+   0xDead_Beef</p>
+<p>An underscore can follow the base specifier. For example, "0x_1f" is a
+valid literal, but "0_x1f" and "0x__1f" are not.</p>
+<p>Leading zeros in a non-zero decimal number are not allowed. For
+example, "0123" is not a valid literal. This is for disambiguation
+with C-style octal literals, which Python used before version 3.0.</p>
+<p>Formally, integer literals are described by the following lexical
+definitions:</p>
+<p>integer:      decinteger | bininteger | octinteger | hexinteger | zerointeger
+   decinteger:   nonzerodigit (["_"] digit)<em>
+   bininteger:   "0" ("b" | "B") (["<em>"] bindigit)+
+   octinteger:   "0" ("o" | "O") (["</em>"] octdigit)+
+   hexinteger:   "0" ("x" | "X") (["<em>"] hexdigit)+
+   zerointeger:  "0"+ (["</em>"] "0")</em>
+   nonzerodigit: "1"..."9"
+   digit:        "0"..."9"
+   bindigit:     "0" | "1"
+   octdigit:     "0"..."7"
+   hexdigit:     digit | "a"..."f" | "A"..."F"</p>
+<p>Distinto en la versión 3.6: Los guiones bajos están ahora permitidos
+para agrupar en literales.</p>
+<h3 id="262-literales-de-punto-flotante">2.6.2. Literales de punto flotante<a class="headerlink" href="#262-literales-de-punto-flotante" title="Permanent link">#</a></h3>
+<p>Floating-point (float) literals, such as "3.14" or "1.5", denote
+approximations of real numbers.</p>
+<p>They consist of <em>integer</em> and <em>fraction</em> parts, each composed of
+decimal digits. The parts are separated by a decimal point, ".":</p>
+<p>2.71828
+   4.0</p>
+<p>Unlike in integer literals, leading zeros are allowed. For example,
+"077.010" is legal, and denotes the same number as "77.01".</p>
+<p>As in integer literals, single underscores may occur between digits to
+help readability:</p>
+<p>96_485.332_123
+   3.14_15_93</p>
+<p>Either of these parts, but not both, can be empty. For example:</p>
+<ol start="10">
+<li>
+<h1 id="equivalent-to-100">(equivalent to 10.0)<a class="headerlink" href="#equivalent-to-100" title="Permanent link">#</a></h1>
+   .001  # (equivalent to 0.001)</li>
+</ol>
+<p>Optionally, the integer and fraction may be followed by an <em>exponent</em>:
+the letter "e" or "E", followed by an optional sign, "+" or "-", and a
+number in the same format as the integer and fraction parts. The "e"
+or "E" represents "times ten raised to the power of":</p>
+<p>1.0e3  # (represents 1.0×10³, or 1000.0)
+   1.166e-5  # (represents 1.166×10⁻⁵, or 0.00001166)
+   6.02214076e+23  # (represents 6.02214076×10²³, or 602214076000000000000000.)</p>
+<p>In floats with only integer and exponent parts, the decimal point may
+be omitted:</p>
+<p>1e3  # (equivalent to 1.e3 and 1.0e3)
+   0e0  # (equivalent to 0.)</p>
+<p>Formally, floating-point literals are described by the following
+lexical definitions:</p>
+<p>floatnumber:
+      | digitpart "." [digitpart] [exponent]
+      | "." digitpart [exponent]
+      | digitpart exponent
+   digitpart: digit (["_"] digit)*
+   exponent:  ("e" | "E") ["+" | "-"] digitpart</p>
+<p>Distinto en la versión 3.6: Los guiones bajos están ahora permitidos
+para agrupar en literales.</p>
+<h3 id="263-literales-imaginarios">2.6.3. Literales imaginarios<a class="headerlink" href="#263-literales-imaginarios" title="Permanent link">#</a></h3>
+<p>Python has complex number objects, but no complex literals. Instead,
+<em>imaginary literals</em> denote complex numbers with a zero real part.</p>
+<p>For example, in math, the complex number 3+4.2<em>i</em> is written as the
+real number 3 added to the imaginary number 4.2<em>i</em>. Python uses a
+similar syntax, except the imaginary unit is written as "j" rather
+than <em>i</em>:</p>
+<p>3+4.2j</p>
+<p>This is an expression composed of the integer literal "3", the
+operator '"+"', and the imaginary literal "4.2j". Since these are
+three separate tokens, whitespace is allowed between them:</p>
+<p>3 + 4.2j</p>
+<p>No whitespace is allowed <em>within</em> each token. In particular, the "j"
+suffix, may not be separated from the number before it.</p>
+<p>The number before the "j" has the same syntax as a floating-point
+literal. Thus, the following are valid imaginary literals:</p>
+<p>4.2j
+   3.14j
+   10.j
+   .001j
+   1e100j
+   3.14e-10j
+   3.14_15_93j</p>
+<p>Unlike in a floating-point literal the decimal point can be omitted if
+the imaginary number only has an integer part. The number is still
+evaluated as a floating-point number, not an integer:</p>
+<p>10j
+   0j
+   1000000000000000000000000j   # equivalent to 1e+24j</p>
+<p>The "j" suffix is case-insensitive. That means you can use "J"
+instead:</p>
+<p>3.14J   # equivalent to 3.14j</p>
+<p>Formally, imaginary literals are described by the following lexical
+definition:</p>
+<p>imagnumber: (floatnumber | digitpart) ("j" | "J")</p>
+<h2 id="27-operators-and-delimiters">2.7. Operators and delimiters<a class="headerlink" href="#27-operators-and-delimiters" title="Permanent link">#</a></h2>
+<p>The following grammar defines <em>operator</em> and <em>delimiter</em> tokens, that
+is, the generic "OP" token type. A list of these tokens and their
+names is also available in the "token" module documentation.</p>
+<p>OP:
+      | assignment_operator
+      | bitwise_operator
+      | comparison_operator
+      | enclosing_delimiter
+      | other_delimiter
+      | arithmetic_operator
+      | "..."
+      | other_op</p>
+<p>assignment_operator:   "+=" | "-=" | "<em>=" | "</em><em>=" | "/="  | "//=" | "%=" |
+                          "&amp;=" | "|=" | "^=" | "&lt;&lt;=" | "&gt;&gt;=" | "@="  | ":="
+   bitwise_operator:      "&amp;"  | "|"  | "^"  | "~"   | "&lt;&lt;"  | "&gt;&gt;"
+   comparison_operator:   "&lt;=" | "&gt;=" | "&lt;"  | "&gt;"   | "=="  | "!="
+   enclosing_delimiter:   "("  | ")"  | "["  | "]"   | "{"   | "}"
+   other_delimiter:       ","  | ":"  | "!"  | ";"   | "="   | "-&gt;"
+   arithmetic_operator:   "+"  | "-"  | "</em><em>" | "</em>"   | "//"  | "/"   | "%"
+   other_op:              "."  | "@"</p>
+<p>Nota:</p>
+<p>Generally, <em>operators</em> are used to combine expressions, while
+  <em>delimiters</em> serve other purposes. However, there is no clear,
+  formal distinction between the two categories.Some tokens can serve
+  as either operators or delimiters, depending on usage. For example,
+  "*" is both the multiplication operator and a delimiter used for
+  sequence unpacking, and "@" is both the matrix multiplication and a
+  delimiter that introduces decorators.For some tokens, the
+  distinction is unclear. For example, some people consider ".", "(",
+  and ")" to be delimiters, while others see the "getattr()" operator
+  and the function call operator(s).Some of Python's operators, like
+  "and", "or", and "not in", use keyword tokens rather than "symbols"
+  (operator tokens).</p>
+<p>A sequence of three consecutive periods ("...") has a special meaning
+as an "Ellipsis" literal.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../reference/introduction.html">
+          <span class="muted">Anterior</span>1. Introducción
+        </a>
+        <a class="pager-next" href="../reference/simple_stmts.html">
+          <span class="muted">Siguiente</span>7. Declaraciones simples
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> de documentación técnica.
+    La referencia siempre es el sitio oficial de cada proyecto.
+  </p>
+  <p class="muted">
+    Cada documentación conserva la licencia de su proyecto de origen ·
+    Generado el 2026-08-02 · Mantenido por @raupulus
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>
