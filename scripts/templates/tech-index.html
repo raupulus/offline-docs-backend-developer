@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 
 {% block title %}{{ meta.name }} · Documentación offline{% endblock %}
+{% block description %}Documentación técnica offline de {{ meta.name }}{% if meta.version %} (versión {{ meta.version }}){% endif %}. {{ meta.documents }} documentos disponibles sin conexión a internet.{% endblock %}
+{% block og_description %}Documentación técnica offline de {{ meta.name }}{% if meta.version %} (versión {{ meta.version }}){% endif %}. {{ meta.documents }} documentos disponibles sin conexión a internet.{% endblock %}
+
+{% block schema_type %}TechArticle{% endblock %}
+{% block schema_desc %}Documentación técnica offline de {{ meta.name }}{% if meta.version %} (versión {{ meta.version }}){% endif %}. {{ meta.documents }} documentos disponibles sin conexión a internet.{% endblock %}
 
 {% block search_box %}
 <div class="search" data-search data-tech="{{ meta.id }}" data-index="./_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en {{ meta.name }}…"
-         aria-label="Buscar en {{ meta.name }}" autocomplete="off" spellcheck="false">
+         aria-label="Buscar en {{ meta.name }}" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
   <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
@@ -21,9 +27,14 @@
       {% if meta.license %}<span class="muted">Licencia {{ meta.license }}</span>{% endif %}
       {% if meta.retrieved_at %}<span class="muted">Descargado el {{ meta.retrieved_at }}</span>{% endif %}
     </p>
-    {% if meta.homepage %}
-      <p><a href="{{ meta.homepage }}" target="_blank" rel="noopener">Documentación oficial en línea</a></p>
-    {% endif %}
+    <div class="tech-actions">
+      {% if meta.homepage %}
+        <a href="{{ meta.homepage }}" target="_blank" rel="noopener" class="btn-action">Documentación oficial en línea ↗</a>
+      {% endif %}
+      <a href="{{ root }}/bundles/{{ meta.id }}.md" download class="btn-action btn-action-primary">
+        Descargar bundle Markdown completo ({{ meta.bundle_size or '.md' }}) ↓
+      </a>
+    </div>
   </header>
 
   {# Aquí sí va el índice completo: es UNA sola página por tecnología,

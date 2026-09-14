@@ -25,7 +25,8 @@ import posixpath
 import re
 import shutil
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
+from email.utils import formatdate
 from pathlib import Path
 from typing import Any
 
@@ -270,6 +271,7 @@ def build_technology(
     out_dir: Path,
     env: Environment,
     built_at: str,
+    base_url: str = "https://docs.raupulus.dev",
 ) -> dict | None:
     tech = tech_dir.name
 
@@ -278,6 +280,16 @@ def build_technology(
     if not meta or not toc:
         Log.warn(f"{tech}: falta _meta.json o _toc.json, se omite")
         return None
+
+    # Detectar tamaño del bundle si existe
+    bundle_file = out_dir / "bundles" / f"{tech}.md"
+    if not bundle_file.is_file():
+        bundle_file = Path("bundles") / f"{tech}.md"
+    if bundle_file.is_file():
+        sz = bundle_file.stat().st_size
+        meta["bundle_size"] = f"{sz / 1024:.0f} KB" if sz < 1024 * 1024 else f"{sz / (1024 * 1024):.1f} MB"
+    else:
+        meta["bundle_size"] = ""
 
     tech_out = out_dir / tech
     shutil.rmtree(tech_out, ignore_errors=True)
@@ -299,6 +311,8 @@ def build_technology(
     converter = make_converter()
     page_template = env.get_template("page.html")
     written = 0
+
+    base_clean = base_url.rstrip("/")
 
     for doc in sorted(tech_dir.rglob("*.md")):
         rel = doc.relative_to(tech_dir).as_posix()
@@ -344,6 +358,8 @@ def build_technology(
             "next": next_page,
         }
 
+        canonical_url = f"{base_clean}/{tech}/{to_html_path(rel)}"
+
         dest.write_text(
             page_template.render(
                 page=page,
@@ -355,6 +371,7 @@ def build_technology(
                 tech_root=tech_root,
                 page_title=page["title"],
                 built_at=built_at,
+                canonical_url=canonical_url,
             ),
             encoding="utf-8",
         )
@@ -369,6 +386,7 @@ def build_technology(
             tech_root=".",
             page_title=meta.get("name", tech),
             built_at=built_at,
+            canonical_url=f"{base_clean}/{tech}/",
         ),
         encoding="utf-8",
     )
@@ -423,6 +441,7 @@ def build_home(
     out_dir: Path,
     env: Environment,
     built_at: str,
+    base_url: str = "https://docs.raupulus.dev",
 ) -> None:
     technologies = sorted(metas, key=lambda m: m.get("name", "").lower())
     total = sum(m.get("documents", 0) for m in technologies)
@@ -435,6 +454,7 @@ def build_home(
             root=".",
             page_title="Documentación offline",
             built_at=built_at,
+            canonical_url=f"{base_url.rstrip('/')}/",
         ),
         encoding="utf-8",
     )
@@ -445,6 +465,7 @@ def build_standalone_pages(
     out_dir: Path,
     env: Environment,
     built_at: str,
+    base_url: str = "https://docs.raupulus.dev",
 ) -> None:
     """Compila páginas raíz informativas desde markdown a HTML."""
     pages = [
@@ -473,6 +494,7 @@ def build_standalone_pages(
                 root=".",
                 page_title=f"{title} · Documentación offline",
                 built_at=built_at,
+                canonical_url=f"{base_url.rstrip('/')}/{dest_name}",
             ),
             encoding="utf-8",
         )
@@ -545,6 +567,67 @@ def build_sitemap_and_robots(
     Log.ok("robots.txt generado")
 
 
+def build_feed(
+    out_dir: Path,
+    metas: list[dict],
+    base_url: str = "https://docs.raupulus.dev",
+) -> None:
+    """Genera feed.xml (RSS 2.0) con las tecnologías y versiones del espejo."""
+    base_url = base_url.rstrip("/")
+    technologies = sorted(metas, key=lambda m: m.get("name", "").lower())
+    now_rfc = formatdate(usegmt=True)
+
+    items = []
+    for tech in technologies:
+        name = tech.get("name", tech.get("id", ""))
+        tid = tech.get("id", "")
+        version = tech.get("version", "")
+        version_str = f" v{version}" if version else ""
+        docs_count = tech.get("documents", 0)
+        license_str = tech.get("license", "")
+        retrieved_at = tech.get("retrieved_at", "")
+
+        pub_date = now_rfc
+        if retrieved_at:
+            try:
+                dt = datetime.fromisoformat(retrieved_at).replace(tzinfo=timezone.utc)
+                pub_date = formatdate(dt.timestamp(), usegmt=True)
+            except ValueError:
+                pass
+
+        link = f"{base_url}/{tid}/"
+        desc = (
+            f"Documentación oficial de {html.escape(name)}{html.escape(version_str)}. "
+            f"Contiene {docs_count} documentos listos para consulta sin conexión. "
+            f"Licencia: {html.escape(license_str)}."
+        )
+
+        items.append(f"""    <item>
+      <title>{html.escape(name)}{html.escape(version_str)} - Documentación offline</title>
+      <link>{link}</link>
+      <guid isPermaLink="true">{link}</guid>
+      <pubDate>{pub_date}</pubDate>
+      <description>{desc}</description>
+    </item>""")
+
+    feed_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Documentación técnica offline</title>
+    <link>{base_url}/</link>
+    <description>Espejo offline de documentación técnica oficial para backend developers</description>
+    <language>es</language>
+    <lastBuildDate>{now_rfc}</lastBuildDate>
+    <atom:link href="{base_url}/feed.xml" rel="self" type="application/rss+xml" />
+{chr(10).join(items)}
+  </channel>
+</rss>
+"""
+    feed_file = out_dir / "feed.xml"
+    feed_file.write_text(feed_xml, encoding="utf-8")
+    Log.ok(f"Feed RSS generado: {feed_file.name} ({len(technologies)} tecnologías)")
+
+
 # ── Orquestación ────────────────────────────────────────────────────
 
 def main(argv: list[str] | None = None) -> int:
@@ -595,11 +678,20 @@ def main(argv: list[str] | None = None) -> int:
             Log.error(f"'{args.source}' no está en {src_dir}/")
             return 1
 
+    Log.step("Bundles Markdown")
+    bundles_dir = Path("bundles")
+    bundles_dir.mkdir(parents=True, exist_ok=True)
+    public_bundles = out_dir / "bundles"
+    public_bundles.mkdir(parents=True, exist_ok=True)
+    from .bundle import bundle_technology
+    for td in tech_dirs:
+        bundle_technology(td, bundles_dir, public_bundles)
+
     Log.step(f"Generando el sitio en {out_dir}/")
 
     metas = []
     for tech_dir in tech_dirs:
-        meta = build_technology(tech_dir, out_dir, env, built_at)
+        meta = build_technology(tech_dir, out_dir, env, built_at, args.base_url)
         if meta:
             metas.append(meta)
 
@@ -634,13 +726,16 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     Log.step("Portada")
-    build_home(metas, pending, out_dir, env, built_at)
+    build_home(metas, pending, out_dir, env, built_at, args.base_url)
 
     Log.step("Páginas informativas")
-    build_standalone_pages(out_dir, env, built_at)
+    build_standalone_pages(out_dir, env, built_at, args.base_url)
 
     Log.step("Sitemap y robots.txt")
     build_sitemap_and_robots(out_dir, args.base_url)
+
+    Log.step("Canal RSS")
+    build_feed(out_dir, metas, args.base_url)
 
     Log.step("Listo")
     Log.info(f"Abre {out_dir}/index.html en el navegador")

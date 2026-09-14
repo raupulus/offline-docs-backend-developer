@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block title %}{{ page.title }} · {{ meta.name }}{% endblock %}
+{% block description %}{{ page.title }} - Documentación técnica offline de {{ meta.name }}. Consulta rápida sin conexión.{% endblock %}
+{% block og_description %}{{ page.title }} - Documentación técnica offline de {{ meta.name }}. Consulta rápida sin conexión.{% endblock %}
 {% block body_class %}has-sidebar{% endblock %}
 
 {% block topbar_extra %}
@@ -10,10 +12,14 @@
 </span>
 {% endblock %}
 
+{% block schema_type %}TechArticle{% endblock %}
+{% block schema_desc %}{{ page.title }} - Documentación técnica de {{ meta.name }} en modo offline.{% endblock %}
+
 {% block search_box %}
 <div class="search" data-search data-tech="{{ meta.id }}" data-index="{{ tech_root }}/_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en {{ meta.name }}…"
-         aria-label="Buscar en {{ meta.name }}" autocomplete="off" spellcheck="false">
+         aria-label="Buscar en {{ meta.name }}" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
   <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
@@ -74,6 +80,7 @@
         {% endif %}
         {% if meta.license %}<span class="muted">Licencia {{ meta.license }}</span>{% endif %}
         {% if page.retrieved_at %}<span class="muted">Descargado el {{ page.retrieved_at }}</span>{% endif %}
+        <a href="{{ root }}/bundles/{{ meta.id }}.md" download class="doc-meta-bundle" title="Descargar toda la documentación de {{ meta.name }} en un solo archivo Markdown">Bundle .md ({{ meta.bundle_size or '' }}) ↓</a>
       </p>
 
       {% if page.headings %}

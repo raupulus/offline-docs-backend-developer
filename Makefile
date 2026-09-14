@@ -12,7 +12,7 @@ DOCSYNC     := $(PYTHON) -m scripts.docsync
 SRC_DIR     := src
 WORK_DIR    := work
 PUBLIC_DIR  := public
-DIST_DIR    := dist
+BUNDLES_DIR := bundles
 PORT        := 8080
 
 # Fuente concreta para los objetivos *-one:  make fetch-one S=laravel
@@ -110,9 +110,10 @@ status:  ## Resumen de lo que hay descargado ahora mismo
 	done
 	@echo ""
 
-bundles: | $(DIST_DIR)  ## Concatena cada tecnología en un .md para modelos de IA
+bundles:  ## Concatena cada tecnología en un .md para modelos de IA
+	@mkdir -p $(BUNDLES_DIR) $(PUBLIC_DIR)/bundles
 	$(call require_script,bundle)
-	$(DOCSYNC).bundle --src $(SRC_DIR) --out $(DIST_DIR)
+	$(DOCSYNC).bundle --src $(SRC_DIR) --out $(BUNDLES_DIR) --public $(PUBLIC_DIR)/bundles
 
 venv:  ## Crea .venv e instala las dependencias Python
 	@test -d .venv || $(PYTHON) -m venv .venv
@@ -155,9 +156,9 @@ clean-work:  ## Borra work/ (clones y tarballs descargados)
 	@rm -rf $(WORK_DIR)
 	@echo "  ✓ work/ eliminado"
 
-clean: clean-work  ## Borra todo lo generado (work/, public/, dist/)
-	@rm -rf $(PUBLIC_DIR) $(DIST_DIR)
-	@echo "  ✓ public/ y dist/ eliminados"
+clean: clean-work  ## Borra el sitio HTML generado en public/
+	@rm -rf $(PUBLIC_DIR)
+	@echo "  ✓ public/ eliminado"
 
 clean-all: clean  ## Además elimina la carpeta repos/ de la estructura antigua
 	@if [ -d repos ]; then \
@@ -172,7 +173,7 @@ clean-all: clean  ## Además elimina la carpeta repos/ de la estructura antigua
 # Interno
 # ───────────────────────────────────────────────────────────────────
 
-$(WORK_DIR) $(DIST_DIR) $(PUBLIC_DIR):
+$(WORK_DIR) $(PUBLIC_DIR):
 	@mkdir -p $@
 
 # Mensaje claro mientras los scripts de la fase 2 no existan todavía.
