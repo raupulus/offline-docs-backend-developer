@@ -40,7 +40,7 @@
 <div class="search" data-search data-tech="js-javascript" data-index="../../_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en JavaScript…"
          aria-label="Buscar en JavaScript" autocomplete="off" spellcheck="false">
-  <kbd class="search-hint">/</kbd>
+  <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
     <button type="button" class="theme-toggle" data-theme-toggle
@@ -214,7 +214,7 @@ class="is-current" aria-current="page">Memory management</a>
       <h1 class="doc-title">Memory management</h1>
 
       <p class="doc-meta">
-<span class="badge">main</span>          <a href="https://developer.mozilla.org/es/docs/Web/JavaScript" rel="noopener">Documentación oficial</a>
+<span class="badge">main</span>          <a href="https://developer.mozilla.org/es/docs/Web/JavaScript" target="_blank" rel="noopener">Documentación oficial</a>
 <span class="muted">Licencia CC-BY-SA-2.5</span><span class="muted">Descargado el 2026-08-02</span>      </p>
 
         <details class="doc-toc">
@@ -236,7 +236,7 @@ class="is-current" aria-current="page">Memory management</a>
         </details>
 
       <div class="doc-body">
-        <p>Low-level languages like C, have manual memory management primitives such as <a href="https://pubs.opengroup.org/onlinepubs/009695399/functions/malloc.html"><code>malloc()</code></a> and <a href="https://en.wikipedia.org/wiki/C_dynamic_memory_allocation#Overview_of_functions"><code>free()</code></a>. In contrast, JavaScript automatically allocates memory when objects are created and frees it when they are not used anymore (<em>garbage collection</em>). This automaticity is a potential source of confusion: it can give developers the false impression that they don't need to worry about memory management.</p>
+        <p>Low-level languages like C, have manual memory management primitives such as <a href="https://pubs.opengroup.org/onlinepubs/009695399/functions/malloc.html" rel="noopener" target="_blank"><code>malloc()</code></a> and <a href="https://en.wikipedia.org/wiki/C_dynamic_memory_allocation#Overview_of_functions" rel="noopener" target="_blank"><code>free()</code></a>. In contrast, JavaScript automatically allocates memory when objects are created and frees it when they are not used anymore (<em>garbage collection</em>). This automaticity is a potential source of confusion: it can give developers the false impression that they don't need to worry about memory management.</p>
 <h2 id="memory-life-cycle">Memory life cycle<a class="headerlink" href="#memory-life-cycle" title="Permanent link">#</a></h2>
 <p>Regardless of the programming language, the memory life cycle is pretty much always the same:</p>
 <ol>
@@ -296,7 +296,7 @@ class="is-current" aria-current="page">Memory management</a>
 <h3 id="release-when-the-memory-is-not-needed-anymore">Release when the memory is not needed anymore<a class="headerlink" href="#release-when-the-memory-is-not-needed-anymore" title="Permanent link">#</a></h3>
 <p>The majority of memory management issues occur at this phase. The most difficult aspect of this stage is determining when the allocated memory is no longer needed.</p>
 <p>Low-level languages require the developer to manually determine at which point in the program the allocated memory is no longer needed and to release it.</p>
-<p>Some high-level languages, such as JavaScript, utilize a form of automatic memory management known as <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a> (GC). The purpose of a garbage collector is to monitor memory allocation and determine when a block of allocated memory is no longer needed and reclaim it. This automatic process is an approximation since the general problem of determining whether or not a specific piece of memory is still needed is <a href="https://en.wikipedia.org/wiki/Decidability_%28logic%29">undecidable</a>.</p>
+<p>Some high-level languages, such as JavaScript, utilize a form of automatic memory management known as <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)" rel="noopener" target="_blank">garbage collection</a> (GC). The purpose of a garbage collector is to monitor memory allocation and determine when a block of allocated memory is no longer needed and reclaim it. This automatic process is an approximation since the general problem of determining whether or not a specific piece of memory is still needed is <a href="https://en.wikipedia.org/wiki/Decidability_%28logic%29" rel="noopener" target="_blank">undecidable</a>.</p>
 <h2 id="garbage-collection">Garbage collection<a class="headerlink" href="#garbage-collection" title="Permanent link">#</a></h2>
 <p>As stated above, the general problem of automatically finding whether some memory "is not needed anymore" is undecidable. As a consequence, garbage collectors implement a restriction of a solution to the general problem. This section will explain the concepts that are necessary for understanding the main garbage collection algorithms and their respective limitations.</p>
 <h3 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h3>
@@ -367,7 +367,7 @@ No modern JavaScript engine uses reference-counting for garbage collection anymo
 <div class="codehilite"><pre><span></span><code>node<span class="w"> </span>--max-old-space-size<span class="o">=</span><span class="m">6000</span><span class="w"> </span>index.js
 </code></pre></div>
 
-<p>We can also expose the garbage collector for debugging memory issues using a flag and the <a href="https://nodejs.org/learn/getting-started/debugging">Chrome Debugger</a>:</p>
+<p>We can also expose the garbage collector for debugging memory issues using a flag and the <a href="https://nodejs.org/learn/getting-started/debugging" rel="noopener" target="_blank">Chrome Debugger</a>:</p>
 <div class="codehilite"><pre><span></span><code>node<span class="w"> </span>--expose-gc<span class="w"> </span>--inspect<span class="w"> </span>index.js
 </code></pre></div>
 
@@ -389,7 +389,7 @@ No modern JavaScript engine uses reference-counting for garbage collection anymo
 <span class="c1">// and the value is strongly held in the map!</span>
 </code></pre></div>
 
-<p>If <code>key</code> is stored as an actual reference, it would create a cyclic reference and make both the key and value ineligible for garbage collection, even when nothing else references <code>key</code> — because if <code>key</code> is garbage collected, it means that at some particular instant, <code>value.key</code> would point to a non-existent address, which is not legal. To fix this, the entries of <code>WeakMap</code> and <code>WeakSet</code> aren't actual references, but <a href="https://dl.acm.org/doi/pdf/10.1145/263700.263733">ephemerons</a>, an enhancement to the mark-and-sweep mechanism. <a href="https://www.jucs.org/jucs_14_21/eliminating_cycles_in_weak/jucs_14_21_3481_3497_barros.pdf">Barros et al.</a> offers a good summary of the algorithm (page 4). To quote a paragraph:</p>
+<p>If <code>key</code> is stored as an actual reference, it would create a cyclic reference and make both the key and value ineligible for garbage collection, even when nothing else references <code>key</code> — because if <code>key</code> is garbage collected, it means that at some particular instant, <code>value.key</code> would point to a non-existent address, which is not legal. To fix this, the entries of <code>WeakMap</code> and <code>WeakSet</code> aren't actual references, but <a href="https://dl.acm.org/doi/pdf/10.1145/263700.263733" rel="noopener" target="_blank">ephemerons</a>, an enhancement to the mark-and-sweep mechanism. <a href="https://www.jucs.org/jucs_14_21/eliminating_cycles_in_weak/jucs_14_21_3481_3497_barros.pdf" rel="noopener" target="_blank">Barros et al.</a> offers a good summary of the algorithm (page 4). To quote a paragraph:</p>
 <blockquote>
 <p>Ephemerons are a refinement of weak pairs where neither the key nor the value can be classified as weak or strong. The connectivity of the key determines the connectivity of the value, but the connectivity of the value does not affect the connectivity of the key. […] when the garbage collection offers support to ephemerons, it occurs in three phases instead of two (mark and sweep).</p>
 </blockquote>
@@ -503,8 +503,8 @@ This is not a polyfill, nor is it anywhere close to how it's implemented in the 
     <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
     <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
     Descargar ZIP:
-    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip">GitLab</a> ·
-    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip">GitHub</a>
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a>
   </p>
 </footer>
 

@@ -40,7 +40,7 @@
 <div class="search" data-search data-tech="js-javascript" data-index="../../_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en JavaScript…"
          aria-label="Buscar en JavaScript" autocomplete="off" spellcheck="false">
-  <kbd class="search-hint">/</kbd>
+  <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
     <button type="button" class="theme-toggle" data-theme-toggle
@@ -325,7 +325,7 @@ class="is-current" aria-current="page">JavaScript execution model</a>
       <h1 class="doc-title">JavaScript execution model</h1>
 
       <p class="doc-meta">
-<span class="badge">main</span>          <a href="https://developer.mozilla.org/es/docs/Web/JavaScript" rel="noopener">Documentación oficial</a>
+<span class="badge">main</span>          <a href="https://developer.mozilla.org/es/docs/Web/JavaScript" target="_blank" rel="noopener">Documentación oficial</a>
 <span class="muted">Licencia CC-BY-SA-2.5</span><span class="muted">Descargado el 2026-08-02</span>      </p>
 
         <details class="doc-toc">
@@ -373,7 +373,7 @@ class="is-current" aria-current="page">JavaScript execution model</a>
 <li>A <em>Service worker agent</em> containing a single {{domxref("ServiceWorkerGlobalScope")}}.</li>
 <li>A <em>Worklet agent</em> containing a single {{domxref("WorkletGlobalScope")}}.</li>
 </ul>
-<p>In other words, each worker creates its own agent, while one or more windows may be within the same agent—usually a main document and its similar-origin iframes. In Node.js, a similar concept called <a href="https://nodejs.org/api/worker_threads.html">worker threads</a> is available.</p>
+<p>In other words, each worker creates its own agent, while one or more windows may be within the same agent—usually a main document and its similar-origin iframes. In Node.js, a similar concept called <a href="https://nodejs.org/api/worker_threads.html" rel="noopener" target="_blank">worker threads</a> is available.</p>
 <p>The diagram below illustrates the execution model of agents:</p>
 <p><img alt="A diagram consisting of two agents: one HTML page and one worker. Each has its own stack containing execution contexts, heap containing objects, and queue containing jobs." src="runtime-environment-diagram.svg"></p>
 <h2 id="realms">Realms<a class="headerlink" href="#realms" title="Permanent link">#</a></h2>
@@ -446,7 +446,7 @@ class="is-current" aria-current="page">JavaScript execution model</a>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>In reality, discarding the current frame causes debugging problems, because if <code>g()</code> throws an error, <code>f</code> is no longer on the stack and won't appear in the stack trace. Currently, only Safari (JavaScriptCore) implements PTC, and they have invented some <a href="https://webkit.org/blog/6240/ecmascript-6-proper-tail-calls-in-webkit/">specific infrastructure</a> to address the debuggability issue.</p>
+<p>In reality, discarding the current frame causes debugging problems, because if <code>g()</code> throws an error, <code>f</code> is no longer on the stack and won't appear in the stack trace. Currently, only Safari (JavaScriptCore) implements PTC, and they have invented some <a href="https://webkit.org/blog/6240/ecmascript-6-proper-tail-calls-in-webkit/" rel="noopener" target="_blank">specific infrastructure</a> to address the debuggability issue.</p>
 <h3 id="closures">Closures<a class="headerlink" href="#closures" title="Permanent link">#</a></h3>
 <p>Another interesting phenomenon related to variable scoping and function calls is <a href="/en-US/docs/Web/JavaScript/Guide/Closures">closures</a>. Whenever a function is created, it also memorizes internally the variable bindings of the current running execution context. Then, these variable bindings can outlive the execution context.</p>
 <div class="codehilite"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="nx">f</span><span class="p">;</span>
@@ -498,10 +498,10 @@ class="is-current" aria-current="page">JavaScript execution model</a>
 <li>A <code>Window</code> object A and the <code>Window</code> object of an <code>iframe</code> element that A created that cannot be same origin-domain with A.</li>
 <li>Any two <code>Window</code> objects with no opener or ancestor relationship. This holds even if the two <code>Window</code> objects are same origin.</li>
 </ul>
-<p>For the exact algorithm, check the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#integration-with-the-javascript-agent-cluster-formalism">HTML specification</a>.</p>
+<p>For the exact algorithm, check the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#integration-with-the-javascript-agent-cluster-formalism" rel="noopener" target="_blank">HTML specification</a>.</p>
 <h3 id="cross-agent-communication-and-memory-model">Cross-agent communication and memory model<a class="headerlink" href="#cross-agent-communication-and-memory-model" title="Permanent link">#</a></h3>
 <p>As aforementioned, agents communicate via memory sharing. On the web, memory is shared via the <a href="/en-US/docs/Web/API/Window/postMessage"><code>postMessage()</code></a> method. The <a href="/en-US/docs/Web/API/Web_Workers_API/Using_web_workers">using web workers</a> guide provides an overview of this. Typically, data is passed by value only (via <a href="/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm">structured cloning</a>), and therefore does not involve any concurrency complications. To share memory, one must post a {{jsxref("SharedArrayBuffer")}} object, which can be simultaneously accessed by multiple agents. Once two agents share access to the same memory via a <code>SharedArrayBuffer</code>, they can synchronize executions via the {{jsxref("Atomics")}} object.</p>
-<p>There are two ways to access shared memory: via normal memory access (which is not atomic) and via atomic memory access. The latter is <a href="https://en.wikipedia.org/wiki/Sequential_consistency">sequentially consistent</a> (which means there is a strict total ordering of events agreed upon by all agents in the cluster), while the former is unordered (which means no ordering exists); JavaScript does not provide operations with other ordering guarantees.</p>
+<p>There are two ways to access shared memory: via normal memory access (which is not atomic) and via atomic memory access. The latter is <a href="https://en.wikipedia.org/wiki/Sequential_consistency" rel="noopener" target="_blank">sequentially consistent</a> (which means there is a strict total ordering of events agreed upon by all agents in the cluster), while the former is unordered (which means no ordering exists); JavaScript does not provide operations with other ordering guarantees.</p>
 <p>The spec provides the following guidelines for programmers working with shared memory:</p>
 <blockquote>
 <p>We recommend programs be kept data race free, i.e., make it so that it is impossible for there to be concurrent non-atomic operations on the same memory location. Data race free programs have interleaving semantics where each step in the evaluation semantics of each agent are interleaved with each other. For data race free programs, it is not necessary to understand the details of the memory model. The details are unlikely to build intuition that will help one to better write ECMAScript.</p>
@@ -525,8 +525,8 @@ class="is-current" aria-current="page">JavaScript execution model</a>
 <p>{{Specifications}}</p>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">#</a></h2>
 <ul>
-<li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loops">Event loops</a> in the HTML standard</li>
-<li><a href="https://nodejs.org/learn/asynchronous-work/event-loop-timers-and-nexttick#what-is-the-event-loop">What is the Event Loop?</a> in the Node.js docs</li>
+<li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loops" rel="noopener" target="_blank">Event loops</a> in the HTML standard</li>
+<li><a href="https://nodejs.org/learn/asynchronous-work/event-loop-timers-and-nexttick#what-is-the-event-loop" rel="noopener" target="_blank">What is the Event Loop?</a> in the Node.js docs</li>
 </ul>
       </div>
     </article>
@@ -557,8 +557,8 @@ class="is-current" aria-current="page">JavaScript execution model</a>
     <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
     <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
     Descargar ZIP:
-    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip">GitLab</a> ·
-    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip">GitHub</a>
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a>
   </p>
 </footer>
 

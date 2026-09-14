@@ -40,7 +40,7 @@
 <div class="search" data-search data-tech="nuxt" data-index="../../_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en Nuxt…"
          aria-label="Buscar en Nuxt" autocomplete="off" spellcheck="false">
-  <kbd class="search-hint">/</kbd>
+  <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
     <button type="button" class="theme-toggle" data-theme-toggle
@@ -292,7 +292,7 @@ class="is-current" aria-current="page">Creating a Builder</a>
       <h1 class="doc-title">Creating a Builder</h1>
 
       <p class="doc-meta">
-<span class="badge">main</span>          <a href="https://nuxt.com/docs" rel="noopener">Documentación oficial</a>
+<span class="badge">main</span>          <a href="https://nuxt.com/docs" target="_blank" rel="noopener">Documentación oficial</a>
 <span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
 
         <details class="doc-toc">
@@ -312,7 +312,7 @@ class="is-current" aria-current="page">Creating a Builder</a>
         </details>
 
       <div class="doc-body">
-        <p>A <strong>builder</strong> is the part of Nuxt responsible for bundling your application. Nuxt ships with three official builders, <a href="https://vite.dev">Vite</a> (the default), <a href="https://webpack.js.org">webpack</a> and <a href="https://rspack.dev">Rspack</a>, and you can select one with the <a href="/docs/4.x/api/nuxt-config#builder"><code>builder</code></a> option or supply your own.</p>
+        <p>A <strong>builder</strong> is the part of Nuxt responsible for bundling your application. Nuxt ships with three official builders, <a href="https://vite.dev" rel="noopener" target="_blank">Vite</a> (the default), <a href="https://webpack.js.org" rel="noopener" target="_blank">webpack</a> and <a href="https://rspack.dev" rel="noopener" target="_blank">Rspack</a>, and you can select one with the <a href="/docs/4.x/api/nuxt-config#builder"><code>builder</code></a> option or supply your own.</p>
 <p>This guide explains how builders fit into the Nuxt build, what contract a builder must fulfil, and how to author one.</p>
 <p>::note
 Authoring a builder is an advanced topic. Most apps never need a custom builder; if you only want to influence the bundle, a <a href="/docs/4.x/guide/modules">module</a> that registers bundler plugins is usually the right tool.
@@ -326,7 +326,7 @@ Authoring a builder is an advanced topic. Most apps never need a custom builder;
 <li>Producing the artifacts the server runtime needs to render and hydrate: the client manifest, the per-component styles map, and so on (see <a href="#the-build-output-contract">The Build Output Contract</a>).</li>
 <li>In development, exposing a dev server and triggering reloads when the build changes.</li>
 </ul>
-<p>The deployable server itself is produced by <a href="https://nitro.build">Nitro</a> via <code>@nuxt/nitro-server</code>, not by the builder. The builder hands its outputs to Nitro through a typed contract; Nitro bundles them into the final <code>.output</code>.</p>
+<p>The deployable server itself is produced by <a href="https://nitro.build" rel="noopener" target="_blank">Nitro</a> via <code>@nuxt/nitro-server</code>, not by the builder. The builder hands its outputs to Nitro through a typed contract; Nitro bundles them into the final <code>.output</code>.</p>
 <h2 id="the-builder-interface">The Builder Interface<a class="headerlink" href="#the-builder-interface" title="Permanent link">#</a></h2>
 <p>A builder is an object implementing the <code>NuxtBuilder</code> interface. The only required method is <code>bundle</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Nuxt</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@nuxt/schema&#39;</span>
@@ -386,7 +386,7 @@ Only the three official builder specifiers (<code>@nuxt/vite-builder</code>, <co
 <p>Modules influence the bundle through <a href="../../guide/going-further/kit.html">Nuxt Kit</a> helpers. A builder should honour the relevant ones:</p>
 <ul>
 <li><a href="../../api/kit/builder.html#addviteplugin"><code>addVitePlugin</code></a> / <a href="../../api/kit/builder.html#addwebpackplugin"><code>addWebpackPlugin</code></a> register bundler-specific plugins.</li>
-<li><a href="../../api/kit/builder.html#addbuildplugin"><code>addBuildPlugin</code></a> registers an <a href="https://github.com/unjs/unplugin">unplugin</a> factory, so a single plugin works across every builder.</li>
+<li><a href="../../api/kit/builder.html#addbuildplugin"><code>addBuildPlugin</code></a> registers an <a href="https://github.com/unjs/unplugin" rel="noopener" target="_blank">unplugin</a> factory, so a single plugin works across every builder.</li>
 <li><a href="../../api/kit/builder.html#extendviteconfig"><code>extendViteConfig</code></a> / <a href="../../api/kit/builder.html#extendwebpackconfig"><code>extendWebpackConfig</code></a> mutate the resolved bundler config.</li>
 </ul>
 <p>The official builders also emit their own hooks (for example <code>vite:extendConfig</code>, <code>vite:serverCreated</code>, <code>webpack:config</code>) so modules and Nitro can participate in the build. A custom builder may emit its own hooks, but the build output contract below is what makes it interoperate with the Nuxt server runtime.</p>
@@ -512,7 +512,7 @@ You rarely need to provide every key. The defaults are sensible (an empty manife
 </ul>
 <p>In dev, the build outputs are typically wired to live, in-memory sources rather than on-disk files. For instance, the SSR entry may be served from the bundler's in-memory output, and the client manifest may be computed from the dev module graph, rather than read from <code>nuxt.options.buildDir</code>.</p>
 <h2 id="builders-and-the-vite-environment-api">Builders and the Vite Environment API<a class="headerlink" href="#builders-and-the-vite-environment-api" title="Permanent link">#</a></h2>
-<p>The contract above is deliberately builder-agnostic and works for both the legacy path (each builder runs its own bundle, and Nitro bundles the deployable separately through its own Rollup pass) and the newer <a href="https://vite.dev/guide/api-environment">Vite Environment API</a> path, where Nitro runs as a Vite environment.</p>
+<p>The contract above is deliberately builder-agnostic and works for both the legacy path (each builder runs its own bundle, and Nitro bundles the deployable separately through its own Rollup pass) and the newer <a href="https://vite.dev/guide/api-environment" rel="noopener" target="_blank">Vite Environment API</a> path, where Nitro runs as a Vite environment.</p>
 <p>For a custom builder you only need to satisfy the generic contract. The Vite Environment API integration (<code>experimental.nitroViteEnvironment</code>) is specific to <code>@nuxt/vite-builder</code>; other builders, including custom ones, use the legacy Nitro Rollup path.</p>
 <p>::read-more{to="/docs/4.x/guide/going-further/internals"}
 Learn more about the Nuxt interface and the build vs. runtime split.
@@ -549,8 +549,8 @@ Browse the Nuxt Kit builder utilities used to register bundler plugins and build
     <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
     <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
     Descargar ZIP:
-    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip">GitLab</a> ·
-    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip">GitHub</a>
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a>
   </p>
 </footer>
 

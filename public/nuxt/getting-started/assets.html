@@ -40,7 +40,7 @@
 <div class="search" data-search data-tech="nuxt" data-index="../_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en Nuxt…"
          aria-label="Buscar en Nuxt" autocomplete="off" spellcheck="false">
-  <kbd class="search-hint">/</kbd>
+  <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
     <button type="button" class="theme-toggle" data-theme-toggle
@@ -184,7 +184,7 @@ class="is-current" aria-current="page">Assets</a>
       <h1 class="doc-title">Assets</h1>
 
       <p class="doc-meta">
-<span class="badge">main</span>          <a href="https://nuxt.com/docs" rel="noopener">Documentación oficial</a>
+<span class="badge">main</span>          <a href="https://nuxt.com/docs" target="_blank" rel="noopener">Documentación oficial</a>
 <span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>      </p>
 
         <details class="doc-toc">
@@ -256,7 +256,7 @@ Nuxt won't serve files in the <a href="/docs/4.x/directory-structure/app/assets"
 <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
 </code></pre></div>
 
-<p>A runtime-built public path like <code>/img/${name}.png</code> is therefore <strong>not</strong> prefixed with <a href="/docs/4.x/api/nuxt-config#baseurl"><code>app.baseURL</code></a>. If your application is deployed below the origin root, prefix it yourself with <a href="../api/composables/use-runtime-config.html"><code>useRuntimeConfig().app.baseURL</code></a> (for example via <a href="https://github.com/unjs/ufo#joinurl"><code>joinURL</code></a>).</p>
+<p>A runtime-built public path like <code>/img/${name}.png</code> is therefore <strong>not</strong> prefixed with <a href="/docs/4.x/api/nuxt-config#baseurl"><code>app.baseURL</code></a>. If your application is deployed below the origin root, prefix it yourself with <a href="../api/composables/use-runtime-config.html"><code>useRuntimeConfig().app.baseURL</code></a> (for example via <a href="https://github.com/unjs/ufo#joinurl" rel="noopener" target="_blank"><code>joinURL</code></a>).</p>
 <p>The sections below cover how to handle each case when the path is only known at runtime.</p>
 <h4 id="public-assets">Public Assets<a class="headerlink" href="#public-assets" title="Permanent link">#</a></h4>
 <p>If the files do not need to be processed or hashed, put them in the <a href="../directory-structure/public.html"><code>public/</code></a> directory and reference them by URL:</p>
@@ -307,7 +307,7 @@ const logoUrl = (await logos[props.theme]()).default
 </code></pre></div>
 
 <p>Each import has a literal path, so Vite can find both files at build time while loading only the selected module at runtime.</p>
-<p>When many files share a directory and extension, use a <a href="https://vite.dev/guide/features.html#dynamic-import">variable dynamic import</a> instead of listing every file:</p>
+<p>When many files share a directory and extension, use a <a href="https://vite.dev/guide/features.html#dynamic-import" rel="noopener" target="_blank">variable dynamic import</a> instead of listing every file:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getImageUrl</span><span class="w"> </span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">import</span><span class="p">(</span><span class="sb">`./assets/img/</span><span class="si">${</span><span class="nx">name</span><span class="si">}</span><span class="sb">.png?url`</span><span class="p">)</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">image</span><span class="p">.</span><span class="k">default</span>
@@ -315,7 +315,7 @@ const logoUrl = (await logos[props.theme]()).default
 </code></pre></div>
 
 <p>Only the filename can be dynamic in this example. Keeping the directory and extension in the import lets Vite find the possible files at build time.</p>
-<p>For a broader pattern or an explicit map of available files, use <a href="https://vite.dev/guide/features.html#glob-import"><code>import.meta.glob</code></a>:</p>
+<p>For a broader pattern or an explicit map of available files, use <a href="https://vite.dev/guide/features.html#glob-import" rel="noopener" target="_blank"><code>import.meta.glob</code></a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">images</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">import</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nx">glob</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">&#39;./assets/img/*.{png,jpg,svg}&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">query</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;?url&#39;</span><span class="p">,</span>
 <span class="w">  </span><span class="k">import</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
@@ -342,7 +342,7 @@ const logoUrl = (await logos[props.theme]()).default
 
 <p>Every matching asset is still included in the build output. Lazy imports load each match on demand, while an eager glob loads all matches up front and can increase the initial JavaScript size or inline small assets.</p>
 <p>::warning
-Await a lazy import before using its URL in server-rendered markup. Vite's <a href="https://vite.dev/guide/assets.html#new-url-url-import-meta-url"><code>new URL(..., import.meta.url)</code> pattern</a> does not work with SSR.
+Await a lazy import before using its URL in server-rendered markup. Vite's <a href="https://vite.dev/guide/assets.html#new-url-url-import-meta-url" rel="noopener" target="_blank"><code>new URL(..., import.meta.url)</code> pattern</a> does not work with SSR.
 ::</p>
       </div>
     </article>
@@ -373,8 +373,8 @@ Await a lazy import before using its URL in server-rendered markup. Vite's <a hr
     <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
     <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
     Descargar ZIP:
-    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip">GitLab</a> ·
-    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip">GitHub</a>
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a>
   </p>
 </footer>
 

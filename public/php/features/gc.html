@@ -40,7 +40,7 @@
 <div class="search" data-search data-tech="php" data-index="../_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en PHP…"
          aria-label="Buscar en PHP" autocomplete="off" spellcheck="false">
-  <kbd class="search-hint">/</kbd>
+  <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
     <button type="button" class="theme-toggle" data-theme-toggle
@@ -111,7 +111,7 @@ class="is-current" aria-current="page">Recolección de basura (Garbage Collectio
       <h1 class="doc-title">Recolección de basura (Garbage Collection)</h1>
 
       <p class="doc-meta">
-<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.gc.php" rel="noopener">Ver versión oficial en línea</a>
+<span class="badge">master</span>          <a href="https://www.php.net/manual/es/features.gc.php" target="_blank" rel="noopener">Ver versión oficial en línea</a>
 <span class="muted">Licencia CC-BY-3.0</span><span class="muted">Descargado el 2026-08-02</span>      </p>
 
         <details class="doc-toc">
@@ -142,7 +142,7 @@ class="is-current" aria-current="page">Recolección de basura (Garbage Collectio
 <span class="cp">?&gt;</span>
 </code></pre></div>
 
-<p>En este caso, el nuevo símbolo <code>a</code> se crea en el ámbito global, y se crea un nuevo contenedor con el tipo <code>string</code> y el valor <code>new string</code>. El bit "is_ref" se establece por omisión en <code>false</code> ya que ninguna referencia ha sido creada por el programador. El contador de referencias "refcount" se establece en <code>1</code> ya que solo hay un símbolo que utiliza este contenedor. Es de destacar que las referencias (es decir, "is_ref" es <code>true</code>) con "refcount" <code>1</code>, se tratan como si no fueran referencias (es decir, como si "is_ref" fuera <code>false</code>). Si ha instalado <a href="http://xdebug.org/">Xdebug</a>, puede mostrar esta información llamando a <code>xdebug_debug_zval</code>.</p>
+<p>En este caso, el nuevo símbolo <code>a</code> se crea en el ámbito global, y se crea un nuevo contenedor con el tipo <code>string</code> y el valor <code>new string</code>. El bit "is_ref" se establece por omisión en <code>false</code> ya que ninguna referencia ha sido creada por el programador. El contador de referencias "refcount" se establece en <code>1</code> ya que solo hay un símbolo que utiliza este contenedor. Es de destacar que las referencias (es decir, "is_ref" es <code>true</code>) con "refcount" <code>1</code>, se tratan como si no fueran referencias (es decir, como si "is_ref" fuera <code>false</code>). Si ha instalado <a href="http://xdebug.org/" rel="noopener" target="_blank">Xdebug</a>, puede mostrar esta información llamando a <code>xdebug_debug_zval</code>.</p>
 <p>Mostrar información zval</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 <span class="nv">$a</span> <span class="o">=</span> <span class="s2">&quot;new string&quot;</span><span class="p">;</span>
@@ -274,7 +274,7 @@ a: (refcount=1, is_ref=0)=&#39;new string&#39;
 <p>Aunque ya no haya ningún símbolo en el espacio de variables actual que apunte a esta estructura, no puede ser limpiada, ya que el elemento "1" del array sigue apuntando a este mismo array. Como ya no hay ningún símbolo externo que apunte a esta estructura, el usuario no puede limpiarla manualmente; por lo tanto, hay una fuga de memoria. Afortunadamente, PHP destruirá esta estructura al final de la solicitud, pero antes de esta etapa, la memoria no se libera. Esta situación ocurre a menudo si se implementa un algoritmo de análisis u otras ideas donde se tiene un hijo que apunta a su padre. Lo mismo puede ocurrir, por supuesto, con los objetos, y es incluso más probable, ya que siempre se utilizan implícitamente por "<a href="#language.oop5.references">referencia</a>".</p>
 <p>Esto puede no ser molesto si ocurre solo una o dos veces, pero si hay miles, o incluso millones, de estas fugas de memoria, entonces obviamente esto puede convertirse en un problema importante. Esto es particularmente problemático para los scripts que duran mucho tiempo, como los demonios para los cuales la solicitud nunca termina, o incluso en grandes suites de pruebas unitarias. Este último caso se encontró al lanzar las pruebas unitarias del componente Template de la biblioteca eZ Components. En algunos casos, la suite de pruebas requería más de 2Go de memoria, que el servidor de prueba no tenía realmente disponible.</p>
 <h2 id="limpieza-de-ciclos">Limpieza de Ciclos<a class="headerlink" href="#limpieza-de-ciclos" title="Permanent link">#</a></h2>
-<p>Tradicionalmente, los mecanismos de conteo de referencias, como los utilizados anteriormente en PHP, no saben manejar las fugas de memoria debidas a referencias circulares; sin embargo, desde PHP 5.3.0, un algoritmo síncrono derivado del análisis <a href="https://pages.cs.wisc.edu/~cymen/misc/interests/Bacon01Concurrent.pdf">Concurrent Cycle Collection in Reference Counted Systems</a> se utiliza para abordar este problema en particular.</p>
+<p>Tradicionalmente, los mecanismos de conteo de referencias, como los utilizados anteriormente en PHP, no saben manejar las fugas de memoria debidas a referencias circulares; sin embargo, desde PHP 5.3.0, un algoritmo síncrono derivado del análisis <a href="https://pages.cs.wisc.edu/~cymen/misc/interests/Bacon01Concurrent.pdf" rel="noopener" target="_blank">Concurrent Cycle Collection in Reference Counted Systems</a> se utiliza para abordar este problema en particular.</p>
 <p>Una explicación completa del funcionamiento del algoritmo iría un poco más allá del alcance de esta sección, pero aquí presentaremos los principios básicos. En primer lugar, estableceremos algunas reglas básicas. Si un refcount se incrementa, el contenedor siempre se utiliza, por lo tanto, no se limpia. Si el refcount se decrementa y llega a cero, el contenedor zval puede ser eliminado y la memoria liberada. En primer lugar, esto significa que los ciclos perturbadores solo pueden crearse cuando el refcount se decrementa a un valor diferente de cero. Luego, en un ciclo problemático, es posible detectar la basura verificando si es posible o no decrementar su refcount en uno, verificando luego qué zvals tienen un refcount a cero.</p>
 <p><img alt="Algoritmo de recolección de basura" src="en/features/figures/gc-algorithm.png"></p>
 <p>Para evitar tener que llamar a la rutina de limpieza en cada decrementación de refcount posible, el algoritmo coloca todas las raíces zval en un "búfer de raíces" (marcándolas en "violeta"). También se asegura de que cada raíz aparezca solo una vez en el búfer. El mecanismo de limpieza solo interviene cuando el búfer está lleno. Vea el paso A en la figura anterior.</p>
@@ -371,7 +371,7 @@ a: (refcount=1, is_ref=0)=&#39;new string&#39;
 <h3 id="conclusion">Conclusión<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h3>
 <p>En general, la recolección de basura de PHP solo causará un retraso cuando el algoritmo de recolección de ciclos se ejecute, lo que significa que en los scripts normales (más cortos), no debería haber ningún impacto en el rendimiento.</p>
 <p>Sin embargo, cuando el mecanismo de recolección de ciclos se desencadene en scripts normales, la reducción de la huella de memoria permitirá la ejecución paralela de un número mayor de estos scripts, ya que se utilizará menos memoria en total.</p>
-<p>Las ventajas se sienten más claramente en el caso de scripts demonio o que deben ejecutarse durante mucho tiempo. Así, para las aplicaciones <a href="http://gtk.php.net/">PHP-GTK</a> que a menudo duran más que los scripts web, el nuevo mecanismo debería reducir significativamente las fugas de memoria a largo plazo.</p>
+<p>Las ventajas se sienten más claramente en el caso de scripts demonio o que deben ejecutarse durante mucho tiempo. Así, para las aplicaciones <a href="http://gtk.php.net/" rel="noopener" target="_blank">PHP-GTK</a> que a menudo duran más que los scripts web, el nuevo mecanismo debería reducir significativamente las fugas de memoria a largo plazo.</p>
       </div>
     </article>
 
@@ -401,8 +401,8 @@ a: (refcount=1, is_ref=0)=&#39;new string&#39;
     <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
     <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
     Descargar ZIP:
-    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip">GitLab</a> ·
-    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip">GitHub</a>
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a>
   </p>
 </footer>
 

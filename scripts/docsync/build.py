@@ -64,6 +64,7 @@ RE_HEADING = re.compile(
     r'<h([23])[^>]*\bid="([^"]+)"[^>]*>(.*?)</h\1>', re.DOTALL
 )
 RE_TAG = re.compile(r"<[^>]+>")
+RE_A_EXT = re.compile(r'<a\b(?![^>]*\btarget=)([^>]*\bhref="https?://[^"]*"[^>]*)>')
 
 ASSETS_DIR = "_assets"
 
@@ -130,7 +131,21 @@ def rewrite_html_links(
 
         return f"{match.group(1)}{up}/{candidate}{anchor}{match.group(4)}"
 
-    return RE_HREF_ABS.sub(absolute, content)
+    content = RE_HREF_ABS.sub(absolute, content)
+
+    def external(match: re.Match) -> str:
+        attrs = match.group(1)
+        if 'rel="' in attrs:
+            attrs = re.sub(
+                r'rel="([^"]*)"',
+                lambda m: f'rel="{m.group(1)} noopener"' if 'noopener' not in m.group(1) else m.group(0),
+                attrs,
+            )
+        else:
+            attrs += ' rel="noopener"'
+        return f'<a{attrs} target="_blank">'
+
+    return RE_A_EXT.sub(external, content)
 
 
 def extract_headings(content: str) -> list[dict[str, Any]]:

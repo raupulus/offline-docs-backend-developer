@@ -40,7 +40,7 @@
 <div class="search" data-search data-tech="js-javascript" data-index="../../../../_search-index.js">
   <input type="search" class="search-input" placeholder="Buscar en JavaScript…"
          aria-label="Buscar en JavaScript" autocomplete="off" spellcheck="false">
-  <kbd class="search-hint">/</kbd>
+  <kbd class="search-hint">/ ó ⌘K</kbd>
   <div class="search-results" hidden></div>
 </div>
     <button type="button" class="theme-toggle" data-theme-toggle
@@ -325,7 +325,7 @@ class="is-current" aria-current="page">Temporal.ZonedDateTime</a>
       <h1 class="doc-title">Temporal.ZonedDateTime</h1>
 
       <p class="doc-meta">
-<span class="badge">main</span>          <a href="https://developer.mozilla.org/es/docs/Web/JavaScript" rel="noopener">Documentación oficial</a>
+<span class="badge">main</span>          <a href="https://developer.mozilla.org/es/docs/Web/JavaScript" target="_blank" rel="noopener">Documentación oficial</a>
 <span class="muted">Licencia CC-BY-SA-2.5</span><span class="muted">Descargado el 2026-08-02</span>      </p>
 
         <details class="doc-toc">
@@ -362,7 +362,7 @@ class="is-current" aria-current="page">Temporal.ZonedDateTime</a>
 
 <p>By suffixing this local time with the offset, thus expressing this time as "1969-12-31T19:00:00-05:00", it can now be unambiguously understood as an instant in history.</p>
 <p>To know the offset, we need two pieces of information, the <em>time zone</em>, and the <em>instant</em>. The time zone is a region on Earth where the same offset is used at all times. Two clocks in the same time zone will always show the same time simultaneously, but the offset is not necessarily constant: that is, these clocks' times may change abruptly. This commonly happens during daylight saving time transitions, where the offset changes by an hour, which happens twice a year. Offsets can also change permanently due to political changes, e.g., a country switching time zones.</p>
-<p>The time zones are stored in the <a href="https://www.iana.org/time-zones">IANA Time Zone Database</a>. Each IANA time zone has:</p>
+<p>The time zones are stored in the <a href="https://www.iana.org/time-zones" rel="noopener" target="_blank">IANA Time Zone Database</a>. Each IANA time zone has:</p>
 <ul>
 <li>A <em>primary time zone identifier</em> that uniquely identifies the time zone. It usually refers to a geographic area anchored by a city (e.g., <code>Europe/Paris</code> or <code>Africa/Kampala</code>), but can also denote single-offset time zones like <code>UTC</code> (a consistent <code>+00:00</code> offset) or <code>Etc/GMT+5</code> (which for historical reasons is a negative offset <code>-05:00</code>). For historical reasons, the primary name for the UTC time zone is <code>UTC</code>, though in IANA it is <code>Etc/UTC</code>.</li>
 <li>A <em>time zone definition</em> in the form of a table that maps UTC date/time ranges (including future ranges) to specific offsets.</li>
@@ -412,17 +412,17 @@ Avoid using offset identifiers if there is a named time zone you can use instead
 </tr>
 </tbody>
 </table>
-<p>Historically, these renames caused problems for programmers because the Unicode <a href="https://github.com/unicode-org/cldr/blob/main/common/bcp47/timezone.xml">CLDR database</a> (a library used by browsers to supply time zone identifiers and data) did not follow IANA's renaming for <a href="https://unicode.org/reports/tr35/#Time_Zone_Identifiers">stability reasons</a>. As a result, some browsers like Chrome and Safari reported CLDR's outdated identifiers, while other browsers like Firefox overrode CLDR's defaults and reported the up-to-date primary identifiers.</p>
+<p>Historically, these renames caused problems for programmers because the Unicode <a href="https://github.com/unicode-org/cldr/blob/main/common/bcp47/timezone.xml" rel="noopener" target="_blank">CLDR database</a> (a library used by browsers to supply time zone identifiers and data) did not follow IANA's renaming for <a href="https://unicode.org/reports/tr35/#Time_Zone_Identifiers" rel="noopener" target="_blank">stability reasons</a>. As a result, some browsers like Chrome and Safari reported CLDR's outdated identifiers, while other browsers like Firefox overrode CLDR's defaults and reported the up-to-date primary identifiers.</p>
 <p>With the introduction of Temporal, this behavior is now more standardized:</p>
 <ul>
-<li><a href="https://github.com/unicode-org/cldr/blob/main/common/bcp47/timezone.xml">CLDR data</a> now includes an <code>"_iana"</code> attribute that indicates the most up-to-date identifier if the older, stable identifier has been renamed. Browsers can use this new attribute to provide up-to-date identifiers to callers.</li>
+<li><a href="https://github.com/unicode-org/cldr/blob/main/common/bcp47/timezone.xml" rel="noopener" target="_blank">CLDR data</a> now includes an <code>"_iana"</code> attribute that indicates the most up-to-date identifier if the older, stable identifier has been renamed. Browsers can use this new attribute to provide up-to-date identifiers to callers.</li>
 <li>Time zone identifiers provided by the programmer will never be replaced with an alias. For example, if the caller provides <code>Asia/Calcutta</code> or <code>Asia/Kolkata</code> as the identifier input to {{jsxref("Temporal/ZonedDateTime/from", "Temporal.ZonedDateTime.from()")}}, then the same identifier is returned in the resulting instance's {{jsxref("Temporal/ZonedDateTime/timeZoneId", "timeZoneId")}}. Note that the letter case of outputs are normalized to match IANA, so that <code>ASIA/calCuTTa</code> as input generates a {{jsxref("Temporal/ZonedDateTime/timeZoneId", "timeZoneId")}} of <code>Asia/Calcutta</code> as output.</li>
 <li>When a time zone identifier is not provided by a caller but is instead sourced from the system itself (for example, when using {{jsxref("Temporal/Now/timeZoneId", "Temporal.Now.timeZoneId()")}}), modern identifiers are returned in all browsers. For city renames, there is a two-year lag before these system-provided-identifier APIs expose the new name, thereby giving other components (like a Node server) time to update their copies of the IANA database to recognize the new name.</li>
 </ul>
 <p>Note that the attribution of primary identifiers preserves the country code: for example, the IANA database records <code>Atlantic/Reykjavik</code> as an alias for <code>Africa/Abidjan</code>, but because they correspond to different countries (Iceland and Côte d'Ivoire, respectively), they are treated as distinct primary identifiers.</p>
 <p>This standardization applies outside of <code>Temporal</code> as well. For example, the <code>timeZone</code> option returned by {{jsxref("Intl/DateTimeFormat/resolvedOptions", "Intl.DateTimeFormat.prototype.resolvedOptions()")}} is also never replaced with an alias, though browsers have traditionally canonicalized these identifiers prior to standardization by Temporal. On the other hand, {{jsxref("Intl/Locale/getTimeZones", "Intl.Locale.prototype.getTimeZones()")}} and {{jsxref("Intl.supportedValuesOf()")}} (<code>timeZone</code> option) will return the most up-to-date identifier, while some browsers used to return the old, non-primary identifier.</p>
 <h3 id="rfc-9557-format">RFC 9557 format<a class="headerlink" href="#rfc-9557-format" title="Permanent link">#</a></h3>
-<p><code>ZonedDateTime</code> objects can be serialized and parsed using the <a href="https://datatracker.ietf.org/doc/html/rfc9557">RFC 9557</a> format, an extension to the <a href="https://datatracker.ietf.org/doc/html/rfc3339">ISO 8601 / RFC 3339</a> format. The string has the following form (spaces are only for readability and should not be present in the actual string):</p>
+<p><code>ZonedDateTime</code> objects can be serialized and parsed using the <a href="https://datatracker.ietf.org/doc/html/rfc9557" rel="noopener" target="_blank">RFC 9557</a> format, an extension to the <a href="https://datatracker.ietf.org/doc/html/rfc3339" rel="noopener" target="_blank">ISO 8601 / RFC 3339</a> format. The string has the following form (spaces are only for readability and should not be present in the actual string):</p>
 <div class="codehilite"><pre><span></span><code>YYYY-MM-DD T HH:mm:ss.sssssssss Z/±HH:mm [time_zone_id] [u-ca=calendar_id]
 </code></pre></div>
 
@@ -524,7 +524,7 @@ Avoid using offset identifiers if there is a named time zone you can use instead
 </ul>
 <p>If you know in advance how you want to handle offset ambiguity, consider using the <code>offset</code> option to avoid exceptions that are thrown by default. For example, a calendar application likely wants the time zone identifier to "win" so that recurring meetings are shown in the most up-to-date local time for that time zone, so <code>offset: "ignore"</code> is appropriate. On the other hand, a task scheduler application that executes a task exactly 3 hours from now should probably pick <code>offset: "use"</code> because changes to time zone rules shouldn't change the meaning of "3 hours from now".</p>
 <p>In some cases, you may not know which <code>offset</code> option is the correct one without getting input from the user. In these cases, you may want to catch the <code>RangeError</code> and then ask your user which local time is the correct one, and then retry parsing using a different <code>offset</code> option corresponding to the user's choice.</p>
-<p>Note that the <code>Z</code> offset is not equivalent to <code>+00:00</code>. The <code>Z</code> offset means "the time in UTC is known, but the offset to local time is unknown", as per <a href="https://www.rfc-editor.org/info/rfc9557/#name-update-to-rfc-3339">RFC 9557</a>. When the time string uses the <code>Z</code> offset, the <code>offset</code> option is ignored, and the offset is derived from the time zone ID. On the other hand, the <code>+00:00</code> offset is interpreted as a local time offset that happens to match UTC and is validated against the time zone ID.</p>
+<p>Note that the <code>Z</code> offset is not equivalent to <code>+00:00</code>. The <code>Z</code> offset means "the time in UTC is known, but the offset to local time is unknown", as per <a href="https://www.rfc-editor.org/info/rfc9557/#name-update-to-rfc-3339" rel="noopener" target="_blank">RFC 9557</a>. When the time string uses the <code>Z</code> offset, the <code>offset</code> option is ignored, and the offset is derived from the time zone ID. On the other hand, the <code>+00:00</code> offset is interpreted as a local time offset that happens to match UTC and is validated against the time zone ID.</p>
 <blockquote>
 <p>[!NOTE]
 Although {{jsxref("Temporal/Instant/from", "Temporal.Instant.from()")}} also takes an <a href="#rfc_9557_format">RFC 9557</a> string in the same form, there is no ambiguity because it always ignores the time zone identifier and reads the offset only.</p>
@@ -690,8 +690,8 @@ Although {{jsxref("Temporal/Instant/from", "Temporal.Instant.from()")}} also tak
     <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
     <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
     Descargar ZIP:
-    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip">GitLab</a> ·
-    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip">GitHub</a>
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a>
   </p>
 </footer>
 
