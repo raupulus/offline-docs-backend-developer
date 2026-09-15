@@ -1,15 +1,15 @@
 ---
 title: Rate Limiting
-source_url: https://laravel.com/docs/12.x/rate-limiting
+source_url: https://laravel.com/docs/13.x/rate-limiting
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: rate-limiting.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 730
+retrieved_at: '2026-09-15'
+order: 750
 ---
 
 # Rate Limiting
@@ -88,6 +88,20 @@ if (RateLimiter::tooManyAttempts('send-message:'.$user->id, $perMinute = 5)) {
 }
 
 RateLimiter::increment('send-message:'.$user->id);
+
+// Send message...
+```
+
+When rate limiting an endpoint that may receive many simultaneous requests, you may wish to check the value returned by the `increment` method instead of using `tooManyAttempts` and `increment` as separate operations. When using the `redis`, `memcached`, or `database` cache stores, this value is incremented atomically, ensuring each concurrent request receives a unique count:
+
+```php
+use Illuminate\Support\Facades\RateLimiter;
+
+$perMinute = 5;
+
+if (RateLimiter::increment('send-message:'.$user->id) > $perMinute) {
+    return 'Too many attempts!';
+}
 
 // Send message...
 ```

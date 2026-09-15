@@ -1,15 +1,15 @@
 ---
 title: Prompts
-source_url: https://laravel.com/docs/12.x/prompts
+source_url: https://laravel.com/docs/13.x/prompts
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: prompts.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 680
+retrieved_at: '2026-09-15'
+order: 700
 ---
 
 # Prompts
@@ -32,13 +32,13 @@ order: 680
 - [Transforming Input Before Validation](#transforming-input-before-validation)
 - [Forms](#forms)
 - [Informational Messages](#informational-messages)
+- [Callouts](#callouts)
 - [Tables](#tables)
 - [Spin](#spin)
 - [Progress Bar](#progress)
 - [Task](#task)
 - [Stream](#stream)
 - [Terminal Title](#terminal-title)
-- [Notifications](#notifications)
 - [Clearing the Terminal](#clear)
 - [Terminal Considerations](#terminal-considerations)
 - [Unsupported Environments and Fallbacks](#fallbacks)
@@ -821,7 +821,7 @@ If you have a lot of searchable options and need the user to be able to select m
 use function Laravel\Prompts\multisearch;
 
 $ids = multisearch(
-    'Search for the users that should receive the mail',
+    'Search for users who should receive the mail',
     fn (string $value) => strlen($value) > 0
         ? User::whereLike('name', "%{$value}%")->pluck('name', 'id')->all()
         : []
@@ -836,7 +836,7 @@ When filtering an array where you intend to return the value, you should use the
 $names = collect(['Taylor', 'Abigail']);
 
 $selected = multisearch(
-    label: 'Search for the users that should receive the mail',
+    label: 'Search for users who should receive the mail',
     options: fn (string $value) => $names
         ->filter(fn ($name) => Str::contains($name, $value, ignoreCase: true))
         ->values()
@@ -848,7 +848,7 @@ You may also include placeholder text and an informational hint:
 
 ```php
 $ids = multisearch(
-    label: 'Search for the users that should receive the mail',
+    label: 'Search for users who should receive the mail',
     placeholder: 'E.g. Taylor Otwell',
     options: fn (string $value) => strlen($value) > 0
         ? User::whereLike('name', "%{$value}%")->pluck('name', 'id')->all()
@@ -1112,6 +1112,100 @@ use function Laravel\Prompts\info;
 info('Package installed successfully.');
 ```
 
+<a name="callouts"></a>
+## Callouts
+
+The `callout` function displays a boxed message with a label and content. Callouts are useful for displaying important information that should stand out, such as deployment summaries, error details, or status updates:
+
+```php
+use function Laravel\Prompts\callout;
+
+callout(
+    label: 'Environment Configured',
+    content: 'Your application is running in production mode with 4 workers.',
+);
+```
+
+You may pass `warning` or `error` as the `type` argument to change the callout's visual style:
+
+```php
+callout(
+    label: 'Deprecation Notice',
+    content: 'The `--prefer-stable` flag will be removed in v4.0. Use `--stability=stable` instead.',
+    type: 'warning',
+);
+
+callout(
+    label: 'Database Connection Failed',
+    content: 'Could not connect to MySQL on 127.0.0.1:3306.',
+    type: 'error',
+);
+```
+
+The `info` argument adds a footer line to the callout, which is useful for displaying metadata like IDs or timestamps:
+
+```php
+callout(
+    label: 'Deployment Summary',
+    content: 'Your application was deployed to production.',
+    info: 'deploy-id: d4f8a2c',
+);
+```
+
+<a name="callout-rich-content"></a>
+#### Rich Content
+
+Instead of passing a string, you may pass an array of strings and elements to build rich, structured callouts. The `Element` class provides factory methods for creating headings, bulleted lists, numbered lists, key-value lists, and links:
+
+```php
+use Laravel\Prompts\Elements\Element;
+
+use function Laravel\Prompts\callout;
+
+callout('Deployment Summary', [
+    'Your application was deployed to production at 2024-03-15 14:32 UTC.',
+    Element::heading('What Changed'),
+    Element::bulletedList([
+        'Migrated 3 pending database migrations',
+        'Cleared and rebuilt route cache',
+        'Restarted 4 queue workers',
+    ]),
+    Element::heading('Next Steps'),
+    Element::numberedList([
+        'Verify the health check endpoint at /up',
+        'Monitor error rates for the next 15 minutes',
+        'Confirm background jobs are processing',
+    ]),
+]);
+```
+
+You may also use `Element::keyValueList` to display labeled data:
+
+```php
+callout('Database Connection Failed', [
+    'Could not connect to the database server.',
+    Element::keyValueList([
+        'Host' => '127.0.0.1',
+        'Port' => '3306',
+        'Database' => 'forge',
+        'Status' => 'Connection refused',
+    ]),
+], type: 'error');
+```
+
+The `Element::link` method creates a clickable hyperlink in terminals that support [OSC 8](https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda). You may provide a URL alone, or a URL with a custom label:
+
+```php
+callout('Server Health Check', [
+    'Multiple services are reporting degraded performance.',
+    Element::heading('Affected Services'),
+    'Look here: '.Element::link('https://example.com/health', 'Health Dashboard'),
+    Element::link('https://example.com/health'),
+]);
+```
+
+If no label is provided, the URL itself will be displayed as the link text.
+
 <a name="tables"></a>
 ## Tables
 
@@ -1276,6 +1370,36 @@ task(
 );
 ```
 
+<a name="task-sub-label"></a>
+#### Displaying a Sub-Label
+
+The `subLabel` method displays a dim line beneath the task's main label, which is useful for communicating ephemeral status such as the step currently in progress. Pass an empty string to clear the sub-label:
+
+```php
+task(
+    label: 'Deploying',
+    callback: function ($logger) {
+        $logger->subLabel('Building assets...');
+        // ...
+        $logger->subLabel('Running migrations...');
+        // ...
+        $logger->subLabel('');
+    }
+);
+```
+
+You may also provide an initial sub-label via the `subLabel` argument:
+
+```php
+task(
+    label: 'Deploying',
+    callback: function ($logger) {
+        // ...
+    },
+    subLabel: 'Preparing...'
+);
+```
+
 <a name="task-streaming"></a>
 #### Streaming Text
 
@@ -1306,6 +1430,23 @@ task(
         // ...
     },
     limit: 20
+);
+```
+
+<a name="task-keep-summary"></a>
+#### Keeping the Summary
+
+By default, the task's output is erased once the callback finishes. If you would like to keep the status messages on screen after the task has completed, you may pass the `keepSummary` argument:
+
+```php
+task(
+    label: 'Deploying',
+    callback: function ($logger) {
+        $logger->success('Assets built');
+        // ...
+        $logger->success('Migrations complete');
+    },
+    keepSummary: true,
 );
 ```
 
@@ -1344,40 +1485,6 @@ To reset the terminal title back to its default, pass an empty string:
 
 ```php
 title('');
-```
-
-<a name="notifications"></a>
-## Notifications
-
-The `notify` function sends a native desktop notification from the terminal:
-
-```php
-use function Laravel\Prompts\notify;
-
-notify('Build Complete', 'Deployed to production');
-```
-
-Notifications are supported on macOS (via `osascript`) and Linux (via `notify-send` with `kdialog` fallback).
-
-On macOS, you may also include a `subtitle` and a `sound`:
-
-```php
-notify(
-    title: 'Build Complete',
-    body: 'Deployed to production',
-    subtitle: 'staging-server',
-    sound: 'Glass',
-);
-```
-
-On Linux, you may provide a custom `icon`:
-
-```php
-notify(
-    title: 'Build Complete',
-    body: 'Deployed to production',
-    icon: '/path/to/icon.png',
-);
 ```
 
 <a name="clear"></a>

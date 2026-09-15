@@ -1,15 +1,15 @@
 ---
 title: Processes
-source_url: https://laravel.com/docs/12.x/processes
+source_url: https://laravel.com/docs/13.x/processes
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: processes.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 670
+retrieved_at: '2026-09-15'
+order: 690
 ---
 
 # Processes
@@ -106,6 +106,14 @@ By default, processes will throw an instance of `Illuminate\Process\Exceptions\P
 
 ```php
 $result = Process::timeout(120)->run('bash import.sh');
+```
+
+The `timeout` and `idleTimeout` methods also accept `CarbonInterval` instances:
+
+```php
+use function Illuminate\Support\minutes;
+
+$result = Process::timeout(minutes(2))->run('bash import.sh');
 ```
 
 Or, if you would like to disable the process timeout entirely, you may invoke the `forever` method:
@@ -599,6 +607,14 @@ use Illuminate\Support\Facades\Process;
 Process::assertRan('ls -la');
 ```
 
+When the process was invoked with an array of arguments, you may pass the same array to the assertion:
+
+```php
+Process::assertRan(['php', 'artisan', 'migrate']);
+```
+
+The `assertRanTimes` and `assertDidntRun` methods also accept array commands.
+
 The `assertRan` method also accepts a closure, which will receive an instance of a process and a process result, allowing you to inspect the process' configured options. If this closure returns `true`, the assertion will "pass":
 
 ```php
@@ -648,6 +664,20 @@ Process::assertRanTimes(function (PendingProcess $process, ProcessResult $result
     return $process->command === 'ls -la';
 }, times: 3);
 ```
+
+<a name="assert-processes-ran-in-order"></a>
+#### assertRanInOrder
+
+Assert that processes were invoked in a given order:
+
+```php
+Process::assertRanInOrder([
+    'git fetch',
+    'composer install',
+]);
+```
+
+The `assertRanInOrder` method accepts command strings, arrays of command arguments, or closures like the other process assertions.
 
 <a name="preventing-stray-processes"></a>
 ### Preventing Stray Processes

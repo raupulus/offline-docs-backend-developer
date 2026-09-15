@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Eloquent: Mutators &amp; Casting</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Eloquent: Mutators &amp; Casting</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Eloquent: Mutators &amp; Casting</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Eloquent: Mutators &amp; Casting</a>
       <h1 class="doc-title">Eloquent: Mutators &amp; Casting</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/eloquent-mutators" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/eloquent-mutators" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -363,6 +363,7 @@ class="is-current" aria-current="page">Eloquent: Mutators &amp; Casting</a>
               <li class="lvl-3"><a href="#defining-a-mutator">Defining a Mutator#</a></li>
               <li class="lvl-2"><a href="#attribute-casting">Attribute Casting#</a></li>
               <li class="lvl-3"><a href="#array-and-json-casting">Array and JSON Casting#</a></li>
+              <li class="lvl-3"><a href="#vector-casting">Vector Casting#</a></li>
               <li class="lvl-3"><a href="#binary-casting">Binary Casting#</a></li>
               <li class="lvl-3"><a href="#date-casting">Date Casting#</a></li>
               <li class="lvl-3"><a href="#enum-casting">Enum Casting#</a></li>
@@ -389,6 +390,7 @@ class="is-current" aria-current="page">Eloquent: Mutators &amp; Casting</a>
 </li>
 <li><a href="#attribute-casting">Attribute Casting</a><ul>
 <li><a href="#array-and-json-casting">Array and JSON Casting</a></li>
+<li><a href="#vector-casting">Vector Casting</a></li>
 <li><a href="#binary-casting">Binary Casting</a></li>
 <li><a href="#date-casting">Date Casting</a></li>
 <li><a href="#enum-casting">Enum Casting</a></li>
@@ -574,6 +576,7 @@ If you would like these computed values to be added to the array / JSON represen
 <li><code>AsFluent::class</code></li>
 <li><code>AsStringable::class</code></li>
 <li><code>AsUri::class</code></li>
+<li><code>AsVector::class</code></li>
 <li><code>boolean</code></li>
 <li><code>collection</code></li>
 <li><code>date</code></li>
@@ -848,6 +851,25 @@ Attributes that are <code>null</code> will not be cast. In addition, you should 
 <span class="p">}</span>
 </code></pre></div>
 
+<p><a name="vector-casting"></a></p>
+<h3 id="vector-casting">Vector Casting<a class="headerlink" href="#vector-casting" title="Permanent link">#</a></h3>
+<p>You may use the <code>Illuminate\Database\Eloquent\Casts\AsVector</code> cast class to cast a database vector column to and from a PHP array:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Casts\AsVector;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Get the attributes that should be cast.</span>
+<span class="x"> *</span>
+<span class="x"> * @return array&lt;string, string&gt;</span>
+<span class="x"> */</span>
+<span class="x">protected function casts(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;embedding&#39; =&gt; AsVector::class,</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>When setting the attribute, the cast accepts a PHP array or an <code>Arrayable</code> instance, such as a Laravel collection. When retrieving the attribute, the cast returns an array of floats.</p>
 <p><a name="binary-casting"></a></p>
 <h3 id="binary-casting">Binary Casting<a class="headerlink" href="#binary-casting" title="Permanent link">#</a></h3>
 <p>If your Eloquent model has a <a href="./migrations.html#column-method-binary">binary type</a> <code>uuid</code> or <code>ulid</code> column in addition to your model's auto-incrementing ID column, you may use the <code>AsBinary</code> cast to automatically cast the value to and from its binary representation:</p>
@@ -905,13 +927,14 @@ Attributes that are <code>null</code> will not be cast. In addition, you should 
 <span class="x">}</span>
 </code></pre></div>
 
-<p>To specify the format that should be used when actually storing a model's dates within your database, you should define a <code>$dateFormat</code> property on your model:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * The storage format of the model&#39;s date columns.</span>
-<span class="x"> *</span>
-<span class="x"> * @var string</span>
-<span class="x"> */</span>
-<span class="x">protected $dateFormat = &#39;U&#39;;</span>
+<p>To specify the format that should be used when actually storing a model's dates within your database, you should use the <code>dateFormat</code> argument on your model's <code>Table</code> attribute:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Attributes\Table;</span>
+
+<span class="x">#[Table(dateFormat: &#39;U&#39;)]</span>
+<span class="x">class Flight extends Model</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
 </code></pre></div>
 
 <p><a name="date-casting-and-timezones"></a></p>

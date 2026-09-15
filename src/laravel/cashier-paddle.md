@@ -1,14 +1,14 @@
 ---
 title: Laravel Cashier (Paddle)
-source_url: https://laravel.com/docs/12.x/cashier-paddle
+source_url: https://laravel.com/docs/13.x/cashier-paddle
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: cashier-paddle.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 110
 ---
 
@@ -483,7 +483,7 @@ Cashier includes a `paddle-button` [Blade component](/docs/{{version}}/blade#com
 </x-paddle-button>
 ```
 
-By default, this will display the widget using Paddle's default styling. You can customize the widget by adding [Paddle supported attributes](https://developer.paddle.com/paddlejs/html-data-attributes) like the  `data-theme='light'` attribute to the component:
+By default, this will display the widget using Paddle's default styling. You can customize the widget by adding [Paddle supported attributes](https://developer.paddle.com/paddlejs/html-data-attributes) like the `data-theme='light'` attribute to the component:
 
 ```html
 <x-paddle-button :checkout="$checkout" class="px-8 py-4" data-theme="light">
@@ -787,7 +787,7 @@ Once a subscription checkout session has been created, the checkout session may 
 </x-paddle-button>
 ```
 
-After the user has finished their checkout, a `subscription_created` webhook will be dispatched from Paddle. Cashier will receive this webhook and setup the subscription for your customer. In order to make sure all webhooks are properly received and handled by your application, ensure you have properly [setup webhook handling](#handling-paddle-webhooks).
+After the user has finished their checkout, a `subscription_created` webhook will be dispatched from Paddle. Cashier will receive this webhook and set up the subscription for your customer. In order to make sure all webhooks are properly received and handled by your application, ensure you have properly [set up webhook handling](#handling-paddle-webhooks).
 
 <a name="checking-subscription-status"></a>
 ### Checking Subscription Status
@@ -1374,7 +1374,7 @@ Since Paddle webhooks need to bypass Laravel's [CSRF protection](/docs/{{version
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->validateCsrfTokens(except: [
+    $middleware->preventRequestForgery(except: [
         'paddle/*',
     ]);
 })

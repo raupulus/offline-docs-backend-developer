@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Database: Query Builder</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Database: Query Builder</a>
       <h1 class="doc-title">Database: Query Builder</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/queries" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/queries" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -365,7 +365,6 @@ class="is-current" aria-current="page">Database: Query Builder</a>
               <li class="lvl-2"><a href="#select-statements">Select Statements#</a></li>
               <li class="lvl-2"><a href="#raw-expressions">Raw Expressions#</a></li>
               <li class="lvl-3"><a href="#raw-methods">Raw Methods#</a></li>
-              <li class="lvl-3"><a href="#groupbyraw">groupByRaw#</a></li>
               <li class="lvl-2"><a href="#joins">Joins#</a></li>
               <li class="lvl-2"><a href="#unions">Unions#</a></li>
               <li class="lvl-2"><a href="#basic-where-clauses">Basic Where Clauses#</a></li>
@@ -711,7 +710,7 @@ Raw statements will be injected into the query as strings, so you should be extr
 </code></pre></div>
 
 <p><a name="groupbyraw"></a></p>
-<h3 id="groupbyraw"><code>groupByRaw</code><a class="headerlink" href="#groupbyraw" title="Permanent link">#</a></h3>
+<h4 id="groupbyraw"><code>groupByRaw</code><a class="headerlink" href="#groupbyraw" title="Permanent link">#</a></h4>
 <p>The <code>groupByRaw</code> method may be used to provide a raw string as the value of the <code>group by</code> clause:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$orders = DB::table(&#39;orders&#39;)</span>
 <span class="x">    -&gt;select(&#39;city&#39;, &#39;state&#39;)</span>
@@ -880,7 +879,7 @@ MySQL and MariaDB automatically typecast strings to integers in string-number co
 </code></pre></div>
 
 <p>If you need to group an "or" condition within parentheses, you may pass a closure as the first argument to the <code>orWhere</code> method:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Query\Builder; </span>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Query\Builder;</span>
 
 <span class="x">$users = DB::table(&#39;users&#39;)</span>
 <span class="x">    -&gt;where(&#39;votes&#39;, &#39;&gt;&#39;, 100)</span>
@@ -1150,6 +1149,15 @@ If you are adding a large array of integer bindings to your query, the <code>whe
 <span class="x">    -&gt;get();</span>
 </code></pre></div>
 
+<p><strong>whereNullSafeEquals / orWhereNullSafeEquals</strong></p>
+<p>The <code>whereNullSafeEquals</code> and <code>orWhereNullSafeEquals</code> methods may be used to compare a column's value against a given value while treating two <code>NULL</code> values as equal:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$lastLoginIp = $request-&gt;input(&#39;last_login_ip&#39;);</span>
+
+<span class="x">$users = DB::table(&#39;users&#39;)</span>
+<span class="x">    -&gt;whereNullSafeEquals(&#39;last_login_ip&#39;, $lastLoginIp)</span>
+<span class="x">    -&gt;get();</span>
+</code></pre></div>
+
 <p><strong>whereDate / whereMonth / whereDay / whereYear / whereTime</strong></p>
 <p>The <code>whereDate</code> method may be used to compare a column's value against a date:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$users = DB::table(&#39;users&#39;)</span>
@@ -1340,7 +1348,7 @@ Full text where clauses are currently supported by MariaDB, MySQL, and PostgreSQ
 <h3 id="vector-similarity-clauses">Vector Similarity Clauses<a class="headerlink" href="#vector-similarity-clauses" title="Permanent link">#</a></h3>
 <blockquote>
 <p>[!NOTE]
-Vector similarity clauses are currently only supported on PostgreSQL connections using the <code>pgvector</code> extension. For information on defining vector columns and indexes, consult the <a href="./migrations.html#available-column-types">migration documentation</a>.</p>
+Vector similarity clauses are currently supported on PostgreSQL connections using the <code>pgvector</code> extension and MariaDB 11.7 or later. For information on defining vector columns and indexes, consult the <a href="./migrations.html#available-column-types">migration documentation</a>.</p>
 </blockquote>
 <p>The <code>whereVectorSimilarTo</code> method filters results by cosine similarity to a given vector and orders the results by relevance. The <code>minSimilarity</code> threshold should be a value between <code>0.0</code> and <code>1.0</code>, where <code>1.0</code> is identical:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$documents = DB::table(&#39;documents&#39;)</span>

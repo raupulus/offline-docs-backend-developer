@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Blade Templates</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Blade Templates</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Blade Templates</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Blade Templates</a>
       <h1 class="doc-title">Blade Templates</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/blade" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/blade" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -372,6 +372,7 @@ class="is-current" aria-current="page">Blade Templates</a>
               <li class="lvl-3"><a href="#including-subviews">Including Subviews#</a></li>
               <li class="lvl-3"><a href="#the-once-directive">The @once Directive#</a></li>
               <li class="lvl-3"><a href="#raw-php">Raw PHP#</a></li>
+              <li class="lvl-3"><a href="#fonts">Fonts#</a></li>
               <li class="lvl-3"><a href="#comments">Comments#</a></li>
               <li class="lvl-2"><a href="#components">Components#</a></li>
               <li class="lvl-3"><a href="#rendering-components">Rendering Components#</a></li>
@@ -427,6 +428,7 @@ class="is-current" aria-current="page">Blade Templates</a>
 <li><a href="#including-subviews">Including Subviews</a></li>
 <li><a href="#the-once-directive">The <code>@once</code> Directive</a></li>
 <li><a href="#raw-php">Raw PHP</a></li>
+<li><a href="#fonts">Fonts</a></li>
 <li><a href="#comments">Comments</a></li>
 </ul>
 </li>
@@ -446,7 +448,7 @@ class="is-current" aria-current="page">Blade Templates</a>
 <li><a href="#anonymous-index-components">Anonymous Index Components</a></li>
 <li><a href="#data-properties-attributes">Data Properties / Attributes</a></li>
 <li><a href="#accessing-parent-data">Accessing Parent Data</a></li>
-<li><a href="#anonymous-component-paths">Anonymous Components Paths</a></li>
+<li><a href="#anonymous-component-paths">Anonymous Component Paths</a></li>
 </ul>
 </li>
 <li><a href="#building-layouts">Building Layouts</a><ul>
@@ -1001,6 +1003,31 @@ Views rendered via <code>@each</code> do not inherit the variables from the pare
 <p>Grouped imports are also supported with both function and const modifiers, allowing you to import multiple symbols from the same namespace in a single directive:</p>
 <div class="codehilite"><pre><span></span><code>@use(function App\Helpers\{format_currency, format_date})
 @use(const App\Constants\{MAX_ATTEMPTS, DEFAULT_TIMEOUT})
+</code></pre></div>
+
+<p><a name="fonts"></a></p>
+<h3 id="fonts">Fonts<a class="headerlink" href="#fonts" title="Permanent link">#</a></h3>
+<p>When using <a href="./vite.html#working-with-fonts">Laravel's Vite font optimization</a>, you may use the <code>@fonts</code> directive to render your configured font preload links and inline font CSS in your application's layout:</p>
+<div class="codehilite"><pre><span></span><code>&lt;!doctype html&gt;
+&lt;head&gt;
+    {{-- ... --}}
+
+    @fonts
+    @vite(&#39;resources/js/app.js&#39;)
+&lt;/head&gt;
+</code></pre></div>
+
+<p>The <code>@fonts</code> directive renders all font families configured in your <code>vite.config.js</code> file. The directive should typically be placed in the <code>&lt;head&gt;</code> of your application's root layout before any content that uses those fonts.</p>
+<p>If a page only needs some of your configured fonts, you may pass one or more font aliases to the directive:</p>
+<div class="codehilite"><pre><span></span><code>{{-- Load a single font alias... --}}
+@fonts(&#39;sans&#39;)
+
+{{-- Load multiple font aliases... --}}
+@fonts([&#39;sans&#39;, &#39;mono&#39;])
+</code></pre></div>
+
+<p>Font aliases are configured using the <code>alias</code> option when defining fonts in your Vite configuration. The <code>@fonts</code> directive calls the <code>fonts</code> method provided by the <code>Vite</code> facade, which may also be invoked directly:</p>
+<div class="codehilite"><pre><span></span><code>{{ Vite::fonts([&#39;sans&#39;, &#39;mono&#39;]) }}
 </code></pre></div>
 
 <p><a name="comments"></a></p>

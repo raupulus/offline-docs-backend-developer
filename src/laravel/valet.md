@@ -1,15 +1,15 @@
 ---
 title: Laravel Valet
-source_url: https://laravel.com/docs/12.x/valet
+source_url: https://laravel.com/docs/13.x/valet
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: valet.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 950
+retrieved_at: '2026-09-15'
+order: 970
 ---
 
 # Laravel Valet
@@ -290,7 +290,7 @@ valet unisolate
 
 Valet includes a command to share your local sites with the world, providing an easy way to test your site on mobile devices or share it with team members and clients.
 
-Out of the box, Valet supports sharing your sites via ngrok or Expose. Before sharing a site, you should update your Valet configuration using the `share-tool` command, specifying `ngrok`, `expose`, or  `cloudflared`:
+Out of the box, Valet supports sharing your sites via ngrok or Expose. Before sharing a site, you should update your Valet configuration using the `share-tool` command, specifying `ngrok`, `expose`, or `cloudflared`:
 
 ```shell
 valet share-tool ngrok

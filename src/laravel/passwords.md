@@ -1,15 +1,15 @@
 ---
 title: Resetting Passwords
-source_url: https://laravel.com/docs/12.x/passwords
+source_url: https://laravel.com/docs/13.x/passwords
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: passwords.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 630
+retrieved_at: '2026-09-15'
+order: 650
 ---
 
 # Resetting Passwords

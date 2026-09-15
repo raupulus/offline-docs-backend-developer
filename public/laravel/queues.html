@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Queues</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Queues</a>
       <h1 class="doc-title">Queues</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/queues" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/queues" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -364,15 +364,19 @@ class="is-current" aria-current="page">Queues</a>
               <li class="lvl-3"><a href="#generating-job-classes">Generating Job Classes#</a></li>
               <li class="lvl-3"><a href="#class-structure">Class Structure#</a></li>
               <li class="lvl-3"><a href="#unique-jobs">Unique Jobs#</a></li>
+              <li class="lvl-3"><a href="#debounced-jobs">Debounced Jobs#</a></li>
               <li class="lvl-3"><a href="#encrypted-jobs">Encrypted Jobs#</a></li>
               <li class="lvl-2"><a href="#job-middleware">Job Middleware#</a></li>
               <li class="lvl-3"><a href="#rate-limiting">Rate Limiting#</a></li>
               <li class="lvl-3"><a href="#preventing-job-overlaps">Preventing Job Overlaps#</a></li>
               <li class="lvl-3"><a href="#throttling-exceptions">Throttling Exceptions#</a></li>
+              <li class="lvl-3"><a href="#releasing-jobs">Releasing Jobs#</a></li>
               <li class="lvl-3"><a href="#skipping-jobs">Skipping Jobs#</a></li>
               <li class="lvl-2"><a href="#dispatching-jobs">Dispatching Jobs#</a></li>
               <li class="lvl-3"><a href="#delayed-dispatching">Delayed Dispatching#</a></li>
               <li class="lvl-3"><a href="#synchronous-dispatching">Synchronous Dispatching#</a></li>
+              <li class="lvl-3"><a href="#bulk-dispatching">Bulk Dispatching#</a></li>
+              <li class="lvl-3"><a href="#preparing-jobs-before-dispatch">Preparing Jobs Before Dispatch#</a></li>
               <li class="lvl-3"><a href="#jobs-database-transactions">Jobs &amp; Database Transactions#</a></li>
               <li class="lvl-3"><a href="#job-chaining">Job Chaining#</a></li>
               <li class="lvl-3"><a href="#customizing-the-queue-and-connection">Customizing the Queue and Connection#</a></li>
@@ -395,6 +399,7 @@ class="is-current" aria-current="page">Queues</a>
               <li class="lvl-3"><a href="#the-queuework-command">The queue:work Command#</a></li>
               <li class="lvl-3"><a href="#queue-priorities">Queue Priorities#</a></li>
               <li class="lvl-3"><a href="#queue-workers-and-deployment">Queue Workers and Deployment#</a></li>
+              <li class="lvl-3"><a href="#reacting-to-worker-signals">Reacting to Worker Signals#</a></li>
               <li class="lvl-3"><a href="#job-expirations-and-timeouts">Job Expirations and Timeouts#</a></li>
               <li class="lvl-3"><a href="#pausing-and-resuming-queue-workers">Pausing and Resuming Queue Workers#</a></li>
               <li class="lvl-2"><a href="#supervisor-configuration">Supervisor Configuration#</a></li>
@@ -424,6 +429,7 @@ class="is-current" aria-current="page">Queues</a>
 <li><a href="#generating-job-classes">Generating Job Classes</a></li>
 <li><a href="#class-structure">Class Structure</a></li>
 <li><a href="#unique-jobs">Unique Jobs</a></li>
+<li><a href="#debounced-jobs">Debounced Jobs</a></li>
 <li><a href="#encrypted-jobs">Encrypted Jobs</a></li>
 </ul>
 </li>
@@ -431,12 +437,15 @@ class="is-current" aria-current="page">Queues</a>
 <li><a href="#rate-limiting">Rate Limiting</a></li>
 <li><a href="#preventing-job-overlaps">Preventing Job Overlaps</a></li>
 <li><a href="#throttling-exceptions">Throttling Exceptions</a></li>
+<li><a href="#releasing-jobs">Releasing Jobs</a></li>
 <li><a href="#skipping-jobs">Skipping Jobs</a></li>
 </ul>
 </li>
 <li><a href="#dispatching-jobs">Dispatching Jobs</a><ul>
 <li><a href="#delayed-dispatching">Delayed Dispatching</a></li>
 <li><a href="#synchronous-dispatching">Synchronous Dispatching</a></li>
+<li><a href="#bulk-dispatching">Bulk Dispatching</a></li>
+<li><a href="#preparing-jobs-before-dispatch">Preparing Jobs Before Dispatch</a></li>
 <li><a href="#jobs-and-database-transactions">Jobs &amp; Database Transactions</a></li>
 <li><a href="#job-chaining">Job Chaining</a></li>
 <li><a href="#customizing-the-queue-and-connection">Customizing The Queue and Connection</a></li>
@@ -463,6 +472,7 @@ class="is-current" aria-current="page">Queues</a>
 <li><a href="#the-queue-work-command">The <code>queue:work</code> Command</a></li>
 <li><a href="#queue-priorities">Queue Priorities</a></li>
 <li><a href="#queue-workers-and-deployment">Queue Workers and Deployment</a></li>
+<li><a href="#reacting-to-worker-signals">Reacting to Worker Signals</a></li>
 <li><a href="#job-expirations-and-timeouts">Job Expirations and Timeouts</a></li>
 <li><a href="#pausing-and-resuming-queue-workers">Pausing and Resuming Queue Workers</a></li>
 </ul>
@@ -563,6 +573,30 @@ The <code>serializer</code> and <code>compression</code> Redis options are not s
 <p>[!WARNING]
 Setting <code>block_for</code> to <code>0</code> will cause queue workers to block indefinitely until a job is available. This will also prevent signals such as <code>SIGTERM</code> from being handled until the next job has been processed.</p>
 </blockquote>
+<p><a name="sqs-overflow-storage"></a></p>
+<h4 id="sqs-overflow-storage">SQS Overflow Storage<a class="headerlink" href="#sqs-overflow-storage" title="Permanent link">#</a></h4>
+<p>Amazon SQS limits the maximum size of a queued message payload. If you need to dispatch jobs with payloads that may exceed this limit, you may configure Laravel to store oversized SQS payloads in a cache store and send a pointer through SQS instead. To enable this feature, add an <code>overflow</code> array to your SQS queue connection configuration:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;sqs&#39; =&gt; [</span>
+<span class="x">    &#39;driver&#39; =&gt; &#39;sqs&#39;,</span>
+<span class="x">    &#39;key&#39; =&gt; env(&#39;AWS_ACCESS_KEY_ID&#39;),</span>
+<span class="x">    &#39;secret&#39; =&gt; env(&#39;AWS_SECRET_ACCESS_KEY&#39;),</span>
+<span class="x">    &#39;prefix&#39; =&gt; env(&#39;SQS_PREFIX&#39;, &#39;https://sqs.us-east-1.amazonaws.com/your-account-id&#39;),</span>
+<span class="x">    &#39;queue&#39; =&gt; env(&#39;SQS_QUEUE&#39;, &#39;default&#39;),</span>
+<span class="x">    &#39;suffix&#39; =&gt; env(&#39;SQS_SUFFIX&#39;),</span>
+<span class="x">    &#39;region&#39; =&gt; env(&#39;AWS_DEFAULT_REGION&#39;, &#39;us-east-1&#39;),</span>
+<span class="x">    &#39;after_commit&#39; =&gt; false,</span>
+<span class="x">    &#39;overflow&#39; =&gt; [</span>
+<span class="x">        &#39;enabled&#39; =&gt; env(&#39;SQS_OVERFLOW_ENABLED&#39;, false),</span>
+<span class="x">        &#39;store&#39; =&gt; env(&#39;SQS_OVERFLOW_STORE&#39;),</span>
+<span class="x">        &#39;always&#39; =&gt; false,</span>
+<span class="x">        &#39;delete_after_processing&#39; =&gt; true,</span>
+<span class="x">        &#39;flush_on_clear&#39; =&gt; env(&#39;SQS_OVERFLOW_FLUSH_ON_CLEAR&#39;, false),</span>
+<span class="x">    ],</span>
+<span class="x">],</span>
+</code></pre></div>
+
+<p>When overflow storage is enabled, Laravel will store payloads that are at least 1 MB in the configured cache store. If the <code>always</code> option is <code>true</code>, every SQS payload will be stored in the cache store regardless of its size. Since queued jobs will need to retrieve their payloads from the cache store when they are processed, you should choose a store that can retain the payloads until your workers process them. By default, stored payloads are deleted after their jobs have been successfully processed and deleted from SQS.</p>
+<p>If the <code>flush_on_clear</code> option is <code>true</code>, the configured overflow cache store will be flushed when the <code>queue:clear</code> command clears the SQS queue. Since flushing a cache store may remove all items from that store, you should configure SQS overflow storage to use a dedicated cache store when enabling this option.</p>
 <p><a name="other-driver-prerequisites"></a></p>
 <h4 id="other-driver-prerequisites">Other Driver Prerequisites<a class="headerlink" href="#other-driver-prerequisites" title="Permanent link">#</a></h4>
 <p>The following dependencies are needed for the listed queue drivers. These dependencies may be installed via the Composer package manager:</p>
@@ -570,7 +604,7 @@ Setting <code>block_for</code> to <code>0</code> will cause queue workers to blo
 <ul>
 <li>Amazon SQS: <code>aws/aws-sdk-php ~3.0</code></li>
 <li>Beanstalkd: <code>pda/pheanstalk ~5.0</code></li>
-<li>Redis: <code>predis/predis ~2.0</code> or phpredis PHP extension</li>
+<li>Redis: <code>predis/predis ~3.0</code> or phpredis PHP extension</li>
 <li><a href="https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/queues/" rel="noopener" target="_blank">MongoDB</a>: <code>mongodb/laravel-mongodb</code></li>
 </ul>
 </div>
@@ -653,6 +687,10 @@ Binary data, such as raw image contents, should be passed through the <code>base
 <span class="x">}</span>
 </code></pre></div>
 
+<p>If you only need to remove specific relations while keeping the rest, you may use the <code>withoutRelation</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$this-&gt;podcast = $podcast-&gt;withoutRelation(&#39;comments&#39;);</span>
+</code></pre></div>
+
 <p>If you are using <a href="https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion" rel="noopener" target="_blank">PHP constructor property promotion</a> and would like to indicate that an Eloquent model should not have its relations serialized, you may use the <code>WithoutRelations</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Queue\Attributes\WithoutRelations;</span>
 
@@ -713,14 +751,16 @@ Unique job constraints do not apply to jobs within batches.</p>
 </code></pre></div>
 
 <p>In the example above, the <code>UpdateSearchIndex</code> job is unique. So, the job will not be dispatched if another instance of the job is already on the queue and has not finished processing.</p>
-<p>In certain cases, you may want to define a specific "key" that makes the job unique or you may want to specify a timeout beyond which the job no longer stays unique. To accomplish this, you may define <code>uniqueId</code> and <code>uniqueFor</code> properties or methods on your job class:</p>
+<p>In certain cases, you may want to define a specific "key" that makes the job unique or you may want to specify a timeout beyond which the job no longer stays unique. To accomplish this, you may use the <code>UniqueFor</code> attribute and define a <code>uniqueId</code> method on your job class:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldBeUnique</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\UniqueFor</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">UniqueFor</span><span class="p">(</span><span class="mi">3600</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">UpdateSearchIndex</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span><span class="p">,</span> <span class="nx">ShouldBeUnique</span>
 <span class="p">{</span>
     <span class="sd">/**</span>
@@ -729,13 +769,6 @@ Unique job constraints do not apply to jobs within batches.</p>
 <span class="sd">     * @var \App\Models\Product</span>
 <span class="sd">     */</span>
     <span class="k">public</span> <span class="nv">$product</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The number of seconds after which the job&#39;s unique lock will be released.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$uniqueFor</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">;</span>
 
     <span class="sd">/**</span>
 <span class="sd">     * Get the unique ID for the job.</span>
@@ -789,6 +822,67 @@ If your application dispatches jobs from multiple web servers or containers, you
 <blockquote>
 <p>[!NOTE]
 If you only need to limit the concurrent processing of a job, use the <a href="./queues.html#preventing-job-overlaps">WithoutOverlapping</a> job middleware instead.</p>
+</blockquote>
+<p><a name="debounced-jobs"></a></p>
+<h3 id="debounced-jobs">Debounced Jobs<a class="headerlink" href="#debounced-jobs" title="Permanent link">#</a></h3>
+<p>Sometimes, you may want to ensure that when the same job is dispatched many times in a short window, only the latest dispatch actually executes. You may do so by adding the <code>DebounceFor</code> attribute to your job:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Queue\Queueable</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\DebounceFor</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">DebounceFor</span><span class="p">(</span><span class="mi">30</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">UpdateSearchIndex</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">Queueable</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Create a new job instance.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="k">public</span> <span class="nx">int</span> <span class="nv">$productId</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Get the debounce ID for the job.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">debounceId</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">productId</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>In the example above, repeatedly dispatching <code>UpdateSearchIndex</code> for the same product within <code>30</code> seconds will debounce the job so that only the latest dispatch runs.</p>
+<p>If you would like to cap how long a frequently re-dispatched job can be deferred, you may provide the <code>maxWait</code> argument to the <code>DebounceFor</code> attribute:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">#[DebounceFor(30, maxWait: 120)]</span>
+<span class="x">class UpdateSearchIndex implements ShouldQueue</span>
+<span class="x">{</span>
+<span class="x">    use Queueable;</span>
+
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You may customize the cache store used for debounce tracking by defining a <code>debounceVia</code> method on your job:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Contracts\Cache\Repository;</span>
+<span class="x">use Illuminate\Support\Facades\Cache;</span>
+
+<span class="x">public function debounceVia(): Repository</span>
+<span class="x">{</span>
+<span class="x">    return Cache::driver(&#39;redis&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If a debounced job is superseded by a newer dispatch, Laravel will dispatch the <code>Illuminate\Queue\Events\JobDebounced</code> event and remove the superseded job from the queue.</p>
+<blockquote>
+<p>[!WARNING]
+Debounced jobs and unique jobs are mutually exclusive. A job using the <code>DebounceFor</code> attribute should not implement <code>ShouldBeUnique</code>.</p>
+<p>[!WARNING]
+If your application dispatches debounced jobs from multiple web servers or containers, you should ensure that all of your servers are communicating with the same central cache server.</p>
 </blockquote>
 <p><a name="encrypted-jobs"></a></p>
 <h3 id="encrypted-jobs">Encrypted Jobs<a class="headerlink" href="#encrypted-jobs" title="Permanent link">#</a></h3>
@@ -915,7 +1009,7 @@ Job middleware can also be assigned to <a href="./events.html#queued-event-liste
 <span class="x">}</span>
 </code></pre></div>
 
-<p>Releasing a rate limited job back onto the queue will still increment the job's total number of <code>attempts</code>. You may wish to tune your <code>tries</code> and <code>maxExceptions</code> properties on your job class accordingly. Or, you may wish to use the <a href="#time-based-attempts">retryUntil method</a> to define the amount of time until the job should no longer be attempted.</p>
+<p>Releasing a rate limited job back onto the queue will still increment the job's total number of <code>attempts</code>. You may wish to tune your <code>Tries</code> and <code>MaxExceptions</code> attributes on your job class accordingly. Or, you may wish to use the <a href="#time-based-attempts">retryUntil method</a> to define the amount of time until the job should no longer be attempted.</p>
 <p>Using the <code>releaseAfter</code> method, you may also specify the number of seconds that must elapse before the released job will be attempted again:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">/**</span>
 <span class="x"> * Get the middleware the job should pass through.</span>
@@ -972,7 +1066,7 @@ Job middleware can also be assigned to <a href="./events.html#queued-event-liste
 <span class="x">}</span>
 </code></pre></div>
 
-<p>Releasing an overlapping job back onto the queue will still increment the job's total number of attempts. You may wish to tune your <code>tries</code> and <code>maxExceptions</code> properties on your job class accordingly. For example, leaving the <code>tries</code> property to 1 as it is by default would prevent any overlapping job from being retried later.</p>
+<p>Releasing an overlapping job back onto the queue will still increment the job's total number of attempts. You may wish to tune your <code>Tries</code> and <code>MaxExceptions</code> attributes on your job class accordingly. For example, leaving <code>Tries</code> to 1 as it is by default would prevent any overlapping job from being retried later.</p>
 <p>Any overlapping jobs of the same type will be released back to the queue. You may also specify the number of seconds that must elapse before the released job will be attempted again:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">/**</span>
 <span class="x"> * Get the middleware the job should pass through.</span>
@@ -1084,6 +1178,26 @@ The <code>WithoutOverlapping</code> middleware requires a cache driver that supp
 <span class="x">}</span>
 </code></pre></div>
 
+<p>The <code>backoff</code> method also accepts a closure that receives the thrown exception, allowing the delay to be determined dynamically:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Exceptions\RateLimitedException;</span>
+<span class="x">use Illuminate\Queue\Middleware\ThrottlesExceptions;</span>
+<span class="x">use Throwable;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Get the middleware the job should pass through.</span>
+<span class="x"> *</span>
+<span class="x"> * @return array&lt;int, object&gt;</span>
+<span class="x"> */</span>
+<span class="x">public function middleware(): array</span>
+<span class="x">{</span>
+<span class="x">    return [(new ThrottlesExceptions(10, 5 * 60))-&gt;backoff(</span>
+<span class="x">        fn (Throwable $throwable) =&gt; $throwable instanceof RateLimitedException</span>
+<span class="x">            ? $throwable-&gt;retryAfterMinutes()</span>
+<span class="x">            : 5</span>
+<span class="x">    )];</span>
+<span class="x">}</span>
+</code></pre></div>
+
 <p>Internally, this middleware uses Laravel's cache system to implement rate limiting, and the job's class name is utilized as the cache "key". You may override this key by calling the <code>by</code> method when attaching the middleware to your job. This may be useful if you have multiple jobs interacting with the same third-party service and you would like them to share a common throttling "bucket" ensuring they respect a single shared limit:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Queue\Middleware\ThrottlesExceptions;</span>
 
@@ -1160,6 +1274,39 @@ The <code>WithoutOverlapping</code> middleware requires a cache driver that supp
 
 <p>The <code>connection</code> method may be used to specify which Redis connection the middleware should use:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">return [(new ThrottlesExceptionsWithRedis(10, 10 * 60))-&gt;connection(&#39;limiter&#39;)];</span>
+</code></pre></div>
+
+<p><a name="releasing-jobs"></a></p>
+<h3 id="releasing-jobs">Releasing Jobs<a class="headerlink" href="#releasing-jobs" title="Permanent link">#</a></h3>
+<p>The <code>Release</code> middleware allows you to release a job back onto the queue without executing it. The <code>Release::when</code> method will release the job if the given condition evaluates to <code>true</code>, while the <code>Release::unless</code> method will release the job if the condition evaluates to <code>false</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Queue\Middleware\Release;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Get the middleware the job should pass through.</span>
+<span class="x"> */</span>
+<span class="x">public function middleware(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Release::when($condition, releaseAfter: 60),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Releasing a job back onto the queue will still increment the job's total number of attempts. You may wish to tune your <code>Tries</code> and <code>MaxExceptions</code> attributes on your job class accordingly.</p>
+<p>You can also pass a <code>Closure</code> to the <code>when</code> and <code>unless</code> methods for more complex conditional evaluation:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Queue\Middleware\Release;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Get the middleware the job should pass through.</span>
+<span class="x"> */</span>
+<span class="x">public function middleware(): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        Release::when(function (): bool {</span>
+<span class="x">            return ! $this-&gt;order-&gt;isPaid();</span>
+<span class="x">        }, releaseAfter: 60),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
 </code></pre></div>
 
 <p><a name="skipping-jobs"></a></p>
@@ -1309,6 +1456,52 @@ The Amazon SQS queue service has a maximum delay time of 15 minutes.</p>
 <p>The <code>deferred</code> connection also serves as the default <a href="#queue-failover">failover queue</a>.</p>
 <p>Similarly, the <code>background</code> connection processes jobs after the HTTP response has been sent to the user; however, the job is processed in a separately spawned PHP process, allowing the PHP-FPM / application worker to be available to handle another incoming HTTP request:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">RecordDelivery::dispatch($order)-&gt;onConnection(&#39;background&#39;);</span>
+</code></pre></div>
+
+<p><a name="bulk-dispatching"></a></p>
+<h3 id="bulk-dispatching">Bulk Dispatching<a class="headerlink" href="#bulk-dispatching" title="Permanent link">#</a></h3>
+<p>If you need to dispatch many independent jobs at once and do not need <a href="#job-batching">batch</a> tracking or callbacks, you may use the <code>bulk</code> method of the <code>Bus</code> facade. Laravel will group the jobs by their configured queue connection and queue name and push each group to the appropriate queue in bulk:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Jobs\ProcessUser;</span>
+<span class="x">use Illuminate\Support\Facades\Bus;</span>
+
+<span class="x">Bus::bulk(</span>
+<span class="x">    $users-&gt;map(fn ($user) =&gt; new ProcessUser($user))</span>
+<span class="x">);</span>
+</code></pre></div>
+
+<p><a name="preparing-jobs-before-dispatch"></a></p>
+<h3 id="preparing-jobs-before-dispatch">Preparing Jobs Before Dispatch<a class="headerlink" href="#preparing-jobs-before-dispatch" title="Permanent link">#</a></h3>
+<p>If a job needs to prepare or inspect its state before it is pushed onto the queue, the job may implement the <code>Illuminate\Contracts\Queue\PreparesForDispatch</code> interface. Laravel will invoke the job's <code>prepareForDispatch</code> method before dispatching the job. If this method returns <code>false</code>, the job will not be dispatched:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\PreparesForDispatch</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Queue\Queueable</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Support\Facades\Cache</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">SyncPodcasts</span> <span class="k">implements</span> <span class="nx">PreparesForDispatch</span><span class="p">,</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">Queueable</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Create a new job instance.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">public</span> <span class="k">array</span> <span class="nv">$podcastIds</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Prepare the job before dispatching.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">prepareForDispatch</span><span class="p">()</span><span class="o">:</span> <span class="nx">bool</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">collect</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">podcastIds</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">reject</span><span class="p">(</span><span class="nx">fn</span> <span class="p">(</span><span class="nx">int</span> <span class="nv">$id</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Cache</span><span class="o">::</span><span class="na">has</span><span class="p">(</span><span class="s2">&quot;podcast-syncing:</span><span class="si">{</span><span class="nv">$id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+            <span class="o">-&gt;</span><span class="na">isNotEmpty</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p><a name="jobs-and-database-transactions"></a></p>
@@ -1470,10 +1663,6 @@ Since chain callbacks are serialized and executed at a later time by the Laravel
 <span class="p">}</span>
 </code></pre></div>
 
-<blockquote>
-<p>[!WARNING]
-Constructor-based queue assignment via <code>onQueue</code> only works for job classes. For <a href="./events.html#customizing-the-queue-connection-queue-name">queued event listeners</a>, define a <code>viaQueue</code> method or a <code>$queue</code> property on the listener class instead.</p>
-</blockquote>
 <p><a name="dispatching-to-a-particular-connection"></a></p>
 <h4 id="dispatching-to-a-particular-connection">Dispatching to a Particular Connection<a class="headerlink" href="#dispatching-to-a-particular-connection" title="Permanent link">#</a></h4>
 <p>If your application interacts with multiple queue connections, you may specify which connection to push a job to using the <code>onConnection</code> method:</p>
@@ -1532,6 +1721,55 @@ Constructor-based queue assignment via <code>onQueue</code> only works for job c
 <span class="p">}</span>
 </code></pre></div>
 
+<p><a name="queue-routing"></a></p>
+<h4 id="queue-routing">Queue Routing<a class="headerlink" href="#queue-routing" title="Permanent link">#</a></h4>
+<p>You may use the <code>Queue</code> facade's <code>route</code> method to define a default connection and queue for specific job classes. This is useful when you want to ensure certain jobs always use specific queues without needing to specify the connection or queue on the job.</p>
+<p>In addition to routing specific job classes, you may also pass an interface, trait, or parent class to the <code>route</code> method. When you do this, any job that implements the interface, uses the trait, or extends the parent class will automatically use the configured connection and queue.</p>
+<p>Typically, you should call the <code>route</code> method from the <code>boot</code> method of a service provider:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Concerns\RequiresVideo;</span>
+<span class="x">use App\Jobs\ProcessPodcast;</span>
+<span class="x">use App\Jobs\ProcessVideo;</span>
+<span class="x">use Illuminate\Support\Facades\Queue;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Bootstrap any application services.</span>
+<span class="x"> */</span>
+<span class="x">public function boot(): void</span>
+<span class="x">{</span>
+<span class="x">    Queue::route(ProcessPodcast::class, connection: &#39;redis&#39;, queue: &#39;podcasts&#39;);</span>
+<span class="x">    Queue::route(RequiresVideo::class, queue: &#39;video&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>When a connection is specified without a queue, the job will be sent to the default queue:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Queue::route(ProcessPodcast::class, connection: &#39;redis&#39;);</span>
+</code></pre></div>
+
+<p>You may also route multiple job classes at once by passing an array to the <code>route</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Queue::route([</span>
+<span class="x">    ProcessPodcast::class =&gt; [&#39;redis&#39;, &#39;podcasts&#39;], // Connection and queue</span>
+<span class="x">    ProcessVideo::class =&gt; &#39;videos&#39;, // Queue only (uses default connection)</span>
+<span class="x">]);</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]
+Queue routing can still be overridden by the job on a per-job basis.</p>
+</blockquote>
+<p>You may use the <code>forward</code> method to forward jobs from one queue to another queue and / or connection. This is useful when you need to change queue infrastructure without modifying individual jobs or dispatch locations:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Queue::forward(&#39;reports&#39;, &#39;reports.fifo&#39;, &#39;sqs&#39;);</span>
+<span class="x">Queue::forward(&#39;payments&#39;, connection: &#39;sqs&#39;);</span>
+<span class="x">Queue::forward(&#39;updates&#39;, &#39;notifications&#39;);</span>
+</code></pre></div>
+
+<p>You may also forward multiple queues at once by passing an array:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Queue::forward([</span>
+<span class="x">    &#39;reports&#39; =&gt; &#39;reports.fifo&#39;,</span>
+<span class="x">    &#39;emails&#39; =&gt; &#39;emails.fifo&#39;,</span>
+<span class="x">], connection: &#39;sqs&#39;);</span>
+</code></pre></div>
+
+<p>An explicit connection configured on a job takes precedence over a forwarded connection.</p>
 <p><a name="max-job-attempts-and-timeout"></a></p>
 <h3 id="specifying-max-job-attempts-timeout-values">Specifying Max Job Attempts / Timeout Values<a class="headerlink" href="#specifying-max-job-attempts-timeout-values" title="Permanent link">#</a></h3>
 <p><a name="max-attempts"></a></p>
@@ -1558,19 +1796,17 @@ By default, Laravel will only attempt a job once. If your job uses middleware li
 </code></pre></div>
 
 <p>If a job exceeds its maximum number of attempts, it will be considered a "failed" job. For more information on handling failed jobs, consult the <a href="#dealing-with-failed-jobs">failed job documentation</a>. If <code>--tries=0</code> is provided to the <code>queue:work</code> command, the job will be retried indefinitely.</p>
-<p>You may take a more granular approach by defining the maximum number of times a job may be attempted on the job class itself. If the maximum number of attempts is specified on the job, it will take precedence over the <code>--tries</code> value provided on the command line:</p>
+<p>You may take a more granular approach by defining the maximum number of times a job may be attempted on the job class itself using the <code>Tries</code> attribute. If the maximum number of attempts is specified on the job, it will take precedence over the <code>--tries</code> value provided on the command line:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Tries</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Tries</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">ProcessPodcast</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The number of times the job may be attempted.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$tries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1601,36 +1837,26 @@ By default, Laravel will only attempt a job once. If your job uses middleware li
 <p>If both <code>retryUntil</code> and <code>tries</code> are defined, Laravel gives precedence to the <code>retryUntil</code> method.</p>
 <blockquote>
 <p>[!NOTE]
-You may also define a <code>tries</code> property or <code>retryUntil</code> method on your <a href="./events.html#queued-event-listeners">queued event listeners</a> and <a href="./notifications.html#queueing-notifications">queued notifications</a>.</p>
+You may also define a <code>Tries</code> attribute or <code>retryUntil</code> method on your <a href="./events.html#queued-event-listeners">queued event listeners</a> and <a href="./notifications.html#queueing-notifications">queued notifications</a>.</p>
 </blockquote>
 <p><a name="max-exceptions"></a></p>
 <h4 id="max-exceptions">Max Exceptions<a class="headerlink" href="#max-exceptions" title="Permanent link">#</a></h4>
-<p>Sometimes you may wish to specify that a job may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the <code>release</code> method directly). To accomplish this, you may define a <code>maxExceptions</code> property on your job class:</p>
+<p>Sometimes you may wish to specify that a job may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the <code>release</code> method directly). To accomplish this, you may use the <code>Tries</code> and <code>MaxExceptions</code> attributes on your job class:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Foundation\Queue\Queueable</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\MaxExceptions</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Tries</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Support\Facades\Redis</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Tries</span><span class="p">(</span><span class="mi">25</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">MaxExceptions</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">ProcessPodcast</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">Queueable</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The number of times the job may be attempted.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$tries</span> <span class="o">=</span> <span class="mi">25</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The maximum number of unhandled exceptions to allow before failing.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$maxExceptions</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 
     <span class="sd">/**</span>
 <span class="sd">     * Execute the job.</span>
@@ -1648,6 +1874,30 @@ You may also define a <code>tries</code> property or <code>retryUntil</code> met
 </code></pre></div>
 
 <p>In this example, the job is released for ten seconds if the application is unable to obtain a Redis lock and will continue to be retried up to 25 times. However, the job will fail if three unhandled exceptions are thrown by the job.</p>
+<p><a name="stopping-retries-by-exception"></a></p>
+<h4 id="stopping-retries-by-exception">Stopping Retries by Exception<a class="headerlink" href="#stopping-retries-by-exception" title="Permanent link">#</a></h4>
+<p>Sometimes an exception indicates that a queued job should fail immediately instead of being released for another attempt. You may configure exception types that should stop job retries using the <code>dontRetry</code> exception method in your application's <code>bootstrap/app.php</code> file:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Exceptions\InvalidPodcastSourceException;</span>
+<span class="x">use Illuminate\Foundation\Configuration\Exceptions;</span>
+
+<span class="x">-&gt;withExceptions(function (Exceptions $exceptions): void {</span>
+<span class="x">    $exceptions-&gt;dontRetry([</span>
+<span class="x">        InvalidPodcastSourceException::class,</span>
+<span class="x">    ]);</span>
+<span class="x">})</span>
+</code></pre></div>
+
+<p>If you need more control over when retries should stop, you may provide a closure to the <code>dontRetryWhen</code> method. When the closure returns <code>true</code>, the job will be marked as failed and will not be retried:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Exceptions\PodcastProcessingException;</span>
+<span class="x">use Illuminate\Foundation\Configuration\Exceptions;</span>
+
+<span class="x">-&gt;withExceptions(function (Exceptions $exceptions): void {</span>
+<span class="x">    $exceptions-&gt;dontRetryWhen(function (PodcastProcessingException $e) {</span>
+<span class="x">        return $e-&gt;reason() === &#39;Subscription expired&#39;;</span>
+<span class="x">    });</span>
+<span class="x">})</span>
+</code></pre></div>
+
 <p><a name="timeout"></a></p>
 <h4 id="timeout">Timeout<a class="headerlink" href="#timeout" title="Permanent link">#</a></h4>
 <p>Often, you know roughly how long you expect your queued jobs to take. For this reason, Laravel allows you to specify a "timeout" value. By default, the timeout value is 60 seconds. If a job is processing for longer than the number of seconds specified by the timeout value, the worker processing the job will exit with an error. Typically, the worker will be restarted automatically by a <a href="#supervisor-configuration">process manager configured on your server</a>.</p>
@@ -1656,36 +1906,39 @@ You may also define a <code>tries</code> property or <code>retryUntil</code> met
 </code></pre></div>
 
 <p>If the job exceeds its maximum attempts by continually timing out, it will be marked as failed.</p>
-<p>You may also define the maximum number of seconds a job should be allowed to run on the job class itself. If the timeout is specified on the job, it will take precedence over any timeout specified on the command line:</p>
+<p>You may also define the maximum number of seconds a job should be allowed to run using the <code>Timeout</code> attribute on the job class. If the timeout is specified on the job, it will take precedence over any timeout specified on the command line:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Timeout</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Timeout</span><span class="p">(</span><span class="mi">120</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">ProcessPodcast</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The number of seconds the job can run before timing out.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$timeout</span> <span class="o">=</span> <span class="mi">120</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>Sometimes, IO blocking processes such as sockets or outgoing HTTP connections may not respect your specified timeout. Therefore, when using these features, you should always attempt to specify a timeout using their APIs as well. For example, when using <a href="https://docs.guzzlephp.org" rel="noopener" target="_blank">Guzzle</a>, you should always specify a connection and request timeout value.</p>
 <blockquote>
 <p>[!WARNING]
-The <a href="https://www.php.net/manual/en/book.pcntl.php" rel="noopener" target="_blank">PCNTL</a> PHP extension must be installed in order to specify job timeouts. In addition, a job's "timeout" value should always be less than its <a href="#job-expiration">"retry after"</a> value. Otherwise, the job may be re-attempted before it has actually finished executing or timed out.</p>
+The <a href="https://www.php.net/manual/en/book.pcntl.php" rel="noopener" target="_blank">PCNTL</a> PHP extension must be installed in order to specify job timeouts. In addition, a job's "timeout" value should always be less than its <a href="#job-expiration">"retry after"</a> value. Otherwise, the job may be re-attempted before it has actually finished executing or timed out. The <code>--timeout</code> option has no effect when the <code>queue:work</code> command is invoked with the <code>--once</code> option.</p>
 </blockquote>
 <p><a name="failing-on-timeout"></a></p>
 <h4 id="failing-on-timeout">Failing on Timeout<a class="headerlink" href="#failing-on-timeout" title="Permanent link">#</a></h4>
-<p>If you would like to indicate that a job should be marked as <a href="#dealing-with-failed-jobs">failed</a> on timeout, you may define the <code>$failOnTimeout</code> property on the job class:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * Indicate if the job should be marked as failed on timeout.</span>
-<span class="x"> *</span>
-<span class="x"> * @var bool</span>
-<span class="x"> */</span>
-<span class="x">public $failOnTimeout = true;</span>
+<p>If you would like to indicate that a job should be marked as <a href="#dealing-with-failed-jobs">failed</a> on timeout, you may use the <code>FailOnTimeout</code> attribute on the job class:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\FailOnTimeout</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">FailOnTimeout</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">ProcessPodcast</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <blockquote>
@@ -1694,7 +1947,7 @@ By default, when a job times out, it consumes one attempt and is released back t
 </blockquote>
 <p><a name="sqs-fifo-and-fair-queues"></a></p>
 <h3 id="sqs-fifo-and-fair-queues">SQS FIFO and Fair Queues<a class="headerlink" href="#sqs-fifo-and-fair-queues" title="Permanent link">#</a></h3>
-<p>Laravel supports <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queues.html" rel="noopener" target="_blank">Amazon SQS FIFO (First-In-First-Out)</a> queues, allowing you to process jobs in the exact order they were sent while ensuring exactly-once processing through message deduplication.</p>
+<p>Laravel supports <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queues.html" rel="noopener" target="_blank">Amazon SQS FIFO (First-In-First-Out)</a> and <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fair-queues.html" rel="noopener" target="_blank">fair</a> queues. FIFO queues allow you to process jobs in the exact order they were sent while ensuring exactly-once processing through message deduplication.</p>
 <p>FIFO queues require a message group ID to determine which jobs can be processed in parallel. Jobs with the same group ID are processed sequentially, while messages with different group IDs can be processed concurrently.</p>
 <p>Laravel provides a fluent <code>onGroup</code> method to specify the message group ID when dispatching jobs:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">ProcessOrder::dispatch($order)</span>
@@ -1721,6 +1974,33 @@ By default, when a job times out, it consumes one attempt and is released back t
     <span class="k">public</span> <span class="k">function</span> <span class="nf">deduplicationId</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="s2">&quot;renewal-</span><span class="si">{</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">subscription</span><span class="o">-&gt;</span><span class="na">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><a name="fair-queues"></a></p>
+<h4 id="fair-queues">Fair Queues<a class="headerlink" href="#fair-queues" title="Permanent link">#</a></h4>
+<p>If you are using an SQS standard queue, setting a message group enables fair queueing. In other words, once you assign groups, SQS will use them to maintain fair delivery across tenants / workloads. No additional Laravel configuration is required.</p>
+<p>Instead of calling <code>onGroup</code> at dispatch time, you may also define a <code>messageGroup</code> method directly on the job:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Queue\Queueable</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ProcessOrder</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">Queueable</span><span class="p">;</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Get the job&#39;s message group.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">messageGroup</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">&quot;customer-</span><span class="si">{</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">order</span><span class="o">-&gt;</span><span class="na">customer_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1866,14 +2146,14 @@ For more information on failed jobs, check out the <a href="#dealing-with-failed
 <span class="k">use</span> <span class="nx">Illuminate\Auth\Access\AuthorizationException</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Foundation\Queue\Queueable</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Tries</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Queue\Middleware\FailOnException</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Support\Facades\Http</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Tries</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">SyncChatHistory</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">Queueable</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="nv">$tries</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 
     <span class="sd">/**</span>
 <span class="sd">     * Create a new job instance.</span>
@@ -2354,7 +2634,7 @@ php<span class="w"> </span>artisan<span class="w"> </span>queue:work<span class=
 
 <p><a name="resource-considerations"></a></p>
 <h4 id="resource-considerations">Resource Considerations<a class="headerlink" href="#resource-considerations" title="Permanent link">#</a></h4>
-<p>Daemon queue workers do not "reboot" the framework before processing each job. Therefore, you should release any heavy resources after each job completes. For example, if you are doing image manipulation with the <a href="https://www.php.net/manual/en/book.image.php" rel="noopener" target="_blank">GD library</a>, you should free the memory with <code>imagedestroy</code> when you are done processing the image.</p>
+<p>Daemon queue workers do not "reboot" the framework before processing each job. Therefore, you should release any heavy resources after each job completes. For example, if you are doing <a href="./images.html">image manipulation</a> with the <a href="https://www.php.net/manual/en/book.image.php" rel="noopener" target="_blank">GD library</a>, you should free the memory with <code>imagedestroy</code> when you are done processing the image.</p>
 <p><a name="queue-priorities"></a></p>
 <h3 id="queue-priorities">Queue Priorities<a class="headerlink" href="#queue-priorities" title="Permanent link">#</a></h3>
 <p>Sometimes you may wish to prioritize how your queues are processed. For example, in your <code>config/queue.php</code> configuration file, you may set the default <code>queue</code> for your <code>redis</code> connection to <code>low</code>. However, occasionally you may wish to push a job to a <code>high</code> priority queue like so:</p>
@@ -2376,6 +2656,59 @@ php<span class="w"> </span>artisan<span class="w"> </span>queue:work<span class=
 <p>[!NOTE]
 The queue uses the <a href="./cache.html">cache</a> to store restart signals, so you should verify that a cache driver is properly configured for your application before using this feature.</p>
 </blockquote>
+<p><a name="reacting-to-worker-signals"></a></p>
+<h3 id="reacting-to-worker-signals">Reacting to Worker Signals<a class="headerlink" href="#reacting-to-worker-signals" title="Permanent link">#</a></h3>
+<p>When a queue worker receives a termination signal such as <code>SIGQUIT</code>, <code>SIGTERM</code>, or <code>SIGINT</code> while processing a job, the worker will finish its current job before exiting. However, your job may need to react to the signal before the process is stopped by your server or container orchestrator. For example, a long-running import job may need to stop pulling new records and save its current progress.</p>
+<p>To react to worker signals from within a job, implement the <code>Illuminate\Contracts\Queue\Interruptible</code> interface and define an <code>interrupted</code> method on your job. The signal number received by the worker will be passed to the <code>interrupted</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Models\Import</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\Interruptible</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Queue\Queueable</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ImportProducts</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span><span class="p">,</span> <span class="nx">Interruptible</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">Queueable</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="nx">bool</span> <span class="nv">$shouldStop</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Create a new job instance.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">public</span> <span class="nx">Import</span> <span class="nv">$import</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Execute the job.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">import</span><span class="o">-&gt;</span><span class="na">pendingRows</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">shouldStop</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="c1">// Import the product row...</span>
+        <span class="p">}</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">import</span><span class="o">-&gt;</span><span class="na">saveProgress</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Handle a signal received by the queue worker.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">interrupted</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$signal</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">shouldStop</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The <code>interrupted</code> method is only invoked when the worker receives a process signal while the job is currently running. It is not a replacement for <a href="#worker-timeouts">timeouts</a> or the job's <a href="#cleaning-up-after-failed-jobs"><code>failed</code> method</a>.</p>
 <p><a name="job-expirations-and-timeouts"></a></p>
 <h3 id="job-expirations-and-timeouts">Job Expirations and Timeouts<a class="headerlink" href="#job-expirations-and-timeouts" title="Permanent link">#</a></h3>
 <p><a name="job-expiration"></a></p>
@@ -2404,11 +2737,19 @@ The <code>--timeout</code> value should always be at least several seconds short
 </code></pre></div>
 
 <p>In this example, <code>database</code> is the queue connection name and <code>default</code> is the queue name. Once a queue is paused, any workers processing jobs from that queue will continue to finish their current job, but will not pick up any new jobs until the queue is resumed.</p>
+<p>To pause job processing for every queue on every connection, use the <code>--all</code> option:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>queue:pause<span class="w"> </span>--all
+</code></pre></div>
+
 <p>To resume processing jobs on a paused queue, use the <code>queue:continue</code> command:</p>
 <div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>queue:continue<span class="w"> </span>database:default
 </code></pre></div>
 
-<p>After resuming a queue, workers will begin processing new jobs from that queue immediately. Note that pausing a queue does not stop the worker process itself - it only prevents the worker from processing new jobs from the specified queue.</p>
+<p>To resume job processing for every queue on every connection, use the <code>--all</code> option with the <code>queue:resume</code> command:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>queue:resume<span class="w"> </span>--all
+</code></pre></div>
+
+<p>After resuming a queue, workers will begin processing new jobs from that queue immediately. Resuming all queues does not resume queues that were paused individually. Note that pausing a queue does not stop the worker process itself - it only prevents the worker from processing new jobs from the specified queue.</p>
 <p><a name="worker-restart-and-pause-signals"></a></p>
 <h4 id="worker-restart-and-pause-signals">Worker Restart and Pause Signals<a class="headerlink" href="#worker-restart-and-pause-signals" title="Permanent link">#</a></h4>
 <p>By default, queue workers poll the cache driver for restart and pause signals on each job iteration. While this polling is essential for responding to <code>queue:restart</code> and <code>queue:pause</code> commands, it does introduce a small performance overhead.</p>
@@ -2497,7 +2838,7 @@ sudo<span class="w"> </span>supervisorctl<span class="w"> </span>start<span clas
 php<span class="w"> </span>artisan<span class="w"> </span>migrate
 </code></pre></div>
 
-<p>When running a <a href="#running-the-queue-worker">queue worker</a> process, you may specify the maximum number of times a job should be attempted using the <code>--tries</code> switch on the <code>queue:work</code> command. If you do not specify a value for the <code>--tries</code> option, jobs will only be attempted once or as many times as specified by the job class' <code>$tries</code> property:</p>
+<p>When running a <a href="#running-the-queue-worker">queue worker</a> process, you may specify the maximum number of times a job should be attempted using the <code>--tries</code> switch on the <code>queue:work</code> command. If you do not specify a value for the <code>--tries</code> option, jobs will only be attempted once or as many times as specified by the job class' <code>Tries</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>queue:work<span class="w"> </span>redis<span class="w"> </span>--tries<span class="o">=</span><span class="m">3</span>
 </code></pre></div>
 
@@ -2505,13 +2846,18 @@ php<span class="w"> </span>artisan<span class="w"> </span>migrate
 <div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>queue:work<span class="w"> </span>redis<span class="w"> </span>--tries<span class="o">=</span><span class="m">3</span><span class="w"> </span>--backoff<span class="o">=</span><span class="m">3</span>
 </code></pre></div>
 
-<p>If you would like to configure how many seconds Laravel should wait before retrying a job that has encountered an exception on a per-job basis, you may do so by defining a <code>backoff</code> property on your job class:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * The number of seconds to wait before retrying the job.</span>
-<span class="x"> *</span>
-<span class="x"> * @var int</span>
-<span class="x"> */</span>
-<span class="x">public $backoff = 3;</span>
+<p>If you would like to configure how many seconds Laravel should wait before retrying a job that has encountered an exception on a per-job basis, you may use the <code>Backoff</code> attribute on your job class:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Backoff</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Backoff</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">ProcessPodcast</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>If you require more complex logic for determining the job's backoff time, you may define a <code>backoff</code> method on your job class:</p>
@@ -2524,16 +2870,18 @@ php<span class="w"> </span>artisan<span class="w"> </span>migrate
 <span class="x">}</span>
 </code></pre></div>
 
-<p>You may easily configure "exponential" backoffs by returning an array of backoff values from the <code>backoff</code> method. In this example, the retry delay will be 1 second for the first retry, 5 seconds for the second retry, 10 seconds for the third retry, and 10 seconds for every subsequent retry if there are more attempts remaining:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * Calculate the number of seconds to wait before retrying the job.</span>
-<span class="x"> *</span>
-<span class="x"> * @return array&lt;int, int&gt;</span>
-<span class="x"> */</span>
-<span class="x">public function backoff(): array</span>
-<span class="x">{</span>
-<span class="x">    return [1, 5, 10];</span>
-<span class="x">}</span>
+<p>You may easily configure "exponential" backoffs by defining an array of backoff values. In this example, the retry delay will be 1 second for the first retry, 5 seconds for the second retry, 10 seconds for the third retry, and 10 seconds for every subsequent retry if there are more attempts remaining:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Backoff</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Backoff</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">])]</span>
+<span class="k">class</span> <span class="nc">ProcessPodcast</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p><a name="cleaning-up-after-failed-jobs"></a></p>
@@ -2632,13 +2980,18 @@ When using <a href="./horizon.html">Horizon</a>, you should use the <code>horizo
 <p><a name="ignoring-missing-models"></a></p>
 <h3 id="ignoring-missing-models">Ignoring Missing Models<a class="headerlink" href="#ignoring-missing-models" title="Permanent link">#</a></h3>
 <p>When injecting an Eloquent model into a job, the model is automatically serialized before being placed on the queue and re-retrieved from the database when the job is processed. However, if the model has been deleted while the job was waiting to be processed by a worker, your job may fail with a <code>ModelNotFoundException</code>.</p>
-<p>For convenience, you may choose to automatically delete jobs with missing models by setting your job's <code>deleteWhenMissingModels</code> property to <code>true</code>. When this property is set to <code>true</code>, Laravel will quietly discard the job without raising an exception:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * Delete the job if its models no longer exist.</span>
-<span class="x"> *</span>
-<span class="x"> * @var bool</span>
-<span class="x"> */</span>
-<span class="x">public $deleteWhenMissingModels = true;</span>
+<p>For convenience, you may choose to automatically delete jobs with missing models using the <code>DeleteWhenMissingModels</code> attribute on your job class. When this attribute is present, Laravel will quietly discard the job without raising an exception:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Jobs</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\DeleteWhenMissingModels</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">DeleteWhenMissingModels</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">ProcessPodcast</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p><a name="pruning-failed-jobs"></a></p>
@@ -2749,7 +3102,7 @@ Clearing jobs from queues is only available for the SQS, Redis, and database que
 <span class="x">    Event::listen(function (QueueBusy $event) {</span>
 <span class="x">        Notification::route(&#39;mail&#39;, &#39;dev@example.com&#39;)</span>
 <span class="x">            -&gt;notify(new QueueHasLongWaitTime(</span>
-<span class="x">                $event-&gt;connection,</span>
+<span class="x">                $event-&gt;connectionName,</span>
 <span class="x">                $event-&gt;queue,</span>
 <span class="x">                $event-&gt;size</span>
 <span class="x">            ));</span>
@@ -2781,6 +3134,9 @@ test('orders can be shipped', function () {
 
     // Assert a job was pushed
     Queue::assertPushed(ShipOrder::class);
+
+    // Assert a job was pushed exactly once...
+    Queue::assertPushedOnce(ShipOrder::class);
 
     // Assert a job was pushed twice...
     Queue::assertPushedTimes(ShipOrder::class, 2);
@@ -2824,6 +3180,9 @@ class ExampleTest extends TestCase
 
         // Assert a job was pushed
         Queue::assertPushed(ShipOrder::class);
+
+        // Assert a job was pushed exactly once...
+        Queue::assertPushedOnce(ShipOrder::class);
 
         // Assert a job was pushed twice...
         Queue::assertPushedTimes(ShipOrder::class, 2);
@@ -3160,6 +3519,21 @@ Using the `looping` method on the `Queue` [facade](/docs/{{version}}/facades), y
 <span class="x">    while (DB::transactionLevel() &gt; 0) {</span>
 <span class="x">        DB::rollBack();</span>
 <span class="x">    }</span>
+<span class="x">});</span>
+</code></pre></div>
+
+
+
+Laravel also dispatches an `Illuminate\Queue\Events\WorkerIdle` event when a queue worker is unable to retrieve a job from the queue:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Queue\Events\WorkerIdle;</span>
+<span class="x">use Illuminate\Support\Facades\Event;</span>
+
+<span class="x">Event::listen(function (WorkerIdle $event) {</span>
+<span class="x">    // $event-&gt;connectionName</span>
+<span class="x">    // $event-&gt;queue</span>
+<span class="x">    // $event-&gt;workerOptions</span>
 <span class="x">});</span>
 </code></pre></div>
 

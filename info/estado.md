@@ -21,7 +21,7 @@
 | Composer | 33 |
 | Filament | 82 |
 | JavaScript | 1.331 |
-| Laravel | 99 |
+| Laravel | 101 |
 | Node.js | 70 |
 | npm | 87 |
 | Nuxt | 261 |
@@ -29,7 +29,7 @@
 | pnpm | 140 |
 | Python | 536 |
 | Vue 3 | 109 |
-| **Total** | **13.818 documentos** |
+| **Total** | **13.820 documentos** |
 
 Enlaces internos comprobados en el sitio generado: ninguno roto. `make test` pasa 16 comprobaciones sin red.
 

@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Routing</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Routing</a>
       <h1 class="doc-title">Routing</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/routing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/routing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -846,10 +846,6 @@ Sometimes, you may wish to specify request-wide default values for URL parameter
 <span class="x">});</span>
 </code></pre></div>
 
-<blockquote>
-<p>[!WARNING]
-In order to ensure your subdomain routes are reachable, you should register subdomain routes before registering root domain routes. This will prevent root domain routes from overwriting subdomain routes which have the same URI path.</p>
-</blockquote>
 <p><a name="route-group-prefixes"></a></p>
 <h3 id="route-prefixes">Route Prefixes<a class="headerlink" href="#route-prefixes" title="Permanent link">#</a></h3>
 <p>The <code>prefix</code> method may be used to prefix each route in the group with a given URI. For example, you may want to prefix all route URIs within the group with <code>admin</code>:</p>
@@ -918,13 +914,14 @@ In order to ensure your subdomain routes are reachable, you should register subd
 <span class="x">});</span>
 </code></pre></div>
 
-<p>If you would like model binding to always use a database column other than <code>id</code> when retrieving a given model class, you may override the <code>getRouteKeyName</code> method on the Eloquent model:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * Get the route key for the model.</span>
-<span class="x"> */</span>
-<span class="x">public function getRouteKeyName(): string</span>
+<p>If you would like model binding to always use a database column other than <code>id</code> when retrieving a given model class, you may apply the <code>RouteKey</code> attribute to the Eloquent model:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Attributes\RouteKey;</span>
+<span class="x">use Illuminate\Database\Eloquent\Model;</span>
+
+<span class="x">#[RouteKey(&#39;slug&#39;)]</span>
+<span class="x">class Post extends Model</span>
 <span class="x">{</span>
-<span class="x">    return &#39;slug&#39;;</span>
+<span class="x">    // ...</span>
 <span class="x">}</span>
 </code></pre></div>
 
@@ -1126,7 +1123,7 @@ In order to ensure your subdomain routes are reachable, you should register subd
 
 <p>Since rate limiter callbacks receive the incoming HTTP request instance, you may build the appropriate rate limit dynamically based on the incoming request or authenticated user:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">RateLimiter::for(&#39;uploads&#39;, function (Request $request) {</span>
-<span class="x">    return $request-&gt;user()-&gt;vipCustomer()</span>
+<span class="x">    return $request-&gt;user()?-&gt;vipCustomer()</span>
 <span class="x">        ? Limit::none()</span>
 <span class="x">        : Limit::perHour(10);</span>
 <span class="x">});</span>

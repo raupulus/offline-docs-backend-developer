@@ -1,15 +1,15 @@
 ---
 title: Helpers
-source_url: https://laravel.com/docs/12.x/helpers
+source_url: https://laravel.com/docs/13.x/helpers
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: helpers.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 420
+retrieved_at: '2026-09-15'
+order: 430
 ---
 
 # Helpers
@@ -132,6 +132,7 @@ Laravel includes a variety of global "helper" PHP functions. Many of these funct
 [Number::format](#method-number-format)
 [Number::ordinal](#method-number-ordinal)
 [Number::pairs](#method-number-pairs)
+[Number::parse](#method-number-parse)
 [Number::parseInt](#method-number-parse-int)
 [Number::parseFloat](#method-number-parse-float)
 [Number::percentage](#method-number-percentage)
@@ -296,7 +297,7 @@ $array = Arr::add(['name' => 'Desk', 'price' => null], 'price', 100);
 
 The `Arr::array` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not an `array`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'languages' => ['PHP', 'Ruby']];
@@ -315,7 +316,7 @@ $value = Arr::array($array, 'name');
 
 The `Arr::boolean` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not a `boolean`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'available' => true];
@@ -533,7 +534,7 @@ $flattened = Arr::flatten($array);
 
 The `Arr::float` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not a `float`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'balance' => 123.45];
@@ -670,7 +671,7 @@ $contains = Arr::hasAny($array, ['category', 'product.discount']);
 
 The `Arr::integer` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not an `int`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'age' => 42];
@@ -1299,7 +1300,7 @@ $sorted = Arr::sortRecursiveDesc($array);
 
 The `Arr::string` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not a `string`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'languages' => ['PHP', 'Ruby']];
@@ -1851,6 +1852,23 @@ $result = Number::pairs(25, 10);
 $result = Number::pairs(25, 10, offset: 0);
 
 // [[0, 10], [10, 20], [20, 25]]
+```
+
+<a name="method-number-parse"></a>
+#### `Number::parse()` {.collection-method}
+
+The `Number::parse` method parses a localized numeric string using PHP's `NumberFormatter`:
+
+```php
+use Illuminate\Support\Number;
+
+$result = Number::parse('10,123', locale: 'en');
+
+// 10123.0
+
+$result = Number::parse('10,123', locale: 'fr');
+
+// 10.123
 ```
 
 <a name="method-number-parse-int"></a>
@@ -2981,6 +2999,16 @@ The `retry` function attempts to execute the given callback until the given maxi
 return retry(5, function () {
     // Attempt 5 times while resting 100ms between attempts...
 }, 100);
+```
+
+The sleep duration also accepts a `CarbonInterval` instance:
+
+```php
+use function Illuminate\Support\seconds;
+
+return retry(5, function () {
+    // Attempt 5 times while resting 5 seconds between attempts...
+}, seconds(5));
 ```
 
 If you would like to manually calculate the number of milliseconds to sleep between attempts, you may pass a closure as the third argument to the `retry` function:

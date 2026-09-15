@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -97,10 +97,6 @@
               Laravel
           </h2>
           <ul class="nav-list">
-              <li>
-                <a href="./configuration.html"
->Configuration</a>
-              </li>
               <li>
                 <a href="./console-tests.html"
 >Console Tests</a>
@@ -210,6 +206,10 @@
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -228,6 +228,10 @@ class="is-current" aria-current="page">Laravel Horizon</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -333,15 +337,11 @@ class="is-current" aria-current="page">Laravel Horizon</a>
                 <a href="./queues.html"
 >Queues</a>
               </li>
-              <li>
-                <a href="./rate-limiting.html"
->Rate Limiting</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Laravel Horizon</a>
       <h1 class="doc-title">Laravel Horizon</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/horizon" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/horizon" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -364,6 +364,7 @@ class="is-current" aria-current="page">Laravel Horizon</a>
               <li class="lvl-3"><a href="#max-job-attempts">Max Job Attempts#</a></li>
               <li class="lvl-3"><a href="#job-timeout">Job Timeout#</a></li>
               <li class="lvl-3"><a href="#job-backoff">Job Backoff#</a></li>
+              <li class="lvl-3"><a href="#other-worker-options">Other Worker Options#</a></li>
               <li class="lvl-3"><a href="#silenced-jobs">Silenced Jobs#</a></li>
               <li class="lvl-2"><a href="#balancing-strategies">Balancing Strategies#</a></li>
               <li class="lvl-3"><a href="#auto-balancing">Auto Balancing#</a></li>
@@ -390,6 +391,7 @@ class="is-current" aria-current="page">Laravel Horizon</a>
 <li><a href="#max-job-attempts">Max Job Attempts</a></li>
 <li><a href="#job-timeout">Job Timeout</a></li>
 <li><a href="#job-backoff">Job Backoff</a></li>
+<li><a href="#other-worker-options">Other Worker Options</a></li>
 <li><a href="#silenced-jobs">Silenced Jobs</a></li>
 </ul>
 </li>
@@ -440,6 +442,29 @@ Laravel Horizon requires that you use <a href="https://redis.io" rel="noopener" 
 <p>[!WARNING]
 Horizon uses a Redis connection named <code>horizon</code> internally. This Redis connection name is reserved and should not be assigned to another Redis connection in the <code>database.php</code> configuration file or as the value of the <code>use</code> option in the <code>horizon.php</code> configuration file.</p>
 </blockquote>
+<p><a name="content-security-policy-csp-nonce"></a></p>
+<h4 id="content-security-policy-csp-nonce">Content Security Policy (CSP) Nonce<a class="headerlink" href="#content-security-policy-csp-nonce" title="Permanent link">#</a></h4>
+<p>If you would like to use a <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/nonce" rel="noopener" target="_blank">nonce attribute</a> on the script and style tags used in Horizon views as part of your <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP" rel="noopener" target="_blank">Content Security Policy</a>, you may use the <code>Horizon::cspNonce</code> method to specify the nonce to use. This method should typically be invoked within middleware so that a new nonce is assigned for each request:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Closure;</span>
+<span class="x">use Illuminate\Http\Request;</span>
+<span class="x">use Laravel\Horizon\Horizon;</span>
+<span class="x">use Symfony\Component\HttpFoundation\Response;</span>
+
+<span class="x">public function handle(Request $request, Closure $next): Response</span>
+<span class="x">{</span>
+<span class="x">    Horizon::cspNonce(&#39;csp-nonce&#39;);</span>
+
+<span class="x">    return $next($request);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You may add this middleware to the <code>middleware</code> option in your application's <code>config/horizon.php</code> configuration file:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;middleware&#39; =&gt; [</span>
+<span class="x">    &#39;web&#39;,</span>
+<span class="x">    App\Http\Middleware\AddHorizonCspNonce::class,</span>
+<span class="x">],</span>
+</code></pre></div>
+
 <p><a name="environments"></a></p>
 <h4 id="environments">Environments<a class="headerlink" href="#environments" title="Permanent link">#</a></h4>
 <p>After installation, the primary Horizon configuration option that you should familiarize yourself with is the <code>environments</code> configuration option. This configuration option is an array of environments that your application runs on and defines the worker process options for each environment. By default, this entry contains a <code>production</code> and <code>local</code> environment. However, you are free to add more environments as needed:</p>
@@ -548,7 +573,7 @@ This option is similar to the <code>--tries</code> option when using the Artisan
 <div class="codehilite"><pre><span></span><code><span class="x">&#39;environments&#39; =&gt; [</span>
 <span class="x">    &#39;production&#39; =&gt; [</span>
 <span class="x">        &#39;supervisor-1&#39; =&gt; [</span>
-<span class="x">            // ...¨</span>
+<span class="x">            // ...</span>
 <span class="x">            &#39;timeout&#39; =&gt; 60,</span>
 <span class="x">        ],</span>
 <span class="x">    ],</span>
@@ -583,6 +608,34 @@ When using the <code>auto</code> balancing strategy, Horizon will consider in-pr
 <span class="x">],</span>
 </code></pre></div>
 
+<p><a name="other-worker-options"></a></p>
+<h3 id="other-worker-options">Other Worker Options<a class="headerlink" href="#other-worker-options" title="Permanent link">#</a></h3>
+<p>In addition to <code>tries</code>, <code>timeout</code>, and <code>backoff</code>, each supervisor accepts several other options that control how its worker processes behave and when they are automatically restarted. Periodically restarting workers is a good practice for long-running processes, as it helps guard against memory leaks:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;environments&#39; =&gt; [</span>
+<span class="x">    &#39;production&#39; =&gt; [</span>
+<span class="x">        &#39;supervisor-1&#39; =&gt; [</span>
+<span class="x">            // ...</span>
+<span class="x">            &#39;memory&#39; =&gt; 128,</span>
+<span class="x">            &#39;maxJobs&#39; =&gt; 1000,</span>
+<span class="x">            &#39;maxTime&#39; =&gt; 3600,</span>
+<span class="x">            &#39;sleep&#39; =&gt; 3,</span>
+<span class="x">            &#39;rest&#39; =&gt; 0,</span>
+<span class="x">            &#39;nice&#39; =&gt; 0,</span>
+<span class="x">        ],</span>
+<span class="x">    ],</span>
+<span class="x">],</span>
+</code></pre></div>
+
+<div class="content-list">
+<ul>
+<li><code>memory</code> defines the maximum amount of memory, in megabytes, that a single worker process may consume before it is restarted. By default, this value is <code>128</code>.</li>
+<li><code>maxJobs</code> defines the number of jobs a worker should process before restarting. A value of <code>0</code> indicates that workers should not be restarted based on the number of jobs processed. By default, this value is <code>0</code>.</li>
+<li><code>maxTime</code> defines the number of seconds a worker should run before restarting. A value of <code>0</code> indicates that workers should not be restarted based on time. By default, this value is <code>0</code>.</li>
+<li><code>sleep</code> defines the number of seconds a worker should wait when no job is available before polling the queue for new jobs again. By default, this value is <code>3</code>.</li>
+<li><code>rest</code> defines the number of seconds to pause between processing each job. By default, this value is <code>0</code>.</li>
+<li><code>nice</code> defines the "niceness" (scheduling priority) of the worker processes. A higher value gives the process a lower priority. By default, this value is <code>0</code>.</li>
+</ul>
+</div>
 <p><a name="silenced-jobs"></a></p>
 <h3 id="silenced-jobs">Silenced Jobs<a class="headerlink" href="#silenced-jobs" title="Permanent link">#</a></h3>
 <p>Sometimes, you may not be interested in viewing certain jobs dispatched by your application or third-party packages. Instead of these jobs taking up space in your "Completed Jobs" list, you can silence them. To get started, add the job's class name to the <code>silenced</code> configuration option in your application's <code>horizon</code> configuration file:</p>
@@ -969,6 +1022,15 @@ When configuring Horizon to send Slack or SMS notifications, you should review t
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Schedule;</span>
 
 <span class="x">Schedule::command(&#39;horizon:snapshot&#39;)-&gt;everyFiveMinutes();</span>
+</code></pre></div>
+
+<p>You may configure how many snapshots Horizon retains for its metrics graphs using the <code>metrics.trim_snapshots</code> option in your application's <code>config/horizon.php</code> configuration file. Because this option limits the number of snapshots rather than their age, the retention period depends on how frequently the <code>horizon:snapshot</code> command runs:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;metrics&#39; =&gt; [</span>
+<span class="x">    &#39;trim_snapshots&#39; =&gt; [</span>
+<span class="x">        &#39;job&#39; =&gt; 24,</span>
+<span class="x">        &#39;queue&#39; =&gt; 24,</span>
+<span class="x">    ],</span>
+<span class="x">],</span>
 </code></pre></div>
 
 <p>If you would like to delete all metric data, you can invoke the <code>horizon:clear-metrics</code> Artisan command:</p>

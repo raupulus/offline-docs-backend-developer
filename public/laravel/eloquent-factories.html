@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Eloquent: Factories</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Eloquent: Factories</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Eloquent: Factories</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Eloquent: Factories</a>
       <h1 class="doc-title">Eloquent: Factories</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/eloquent-factories" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/eloquent-factories" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -491,18 +491,15 @@ You can change your application's Faker locale by updating the <code>faker_local
 <span class="x">}</span>
 </code></pre></div>
 
-<p>Then, define a <code>model</code> property on the corresponding factory:</p>
+<p>Then, use the <code>UseModel</code> attribute on the corresponding factory to specify the model:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use App\Administration\Flight;</span>
+<span class="x">use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;</span>
 <span class="x">use Illuminate\Database\Eloquent\Factories\Factory;</span>
 
+<span class="x">#[UseModel(Flight::class)]</span>
 <span class="x">class FlightFactory extends Factory</span>
 <span class="x">{</span>
-<span class="x">    /**</span>
-<span class="x">     * The name of the factory&#39;s corresponding model.</span>
-<span class="x">     *</span>
-<span class="x">     * @var class-string&lt;\Illuminate\Database\Eloquent\Model&gt;</span>
-<span class="x">     */</span>
-<span class="x">    protected $model = Flight::class;</span>
+<span class="x">    // ...</span>
 <span class="x">}</span>
 </code></pre></div>
 
@@ -729,6 +726,16 @@ You can change your application's Faker locale by updating the <code>faker_local
 <span class="x">    -&gt;create();</span>
 </code></pre></div>
 
+<p>You may also pass multiple attribute arrays to create related models with per-model state. Laravel will apply each array in sequence:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$user = User::factory()</span>
+<span class="x">    -&gt;hasPosts(</span>
+<span class="x">        [&#39;title&#39; =&gt; &#39;First Post&#39;],</span>
+<span class="x">        [&#39;title&#39; =&gt; &#39;Second Post&#39;],</span>
+<span class="x">        [&#39;title&#39; =&gt; &#39;Third Post&#39;],</span>
+<span class="x">    )</span>
+<span class="x">    -&gt;create();</span>
+</code></pre></div>
+
 <p>You may provide a closure-based state transformation if your state change requires access to the parent model:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$user = User::factory()</span>
 <span class="x">    -&gt;hasPosts(3, function (array $attributes, User $user) {</span>
@@ -805,6 +812,18 @@ You can change your application's Faker locale by updating the <code>faker_local
 <span class="x">                return [&#39;name&#39; =&gt; $user-&gt;name.&#39; Role&#39;];</span>
 <span class="x">            }),</span>
 <span class="x">        [&#39;active&#39; =&gt; true]</span>
+<span class="x">    )</span>
+<span class="x">    -&gt;create();</span>
+</code></pre></div>
+
+<p>You may also pass an array of pivot arrays to provide unique pivot data for each related model:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$user = User::factory()</span>
+<span class="x">    -&gt;hasAttached(</span>
+<span class="x">        Role::factory(),</span>
+<span class="x">        [</span>
+<span class="x">            [&#39;active&#39; =&gt; true],</span>
+<span class="x">            [&#39;active&#39; =&gt; false],</span>
+<span class="x">        ]</span>
 <span class="x">    )</span>
 <span class="x">    -&gt;create();</span>
 </code></pre></div>

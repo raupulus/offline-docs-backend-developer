@@ -1,14 +1,14 @@
 ---
 title: Laravel Dusk
-source_url: https://laravel.com/docs/12.x/dusk
+source_url: https://laravel.com/docs/13.x/dusk
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: dusk.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 240
 ---
 
@@ -178,7 +178,6 @@ The `DatabaseMigrations` trait will run your database migrations before each tes
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
 
 pest()->use(DatabaseMigrations::class);
 
@@ -214,7 +213,6 @@ The `DatabaseTruncation` trait will migrate your database on the first test in o
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTruncation;
-use Laravel\Dusk\Browser;
 
 pest()->use(DatabaseTruncation::class);
 
@@ -372,7 +370,6 @@ To get started, let's write a test that verifies we can log into our application
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
 
 pest()->use(DatabaseMigrations::class);
 
@@ -1008,6 +1005,13 @@ The `controlClick` method may be used to simulate the `ctrl+click` event within 
 $browser->controlClick();
 
 $browser->controlClick('.selector');
+```
+
+The `clickWhenVisible` or `clickWhenEnabled` method may be used to wait for an element to be ready before clicking it exactly once:
+
+```php
+$browser->clickWhenVisible('@save-button');
+$browser->clickWhenEnabled('@submit-button');
 ```
 
 <a name="mouseover"></a>
@@ -2025,7 +2029,7 @@ Assert that the element matching the given selector has the given value in the p
 $browser->assertDataAttribute($selector, $attribute, $value);
 ```
 
-For example, given the markup `<tr id="row-1" data-content="attendees"></tr>`, you may assert against the `data-label` attribute like so:
+For example, given the markup `<tr id="row-1" data-content="attendees"></tr>`, you may assert against the `data-content` attribute like so:
 
 ```php
 $browser->assertDataAttribute('#row-1', 'content', 'attendees')
@@ -2488,7 +2492,6 @@ Once the component has been defined, we can easily select a date within the date
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
 use Tests\Browser\Components\DatePicker;
 
 pest()->use(DatabaseMigrations::class);

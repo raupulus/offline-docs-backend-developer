@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Controllers</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Controllers</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Controllers</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Controllers</a>
       <h1 class="doc-title">Controllers</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/controllers" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/controllers" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -362,6 +362,8 @@ class="is-current" aria-current="page">Controllers</a>
               <li class="lvl-3"><a href="#basic-controllers">Basic Controllers#</a></li>
               <li class="lvl-3"><a href="#single-action-controllers">Single Action Controllers#</a></li>
               <li class="lvl-2"><a href="#controller-middleware">Controller Middleware#</a></li>
+              <li class="lvl-3"><a href="#middleware-attributes">Middleware Attributes#</a></li>
+              <li class="lvl-3"><a href="#authorization-attributes">Authorization Attributes#</a></li>
               <li class="lvl-2"><a href="#resource-controllers">Resource Controllers#</a></li>
               <li class="lvl-3"><a href="#partial-resource-routes">Partial Resource Routes#</a></li>
               <li class="lvl-3"><a href="#nested-resources">Nested Resources#</a></li>
@@ -385,7 +387,11 @@ class="is-current" aria-current="page">Controllers</a>
 <li><a href="#single-action-controllers">Single Action Controllers</a></li>
 </ul>
 </li>
-<li><a href="#controller-middleware">Controller Middleware</a></li>
+<li><a href="#controller-middleware">Controller Middleware</a><ul>
+<li><a href="#middleware-attributes">Middleware Attributes</a></li>
+<li><a href="#authorization-attributes">Authorization Attributes</a></li>
+</ul>
+</li>
 <li><a href="#resource-controllers">Resource Controllers</a><ul>
 <li><a href="#restful-partial-resource-routes">Partial Resource Routes</a></li>
 <li><a href="#restful-nested-resources">Nested Resources</a></li>
@@ -526,6 +532,108 @@ Controller stubs may be customized using <a href="./artisan.html#stub-customizat
 <span class="x">}</span>
 </code></pre></div>
 
+<p><a name="middleware-attributes"></a></p>
+<h3 id="middleware-attributes">Middleware Attributes<a class="headerlink" href="#middleware-attributes" title="Permanent link">#</a></h3>
+<p>You may also assign middleware to controllers using PHP attributes:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Controllers</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Routing\Attributes\Controllers\Middleware</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="nx">only</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">])]</span>
+<span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="s1">&#39;subscribed&#39;</span><span class="p">,</span> <span class="nx">except</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;store&#39;</span><span class="p">])]</span>
+<span class="k">class</span> <span class="nc">UserController</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>You may place middleware attributes on individual controller methods as well. Middleware assigned to methods will be merged with middleware assigned at the class level:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Controllers</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Closure</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Http\Request</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Routing\Attributes\Controllers\Middleware</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">UserController</span>
+<span class="p">{</span>
+    <span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="s1">&#39;subscribed&#39;</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+
+    <span class="p">#[</span><span class="nd">Middleware</span><span class="p">(</span><span class="k">static</span> <span class="k">function</span> <span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nx">Closure</span> <span class="nv">$next</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// ...</span>
+
+        <span class="nd">return</span> <span class="nv">$next</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
+    <span class="p">})]</span>
+    <span class="nd">public</span> <span class="nd">function</span> <span class="nd">store</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>To exclude middleware from a controller or individual controller methods, use the <code>WithoutMiddleware</code> attribute. You may use the <code>only</code> and <code>except</code> arguments to limit a class-level attribute to particular controller methods:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Controllers</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Http\Middleware\EnsureTokenIsValid</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Routing\Attributes\Controllers\WithoutMiddleware</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">WithoutMiddleware</span><span class="p">(</span><span class="s1">&#39;subscribed&#39;</span><span class="p">,</span> <span class="nx">except</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">])]</span>
+<span class="k">class</span> <span class="nc">UserController</span>
+<span class="p">{</span>
+    <span class="p">#[</span><span class="nd">WithoutMiddleware</span><span class="p">(</span><span class="nx">EnsureTokenIsValid</span><span class="o">::</span><span class="na">class</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">show</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Class-level <code>WithoutMiddleware</code> attributes are inherited by child controllers. The attribute can only remove route middleware and does not apply to <a href="./middleware.html#global-middleware">global middleware</a>.</p>
+<p><a name="authorization-attributes"></a></p>
+<h3 id="authorization-attributes">Authorization Attributes<a class="headerlink" href="#authorization-attributes" title="Permanent link">#</a></h3>
+<p>If you are authorizing controller actions via policies, you may use the <code>Authorize</code> attribute as a convenient shortcut for the <code>can</code> middleware:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Controllers</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Models\Comment</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Models\Post</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Routing\Attributes\Controllers\Authorize</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">CommentController</span>
+<span class="p">{</span>
+    <span class="p">#[</span><span class="nd">Authorize</span><span class="p">(</span><span class="s1">&#39;create&#39;</span><span class="p">,</span> <span class="p">[</span><span class="nx">Comment</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="s1">&#39;post&#39;</span><span class="p">])]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">store</span><span class="p">(</span><span class="nx">Post</span> <span class="nv">$post</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+
+    <span class="p">#[</span><span class="nd">Authorize</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">)]</span>
+    <span class="nd">public</span> <span class="nd">function</span> <span class="nd">destroy</span><span class="p">(</span><span class="nx">Comment</span> <span class="nv">$comment</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The first argument is the ability you wish to authorize. The second argument is the model class, route parameter, or parameters that should be passed to the policy.</p>
 <p><a name="resource-controllers"></a></p>
 <h2 id="resource-controllers">Resource Controllers<a class="headerlink" href="#resource-controllers" title="Permanent link">#</a></h2>
 <p>If you think of each Eloquent model in your application as a "resource", it is typical to perform the same sets of actions against each resource in your application. For example, imagine your application contains a <code>Photo</code> model and a <code>Movie</code> model. It is likely that users can create, read, update, or delete these resources.</p>

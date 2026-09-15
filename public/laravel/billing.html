@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Laravel Cashier (Stripe)</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Laravel Cashier (Stripe)</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Laravel Cashier (Stripe)</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Laravel Cashier (Stripe)</a>
       <h1 class="doc-title">Laravel Cashier (Stripe)</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/billing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/billing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -983,113 +983,147 @@ As long as you have configured Cashier's webhook handling, Cashier will automati
 <h2 id="payment-methods">Payment Methods<a class="headerlink" href="#payment-methods" title="Permanent link">#</a></h2>
 <p><a name="storing-payment-methods"></a></p>
 <h3 id="storing-payment-methods">Storing Payment Methods<a class="headerlink" href="#storing-payment-methods" title="Permanent link">#</a></h3>
-<p>In order to create subscriptions or perform "one-off" charges with Stripe, you will need to store a payment method and retrieve its identifier from Stripe. The approach used to accomplish this differs based on whether you plan to use the payment method for subscriptions or single charges, so we will examine both below.</p>
-<p><a name="payment-methods-for-subscriptions"></a></p>
-<h4 id="payment-methods-for-subscriptions">Payment Methods for Subscriptions<a class="headerlink" href="#payment-methods-for-subscriptions" title="Permanent link">#</a></h4>
-<p>When storing a customer's credit card information for future use by a subscription, the Stripe "Setup Intents" API must be used to securely gather the customer's payment method details. A "Setup Intent" indicates to Stripe the intention to charge a customer's payment method. Cashier's <code>Billable</code> trait includes the <code>createSetupIntent</code> method to easily create a new Setup Intent. You should invoke this method from the route or controller that will render the form which gathers your customer's payment method details:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">return view(&#39;update-payment-method&#39;, [</span>
+<p>In order to create subscriptions or perform "one-off" charges with Stripe, your application will need to securely collect payment details from the customer. The approach used to accomplish this differs based on whether you plan to store the payment method for future subscriptions or immediately process a single charge, so we will examine both below.</p>
+<p>Stripe's <a href="https://stripe.com/docs/payments/payment-element" rel="noopener" target="_blank">Payment Element</a> may be used to support multiple payment methods, such as cards, Apple Pay, Google Pay, and iDEAL.</p>
+<p><a name="payment-element-for-subscriptions"></a></p>
+<h4 id="payment-element-for-subscriptions">Payment Element for Subscriptions<a class="headerlink" href="#payment-element-for-subscriptions" title="Permanent link">#</a></h4>
+<p>First, create a Setup Intent and pass it to your view:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">return view(&#39;subscribe&#39;, [</span>
 <span class="x">    &#39;intent&#39; =&gt; $user-&gt;createSetupIntent()</span>
 <span class="x">]);</span>
 </code></pre></div>
 
-<p>After you have created the Setup Intent and passed it to the view, you should attach its secret to the element that will gather the payment method. For example, consider this "update payment method" form:</p>
-<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;card-holder-name&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span><span class="p">&gt;</span>
+<p>Mount the Payment Element using the Setup Intent's <code>client_secret</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;payment-element&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="p">&gt;</span>Subscribe<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
 
-<span class="cm">&lt;!-- Stripe Elements Placeholder --&gt;</span>
-<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;card-element&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;card-button&quot;</span> <span class="na">data-secret</span><span class="o">=</span><span class="s">&quot;{{ $intent-&gt;client_secret }}&quot;</span><span class="p">&gt;</span>
-    Update Payment Method
-<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
-</code></pre></div>
-
-<p>Next, the Stripe.js library may be used to attach a <a href="https://stripe.com/docs/stripe-js" rel="noopener" target="_blank">Stripe Element</a> to the form and securely gather the customer's payment details:</p>
-<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://js.stripe.com/v3/&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://js.stripe.com/v3/&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">stripe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Stripe</span><span class="p">(</span><span class="s1">&#39;stripe-public-key&#39;</span><span class="p">);</span>
 
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">elements</span><span class="p">();</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">cardElement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elements</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;card&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">elements</span><span class="p">({</span>
+<span class="w">        </span><span class="nx">clientSecret</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{{ $intent-&gt;client_secret }}&#39;</span>
+<span class="w">    </span><span class="p">});</span>
 
-<span class="w">    </span><span class="nx">cardElement</span><span class="p">.</span><span class="nx">mount</span><span class="p">(</span><span class="s1">&#39;#card-element&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">paymentElement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elements</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;payment&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">paymentElement</span><span class="p">.</span><span class="nx">mount</span><span class="p">(</span><span class="s1">&#39;#payment-element&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">confirmSetup</span><span class="p">({</span>
+<span class="w">            </span><span class="nx">elements</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">confirmParams</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">return_url</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{{ route(&quot;subscription.complete&quot;) }}&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Display &quot;error.message&quot; to the user...</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
 <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </code></pre></div>
 
-<p>Next, the card can be verified and a secure "payment method identifier" can be retrieved from Stripe using <a href="https://stripe.com/docs/js/setup_intents/confirm_card_setup" rel="noopener" target="_blank">Stripe's <code>confirmCardSetup</code> method</a>:</p>
-<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">cardHolderName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;card-holder-name&#39;</span><span class="p">);</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">cardButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;card-button&#39;</span><span class="p">);</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">clientSecret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cardButton</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">secret</span><span class="p">;</span>
+<p>After Stripe redirects to your <code>return_url</code>, the <code>setup_intent</code> ID will be available as a query string parameter. You may use this value to retrieve the payment method and create the subscription:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Http\Request;</span>
 
-<span class="nx">cardButton</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">setupIntent</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">confirmCardSetup</span><span class="p">(</span>
-<span class="w">        </span><span class="nx">clientSecret</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">payment_method</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">card</span><span class="o">:</span><span class="w"> </span><span class="nx">cardElement</span><span class="p">,</span>
-<span class="w">                </span><span class="nx">billing_details</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="nx">cardHolderName</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="p">}</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">);</span>
+<span class="x">Route::get(&#39;/subscription/complete&#39;, function (Request $request) {</span>
+<span class="x">    $setupIntent = $request-&gt;user()-&gt;findSetupIntent(</span>
+<span class="x">        $request-&gt;setup_intent</span>
+<span class="x">    );</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// Display &quot;error.message&quot; to the user...</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// The card has been verified successfully...</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">});</span>
+<span class="x">    $paymentMethod = $setupIntent-&gt;payment_method;</span>
+
+<span class="x">    $request-&gt;user()</span>
+<span class="x">        -&gt;newSubscription(&#39;default&#39;, &#39;price_xxx&#39;)</span>
+<span class="x">        -&gt;create($paymentMethod);</span>
+
+<span class="x">    return redirect(&#39;/dashboard&#39;);</span>
+<span class="x">})-&gt;name(&#39;subscription.complete&#39;);</span>
 </code></pre></div>
 
-<p>After the card has been verified by Stripe, you may pass the resulting <code>setupIntent.payment_method</code> identifier to your Laravel application, where it can be attached to the customer. The payment method can either be <a href="#adding-payment-methods">added as a new payment method</a> or <a href="#updating-the-default-payment-method">used to update the default payment method</a>. You can also immediately use the payment method identifier to <a href="#creating-subscriptions">create a new subscription</a>.</p>
-<blockquote>
-<p>[!NOTE]
-If you would like more information about Setup Intents and gathering customer payment details please <a href="https://stripe.com/docs/payments/save-and-reuse#php" rel="noopener" target="_blank">review this overview provided by Stripe</a>.</p>
-</blockquote>
-<p><a name="payment-methods-for-single-charges"></a></p>
-<h4 id="payment-methods-for-single-charges">Payment Methods for Single Charges<a class="headerlink" href="#payment-methods-for-single-charges" title="Permanent link">#</a></h4>
-<p>Of course, when making a single charge against a customer's payment method, we will only need to use a payment method identifier once. Due to Stripe limitations, you may not use the stored default payment method of a customer for single charges. You must allow the customer to enter their payment method details using the Stripe.js library. For example, consider the following form:</p>
-<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;card-holder-name&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span><span class="p">&gt;</span>
+<p>If you are using the Payment Element to update a customer's default payment method instead of creating a subscription, you may pass the payment method identifier to the <a href="#updating-the-default-payment-method"><code>updateDefaultPaymentMethod</code></a> method.</p>
+<p><a name="payment-element-for-single-charges"></a></p>
+<h4 id="payment-element-for-single-charges">Payment Element for Single Charges<a class="headerlink" href="#payment-element-for-single-charges" title="Permanent link">#</a></h4>
+<p>For one-off payments, create a Payment Intent using Cashier's <code>pay</code> method. Typically, you should store the Payment Intent ID on your application's corresponding order so that the order can be retrieved after Stripe redirects the customer back to your application. The following example assumes your application has an <code>Order</code> model with <code>user_id</code>, <code>amount</code>, <code>status</code>, and <code>stripe_payment_intent_id</code> columns:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Order;</span>
+<span class="x">use Illuminate\Http\Request;</span>
 
-<span class="cm">&lt;!-- Stripe Elements Placeholder --&gt;</span>
-<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;card-element&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="x">Route::post(&#39;/pay&#39;, function (Request $request) {</span>
+<span class="x">    $amount = 1000;</span>
 
-<span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;card-button&quot;</span><span class="p">&gt;</span>
-    Process Payment
-<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="x">    $payment = $request-&gt;user()-&gt;pay($amount);</span>
+
+<span class="x">    $order = Order::create([</span>
+<span class="x">        &#39;user_id&#39; =&gt; $request-&gt;user()-&gt;id,</span>
+<span class="x">        &#39;amount&#39; =&gt; $amount,</span>
+<span class="x">        &#39;status&#39; =&gt; &#39;pending&#39;,</span>
+<span class="x">        &#39;stripe_payment_intent_id&#39; =&gt; $payment-&gt;id,</span>
+<span class="x">    ]);</span>
+
+<span class="x">    return view(&#39;checkout&#39;, [</span>
+<span class="x">        &#39;clientSecret&#39; =&gt; $payment-&gt;client_secret,</span>
+<span class="x">        &#39;order&#39; =&gt; $order,</span>
+<span class="x">    ]);</span>
+<span class="x">});</span>
 </code></pre></div>
 
-<p>After defining such a form, the Stripe.js library may be used to attach a <a href="https://stripe.com/docs/stripe-js" rel="noopener" target="_blank">Stripe Element</a> to the form and securely gather the customer's payment details:</p>
-<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://js.stripe.com/v3/&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<p>Then, mount the Payment Element and confirm the payment:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;payment-element&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="p">&gt;</span>Pay Now<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
 
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://js.stripe.com/v3/&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">stripe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Stripe</span><span class="p">(</span><span class="s1">&#39;stripe-public-key&#39;</span><span class="p">);</span>
 
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">elements</span><span class="p">();</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">cardElement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elements</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;card&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">elements</span><span class="p">({</span>
+<span class="w">        </span><span class="nx">clientSecret</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{{ $clientSecret }}&#39;</span>
+<span class="w">    </span><span class="p">});</span>
 
-<span class="w">    </span><span class="nx">cardElement</span><span class="p">.</span><span class="nx">mount</span><span class="p">(</span><span class="s1">&#39;#card-element&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">paymentElement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elements</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;payment&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nx">paymentElement</span><span class="p">.</span><span class="nx">mount</span><span class="p">(</span><span class="s1">&#39;#payment-element&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">confirmPayment</span><span class="p">({</span>
+<span class="w">            </span><span class="nx">elements</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">confirmParams</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">return_url</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{{ route(&quot;payment.complete&quot;) }}&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Display &quot;error.message&quot; to the user...</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
 <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </code></pre></div>
 
-<p>Next, the card can be verified and a secure "payment method identifier" can be retrieved from Stripe using <a href="https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method" rel="noopener" target="_blank">Stripe's <code>createPaymentMethod</code> method</a>:</p>
-<div class="codehilite"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">cardHolderName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;card-holder-name&#39;</span><span class="p">);</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">cardButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;card-button&#39;</span><span class="p">);</span>
+<p>After the redirect, you may use the <code>payment_intent</code> query string parameter to retrieve the corresponding order and Payment Intent. Before fulfilling the order, you should verify that the order belongs to the authenticated customer and that the Payment Intent belongs to the authenticated customer and has succeeded:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Order;</span>
+<span class="x">use Illuminate\Http\Request;</span>
 
-<span class="nx">cardButton</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">paymentMethod</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">stripe</span><span class="p">.</span><span class="nx">createPaymentMethod</span><span class="p">(</span>
-<span class="w">        </span><span class="s1">&#39;card&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">cardElement</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">billing_details</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="nx">cardHolderName</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">);</span>
+<span class="x">Route::get(&#39;/payment/complete&#39;, function (Request $request) {</span>
+<span class="x">    $order = Order::where(&#39;user_id&#39;, $request-&gt;user()-&gt;id)</span>
+<span class="x">        -&gt;where(&#39;stripe_payment_intent_id&#39;, $request-&gt;payment_intent)</span>
+<span class="x">        -&gt;firstOrFail();</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// Display &quot;error.message&quot; to the user...</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// The card has been verified successfully...</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">});</span>
+<span class="x">    $paymentIntent = $request-&gt;user()</span>
+<span class="x">        -&gt;stripe()</span>
+<span class="x">        -&gt;paymentIntents</span>
+<span class="x">        -&gt;retrieve($request-&gt;payment_intent);</span>
+
+<span class="x">    if ($paymentIntent-&gt;customer === $request-&gt;user()-&gt;stripe_id &amp;&amp;</span>
+<span class="x">        $paymentIntent-&gt;status === &#39;succeeded&#39;) {</span>
+<span class="x">        $order-&gt;update([&#39;status&#39; =&gt; &#39;paid&#39;]);</span>
+
+<span class="x">        // Fulfill the order...</span>
+<span class="x">    }</span>
+
+<span class="x">    return redirect(&#39;/dashboard&#39;);</span>
+<span class="x">})-&gt;name(&#39;payment.complete&#39;);</span>
 </code></pre></div>
 
-<p>If the card is verified successfully, you may pass the <code>paymentMethod.id</code> to your Laravel application and process a <a href="#simple-charge">single charge</a>.</p>
 <p><a name="retrieving-payment-methods"></a></p>
 <h3 id="retrieving-payment-methods">Retrieving Payment Methods<a class="headerlink" href="#retrieving-payment-methods" title="Permanent link">#</a></h3>
 <p>The <code>paymentMethods</code> method on the billable model instance returns a collection of <code>Laravel\Cashier\PaymentMethod</code> instances:</p>
@@ -1983,7 +2017,7 @@ Make sure you protect incoming Stripe webhook requests with Cashier's included <
 <h4 id="webhooks-and-csrf-protection">Webhooks and CSRF Protection<a class="headerlink" href="#webhooks-and-csrf-protection" title="Permanent link">#</a></h4>
 <p>Since Stripe webhooks need to bypass Laravel's <a href="./csrf.html">CSRF protection</a>, you should ensure that Laravel does not attempt to validate the CSRF token for incoming Stripe webhooks. To accomplish this, you should exclude <code>stripe/*</code> from CSRF protection in your application's <code>bootstrap/app.php</code> file:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">-&gt;withMiddleware(function (Middleware $middleware): void {</span>
-<span class="x">    $middleware-&gt;validateCsrfTokens(except: [</span>
+<span class="x">    $middleware-&gt;preventRequestForgery(except: [</span>
 <span class="x">        &#39;stripe/*&#39;,</span>
 <span class="x">    ]);</span>
 <span class="x">})</span>
@@ -2025,11 +2059,11 @@ Make sure you protect incoming Stripe webhook requests with Cashier's included <
 <h2 id="single-charges">Single Charges<a class="headerlink" href="#single-charges" title="Permanent link">#</a></h2>
 <p><a name="simple-charge"></a></p>
 <h3 id="simple-charge">Simple Charge<a class="headerlink" href="#simple-charge" title="Permanent link">#</a></h3>
-<p>If you would like to make a one-time charge against a customer, you may use the <code>charge</code> method on a billable model instance. You will need to <a href="#payment-methods-for-single-charges">provide a payment method identifier</a> as the second argument to the <code>charge</code> method:</p>
+<p>If you would like to make a one-time charge against a customer using a payment method identifier, you may use the <code>charge</code> method on a billable model instance. If you need to collect payment details from a customer before processing a one-time charge, see the <a href="#payment-element-for-single-charges">Payment Element for Single Charges</a> documentation:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Http\Request;</span>
 
 <span class="x">Route::post(&#39;/purchase&#39;, function (Request $request) {</span>
-<span class="x">    $stripeCharge = $request-&gt;user()-&gt;charge(</span>
+<span class="x">    $payment = $request-&gt;user()-&gt;charge(</span>
 <span class="x">        100, $request-&gt;paymentMethodId</span>
 <span class="x">    );</span>
 
@@ -2037,7 +2071,7 @@ Make sure you protect incoming Stripe webhook requests with Cashier's included <
 <span class="x">});</span>
 </code></pre></div>
 
-<p>The <code>charge</code> method accepts an array as its third argument, allowing you to pass any options you wish to the underlying Stripe charge creation. More information regarding the options available to you when creating charges may be found in the <a href="https://stripe.com/docs/api/charges/create" rel="noopener" target="_blank">Stripe documentation</a>:</p>
+<p>The <code>charge</code> method accepts an array as its third argument, allowing you to pass any options you wish to the underlying Stripe Payment Intent creation. More information regarding the options available to you when creating Payment Intents may be found in the <a href="https://stripe.com/docs/api/payment_intents/create" rel="noopener" target="_blank">Stripe documentation</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$user-&gt;charge(100, $paymentMethod, [</span>
 <span class="x">    &#39;custom_option&#39; =&gt; $value,</span>
 <span class="x">]);</span>
@@ -2046,7 +2080,7 @@ Make sure you protect incoming Stripe webhook requests with Cashier's included <
 <p>You may also use the <code>charge</code> method without an underlying customer or user. To accomplish this, invoke the <code>charge</code> method on a new instance of your application's billable model:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use App\Models\User;</span>
 
-<span class="x">$stripeCharge = (new User)-&gt;charge(100, $paymentMethod);</span>
+<span class="x">$payment = (new User)-&gt;charge(100, $paymentMethod);</span>
 </code></pre></div>
 
 <p>The <code>charge</code> method will throw an exception if the charge fails. If the charge is successful, an instance of <code>Laravel\Cashier\Payment</code> will be returned from the method:</p>
@@ -2125,7 +2159,7 @@ The <code>pay</code> and <code>payWith</code> methods accept the payment amount 
 </blockquote>
 <p><a name="refunding-charges"></a></p>
 <h3 id="refunding-charges">Refunding Charges<a class="headerlink" href="#refunding-charges" title="Permanent link">#</a></h3>
-<p>If you need to refund a Stripe charge, you may use the <code>refund</code> method. This method accepts the Stripe <a href="#payment-methods-for-single-charges">payment intent ID</a> as its first argument:</p>
+<p>If you need to refund a Stripe payment, you may use the <code>refund</code> method. This method accepts the Stripe Payment Intent ID as its first argument:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$payment = $user-&gt;charge(100, $paymentMethodId);</span>
 
 <span class="x">$user-&gt;refund($payment-&gt;id);</span>
@@ -2438,7 +2472,7 @@ If you have already configured <a href="#tax-configuration">automatic tax collec
 <li>SEPA Direct Debit</li>
 </ul>
 </div>
-<p>Alternatively, you could allow Stripe to handle the payment confirmation for you. In this case, instead of redirecting to the payment confirmation page, you may <a href="https://dashboard.stripe.com/account/billing/automatic" rel="noopener" target="_blank">setup Stripe's automatic billing emails</a> in your Stripe dashboard. However, if an <code>IncompletePayment</code> exception is caught, you should still inform the user they will receive an email with further payment confirmation instructions.</p>
+<p>Alternatively, you could allow Stripe to handle the payment confirmation for you. In this case, instead of redirecting to the payment confirmation page, you may <a href="https://dashboard.stripe.com/account/billing/automatic" rel="noopener" target="_blank">set up Stripe's automatic billing emails</a> in your Stripe dashboard. However, if an <code>IncompletePayment</code> exception is caught, you should still inform the user they will receive an email with further payment confirmation instructions.</p>
 <p>Payment exceptions may be thrown for the following methods: <code>charge</code>, <code>invoiceFor</code>, and <code>invoice</code> on models using the <code>Billable</code> trait. When interacting with subscriptions, the <code>create</code> method on the <code>SubscriptionBuilder</code>, and the <code>incrementAndInvoice</code> and <code>swapAndInvoice</code> methods on the <code>Subscription</code> and <code>SubscriptionItem</code> models may throw incomplete payment exceptions.</p>
 <p>Determining if an existing subscription has an incomplete payment may be accomplished using the <code>hasIncompletePayment</code> method on the billable model or a subscription instance:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">if ($user-&gt;hasIncompletePayment(&#39;default&#39;)) {</span>
@@ -2479,7 +2513,7 @@ If you have already configured <a href="#tax-configuration">automatic tax collec
 <p>You may consult the <a href="https://stripe.com/docs/api/payment_intents/confirm" rel="noopener" target="_blank">Stripe API documentation</a> to review all of the options accepted when confirming payments.</p>
 <p><a name="strong-customer-authentication"></a></p>
 <h2 id="strong-customer-authentication">Strong Customer Authentication<a class="headerlink" href="#strong-customer-authentication" title="Permanent link">#</a></h2>
-<p>If your business or one of your customers is based in Europe you will need to abide by the EU's Strong Customer Authentication (SCA) regulations. These regulations were imposed in September 2019 by the European Union to prevent payment fraud. Luckily, Stripe and Cashier are prepared for building SCA compliant applications.</p>
+<p>If your business or one of your customers is based in Europe you will need to abide by the EU's Strong Customer Authentication (SCA) regulations. These regulations were imposed in September 2019 by the European Union to prevent payment fraud. Luckily, Stripe and Cashier are prepared for building SCA compliant applications.</p>
 <blockquote>
 <p>[!WARNING]
 Before getting started, review <a href="https://stripe.com/guides/strong-customer-authentication" rel="noopener" target="_blank">Stripe's guide on PSD2 and SCA</a> as well as their <a href="https://stripe.com/docs/strong-customer-authentication" rel="noopener" target="_blank">documentation on the new SCA APIs</a>.</p>

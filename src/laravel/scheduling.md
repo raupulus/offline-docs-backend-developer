@@ -1,15 +1,15 @@
 ---
 title: Task Scheduling
-source_url: https://laravel.com/docs/12.x/scheduling
+source_url: https://laravel.com/docs/13.x/scheduling
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: scheduling.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 820
+retrieved_at: '2026-09-15'
+order: 840
 ---
 
 # Task Scheduling
@@ -25,6 +25,7 @@ order: 820
     - [Running Tasks on One Server](#running-tasks-on-one-server)
     - [Background Tasks](#background-tasks)
     - [Maintenance Mode](#maintenance-mode)
+    - [Pausing Scheduled Tasks](#pausing-scheduled-tasks)
     - [Schedule Groups](#schedule-groups)
 - [Running the Scheduler](#running-the-scheduler)
     - [Sub-Minute Scheduled Tasks](#sub-minute-scheduled-tasks)
@@ -335,7 +336,7 @@ If you are repeatedly assigning the same timezone to all of your scheduled tasks
 ```
 
 > [!WARNING]
-> Remember that some timezones utilize daylight savings time. When daylight saving time changes occur, your scheduled task may run twice or even not run at all. For this reason, we recommend avoiding timezone scheduling when possible.
+> Remember that some timezones utilize daylight saving time. When daylight saving time changes occur, your scheduled task may run twice or even not run at all. For this reason, we recommend avoiding timezone scheduling when possible.
 
 <a name="preventing-task-overlaps"></a>
 ### Preventing Task Overlaps
@@ -432,6 +433,27 @@ Your application's scheduled tasks will not run when the application is in [main
 
 ```php
 Schedule::command('emails:send')->evenInMaintenanceMode();
+```
+
+<a name="pausing-scheduled-tasks"></a>
+### Pausing Scheduled Tasks
+
+You may temporarily pause scheduled task processing without changing your deployed code by using the `schedule:pause` Artisan command:
+
+```shell
+php artisan schedule:pause
+```
+
+While the scheduler is paused, no scheduled tasks will run. You may resume scheduled task processing using the `schedule:continue` command:
+
+```shell
+php artisan schedule:continue
+```
+
+If a task should still run while the scheduler is paused, you may mark it with the `evenWhenPaused` method:
+
+```php
+Schedule::command('emails:send')->evenWhenPaused();
 ```
 
 <a name="schedule-groups"></a>

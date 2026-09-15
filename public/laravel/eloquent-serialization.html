@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Eloquent: Serialization</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Eloquent: Serialization</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Eloquent: Serialization</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Eloquent: Serialization</a>
       <h1 class="doc-title">Eloquent: Serialization</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/eloquent-serialization" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/eloquent-serialization" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -438,43 +438,37 @@ For an even more robust way of handling Eloquent model and collection JSON seria
 <p>When an Eloquent model is converted to JSON, its loaded relationships will automatically be included as attributes on the JSON object. Also, though Eloquent relationship methods are defined using "camel case" method names, a relationship's JSON attribute will be "snake case".</p>
 <p><a name="hiding-attributes-from-json"></a></p>
 <h2 id="hiding-attributes-from-json">Hiding Attributes From JSON<a class="headerlink" href="#hiding-attributes-from-json" title="Permanent link">#</a></h2>
-<p>Sometimes you may wish to limit the attributes, such as passwords, that are included in your model's array or JSON representation. To do so, add a <code>$hidden</code> property to your model. Attributes that are listed in the <code>$hidden</code> property's array will not be included in the serialized representation of your model:</p>
+<p>Sometimes you may wish to limit the attributes, such as passwords, that are included in your model's array or JSON representation. To do so, you may use the <code>Hidden</code> attribute on your model. Attributes that are listed in the <code>Hidden</code> attribute will not be included in the serialized representation of your model:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Hidden</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Hidden</span><span class="p">([</span><span class="s1">&#39;password&#39;</span><span class="p">])]</span>
 <span class="k">class</span> <span class="nc">User</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The attributes that should be hidden for serialization.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var array&lt;string&gt;</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$hidden</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">];</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <blockquote>
 <p>[!NOTE]
-To hide relationships, add the relationship's method name to your Eloquent model's <code>$hidden</code> property.</p>
+To hide relationships, add the relationship's method name to your Eloquent model's <code>Hidden</code> attribute.</p>
 </blockquote>
-<p>Alternatively, you may use the <code>visible</code> property to define an "allow list" of attributes that should be included in your model's array and JSON representation. All attributes that are not present in the <code>$visible</code> array will be hidden when the model is converted to an array or JSON:</p>
+<p>Alternatively, you may use the <code>Visible</code> attribute to define an "allow list" of attributes that should be included in your model's array and JSON representation. All attributes that are not present in the <code>Visible</code> attribute will be hidden when the model is converted to an array or JSON:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Visible</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Visible</span><span class="p">([</span><span class="s1">&#39;first_name&#39;</span><span class="p">,</span> <span class="s1">&#39;last_name&#39;</span><span class="p">])]</span>
 <span class="k">class</span> <span class="nc">User</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The attributes that should be visible in arrays.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var array</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$visible</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;first_name&#39;</span><span class="p">,</span> <span class="s1">&#39;last_name&#39;</span><span class="p">];</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -522,21 +516,18 @@ To hide relationships, add the relationship's method name to your Eloquent model
 <span class="p">}</span>
 </code></pre></div>
 
-<p>If you would like the accessor to always be appended to your model's array and JSON representations, you may add the attribute name to the <code>appends</code> property of your model. Note that attribute names are typically referenced using their "snake case" serialized representation, even though the accessor's PHP method is defined using "camel case":</p>
+<p>If you would like the accessor to always be appended to your model's array and JSON representations, you may use the <code>Appends</code> attribute on your model. Note that attribute names are typically referenced using their "snake case" serialized representation, even though the accessor's PHP method is defined using "camel case":</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Appends</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Appends</span><span class="p">([</span><span class="s1">&#39;is_admin&#39;</span><span class="p">])]</span>
 <span class="k">class</span> <span class="nc">User</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The accessors to append to the model&#39;s array form.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var array</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$appends</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;is_admin&#39;</span><span class="p">];</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 

@@ -1,14 +1,14 @@
 ---
 title: 'Eloquent: Serialization'
-source_url: https://laravel.com/docs/12.x/eloquent-serialization
+source_url: https://laravel.com/docs/13.x/eloquent-serialization
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: eloquent-serialization.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 300
 ---
 
@@ -99,46 +99,41 @@ When an Eloquent model is converted to JSON, its loaded relationships will autom
 <a name="hiding-attributes-from-json"></a>
 ## Hiding Attributes From JSON
 
-Sometimes you may wish to limit the attributes, such as passwords, that are included in your model's array or JSON representation. To do so, add a `$hidden` property to your model. Attributes that are listed in the `$hidden` property's array will not be included in the serialized representation of your model:
+Sometimes you may wish to limit the attributes, such as passwords, that are included in your model's array or JSON representation. To do so, you may use the `Hidden` attribute on your model. Attributes that are listed in the `Hidden` attribute will not be included in the serialized representation of your model:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Model;
 
+#[Hidden(['password'])]
 class User extends Model
 {
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<string>
-     */
-    protected $hidden = ['password'];
+    // ...
 }
 ```
 
-> [!NOTE]
-> To hide relationships, add the relationship's method name to your Eloquent model's `$hidden` property.
 
-Alternatively, you may use the `visible` property to define an "allow list" of attributes that should be included in your model's array and JSON representation. All attributes that are not present in the `$visible` array will be hidden when the model is converted to an array or JSON:
+> [!NOTE]
+> To hide relationships, add the relationship's method name to your Eloquent model's `Hidden` attribute.
+
+Alternatively, you may use the `Visible` attribute to define an "allow list" of attributes that should be included in your model's array and JSON representation. All attributes that are not present in the `Visible` attribute will be hidden when the model is converted to an array or JSON:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Model;
 
+#[Visible(['first_name', 'last_name'])]
 class User extends Model
 {
-    /**
-     * The attributes that should be visible in arrays.
-     *
-     * @var array
-     */
-    protected $visible = ['first_name', 'last_name'];
+    // ...
 }
 ```
 
@@ -196,23 +191,20 @@ class User extends Model
 }
 ```
 
-If you would like the accessor to always be appended to your model's array and JSON representations, you may add the attribute name to the `appends` property of your model. Note that attribute names are typically referenced using their "snake case" serialized representation, even though the accessor's PHP method is defined using "camel case":
+If you would like the accessor to always be appended to your model's array and JSON representations, you may use the `Appends` attribute on your model. Note that attribute names are typically referenced using their "snake case" serialized representation, even though the accessor's PHP method is defined using "camel case":
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Model;
 
+#[Appends(['is_admin'])]
 class User extends Model
 {
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['is_admin'];
+    // ...
 }
 ```
 

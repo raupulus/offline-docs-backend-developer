@@ -1,15 +1,15 @@
 ---
 title: Routing
-source_url: https://laravel.com/docs/12.x/routing
+source_url: https://laravel.com/docs/13.x/routing
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: routing.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 790
+retrieved_at: '2026-09-15'
+order: 810
 ---
 
 # Routing
@@ -560,9 +560,6 @@ Route::domain('{account}.example.com')->group(function () {
 });
 ```
 
-> [!WARNING]
-> In order to ensure your subdomain routes are reachable, you should register subdomain routes before registering root domain routes. This will prevent root domain routes from overwriting subdomain routes which have the same URI path.
-
 <a name="route-group-prefixes"></a>
 ### Route Prefixes
 
@@ -651,15 +648,16 @@ Route::get('/posts/{post:slug}', function (Post $post) {
 });
 ```
 
-If you would like model binding to always use a database column other than `id` when retrieving a given model class, you may override the `getRouteKeyName` method on the Eloquent model:
+If you would like model binding to always use a database column other than `id` when retrieving a given model class, you may apply the `RouteKey` attribute to the Eloquent model:
 
 ```php
-/**
- * Get the route key for the model.
- */
-public function getRouteKeyName(): string
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
+use Illuminate\Database\Eloquent\Model;
+
+#[RouteKey('slug')]
+class Post extends Model
 {
-    return 'slug';
+    // ...
 }
 ```
 
@@ -907,7 +905,7 @@ Since rate limiter callbacks receive the incoming HTTP request instance, you may
 
 ```php
 RateLimiter::for('uploads', function (Request $request) {
-    return $request->user()->vipCustomer()
+    return $request->user()?->vipCustomer()
         ? Limit::none()
         : Limit::perHour(10);
 });

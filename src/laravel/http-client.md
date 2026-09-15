@@ -1,15 +1,15 @@
 ---
 title: HTTP Client
-source_url: https://laravel.com/docs/12.x/http-client
+source_url: https://laravel.com/docs/13.x/http-client
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: http-client.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 450
+retrieved_at: '2026-09-15'
+order: 460
 ---
 
 # HTTP Client
@@ -103,7 +103,7 @@ The HTTP client also allows you to construct request URLs using the [URI templat
 Http::withUrlParameters([
     'endpoint' => 'https://laravel.com',
     'page' => 'docs',
-    'version' => '12.x',
+    'version' => '13.x',
     'topic' => 'validation',
 ])->get('{+endpoint}/{page}/{version}/{topic}');
 ```
@@ -265,7 +265,7 @@ The `timeout` method may be used to specify the maximum number of seconds to wai
 $response = Http::timeout(3)->get(/* ... */);
 ```
 
-If the given timeout is exceeded, an instance of `Illuminate\Http\Client\ConnectionException` will  be thrown.
+If the given timeout is exceeded, an instance of `Illuminate\Http\Client\ConnectionException` will be thrown.
 
 You may specify the maximum number of seconds to wait while trying to connect to a server using the `connectTimeout` method. The default is 10 seconds:
 
@@ -388,6 +388,12 @@ $response->throwIfStatus(403);
 
 // Throw an exception unless the response has a specific status code...
 $response->throwUnlessStatus(200);
+
+// Throw an exception if a server error occurred (status >500)...
+$response->throwIfServerError();
+
+// Throw an exception if a client error occurred (status >400 and <500)...
+$response->throwIfClientError();
 
 return $response['user']['id'];
 ```
@@ -557,6 +563,18 @@ The maximum concurrency of the request pool may be controlled by providing the `
 $responses = Http::pool(fn (Pool $pool) => [
     // ...
 ], concurrency: 5);
+```
+
+If a pooled request fails at the connection level (for example, a timeout or DNS failure), the corresponding entry in the `$responses` array will be an `Illuminate\Http\Client\ConnectionException` instance instead of a `Response` instance:
+
+```php
+foreach ($responses as $response) {
+    if ($response instanceof Throwable) {
+        // The request failed to connect...
+    } elseif ($response->failed()) {
+        // The request connected but received an error response...
+    }
+}
 ```
 
 <a name="customizing-concurrent-requests"></a>

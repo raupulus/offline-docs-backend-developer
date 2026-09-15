@@ -1,15 +1,15 @@
 ---
 title: Laravel Pennant
-source_url: https://laravel.com/docs/12.x/pennant
+source_url: https://laravel.com/docs/13.x/pennant
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: pennant.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 640
+retrieved_at: '2026-09-15'
+order: 660
 ---
 
 # Laravel Pennant
@@ -28,6 +28,7 @@ order: 640
     - [In-Memory Cache](#in-memory-cache)
 - [Scope](#scope)
     - [Specifying the Scope](#specifying-the-scope)
+    - [Global Scope](#global-scope)
     - [Default Scope](#default-scope)
     - [Nullable Scope](#nullable-scope)
     - [Identifying Scope](#identifying-scope)
@@ -558,6 +559,17 @@ if (Feature::for($user->team)->active('billing-v2')) {
 }
 
 // ...
+```
+
+<a name="global-scope"></a>
+### Global Scope
+
+To check or interact with a feature using a global scope, regardless of the configured default scope resolver, use the `globally` method. This is useful for application-wide feature flags, such as temporarily enabling maintenance behavior or rolling out a feature to every user:
+
+```php
+Feature::globally()->active('new-api');
+
+Feature::globally()->activate('new-api');
 ```
 
 <a name="default-scope"></a>

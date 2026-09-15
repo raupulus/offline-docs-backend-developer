@@ -1,15 +1,15 @@
 ---
 title: Asset Bundling (Vite)
-source_url: https://laravel.com/docs/12.x/vite
+source_url: https://laravel.com/docs/13.x/vite
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: vite.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 990
+retrieved_at: '2026-09-15'
+order: 1010
 ---
 
 # Asset Bundling (Vite)
@@ -29,6 +29,10 @@ order: 990
   - [Inertia](#inertia)
   - [URL Processing](#url-processing)
 - [Working With Stylesheets](#working-with-stylesheets)
+- [Working With Fonts](#working-with-fonts)
+  - [Font Providers](#font-providers)
+  - [Local Fonts](#local-fonts)
+  - [Font Options](#font-options)
 - [Working With Blade and Routes](#working-with-blade-and-routes)
   - [Processing Static Assets With Vite](#blade-processing-static-assets)
   - [Refreshing on Save](#blade-refreshing-on-save)
@@ -347,7 +351,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Vue, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Vue, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Vue, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Vue, and Vite.
 
 <a name="react"></a>
 ### React
@@ -385,7 +389,7 @@ You will also need to include the additional `@viteReactRefresh` Blade directive
 The `@viteReactRefresh` directive must be called before the `@vite` directive.
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, React, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, React, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, React, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, React, and Vite.
 
 <a name="svelte"></a>
 ### Svelte
@@ -416,7 +420,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Svelte, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Svelte, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Svelte, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Svelte, and Vite.
 
 <a name="inertia"></a>
 ### Inertia
@@ -441,7 +445,7 @@ createInertiaApp({
 If you are using Vite's code splitting feature with Inertia, we recommend configuring [asset prefetching](#asset-prefetching).
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Inertia, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Inertia, and Vite.
 
 <a name="url-processing"></a>
 ### URL Processing
@@ -487,21 +491,144 @@ composer run dev
 
 Your application's CSS may be placed within the `resources/css/app.css` file.
 
+<a name="working-with-fonts"></a>
+## Working With Fonts
+
+The Laravel Vite plugin can serve optimized, self-hosted fonts for your application. When fonts are configured, the plugin resolves the requested font files, emits them as Vite assets, generates font CSS, and writes a font manifest that may be consumed by Blade's [`@fonts` directive](/docs/{{version}}/blade#fonts).
+
+To configure fonts, import one or more provider helpers from `laravel-vite-plugin/fonts` and add them to the Laravel plugin's `fonts` option:
+
+```js
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import { google } from 'laravel-vite-plugin/fonts';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: 'resources/js/app.js',
+            fonts: [
+                google('Inter', {
+                    alias: 'sans',
+                    weights: [400, 500, 600, 700],
+                    styles: ['normal', 'italic'],
+                    subsets: ['latin'],
+                    display: 'swap',
+                    preload: [
+                        { weight: 400 },
+                        { weight: 700 },
+                    ],
+                    fallbacks: ['system-ui', 'sans-serif'],
+                }),
+            ],
+        }),
+    ],
+});
+```
+
+In this example, the `Inter` font will be available through the `sans` alias. The plugin will generate a `--font-sans` CSS variable and a `.font-sans` utility class that applies the generated font stack.
+
+<a name="font-providers"></a>
+### Font Providers
+
+The Laravel Vite plugin includes provider helpers for Google Fonts, Bunny Fonts, Fontsource, and local fonts:
+
+```js
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import { bunny, fontsource, google, local } from 'laravel-vite-plugin/fonts';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: 'resources/js/app.js',
+            fonts: [
+                google('Inter', { alias: 'sans' }),
+                bunny('Figtree', { alias: 'body' }),
+                fontsource('JetBrains Mono', { alias: 'mono' }),
+                local('Brand Sans', {
+                    alias: 'brand',
+                    src: 'resources/fonts/brand-sans',
+                }),
+            ],
+        }),
+    ],
+});
+```
+
+The `fontsource` provider reads fonts from an installed Fontsource package. By default, the package name is derived from the font family, such as `@fontsource/jetbrains-mono`. If your application uses a different package name, you may specify it using the `package` option.
+
+<a name="local-fonts"></a>
+### Local Fonts
+
+When using local fonts, the `src` option may point to a single font file, a directory, or a glob pattern. The plugin will discover supported font files and infer their weight and style from their filenames:
+
+```js
+local('Brand Sans', {
+    alias: 'brand',
+    src: 'resources/fonts/brand-sans/*.woff2',
+})
+```
+
+If you need full control over the available variants, you may define them explicitly using the `variants` option:
+
+```js
+local('Brand Sans', {
+    alias: 'brand',
+    variants: [
+        { src: 'resources/fonts/BrandSans-Regular.woff2', weight: 400 },
+        { src: 'resources/fonts/BrandSans-Italic.woff2', weight: 400, style: 'italic' },
+        { src: ['resources/fonts/BrandSans-Bold.woff2', 'resources/fonts/BrandSans-Bold.ttf'], weight: 700 },
+    ],
+})
+```
+
+<a name="font-options"></a>
+### Font Options
+
+Depending on the provider, font definitions may accept several options that allow you to customize the generated font CSS:
+
+<div class="content-list" markdown="1">
+
+- `alias` defines the name used by Blade's `@fonts` directive and defaults to a slug of the font family.
+- `variable` defines the generated CSS variable and defaults to `--font-{alias}`.
+- `weights` defines the remote or Fontsource font weights that should be resolved and defaults to `[400]`.
+- `styles` defines the remote or Fontsource font styles that should be resolved and defaults to `['normal']`.
+- `subsets` defines the remote or Fontsource font subsets that should be resolved and defaults to `['latin']`.
+- `display` defines the `font-display` value and defaults to `swap`.
+- `preload` controls which WOFF2 font variants should be preloaded. This option may be `true`, `false`, or an array of `{ weight, style }` selectors.
+- `fallbacks` defines additional fallback fonts that should be appended to the generated font stack.
+- `optimizedFallbacks` attempts to generate metric-adjusted fallback font faces using the optional `fontaine` package and defaults to `true`.
+
+</div>
+
+Optimized fallbacks require the `fontaine` package, which is not installed by default. If you want Laravel to generate metric-adjusted fallback font faces, you should install `fontaine` as a development dependency:
+
+```shell
+npm install --save-dev fontaine
+```
+
+If `fontaine` is not installed or cannot read a font file, Laravel will skip the optimized fallback for that font and continue using any fonts configured via the `fallbacks` option.
+
+Local fonts are resolved from the `src` or `variants` options described above instead of using `weights`, `styles`, and `subsets`.
+
 <a name="working-with-blade-and-routes"></a>
 ## Working With Blade and Routes
 
 <a name="blade-processing-static-assets"></a>
 ### Processing Static Assets With Vite
 
-When referencing assets in your JavaScript or CSS, Vite automatically processes and versions them. In addition, when building Blade based applications, Vite can also process and version static assets that you reference solely in Blade templates.
+When referencing assets in your JavaScript or CSS, Vite automatically processes and versions them. In addition, when building Blade-based applications, Vite can also process and version static assets that you reference solely in Blade templates.
 
-However, in order to accomplish this, you need to make Vite aware of your assets by importing the static assets into the application's entry point. For example, if you want to process and version all images stored in `resources/images` and all fonts stored in `resources/fonts`, you should add the following in your application's `resources/js/app.js` entry point:
+However, to accomplish this, you need to make Vite aware of your assets by specifying them in the plugin's `assets` option. This option is intended for static files that you want to reference directly with `Vite::asset`. If you want Laravel to generate font CSS and preload links, use the [`fonts` option](#working-with-fonts) instead.
+
+For example, if you want to process and version all images stored in `resources/images` and all fonts stored in `resources/fonts`, you should add the following to your Vite configuration:
 
 ```js
-import.meta.glob([
-  '../images/**',
-  '../fonts/**',
-]);
+laravel({
+    input: 'resources/js/app.js',
+    assets: ['resources/images/**', 'resources/fonts/**'],
+})
 ```
 
 These assets will now be processed by Vite when running `npm run build`. You can then reference these assets in Blade templates using the `Vite::asset` method, which will return the versioned URL for a given asset:
@@ -509,6 +636,9 @@ These assets will now be processed by Vite when running `npm run build`. You can
 ```blade
 <img src="{{ Vite::asset('resources/images/logo.png') }}">
 ```
+
+> [!NOTE]
+> Prior to version 3 of the Laravel Vite plugin, static assets had to be imported in your application's entry point using `import.meta.glob`. The `assets` option was introduced due to changes in Vite 8.
 
 <a name="blade-refreshing-on-save"></a>
 ### Refreshing on Save
@@ -789,7 +919,7 @@ php artisan inertia:start-ssr
 ```
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia SSR, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Inertia SSR, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia SSR, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Inertia SSR, and Vite.
 
 <a name="script-and-style-attributes"></a>
 ## Script and Style Tag Attributes

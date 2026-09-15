@@ -1,15 +1,15 @@
 ---
 title: HTTP Responses
-source_url: https://laravel.com/docs/12.x/responses
+source_url: https://laravel.com/docs/13.x/responses
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: responses.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 770
+retrieved_at: '2026-09-15'
+order: 790
 ---
 
 # HTTP Responses
@@ -176,10 +176,16 @@ return response('Hello World')->cookie($cookie);
 <a name="expiring-cookies-early"></a>
 #### Expiring Cookies Early
 
-You may remove a cookie by expiring it via the `withoutCookie` method of an outgoing response:
+You may remove a cookie by expiring it via the `withoutCookie` or `withoutCookies` method of an outgoing response:
 
 ```php
 return response('Hello World')->withoutCookie('name');
+
+return response('Hello World')->withoutCookies([
+    'name',
+    'email',
+    'preferences',
+]);
 ```
 
 If you do not yet have an instance of the outgoing response, you may use the `Cookie` facade's `expire` method to expire a cookie:

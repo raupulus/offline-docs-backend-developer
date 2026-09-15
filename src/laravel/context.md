@@ -1,14 +1,14 @@
 ---
 title: Context
-source_url: https://laravel.com/docs/12.x/context
+source_url: https://laravel.com/docs/13.x/context
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: context.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 170
 ---
 
@@ -34,7 +34,7 @@ Laravel's "context" capabilities enable you to capture, retrieve, and share info
 <a name="how-it-works"></a>
 ### How it Works
 
-The best way to understand Laravel's context capabilities is to see it in action using  the built-in logging features. To get started, you may [add information to the context](#capturing-context) using the `Context` facade. In this example, we will use a [middleware](/docs/{{version}}/middleware) to add the request URL and a unique trace ID to the context on every incoming request:
+The best way to understand Laravel's context capabilities is to see it in action using the built-in logging features. To get started, you may [add information to the context](#capturing-context) using the `Context` facade. In this example, we will use a [middleware](/docs/{{version}}/middleware) to add the request URL and a unique trace ID to the context on every incoming request:
 
 ```php
 <?php

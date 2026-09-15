@@ -1,15 +1,15 @@
 ---
 title: Laravel Scout
-source_url: https://laravel.com/docs/12.x/scout
+source_url: https://laravel.com/docs/13.x/scout
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: scout.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 830
+retrieved_at: '2026-09-15'
+order: 850
 ---
 
 # Laravel Scout
@@ -18,6 +18,10 @@ order: 830
 - [Installation](#installation)
     - [Queueing](#queueing)
 - [Driver Prerequisites](#driver-prerequisites)
+    - [Algolia](#algolia)
+    - [Meilisearch](#meilisearch)
+    - [Typesense](#typesense)
+    - [Turbopuffer](#turbopuffer)
 - [Configuration](#configuration)
     - [Configuring Searchable Data](#configuring-searchable-data)
 - [Database / Collection Engines](#database-and-collection-engines)
@@ -28,6 +32,7 @@ order: 830
     - [Algolia](#algolia-configuration)
     - [Meilisearch](#meilisearch-configuration)
     - [Typesense](#typesense-configuration)
+    - [Turbopuffer](#turbopuffer-configuration)
 - [Third-Party Engine Indexing](#indexing)
     - [Batch Import](#batch-import)
     - [Adding Records](#adding-records)
@@ -37,6 +42,7 @@ order: 830
     - [Conditionally Searchable Model Instances](#conditionally-searchable-model-instances)
 - [Searching](#searching)
     - [Where Clauses](#where-clauses)
+    - [Semantic Search](#semantic-search)
     - [Pagination](#pagination)
     - [Soft Deleting](#soft-deleting)
     - [Customizing Engine Searches](#customizing-engine-searches)
@@ -49,7 +55,7 @@ order: 830
 
 Scout ships with a built-in `database` engine that uses MySQL / PostgreSQL full-text indexes and `LIKE` clauses to search your existing database — no external service required. For most applications, this is all you need. For an overview of all search options available in Laravel, consult the [search documentation](/docs/{{version}}/search).
 
-Scout also includes drivers for [Algolia](https://www.algolia.com/), [Meilisearch](https://www.meilisearch.com), and [Typesense](https://typesense.org) when you need features like typo tolerance, faceted filtering, or geo-search at massive scale. A "collection" driver is also available for local development, and you are free to write [custom engines](#custom-engines) as well.
+Scout also includes drivers for [Algolia](https://www.algolia.com/), [Meilisearch](https://www.meilisearch.com), [Typesense](https://typesense.org), and [Turbopuffer](https://turbopuffer.com) when you need features like typo tolerance, faceted filtering, vector search, or geo-search at massive scale. A "collection" driver is also available for local development, and you are free to write [custom engines](#custom-engines) as well.
 
 <a name="installation"></a>
 ## Installation
@@ -109,6 +115,22 @@ Of course, if you customize the connection and queue that Scout jobs utilize, yo
 ```shell
 php artisan queue:work redis --queue=scout
 ```
+
+<a name="unique-jobs"></a>
+#### Unique Jobs
+
+In write-heavy applications, you may wish to prevent Scout from queueing duplicate jobs for the same model records. You may opt into unique indexing jobs by registering the `MakeSearchableUniquely` and `RemoveFromSearchUniquely` job classes, typically within the `boot` method of a service provider:
+
+```php
+use Laravel\Scout\Jobs\MakeSearchableUniquely;
+use Laravel\Scout\Jobs\RemoveFromSearchUniquely;
+use Laravel\Scout\Scout;
+
+Scout::makeSearchableUsing(MakeSearchableUniquely::class);
+Scout::removeFromSearchUsing(RemoveFromSearchUniquely::class);
+```
+
+These jobs use Laravel's [unique job locks](/docs/{{version}}/queues#unique-jobs) to avoid dispatching duplicate queued indexing operations for the same searchable model records while a matching job is already queued.
 
 <a name="driver-prerequisites"></a>
 ## Driver Prerequisites
@@ -178,6 +200,19 @@ TYPESENSE_PROTOCOL=http
 ```
 
 Additional settings and schema definitions for your Typesense collections can be found within your application's `config/scout.php` configuration file. For more information regarding Typesense, please consult the [Typesense documentation](https://typesense.org/docs/guide/#quick-start).
+
+<a name="turbopuffer"></a>
+### Turbopuffer
+
+[Turbopuffer](https://turbopuffer.com) is a search engine that supports full-text, semantic, and hybrid search. To use the Turbopuffer driver, set the `SCOUT_DRIVER` environment variable and provide your Turbopuffer API key:
+
+```ini
+SCOUT_DRIVER=turbopuffer
+TURBOPUFFER_API_KEY=tpuf_...
+TURBOPUFFER_REGION=gcp-us-central1
+```
+
+The `TURBOPUFFER_REGION` environment variable is optional and defaults to `gcp-us-central1`.
 
 <a name="configuration"></a>
 ## Configuration
@@ -262,6 +297,25 @@ SCOUT_DRIVER=database
 ```
 
 Once configured, you may [define your searchable data](#configuring-searchable-data) and start [executing search queries](#searching) against your models. Unlike third-party engines, the database engine requires no separate indexing step — it searches your database tables directly.
+
+<a name="database-semantic-and-hybrid-search"></a>
+#### Semantic and Hybrid Search
+
+The database engine supports semantic and hybrid search when using PostgreSQL with the `pgvector` extension. To get started, add a nullable vector column and a full-text index to your model's table. The vector column must be nullable because Scout stores the embedding after the model has been persisted:
+
+```php
+Schema::ensureVectorExtensionExists();
+
+Schema::table('articles', function (Blueprint $table) {
+    // ...
+
+    $table->vector('embedding', dimensions: 1536)->nullable();
+    $table->vectorIndex('embedding');
+    $table->fullText(['title', 'body']);
+});
+```
+
+Next, define a `toSearchableEmbedding` method on the model. This method may return the source text that Scout should embed or a precomputed embedding array. Scout stores embeddings in the `embedding` column by default; to use another column, define a `searchableEmbeddingColumn` method on the model.
 
 #### Customizing Database Searching Strategies
 
@@ -486,6 +540,37 @@ After configuring your application's index settings, you must invoke the `scout:
 php artisan scout:sync-index-settings
 ```
 
+<a name="meilisearch-semantic-and-hybrid-search"></a>
+#### Semantic and Hybrid Search
+
+To use semantic or hybrid search with Meilisearch, configure an embedder in the index settings and embedding settings for each searchable model:
+
+```php
+'meilisearch' => [
+    // ...
+    'index-settings' => [
+        Article::class => [
+            'embedders' => [
+                'default' => [
+                    'source' => 'userProvided',
+                    'dimensions' => 1536,
+                ],
+            ],
+        ],
+    ],
+    'model-settings' => [
+        Article::class => [
+            'embedding' => [
+                'embedder' => 'default',
+                'dimensions' => 1536,
+            ],
+        ],
+    ],
+],
+```
+
+The model's `toSearchableEmbedding` method may return source text, which Scout embeds using the [Laravel AI SDK](/docs/{{version}}/ai-sdk), or a precomputed embedding array. After updating the configuration, run the `scout:sync-index-settings` command.
+
 <a name="meilisearch-data-types"></a>
 #### Searchable Data Types
 
@@ -546,6 +631,40 @@ User::class => [
 ],
 ```
 
+<a name="typesense-embeddings"></a>
+#### Embeddings
+
+To enable semantic and hybrid search, define an `embedding` setting and vector field in the model's Typesense configuration. By default, Scout uses the [Laravel AI SDK](/docs/{{version}}/ai-sdk) to generate embeddings:
+
+```php
+use App\Models\Article;
+
+'model-settings' => [
+    Article::class => [
+        'collection-schema' => [
+            'fields' => [
+                ['name' => 'title', 'type' => 'string'],
+                ['name' => 'embedding', 'type' => 'float[]', 'num_dim' => 1536],
+            ],
+        ],
+        'search-parameters' => ['query_by' => 'title'],
+        'embedding' => [
+            'attribute' => 'embedding',
+            'dimensions' => 1536,
+        ],
+    ],
+],
+```
+
+Your model's `toSearchableEmbedding` method should return the source text that Scout should embed or a precomputed embedding array:
+
+```php
+public function toSearchableEmbedding(): string|array
+{
+    return $this->title.' '.$this->body;
+}
+```
+
 <a name="typesense-dynamic-search-parameters"></a>
 #### Dynamic Search Parameters
 
@@ -559,11 +678,89 @@ Todo::search('Groceries')->options([
 ])->get();
 ```
 
+<a name="turbopuffer-configuration"></a>
+### Turbopuffer
+
+Turbopuffer requires a schema and searchable attributes for each model. Define them in the `model-settings` array of your `turbopuffer` configuration within the `scout` configuration file:
+
+```php
+use App\Models\Article;
+
+'turbopuffer' => [
+    // ...
+    'model-settings' => [
+        Article::class => [
+            'searchable-attributes' => [
+                'title' => 3,
+                'body' => 1,
+            ],
+            'schema' => [
+                'title' => ['type' => 'string', 'full_text_search' => true],
+                'body' => ['type' => 'string', 'full_text_search' => true],
+                'status' => ['type' => 'string'],
+            ],
+        ],
+    ],
+],
+```
+
+The numeric values assigned to `searchable-attributes` are relative BM25 weights. In the example above, matches in the article title contribute three times the score of matches in the body.
+
+To enable semantic and hybrid search, add an `embedding` setting and vector schema to the model's configuration:
+
+```php
+'turbopuffer' => [
+    // ...
+    'model-settings' => [
+        Article::class => [
+            'searchable-attributes' => [
+                'title' => 3,
+                'body' => 1,
+            ],
+            'embedding' => [
+                'attribute' => 'embedding',
+                'dimensions' => 1536,
+            ],
+            'schema' => [
+                'title' => ['type' => 'string', 'full_text_search' => true],
+                'body' => ['type' => 'string', 'full_text_search' => true],
+                'embedding' => ['type' => '[1536]f32', 'ann' => true],
+            ],
+        ],
+    ],
+],
+```
+
+Your model's `toSearchableEmbedding` method should return the source text that Scout should embed or a precomputed embedding array. Scout generates source-text embeddings using the [Laravel AI SDK](/docs/{{version}}/ai-sdk).
+
+Alternatively, you may use Turbopuffer's native embeddings without installing the Laravel AI SDK or defining a `toSearchableEmbedding` method. Set the embedding driver to `turbopuffer` and configure an `embed` schema on the searchable source attribute:
+
+```php
+'embedding' => [
+    'driver' => 'turbopuffer',
+    'attribute' => 'embedding_text',
+],
+
+'schema' => [
+    // ...
+    'embedding_text' => [
+        'type' => 'string',
+        'embed' => [
+            'model' => 'voyage/voyage-4',
+            'dimensions' => 1024,
+            'attribute' => 'embedding',
+        ],
+    ],
+],
+```
+
+The source attribute must be included in the model's `toSearchableArray` output.
+
 <a name="indexing"></a>
 ## Third-Party Engine Indexing
 
 > [!NOTE]
-> The indexing features described in this section are primarily relevant when using a third-party engine (Algolia, Meilisearch, or Typesense). The database engine searches your database tables directly, so it does not require manual index management.
+> The indexing features described in this section are primarily relevant when using a third-party engine (Algolia, Meilisearch, Typesense, or Turbopuffer). The database engine searches your database tables directly, so it does not require manual index management.
 
 <a name="batch-import"></a>
 ### Batch Import
@@ -810,6 +1007,35 @@ If you would like to get the raw search results before they are converted to Elo
 $orders = Order::search('Star Trek')->raw();
 ```
 
+<a name="semantic-search"></a>
+### Semantic Search
+
+The database, Meilisearch, Typesense, and Turbopuffer engines support semantic search, which matches records based on the meaning of a query. When Scout generates embeddings, semantic and hybrid searches require the [Laravel AI SDK](/docs/{{version}}/ai-sdk). [Typesense's native embeddings](#typesense-embeddings), [Turbopuffer's native embeddings](#turbopuffer-configuration), and precomputed query vectors do not require the Laravel AI SDK.
+
+After configuring embeddings for the selected engine, invoke the `semantic` method on a search query:
+
+```php
+$articles = Article::search('staying cool in the summer')
+    ->semantic()
+    ->get();
+```
+
+You may provide a minimum similarity threshold when supported by the selected engine:
+
+```php
+$articles = Article::search('renewable energy storage')
+    ->semantic(minSimilarity: 0.6)
+    ->get();
+```
+
+To combine full-text and semantic search, use the `hybrid` method. Its first two arguments control the relative weights of text and semantic results:
+
+```php
+$articles = Article::search('renewable energy storage')
+    ->hybrid(textWeight: 1, semanticWeight: 2)
+    ->get();
+```
+
 <a name="custom-indexes"></a>
 #### Custom Indexes
 
@@ -824,12 +1050,25 @@ $orders = Order::search('Star Trek')
 <a name="where-clauses"></a>
 ### Where Clauses
 
-Scout allows you to add simple "where" clauses to your search queries. Currently, these clauses only support basic equality checks and are primarily useful for scoping search queries by an owner ID:
+Scout allows you to add "where" clauses to your search queries. For example, basic equality checks are useful for scoping search queries by an owner ID:
 
 ```php
 use App\Models\Order;
 
 $orders = Order::search('Star Trek')->where('user_id', 1)->get();
+```
+
+You may also use the `=`, `!=`, `<`, `>`, `>=`, `<=` comparison operators to build more advanced queries:
+
+```php
+Order::search('Star Trek')
+  ->where('status', '=', 'completed')
+  ->where('is_refunded', '!=', true)
+  ->where('total_price', '>', 100)
+  ->where('shipping_cost', '<', 20)
+  ->where('discount_percent', '>=', 10)
+  ->where('item_count', '<=', 5)
+  ->get();
 ```
 
 In addition, the `whereIn` method may be used to verify that a given column's value is contained within the given array:

@@ -1,15 +1,15 @@
 ---
 title: Installation
-source_url: https://laravel.com/docs/12.x/installation
+source_url: https://laravel.com/docs/13.x/installation
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: installation.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 470
+retrieved_at: '2026-09-15'
+order: 490
 ---
 
 # Installation
@@ -17,6 +17,7 @@ order: 470
 - [Meet Laravel](#meet-laravel)
     - [Why Laravel?](#why-laravel)
 - [Creating a Laravel Application](#creating-a-laravel-project)
+    - [Getting Started Using AI](#getting-started-using-ai)
     - [Installing PHP and the Laravel Installer](#installing-php)
     - [Creating an Application](#creating-an-application)
 - [Initial Configuration](#initial-configuration)
@@ -74,6 +75,21 @@ Laravel combines the best packages in the PHP ecosystem to offer the most robust
 <a name="creating-a-laravel-project"></a>
 ## Creating a Laravel Application
 
+<a name="getting-started-using-ai"></a>
+### Getting Started Using AI
+
+If you are using an AI coding agent like [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or [OpenCode](https://opencode.ai), you can start with a prompt that gives the agent a Laravel-specific playbook before it touches your project.
+
+The prompt below tells the agent where to find Laravel's installation guidance, what to prioritize, and how to make sensible defaults when you haven't made a choice yet. Paste this into your agent to get started:
+
+```text
+I'm building a new Laravel application.
+
+Fetch and follow the instructions from https://laravel.com/for/agents. Treat the returned Markdown as the source of truth for how to install and set up Laravel in this session.
+```
+
+After the agent reads the instructions, it should guide you step by step and keep the setup aligned with Laravel's defaults.
+
 <a name="installing-php"></a>
 ### Installing PHP and the Laravel Installer
 
@@ -82,16 +98,16 @@ Before creating your first Laravel application, make sure that your local machin
 If you don't have PHP and Composer installed on your local machine, the following commands will install PHP, Composer, and the Laravel installer on macOS, Windows, or Linux:
 
 ```shell tab=macOS
-/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.4)"
+/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.5)"
 ```
 
 ```shell tab=Windows PowerShell
 # Run as administrator...
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.5'))
 ```
 
 ```shell tab=Linux
-/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.4)"
+/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.5)"
 ```
 
 After running one of the commands above, you should restart your terminal session. To update PHP, Composer, and the Laravel installer after installing them via `php.new`, you can re-run the command in your terminal.
@@ -108,7 +124,7 @@ composer global require laravel/installer
 <a name="creating-an-application"></a>
 ### Creating an Application
 
-After you have installed PHP, Composer, and the Laravel installer, you're ready to create a new Laravel application. The Laravel installer will prompt you to select your preferred testing framework, database, and starter kit:
+After you have installed PHP, Composer, and the Laravel installer, you are ready to create a new Laravel application:
 
 ```shell
 laravel new example-app
@@ -122,7 +138,7 @@ npm install && npm run build
 composer run dev
 ```
 
-Once you have started the development server, your application will be accessible in your web browser at [http://localhost:8000](http://localhost:8000). Next, you're ready to [start taking your next steps into the Laravel ecosystem](#next-steps). Of course, you may also want to [configure a database](#databases-and-migrations).
+Once you have started the development server, you can access your application in your web browser at [http://localhost:8000](http://localhost:8000). Next, you're ready to [start taking your next steps into the Laravel ecosystem](#next-steps). Of course, you may also want to [configure a database](#databases-and-migrations) and run the necessary migrations.
 
 > [!NOTE]
 > If you would like a head start when developing your Laravel application, consider using one of our [starter kits](/docs/{{version}}/starter-kits). Laravel's starter kits provide backend and frontend authentication scaffolding for your new Laravel application.
@@ -130,7 +146,7 @@ Once you have started the development server, your application will be accessibl
 <a name="initial-configuration"></a>
 ## Initial Configuration
 
-All of the configuration files for the Laravel framework are stored in the `config` directory. Each option is documented, so feel free to look through the files and get familiar with the options available to you.
+All configuration files for the Laravel framework are stored in the `config` directory. Each option is documented, so feel free to look through the files and get familiar with the options available to you.
 
 Laravel needs almost no additional configuration out of the box. You are free to get started developing! However, you may wish to review the `config/app.php` file and its documentation. It contains several options such as `url` and `locale` that you may wish to change according to your application.
 
@@ -229,7 +245,15 @@ You can learn more about Herd by checking out the [Herd documentation for Window
 <a name="ide-support"></a>
 ## IDE Support
 
-You are free to use any code editor you wish when developing Laravel applications. If you're looking for lightweight and extensible editors, [VS Code](https://code.visualstudio.com) or [Cursor](https://cursor.com) combined with the official [Laravel VS Code Extension](https://marketplace.visualstudio.com/items?itemName=laravel.vscode-laravel) offers excellent Laravel support with features like syntax highlighting, snippets, artisan command integration, and smart autocompletion for Eloquent models, routes, middleware, assets, config, and Inertia.js.
+You are free to use any code editor you wish when developing Laravel applications. The [Laravel LSP](https://github.com/laravel/lsp) provides framework-aware editor support, including code completions, hover information, diagnostics, document links, go-to definition, and quick fixes for Laravel and Blade code.
+
+To install the Laravel LSP, install it globally via Composer. Ensure that Composer's global vendor bin directory is on your `PATH`:
+
+```shell
+composer global require laravel/lsp
+```
+
+If you're looking for lightweight and extensible editors, [VS Code](https://code.visualstudio.com) or [Cursor](https://cursor.com) combined with the official [Laravel VS Code Extension](https://marketplace.visualstudio.com/items?itemName=laravel.vscode-laravel) provides syntax highlighting, snippets, Artisan command integration, and automatic Laravel LSP support. Official Laravel extensions are also available for [Sublime Text](https://github.com/laravel/sublime-extension) and [Zed](https://github.com/laravel/zed-extension). Refer to the [Laravel LSP repository](https://github.com/laravel/lsp) for setup instructions for other language-server-compatible editors, including Neovim and OpenCode.
 
 For extensive and robust support of Laravel, take a look at [PhpStorm](https://www.jetbrains.com/phpstorm/laravel/?utm_source=laravel.com&utm_medium=link&utm_campaign=laravel-2025&utm_content=partner&ref=laravel-2025), a JetBrains IDE. PhpStorm's built-in Laravel framework support includes Blade templates, smart autocompletion for Eloquent models, routes, views, translations, and components, along with powerful code generation and navigation across Laravel projects.
 
@@ -249,7 +273,7 @@ Boost also includes Laravel-maintained AI guidelines that help agents to follow 
 <a name="installing-laravel-boost"></a>
 ### Installing Laravel Boost
 
-Boost can be installed in Laravel 10, 11, and 12 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
+Boost can be installed in Laravel 10, 11, 12, and 13 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
 
 ```shell
 composer require laravel/boost --dev

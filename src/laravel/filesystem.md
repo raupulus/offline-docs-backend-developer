@@ -1,14 +1,14 @@
 ---
 title: File Storage
-source_url: https://laravel.com/docs/12.x/filesystem
+source_url: https://laravel.com/docs/13.x/filesystem
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: filesystem.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 370
 ---
 
@@ -19,7 +19,7 @@ order: 370
     - [The Local Driver](#the-local-driver)
     - [The Public Disk](#the-public-disk)
     - [Driver Prerequisites](#driver-prerequisites)
-    - [Scoped and Read-Only Filesystems](#scoped-and-read-only-filesystems)
+    - [Scoped, Read-Only, and Read-Through Filesystems](#scoped-and-read-only-filesystems)
     - [Amazon S3 Compatible Filesystems](#amazon-s3-compatible-filesystems)
 - [Obtaining Disk Instances](#obtaining-disk-instances)
     - [On-Demand Disks](#on-demand-disks)
@@ -34,6 +34,7 @@ order: 370
     - [Automatic Streaming](#automatic-streaming)
     - [File Uploads](#file-uploads)
     - [File Visibility](#file-visibility)
+    - [Image Manipulation](#image-manipulation)
 - [Deleting Files](#deleting-files)
 - [Directories](#directories)
 - [Testing](#testing)
@@ -190,7 +191,7 @@ Laravel's Flysystem integrations work great with SFTP; however, a sample configu
 ```
 
 <a name="scoped-and-read-only-filesystems"></a>
-### Scoped and Read-Only Filesystems
+### Scoped, Read-Only, and Read-Through Filesystems
 
 Scoped disks allow you to define a filesystem where all paths are automatically prefixed with a given path prefix. Before creating a scoped filesystem disk, you will need to install an additional Flysystem package via the Composer package manager:
 
@@ -223,6 +224,18 @@ Next, you may include the `read-only` configuration option in one or more of you
     'read-only' => true,
 ],
 ```
+
+Read-through disks allow you to migrate files between disks without downtime. When reading a file, Laravel checks the primary disk first. If the file only exists on the fallback disk, Laravel reads the file from the fallback disk and copies it to the primary disk for future requests:
+
+```php
+'assets' => [
+    'driver' => 'read-through',
+    'primary' => 's3',
+    'fallback' => 'legacy-s3',
+],
+```
+
+Writes and directory listings target the primary disk. File existence and metadata checks use either disk without copying files to the primary disk. If copying a fallback file to the primary disk fails, the read still succeeds by default. To throw an exception instead, set the `throw_on_promotion_failure` configuration option to `true`.
 
 <a name="amazon-s3-compatible-filesystems"></a>
 ### Amazon S3 Compatible Filesystems
@@ -682,6 +695,24 @@ $path = $request->file('avatar')->storePubliclyAs(
 );
 ```
 
+<a name="image-manipulation"></a>
+### Image Manipulation
+
+If you need to resize, crop, or convert an uploaded image before storing it, you may use Laravel's [image manipulation features](/docs/{{version}}/images):
+
+```php
+$path = $request->image('avatar')
+    ->cover(400, 400)
+    ->toWebp()
+    ->storePublicly('avatars', 'public');
+```
+
+You may also create an image instance from a file already stored on one of your filesystem disks:
+
+```php
+$image = Storage::disk('public')->image('avatars/photo.jpg');
+```
+
 <a name="local-files-and-visibility"></a>
 #### Local Files and Visibility
 
@@ -803,6 +834,9 @@ test('albums can be uploaded', function () {
 
     // Assert that a given directory is empty...
     Storage::disk('photos')->assertDirectoryEmpty('/wallpapers');
+
+    // Assert that the disk contains no files...
+    Storage::disk('photos')->assertEmpty();
 });
 ```
 
@@ -839,6 +873,9 @@ class ExampleTest extends TestCase
 
         // Assert that a given directory is empty...
         Storage::disk('photos')->assertDirectoryEmpty('/wallpapers');
+
+        // Assert that the disk contains no files...
+        Storage::disk('photos')->assertEmpty();
     }
 }
 ```

@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -97,14 +97,6 @@
               Laravel
           </h2>
           <ul class="nav-list">
-              <li>
-                <a href="./database-testing.html"
->Database Testing</a>
-              </li>
-              <li>
-                <a href="./database.html"
->Database: Getting Started</a>
-              </li>
               <li>
                 <a href="./deployment.html"
 >Deployment</a>
@@ -182,6 +174,10 @@
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -200,6 +196,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Mail</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Mail</a>
       <h1 class="doc-title">Mail</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/mail" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/mail" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -440,7 +440,7 @@ class="is-current" aria-current="page">Mail</a>
 </ul>
 <p><a name="introduction"></a></p>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
-<p>Sending email doesn't have to be complicated. Laravel provides a clean, simple email API powered by the popular <a href="https://symfony.com/doc/current/mailer.html" rel="noopener" target="_blank">Symfony Mailer</a> component. Laravel and Symfony Mailer provide drivers for sending email via SMTP, Mailgun, Postmark, Resend, Amazon SES, and <code>sendmail</code>, allowing you to quickly get started sending mail through a local or cloud-based service of your choice.</p>
+<p>Sending email doesn't have to be complicated. Laravel provides a clean, simple email API powered by the popular <a href="https://symfony.com/doc/current/mailer.html" rel="noopener" target="_blank">Symfony Mailer</a> component. Laravel and Symfony Mailer provide drivers for sending email via SMTP, Cloudflare, Mailgun, Postmark, Resend, Amazon SES, and <code>sendmail</code>, allowing you to quickly get started sending mail through a local or cloud-based service of your choice.</p>
 <p><a name="configuration"></a></p>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h3>
 <p>Laravel's email services may be configured via your application's <code>config/mail.php</code> configuration file. Each mailer configured within this file may have its own unique configuration and even its own unique "transport", allowing your application to use different email services to send certain email messages. For example, your application might use Postmark to send transactional emails while using Amazon SES to send bulk emails.</p>
@@ -448,6 +448,29 @@ class="is-current" aria-current="page">Mail</a>
 <p><a name="driver-prerequisites"></a></p>
 <h3 id="driver-transport-prerequisites">Driver / Transport Prerequisites<a class="headerlink" href="#driver-transport-prerequisites" title="Permanent link">#</a></h3>
 <p>The API based drivers such as Mailgun, Postmark, and Resend are often simpler and faster than sending mail via SMTP servers. Whenever possible, we recommend that you use one of these drivers.</p>
+<p><a name="cloudflare-driver"></a></p>
+<h4 id="cloudflare-driver">Cloudflare Driver<a class="headerlink" href="#cloudflare-driver" title="Permanent link">#</a></h4>
+<p>To use the Cloudflare driver, install Symfony's HTTP Client via Composer:</p>
+<div class="codehilite"><pre><span></span><code>composer<span class="w"> </span>require<span class="w"> </span>symfony/http-client
+</code></pre></div>
+
+<p>Next, you will need to make two changes in your application's <code>config/mail.php</code> configuration file. First, set your default mailer to <code>cloudflare</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;default&#39; =&gt; env(&#39;MAIL_MAILER&#39;, &#39;cloudflare&#39;),</span>
+</code></pre></div>
+
+<p>Second, add the following configuration array to your array of <code>mailers</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;cloudflare&#39; =&gt; [</span>
+<span class="x">    &#39;transport&#39; =&gt; &#39;cloudflare&#39;,</span>
+<span class="x">],</span>
+</code></pre></div>
+
+<p>After configuring your application's default mailer, add the following options to your <code>config/services.php</code> configuration file:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;cloudflare&#39; =&gt; [</span>
+<span class="x">    &#39;account_id&#39; =&gt; env(&#39;CLOUDFLARE_ACCOUNT_ID&#39;),</span>
+<span class="x">    &#39;key&#39; =&gt; env(&#39;CLOUDFLARE_KEY&#39;),</span>
+<span class="x">],</span>
+</code></pre></div>
+
 <p><a name="mailgun-driver"></a></p>
 <h4 id="mailgun-driver">Mailgun Driver<a class="headerlink" href="#mailgun-driver" title="Permanent link">#</a></h4>
 <p>To use the Mailgun driver, install Symfony's Mailgun Mailer transport via Composer:</p>
@@ -476,7 +499,7 @@ class="is-current" aria-current="page">Mail</a>
 <span class="x">],</span>
 </code></pre></div>
 
-<p>If you are not using the United States <a href="https://documentation.mailgun.com/docs/mailgun/api-reference/#mailgun-regions" rel="noopener" target="_blank">Mailgun region</a>, you may define your region's endpoint in the <code>services</code> configuration file:</p>
+<p>If you are not using the United States <a href="https://documentation.mailgun.com/docs/mailgun/api-reference/api-overview#mailgun-regions" rel="noopener" target="_blank">Mailgun region</a>, you may define your region's endpoint in the <code>services</code> configuration file:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">&#39;mailgun&#39; =&gt; [</span>
 <span class="x">    &#39;domain&#39; =&gt; env(&#39;MAILGUN_DOMAIN&#39;),</span>
 <span class="x">    &#39;secret&#39; =&gt; env(&#39;MAILGUN_SECRET&#39;),</span>
@@ -552,6 +575,17 @@ class="is-current" aria-current="page">Mail</a>
 <span class="x">    return new Headers(</span>
 <span class="x">        text: [</span>
 <span class="x">            &#39;X-Ses-List-Management-Options&#39; =&gt; &#39;contactListName=MyContactList;topicName=MyTopic&#39;,</span>
+<span class="x">        ],</span>
+<span class="x">    );</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>To send an email through an SES <a href="https://docs.aws.amazon.com/ses/latest/dg/tenants.html" rel="noopener" target="_blank">tenant</a>, you may return the <code>X-Ses-Tenant-Name</code> header from the <code>headers</code> method. Laravel will pass the header value as the <code>TenantName</code> option to SES when sending the message:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public function headers(): Headers</span>
+<span class="x">{</span>
+<span class="x">    return new Headers(</span>
+<span class="x">        text: [</span>
+<span class="x">            &#39;X-Ses-Tenant-Name&#39; =&gt; &#39;tenant-id&#39;,</span>
 <span class="x">        ],</span>
 <span class="x">    );</span>
 <span class="x">}</span>
@@ -1220,6 +1254,18 @@ This is the panel content.
 <span class="x">    -&gt;queue($message);</span>
 </code></pre></div>
 
+<p>Alternatively, you may specify the connection and queue using the <code>Connection</code> and <code>Queue</code> attributes on the mailable class:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Queue\Attributes\Connection;</span>
+<span class="x">use Illuminate\Queue\Attributes\Queue;</span>
+
+<span class="x">#[Connection(&#39;sqs&#39;)]</span>
+<span class="x">#[Queue(&#39;emails&#39;)]</span>
+<span class="x">class OrderShipped extends Mailable</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
 <p><a name="queueing-by-default"></a></p>
 <h4 id="queueing-by-default">Queueing by Default<a class="headerlink" href="#queueing-by-default" title="Permanent link">#</a></h4>
 <p>If you have mailable classes that you want to always be queued, you may implement the <code>ShouldQueue</code> contract on the class. Now, even if you call the <code>send</code> method when mailing, the mailable will still be queued since it implements the contract:</p>
@@ -1454,6 +1500,9 @@ test('orders can be shipped', function () {
     // Assert a mailable was sent twice...
     Mail::assertSentTimes(OrderShipped::class, 2);
 
+    // Assert that a mailable was sent exactly once...
+    Mail::assertSentOnce(OrderShipped::class);
+
     // Assert 3 total mailables were sent...
     Mail::assertSentCount(3);
 });
@@ -1496,6 +1545,9 @@ class ExampleTest extends TestCase
         // Assert a mailable was sent twice...
         Mail::assertSentTimes(OrderShipped::class, 2);
 
+        // Assert that a mailable was sent exactly once...
+        Mail::assertSentOnce(OrderShipped::class);
+
         // Assert 3 total mailables were sent...
         Mail::assertSentCount(3);
     }
@@ -1508,6 +1560,7 @@ If you are queueing mailables for delivery in the background, you should use the
 
 
 <div class="codehilite"><pre><span></span><code><span class="x">Mail::assertQueued(OrderShipped::class);</span>
+<span class="x">Mail::assertQueuedOnce(OrderShipped::class);</span>
 <span class="x">Mail::assertNotQueued(OrderShipped::class);</span>
 <span class="x">Mail::assertNothingQueued();</span>
 <span class="x">Mail::assertQueuedCount(3);</span>

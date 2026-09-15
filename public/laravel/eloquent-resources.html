@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Eloquent: API Resources</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Eloquent: API Resources</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Eloquent: API Resources</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Eloquent: API Resources</a>
       <h1 class="doc-title">Eloquent: API Resources</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/eloquent-resources" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/eloquent-resources" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -367,6 +367,13 @@ class="is-current" aria-current="page">Eloquent: API Resources</a>
               <li class="lvl-3"><a href="#conditional-attributes">Conditional Attributes#</a></li>
               <li class="lvl-3"><a href="#conditional-relationships">Conditional Relationships#</a></li>
               <li class="lvl-3"><a href="#adding-meta-data">Adding Meta Data#</a></li>
+              <li class="lvl-2"><a href="#jsonapi-resources">JSON:API Resources#</a></li>
+              <li class="lvl-3"><a href="#generating-jsonapi-resources">Generating JSON:API Resources#</a></li>
+              <li class="lvl-3"><a href="#defining-attributes">Defining Attributes#</a></li>
+              <li class="lvl-3"><a href="#defining-relationships">Defining Relationships#</a></li>
+              <li class="lvl-3"><a href="#resource-type-and-id">Resource Type and ID#</a></li>
+              <li class="lvl-3"><a href="#sparse-fieldsets-and-includes">Sparse Fieldsets and Includes#</a></li>
+              <li class="lvl-3"><a href="#links-and-meta">Links and Meta#</a></li>
               <li class="lvl-2"><a href="#resource-responses">Resource Responses#</a></li>
           </ul>
         </details>
@@ -386,6 +393,15 @@ class="is-current" aria-current="page">Eloquent: API Resources</a>
 <li><a href="#conditional-attributes">Conditional Attributes</a></li>
 <li><a href="#conditional-relationships">Conditional Relationships</a></li>
 <li><a href="#adding-meta-data">Adding Meta Data</a></li>
+</ul>
+</li>
+<li><a href="#jsonapi-resources">JSON:API Resources</a><ul>
+<li><a href="#generating-jsonapi-resources">Generating JSON:API Resources</a></li>
+<li><a href="#defining-jsonapi-attributes">Defining Attributes</a></li>
+<li><a href="#defining-jsonapi-relationships">Defining Relationships</a></li>
+<li><a href="#jsonapi-resource-type-and-id">Resource Type and ID</a></li>
+<li><a href="#jsonapi-sparse-fieldsets-and-includes">Sparse Fieldsets and Includes</a></li>
+<li><a href="#jsonapi-links-and-meta">Links and Meta</a></li>
 </ul>
 </li>
 <li><a href="#resource-responses">Resource Responses</a></li>
@@ -563,21 +579,18 @@ This is a high-level overview of resources and resource collections. You are hig
 <p>When invoking the <code>toResourceCollection</code> method, Laravel will attempt to locate a resource collection that matches the model's name and is suffixed with <code>Collection</code> within the <code>Http\Resources</code> namespace closest to the model's namespace.</p>
 <p><a name="preserving-collection-keys"></a></p>
 <h4 id="preserving-collection-keys">Preserving Collection Keys<a class="headerlink" href="#preserving-collection-keys" title="Permanent link">#</a></h4>
-<p>When returning a resource collection from a route, Laravel resets the collection's keys so that they are in numerical order. However, you may add a <code>preserveKeys</code> property to your resource class indicating whether a collection's original keys should be preserved:</p>
+<p>When returning a resource collection from a route, Laravel resets the collection's keys so that they are in numerical order. However, you may use the <code>PreserveKeys</code> attribute on your resource class indicating whether a collection's original keys should be preserved:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Http\Resources</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Http\Resources\Attributes\PreserveKeys</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Http\Resources\Json\JsonResource</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">PreserveKeys</span><span class="p">]</span>
 <span class="k">class</span> <span class="nc">UserResource</span> <span class="k">extends</span> <span class="nx">JsonResource</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * Indicates if the resource&#39;s collection keys should be preserved.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var bool</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$preserveKeys</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -593,21 +606,18 @@ This is a high-level overview of resources and resource collections. You are hig
 <p><a name="customizing-the-underlying-resource-class"></a></p>
 <h4 id="customizing-the-underlying-resource-class">Customizing the Underlying Resource Class<a class="headerlink" href="#customizing-the-underlying-resource-class" title="Permanent link">#</a></h4>
 <p>Typically, the <code>$this-&gt;collection</code> property of a resource collection is automatically populated with the result of mapping each item of the collection to its singular resource class. The singular resource class is assumed to be the collection's class name without the trailing <code>Collection</code> portion of the class name. In addition, depending on your personal preference, the singular resource class may or may not be suffixed with <code>Resource</code>.</p>
-<p>For example, <code>UserCollection</code> will attempt to map the given user instances into the <code>UserResource</code> resource. To customize this behavior, you may override the <code>$collects</code> property of your resource collection:</p>
+<p>For example, <code>UserCollection</code> will attempt to map the given user instances into the <code>UserResource</code> resource. To customize this behavior, you may use the <code>Collects</code> attribute on your resource collection:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Http\Resources</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Http\Resources\Attributes\Collects</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Http\Resources\Json\ResourceCollection</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Collects</span><span class="p">(</span><span class="nx">Member</span><span class="o">::</span><span class="na">class</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">UserCollection</span> <span class="k">extends</span> <span class="nx">ResourceCollection</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The resource that this resource collects.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$collects</span> <span class="o">=</span> <span class="nx">Member</span><span class="o">::</span><span class="na">class</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1140,6 +1150,294 @@ The <code>mergeWhen</code> method should not be used within arrays that mix stri
 <span class="x">    -&gt;additional([&#39;meta&#39; =&gt; [</span>
 <span class="x">        &#39;key&#39; =&gt; &#39;value&#39;,</span>
 <span class="x">    ]]);</span>
+</code></pre></div>
+
+<p><a name="jsonapi-resources"></a></p>
+<h2 id="jsonapi-resources">JSON:API Resources<a class="headerlink" href="#jsonapi-resources" title="Permanent link">#</a></h2>
+<p>Laravel ships with <code>JsonApiResource</code>, a resource class that produces responses compliant with the <a href="https://jsonapi.org/" rel="noopener" target="_blank">JSON:API specification</a>. It extends the standard <code>JsonResource</code> class and automatically handles resource object structure, relationships, sparse fieldsets, includes, lazy attribute evaluation, and sets the <code>Content-Type</code> header to <code>application/vnd.api+json</code>.</p>
+<blockquote>
+<p>[!NOTE]
+Laravel's JSON:API resources handle the serialization of your responses. If you also need to parse incoming JSON:API query parameters such as filters and sorts, <a href="https://spatie.be/docs/laravel-query-builder" rel="noopener" target="_blank">Spatie's Laravel Query Builder</a> is a great companion package.</p>
+</blockquote>
+<p><a name="generating-jsonapi-resources"></a></p>
+<h3 id="generating-jsonapi-resources">Generating JSON:API Resources<a class="headerlink" href="#generating-jsonapi-resources" title="Permanent link">#</a></h3>
+<p>To generate a JSON:API resource, use the <code>make:resource</code> Artisan command with the <code>--json-api</code> flag:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:resource<span class="w"> </span>PostResource<span class="w"> </span>--json-api
+</code></pre></div>
+
+<p>The generated class will extend <code>Illuminate\Http\Resources\JsonApi\JsonApiResource</code> and include <code>$attributes</code> and <code>$relationships</code> properties for you to define:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Resources</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Http\Request</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Http\Resources\JsonApi\JsonApiResource</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">PostResource</span> <span class="k">extends</span> <span class="nx">JsonApiResource</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * The resource&#39;s attributes.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="nv">$attributes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1">// ...</span>
+    <span class="p">];</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * The resource&#39;s relationships.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="nv">$relationships</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1">// ...</span>
+    <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>JSON:API resources may be returned from routes and controllers just like standard resources:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Http\Resources\PostResource;</span>
+<span class="x">use App\Models\Post;</span>
+
+<span class="x">Route::get(&#39;/api/posts/{post}&#39;, function (Post $post) {</span>
+<span class="x">    return new PostResource($post);</span>
+<span class="x">});</span>
+</code></pre></div>
+
+<p>Or, for convenience, you may use the model's <code>toResource</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Route::get(&#39;/api/posts/{post}&#39;, function (Post $post) {</span>
+<span class="x">    return $post-&gt;toResource();</span>
+<span class="x">});</span>
+</code></pre></div>
+
+<p>This will produce a JSON:API compliant response:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;posts&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This is my first post.&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>To return a collection of JSON:API resources, use the <code>collection</code> method or the <code>toResourceCollection</code> convenience method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">return PostResource::collection(Post::all());</span>
+
+<span class="x">return Post::all()-&gt;toResourceCollection();</span>
+</code></pre></div>
+
+<p><a name="defining-jsonapi-attributes"></a></p>
+<h3 id="defining-attributes">Defining Attributes<a class="headerlink" href="#defining-attributes" title="Permanent link">#</a></h3>
+<p>There are two ways to define which attributes are included in your JSON:API resource.</p>
+<p>The simplest approach is to define an <code>$attributes</code> property on your resource. You may list attribute names as values, which will be read directly from the underlying model:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public $attributes = [</span>
+<span class="x">    &#39;title&#39;,</span>
+<span class="x">    &#39;body&#39;,</span>
+<span class="x">    &#39;created_at&#39;,</span>
+<span class="x">];</span>
+</code></pre></div>
+
+<p>If an attribute is expensive to calculate, you may return it from <code>toAttributes</code> as a closure so it is only evaluated when the attribute is actually needed in the response.</p>
+<p>Or, for full control over the resource's attributes, you may override the <code>toAttributes</code> method on the resource:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
+<span class="x"> * Get the resource&#39;s attributes.</span>
+<span class="x"> *</span>
+<span class="x"> * @return array&lt;string, mixed&gt;</span>
+<span class="x"> */</span>
+<span class="x">public function toAttributes(Request $request): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;title&#39; =&gt; $this-&gt;title,</span>
+<span class="x">        &#39;body&#39; =&gt; $this-&gt;body,</span>
+<span class="x">        &#39;is_published&#39; =&gt; fn () =&gt; $this-&gt;published_at !== null,</span>
+<span class="x">        &#39;created_at&#39; =&gt; $this-&gt;created_at,</span>
+<span class="x">        &#39;updated_at&#39; =&gt; $this-&gt;updated_at,</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><a name="defining-jsonapi-relationships"></a></p>
+<h3 id="defining-relationships">Defining Relationships<a class="headerlink" href="#defining-relationships" title="Permanent link">#</a></h3>
+<p>JSON:API resources support defining relationships that follow the JSON:API specification. Relationships are only serialized when requested by the client via the <code>include</code> query parameter.</p>
+<h4 id="the-relationships-property">The <code>$relationships</code> Property<a class="headerlink" href="#the-relationships-property" title="Permanent link">#</a></h4>
+<p>You may define your resource's includable relationships via the <code>$relationships</code> property on your resource:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">public $relationships = [</span>
+<span class="x">    &#39;author&#39;,</span>
+<span class="x">    &#39;comments&#39;,</span>
+<span class="x">];</span>
+</code></pre></div>
+
+<p>When listing a relationship name as a value, Laravel will resolve the corresponding Eloquent relationship and automatically discover the appropriate resource class. If you need to specify the resource class explicitly, you may define the relationship as a key / class pair:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Http\Resources\UserResource;</span>
+
+<span class="x">public $relationships = [</span>
+<span class="x">    &#39;author&#39; =&gt; UserResource::class,</span>
+<span class="x">    &#39;comments&#39;,</span>
+<span class="x">];</span>
+</code></pre></div>
+
+<p>Alternatively, you may override the <code>toRelationships</code> method on the resource:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
+<span class="x"> * Get the resource&#39;s relationships.</span>
+<span class="x"> */</span>
+<span class="x">public function toRelationships(Request $request): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;author&#39; =&gt; UserResource::class,</span>
+<span class="x">        &#39;comments&#39; =&gt; fn () =&gt; CommentResource::collection(</span>
+<span class="x">            $request-&gt;user()-&gt;is($this-&gt;resource)</span>
+<span class="x">                ? $this-&gt;comments</span>
+<span class="x">                : $this-&gt;comments-&gt;where(&#39;is_public&#39;, true),</span>
+<span class="x">        ),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Using closures gives you more control over the relationship payload, while still only resolving the relationship when the client requests it.</p>
+<h4 id="including-relationships">Including Relationships<a class="headerlink" href="#including-relationships" title="Permanent link">#</a></h4>
+<p>Clients may request related resources using the <code>include</code> query parameter:</p>
+<div class="codehilite"><pre><span></span><code>GET /api/posts/1?include=author,comments
+</code></pre></div>
+
+<p>This produces a response with resource identifier objects in the <code>relationships</code> key and full resource objects in the top-level <code>included</code> array:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;posts&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello World&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;relationships&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;users&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;comments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;comments&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;included&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;users&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Taylor Otwell&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;comments&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Great post!&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Nested relationships may be included using dot notation:</p>
+<div class="codehilite"><pre><span></span><code>GET /api/posts/1?include=comments.author
+</code></pre></div>
+
+<p><a name="jsonapi-relationship-depth"></a></p>
+<h4 id="relationship-depth">Relationship Depth<a class="headerlink" href="#relationship-depth" title="Permanent link">#</a></h4>
+<p>By default, nested relationship includes are limited to a maximum depth. You may customize this limit using the <code>maxRelationshipDepth</code> method, typically in one of you application's service provider:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Http\Resources\JsonApi\JsonApiResource;</span>
+
+<span class="x">JsonApiResource::maxRelationshipDepth(3);</span>
+</code></pre></div>
+
+<p><a name="jsonapi-resource-type-and-id"></a></p>
+<h3 id="resource-type-and-id">Resource Type and ID<a class="headerlink" href="#resource-type-and-id" title="Permanent link">#</a></h3>
+<p>By default, the resource's <code>type</code> is derived from the resource class name. For example, <code>PostResource</code> produces the type <code>posts</code> and <code>BlogPostResource</code> produces <code>blog-posts</code>. The resource's <code>id</code> is resolved from the model's primary key.</p>
+<p>If you need to customize these values, you may override the <code>toType</code> and <code>toId</code> methods on your resource:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
+<span class="x"> * Get the resource&#39;s type.</span>
+<span class="x"> */</span>
+<span class="x">public function toType(Request $request): string</span>
+<span class="x">{</span>
+<span class="x">    return &#39;articles&#39;;</span>
+<span class="x">}</span>
+
+<span class="x">/**</span>
+<span class="x"> * Get the resource&#39;s ID.</span>
+<span class="x"> */</span>
+<span class="x">public function toId(Request $request): string</span>
+<span class="x">{</span>
+<span class="x">    return (string) $this-&gt;uuid;</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>This is particularly useful when a resource's type should differ from its class name, such as when an <code>AuthorResource</code> wraps a <code>User</code> model and should output the type <code>authors</code>.</p>
+<p><a name="jsonapi-sparse-fieldsets-and-includes"></a></p>
+<h3 id="sparse-fieldsets-and-includes">Sparse Fieldsets and Includes<a class="headerlink" href="#sparse-fieldsets-and-includes" title="Permanent link">#</a></h3>
+<p>JSON:API resources support <a href="https://jsonapi.org/format/#fetching-sparse-fieldsets" rel="noopener" target="_blank">sparse fieldsets</a>, allowing clients to request only specific attributes for each resource type using the <code>fields</code> query parameter:</p>
+<div class="codehilite"><pre><span></span><code>GET /api/posts?fields[posts]=title,created_at&amp;fields[users]=name
+</code></pre></div>
+
+<p>This will only include the <code>title</code> and <code>created_at</code> attributes for <code>posts</code> resources, and the <code>name</code> attribute for <code>users</code> resources.</p>
+<p><a name="jsonapi-ignoring-query-string"></a></p>
+<h4 id="ignoring-the-query-string">Ignoring the Query String<a class="headerlink" href="#ignoring-the-query-string" title="Permanent link">#</a></h4>
+<p>If you would like to disable sparse fieldset filtering for a given resource response, you may call the <code>ignoreFieldsAndIncludesInQueryString</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">return $post-&gt;toResource()</span>
+<span class="x">    -&gt;ignoreFieldsAndIncludesInQueryString();</span>
+</code></pre></div>
+
+<p><a name="jsonapi-including-previously-loaded-relationships"></a></p>
+<h4 id="including-previously-loaded-relationships">Including Previously Loaded Relationships<a class="headerlink" href="#including-previously-loaded-relationships" title="Permanent link">#</a></h4>
+<p>By default, relationships are only included in the response when requested via the <code>include</code> query parameter. If you would like to include all previously eager-loaded relationships regardless of the query string, you may call the <code>includePreviouslyLoadedRelationships</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">return $post-&gt;load(&#39;author&#39;, &#39;comments&#39;)</span>
+<span class="x">    -&gt;toResource()</span>
+<span class="x">    -&gt;includePreviouslyLoadedRelationships();</span>
+</code></pre></div>
+
+<p><a name="jsonapi-links-and-meta"></a></p>
+<h3 id="links-and-meta">Links and Meta<a class="headerlink" href="#links-and-meta" title="Permanent link">#</a></h3>
+<p>You may add links and meta information to your JSON:API resource objects by overriding the <code>toLinks</code> and <code>toMeta</code> methods on the resource:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
+<span class="x"> * Get the resource&#39;s links.</span>
+<span class="x"> */</span>
+<span class="x">public function toLinks(Request $request): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;self&#39; =&gt; route(&#39;api.posts.show&#39;, $this-&gt;resource),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+
+<span class="x">/**</span>
+<span class="x"> * Get the resource&#39;s meta information.</span>
+<span class="x"> */</span>
+<span class="x">public function toMeta(Request $request): array</span>
+<span class="x">{</span>
+<span class="x">    return [</span>
+<span class="x">        &#39;readable_created_at&#39; =&gt; $this-&gt;created_at-&gt;diffForHumans(),</span>
+<span class="x">    ];</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>This will add <code>links</code> and <code>meta</code> keys to the resource object in the response:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;posts&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello World&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;links&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;self&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/api/posts/1&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;readable_created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2 hours ago&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p><a name="resource-responses"></a></p>

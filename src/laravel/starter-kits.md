@@ -1,15 +1,15 @@
 ---
 title: Starter Kits
-source_url: https://laravel.com/docs/12.x/starter-kits
+source_url: https://laravel.com/docs/13.x/starter-kits
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: starter-kits.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 880
+retrieved_at: '2026-09-15'
+order: 900
 ---
 
 # Starter Kits
@@ -31,7 +31,9 @@ order: 880
     - [Customizing User Creation and Password Reset](#customizing-actions)
     - [Two-Factor Authentication](#two-factor-authentication)
     - [Rate Limiting](#rate-limiting)
+- [Teams](#teams)
 - [WorkOS AuthKit Authentication](#workos)
+    - [Configuring Your WorkOS Starter Kit](#configuring-your-workos-starter-kit)
 - [Inertia SSR](#inertia-ssr)
 - [Community Maintained Starter Kits](#community-maintained-starter-kits)
 - [Frequently Asked Questions](#faqs)
@@ -113,7 +115,7 @@ The Livewire starter kit utilizes Livewire, Tailwind, and the [Flux UI](https://
 <a name="react-customization"></a>
 ### React
 
-Our React starter kit is built with Inertia 2, React 19, Tailwind 4, and [shadcn/ui](https://ui.shadcn.com). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
+Our React starter kit is built with Inertia 3, React 19, Tailwind 4, and [shadcn/ui](https://ui.shadcn.com). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
 
 The majority of the frontend code is located in the `resources/js` directory. You are free to modify any of the code to customize the appearance and behavior of your application:
 
@@ -184,7 +186,7 @@ import AuthLayoutTemplate from '@/layouts/auth/auth-split-layout'; // [tl! add]
 <a name="svelte-customization"></a>
 ### Svelte
 
-Our Svelte starter kit is built with Inertia 2, Svelte 5, Tailwind, and [shadcn-svelte](https://www.shadcn-svelte.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
+Our Svelte starter kit is built with Inertia 3, Svelte 5, Tailwind, and [shadcn-svelte](https://www.shadcn-svelte.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
 
 The majority of the frontend code is located in the `resources/js` directory. You are free to modify any of the code to customize the appearance and behavior of your application:
 
@@ -250,7 +252,7 @@ import AuthLayout from '@/layouts/auth/AuthSplitLayout.svelte'; // [tl! add]
 <a name="vue-customization"></a>
 ### Vue
 
-Our Vue starter kit is built with Inertia 2, Vue 3 Composition API, Tailwind, and [shadcn-vue](https://www.shadcn-vue.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
+Our Vue starter kit is built with Inertia 3, Vue 3 Composition API, Tailwind, and [shadcn-vue](https://www.shadcn-vue.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
 
 The majority of the frontend code is located in the `resources/js` directory. You are free to modify any of the code to customize the appearance and behavior of your application:
 
@@ -367,6 +369,8 @@ All starter kits use [Laravel Fortify](/docs/{{version}}/fortify) to handle auth
 
 Fortify automatically registers the following authentication routes based on the features that are enabled in your application's `config/fortify.php` configuration file:
 
+<div class="overflow-auto">
+
 | Route                              | Method | Description                         |
 | ---------------------------------- | ------ | ----------------------------------- |
 | `/login`                           | `GET`    | Display login form                  |
@@ -385,6 +389,8 @@ Fortify automatically registers the following authentication routes based on the
 | `/user/confirm-password`           | `POST`   | Confirm password                    |
 | `/two-factor-challenge`            | `GET`    | Display 2FA challenge form          |
 | `/two-factor-challenge`            | `POST`   | Verify 2FA code                     |
+
+</div>
 
 The `php artisan route:list` Artisan command can be used to display all of the routes in your application.
 
@@ -416,11 +422,15 @@ When using the [React](#react), [Svelte](#svelte) or [Vue](#vue) starter kits, y
 
 When a user registers or resets their password, Fortify invokes action classes located in your application's `app/Actions/Fortify` directory:
 
+<div class="overflow-auto">
+
 | File                          | Description                           |
 | ----------------------------- | ------------------------------------- |
 | `CreateNewUser.php`           | Validates and creates new users       |
 | `ResetUserPassword.php`       | Validates and updates user passwords  |
 | `PasswordValidationRules.php` | Defines password validation rules     |
+
+</div>
 
 For example, to customize your application's registration logic, you should edit the `CreateNewUser` action:
 
@@ -464,6 +474,17 @@ RateLimiter::for('login', function ($request) {
 });
 ```
 
+<a name="teams"></a>
+## Teams
+
+The React, Svelte, Vue, and Livewire starter kits may also be generated with team support. When the teams feature is enabled, each user belongs to one or more teams and has a current team. During registration, new users are automatically given a personal team. The starter kits also include team management screens for creating teams, switching between teams, inviting members, and updating team details.
+
+When a route is scoped to the current team, the current team's slug is included in the URL. For example, the dashboard route becomes `/{current_team}/dashboard`, while team management pages use routes such as `settings/teams/{team}`. When using the `{current_team}` and `{team}` route parameters, the starter kits automatically ensure that the authenticated user belongs to the requested team before allowing access to the route.
+
+To make generating team-aware URLs more convenient, the starter kits register URL defaults for the authenticated user's current team. This allows calls to helpers such as `route('dashboard')` to automatically include the current team's slug. When a user signs in, registers, or switches teams, the starter kits update the current team and refresh these URL defaults so generated links continue to use the correct team context.
+
+When creating or renaming a team, the starter kits also prevent users from choosing reserved names that could produce unsafe or conflicting route segments. For example, names that would collide with route prefixes such as `settings`, `login`, or `dashboard` may not be used.
+
 <a name="workos"></a>
 ## WorkOS AuthKit Authentication
 
@@ -482,6 +503,7 @@ Using WorkOS as your authentication provider [requires a WorkOS account](https:/
 
 To use WorkOS AuthKit as your application's authentication provider, select the WorkOS option when creating your new starter kit powered application via `laravel new`.
 
+<a name="configuring-your-workos-starter-kit"></a>
 ### Configuring Your WorkOS Starter Kit
 
 After creating a new application using a WorkOS powered starter kit, you should set the `WORKOS_CLIENT_ID`, `WORKOS_API_KEY`, and `WORKOS_REDIRECT_URL` environment variables in your application's `.env` file. These variables should match the values provided to you in the WorkOS dashboard for your application:
@@ -578,7 +600,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 You may want to customize the default email template to better align with your application's branding. To modify this template, you should publish the email views to your application with the following command:
 
-```
+```shell
 php artisan vendor:publish --tag=laravel-mail
 ```
 

@@ -1,15 +1,15 @@
 ---
 title: Laravel Passport
-source_url: https://laravel.com/docs/12.x/passport
+source_url: https://laravel.com/docs/13.x/passport
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: passport.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 620
+retrieved_at: '2026-09-15'
+order: 640
 ---
 
 # Laravel Passport
@@ -34,7 +34,7 @@ order: 620
     - [Creating the Client](#creating-a-auth-pkce-grant-client)
     - [Requesting Tokens](#requesting-auth-pkce-grant-tokens)
 - [Device Authorization Grant](#device-authorization-grant)
-    - [Creating a Device Code Grant Client](#creating-a-device-authorization-grant-client)
+    - [Creating a Device Authorization Grant Client](#creating-a-device-authorization-grant-client)
     - [Requesting Tokens](#requesting-device-authorization-grant-tokens)
 - [Password Grant](#password-grant)
     - [Creating a Password Grant Client](#creating-a-password-grant-client)
@@ -45,6 +45,7 @@ order: 620
     - [Customizing the Password Validation](#customizing-the-password-validation)
 - [Implicit Grant](#implicit-grant)
 - [Client Credentials Grant](#client-credentials-grant)
+    - [Retrieving Tokens](#retrieving-tokens)
 - [Personal Access Tokens](#personal-access-tokens)
     - [Creating a Personal Access Client](#creating-a-personal-access-client)
     - [Customizing the User Provider](#customizing-the-user-provider-for-pat)
@@ -568,7 +569,7 @@ php artisan passport:client --public
 
 As this authorization grant does not provide a client secret, developers will need to generate a combination of a code verifier and a code challenge in order to request a token.
 
-The code verifier should be a random string of between 43 and 128 characters containing letters, numbers, and  `"-"`, `"."`, `"_"`, `"~"` characters, as defined in the [RFC 7636 specification](https://tools.ietf.org/html/rfc7636).
+The code verifier should be a random string of between 43 and 128 characters containing letters, numbers, and `"-"`, `"."`, `"_"`, `"~"` characters, as defined in the [RFC 7636 specification](https://tools.ietf.org/html/rfc7636).
 
 The code challenge should be a Base64 encoded string with URL and filename-safe characters. The trailing `'='` characters should be removed and no line breaks, whitespace, or other additional characters should be present.
 
@@ -1227,6 +1228,37 @@ Route::get('/orders', function () {
     // Access token has either "orders:read" or "orders:create" scope...
 })->middleware(['auth:api', CheckTokenForAnyScope::using('orders:read', 'orders:create')]);
 ```
+
+<a name="scope-attributes"></a>
+#### Scope Attributes
+
+If your application uses [controller middleware attributes](/docs/{{version}}/controllers#middleware-attributes), you may use the `Laravel\Passport\Attributes\AuthorizeToken` attribute as a convenient shortcut for Passport's scope middleware:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Laravel\Passport\Attributes\AuthorizeToken;
+
+#[AuthorizeToken('orders:read')]
+#[AuthorizeToken('orders:create', only: ['store'])]
+class OrderController
+{
+    #[AuthorizeToken(['orders:read', 'orders:create'], anyScope: true)]
+    public function index()
+    {
+        // Access token has either "orders:read" or "orders:create" scope...
+    }
+
+    public function store()
+    {
+        // Access token has both "orders:read" and "orders:create" scopes...
+    }
+}
+```
+
+By default, the `AuthorizeToken` attribute requires all given scopes. If you pass `anyScope: true`, the request is authorized when the token has at least one of the given scopes.
 
 <a name="checking-scopes-on-a-token-instance"></a>
 #### Checking Scopes on a Token Instance

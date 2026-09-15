@@ -1,14 +1,14 @@
 ---
 title: 'Eloquent: Mutators & Casting'
-source_url: https://laravel.com/docs/12.x/eloquent-mutators
+source_url: https://laravel.com/docs/13.x/eloquent-mutators
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: eloquent-mutators.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 270
 ---
 
@@ -20,6 +20,7 @@ order: 270
     - [Defining a Mutator](#defining-a-mutator)
 - [Attribute Casting](#attribute-casting)
     - [Array and JSON Casting](#array-and-json-casting)
+    - [Vector Casting](#vector-casting)
     - [Binary Casting](#binary-casting)
     - [Date Casting](#date-casting)
     - [Enum Casting](#enum-casting)
@@ -232,6 +233,7 @@ The `casts` method should return an array where the key is the name of the attri
 - `AsFluent::class`
 - `AsStringable::class`
 - `AsUri::class`
+- `AsVector::class`
 - `boolean`
 - `collection`
 - `date`
@@ -538,6 +540,29 @@ class Option implements Arrayable, JsonSerializable
 }
 ```
 
+<a name="vector-casting"></a>
+### Vector Casting
+
+You may use the `Illuminate\Database\Eloquent\Casts\AsVector` cast class to cast a database vector column to and from a PHP array:
+
+```php
+use Illuminate\Database\Eloquent\Casts\AsVector;
+
+/**
+ * Get the attributes that should be cast.
+ *
+ * @return array<string, string>
+ */
+protected function casts(): array
+{
+    return [
+        'embedding' => AsVector::class,
+    ];
+}
+```
+
+When setting the attribute, the cast accepts a PHP array or an `Arrayable` instance, such as a Laravel collection. When retrieving the attribute, the cast returns an array of floats.
+
 <a name="binary-casting"></a>
 ### Binary Casting
 
@@ -607,15 +632,16 @@ protected function serializeDate(DateTimeInterface $date): string
 }
 ```
 
-To specify the format that should be used when actually storing a model's dates within your database, you should define a `$dateFormat` property on your model:
+To specify the format that should be used when actually storing a model's dates within your database, you should use the `dateFormat` argument on your model's `Table` attribute:
 
 ```php
-/**
- * The storage format of the model's date columns.
- *
- * @var string
- */
-protected $dateFormat = 'U';
+use Illuminate\Database\Eloquent\Attributes\Table;
+
+#[Table(dateFormat: 'U')]
+class Flight extends Model
+{
+    // ...
+}
 ```
 
 <a name="date-casting-and-timezones"></a>

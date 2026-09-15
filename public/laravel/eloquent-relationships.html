@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Eloquent: Relationships</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Eloquent: Relationships</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Eloquent: Relationships</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Eloquent: Relationships</a>
       <h1 class="doc-title">Eloquent: Relationships</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/eloquent-relationships" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/eloquent-relationships" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -419,7 +419,10 @@ class="is-current" aria-current="page">Eloquent: Relationships</a>
 <li><a href="#retrieving-intermediate-table-columns">Retrieving Intermediate Table Columns</a></li>
 <li><a href="#filtering-queries-via-intermediate-table-columns">Filtering Queries via Intermediate Table Columns</a></li>
 <li><a href="#ordering-queries-via-intermediate-table-columns">Ordering Queries via Intermediate Table Columns</a></li>
-<li><a href="#defining-custom-intermediate-table-models">Defining Custom Intermediate Table Models</a></li>
+<li><a href="#defining-custom-intermediate-table-models">Defining Custom Intermediate Table Models</a><ul>
+<li><a href="#automatically-hydrating-pivot-relationships">Automatically Hydrating Pivot Relationships</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#polymorphic-relationships">Polymorphic Relationships</a><ul>
@@ -512,7 +515,7 @@ class="is-current" aria-current="page">Eloquent: Relationships</a>
 <div class="codehilite"><pre><span></span><code><span class="x">return $this-&gt;hasOne(Phone::class, &#39;foreign_key&#39;);</span>
 </code></pre></div>
 
-<p>Additionally, Eloquent assumes that the foreign key should have a value matching the primary key column of the parent. In other words, Eloquent will look for the value of the user's <code>id</code> column in the <code>user_id</code> column of the <code>Phone</code> record. If you would like the relationship to use a primary key value other than <code>id</code> or your model's <code>$primaryKey</code> property, you may pass a third argument to the <code>hasOne</code> method:</p>
+<p>Additionally, Eloquent assumes that the foreign key should have a value matching the primary key column of the parent. In other words, Eloquent will look for the value of the user's <code>id</code> column in the <code>user_id</code> column of the <code>Phone</code> record. If you would like the relationship to use a primary key value other than <code>id</code> or your model's primary key, you may pass a third argument to the <code>hasOne</code> method:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">return $this-&gt;hasOne(Phone::class, &#39;foreign_key&#39;, &#39;local_key&#39;);</span>
 </code></pre></div>
 
@@ -1251,13 +1254,53 @@ Pivot models may not use the <code>SoftDeletes</code> trait. If you need to soft
 </blockquote>
 <p><a name="custom-pivot-models-and-incrementing-ids"></a></p>
 <h4 id="custom-pivot-models-and-incrementing-ids">Custom Pivot Models and Incrementing IDs<a class="headerlink" href="#custom-pivot-models-and-incrementing-ids" title="Permanent link">#</a></h4>
-<p>If you have defined a many-to-many relationship that uses a custom pivot model, and that pivot model has an auto-incrementing primary key, you should ensure your custom pivot model class defines an <code>incrementing</code> property that is set to <code>true</code>.</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * Indicates if the IDs are auto-incrementing.</span>
-<span class="x"> *</span>
-<span class="x"> * @var bool</span>
-<span class="x"> */</span>
-<span class="x">public $incrementing = true;</span>
+<p>If you have defined a many-to-many relationship that uses a custom pivot model, and that pivot model has an auto-incrementing primary key, you should ensure your custom pivot model class uses the <code>Table</code> attribute with <code>incrementing</code> set to <code>true</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Attributes\Table;</span>
+<span class="x">use Illuminate\Database\Eloquent\Relations\Pivot;</span>
+
+<span class="x">#[Table(incrementing: true)]</span>
+<span class="x">class RoleUser extends Pivot</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p><a name="automatically-hydrating-pivot-relationships"></a></p>
+<h4 id="automatically-hydrating-pivot-relationships">Automatically Hydrating Pivot Relationships<a class="headerlink" href="#automatically-hydrating-pivot-relationships" title="Permanent link">#</a></h4>
+<p>When a custom pivot model defines <code>belongsTo</code> relationships for the declaring and related models, you may invoke <code>chaperone</code> to automatically hydrate those relationships on each pivot model. This avoids additional queries when accessing the models through the pivot:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Model;</span>
+<span class="x">use Illuminate\Database\Eloquent\Relations\BelongsTo;</span>
+<span class="x">use Illuminate\Database\Eloquent\Relations\BelongsToMany;</span>
+<span class="x">use Illuminate\Database\Eloquent\Relations\Pivot;</span>
+
+<span class="x">class RoleUser extends Pivot</span>
+<span class="x">{</span>
+<span class="x">    public function role(): BelongsTo</span>
+<span class="x">    {</span>
+<span class="x">        return $this-&gt;belongsTo(Role::class);</span>
+<span class="x">    }</span>
+
+<span class="x">    public function user(): BelongsTo</span>
+<span class="x">    {</span>
+<span class="x">        return $this-&gt;belongsTo(User::class);</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+
+<span class="x">class Role extends Model</span>
+<span class="x">{</span>
+<span class="x">    public function users(): BelongsToMany</span>
+<span class="x">    {</span>
+<span class="x">        return $this-&gt;belongsToMany(User::class)</span>
+<span class="x">            -&gt;using(RoleUser::class)</span>
+<span class="x">            -&gt;chaperone();</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Eloquent will attempt to infer the pivot relationship names. If your pivot model uses non-standard names, pass the declaring and related relationship names to <code>chaperone</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">return $this-&gt;belongsToMany(User::class)</span>
+<span class="x">    -&gt;using(RoleUser::class)</span>
+<span class="x">    -&gt;chaperone(declaring: &#39;role&#39;, related: &#39;user&#39;);</span>
 </code></pre></div>
 
 <p><a name="polymorphic-relationships"></a></p>
@@ -1279,8 +1322,8 @@ users
 images
     id - integer
     url - string
-    imageable_id - integer
     imageable_type - string
+    imageable_id - integer
 </code></pre></div>
 
 <p>Note the <code>imageable_id</code> and <code>imageable_type</code> columns on the <code>images</code> table. The <code>imageable_id</code> column will contain the ID value of the post or user, while the <code>imageable_type</code> column will contain the class name of the parent model. The <code>imageable_type</code> column is used by Eloquent to determine which "type" of parent model to return when accessing the <code>imageable</code> relation. In this case, the column would contain either <code>App\Models\Post</code> or <code>App\Models\User</code>.</p>
@@ -1383,8 +1426,8 @@ videos
 comments
     id - integer
     body - text
-    commentable_id - integer
     commentable_type - string
+    commentable_id - integer
 </code></pre></div>
 
 <p><a name="one-to-many-polymorphic-model-structure"></a></p>
@@ -1548,8 +1591,8 @@ tags
 
 taggables
     tag_id - integer
-    taggable_id - integer
     taggable_type - string
+    taggable_id - integer
 </code></pre></div>
 
 <blockquote>
@@ -2275,10 +2318,6 @@ When using this feature, you should always include the <code>id</code> column an
 
 <p><a name="automatic-eager-loading"></a></p>
 <h3 id="automatic-eager-loading">Automatic Eager Loading<a class="headerlink" href="#automatic-eager-loading" title="Permanent link">#</a></h3>
-<blockquote>
-<p>[!WARNING]
-This feature is currently in beta in order to gather community feedback. The behavior and functionality of this feature may change even on patch releases.</p>
-</blockquote>
 <p>In many cases, Laravel can automatically eager load the relationships you access. To enable automatic eager loading, you should invoke the <code>Model::automaticallyEagerLoadRelationships</code> method within the <code>boot</code> method of your application's <code>AppServiceProvider</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Model;</span>
 
@@ -2508,6 +2547,14 @@ Before using the <code>create</code> method, be sure to review the <a href="./el
 <span class="x">]);</span>
 </code></pre></div>
 
+<p><a name="transactional-pivot-operations"></a></p>
+<h4 id="transactional-pivot-operations">Transactional Pivot Operations<a class="headerlink" href="#transactional-pivot-operations" title="Permanent link">#</a></h4>
+<p>Each of the pivot operations discussed above also has an <code>OrFail</code> variant (<code>attachOrFail</code>, <code>detachOrFail</code>, <code>syncOrFail</code>, <code>syncWithoutDetachingOrFail</code>, and <code>toggleOrFail</code>) that wraps the operation within a database transaction, so that all changes are automatically rolled back if an exception is thrown:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$user-&gt;roles()-&gt;attachOrFail([1, 2, 3]);</span>
+
+<span class="x">$user-&gt;roles()-&gt;syncOrFail([1, 2, 3]);</span>
+</code></pre></div>
+
 <p><a name="updating-a-record-on-the-intermediate-table"></a></p>
 <h4 id="updating-a-record-on-the-intermediate-table">Updating a Record on the Intermediate Table<a class="headerlink" href="#updating-a-record-on-the-intermediate-table" title="Permanent link">#</a></h4>
 <p>If you need to update an existing row in your relationship's intermediate table, you may use the <code>updateExistingPivot</code> method. This method accepts the intermediate record foreign key and an array of attributes to update:</p>
@@ -2521,23 +2568,18 @@ Before using the <code>create</code> method, be sure to review the <a href="./el
 <p><a name="touching-parent-timestamps"></a></p>
 <h2 id="touching-parent-timestamps">Touching Parent Timestamps<a class="headerlink" href="#touching-parent-timestamps" title="Permanent link">#</a></h2>
 <p>When a model defines a <code>belongsTo</code> or <code>belongsToMany</code> relationship to another model, such as a <code>Comment</code> which belongs to a <code>Post</code>, it is sometimes helpful to update the parent's timestamp when the child model is updated.</p>
-<p>For example, when a <code>Comment</code> model is updated, you may want to automatically "touch" the <code>updated_at</code> timestamp of the owning <code>Post</code> so that it is set to the current date and time. To accomplish this, you may add a <code>touches</code> property to your child model containing the names of the relationships that should have their <code>updated_at</code> timestamps updated when the child model is updated:</p>
+<p>For example, when a <code>Comment</code> model is updated, you may want to automatically "touch" the <code>updated_at</code> timestamp of the owning <code>Post</code> so that it is set to the current date and time. To accomplish this, you may use the <code>Touches</code> attribute on your child model containing the names of the relationships that should have their <code>updated_at</code> timestamps updated when the child model is updated:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Touches</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Relations\BelongsTo</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Touches</span><span class="p">([</span><span class="s1">&#39;post&#39;</span><span class="p">])]</span>
 <span class="k">class</span> <span class="nc">Comment</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * All of the relationships to be touched.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var array</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$touches</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;post&#39;</span><span class="p">];</span>
-
     <span class="sd">/**</span>
 <span class="sd">     * Get the post that the comment belongs to.</span>
 <span class="sd">     */</span>

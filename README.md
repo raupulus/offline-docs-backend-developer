@@ -124,7 +124,7 @@ En reorganización. La arquitectura descrita arriba es la de destino; el plan co
 
 ### Estado real del pipeline
 
-Verificado con **13.818 documentos** normalizados, validados y publicados en 12 tecnologías:
+Verificado con **13.820 documentos** normalizados, validados y publicados en 12 tecnologías:
 
 | Tecnología | Documentos | Formato de origen |
 |---|---:|---|
@@ -132,7 +132,7 @@ Verificado con **13.818 documentos** normalizados, validados y publicados en 12 
 | Composer | 33 | Markdown nativo |
 | Filament | 82 | Markdown nativo |
 | JavaScript | 1.331 | MDN Web Docs |
-| Laravel | 99 | Markdown nativo |
+| Laravel | 101 | Markdown nativo |
 | Node.js | 70 | Markdown nativo |
 | npm | 87 | Markdown nativo |
 | Nuxt | 261 | Markdown nativo |

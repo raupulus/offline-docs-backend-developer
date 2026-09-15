@@ -1,14 +1,14 @@
 ---
 title: 'Eloquent: Factories'
-source_url: https://laravel.com/docs/12.x/eloquent-factories
+source_url: https://laravel.com/docs/13.x/eloquent-factories
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: eloquent-factories.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 260
 ---
 
@@ -136,20 +136,17 @@ protected static function newFactory()
 }
 ```
 
-Then, define a `model` property on the corresponding factory:
+Then, use the `UseModel` attribute on the corresponding factory to specify the model:
 
 ```php
 use App\Administration\Flight;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(Flight::class)]
 class FlightFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var class-string<\Illuminate\Database\Eloquent\Model>
-     */
-    protected $model = Flight::class;
+    // ...
 }
 ```
 
@@ -429,6 +426,18 @@ $user = User::factory()
     ->create();
 ```
 
+You may also pass multiple attribute arrays to create related models with per-model state. Laravel will apply each array in sequence:
+
+```php
+$user = User::factory()
+    ->hasPosts(
+        ['title' => 'First Post'],
+        ['title' => 'Second Post'],
+        ['title' => 'Third Post'],
+    )
+    ->create();
+```
+
 You may provide a closure-based state transformation if your state change requires access to the parent model:
 
 ```php
@@ -523,6 +532,20 @@ $user = User::factory()
                 return ['name' => $user->name.' Role'];
             }),
         ['active' => true]
+    )
+    ->create();
+```
+
+You may also pass an array of pivot arrays to provide unique pivot data for each related model:
+
+```php
+$user = User::factory()
+    ->hasAttached(
+        Role::factory(),
+        [
+            ['active' => true],
+            ['active' => false],
+        ]
     )
     ->create();
 ```

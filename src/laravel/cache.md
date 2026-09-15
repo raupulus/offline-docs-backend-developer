@@ -1,14 +1,14 @@
 ---
 title: Cache
-source_url: https://laravel.com/docs/12.x/cache
+source_url: https://laravel.com/docs/13.x/cache
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: cache.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 100
 ---
 
@@ -21,13 +21,18 @@ order: 100
     - [Obtaining a Cache Instance](#obtaining-a-cache-instance)
     - [Retrieving Items From the Cache](#retrieving-items-from-the-cache)
     - [Storing Items in the Cache](#storing-items-in-the-cache)
+    - [Extending Item Lifetime](#extending-item-lifetime)
     - [Removing Items From the Cache](#removing-items-from-the-cache)
     - [Cache Memoization](#cache-memoization)
     - [The Cache Helper](#the-cache-helper)
 - [Cache Tags](#cache-tags)
+    - [Storing Tagged Cache Items](#storing-tagged-cache-items)
+    - [Accessing Tagged Cache Items](#accessing-tagged-cache-items)
+    - [Removing Tagged Cache Items](#removing-tagged-cache-items)
 - [Atomic Locks](#atomic-locks)
     - [Managing Locks](#managing-locks)
     - [Managing Locks Across Processes](#managing-locks-across-processes)
+    - [Refreshing Locks](#refreshing-locks)
     - [Concurrency Limiting](#concurrency-limiting)
 - [Cache Failover](#cache-failover)
 - [Adding Custom Cache Drivers](#adding-custom-cache-drivers)
@@ -45,7 +50,7 @@ Thankfully, Laravel provides an expressive, unified API for various cache backen
 <a name="configuration"></a>
 ## Configuration
 
-Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache store you would like to be used by default throughout your application. Laravel supports popular caching backends like [Memcached](https://memcached.org), [Redis](https://redis.io), [DynamoDB](https://aws.amazon.com/dynamodb), and relational databases out of the box. In addition, a file based cache driver is available, while `array` and `null` cache drivers provide convenient cache backends for your automated tests.
+Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache store you would like to be used by default throughout your application. Laravel supports popular caching backends like [Memcached](https://memcached.org), [Redis](https://redis.io), [DynamoDB](https://aws.amazon.com/dynamodb), relational databases, and filesystem disks out of the box. In addition, a file based cache driver is available, while `array` and `null` cache drivers provide convenient cache backends for your automated tests.
 
 The cache configuration file also contains a variety of other options that you may review. By default, Laravel is configured to use the `database` cache driver, which stores the serialized, cached objects in your application's database.
 
@@ -101,9 +106,22 @@ If needed, you may set the `host` option to a UNIX socket path. If you do this, 
 <a name="redis"></a>
 #### Redis
 
-Before using a Redis cache with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the `predis/predis` package (~2.0) via Composer. [Laravel Sail](/docs/{{version}}/sail) already includes this extension. In addition, official Laravel application platforms such as [Laravel Cloud](https://cloud.laravel.com) and [Laravel Forge](https://forge.laravel.com) have the PhpRedis extension installed by default.
+Before using a Redis cache with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the `predis/predis` package via Composer. [Laravel Sail](/docs/{{version}}/sail) already includes this extension. In addition, official Laravel application platforms such as [Laravel Cloud](https://cloud.laravel.com) and [Laravel Forge](https://forge.laravel.com) have the PhpRedis extension installed by default.
 
 For more information on configuring Redis, consult its [Laravel documentation page](/docs/{{version}}/redis#configuration).
+
+<a name="storage"></a>
+#### Storage
+
+The `storage` cache driver allows you to store cached values on any of your application's configured [filesystem disks](/docs/{{version}}/filesystem). This can be useful when you want to use an existing disk, such as an S3 disk, as a key / value cache store:
+
+```php
+'storage' => [
+    'driver' => 'storage',
+    'disk' => env('CACHE_STORAGE_DISK'),
+    'path' => env('CACHE_STORAGE_PATH', 'framework/cache/data'),
+],
+```
 
 <a name="dynamodb"></a>
 #### DynamoDB
@@ -241,6 +259,14 @@ $value = Cache::remember('users', $seconds, function () {
 
 If the item does not exist in the cache, the closure passed to the `remember` method will be executed and its result will be placed in the cache.
 
+If you need to know whether the item was retrieved from the cache instead of by executing the given closure, you may use the `rememberWithWarmth` method. This method returns an array containing the cached value and a boolean indicating whether the item was "warm", meaning it was retrieved from the cache and not resolved from the closure:
+
+```php
+[$value, $warm] = Cache::rememberWithWarmth('users', $seconds, function () {
+    return DB::table('users')->get();
+});
+```
+
 You may use the `rememberForever` method to retrieve an item from the cache or store it forever if it does not exist:
 
 ```php
@@ -305,6 +331,21 @@ The `add` method will only add the item to the cache if it does not already exis
 Cache::add('key', 'value', $seconds);
 ```
 
+<a name="extending-item-lifetime"></a>
+### Extending Item Lifetime
+
+The `touch` method allows you to extend the lifetime (TTL) of an existing cache item. The `touch` method will return `true` if the cache item exists and its expiration time was successfully extended. If the item does not exist in the cache, the method will return `false`:
+
+```php
+Cache::touch('key', 3600);
+```
+
+You may provide a `DateTimeInterface`, `DateInterval`, or `Carbon` instance to specify an exact expiration time:
+
+```php
+Cache::touch('key', now()->addHours(2));
+```
+
 <a name="storing-items-forever"></a>
 #### Storing Items Forever
 
@@ -338,6 +379,12 @@ You may clear the entire cache using the `flush` method:
 
 ```php
 Cache::flush();
+```
+
+You may clear all atomic locks in the cache using the `flushLocks` method:
+
+```php
+Cache::flushLocks();
 ```
 
 > [!WARNING]
@@ -419,7 +466,7 @@ cache()->remember('users', $seconds, function () {
 ## Cache Tags
 
 > [!WARNING]
-> Cache tags are not supported when using the `file`, `dynamodb`, or `database` cache drivers.
+> Cache tags are not supported when using the `file`, `dynamodb`, `database`, or `storage` cache drivers.
 
 <a name="storing-tagged-cache-items"></a>
 ### Storing Tagged Cache Items
@@ -543,6 +590,26 @@ If you would like to release a lock without respecting its current owner, you ma
 
 ```php
 Cache::lock('processing')->forceRelease();
+```
+
+<a name="refreshing-locks"></a>
+### Refreshing Locks
+
+If you need to extend the expiration of a lock that you currently own, you may use the `refresh` method. If no number of seconds is provided, the lock's original duration will be used. This is useful for long-running operations where you prefer to acquire a short lock and periodically extend it instead of acquiring a lock with a very long expiration time:
+
+```php
+$lock = Cache::lock('generate-reports', 60);
+
+if ($lock->get()) {
+    foreach ($reports as $report) {
+        $report->generate();
+
+        // Extend the lock for another 60 seconds...
+        $lock->refresh();
+    }
+
+    $lock->release();
+}
 ```
 
 <a name="concurrency-limiting"></a>
@@ -730,21 +797,25 @@ To execute code on every cache operation, you may listen for various [events](/d
 
 <div class="overflow-auto">
 
-| Event Name                                   |
-|----------------------------------------------|
-| `Illuminate\Cache\Events\CacheFlushed`       |
-| `Illuminate\Cache\Events\CacheFlushing`      |
-| `Illuminate\Cache\Events\CacheHit`           |
-| `Illuminate\Cache\Events\CacheMissed`        |
-| `Illuminate\Cache\Events\ForgettingKey`      |
-| `Illuminate\Cache\Events\KeyForgetFailed`    |
-| `Illuminate\Cache\Events\KeyForgotten`       |
-| `Illuminate\Cache\Events\KeyWriteFailed`     |
-| `Illuminate\Cache\Events\KeyWritten`         |
-| `Illuminate\Cache\Events\RetrievingKey`      |
-| `Illuminate\Cache\Events\RetrievingManyKeys` |
-| `Illuminate\Cache\Events\WritingKey`         |
-| `Illuminate\Cache\Events\WritingManyKeys`    |
+| Event Name                                      |
+|-------------------------------------------------|
+| `Illuminate\Cache\Events\CacheFlushed`          |
+| `Illuminate\Cache\Events\CacheFlushing`         |
+| `Illuminate\Cache\Events\CacheFlushFailed`      |
+| `Illuminate\Cache\Events\CacheLocksFlushed`     |
+| `Illuminate\Cache\Events\CacheLocksFlushing`    |
+| `Illuminate\Cache\Events\CacheLocksFlushFailed` |
+| `Illuminate\Cache\Events\CacheHit`              |
+| `Illuminate\Cache\Events\CacheMissed`           |
+| `Illuminate\Cache\Events\ForgettingKey`         |
+| `Illuminate\Cache\Events\KeyForgetFailed`       |
+| `Illuminate\Cache\Events\KeyForgotten`          |
+| `Illuminate\Cache\Events\KeyWriteFailed`        |
+| `Illuminate\Cache\Events\KeyWritten`            |
+| `Illuminate\Cache\Events\RetrievingKey`         |
+| `Illuminate\Cache\Events\RetrievingManyKeys`    |
+| `Illuminate\Cache\Events\WritingKey`            |
+| `Illuminate\Cache\Events\WritingManyKeys`       |
 
 </div>
 

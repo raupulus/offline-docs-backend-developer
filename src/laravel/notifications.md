@@ -1,15 +1,15 @@
 ---
 title: Notifications
-source_url: https://laravel.com/docs/12.x/notifications
+source_url: https://laravel.com/docs/13.x/notifications
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: notifications.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 580
+retrieved_at: '2026-09-15'
+order: 600
 ---
 
 # Notifications
@@ -290,9 +290,9 @@ public function viaQueues(): array
 ```
 
 <a name="customizing-queued-notification-job-properties"></a>
-#### Customizing Queued Notification Job Properties
+#### Customizing Queued Notification Job Attributes
 
-You may customize the behavior of the underlying queued job by defining properties on your notification class. These properties will be inherited by the queued job that sends the notification:
+You may customize the behavior of the underlying queued job by defining queue attributes on your notification class. These attributes will be inherited by the queued job that sends the notification:
 
 ```php
 <?php
@@ -302,31 +302,18 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Queue\Attributes\FailOnTimeout;
+use Illuminate\Queue\Attributes\MaxExceptions;
+use Illuminate\Queue\Attributes\Timeout;
+use Illuminate\Queue\Attributes\Tries;
 
+#[Tries(5)]
+#[Timeout(120)]
+#[MaxExceptions(3)]
+#[FailOnTimeout]
 class InvoicePaid extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    /**
-     * The number of times the notification may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 5;
-
-    /**
-     * The number of seconds the notification can run before timing out.
-     *
-     * @var int
-     */
-    public $timeout = 120;
-
-    /**
-     * The maximum number of unhandled exceptions to allow before failing.
-     *
-     * @var int
-     */
-    public $maxExceptions = 3;
 
     // ...
 }
@@ -352,7 +339,7 @@ class InvoicePaid extends Notification implements ShouldQueue, ShouldBeEncrypted
 }
 ```
 
-In addition to defining these properties directly on your notification class, you may also define `backoff` and `retryUntil` methods to specify the backoff strategy and retry timeout for the queued notification job:
+In addition to defining these attributes directly on your notification class, you may also define `backoff` and `retryUntil` methods to specify the backoff strategy and retry timeout for the queued notification job:
 
 ```php
 use DateTime;
@@ -375,7 +362,7 @@ public function retryUntil(): DateTime
 ```
 
 > [!NOTE]
-> For more information on these job properties and methods, please review the documentation on [queued jobs](/docs/{{version}}/queues#max-job-attempts-and-timeout).
+> For more information on these job attributes and methods, please review the documentation on [queued jobs](/docs/{{version}}/queues#max-job-attempts-and-timeout).
 
 <a name="queued-notification-middleware"></a>
 #### Queued Notification Middleware
@@ -738,22 +725,6 @@ public function toMail(object $notifiable): MailMessage
 }
 ```
 
-Unlike attaching files in mailable objects, you may not attach a file directly from a storage disk using `attachFromStorage`. You should rather use the `attach` method with an absolute path to the file on the storage disk. Alternatively, you could return a [mailable](/docs/{{version}}/mail#generating-mailables) from the `toMail` method:
-
-```php
-use App\Mail\InvoicePaid as InvoicePaidMailable;
-
-/**
- * Get the mail representation of the notification.
- */
-public function toMail(object $notifiable): Mailable
-{
-    return (new InvoicePaidMailable($this->invoice))
-        ->to($notifiable->email)
-        ->attachFromStorage('/path/to/file');
-}
-```
-
 When necessary, multiple files may be attached to a message using the `attachMany` method:
 
 ```php
@@ -770,6 +741,24 @@ public function toMail(object $notifiable): MailMessage
                 'as' => 'Logo.svg',
                 'mime' => 'image/svg+xml',
             ],
+        ]);
+}
+```
+
+You may use the `attachFromStorageDisk` method to attach a file that exists on a specific [filesystem disk](/docs/{{version}}/filesystem). This method accepts the disk name and the path to the file on that disk:
+
+```php
+use App\Mail\InvoicePaid as InvoicePaidMailable;
+
+/**
+ * Get the mail representation of the notification.
+ */
+public function toMail(object $notifiable): Mailable
+{
+    return (new InvoicePaidMailable($this->invoice))
+        ->to($notifiable->email)
+        ->attachFromStorageDisk('s3', '/path/to/file', 'invoice.pdf', [
+            'mime' => 'application/pdf',
         ]);
 }
 ```
@@ -1221,9 +1210,9 @@ Echo.private('App.Models.User.' + userId)
 ```
 
 <a name="using-react-or-vue"></a>
-#### Using React or Vue
+#### Using React, Vue, or Svelte
 
-Laravel Echo includes React and Vue hooks that make it painless to listen for notifications. To get started, invoke the `useEchoNotification` hook, which is used to listen for notifications. The `useEchoNotification` hook will automatically leave channels when the consuming component is unmounted:
+Laravel Echo includes React, Vue, and Svelte hooks that make it painless to listen for notifications. To get started, invoke the `useEchoNotification` hook, which is used to listen for notifications. The `useEchoNotification` hook will automatically leave channels when the consuming component is unmounted:
 
 ```js tab=React
 import { useEchoNotification } from "@laravel/echo-react";
@@ -1239,6 +1228,19 @@ useEchoNotification(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoNotification } from "@laravel/echo-vue";
+
+useEchoNotification(
+    `App.Models.User.${userId}`,
+    (notification) => {
+        console.log(notification.type);
+    },
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoNotification } from "@laravel/echo-svelte";
 
 useEchoNotification(
     `App.Models.User.${userId}`,
@@ -1266,6 +1268,20 @@ useEchoNotification(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoNotification } from "@laravel/echo-vue";
+
+useEchoNotification(
+    `App.Models.User.${userId}`,
+    (notification) => {
+        console.log(notification.type);
+    },
+    'App.Notifications.InvoicePaid',
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoNotification } from "@laravel/echo-svelte";
 
 useEchoNotification(
     `App.Models.User.${userId}`,
@@ -1788,6 +1804,9 @@ test('orders can be shipped', function () {
     // Assert a notification was sent twice...
     Notification::assertSentTimes(WeeklyReminder::class, 2);
 
+    // Assert that a notification was sent to a user exactly once...
+    Notification::assertSentToOnce($user, OrderShipped::class);
+
     // Assert that a given number of notifications were sent...
     Notification::assertCount(3);
 });
@@ -1826,6 +1845,9 @@ class ExampleTest extends TestCase
         // Assert a notification was sent twice...
         Notification::assertSentTimes(WeeklyReminder::class, 2);
 
+        // Assert that a notification was sent to a user exactly once...
+        Notification::assertSentToOnce($user, OrderShipped::class);
+
         // Assert that a given number of notifications were sent...
         Notification::assertCount(3);
     }
@@ -1843,13 +1865,14 @@ Notification::assertSentTo(
 );
 ```
 
-<a name="on-demand-notifications"></a>
+<a name="testing-on-demand-notifications"></a>
 #### On-Demand Notifications
 
 If the code you are testing sends [on-demand notifications](#on-demand-notifications), you can test that the on-demand notification was sent via the `assertSentOnDemand` method:
 
 ```php
 Notification::assertSentOnDemand(OrderShipped::class);
+Notification::assertSentOnDemandOnce(OrderShipped::class);
 ```
 
 By passing a closure as the second argument to the `assertSentOnDemand` method, you may determine if an on-demand notification was sent to the correct "route" address:

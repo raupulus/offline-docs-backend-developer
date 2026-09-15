@@ -1,20 +1,21 @@
 ---
 title: Upgrade Guide
-source_url: https://laravel.com/docs/12.x/upgrade
+source_url: https://laravel.com/docs/13.x/upgrade
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: upgrade.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 930
+retrieved_at: '2026-09-15'
+order: 950
 ---
 
 # Upgrade Guide
 
-- [Upgrading To 12.0 From 11.x](#upgrade-12.0)
+- [Upgrading To 13.0 From 12.x](#upgrade-13.0)
+    - [Upgrading Using AI](#upgrading-using-ai)
 
 <a name="high-impact-changes"></a>
 ## High Impact Changes
@@ -23,6 +24,7 @@ order: 930
 
 - [Updating Dependencies](#updating-dependencies)
 - [Updating the Laravel Installer](#updating-the-laravel-installer)
+- [Request Forgery Protection](#request-forgery-protection)
 
 </div>
 
@@ -31,7 +33,8 @@ order: 930
 
 <div class="content-list" markdown="1">
 
-- [Models and UUIDv7](#models-and-uuidv7)
+- [Cache `serializable_classes` Configuration](#cache-serializable_classes-configuration)
+- [Database `upsert` With MySQL or MariaDB](#database-upsert-mariadb-mysql)
 
 </div>
 
@@ -40,23 +43,33 @@ order: 930
 
 <div class="content-list" markdown="1">
 
-- [Carbon 3](#carbon-3)
-- [Concurrency Result Index Mapping](#concurrency-result-index-mapping)
-- [Container Class Dependency Resolution](#container-class-dependency-resolution)
-- [Image Validation Now Excludes SVGs](#image-validation)
-- [Local Filesystem Disk Default Root Path](#local-filesystem-disk-default-root-path)
-- [Multi-Schema Database Inspecting](#multi-schema-database-inspecting)
-- [Nested Array Request Merging](#nested-array-request-merging)
+- [Cache Prefixes and Session Cookie Names](#cache-prefixes-and-session-cookie-names)
+- [Collection Model Serialization Restores Eager-Loaded Relations](#collection-model-serialization-restores-eager-loaded-relations)
+- [`Container::call` and Nullable Class Defaults](#containercall-and-nullable-class-defaults)
+- [Domain Route Registration Precedence](#domain-route-registration-precedence)
+- [`JobAttempted` Event Exception Payload](#jobattempted-event-exception-payload)
+- [Manager `extend` Callback Binding](#manager-extend-callback-binding)
+- [MySQL `DELETE` Queries With `JOIN`, `ORDER BY`, and `LIMIT`](#mysql-delete-queries-with-join-order-by-and-limit)
+- [Pagination Bootstrap View Names](#pagination-bootstrap-view-names)
+- [Polymorphic Pivot Table Name Generation](#polymorphic-pivot-table-name-generation)
+- [`QueueBusy` Event Property Rename](#queuebusy-event-property-rename)
+- [Session `serialization` Configuration](#session-serialization-configuration)
+- [`Str` Factories Reset Between Tests](#str-factories-reset-between-tests)
 
 </div>
 
-<a name="upgrade-12.0"></a>
-## Upgrading To 12.0 From 11.x
+<a name="upgrade-13.0"></a>
+## Upgrading To 13.0 From 12.x
 
-#### Estimated Upgrade Time: 5 Minutes
+#### Estimated Upgrade Time: 10 Minutes
 
 > [!NOTE]
-> We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application. Want to save time? You can use [Laravel Shift](https://laravelshift.com/) to help automate your application upgrades.
+> We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application. To save time, you may use [Shift](https://laravelshift.com). Shift is a community-maintained service that automates Laravel upgrades.
+
+<a name="upgrading-using-ai"></a>
+### Upgrading Using AI
+
+You can automate your upgrade using [Laravel Boost](https://github.com/laravel/boost). Boost is a first-party MCP server that provides your AI assistant with guided upgrade prompts — once installed in any Laravel 12 application, use the `/upgrade-laravel-v13` slash command in Claude Code, Cursor, OpenCode, Gemini, or VS Code to begin the upgrade to Laravel 13. This command requires Laravel Boost `^2.0`.
 
 <a name="updating-dependencies"></a>
 ### Updating Dependencies
@@ -67,253 +80,428 @@ You should update the following dependencies in your application's `composer.jso
 
 <div class="content-list" markdown="1">
 
-- `laravel/framework` to `^12.0`
-- `phpunit/phpunit` to `^11.0`
-- `pestphp/pest` to `^3.0`
+- `laravel/framework` to `^13.0`
+- `laravel/boost` to `^2.0`
+- `laravel/tinker` to `^3.0`
+- `phpunit/phpunit` to `^12.0`
+- `pestphp/pest` to `^4.0`
 
 </div>
-
-<a name="carbon-3"></a>
-#### Carbon 3
-
-**Likelihood Of Impact: Low**
-
-Support for Carbon 2.x has been removed. All Laravel 12 applications now require [Carbon 3.x](https://carbon.nesbot.com/guide/getting-started/migration.html).
 
 <a name="updating-the-laravel-installer"></a>
 ### Updating the Laravel Installer
 
-If you are using the Laravel installer CLI tool to create new Laravel applications, you should update your installer installation to be compatible with Laravel 12.x and the [new Laravel starter kits](https://laravel.com/starter-kits). If you installed the Laravel installer via `composer global require`, you may update the installer using `composer global update`:
+If you are using the Laravel installer CLI tool to create new Laravel applications, you should update your installer installation for Laravel 13.x compatibility.
+
+If you installed the Laravel installer via `composer global require`, you may update the installer using `composer global update`:
 
 ```shell
 composer global update laravel/installer
 ```
 
-If you originally installed PHP and Laravel via `php.new`, you may simply re-run the `php.new` installation commands for your operating system to install the latest version of PHP and the Laravel installer:
-
-```shell tab=macOS
-/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.4)"
-```
-
-```shell tab=Windows PowerShell
-# Run as administrator...
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
-```
-
-```shell tab=Linux
-/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.4)"
-```
-
 Or, if you are using [Laravel Herd's](https://herd.laravel.com) bundled copy of the Laravel installer, you should update your Herd installation to the latest release.
 
-<a name="authentication"></a>
-### Authentication
+<a name="cache"></a>
+### Cache
 
-<a name="updated-databasetokenrepository-constructor-signature"></a>
-#### Updated `DatabaseTokenRepository` Constructor Signature
-
-**Likelihood Of Impact: Very Low**
-
-The constructor of the `Illuminate\Auth\Passwords\DatabaseTokenRepository` class now expects the `$expires` parameter to be given in seconds, rather than minutes.
-
-<a name="concurrency"></a>
-### Concurrency
-
-<a name="concurrency-result-index-mapping"></a>
-#### Concurrency Result Index Mapping
+<a name="cache-prefixes-and-session-cookie-names"></a>
+#### Cache Prefixes and Session Cookie Names
 
 **Likelihood Of Impact: Low**
 
-When invoking the `Concurrency::run` method with an associative array, the results of the concurrent operations are now returned with their associated keys:
+Laravel's default cache and Redis key prefixes now use hyphenated suffixes.
+
+In most applications, this change will not apply because application-level configuration files already define these values. This primarily affects applications that rely on framework-level fallback configuration when corresponding application config values are not present.
+
+If your application relies on these generated defaults, cache keys and session cookie names may change after upgrading:
 
 ```php
-$result = Concurrency::run([
-    'task-1' => fn () => 1 + 1,
-    'task-2' => fn () => 2 + 2,
-]);
+// Laravel <= 12.x
+Str::slug((string) env('APP_NAME', 'laravel'), '_').'_cache_';
+Str::slug((string) env('APP_NAME', 'laravel'), '_').'_database_';
+Str::slug((string) env('APP_NAME', 'laravel'), '_').'_session';
 
-// ['task-1' => 2, 'task-2' => 4]
+// Laravel >= 13.x
+Str::slug((string) env('APP_NAME', 'laravel')).'-cache-';
+Str::slug((string) env('APP_NAME', 'laravel')).'-database-';
+Str::slug((string) env('APP_NAME', 'laravel')).'-session';
 ```
+
+To retain previous behavior, explicitly configure `CACHE_PREFIX`, `REDIS_PREFIX`, and `SESSION_COOKIE` in your environment.
+
+<a name="store-and-repository-contracts-touch"></a>
+#### `Store` and `Repository` Contracts: `touch`
+
+**Likelihood Of Impact: Very Low**
+
+The cache contracts now include a `touch` method for extending item TTLs. If you maintain custom cache store implementations, you should add this method:
+
+```php
+// Illuminate\Contracts\Cache\Store
+public function touch($key, $seconds);
+```
+
+<a name="cache-serializable_classes-configuration"></a>
+#### Cache `serializable_classes` Configuration
+
+**Likelihood Of Impact: Medium**
+
+The default application `cache` configuration now includes a `serializable_classes` option set to `false`. This hardens cache unserialization behavior to help prevent PHP deserialization gadget chain attacks if your application's `APP_KEY` is leaked. If your application intentionally stores PHP objects in cache, you should explicitly list the classes that may be unserialized:
+
+```php
+'serializable_classes' => [
+    App\Data\CachedDashboardStats::class,
+    App\Support\CachedPricingSnapshot::class,
+],
+```
+
+If your application previously relied on unserializing arbitrary cached objects, you will need to migrate that usage to explicit class allow-lists or to non-object cache payloads (such as arrays).
 
 <a name="container"></a>
 ### Container
 
-<a name="container-class-dependency-resolution"></a>
-#### Container Class Dependency Resolution
+<a name="containercall-and-nullable-class-defaults"></a>
+#### `Container::call` and Nullable Class Defaults
 
 **Likelihood Of Impact: Low**
 
-The dependency injection container now respects the default value of class properties when resolving a class instance. If you were previously relying on the container to resolve a class instance without the default value, you may need to adjust your application to account for this new behavior:
+`Container::call` now respects nullable class parameter defaults when no binding exists, matching constructor injection behavior introduced in Laravel 12:
 
 ```php
-class Example
-{
-    public function __construct(public ?Carbon $date = null) {}
-}
+$container->call(function (?Carbon $date = null) {
+    return $date;
+});
 
-$example = resolve(Example::class);
-
-// <= 11.x
-$example->date instanceof Carbon;
-
-// >= 12.x
-$example->date === null;
+// Laravel <= 12.x: Carbon instance
+// Laravel >= 13.x: null
 ```
+
+If your method-call injection logic depended on the previous behavior, you may need to update it.
+
+<a name="contracts"></a>
+### Contracts
+
+<a name="dispatcher-contract-dispatchafterresponse"></a>
+#### `Dispatcher` Contract: `dispatchAfterResponse`
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Bus\Dispatcher` contract now includes the `dispatchAfterResponse($command, $handler = null)` method.
+
+If you maintain a custom dispatcher implementation, add this method to your class.
+
+<a name="responsefactory-contract-eventstream"></a>
+#### `ResponseFactory` Contract: `eventStream`
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Routing\ResponseFactory` contract now includes an `eventStream` signature.
+
+If you maintain a custom implementation of this contract, you should add this method.
+
+<a name="mustverifyemail-contract-markemailasunverified"></a>
+#### `MustVerifyEmail` Contract: `markEmailAsUnverified`
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Auth\MustVerifyEmail` contract now includes `markEmailAsUnverified()`.
+
+If you provide a custom implementation of this contract, add this method to remain compatible.
 
 <a name="database"></a>
 ### Database
 
-<a name="multi-schema-database-inspecting"></a>
-#### Multi-Schema Database Inspecting
+<a name="database-upsert-mariadb-mysql"></a>
+#### Database `upsert` With MySQL or MariaDB
+
+**Likelihood Of Impact: Medium**
+
+Laravel now validates that the caller provides a non-empty value for `uniqueBy`, and will throw an `InvalidArgumentException` instead of generating invalid SQL.
+
+Although the MariaDB and MySQL database drivers ignore the `uniqueBy` value and always use the table's primary and unique indexes to detect existing records, the validation still applies. An `InvalidArgumentException` will be thrown if `uniqueBy` is empty.
+
+<a name="mysql-delete-queries-with-join-order-by-and-limit"></a>
+#### MySQL `DELETE` Queries With `JOIN`, `ORDER BY`, and `LIMIT`
 
 **Likelihood Of Impact: Low**
 
-The `Schema::getTables()`, `Schema::getViews()`, and `Schema::getTypes()` methods now include the results from all schemas by default. You may pass the `schema` argument to retrieve the result for the given schema only:
+Laravel now compiles full `DELETE ... JOIN` queries including `ORDER BY` and `LIMIT` for MySQL grammar.
 
-```php
-// All tables on all schemas...
-$tables = Schema::getTables();
-
-// All tables on the 'main' schema...
-$tables = Schema::getTables(schema: 'main');
-
-// All tables on the 'main' and 'blog' schemas...
-$tables = Schema::getTables(schema: ['main', 'blog']);
-```
-
-The `Schema::getTableListing()` method now returns schema-qualified table names by default. You may pass the `schemaQualified` argument to change the behavior as desired:
-
-```php
-$tables = Schema::getTableListing();
-// ['main.migrations', 'main.users', 'blog.posts']
-
-$tables = Schema::getTableListing(schema: 'main');
-// ['main.migrations', 'main.users']
-
-$tables = Schema::getTableListing(schema: 'main', schemaQualified: false);
-// ['migrations', 'users']
-```
-
-The `db:table` and `db:show` commands now output the results of all schemas on MySQL, MariaDB, and SQLite, just like PostgreSQL and SQL Server.
-
-<a name="database-constructor-signature-changes"></a>
-#### Database Constructor Signature Changes
-
-**Likelihood Of Impact: Very Low**
-
-In Laravel 12, several low-level database classes now require an `Illuminate\Database\Connection` instance to be provided via their constructors.
-
-**These changes are primarily applicable to database package maintainers - it is extremely unlikely any of these changes affect normal application development.**
-
-`Illuminate\Database\Schema\Blueprint`
-
-The constructor of the `Illuminate\Database\Schema\Blueprint` class now expects a `Connection` instance as its first argument. This primarily affects applications or packages that manually instantiate `Blueprint` instances.
-
-`Illuminate\Database\Grammar`
-
-The constructor of the `Illuminate\Database\Grammar` class also now requires a `Connection` instance. In previous versions, the connection was assigned after construction using the `setConnection()` method. This method has been removed in Laravel 12:
-
-```php
-// Laravel <= 11.x
-$grammar = new MySqlGrammar;
-$grammar->setConnection($connection);
-
-// Laravel >= 12.x
-$grammar = new MySqlGrammar($connection);
-````
-
-In addition, the following APIs have been removed or deprecated:
-
-<div class="content-list" markdown="1">
-
-- The `Blueprint::getPrefix()` method is deprecated.
-- The `Connection::withTablePrefix()` method has been removed.
-- The `Grammar::getTablePrefix()` and `setTablePrefix()` methods are deprecated.
-- The `Grammar::setConnection()` method has been removed.
-
-</div>
-
-When working with table prefixes, you should now retrieve them directly from the database connection:
-
-```php
-$prefix = $connection->getTablePrefix();
-```
-
-If you maintain custom database drivers, schema builders, or grammar implementations, you should review their constructors and ensure a `Connection` instance is provided.
+In previous versions, `ORDER BY` / `LIMIT` clauses could be silently ignored on joined deletes. In Laravel 13, these clauses are included in the generated SQL. As a result, database engines that do not support this syntax (such as standard MySQL / MariaDB variants) may now throw a `QueryException` instead of executing an unbounded delete.
 
 <a name="eloquent"></a>
 ### Eloquent
 
-<a name="models-and-uuidv7"></a>
-#### Models and UUIDv7
+<a name="model-booting-and-nested-instantiation"></a>
+#### Model Booting and Nested Instantiation
 
-**Likelihood Of Impact: Medium**
+**Likelihood Of Impact: Very Low**
 
-The `HasUuids` trait now returns UUIDs that are compatible with version 7 of the UUID spec (ordered UUIDs). If you would like to continue using ordered UUIDv4 strings for your model's IDs, you should now use the `HasVersion4Uuids` trait:
+Creating a new model instance while that model is still booting is now disallowed and throws a `LogicException`.
+
+This affects code that instantiates models from inside model `boot` methods or trait `boot*` methods:
 
 ```php
-use Illuminate\Database\Eloquent\Concerns\HasUuids; // [tl! remove]
-use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids; // [tl! add]
+protected static function boot()
+{
+    parent::boot();
+
+    // No longer allowed during booting...
+    (new static())->getTable();
+}
 ```
 
-The `HasVersion7Uuids` trait has been removed. If you were previously using this trait, you should use the `HasUuids` trait instead, which now provides the same behavior.
+Move this logic outside the boot cycle to avoid nested booting.
 
-<a name="requests"></a>
-### Requests
-
-<a name="nested-array-request-merging"></a>
-#### Nested Array Request Merging
+<a name="polymorphic-pivot-table-name-generation"></a>
+#### Polymorphic Pivot Table Name Generation
 
 **Likelihood Of Impact: Low**
 
-The `$request->mergeIfMissing()` method now allows merging nested array data using "dot" notation. If you were previously relying on this method to create a top-level array key containing the "dot" notation version of the key, you may need to adjust your application to account for this new behavior:
+When table names are inferred for polymorphic pivot models using custom pivot model classes, Laravel now generates pluralized names.
+
+If your application depended on the previous singular inferred names for morph pivot tables and used custom pivot classes, you should explicitly define the table name on your pivot model.
+
+<a name="collection-model-serialization-restores-eager-loaded-relations"></a>
+#### Collection Model Serialization Restores Eager-Loaded Relations
+
+**Likelihood Of Impact: Low**
+
+When Eloquent model collections are serialized and restored (such as in queued jobs), eager-loaded relations are now restored for the collection's models.
+
+If your code depended on relations not being present after deserialization, you may need to adjust that logic.
+
+<a name="http-client"></a>
+### HTTP Client
+
+<a name="http-client-response-throw-and-throwif-signatures"></a>
+#### HTTP Client `Response::throw` and `throwIf` Signatures
+
+**Likelihood Of Impact: Very Low**
+
+The HTTP client response methods now declare their callback parameters in the method signatures:
 
 ```php
-$request->mergeIfMissing([
-    'user.last_name' => 'Otwell',
-]);
+public function throw($callback = null);
+public function throwIf($condition, $callback = null);
 ```
+
+If you override these methods in custom response classes, ensure your method signatures are compatible.
+
+<a name="notifications"></a>
+### Notifications
+
+<a name="default-password-reset-subject"></a>
+#### Default Password Reset Subject
+
+**Likelihood Of Impact: Very Low**
+
+Laravel's default password reset mail subject has changed:
+
+```text
+// Laravel <= 12.x
+Reset Password Notification
+
+// Laravel >= 13.x
+Reset your password
+```
+
+If your tests, assertions, or translation overrides depend on the previous default string, update them accordingly.
+
+<a name="queued-notifications-and-missing-models"></a>
+#### Queued Notifications and Missing Models
+
+**Likelihood Of Impact: Very Low**
+
+Queued notifications now respect the `#[DeleteWhenMissingModels]` attribute and `$deleteWhenMissingModels` property defined on the notification class.
+
+In previous versions, missing models could still cause queued notification jobs to fail in cases where you expected them to be deleted.
+
+<a name="queue"></a>
+### Queue
+
+<a name="jobattempted-event-exception-payload"></a>
+#### `JobAttempted` Event Exception Payload
+
+**Likelihood Of Impact: Low**
+
+The `Illuminate\Queue\Events\JobAttempted` event now exposes the exception object (or `null`) via `$exception`, replacing the previous boolean `$exceptionOccurred` property:
+
+```php
+// Laravel <= 12.x
+$event->exceptionOccurred;
+
+// Laravel >= 13.x
+$event->exception;
+```
+
+If you listen for this event, update your listener code accordingly.
+
+<a name="queuebusy-event-property-rename"></a>
+#### `QueueBusy` Event Property Rename
+
+**Likelihood Of Impact: Low**
+
+The `Illuminate\Queue\Events\QueueBusy` event property `$connection` has been renamed to `$connectionName` for consistency with other queue events.
+
+If your listeners reference `$connection`, update them to `$connectionName`.
+
+<a name="queue-contract-method-additions"></a>
+#### `Queue` Contract Method Additions
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Queue\Queue` contract now includes queue size inspection methods that were previously only declared in docblocks.
+
+If you maintain custom queue driver implementations of this contract, add implementations for:
+
+<div class="content-list" markdown="1">
+
+- `pendingSize`
+- `delayedSize`
+- `reservedSize`
+- `creationTimeOfOldestPendingJob`
+
+</div>
 
 <a name="routing"></a>
 ### Routing
 
-<a name="route-precedence"></a>
-#### Route Precedence
+<a name="domain-route-registration-precedence"></a>
+#### Domain Route Registration Precedence
 
 **Likelihood Of Impact: Low**
 
-The routing behavior when multiple routes have the same name has been unified between cached and uncached routing. This means that uncached routing now matches the first route registered with a given name instead of the last one.
+Routes with an explicit domain are now prioritized before non-domain routes in route matching.
 
-<a name="storage"></a>
-### Storage
+This allows catch-all subdomain routes to behave consistently even when non-domain routes are registered earlier. If your application relied on previous registration precedence between domain and non-domain routes, review route matching behavior.
 
-<a name="local-filesystem-disk-default-root-path"></a>
-#### Local Filesystem Disk Default Root Path
+<a name="session"></a>
+### Session
 
-**Likelihood Of Impact: Low**
-
-If your application does not explicitly define a `local` disk in your filesystems configuration, Laravel will now default the local disk's root to `storage/app/private`. In previous releases, this defaulted to `storage/app`. As a result, calls to `Storage::disk('local')` will read from and write to `storage/app/private` unless otherwise configured. To restore the previous behavior, you may define the `local` disk manually and set the desired root path.
-
-<a name="validation"></a>
-### Validation
-
-<a name="image-validation"></a>
-#### Image Validation Now Excludes SVGs
+<a name="session-serialization-configuration"></a>
+#### Session `serialization` Configuration
 
 **Likelihood Of Impact: Low**
 
-The `image` validation rule no longer allows SVG images by default. If you would like to allow SVGs when using the `image` rule, you must explicitly allow them:
+To help prevent PHP deserialization gadget chain attacks, the default application skeleton now sets the session `serialization` option to `json` in the `config/session.php` file.
+
+If you are upgrading an existing application and syncing your configuration files with the Laravel 13 skeleton, updating this value from `php` to `json` will invalidate all active user sessions.
+
+If you wish to seamlessly maintain active sessions during your upgrade, you should ensure this value remains set to `php`. However, if your application does not store PHP objects in the session and you are comfortable requiring your users to re-authenticate, we recommend updating this value to `json` for improved security.
+
+<a name="scheduling"></a>
+### Scheduling
+
+<a name="withscheduling-registration-timing"></a>
+#### `withScheduling` Registration Timing
+
+**Likelihood Of Impact: Very Low**
+
+Schedules registered via `ApplicationBuilder::withScheduling()` are now deferred until `Schedule` is resolved.
+
+If your application relied on immediate schedule registration timing during bootstrap, you may need to adjust that logic.
+
+<a name="security"></a>
+### Security
+
+<a name="request-forgery-protection"></a>
+#### Request Forgery Protection
+
+**Likelihood Of Impact: High**
+
+Laravel's CSRF middleware has been renamed from `VerifyCsrfToken` to `PreventRequestForgery`, and now includes request-origin verification using the `Sec-Fetch-Site` header.
+
+`VerifyCsrfToken` and `ValidateCsrfToken` remain as deprecated aliases, but direct references should be updated to `PreventRequestForgery`, especially when excluding middleware in tests or route definitions:
 
 ```php
-use Illuminate\Validation\Rules\File;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
-'photo' => 'required|image:allow_svg'
+// Laravel <= 12.x
+->withoutMiddleware([VerifyCsrfToken::class]);
 
-// Or...
-'photo' => ['required', File::image(allowSvg: true)],
+// Laravel >= 13.x
+->withoutMiddleware([PreventRequestForgery::class]);
 ```
+
+The middleware configuration API now also provides `preventRequestForgery(...)`.
+
+<a name="support"></a>
+### Support
+
+<a name="manager-extend-callback-binding"></a>
+#### Manager `extend` Callback Binding
+
+**Likelihood Of Impact: Low**
+
+Custom driver closures registered via manager `extend` methods are now bound to the manager instance.
+
+If you previously relied on another bound object (such as a service provider instance) as `$this` inside these callbacks, you should move those values into closure captures using `use (...)`.
+
+<a name="str-factories-reset-between-tests"></a>
+#### `Str` Factories Reset Between Tests
+
+**Likelihood Of Impact: Low**
+
+Laravel now resets custom `Str` factories during test teardown.
+
+If your tests depended on custom UUID / ULID / random string factories persisting between test methods, you should set them in each relevant test or setup hook.
+
+<a name="jsfrom-uses-unescaped-unicode-by-default"></a>
+#### `Js::from` Uses Unescaped Unicode By Default
+
+**Likelihood Of Impact: Very Low**
+
+`Illuminate\Support\Js::from` now uses `JSON_UNESCAPED_UNICODE` by default.
+
+If your tests or frontend output comparisons depended on escaped Unicode sequences (for example `\u00e8`), update your expectations.
+
+<a name="utilities"></a>
+### Utilities
+
+<a name="symfony-polyfill"></a>
+#### Symfony PHP 8.5 Polyfill and Global Function Conflicts
+
+**Likelihood Of Impact: Low**
+
+Laravel 13 introduces a dependency on `symfony/polyfill-php85`. On PHP versions below 8.5, this polyfill defines global functions such as `array_first()` and `array_last()` unless they have already been defined earlier during bootstrap.
+
+These functions may conflict with legacy helper packages like `laravel/helpers` or custom global helpers using the same names. For example, the historical `array_first()` helper accepted a callback to return the first matching element, while the polyfilled version only returns the first element of the array.
+
+To avoid conflicts and ensure consistent behavior across PHP versions, you should prefer the `Illuminate\Support\Arr` methods:
+
+```php
+use Illuminate\Support\Arr;
+
+Arr::first($array, function ($value) {
+  return /* condition */;
+});
+```
+
+<a name="views"></a>
+### Views
+
+<a name="pagination-bootstrap-view-names"></a>
+#### Pagination Bootstrap View Names
+
+**Likelihood Of Impact: Low**
+
+The internal pagination view names for Bootstrap 3 defaults are now explicit:
+
+```nothing
+// Laravel <= 12.x
+pagination::default
+pagination::simple-default
+
+// Laravel >= 13.x
+pagination::bootstrap-3
+pagination::simple-bootstrap-3
+```
+
+If your application references the old pagination view names directly, update those references.
 
 <a name="miscellaneous"></a>
 ### Miscellaneous
 
-We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/11.x...12.x) and choose which updates are important to you.
+We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/12.x...13.x) and choose which updates are important to you.

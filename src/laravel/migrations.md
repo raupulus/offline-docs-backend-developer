@@ -1,15 +1,15 @@
 ---
 title: 'Database: Migrations'
-source_url: https://laravel.com/docs/12.x/migrations
+source_url: https://laravel.com/docs/13.x/migrations
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: migrations.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 540
+retrieved_at: '2026-09-15'
+order: 560
 ---
 
 # Database: Migrations
@@ -582,12 +582,13 @@ The schema builder blueprint offers a variety of methods that correspond to the 
 [foreignIdFor](#column-method-foreignIdFor)
 [foreignUlid](#column-method-foreignUlid)
 [foreignUuid](#column-method-foreignUuid)
+[foreignUuidFor](#column-method-foreignUuidFor)
 [morphs](#column-method-morphs)
 [nullableMorphs](#column-method-nullableMorphs)
 
 </div>
 
-<a name="spacifics-method-list"></a>
+<a name="specifics-method-list"></a>
 #### Specialty Types
 
 <div class="collection-method-list" markdown="1">
@@ -761,6 +762,15 @@ The `foreignUuid` method creates a `UUID` equivalent column:
 $table->foreignUuid('user_id');
 ```
 
+<a name="column-method-foreignUuidFor"></a>
+#### `foreignUuidFor()` {.collection-method}
+
+The `foreignUuidFor` method adds a `{column}_id` UUID equivalent column for a given model class:
+
+```php
+$table->foreignUuidFor(User::class);
+```
+
 <a name="column-method-geography"></a>
 #### `geography()` {.collection-method}
 
@@ -905,9 +915,9 @@ $table->mediumText('data')->charset('binary'); // MEDIUMBLOB
 <a name="column-method-morphs"></a>
 #### `morphs()` {.collection-method}
 
-The `morphs` method is a convenience method that adds a `{column}_id` equivalent column and a `{column}_type` `VARCHAR` equivalent column. The column type for the `{column}_id` will be `UNSIGNED BIGINT`, `CHAR(36)`, or `CHAR(26)` depending on the model key type.
+The `morphs` method is a convenience method that adds a `{column}_type` `VARCHAR` equivalent column and a `{column}_id` equivalent column. The column type for the `{column}_id` will be `UNSIGNED BIGINT`, `CHAR(36)`, or `CHAR(26)` depending on the model key type.
 
-This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships). In the following example, `taggable_id` and `taggable_type` columns would be created:
+This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships). In the following example, `taggable_type` and `taggable_id` columns would be created:
 
 ```php
 $table->morphs('taggable');
@@ -1153,9 +1163,9 @@ $table->unsignedTinyInteger('votes');
 <a name="column-method-ulidMorphs"></a>
 #### `ulidMorphs()` {.collection-method}
 
-The `ulidMorphs` method is a convenience method that adds a `{column}_id` `CHAR(26)` equivalent column and a `{column}_type` `VARCHAR` equivalent column.
+The `ulidMorphs` method is a convenience method that adds a `{column}_type` `VARCHAR` equivalent column and a `{column}_id` `CHAR(26)` equivalent column.
 
-This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships) that use ULID identifiers. In the following example, `taggable_id` and `taggable_type` columns would be created:
+This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships) that use ULID identifiers. In the following example, `taggable_type` and `taggable_id` columns would be created:
 
 ```php
 $table->ulidMorphs('taggable');
@@ -1164,9 +1174,9 @@ $table->ulidMorphs('taggable');
 <a name="column-method-uuidMorphs"></a>
 #### `uuidMorphs()` {.collection-method}
 
-The `uuidMorphs` method is a convenience method that adds a `{column}_id` `CHAR(36)` equivalent column and a `{column}_type` `VARCHAR` equivalent column.
+The `uuidMorphs` method is a convenience method that adds a `{column}_type` `VARCHAR` equivalent column and a `{column}_id` `CHAR(36)` equivalent column.
 
-This method is intended to be used when defining the columns necessary for a [polymorphic Eloquent relationship](/docs/{{version}}/eloquent-relationships#polymorphic-relationships) that use UUID identifiers. In the following example, `taggable_id` and `taggable_type` columns would be created:
+This method is intended to be used when defining the columns necessary for a [polymorphic Eloquent relationship](/docs/{{version}}/eloquent-relationships#polymorphic-relationships) that use UUID identifiers. In the following example, `taggable_type` and `taggable_id` columns would be created:
 
 ```php
 $table->uuidMorphs('taggable');
@@ -1248,6 +1258,7 @@ The following table contains all of the available column modifiers. This list do
 | `->nullable($value = true)`         | Allow `NULL` values to be inserted into the column.                                            |
 | `->storedAs($expression)`           | Create a stored generated column (MariaDB / MySQL / PostgreSQL / SQLite).                      |
 | `->unsigned()`                      | Set `INTEGER` columns as `UNSIGNED` (MariaDB / MySQL).                                         |
+| `->using($expression)`              | Specify a casting expression when changing the column type (PostgreSQL).                       |
 | `->useCurrent()`                    | Set `TIMESTAMP` columns to use `CURRENT_TIMESTAMP` as default value.                           |
 | `->useCurrentOnUpdate()`            | Set `TIMESTAMP` columns to use `CURRENT_TIMESTAMP` when a record is updated (MariaDB / MySQL). |
 | `->virtualAs($expression)`          | Create a virtual generated column (MariaDB / MySQL / SQLite).                                  |
@@ -1360,6 +1371,17 @@ $table->bigIncrements('id')->primary()->change();
 $table->char('postal_code', 10)->unique(false)->change();
 ```
 
+<a name="postgresql-column-modifications"></a>
+#### PostgreSQL Column Modifications
+
+When changing a column's type on PostgreSQL, you may use the `using` modifier to specify the expression used to cast the existing values:
+
+```php
+Schema::table('users', function (Blueprint $table) {
+    $table->date('birthday')->using('birthday::date')->change();
+});
+```
+
 <a name="renaming-columns"></a>
 ### Renaming Columns
 
@@ -1399,7 +1421,7 @@ Laravel provides several convenient methods related to dropping common types of 
 
 | Command                             | Description                                           |
 | ----------------------------------- | ----------------------------------------------------- |
-| `$table->dropMorphs('morphable');`  | Drop the `morphable_id` and `morphable_type` columns. |
+| `$table->dropMorphs('morphable');`  | Drop the `morphable_type` and `morphable_id` columns. |
 | `$table->dropRememberToken();`      | Drop the `remember_token` column.                     |
 | `$table->dropSoftDeletes();`        | Drop the `deleted_at` column.                         |
 | `$table->dropSoftDeletesTz();`      | Alias of `dropSoftDeletes()` method.                  |
@@ -1617,12 +1639,13 @@ For convenience, each migration operation will dispatch an [event](/docs/{{versi
 
 | Class                                            | Description                                      |
 | ------------------------------------------------ | ------------------------------------------------ |
+| `Illuminate\Database\Events\DatabaseRefreshed`   | The `migrate:refresh` command has finished.      |
 | `Illuminate\Database\Events\MigrationsStarted`   | A batch of migrations is about to be executed.   |
-| `Illuminate\Database\Events\MigrationsEnded`     | A batch of migrations has finished executing.    |
+| `Illuminate\Database\Events\MigrationsEnded`     | A batch of migrations has finished.              |
 | `Illuminate\Database\Events\MigrationStarted`    | A single migration is about to be executed.      |
-| `Illuminate\Database\Events\MigrationEnded`      | A single migration has finished executing.       |
+| `Illuminate\Database\Events\MigrationEnded`      | A single migration has finished.                 |
 | `Illuminate\Database\Events\NoPendingMigrations` | A migration command found no pending migrations. |
-| `Illuminate\Database\Events\SchemaDumped`        | A database schema dump has completed.            |
+| `Illuminate\Database\Events\SchemaDumped`        | A database schema dump has finished.             |
 | `Illuminate\Database\Events\SchemaLoaded`        | An existing database schema dump has loaded.     |
 
 </div>

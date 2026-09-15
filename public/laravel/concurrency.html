@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Concurrency</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Concurrency</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Concurrency</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Concurrency</a>
       <h1 class="doc-title">Concurrency</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/concurrency" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/concurrency" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -359,6 +359,8 @@ class="is-current" aria-current="page">Concurrency</a>
           <ul>
               <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
               <li class="lvl-2"><a href="#running-concurrent-tasks">Running Concurrent Tasks#</a></li>
+              <li class="lvl-3"><a href="#named-results">Named Results#</a></li>
+              <li class="lvl-3"><a href="#task-timeouts">Task Timeouts#</a></li>
               <li class="lvl-2"><a href="#deferring-concurrent-tasks">Deferring Concurrent Tasks#</a></li>
           </ul>
         </details>
@@ -367,7 +369,11 @@ class="is-current" aria-current="page">Concurrency</a>
         <h1 id="concurrency">Concurrency<a class="headerlink" href="#concurrency" title="Permanent link">#</a></h1>
 <ul>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#running-concurrent-tasks">Running Concurrent Tasks</a></li>
+<li><a href="#running-concurrent-tasks">Running Concurrent Tasks</a><ul>
+<li><a href="#named-results">Named Results</a></li>
+<li><a href="#task-timeouts">Task Timeouts</a></li>
+</ul>
+</li>
 <li><a href="#deferring-concurrent-tasks">Deferring Concurrent Tasks</a></li>
 </ul>
 <p><a name="introduction"></a></p>
@@ -400,6 +406,41 @@ class="is-current" aria-current="page">Concurrency</a>
 
 <p>Or, to change the default concurrency driver, you should publish the <code>concurrency</code> configuration file via the <code>config:publish</code> Artisan command and update the <code>default</code> option within the file:</p>
 <div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>config:publish<span class="w"> </span>concurrency
+</code></pre></div>
+
+<p><a name="named-results"></a></p>
+<h3 id="named-results">Named Results<a class="headerlink" href="#named-results" title="Permanent link">#</a></h3>
+<p>If you would like to access concurrent task results by name rather than by position, you may provide an associative array of closures. Each result will be returned using the same key as its corresponding closure:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Concurrency;</span>
+<span class="x">use Illuminate\Support\Facades\DB;</span>
+
+<span class="x">$results = Concurrency::run([</span>
+<span class="x">    &#39;users&#39; =&gt; fn () =&gt; DB::table(&#39;users&#39;)-&gt;count(),</span>
+<span class="x">    &#39;orders&#39; =&gt; fn () =&gt; DB::table(&#39;orders&#39;)-&gt;count(),</span>
+<span class="x">]);</span>
+
+<span class="x">$userCount = $results[&#39;users&#39;];</span>
+<span class="x">$orderCount = $results[&#39;orders&#39;];</span>
+</code></pre></div>
+
+<p><a name="task-timeouts"></a></p>
+<h3 id="task-timeouts">Task Timeouts<a class="headerlink" href="#task-timeouts" title="Permanent link">#</a></h3>
+<p>When using the <code>process</code> driver (the default), you may specify a maximum number of seconds a concurrent task is allowed to run before it is terminated by providing a timeout to the <code>run</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Concurrency;</span>
+<span class="x">use Illuminate\Support\Facades\DB;</span>
+
+<span class="x">[$userCount, $orderCount] = Concurrency::run([</span>
+<span class="x">    fn () =&gt; DB::table(&#39;users&#39;)-&gt;count(),</span>
+<span class="x">    fn () =&gt; DB::table(&#39;orders&#39;)-&gt;count(),</span>
+<span class="x">], timeout: 30);</span>
+</code></pre></div>
+
+<p>You may also provide a <code>CarbonInterval</code> instance if you prefer a more expressive timeout definition:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Concurrency;</span>
+
+<span class="x">use function Illuminate\Support\seconds;</span>
+
+<span class="x">Concurrency::run([...], timeout: seconds(30));</span>
 </code></pre></div>
 
 <p><a name="deferring-concurrent-tasks"></a></p>

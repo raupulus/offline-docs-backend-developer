@@ -1,14 +1,14 @@
 ---
 title: Controllers
-source_url: https://laravel.com/docs/12.x/controllers
+source_url: https://laravel.com/docs/13.x/controllers
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: controllers.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 190
 ---
 
@@ -19,6 +19,8 @@ order: 190
     - [Basic Controllers](#basic-controllers)
     - [Single Action Controllers](#single-action-controllers)
 - [Controller Middleware](#controller-middleware)
+    - [Middleware Attributes](#middleware-attributes)
+    - [Authorization Attributes](#authorization-attributes)
 - [Resource Controllers](#resource-controllers)
     - [Partial Resource Routes](#restful-partial-resource-routes)
     - [Nested Resources](#restful-nested-resources)
@@ -179,6 +181,120 @@ public static function middleware(): array
     ];
 }
 ```
+
+<a name="middleware-attributes"></a>
+### Middleware Attributes
+
+You may also assign middleware to controllers using PHP attributes:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Routing\Attributes\Controllers\Middleware;
+
+#[Middleware('auth')]
+#[Middleware('log', only: ['index'])]
+#[Middleware('subscribed', except: ['store'])]
+class UserController
+{
+    // ...
+}
+```
+
+You may place middleware attributes on individual controller methods as well. Middleware assigned to methods will be merged with middleware assigned at the class level:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
+
+#[Middleware('auth')]
+class UserController
+{
+    #[Middleware('log')]
+    #[Middleware('subscribed')]
+    public function index()
+    {
+        // ...
+    }
+
+    #[Middleware(static function (Request $request, Closure $next) {
+        // ...
+
+        return $next($request);
+    })]
+    public function store()
+    {
+        // ...
+    }
+}
+```
+
+To exclude middleware from a controller or individual controller methods, use the `WithoutMiddleware` attribute. You may use the `only` and `except` arguments to limit a class-level attribute to particular controller methods:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Middleware\EnsureTokenIsValid;
+use Illuminate\Routing\Attributes\Controllers\WithoutMiddleware;
+
+#[WithoutMiddleware('subscribed', except: ['index'])]
+class UserController
+{
+    #[WithoutMiddleware(EnsureTokenIsValid::class)]
+    public function index()
+    {
+        // ...
+    }
+
+    public function show()
+    {
+        // ...
+    }
+}
+```
+
+Class-level `WithoutMiddleware` attributes are inherited by child controllers. The attribute can only remove route middleware and does not apply to [global middleware](/docs/{{version}}/middleware#global-middleware).
+
+<a name="authorization-attributes"></a>
+### Authorization Attributes
+
+If you are authorizing controller actions via policies, you may use the `Authorize` attribute as a convenient shortcut for the `can` middleware:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Comment;
+use App\Models\Post;
+use Illuminate\Routing\Attributes\Controllers\Authorize;
+
+class CommentController
+{
+    #[Authorize('create', [Comment::class, 'post'])]
+    public function store(Post $post)
+    {
+        // ...
+    }
+
+    #[Authorize('delete', 'comment')]
+    public function destroy(Comment $comment)
+    {
+        // ...
+    }
+}
+```
+
+The first argument is the ability you wish to authorize. The second argument is the model class, route parameter, or parameters that should be passed to the policy.
 
 <a name="resource-controllers"></a>
 ## Resource Controllers

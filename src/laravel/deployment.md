@@ -1,14 +1,14 @@
 ---
 title: Deployment
-source_url: https://laravel.com/docs/12.x/deployment
+source_url: https://laravel.com/docs/13.x/deployment
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: deployment.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 230
 ---
 
@@ -42,7 +42,7 @@ The Laravel framework has a few system requirements. You should ensure that your
 
 <div class="content-list" markdown="1">
 
-- PHP >= 8.2
+- PHP >= 8.3
 - Ctype PHP Extension
 - cURL PHP Extension
 - DOM PHP Extension
@@ -93,9 +93,12 @@ server {
     error_page 404 /index.php;
 
     location ~ ^/index\.php(/|$) {
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
+        fastcgi_buffer_size 32k;
+        fastcgi_buffers 8 32k;
+        fastcgi_busy_buffers_size 64k;
         fastcgi_hide_header X-Powered-By;
     }
 
@@ -195,7 +198,7 @@ After deploying a new version of your application, any long-running services suc
 php artisan reload
 ```
 
-If you are not using [Laravel Cloud](https://cloud.laravel.com), you should manually  configure a process monitor that can detect when your reloadable processes exit and automatically restart them.
+If you are not using [Laravel Cloud](https://cloud.laravel.com), you should manually configure a process monitor that can detect when your reloadable processes exit and automatically restart them.
 
 <a name="debug-mode"></a>
 ## Debug Mode

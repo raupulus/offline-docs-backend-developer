@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Laravel Socialite</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Laravel Socialite</a>
       <h1 class="doc-title">Laravel Socialite</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/socialite" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/socialite" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -556,7 +556,10 @@ When using the <code>with</code> method, be careful not to pass any reserved key
 <span class="x">$user = Socialite::driver(&#39;github&#39;)-&gt;userFromToken($token);</span>
 </code></pre></div>
 
-<p>If you are using Facebook Limited Login via an iOS application, Facebook will return an OIDC token instead of an access token. Like an access token, the OIDC token can be provided to the <code>userFromToken</code> method in order to retrieve user details.</p>
+<p>If you are using Facebook Limited Login via an iOS application, Facebook will return an OIDC token instead of an access token. To retrieve user details from the OIDC token, provide the nonce used to initiate the login to the <code>userFromToken</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$user = Socialite::driver(&#39;facebook&#39;)-&gt;userFromToken($token, $nonce);</span>
+</code></pre></div>
+
 <p><a name="stateless-authentication"></a></p>
 <h4 id="stateless-authentication">Stateless Authentication<a class="headerlink" href="#stateless-authentication" title="Permanent link">#</a></h4>
 <p>The <code>stateless</code> method may be used to disable session state verification. This is useful when adding social authentication to a stateless API that does not utilize cookie based sessions:</p>
@@ -584,12 +587,12 @@ When using the <code>with</code> method, be careful not to pass any reserved key
 
 <p><a name="faking-the-callback"></a></p>
 <h4 id="faking-the-callback">Faking the Callback<a class="headerlink" href="#faking-the-callback" title="Permanent link">#</a></h4>
-<p>To test your application's callback route, you may invoke the <code>fake</code> method and provide a <code>User</code> instance that should be returned when your application requests the user's details from the provider. The <code>User</code> instance may be created using the <code>map</code> method:</p>
+<p>To test your application's callback route, you may invoke the <code>fake</code> method and provide a <code>User</code> instance that should be returned when your application requests the user's details from the provider. The <code>User</code> instance may be created using the <code>fake</code> method:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Laravel\Socialite\Socialite;</span>
 <span class="x">use Laravel\Socialite\Two\User;</span>
 
 <span class="x">test(&#39;user can login with github&#39;, function () {</span>
-<span class="x">    Socialite::fake(&#39;github&#39;, (new User)-&gt;map([</span>
+<span class="x">    Socialite::fake(&#39;github&#39;, User::fake([</span>
 <span class="x">        &#39;id&#39; =&gt; &#39;github-123&#39;,</span>
 <span class="x">        &#39;name&#39; =&gt; &#39;Jason Beggs&#39;,</span>
 <span class="x">        &#39;email&#39; =&gt; &#39;jason@example.com&#39;,</span>
@@ -607,16 +610,19 @@ When using the <code>with</code> method, be careful not to pass any reserved key
 <span class="x">});</span>
 </code></pre></div>
 
-<p>By default, the <code>User</code> instance will also include a <code>token</code> property. If needed, you may manually specify additional properties on the <code>User</code> instance:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">$fakeUser = (new User)-&gt;map([</span>
+<p>By default, the <code>User</code> instance will include fake OAuth token values. If needed, you may override these values by passing additional attributes to the <code>fake</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$fakeUser = User::fake([</span>
 <span class="x">    &#39;id&#39; =&gt; &#39;github-123&#39;,</span>
 <span class="x">    &#39;name&#39; =&gt; &#39;Jason Beggs&#39;,</span>
 <span class="x">    &#39;email&#39; =&gt; &#39;jason@example.com&#39;,</span>
-<span class="x">])-&gt;setToken(&#39;fake-token&#39;)</span>
-<span class="x">  -&gt;setRefreshToken(&#39;fake-refresh-token&#39;)</span>
-<span class="x">  -&gt;setExpiresIn(3600)</span>
-<span class="x">  -&gt;setApprovedScopes([&#39;read&#39;, &#39;write&#39;])</span>
+<span class="x">    &#39;token&#39; =&gt; &#39;fake-token&#39;,</span>
+<span class="x">    &#39;refreshToken&#39; =&gt; &#39;fake-refresh-token&#39;,</span>
+<span class="x">    &#39;expiresIn&#39; =&gt; 3600,</span>
+<span class="x">    &#39;approvedScopes&#39; =&gt; [&#39;read&#39;, &#39;write&#39;],</span>
+<span class="x">]);</span>
 </code></pre></div>
+
+<p>OAuth 1 users may be faked using the <code>Laravel\Socialite\One\User</code> class.</p>
       </div>
     </article>
 

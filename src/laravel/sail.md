@@ -1,22 +1,21 @@
 ---
 title: Laravel Sail
-source_url: https://laravel.com/docs/12.x/sail
+source_url: https://laravel.com/docs/13.x/sail
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: sail.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 800
+retrieved_at: '2026-09-15'
+order: 820
 ---
 
 # Laravel Sail
 
 - [Introduction](#introduction)
 - [Installation and Setup](#installation)
-    - [Installing Sail Into Existing Applications](#installing-sail-into-existing-applications)
     - [Rebuilding Sail Images](#rebuilding-sail-images)
     - [Configuring A Shell Alias](#configuring-a-shell-alias)
 - [Starting and Stopping Sail](#starting-and-stopping-sail)
@@ -38,11 +37,12 @@ order: 800
 - [Previewing Emails](#previewing-emails)
 - [Container CLI](#sail-container-cli)
 - [PHP Versions](#sail-php-versions)
+    - [Additional PHP Extensions](#sail-php-extensions)
 - [Node Versions](#sail-node-versions)
 - [Sharing Your Site](#sharing-your-site)
 - [Debugging With Xdebug](#debugging-with-xdebug)
-  - [Xdebug CLI Usage](#xdebug-cli-usage)
-  - [Xdebug Browser Usage](#xdebug-browser-usage)
+    - [Xdebug CLI Usage](#xdebug-cli-usage)
+    - [Xdebug Browser Usage](#xdebug-browser-usage)
 - [Customization](#sail-customization)
 
 <a name="introduction"></a>
@@ -57,12 +57,7 @@ Laravel Sail is supported on macOS, Linux, and Windows (via [WSL2](https://docs.
 <a name="installation"></a>
 ## Installation and Setup
 
-Laravel Sail is automatically installed with all new Laravel applications so you may start using it immediately.
-
-<a name="installing-sail-into-existing-applications"></a>
-### Installing Sail Into Existing Applications
-
-If you are interested in using Sail with an existing Laravel application, you may simply install Sail using the Composer package manager. Of course, these steps assume that your existing local development environment allows you to install Composer dependencies:
+You may install Sail using the Composer package manager:
 
 ```shell
 composer require laravel/sail --dev
@@ -445,10 +440,24 @@ sail build --no-cache
 sail up
 ```
 
+<a name="sail-php-extensions"></a>
+### Additional PHP Extensions
+
+Sail's runtime images include a common set of PHP extensions. If your application requires additional extensions, you may install them when building the image by adding a space-separated `PHP_EXTENSIONS` build argument to the `laravel.test` service in your application's `compose.yaml` file:
+
+```yaml
+build:
+    args:
+        WWWGROUP: '${WWWGROUP}'
+        PHP_EXTENSIONS: 'gmp imagick'
+```
+
+After updating your application's `compose.yaml` file, you should rebuild your container images.
+
 <a name="sail-node-versions"></a>
 ## Node Versions
 
-Sail installs Node 22 by default. To change the Node version that is installed when building your images, you may update the `build.args` definition of the `laravel.test` service in your application's `compose.yaml` file:
+Sail installs Node 24 by default. To change the Node version that is installed when building your images, you may update the `build.args` definition of the `laravel.test` service in your application's `compose.yaml` file:
 
 ```yaml
 build:

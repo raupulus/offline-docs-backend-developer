@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -246,6 +246,10 @@ class="is-current" aria-current="page">Events</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -264,6 +268,10 @@ class="is-current" aria-current="page">Events</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Events</a>
                 <a href="./passport.html"
 >Laravel Passport</a>
               </li>
-              <li>
-                <a href="./passwords.html"
->Resetting Passwords</a>
-              </li>
-              <li>
-                <a href="./pennant.html"
->Laravel Pennant</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Events</a>
       <h1 class="doc-title">Events</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/events" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/events" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -370,6 +370,7 @@ class="is-current" aria-current="page">Events</a>
               <li class="lvl-3"><a href="#queued-event-listeners-and-database-transactions">Queued Event Listeners and Database Transactions#</a></li>
               <li class="lvl-3"><a href="#queued-listener-middleware">Queued Listener Middleware#</a></li>
               <li class="lvl-3"><a href="#unique-event-listeners">Unique Event Listeners#</a></li>
+              <li class="lvl-3"><a href="#debounced-event-listeners">Debounced Event Listeners#</a></li>
               <li class="lvl-3"><a href="#handling-failed-jobs">Handling Failed Jobs#</a></li>
               <li class="lvl-2"><a href="#dispatching-events">Dispatching Events#</a></li>
               <li class="lvl-3"><a href="#dispatching-events-after-database-transactions">Dispatching Events After Database Transactions#</a></li>
@@ -404,6 +405,7 @@ class="is-current" aria-current="page">Events</a>
 <li><a href="#unique-listener-locks">Unique Listener Locks</a></li>
 </ul>
 </li>
+<li><a href="#debounced-event-listeners">Debounced Event Listeners</a></li>
 <li><a href="#handling-failed-jobs">Handling Failed Jobs</a></li>
 </ul>
 </li>
@@ -419,7 +421,7 @@ class="is-current" aria-current="page">Events</a>
 </li>
 <li><a href="#testing">Testing</a><ul>
 <li><a href="#faking-a-subset-of-events">Faking a Subset of Events</a></li>
-<li><a href="#scoped-event-fakes">Scoped Events Fakes</a></li>
+<li><a href="#scoped-event-fakes">Scoped Event Fakes</a></li>
 </ul>
 </li>
 </ul>
@@ -489,6 +491,31 @@ php<span class="w"> </span>artisan<span class="w"> </span>make:listener
 <p><a name="event-discovery-in-production"></a></p>
 <h4 id="event-discovery-in-production">Event Discovery in Production<a class="headerlink" href="#event-discovery-in-production" title="Permanent link">#</a></h4>
 <p>To give your application a speed boost, you should cache a manifest of all of your application's listeners using the <code>optimize</code> or <code>event:cache</code> Artisan commands. Typically, this command should be run as part of your application's <a href="./deployment.html#optimization">deployment process</a>. This manifest will be used by the framework to speed up the event registration process. The <code>event:clear</code> command may be used to destroy the event cache.</p>
+<p><a name="dynamic-event-discovery"></a></p>
+<h4 id="dynamic-event-discovery">Dynamic Event Discovery<a class="headerlink" href="#dynamic-event-discovery" title="Permanent link">#</a></h4>
+<p>To dynamically control whether a given listener is discovered, you may implement the <code>ShouldBeDiscovered</code> interface on the listener class and define a <code>shouldBeDiscovered</code> method that returns a boolean value. If the method returns <code>false</code>, the listener will not be registered during event discovery:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Contracts\Events\ShouldBeDiscovered;</span>
+
+<span class="x">class SendPodcastNotification implements ShouldBeDiscovered</span>
+<span class="x">{</span>
+<span class="x">    /**</span>
+<span class="x">     * Handle the event.</span>
+<span class="x">     */</span>
+<span class="x">    public function handle(PodcastProcessed $event): void</span>
+<span class="x">    {</span>
+<span class="x">        // ...</span>
+<span class="x">    }</span>
+
+<span class="x">    /**</span>
+<span class="x">     * Determine if the listener should be discovered.</span>
+<span class="x">     */</span>
+<span class="x">    public static function shouldBeDiscovered(): bool</span>
+<span class="x">    {</span>
+<span class="x">        return app()-&gt;environment(&#39;production&#39;);</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+
 <p><a name="manually-registering-events"></a></p>
 <h3 id="manually-registering-events">Manually Registering Events<a class="headerlink" href="#manually-registering-events" title="Permanent link">#</a></h3>
 <p>Using the <code>Event</code> facade, you may manually register events and their corresponding listeners within the <code>boot</code> method of your application's <code>AppServiceProvider</code>:</p>
@@ -529,7 +556,7 @@ php<span class="w"> </span>artisan<span class="w"> </span>make:listener
 <span class="x">}</span>
 </code></pre></div>
 
-<p><a name="queuable-anonymous-event-listeners"></a></p>
+<p><a name="queueable-anonymous-event-listeners"></a></p>
 <h4 id="queueable-anonymous-event-listeners">Queueable Anonymous Event Listeners<a class="headerlink" href="#queueable-anonymous-event-listeners" title="Permanent link">#</a></h4>
 <p>When registering closure-based event listeners, you may wrap the listener closure within the <code>Illuminate\Events\queueable</code> function to instruct Laravel to execute the listener using the <a href="./queues.html">queue</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use App\Events\PodcastProcessed;</span>
@@ -653,36 +680,23 @@ Your event listeners may also type-hint any dependencies they need on their cons
 <p>That's it! Now, when an event handled by this listener is dispatched, the listener will automatically be queued by the event dispatcher using Laravel's <a href="./queues.html">queue system</a>. If no exceptions are thrown when the listener is executed by the queue, the queued job will automatically be deleted after it has finished processing.</p>
 <p><a name="customizing-the-queue-connection-queue-name"></a></p>
 <h4 id="customizing-the-queue-connection-name-delay">Customizing The Queue Connection, Name, &amp; Delay<a class="headerlink" href="#customizing-the-queue-connection-name-delay" title="Permanent link">#</a></h4>
-<p>If you would like to customize the queue connection, queue name, or queue delay time of an event listener, you may define the <code>$connection</code>, <code>$queue</code>, or <code>$delay</code> properties on your listener class:</p>
+<p>If you would like to customize the queue connection, queue name, or queue delay time of an event listener, you may use the <code>Connection</code>, <code>Queue</code>, and <code>Delay</code> attributes on your listener class:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Listeners</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Events\OrderShipped</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Connection</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Delay</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Queue</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Connection</span><span class="p">(</span><span class="s1">&#39;sqs&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">Queue</span><span class="p">(</span><span class="s1">&#39;listeners&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">Delay</span><span class="p">(</span><span class="mi">60</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">SendShipmentNotification</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The name of the connection the job should be sent to.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string|null</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$connection</span> <span class="o">=</span> <span class="s1">&#39;sqs&#39;</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The name of the queue the job should be sent to.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string|null</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$queue</span> <span class="o">=</span> <span class="s1">&#39;listeners&#39;</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The time (seconds) before the job should be processed.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$delay</span> <span class="o">=</span> <span class="mi">60</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -949,6 +963,62 @@ If your application dispatches events from multiple web servers or containers, y
 <p>[!NOTE]
 If you only need to limit the concurrent processing of a listener, use the <a href="./queues.html#preventing-job-overlaps">WithoutOverlapping</a> job middleware instead.</p>
 </blockquote>
+<p><a name="debounced-event-listeners"></a></p>
+<h3 id="debounced-event-listeners">Debounced Event Listeners<a class="headerlink" href="#debounced-event-listeners" title="Permanent link">#</a></h3>
+<p>Sometimes, you may want to handle only the latest instance of an event dispatched repeatedly within a short period. You may do so by adding the <code>DebounceFor</code> attribute to a queued listener:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Listeners</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Events\ProductUpdated</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\DebounceFor</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">DebounceFor</span><span class="p">(</span><span class="mi">30</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">UpdateProductSearchIndex</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * Handle the event.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">(</span><span class="nx">ProductUpdated</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="c1">// Update the product&#39;s search index...</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Get the debounce ID for the listener.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">debounceId</span><span class="p">(</span><span class="nx">ProductUpdated</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">product</span><span class="o">-&gt;</span><span class="na">getKey</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>In the example above, repeatedly dispatching <code>ProductUpdated</code> events for the same product within <code>30</code> seconds will debounce the listener so that only the latest event is handled. Different debounce IDs are handled independently.</p>
+<p>If you would like to cap how long a frequently dispatched event can defer a listener, you may provide the <code>maxWait</code> argument to the <code>DebounceFor</code> attribute:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">#[DebounceFor(30, maxWait: 120)]</span>
+<span class="x">class UpdateProductSearchIndex implements ShouldQueue</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You may customize the cache store used for debounce tracking by defining a <code>debounceVia</code> method on your listener. The method receives the event instance and should return a cache repository:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Contracts\Cache\Repository;</span>
+<span class="x">use Illuminate\Support\Facades\Cache;</span>
+
+<span class="x">public function debounceVia(ProductUpdated $event): Repository</span>
+<span class="x">{</span>
+<span class="x">    return Cache::driver(&#39;redis&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Debounced listeners and unique listeners are mutually exclusive. A listener using the <code>DebounceFor</code> attribute should not implement <code>ShouldBeUnique</code>.</p>
+<blockquote>
+<p>[!WARNING]
+If your application dispatches events from multiple web servers or containers, you should ensure that all of your servers are communicating with the same central cache server.</p>
+</blockquote>
 <p><a name="handling-failed-jobs"></a></p>
 <h3 id="handling-failed-jobs">Handling Failed Jobs<a class="headerlink" href="#handling-failed-jobs" title="Permanent link">#</a></h3>
 <p>Sometimes your queued event listeners may fail. If the queued listener exceeds the maximum number of attempts as defined by your queue worker, the <code>failed</code> method will be called on your listener. The <code>failed</code> method receives the event instance and the <code>Throwable</code> that caused the failure:</p>
@@ -986,35 +1056,32 @@ If you only need to limit the concurrent processing of a listener, use the <a hr
 <p><a name="specifying-queued-listener-maximum-attempts"></a></p>
 <h4 id="specifying-queued-listener-maximum-attempts">Specifying Queued Listener Maximum Attempts<a class="headerlink" href="#specifying-queued-listener-maximum-attempts" title="Permanent link">#</a></h4>
 <p>If one of your queued listeners is encountering an error, you likely do not want it to keep retrying indefinitely. Therefore, Laravel provides various ways to specify how many times or for how long a listener may be attempted.</p>
-<p>You may define a <code>tries</code> property or method on your listener class to specify how many times the listener may be attempted before it is considered to have failed:</p>
+<p>You may use the <code>Tries</code> attribute on your listener class to specify how many times the listener may be attempted before it is considered to have failed:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Listeners</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Events\OrderShipped</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Tries</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Queue\InteractsWithQueue</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Tries</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">SendShipmentNotification</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">InteractsWithQueue</span><span class="p">;</span>
 
-    <span class="sd">/**</span>
-<span class="sd">     * The number of times the queued listener may be attempted.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$tries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>As an alternative to defining how many times a listener may be attempted before it fails, you may define a time at which the listener should no longer be attempted. This allows a listener to be attempted any number of times within a given time frame. To define the time at which a listener should no longer be attempted, add a <code>retryUntil</code> method to your listener class. This method should return a <code>DateTime</code> instance:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">use DateTime;</span>
+<p>As an alternative to defining how many times a listener may be attempted before it fails, you may define a time at which the listener should no longer be attempted. This allows a listener to be attempted any number of times within a given time frame. To define the time at which a listener should no longer be attempted, add a <code>retryUntil</code> method to your listener class. This method should return a <code>DateTimeInterface</code> instance:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use DateTimeInterface;</span>
 
 <span class="x">/**</span>
 <span class="x"> * Determine the time at which the listener should timeout.</span>
 <span class="x"> */</span>
-<span class="x">public function retryUntil(): DateTime</span>
+<span class="x">public function retryUntil(): DateTimeInterface</span>
 <span class="x">{</span>
 <span class="x">    return now()-&gt;plus(minutes: 5);</span>
 <span class="x">}</span>
@@ -1023,13 +1090,19 @@ If you only need to limit the concurrent processing of a listener, use the <a hr
 <p>If both <code>retryUntil</code> and <code>tries</code> are defined, Laravel gives precedence to the <code>retryUntil</code> method.</p>
 <p><a name="specifying-queued-listener-backoff"></a></p>
 <h4 id="specifying-queued-listener-backoff">Specifying Queued Listener Backoff<a class="headerlink" href="#specifying-queued-listener-backoff" title="Permanent link">#</a></h4>
-<p>If you would like to configure how many seconds Laravel should wait before retrying a listener that has encountered an exception, you may do so by defining a <code>backoff</code> property on your listener class:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * The number of seconds to wait before retrying the queued listener.</span>
-<span class="x"> *</span>
-<span class="x"> * @var int</span>
-<span class="x"> */</span>
-<span class="x">public $backoff = 3;</span>
+<p>If you would like to configure how many seconds Laravel should wait before retrying a listener that has encountered an exception, you may use the <code>Backoff</code> attribute on your listener class:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Listeners</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Backoff</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Backoff</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">SendShipmentNotification</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>If you require more complex logic for determining the listeners's backoff time, you may define a <code>backoff</code> method on your listener class:</p>
@@ -1056,32 +1129,22 @@ If you only need to limit the concurrent processing of a listener, use the <a hr
 
 <p><a name="specifying-queued-listener-max-exceptions"></a></p>
 <h4 id="specifying-queued-listener-max-exceptions">Specifying Queued Listener Max Exceptions<a class="headerlink" href="#specifying-queued-listener-max-exceptions" title="Permanent link">#</a></h4>
-<p>Sometimes you may wish to specify that a queued listener may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the <code>release</code> method directly). To accomplish this, you may define a <code>maxExceptions</code> property on your listener class:</p>
+<p>Sometimes you may wish to specify that a queued listener may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the <code>release</code> method directly). To accomplish this, you may use the <code>Tries</code> and <code>MaxExceptions</code> attributes on your listener class:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Listeners</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Events\OrderShipped</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\MaxExceptions</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Tries</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Queue\InteractsWithQueue</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Tries</span><span class="p">(</span><span class="mi">25</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">MaxExceptions</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">SendShipmentNotification</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">InteractsWithQueue</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The number of times the queued listener may be attempted.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$tries</span> <span class="o">=</span> <span class="mi">25</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The maximum number of unhandled exceptions to allow before failing.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$maxExceptions</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 
     <span class="sd">/**</span>
 <span class="sd">     * Handle the event.</span>
@@ -1096,41 +1159,35 @@ If you only need to limit the concurrent processing of a listener, use the <a hr
 <p>In this example, the listener will be retried up to 25 times. However, the listener will fail if three unhandled exceptions are thrown by the listener.</p>
 <p><a name="specifying-queued-listener-timeout"></a></p>
 <h4 id="specifying-queued-listener-timeout">Specifying Queued Listener Timeout<a class="headerlink" href="#specifying-queued-listener-timeout" title="Permanent link">#</a></h4>
-<p>Often, you know roughly how long you expect your queued listeners to take. For this reason, Laravel allows you to specify a "timeout" value. If a listener is processing for longer than the number of seconds specified by the timeout value, the worker processing the listener will exit with an error. You may define the maximum number of seconds a listener should be allowed to run by defining a <code>timeout</code> property on your listener class:</p>
+<p>Often, you know roughly how long you expect your queued listeners to take. For this reason, Laravel allows you to specify a "timeout" value. If a listener is processing for longer than the number of seconds specified by the timeout value, the worker processing the listener will exit with an error. You may define the maximum number of seconds a listener should be allowed to run by using the <code>Timeout</code> attribute on your listener class:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Listeners</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Events\OrderShipped</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Timeout</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Timeout</span><span class="p">(</span><span class="mi">120</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">SendShipmentNotification</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The number of seconds the listener can run before timing out.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$timeout</span> <span class="o">=</span> <span class="mi">120</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>If you would like to indicate that a listener should be marked as failed on timeout, you may define the <code>failOnTimeout</code> property on the listener class:</p>
+<p>If you would like to indicate that a listener should be marked as failed on timeout, you may use the <code>FailOnTimeout</code> attribute on the listener class:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Listeners</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Events\OrderShipped</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\FailOnTimeout</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">FailOnTimeout</span><span class="p">]</span>
 <span class="k">class</span> <span class="nc">SendShipmentNotification</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * Indicate if the listener should be marked as failed on timeout.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var bool</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$failOnTimeout</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 

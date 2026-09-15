@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Database: Getting Started</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Database: Getting Started</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Database: Getting Started</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Database: Getting Started</a>
       <h1 class="doc-title">Database: Getting Started</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/database" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/database" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -360,6 +360,7 @@ class="is-current" aria-current="page">Database: Getting Started</a>
               <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
               <li class="lvl-3"><a href="#configuration">Configuration#</a></li>
               <li class="lvl-3"><a href="#read-and-write-connections">Read and Write Connections#</a></li>
+              <li class="lvl-3"><a href="#pooled-postgresql-connections">Pooled PostgreSQL Connections#</a></li>
               <li class="lvl-2"><a href="#running-sql-queries">Running SQL Queries#</a></li>
               <li class="lvl-3"><a href="#using-multiple-database-connections">Using Multiple Database Connections#</a></li>
               <li class="lvl-3"><a href="#listening-for-query-events">Listening for Query Events#</a></li>
@@ -377,6 +378,7 @@ class="is-current" aria-current="page">Database: Getting Started</a>
 <li><a href="#introduction">Introduction</a><ul>
 <li><a href="#configuration">Configuration</a></li>
 <li><a href="#read-and-write-connections">Read and Write Connections</a></li>
+<li><a href="#pooled-postgresql-connections">Pooled PostgreSQL Connections</a></li>
 </ul>
 </li>
 <li><a href="#running-queries">Running SQL Queries</a><ul>
@@ -479,6 +481,33 @@ If you use the <a href="./installation.html#creating-a-laravel-project">Laravel 
 <p><a name="the-sticky-option"></a></p>
 <h4 id="the-sticky-option">The <code>sticky</code> Option<a class="headerlink" href="#the-sticky-option" title="Permanent link">#</a></h4>
 <p>The <code>sticky</code> option is an <em>optional</em> value that can be used to allow the immediate reading of records that have been written to the database during the current request cycle. If the <code>sticky</code> option is enabled and a "write" operation has been performed against the database during the current request cycle, any further "read" operations will use the "write" connection. This ensures that any data written during the request cycle can be immediately read back from the database during that same request. It is up to you to decide if this is the desired behavior for your application.</p>
+<p><a name="pooled-postgresql-connections"></a></p>
+<h3 id="pooled-postgresql-connections">Pooled PostgreSQL Connections<a class="headerlink" href="#pooled-postgresql-connections" title="Permanent link">#</a></h3>
+<p>Many managed PostgreSQL providers offer transaction-mode connection pooling through services such as PgBouncer or connection proxying. These poolers are ideal for application queries, but some schema operations, migrations, and maintenance commands require a direct database connection.</p>
+<p>To use a transaction pooler with PostgreSQL, configure the pooled connection as usual and provide direct connection details via the <code>direct</code> configuration option:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;pgsql&#39; =&gt; [</span>
+<span class="x">    &#39;driver&#39; =&gt; &#39;pgsql&#39;,</span>
+<span class="x">    // ...</span>
+<span class="x">    &#39;pooled&#39; =&gt; env(&#39;DB_POOLED&#39;, false),</span>
+<span class="x">    &#39;direct&#39; =&gt; array_filter([</span>
+<span class="x">        &#39;host&#39; =&gt; env(&#39;DB_DIRECT_HOST&#39;),</span>
+<span class="x">        &#39;port&#39; =&gt; env(&#39;DB_DIRECT_PORT&#39;),</span>
+<span class="x">        &#39;username&#39; =&gt; env(&#39;DB_DIRECT_USERNAME&#39;),</span>
+<span class="x">        &#39;password&#39; =&gt; env(&#39;DB_DIRECT_PASSWORD&#39;),</span>
+<span class="x">        &#39;sslmode&#39; =&gt; env(&#39;DB_DIRECT_SSLMODE&#39;),</span>
+<span class="x">    ]),</span>
+<span class="x">],</span>
+</code></pre></div>
+
+<p>When a PostgreSQL connection is configured as pooled, Laravel automatically enables emulated prepares for the pooled connection. The direct connection inherits any options not explicitly defined in the <code>direct</code> configuration and uses native prepares by default.</p>
+<p>Laravel automatically uses the direct connection for migrations, schema dumps and restores, <code>db:wipe</code>, <code>db:show</code>, and <code>db:table</code>. The <code>db</code> command also uses the direct connection by default when pooled mode is enabled and a direct connection is configured; you may pass the <code>--pooled</code> option to connect to the pooled connection instead:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>db<span class="w"> </span>--pooled
+</code></pre></div>
+
+<p>If you need to explicitly use the direct connection in your application, append the <code>::direct</code> suffix to the connection name:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DB::connection(&#39;pgsql::direct&#39;)-&gt;statement(&#39;create extension if not exists &quot;uuid-ossp&quot;&#39;);</span>
+</code></pre></div>
+
 <p><a name="running-queries"></a></p>
 <h2 id="running-sql-queries">Running SQL Queries<a class="headerlink" href="#running-sql-queries" title="Permanent link">#</a></h2>
 <p>Once you have configured your database connection, you may run queries using the <code>DB</code> facade. The <code>DB</code> facade provides methods for each type of query: <code>select</code>, <code>update</code>, <code>insert</code>, <code>delete</code>, and <code>statement</code>.</p>

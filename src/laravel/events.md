@@ -1,14 +1,14 @@
 ---
 title: Events
-source_url: https://laravel.com/docs/12.x/events
+source_url: https://laravel.com/docs/13.x/events
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: events.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 350
 ---
 
@@ -30,6 +30,7 @@ order: 350
     - [Unique Event Listeners](#unique-event-listeners)
         - [Keeping Listeners Unique Until Processing Begins](#keeping-listeners-unique-until-processing-begins)
         - [Unique Listener Locks](#unique-listener-locks)
+    - [Debounced Event Listeners](#debounced-event-listeners)
     - [Handling Failed Jobs](#handling-failed-jobs)
 - [Dispatching Events](#dispatching-events)
     - [Dispatching Events After Database Transactions](#dispatching-events-after-database-transactions)
@@ -39,7 +40,7 @@ order: 350
     - [Registering Event Subscribers](#registering-event-subscribers)
 - [Testing](#testing)
     - [Faking a Subset of Events](#faking-a-subset-of-events)
-    - [Scoped Events Fakes](#scoped-event-fakes)
+    - [Scoped Event Fakes](#scoped-event-fakes)
 
 <a name="introduction"></a>
 ## Introduction
@@ -129,6 +130,34 @@ php artisan event:list
 
 To give your application a speed boost, you should cache a manifest of all of your application's listeners using the `optimize` or `event:cache` Artisan commands. Typically, this command should be run as part of your application's [deployment process](/docs/{{version}}/deployment#optimization). This manifest will be used by the framework to speed up the event registration process. The `event:clear` command may be used to destroy the event cache.
 
+<a name="dynamic-event-discovery"></a>
+#### Dynamic Event Discovery
+
+To dynamically control whether a given listener is discovered, you may implement the `ShouldBeDiscovered` interface on the listener class and define a `shouldBeDiscovered` method that returns a boolean value. If the method returns `false`, the listener will not be registered during event discovery:
+
+```php
+use Illuminate\Contracts\Events\ShouldBeDiscovered;
+
+class SendPodcastNotification implements ShouldBeDiscovered
+{
+    /**
+     * Handle the event.
+     */
+    public function handle(PodcastProcessed $event): void
+    {
+        // ...
+    }
+
+    /**
+     * Determine if the listener should be discovered.
+     */
+    public static function shouldBeDiscovered(): bool
+    {
+        return app()->environment('production');
+    }
+}
+```
+
 <a name="manually-registering-events"></a>
 ### Manually Registering Events
 
@@ -177,7 +206,7 @@ public function boot(): void
 }
 ```
 
-<a name="queuable-anonymous-event-listeners"></a>
+<a name="queueable-anonymous-event-listeners"></a>
 #### Queueable Anonymous Event Listeners
 
 When registering closure-based event listeners, you may wrap the listener closure within the `Illuminate\Events\queueable` function to instruct Laravel to execute the listener using the [queue](/docs/{{version}}/queues):
@@ -325,7 +354,7 @@ That's it! Now, when an event handled by this listener is dispatched, the listen
 <a name="customizing-the-queue-connection-queue-name"></a>
 #### Customizing The Queue Connection, Name, & Delay
 
-If you would like to customize the queue connection, queue name, or queue delay time of an event listener, you may define the `$connection`, `$queue`, or `$delay` properties on your listener class:
+If you would like to customize the queue connection, queue name, or queue delay time of an event listener, you may use the `Connection`, `Queue`, and `Delay` attributes on your listener class:
 
 ```php
 <?php
@@ -334,32 +363,18 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Connection;
+use Illuminate\Queue\Attributes\Delay;
+use Illuminate\Queue\Attributes\Queue;
 
+#[Connection('sqs')]
+#[Queue('listeners')]
+#[Delay(60)]
 class SendShipmentNotification implements ShouldQueue
 {
-    /**
-     * The name of the connection the job should be sent to.
-     *
-     * @var string|null
-     */
-    public $connection = 'sqs';
-
-    /**
-     * The name of the queue the job should be sent to.
-     *
-     * @var string|null
-     */
-    public $queue = 'listeners';
-
-    /**
-     * The time (seconds) before the job should be processed.
-     *
-     * @var int
-     */
-    public $delay = 60;
+    // ...
 }
 ```
-
 If you would like to define the listener's queue connection, queue name, or delay at runtime, you may define `viaConnection`, `viaQueue`, or `withDelay` methods on the listener:
 
 ```php
@@ -650,6 +665,70 @@ class AcquireProductKey implements ShouldQueue, ShouldBeUnique
 > [!NOTE]
 > If you only need to limit the concurrent processing of a listener, use the [WithoutOverlapping](/docs/{{version}}/queues#preventing-job-overlaps) job middleware instead.
 
+<a name="debounced-event-listeners"></a>
+### Debounced Event Listeners
+
+Sometimes, you may want to handle only the latest instance of an event dispatched repeatedly within a short period. You may do so by adding the `DebounceFor` attribute to a queued listener:
+
+```php
+<?php
+
+namespace App\Listeners;
+
+use App\Events\ProductUpdated;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\DebounceFor;
+
+#[DebounceFor(30)]
+class UpdateProductSearchIndex implements ShouldQueue
+{
+    /**
+     * Handle the event.
+     */
+    public function handle(ProductUpdated $event): void
+    {
+        // Update the product's search index...
+    }
+
+    /**
+     * Get the debounce ID for the listener.
+     */
+    public function debounceId(ProductUpdated $event): string
+    {
+        return (string) $event->product->getKey();
+    }
+}
+```
+
+In the example above, repeatedly dispatching `ProductUpdated` events for the same product within `30` seconds will debounce the listener so that only the latest event is handled. Different debounce IDs are handled independently.
+
+If you would like to cap how long a frequently dispatched event can defer a listener, you may provide the `maxWait` argument to the `DebounceFor` attribute:
+
+```php
+#[DebounceFor(30, maxWait: 120)]
+class UpdateProductSearchIndex implements ShouldQueue
+{
+    // ...
+}
+```
+
+You may customize the cache store used for debounce tracking by defining a `debounceVia` method on your listener. The method receives the event instance and should return a cache repository:
+
+```php
+use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Support\Facades\Cache;
+
+public function debounceVia(ProductUpdated $event): Repository
+{
+    return Cache::driver('redis');
+}
+```
+
+Debounced listeners and unique listeners are mutually exclusive. A listener using the `DebounceFor` attribute should not implement `ShouldBeUnique`.
+
+> [!WARNING]
+> If your application dispatches events from multiple web servers or containers, you should ensure that all of your servers are communicating with the same central cache server.
+
 <a name="handling-failed-jobs"></a>
 ### Handling Failed Jobs
 
@@ -692,7 +771,7 @@ class SendShipmentNotification implements ShouldQueue
 
 If one of your queued listeners is encountering an error, you likely do not want it to keep retrying indefinitely. Therefore, Laravel provides various ways to specify how many times or for how long a listener may be attempted.
 
-You may define a `tries` property or method on your listener class to specify how many times the listener may be attempted before it is considered to have failed:
+You may use the `Tries` attribute on your listener class to specify how many times the listener may be attempted before it is considered to have failed:
 
 ```php
 <?php
@@ -701,30 +780,27 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\InteractsWithQueue;
 
+#[Tries(5)]
 class SendShipmentNotification implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    /**
-     * The number of times the queued listener may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 5;
+    // ...
 }
 ```
 
-As an alternative to defining how many times a listener may be attempted before it fails, you may define a time at which the listener should no longer be attempted. This allows a listener to be attempted any number of times within a given time frame. To define the time at which a listener should no longer be attempted, add a `retryUntil` method to your listener class. This method should return a `DateTime` instance:
+As an alternative to defining how many times a listener may be attempted before it fails, you may define a time at which the listener should no longer be attempted. This allows a listener to be attempted any number of times within a given time frame. To define the time at which a listener should no longer be attempted, add a `retryUntil` method to your listener class. This method should return a `DateTimeInterface` instance:
 
 ```php
-use DateTime;
+use DateTimeInterface;
 
 /**
  * Determine the time at which the listener should timeout.
  */
-public function retryUntil(): DateTime
+public function retryUntil(): DateTimeInterface
 {
     return now()->plus(minutes: 5);
 }
@@ -735,15 +811,21 @@ If both `retryUntil` and `tries` are defined, Laravel gives precedence to the `r
 <a name="specifying-queued-listener-backoff"></a>
 #### Specifying Queued Listener Backoff
 
-If you would like to configure how many seconds Laravel should wait before retrying a listener that has encountered an exception, you may do so by defining a `backoff` property on your listener class:
+If you would like to configure how many seconds Laravel should wait before retrying a listener that has encountered an exception, you may use the `Backoff` attribute on your listener class:
 
 ```php
-/**
- * The number of seconds to wait before retrying the queued listener.
- *
- * @var int
- */
-public $backoff = 3;
+<?php
+
+namespace App\Listeners;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Backoff;
+
+#[Backoff(3)]
+class SendShipmentNotification implements ShouldQueue
+{
+    // ...
+}
 ```
 
 If you require more complex logic for determining the listeners's backoff time, you may define a `backoff` method on your listener class:
@@ -775,7 +857,7 @@ public function backoff(OrderShipped $event): array
 <a name="specifying-queued-listener-max-exceptions"></a>
 #### Specifying Queued Listener Max Exceptions
 
-Sometimes you may wish to specify that a queued listener may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the `release` method directly). To accomplish this, you may define a `maxExceptions` property on your listener class:
+Sometimes you may wish to specify that a queued listener may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the `release` method directly). To accomplish this, you may use the `Tries` and `MaxExceptions` attributes on your listener class:
 
 ```php
 <?php
@@ -784,25 +866,15 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\MaxExceptions;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\InteractsWithQueue;
 
+#[Tries(25)]
+#[MaxExceptions(3)]
 class SendShipmentNotification implements ShouldQueue
 {
     use InteractsWithQueue;
-
-    /**
-     * The number of times the queued listener may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 25;
-
-    /**
-     * The maximum number of unhandled exceptions to allow before failing.
-     *
-     * @var int
-     */
-    public $maxExceptions = 3;
 
     /**
      * Handle the event.
@@ -819,7 +891,7 @@ In this example, the listener will be retried up to 25 times. However, the liste
 <a name="specifying-queued-listener-timeout"></a>
 #### Specifying Queued Listener Timeout
 
-Often, you know roughly how long you expect your queued listeners to take. For this reason, Laravel allows you to specify a "timeout" value. If a listener is processing for longer than the number of seconds specified by the timeout value, the worker processing the listener will exit with an error. You may define the maximum number of seconds a listener should be allowed to run by defining a `timeout` property on your listener class:
+Often, you know roughly how long you expect your queued listeners to take. For this reason, Laravel allows you to specify a "timeout" value. If a listener is processing for longer than the number of seconds specified by the timeout value, the worker processing the listener will exit with an error. You may define the maximum number of seconds a listener should be allowed to run by using the `Timeout` attribute on your listener class:
 
 ```php
 <?php
@@ -828,19 +900,16 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Timeout;
 
+#[Timeout(120)]
 class SendShipmentNotification implements ShouldQueue
 {
-    /**
-     * The number of seconds the listener can run before timing out.
-     *
-     * @var int
-     */
-    public $timeout = 120;
+    // ...
 }
 ```
 
-If you would like to indicate that a listener should be marked as failed on timeout, you may define the `failOnTimeout` property on the listener class:
+If you would like to indicate that a listener should be marked as failed on timeout, you may use the `FailOnTimeout` attribute on the listener class:
 
 ```php
 <?php
@@ -849,15 +918,12 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\FailOnTimeout;
 
+#[FailOnTimeout]
 class SendShipmentNotification implements ShouldQueue
 {
-    /**
-     * Indicate if the listener should be marked as failed on timeout.
-     *
-     * @var bool
-     */
-    public $failOnTimeout = true;
+    // ...
 }
 ```
 

@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,14 +98,6 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./encryption.html"
->Encryption</a>
-              </li>
-              <li>
-                <a href="./envoy.html"
->Laravel Envoy</a>
-              </li>
-              <li>
                 <a href="./errors.html"
 >Error Handling</a>
               </li>
@@ -138,6 +130,10 @@
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -156,6 +152,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Laravel Passport</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Laravel Passport</a>
       <h1 class="doc-title">Laravel Passport</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/passport" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/passport" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -440,7 +440,7 @@ class="is-current" aria-current="page">Laravel Passport</a>
 </ul>
 </li>
 <li><a href="#device-authorization-grant">Device Authorization Grant</a><ul>
-<li><a href="#creating-a-device-authorization-grant-client">Creating a Device Code Grant Client</a></li>
+<li><a href="#creating-a-device-authorization-grant-client">Creating a Device Authorization Grant Client</a></li>
 <li><a href="#requesting-device-authorization-grant-tokens">Requesting Tokens</a></li>
 </ul>
 </li>
@@ -454,7 +454,10 @@ class="is-current" aria-current="page">Laravel Passport</a>
 </ul>
 </li>
 <li><a href="#implicit-grant">Implicit Grant</a></li>
-<li><a href="#client-credentials-grant">Client Credentials Grant</a></li>
+<li><a href="#client-credentials-grant">Client Credentials Grant</a><ul>
+<li><a href="#retrieving-tokens">Retrieving Tokens</a></li>
+</ul>
+</li>
 <li><a href="#personal-access-tokens">Personal Access Tokens</a><ul>
 <li><a href="#creating-a-personal-access-client">Creating a Personal Access Client</a></li>
 <li><a href="#customizing-the-user-provider-for-pat">Customizing the User Provider</a></li>
@@ -894,7 +897,7 @@ php<span class="w"> </span>artisan<span class="w"> </span>passport:purge<span cl
 <p><a name="code-verifier-code-challenge"></a></p>
 <h4 id="code-verifier-and-code-challenge">Code Verifier and Code Challenge<a class="headerlink" href="#code-verifier-and-code-challenge" title="Permanent link">#</a></h4>
 <p>As this authorization grant does not provide a client secret, developers will need to generate a combination of a code verifier and a code challenge in order to request a token.</p>
-<p>The code verifier should be a random string of between 43 and 128 characters containing letters, numbers, and  <code>"-"</code>, <code>"."</code>, <code>"_"</code>, <code>"~"</code> characters, as defined in the <a href="https://tools.ietf.org/html/rfc7636" rel="noopener" target="_blank">RFC 7636 specification</a>.</p>
+<p>The code verifier should be a random string of between 43 and 128 characters containing letters, numbers, and <code>"-"</code>, <code>"."</code>, <code>"_"</code>, <code>"~"</code> characters, as defined in the <a href="https://tools.ietf.org/html/rfc7636" rel="noopener" target="_blank">RFC 7636 specification</a>.</p>
 <p>The code challenge should be a Base64 encoded string with URL and filename-safe characters. The trailing <code>'='</code> characters should be removed and no line breaks, whitespace, or other additional characters should be present.</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$encoded = base64_encode(hash(&#39;sha256&#39;, $codeVerifier, true));</span>
 
@@ -1446,6 +1449,33 @@ For more information on using multiple user providers with Passport, please cons
 <span class="x">})-&gt;middleware([&#39;auth:api&#39;, CheckTokenForAnyScope::using(&#39;orders:read&#39;, &#39;orders:create&#39;)]);</span>
 </code></pre></div>
 
+<p><a name="scope-attributes"></a></p>
+<h4 id="scope-attributes">Scope Attributes<a class="headerlink" href="#scope-attributes" title="Permanent link">#</a></h4>
+<p>If your application uses <a href="./controllers.html#middleware-attributes">controller middleware attributes</a>, you may use the <code>Laravel\Passport\Attributes\AuthorizeToken</code> attribute as a convenient shortcut for Passport's scope middleware:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Controllers</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Laravel\Passport\Attributes\AuthorizeToken</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">AuthorizeToken</span><span class="p">(</span><span class="s1">&#39;orders:read&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">AuthorizeToken</span><span class="p">(</span><span class="s1">&#39;orders:create&#39;</span><span class="p">,</span> <span class="nx">only</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;store&#39;</span><span class="p">])]</span>
+<span class="k">class</span> <span class="nc">OrderController</span>
+<span class="p">{</span>
+    <span class="p">#[</span><span class="nd">AuthorizeToken</span><span class="p">([</span><span class="s1">&#39;orders:read&#39;</span><span class="p">,</span> <span class="s1">&#39;orders:create&#39;</span><span class="p">],</span> <span class="nx">anyScope</span><span class="o">:</span> <span class="k">true</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// Access token has either &quot;orders:read&quot; or &quot;orders:create&quot; scope...</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">store</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// Access token has both &quot;orders:read&quot; and &quot;orders:create&quot; scopes...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>By default, the <code>AuthorizeToken</code> attribute requires all given scopes. If you pass <code>anyScope: true</code>, the request is authorized when the token has at least one of the given scopes.</p>
 <p><a name="checking-scopes-on-a-token-instance"></a></p>
 <h4 id="checking-scopes-on-a-token-instance">Checking Scopes on a Token Instance<a class="headerlink" href="#checking-scopes-on-a-token-instance" title="Permanent link">#</a></h4>
 <p>Once an access token authenticated request has entered your application, you may still check if the token has a given scope using the <code>tokenCan</code> method on the authenticated <code>App\Models\User</code> instance:</p>

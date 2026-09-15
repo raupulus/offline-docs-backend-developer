@@ -1,14 +1,14 @@
 ---
 title: Service Container
-source_url: https://laravel.com/docs/12.x/container
+source_url: https://laravel.com/docs/13.x/container
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: container.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 160
 ---
 
@@ -331,6 +331,23 @@ interface EventPusher
 }
 ```
 
+For bindings that depend on an arbitrary condition, you may use the `BindWhen` attribute. The closure may receive the container and should return `true` when the binding should be applied. `Bind` and `BindWhen` attributes are evaluated in the order they are declared:
+
+```php
+use App\Services\BetaEventPusher;
+use Illuminate\Container\Attributes\BindWhen;
+use Laravel\Pennant\Feature;
+
+#[BindWhen(BetaEventPusher::class, static fn () => Feature::active('beta-events'))]
+interface EventPusher
+{
+    // ...
+}
+```
+
+> [!NOTE]
+> The `BindWhen` attribute requires PHP 8.5 or greater.
+
 <a name="contextual-binding"></a>
 ### Contextual Binding
 
@@ -381,7 +398,7 @@ class PhotoController extends Controller
 }
 ```
 
-In addition to the `Storage` attribute, Laravel offers `Auth`, `Cache`, `Config`, `Context`, `DB`, `Give`, `Log`, `RouteParameter`, and [Tag](#tagging) attributes:
+In addition to the `Storage` attribute, Laravel offers `Auth`, `Cache`, `Config`, `Context`, `DB`, `Give`, `Log`, `RequestAttribute`, `RouteParameter`, and [Tag](#tagging) attributes:
 
 ```php
 <?php
@@ -389,6 +406,7 @@ In addition to the `Storage` attribute, Laravel offers `Auth`, `Cache`, `Config`
 namespace App\Http\Controllers;
 
 use App\Contracts\UserRepository;
+use App\Models\Organization;
 use App\Models\Photo;
 use App\Repositories\DatabaseRepository;
 use Illuminate\Container\Attributes\Auth;
@@ -398,6 +416,7 @@ use Illuminate\Container\Attributes\Context;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Container\Attributes\Give;
 use Illuminate\Container\Attributes\Log;
+use Illuminate\Container\Attributes\RequestAttribute;
 use Illuminate\Container\Attributes\RouteParameter;
 use Illuminate\Container\Attributes\Tag;
 use Illuminate\Contracts\Auth\Guard;
@@ -416,7 +435,8 @@ class PhotoController extends Controller
         #[DB('mysql')] protected Connection $connection,
         #[Give(DatabaseRepository::class)] protected UserRepository $users,
         #[Log('daily')] protected LoggerInterface $log,
-        #[RouteParameter('photo')] protected Photo $photo,
+        #[RequestAttribute('organization')] protected Organization $organization,
+        #[RouteParameter] protected Photo $photo,
         #[Tag('reports')] protected iterable $reports,
     ) {
         // ...
@@ -424,7 +444,11 @@ class PhotoController extends Controller
 }
 ```
 
-Furthermore, Laravel provides a `CurrentUser` attribute for injecting the currently authenticated user into a given route or class:
+The `RouteParameter` attribute will resolve the route parameter matching the variable name. If needed, you may specify the route parameter name explicitly: `#[RouteParameter('photo')]`.
+
+The `RequestAttribute` attribute will resolve the value stored under the given key in the current request's [attribute bag](https://symfony.com/doc/current/components/http_foundation.html#accessing-request-data): `#[RequestAttribute('organization')]`.
+
+In addition, Laravel provides a `CurrentUser` attribute for injecting the currently authenticated user into a given route or class:
 
 ```php
 use App\Models\User;
@@ -448,6 +472,7 @@ namespace App\Attributes;
 use Attribute;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Container\ContextualAttribute;
+use ReflectionParameter;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
 class Config implements ContextualAttribute
@@ -464,9 +489,10 @@ class Config implements ContextualAttribute
      *
      * @param  self  $attribute
      * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \ReflectionParameter  $parameter
      * @return mixed
      */
-    public static function resolve(self $attribute, Container $container)
+    public static function resolve(self $attribute, Container $container, ReflectionParameter $parameter)
     {
         return $container->make('config')->get($attribute->key, $attribute->default);
     }

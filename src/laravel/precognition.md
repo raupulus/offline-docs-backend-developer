@@ -1,15 +1,15 @@
 ---
 title: Precognition
-source_url: https://laravel.com/docs/12.x/precognition
+source_url: https://laravel.com/docs/13.x/precognition
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: precognition.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 660
+retrieved_at: '2026-09-15'
+order: 680
 ---
 
 # Precognition
@@ -34,7 +34,7 @@ Laravel Precognition allows you to anticipate the outcome of a future HTTP reque
 When Laravel receives a "precognitive request", it will execute all of the route's middleware and resolve the route's controller dependencies, including validating [form requests](/docs/{{version}}/validation#form-request-validation) - but it will not actually execute the route's controller method.
 
 > [!NOTE]
-> As of Inertia 2.3, Precognition support is built-in. Please consult the [Inertia Forms documentation](https://inertiajs.com/docs/v2/the-basics/forms) for more information. Earlier Inertia versions require Precognition 0.x.
+> As of Inertia 2.3, Precognition support is built-in. Please consult the [Inertia Forms documentation](https://inertiajs.com/forms) for more information. Earlier Inertia versions require Precognition 0.x.
 
 <a name="live-validation"></a>
 ## Live Validation

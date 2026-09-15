@@ -1,15 +1,15 @@
 ---
 title: Laravel Telescope
-source_url: https://laravel.com/docs/12.x/telescope
+source_url: https://laravel.com/docs/13.x/telescope
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: telescope.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 910
+retrieved_at: '2026-09-15'
+order: 930
 ---
 
 # Laravel Telescope
@@ -121,6 +121,35 @@ If desired, you may disable Telescope's data collection entirely using the `enab
 
 ```php
 'enabled' => env('TELESCOPE_ENABLED', true),
+```
+
+<a name="content-security-policy-csp-nonce"></a>
+#### Content Security Policy (CSP) Nonce
+
+If you would like to use a [nonce attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/nonce) on the script and style tags used in Telescope views as part of your [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP), you may use the `Telescope::cspNonce` method to specify the nonce to use. This method should typically be invoked within middleware so that a new nonce is assigned for each request:
+
+```php
+use Closure;
+use Illuminate\Http\Request;
+use Laravel\Telescope\Telescope;
+use Symfony\Component\HttpFoundation\Response;
+
+public function handle(Request $request, Closure $next): Response
+{
+    Telescope::cspNonce('csp-nonce');
+
+    return $next($request);
+}
+```
+
+You may add this middleware to the `middleware` option in your application's `config/telescope.php` configuration file:
+
+```php
+'middleware' => [
+    'web',
+    App\Http\Middleware\AddTelescopeCspNonce::class,
+    Authorize::class,
+],
 ```
 
 <a name="data-pruning"></a>

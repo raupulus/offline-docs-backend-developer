@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">HTTP Requests</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">HTTP Requests</a>
       <h1 class="doc-title">HTTP Requests</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/requests" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/requests" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -521,9 +521,10 @@ class="is-current" aria-current="page">HTTP Requests</a>
 <p><a name="retrieving-the-request-host"></a></p>
 <h4 id="retrieving-the-request-host">Retrieving the Request Host<a class="headerlink" href="#retrieving-the-request-host" title="Permanent link">#</a></h4>
 <p>You may retrieve the "host" of the incoming request via the <code>host</code>, <code>httpHost</code>, and <code>schemeAndHttpHost</code> methods:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">$request-&gt;host();</span>
-<span class="x">$request-&gt;httpHost();</span>
-<span class="x">$request-&gt;schemeAndHttpHost();</span>
+<div class="codehilite"><pre><span></span><code><span class="x">// http://localhost:8000</span>
+<span class="x">$request-&gt;host(); // localhost</span>
+<span class="x">$request-&gt;httpHost(); // localhost:8000</span>
+<span class="x">$request-&gt;schemeAndHttpHost(); // http://localhost:8000</span>
 </code></pre></div>
 
 <p><a name="retrieving-the-request-method"></a></p>
@@ -584,6 +585,16 @@ class="is-current" aria-current="page">HTTP Requests</a>
 <p>Since many applications only serve HTML or JSON, you may use the <code>expectsJson</code> method to quickly determine if the incoming request expects a JSON response:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">if ($request-&gt;expectsJson()) {</span>
 <span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If you need to determine whether the request specifically prefers Markdown or will accept Markdown among other content types, such as when serving AI agents or other clients that consume Markdown responses, you may use the <code>wantsMarkdown</code> and <code>acceptsMarkdown</code> methods:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">if ($request-&gt;wantsMarkdown()) {</span>
+<span class="x">    // The client&#39;s most preferred content type is text/markdown...</span>
+<span class="x">}</span>
+
+<span class="x">if ($request-&gt;acceptsMarkdown()) {</span>
+<span class="x">    // The client accepts Markdown responses...</span>
 <span class="x">}</span>
 </code></pre></div>
 
@@ -701,6 +712,21 @@ If you return a PSR-7 response instance from a route or controller, it will auto
 </code></pre></div>
 
 <p>If the input value is present but has an invalid format, an <code>InvalidArgumentException</code> will be thrown; therefore, it is recommended that you validate the input before invoking the <code>date</code> method.</p>
+<p><a name="retrieving-interval-input-values"></a></p>
+<h4 id="retrieving-interval-input-values">Retrieving Interval Input Values<a class="headerlink" href="#retrieving-interval-input-values" title="Permanent link">#</a></h4>
+<p>Input values containing durations may be retrieved as <code>CarbonInterval</code> instances using the <code>interval</code> method. If the request does not contain an input value with the given name, <code>null</code> will be returned:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$duration = $request-&gt;interval(&#39;duration&#39;);</span>
+</code></pre></div>
+
+<p>If the input value is numeric, you may provide a unit as the second argument. The unit may be a string such as <code>second</code>, <code>minute</code>, or <code>day</code>, or a <code>Carbon\Unit</code> enum instance:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Carbon\Unit;</span>
+
+<span class="x">$timeout = $request-&gt;interval(&#39;timeout&#39;, &#39;second&#39;);</span>
+
+<span class="x">$delay = $request-&gt;interval(&#39;delay&#39;, Unit::Minute);</span>
+</code></pre></div>
+
+<p>If the input value is present but has an invalid format, an <code>InvalidArgumentException</code> will be thrown; therefore, it is recommended that you validate the input before invoking the <code>interval</code> method.</p>
 <p><a name="retrieving-enum-input-values"></a></p>
 <h4 id="retrieving-enum-input-values">Retrieving Enum Input Values<a class="headerlink" href="#retrieving-enum-input-values" title="Permanent link">#</a></h4>
 <p>Input values that correspond to <a href="https://www.php.net/manual/en/language.types.enumerations.php" rel="noopener" target="_blank">PHP enums</a> may also be retrieved from the request. If the request does not contain an input value with the given name or the enum does not have a backing value that matches the input value, <code>null</code> will be returned. The <code>enum</code> method accepts the name of the input value and the enum class as its first and second arguments:</p>
@@ -925,6 +951,11 @@ The <code>only</code> method returns all of the key / value pairs that you reque
 <span class="x">}</span>
 </code></pre></div>
 
+<p>If the uploaded file is an image that you need to manipulate before storing, you may use the <code>image</code> method to retrieve an <code>Illuminate\Image\Image</code> instance, or <code>null</code> if the file is not present:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$image = $request-&gt;image(&#39;photo&#39;);</span>
+</code></pre></div>
+
+<p>For more information on manipulating images, please consult the complete <a href="./images.html">image manipulation documentation</a>.</p>
 <p><a name="validating-successful-uploads"></a></p>
 <h4 id="validating-successful-uploads">Validating Successful Uploads<a class="headerlink" href="#validating-successful-uploads" title="Permanent link">#</a></h4>
 <p>In addition to checking if the file is present, you may verify that there were no problems uploading the file via the <code>isValid</code> method:</p>

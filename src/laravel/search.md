@@ -1,15 +1,15 @@
 ---
 title: Search
-source_url: https://laravel.com/docs/12.x/search
+source_url: https://laravel.com/docs/13.x/search
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: search.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 840
+retrieved_at: '2026-09-15'
+order: 860
 ---
 
 # Search
@@ -47,7 +47,7 @@ When you need keyword relevance ranking — where the database scores and sorts 
 <a name="introduction-semantic-vector-search"></a>
 #### Semantic / Vector Search
 
-For AI-powered semantic search that matches results by *meaning* rather than exact keywords, the `whereVectorSimilarTo` query builder method uses vector embeddings stored in PostgreSQL with the `pgvector` extension. For example, a search for "best wineries in Napa Valley" can surface an article titled "Top Vineyards to Visit" — even though the words don't overlap. Vector search requires PostgreSQL with the `pgvector` extension and the [Laravel AI SDK](/docs/{{version}}/ai-sdk).
+For AI-powered semantic search that matches results by *meaning* rather than exact keywords, the `whereVectorSimilarTo` query builder method uses vector embeddings stored in PostgreSQL with the `pgvector` extension or MariaDB. For example, a search for "best wineries in Napa Valley" can surface an article titled "Top Vineyards to Visit" — even though the words don't overlap. Vector search requires PostgreSQL with the `pgvector` extension or MariaDB 11.7 or later, as well as the [Laravel AI SDK](/docs/{{version}}/ai-sdk).
 
 <a name="introduction-reranking"></a>
 #### Reranking
@@ -57,7 +57,7 @@ Laravel's [AI SDK](/docs/{{version}}/ai-sdk) provides reranking capabilities tha
 <a name="introduction-scout-search-engines"></a>
 #### Laravel Scout Search
 
-For applications that want a `Searchable` trait that automatically keeps search indexes in sync with Eloquent models, [Laravel Scout](/docs/{{version}}/scout) offers both a built-in database engine and drivers for third-party services like Algolia, Meilisearch, and Typesense.
+For applications that want a `Searchable` trait that automatically keeps search indexes in sync with Eloquent models, [Laravel Scout](/docs/{{version}}/scout) offers both a built-in database engine and drivers for third-party services like Algolia, Meilisearch, Typesense, and Turbopuffer.
 
 <a name="full-text-search"></a>
 ## Full-Text Search
@@ -122,7 +122,7 @@ Full-text search relies on matching keywords — the words in the query must app
 The basic workflow for vector search is: generate an embedding (a numeric array) for each piece of content and store it alongside your data, then at search time, generate an embedding for the user's query and find the stored embeddings that are closest to it in vector space.
 
 > [!NOTE]
-> Vector search requires a PostgreSQL database with the `pgvector` extension and the [Laravel AI SDK](/docs/{{version}}/ai-sdk). All [Laravel Cloud](https://cloud.laravel.com) Serverless Postgres databases already include `pgvector`.
+> Vector search requires the [Laravel AI SDK](/docs/{{version}}/ai-sdk) and is supported by PostgreSQL (requires the `pgvector` extension), MariaDB 11.7 or later, and MongoDB (requires the [Laravel MongoDB package](https://laravel.com/docs/13.x/mongodb)). All Postgres databases on [Laravel Cloud](https://laravel.com/cloud) already have `pgvector` installed.
 
 <a name="generating-embeddings"></a>
 ### Generating Embeddings
@@ -169,13 +169,15 @@ Schema::create('documents', function (Blueprint $table) {
 
 The `Schema::ensureVectorExtensionExists` method ensures the `pgvector` extension is enabled on your PostgreSQL database before creating the table.
 
-On your Eloquent model, cast the vector column to an `array` so that Laravel automatically handles the conversion between PHP arrays and the database's vector format:
+On your Eloquent model, use the `AsVector` cast so that Laravel automatically handles the conversion between PHP arrays and the database's vector format:
 
 ```php
+use Illuminate\Database\Eloquent\Casts\AsVector;
+
 protected function casts(): array
 {
     return [
-        'embedding' => 'array',
+        'embedding' => AsVector::class,
     ];
 }
 ```

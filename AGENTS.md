@@ -297,7 +297,7 @@ make update WORK_DIR=/tmp/docs-work
 | 4b · Python y Bash | Hecha | `normalize_text.py`, `adapters/archive.py` |
 | 5 · Acabado | Hecha | `bundle.py` (bundles IA, RSS 2.0, PWA vanilla, SEO) |
 
-Verificado: 13.818 documentos en 12 tecnologías (Bash, Composer, Filament, JavaScript, Laravel, Node.js, npm, Nuxt, PHP, pnpm, Python, Vue 3).
+Verificado: 13.820 documentos en 12 tecnologías (Bash, Composer, Filament, JavaScript, Laravel, Node.js, npm, Nuxt, PHP, pnpm, Python, Vue 3).
 
 `make test` ejecuta 16 comprobaciones del normalizador sin red ni descargas. Ejecútalo siempre antes de dar por buena una modificación de `normalize.py`.
 

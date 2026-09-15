@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Database Testing</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Database Testing</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Database Testing</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Database Testing</a>
       <h1 class="doc-title">Database Testing</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/database-testing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/database-testing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -521,39 +521,43 @@ class ExampleTest extends TestCase
 
 
 
-Alternatively, you may instruct Laravel to automatically seed the database before each test that uses the `RefreshDatabase` trait. You may accomplish this by defining a `$seed` property on your base test class:
+Alternatively, you may instruct Laravel to automatically seed the database before each test that uses the `RefreshDatabase` trait. You may accomplish this by adding the `Seed` attribute to your base test class:
 
 
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">Tests</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Testing\Attributes\Seed</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Foundation\Testing\TestCase</span> <span class="k">as</span> <span class="nx">BaseTestCase</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Seed</span><span class="p">]</span>
 <span class="k">abstract</span> <span class="k">class</span> <span class="nc">TestCase</span> <span class="k">extends</span> <span class="nx">BaseTestCase</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * Indicates whether the default seeder should run before each test.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var bool</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$seed</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 
 
 
-When the `$seed` property is `true`, the test will run the `Database\Seeders\DatabaseSeeder` class before each test that uses the `RefreshDatabase` trait. However, you may specify a specific seeder that should be executed by defining a `$seeder` property on your test class:
+When the `Seed` attribute is present, the test will run the `Database\Seeders\DatabaseSeeder` class before each test that uses the `RefreshDatabase` trait. However, you may specify a specific seeder that should be executed by using the `Seeder` attribute on your test class:
 
 
-<div class="codehilite"><pre><span></span><code><span class="x">use Database\Seeders\OrderStatusSeeder;</span>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
-<span class="x">/**</span>
-<span class="x"> * Run a specific seeder before each test.</span>
-<span class="x"> *</span>
-<span class="x"> * @var string</span>
-<span class="x"> */</span>
-<span class="x">protected $seeder = OrderStatusSeeder::class;</span>
+<span class="k">namespace</span> <span class="nx">Tests\Feature</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Database\Seeders\OrderStatusSeeder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Testing\Attributes\Seeder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Testing\RefreshDatabase</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Tests\TestCase</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Seeder</span><span class="p">(</span><span class="nx">OrderStatusSeeder</span><span class="o">::</span><span class="na">class</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">OrderTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">RefreshDatabase</span><span class="p">;</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 

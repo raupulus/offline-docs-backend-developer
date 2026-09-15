@@ -1,15 +1,15 @@
 ---
 title: HTTP Requests
-source_url: https://laravel.com/docs/12.x/requests
+source_url: https://laravel.com/docs/13.x/requests
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: requests.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 760
+retrieved_at: '2026-09-15'
+order: 780
 ---
 
 # HTTP Requests
@@ -179,9 +179,10 @@ $request->fullUrlWithoutQuery(['type']);
 You may retrieve the "host" of the incoming request via the `host`, `httpHost`, and `schemeAndHttpHost` methods:
 
 ```php
-$request->host();
-$request->httpHost();
-$request->schemeAndHttpHost();
+// http://localhost:8000
+$request->host(); // localhost
+$request->httpHost(); // localhost:8000
+$request->schemeAndHttpHost(); // http://localhost:8000
 ```
 
 <a name="retrieving-the-request-method"></a>
@@ -267,6 +268,18 @@ Since many applications only serve HTML or JSON, you may use the `expectsJson` m
 ```php
 if ($request->expectsJson()) {
     // ...
+}
+```
+
+If you need to determine whether the request specifically prefers Markdown or will accept Markdown among other content types, such as when serving AI agents or other clients that consume Markdown responses, you may use the `wantsMarkdown` and `acceptsMarkdown` methods:
+
+```php
+if ($request->wantsMarkdown()) {
+    // The client's most preferred content type is text/markdown...
+}
+
+if ($request->acceptsMarkdown()) {
+    // The client accepts Markdown responses...
 }
 ```
 
@@ -433,6 +446,27 @@ $elapsed = $request->date('elapsed', '!H:i', 'Europe/Madrid');
 ```
 
 If the input value is present but has an invalid format, an `InvalidArgumentException` will be thrown; therefore, it is recommended that you validate the input before invoking the `date` method.
+
+<a name="retrieving-interval-input-values"></a>
+#### Retrieving Interval Input Values
+
+Input values containing durations may be retrieved as `CarbonInterval` instances using the `interval` method. If the request does not contain an input value with the given name, `null` will be returned:
+
+```php
+$duration = $request->interval('duration');
+```
+
+If the input value is numeric, you may provide a unit as the second argument. The unit may be a string such as `second`, `minute`, or `day`, or a `Carbon\Unit` enum instance:
+
+```php
+use Carbon\Unit;
+
+$timeout = $request->interval('timeout', 'second');
+
+$delay = $request->interval('delay', Unit::Minute);
+```
+
+If the input value is present but has an invalid format, an `InvalidArgumentException` will be thrown; therefore, it is recommended that you validate the input before invoking the `interval` method.
 
 <a name="retrieving-enum-input-values"></a>
 #### Retrieving Enum Input Values
@@ -732,6 +766,14 @@ if ($request->hasFile('photo')) {
     // ...
 }
 ```
+
+If the uploaded file is an image that you need to manipulate before storing, you may use the `image` method to retrieve an `Illuminate\Image\Image` instance, or `null` if the file is not present:
+
+```php
+$image = $request->image('photo');
+```
+
+For more information on manipulating images, please consult the complete [image manipulation documentation](/docs/{{version}}/images).
 
 <a name="validating-successful-uploads"></a>
 #### Validating Successful Uploads

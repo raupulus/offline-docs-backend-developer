@@ -1,14 +1,14 @@
 ---
 title: Blade Templates
-source_url: https://laravel.com/docs/12.x/blade
+source_url: https://laravel.com/docs/13.x/blade
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: blade.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 70
 ---
 
@@ -29,6 +29,7 @@ order: 70
     - [Including Subviews](#including-subviews)
     - [The `@once` Directive](#the-once-directive)
     - [Raw PHP](#raw-php)
+    - [Fonts](#fonts)
     - [Comments](#comments)
 - [Components](#components)
     - [Rendering Components](#rendering-components)
@@ -44,7 +45,7 @@ order: 70
     - [Anonymous Index Components](#anonymous-index-components)
     - [Data Properties / Attributes](#data-properties-attributes)
     - [Accessing Parent Data](#accessing-parent-data)
-    - [Anonymous Components Paths](#anonymous-component-paths)
+    - [Anonymous Component Paths](#anonymous-component-paths)
 - [Building Layouts](#building-layouts)
     - [Layouts Using Components](#layouts-using-components)
     - [Layouts Using Template Inheritance](#layouts-using-template-inheritance)
@@ -722,6 +723,39 @@ Grouped imports are also supported with both function and const modifiers, allow
 ```blade
 @use(function App\Helpers\{format_currency, format_date})
 @use(const App\Constants\{MAX_ATTEMPTS, DEFAULT_TIMEOUT})
+```
+
+<a name="fonts"></a>
+### Fonts
+
+When using [Laravel's Vite font optimization](/docs/{{version}}/vite#working-with-fonts), you may use the `@fonts` directive to render your configured font preload links and inline font CSS in your application's layout:
+
+```blade
+<!doctype html>
+<head>
+    {{-- ... --}}
+
+    @fonts
+    @vite('resources/js/app.js')
+</head>
+```
+
+The `@fonts` directive renders all font families configured in your `vite.config.js` file. The directive should typically be placed in the `<head>` of your application's root layout before any content that uses those fonts.
+
+If a page only needs some of your configured fonts, you may pass one or more font aliases to the directive:
+
+```blade
+{{-- Load a single font alias... --}}
+@fonts('sans')
+
+{{-- Load multiple font aliases... --}}
+@fonts(['sans', 'mono'])
+```
+
+Font aliases are configured using the `alias` option when defining fonts in your Vite configuration. The `@fonts` directive calls the `fonts` method provided by the `Vite` facade, which may also be invoked directly:
+
+```blade
+{{ Vite::fonts(['sans', 'mono']) }}
 ```
 
 <a name="comments"></a>

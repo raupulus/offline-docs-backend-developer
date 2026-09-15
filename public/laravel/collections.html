@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Collections</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Collections</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Collections</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Collections</a>
       <h1 class="doc-title">Collections</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/collections" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/collections" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -473,6 +473,7 @@ The results of <a href="./eloquent.html">Eloquent</a> queries are always returne
 <a href="#method-avg">avg</a>
 <a href="#method-before">before</a>
 <a href="#method-chunk">chunk</a>
+<a href="#method-chunkby">chunkBy</a>
 <a href="#method-chunkwhile">chunkWhile</a>
 <a href="#method-collapse">collapse</a>
 <a href="#method-collapsewithkeys">collapseWithKeys</a>
@@ -560,6 +561,7 @@ The results of <a href="./eloquent.html">Eloquent</a> queries are always returne
 <a href="#method-random">random</a>
 <a href="#method-range">range</a>
 <a href="#method-reduce">reduce</a>
+<a href="#method-reduce-into">reduceInto</a>
 <a href="#method-reduce-spread">reduceSpread</a>
 <a href="#method-reject">reject</a>
 <a href="#method-replace">replace</a>
@@ -735,6 +737,22 @@ The results of <a href="./eloquent.html">Eloquent</a> queries are always returne
         @endforeach
     &lt;/div&gt;
 @endforeach
+</code></pre></div>
+
+<p><a name="method-chunkby"></a></p>
+<h4 class="collection-method" id="chunkby"><code>chunkBy()</code><a class="headerlink" href="#chunkby" title="Permanent link">#</a></h4>
+<p>The <code>chunkBy</code> method breaks the collection into multiple, smaller collections by grouping adjacent items that have the same value for a given key or callback. For example, you may group adjacent products that share the same parent:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$chunks = $products-&gt;chunkBy(&#39;parent&#39;);</span>
+</code></pre></div>
+
+<p>Unlike the <code>groupBy</code> method, items with the same value that are not adjacent are placed in separate chunks:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$collection = collect([1, 1, 2, 2, 1]);</span>
+
+<span class="x">$chunks = $collection-&gt;chunkBy(fn (int $value) =&gt; $value);</span>
+
+<span class="x">$chunks-&gt;all();</span>
+
+<span class="x">// [[1, 1], [2, 2], [1]]</span>
 </code></pre></div>
 
 <p><a name="method-chunkwhile"></a></p>
@@ -926,7 +944,7 @@ This method's behavior is modified when using <a href="./eloquent-collections.ht
 
 <p><a name="method-crossjoin"></a></p>
 <h4 class="collection-method" id="crossjoin"><code>crossJoin()</code><a class="headerlink" href="#crossjoin" title="Permanent link">#</a></h4>
-<p>The <code>crossJoin</code> method cross joins the collection's values among the given arrays or collections, returning a Cartesian product with all possible permutations:</p>
+<p>The <code>crossJoin</code> method cross joins the collection's values among the given arrays or collections, returning a Cartesian product with all possible combinations:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$collection = collect([1, 2]);</span>
 
 <span class="x">$matrix = $collection-&gt;crossJoin([&#39;a&#39;, &#39;b&#39;]);</span>
@@ -2496,6 +2514,44 @@ This method's behavior is modified when interacting with <a href="./eloquent-col
 <span class="x">// 4264</span>
 </code></pre></div>
 
+<p><a name="method-reduce-into"></a></p>
+<h4 class="collection-method" id="reduceinto"><code>reduceInto()</code><a class="headerlink" href="#reduceinto" title="Permanent link">#</a></h4>
+<p>The <code>reduceInto</code> method reduces the collection to a single value by mutating the given initial value. Unlike the <code>reduce</code> method, the given callback does not need to return the accumulated value:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">class OrderStats</span>
+<span class="x">{</span>
+<span class="x">    public int $total = 0;</span>
+
+<span class="x">    public int $count = 0;</span>
+<span class="x">}</span>
+
+<span class="x">$orders = collect([</span>
+<span class="x">    [&#39;amount&#39; =&gt; 100],</span>
+<span class="x">    [&#39;amount&#39; =&gt; 250],</span>
+<span class="x">    [&#39;amount&#39; =&gt; 50],</span>
+<span class="x">]);</span>
+
+<span class="x">$stats = $orders-&gt;reduceInto(new OrderStats, function (OrderStats $stats, array $order) {</span>
+<span class="x">    $stats-&gt;total += $order[&#39;amount&#39;];</span>
+<span class="x">    $stats-&gt;count++;</span>
+<span class="x">});</span>
+
+<span class="x">$stats-&gt;total;</span>
+
+<span class="x">// 400</span>
+</code></pre></div>
+
+<p>When reducing into a scalar or array, you should accept it by reference in the callback so that your mutations are applied to the original value:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$collection = collect([1, 2, 3, 4, 5]);</span>
+
+<span class="x">$even = $collection-&gt;reduceInto([], function (array &amp;$result, int $value) {</span>
+<span class="x">    if ($value % 2 === 0) {</span>
+<span class="x">        $result[] = $value;</span>
+<span class="x">    }</span>
+<span class="x">});</span>
+
+<span class="x">// [2, 4]</span>
+</code></pre></div>
+
 <p><a name="method-reduce-spread"></a></p>
 <h4 class="collection-method" id="reducespread"><code>reduceSpread()</code><a class="headerlink" href="#reducespread" title="Permanent link">#</a></h4>
 <p>The <code>reduceSpread</code> method reduces the collection to an array of values, passing the results of each iteration into the subsequent iteration. This method is similar to the <code>reduce</code> method; however, it can accept multiple initial values:</p>
@@ -3898,6 +3954,7 @@ Before learning more about Laravel's lazy collections, take some time to familia
 <a href="#method-average">average</a>
 <a href="#method-avg">avg</a>
 <a href="#method-chunk">chunk</a>
+<a href="#method-chunkby">chunkBy</a>
 <a href="#method-chunkwhile">chunkWhile</a>
 <a href="#method-collapse">collapse</a>
 <a href="#method-collect">collect</a>
@@ -3961,6 +4018,7 @@ Before learning more about Laravel's lazy collections, take some time to familia
 <a href="#method-pluck">pluck</a>
 <a href="#method-random">random</a>
 <a href="#method-reduce">reduce</a>
+<a href="#method-reduce-into">reduceInto</a>
 <a href="#method-reject">reject</a>
 <a href="#method-replace">replace</a>
 <a href="#method-replacerecursive">replaceRecursive</a>

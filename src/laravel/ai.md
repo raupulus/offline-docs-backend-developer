@@ -1,14 +1,14 @@
 ---
 title: AI Assisted Development
-source_url: https://laravel.com/docs/12.x/ai
+source_url: https://laravel.com/docs/13.x/ai
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: ai.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 20
 ---
 
@@ -46,7 +46,7 @@ Boost provides three major capabilities: a suite of MCP tools for inspecting and
 <a name="installation"></a>
 ### Installation
 
-Boost can be installed in Laravel 10, 11, and 12 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
+Boost can be installed in Laravel 10, 11, 12, and 13 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
 
 ```shell
 composer require laravel/boost --dev
@@ -117,7 +117,7 @@ Boost includes a powerful documentation API that gives AI agents access to over 
 
 When an agent needs to understand how a feature works, it can search Boost's documentation API and receive accurate, version-specific information. This eliminates the common problem of AI agents suggesting deprecated methods or syntax from older framework versions.
 
-<a name="agent-integration"></a>
+<a name="agents-integration"></a>
 ### Agents Integration
 
 Boost integrates with popular IDEs and AI tools that support the Model Context Protocol. For detailed setup instructions for Cursor, Claude Code, Codex, Gemini CLI, GitHub Copilot, and Junie, see the [Set Up Your Agents](/docs/{{version}}/boost#set-up-your-agents) section of the Boost documentation.

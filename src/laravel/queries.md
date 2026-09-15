@@ -1,15 +1,15 @@
 ---
 title: 'Database: Query Builder'
-source_url: https://laravel.com/docs/12.x/queries
+source_url: https://laravel.com/docs/13.x/queries
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: queries.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 710
+retrieved_at: '2026-09-15'
+order: 730
 ---
 
 # Database: Query Builder
@@ -377,7 +377,7 @@ $orders = DB::table('orders')
 ```
 
 <a name="groupbyraw"></a>
-### `groupByRaw`
+#### `groupByRaw`
 
 The `groupByRaw` method may be used to provide a raw string as the value of the `group by` clause:
 
@@ -592,7 +592,7 @@ $users = DB::table('users')
 If you need to group an "or" condition within parentheses, you may pass a closure as the first argument to the `orWhere` method:
 
 ```php
-use Illuminate\Database\Query\Builder; 
+use Illuminate\Database\Query\Builder;
 
 $users = DB::table('users')
     ->where('votes', '>', 100)
@@ -930,6 +930,18 @@ $users = DB::table('users')
     ->get();
 ```
 
+**whereNullSafeEquals / orWhereNullSafeEquals**
+
+The `whereNullSafeEquals` and `orWhereNullSafeEquals` methods may be used to compare a column's value against a given value while treating two `NULL` values as equal:
+
+```php
+$lastLoginIp = $request->input('last_login_ip');
+
+$users = DB::table('users')
+    ->whereNullSafeEquals('last_login_ip', $lastLoginIp)
+    ->get();
+```
+
 **whereDate / whereMonth / whereDay / whereYear / whereTime**
 
 The `whereDate` method may be used to compare a column's value against a date:
@@ -1166,7 +1178,7 @@ $users = DB::table('users')
 ### Vector Similarity Clauses
 
 > [!NOTE]
-> Vector similarity clauses are currently only supported on PostgreSQL connections using the `pgvector` extension. For information on defining vector columns and indexes, consult the [migration documentation](/docs/{{version}}/migrations#available-column-types).
+> Vector similarity clauses are currently supported on PostgreSQL connections using the `pgvector` extension and MariaDB 11.7 or later. For information on defining vector columns and indexes, consult the [migration documentation](/docs/{{version}}/migrations#available-column-types).
 
 The `whereVectorSimilarTo` method filters results by cosine similarity to a given vector and orders the results by relevance. The `minSimilarity` threshold should be a value between `0.0` and `1.0`, where `1.0` is identical:
 

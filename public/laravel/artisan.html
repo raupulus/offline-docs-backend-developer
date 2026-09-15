@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Artisan Console</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Artisan Console</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Artisan Console</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Artisan Console</a>
       <h1 class="doc-title">Artisan Console</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/artisan" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/artisan" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -378,6 +378,9 @@ class="is-current" aria-current="page">Artisan Console</a>
               <li class="lvl-2"><a href="#programmatically-executing-commands">Programmatically Executing Commands#</a></li>
               <li class="lvl-3"><a href="#calling-commands-from-other-commands">Calling Commands From Other Commands#</a></li>
               <li class="lvl-2"><a href="#signal-handling">Signal Handling#</a></li>
+              <li class="lvl-2"><a href="#the-dev-command">The Dev Command#</a></li>
+              <li class="lvl-3"><a href="#customizing-dev-processes">Customizing Dev Processes#</a></li>
+              <li class="lvl-3"><a href="#filtering-dev-processes">Filtering Dev Processes#</a></li>
               <li class="lvl-2"><a href="#stub-customization">Stub Customization#</a></li>
               <li class="lvl-2"><a href="#events">Events#</a></li>
           </ul>
@@ -417,12 +420,17 @@ class="is-current" aria-current="page">Artisan Console</a>
 </ul>
 </li>
 <li><a href="#signal-handling">Signal Handling</a></li>
+<li><a href="#the-dev-command">The Dev Command</a><ul>
+<li><a href="#customizing-dev-processes">Customizing Dev Processes</a></li>
+<li><a href="#filtering-dev-processes">Filtering Dev Processes</a></li>
+</ul>
+</li>
 <li><a href="#stub-customization">Stub Customization</a></li>
 <li><a href="#events">Events</a></li>
 </ul>
 <p><a name="introduction"></a></p>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
-<p>Artisan is the command line interface included with Laravel. Artisan exists at the root of your application as the <code>artisan</code> script and provides a number of helpful commands that can assist you while you build your application. To view a list of all available Artisan commands, you may use the <code>list</code> command:</p>
+<p>Artisan is the command line interface included with Laravel. Artisan exists at the root of your application as the <code>artisan</code> script and provides a number of helpful commands you can use while building your application. To view a list of all available Artisan commands, you may use the <code>list</code> command:</p>
 <div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>list
 </code></pre></div>
 
@@ -490,7 +498,7 @@ The <code>dispatch</code> helper function and <code>dispatch</code> method on th
 
 <p><a name="command-structure"></a></p>
 <h3 id="command-structure">Command Structure<a class="headerlink" href="#command-structure" title="Permanent link">#</a></h3>
-<p>After generating your command, you should define appropriate values for the <code>signature</code> and <code>description</code> properties of the class. These properties will be used when displaying your command on the <code>list</code> screen. The <code>signature</code> property also allows you to define <a href="#defining-input-expectations">your command's input expectations</a>. The <code>handle</code> method will be called when your command is executed. You may place your command logic in this method.</p>
+<p>After generating your command, you should define the command's signature and description using the <code>Signature</code> and <code>Description</code> attributes. The <code>Signature</code> attribute also allows you to define <a href="#defining-input-expectations">your command's input expectations</a>. The <code>handle</code> method will be called when your command is executed. You may place your command logic in this method.</p>
 <p>Let's take a look at an example command. Note that we are able to request any dependencies we need via the command's <code>handle</code> method. The Laravel <a href="./container.html">service container</a> will automatically inject all dependencies that are type-hinted in this method's signature:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
@@ -498,24 +506,14 @@ The <code>dispatch</code> helper function and <code>dispatch</code> method on th
 
 <span class="k">use</span> <span class="nx">App\Models\User</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">App\Support\DripEmailer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Console\Attributes\Description</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Console\Attributes\Signature</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Console\Command</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Signature</span><span class="p">(</span><span class="s1">&#39;mail:send {user}&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">Description</span><span class="p">(</span><span class="s1">&#39;Send a marketing email to a user&#39;</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">SendEmails</span> <span class="k">extends</span> <span class="nx">Command</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The name and signature of the console command.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$signature</span> <span class="o">=</span> <span class="s1">&#39;mail:send {user}&#39;</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The console command description.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$description</span> <span class="o">=</span> <span class="s1">&#39;Send a marketing email to a user&#39;</span><span class="p">;</span>
-
     <span class="sd">/**</span>
 <span class="sd">     * Execute the console command.</span>
 <span class="sd">     */</span>
@@ -528,7 +526,7 @@ The <code>dispatch</code> helper function and <code>dispatch</code> method on th
 
 <blockquote>
 <p>[!NOTE]
-For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example above, note that we inject a service class to do the "heavy lifting" of sending the e-mails.</p>
+For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example above, note that we inject a service class to do the "heavy lifting" of sending the emails.</p>
 </blockquote>
 <p><a name="exit-codes"></a></p>
 <h4 id="exit-codes">Exit Codes<a class="headerlink" href="#exit-codes" title="Permanent link">#</a></h4>
@@ -839,6 +837,24 @@ The comprehensive <a href="./prompts.html">Laravel Prompts</a> documentation inc
 <span class="x">$options = $this-&gt;options();</span>
 </code></pre></div>
 
+<p>You may use the <code>input</code> method to retrieve a command's arguments and options as an <code>Illuminate\Console\CommandInput</code> instance, which provides the same typed accessors that are available on HTTP requests and other data containers:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Enums\ReportType;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Execute the console command.</span>
+<span class="x"> */</span>
+<span class="x">public function handle(): void</span>
+<span class="x">{</span>
+<span class="x">    $input = $this-&gt;input()-&gt;date(&#39;from&#39;);</span>
+
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>The <code>input</code> method may also be used to retrieve a single input value from either the arguments or options:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$queue = $this-&gt;input(&#39;queue&#39;, &#39;default&#39;);</span>
+</code></pre></div>
+
 <p><a name="prompting-for-input"></a></p>
 <h3 id="prompting-for-input">Prompting for Input<a class="headerlink" href="#prompting-for-input" title="Permanent link">#</a></h3>
 <blockquote>
@@ -1109,6 +1125,113 @@ For more advanced options, check out the <a href="https://symfony.com/doc/curren
 
 <span class="x">    dump($signal); // SIGTERM / SIGQUIT</span>
 <span class="x">});</span>
+</code></pre></div>
+
+<p><a name="the-dev-command"></a></p>
+<h2 id="the-dev-command">The Dev Command<a class="headerlink" href="#the-dev-command" title="Permanent link">#</a></h2>
+<p>The <code>dev</code> Artisan command starts all of the processes needed for local development in a single terminal window. By default, it concurrently runs the PHP development server, a queue worker, log tailing via <a href="./logging.html#tailing-log-messages-using-pail">Pail</a>, and Vite asset compilation:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>dev
+</code></pre></div>
+
+<p>Under the hood, the <code>dev</code> command uses the <code>@laravel/multiplex</code> npm package to manage the processes, giving each process its own tab with searchable, scrollable output. Each process is labeled and color-coded so you can easily distinguish between them. If a process crashes, it will be restarted automatically, and when you quit, all of the output is written back to your terminal so nothing is lost.</p>
+<blockquote>
+<p>[!NOTE]
+The <code>dev</code> command requires Node 22.13 or later. On Windows, it falls back to the <code>concurrently</code> npm package and the tabbed interface is not available.</p>
+</blockquote>
+<p>The default processes are:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>server</code></td>
+<td><code>php artisan serve --host=localhost</code></td>
+</tr>
+<tr>
+<td><code>queue</code></td>
+<td><code>php artisan queue:listen --tries=1 --timeout=0</code></td>
+</tr>
+<tr>
+<td><code>logs</code></td>
+<td><code>php artisan pail --timeout=0</code></td>
+</tr>
+<tr>
+<td><code>vite</code></td>
+<td><code>npm run dev</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!NOTE]
+The <code>vite</code> process automatically detects your Node package manager (npm, pnpm, Yarn, or Bun) and uses the appropriate run command.</p>
+</blockquote>
+<p><a name="customizing-dev-processes"></a></p>
+<h3 id="customizing-dev-processes">Customizing Dev Processes<a class="headerlink" href="#customizing-dev-processes" title="Permanent link">#</a></h3>
+<p>You may customize the processes that the <code>dev</code> command runs by using the <code>DevCommands</code> class, typically within the <code>boot</code> method of your application's <code>AppServiceProvider</code>. The <code>register</code> method accepts a command string and an optional name:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Foundation\DevCommands;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Bootstrap any application services.</span>
+<span class="x"> */</span>
+<span class="x">public function boot(): void</span>
+<span class="x">{</span>
+<span class="x">    DevCommands::register(&#39;some-command --flag&#39;, &#39;my-process&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>When registering an Artisan command, you may use the <code>artisan</code> method which automatically prefixes the command with <code>php artisan</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DevCommands::artisan(&#39;horizon&#39;, &#39;horizon&#39;);</span>
+</code></pre></div>
+
+<p>Likewise, the <code>node</code> method prefixes the command with your detected package manager's run command (e.g. <code>npm run</code>), and the <code>nodeExec</code> method prefixes the command with the package manager's exec command (e.g. <code>npx</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DevCommands::node(&#39;storybook&#39;, &#39;storybook&#39;);</span>
+
+<span class="x">DevCommands::nodeExec(&#39;tailwindcss -i resources/css/app.css -o public/css/app.css --watch&#39;, &#39;tailwind&#39;);</span>
+</code></pre></div>
+
+<p>If you register a process with the same name as a default process, your process will replace the default. For example, you may customize the server process to use a different port:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DevCommands::artisan(&#39;serve --host=localhost --port=9000&#39;, &#39;server&#39;);</span>
+</code></pre></div>
+
+<p>You may also customize the color of a process label in your terminal. The available color methods are <code>blue</code>, <code>purple</code>, <code>pink</code>, <code>orange</code>, <code>green</code>, and <code>yellow</code>. You may also pass a custom hex color to the <code>color</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DevCommands::register(&#39;my-command&#39;, &#39;my-process&#39;)-&gt;green();</span>
+
+<span class="x">DevCommands::register(&#39;my-command&#39;, &#39;my-process&#39;)-&gt;color(&#39;#ff6347&#39;);</span>
+</code></pre></div>
+
+<p>To see all registered dev processes without starting them, use the <code>dev:list</code> command:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>dev:list
+</code></pre></div>
+
+<p><a name="restarting-failed-processes"></a></p>
+<h4 id="restarting-failed-processes">Restarting Failed Processes<a class="headerlink" href="#restarting-failed-processes" title="Permanent link">#</a></h4>
+<p>If a process crashes, Laravel will restart it after a short delay, up to five times, before marking it as failed. A process that dies within a second of starting is not restarted, since it likely never started successfully in the first place. Restarting a process manually with <code>r</code> resets the counter.</p>
+<p>You may disable this behavior for a single run using the <code>--no-restart</code> option:</p>
+<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>dev<span class="w"> </span>--no-restart
+</code></pre></div>
+
+<p>Or, you may disable it for your entire application using the <code>disableAutoRestart</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DevCommands::disableAutoRestart();</span>
+</code></pre></div>
+
+<p><a name="filtering-dev-processes"></a></p>
+<h3 id="filtering-dev-processes">Filtering Dev Processes<a class="headerlink" href="#filtering-dev-processes" title="Permanent link">#</a></h3>
+<p>You may instruct the <code>dev</code> command to only run specific processes when it is invoked using the <code>only</code> method. Similarly, you may exclude specific processes using the <code>except</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">// Only run the server and vite processes...</span>
+<span class="x">DevCommands::only(&#39;server&#39;, &#39;vite&#39;);</span>
+
+<span class="x">// Run all processes except the queue worker...</span>
+<span class="x">DevCommands::except(&#39;queue&#39;);</span>
+</code></pre></div>
+
+<p>You may exclude commands registered by packages or Laravel's default commands using the <code>withoutVendorCommands</code> and <code>withoutDefaultCommands</code> methods:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DevCommands::withoutVendorCommands();</span>
+
+<span class="x">DevCommands::withoutDefaultCommands();</span>
 </code></pre></div>
 
 <p><a name="stub-customization"></a></p>

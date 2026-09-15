@@ -1,15 +1,15 @@
 ---
 title: Strings
-source_url: https://laravel.com/docs/12.x/strings
+source_url: https://laravel.com/docs/13.x/strings
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: strings.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 890
+retrieved_at: '2026-09-15'
+order: 910
 ---
 
 # Strings
@@ -61,6 +61,7 @@ Laravel includes a variety of functions for manipulating string values. Many of 
 [Str::chopEnd](#method-str-chop-end)
 [Str::contains](#method-str-contains)
 [Str::containsAll](#method-str-contains-all)
+[Str::counted](#method-str-counted)
 [Str::doesntContain](#method-str-doesnt-contain)
 [Str::doesntEndWith](#method-str-doesnt-end-with)
 [Str::doesntStartWith](#method-str-doesnt-start-with)
@@ -165,6 +166,7 @@ Laravel includes a variety of functions for manipulating string values. Many of 
 [chopEnd](#method-fluent-str-chop-end)
 [contains](#method-fluent-str-contains)
 [containsAll](#method-fluent-str-contains-all)
+[counted](#method-fluent-str-counted)
 [decrypt](#method-fluent-str-decrypt)
 [deduplicate](#method-fluent-str-deduplicate)
 [dirname](#method-fluent-str-dirname)
@@ -834,7 +836,7 @@ $matches = Str::is('*.jpg', 'photo.JPG', ignoreCase: true);
 <a name="method-str-is-ascii"></a>
 #### `Str::isAscii()` {.collection-method}
 
-The `Str::isAscii` method determines if a given string is 7 bit ASCII:
+The `Str::isAscii` method determines if a given string is 7-bit ASCII:
 
 ```php
 use Illuminate\Support\Str;
@@ -1068,7 +1070,7 @@ $string = Str::mask('taylor@example.com', '*', 3);
 // tay***************
 ```
 
-If needed, you provide a negative number as the third argument to the `mask` method, which will instruct the method to begin masking at the given distance from the end of the string:
+If needed, you may provide a negative number as the third argument to the `mask` method, which will instruct the method to begin masking at the given distance from the end of the string:
 
 ```php
 $string = Str::mask('taylor@example.com', '*', -15, 3);
@@ -1212,6 +1214,23 @@ $password = Str::password();
 $password = Str::password(12);
 
 // 'qwuar>#V|i]N'
+```
+
+<a name="method-str-counted"></a>
+#### `Str::counted()` {.collection-method}
+
+The `Str::counted` method converts a singular word string to its singular or plural form based on the given count and prefixes the result with the formatted count:
+
+```php
+use Illuminate\Support\Str;
+
+$label = Str::counted('order', 1);
+
+// 1 order
+
+$label = Str::counted('order', 1000);
+
+// 1,000 orders
 ```
 
 <a name="method-str-plural"></a>
@@ -1525,7 +1544,7 @@ $singular = Str::singular('children');
 <a name="method-str-slug"></a>
 #### `Str::slug()` {.collection-method}
 
-The `Str::slug` method generates a URL friendly "slug" from the given string:
+The `Str::slug` method generates a URL-friendly "slug" from the given string:
 
 ```php
 use Illuminate\Support\Str;
@@ -3087,6 +3106,23 @@ $closure = Str::of('foo')->pipe(function (Stringable $str) {
 // 'bar'
 ```
 
+<a name="method-fluent-str-counted"></a>
+#### `counted` {.collection-method}
+
+The `counted` method converts a singular word string to its singular or plural form based on the given count and prefixes the result with the formatted count:
+
+```php
+use Illuminate\Support\Str;
+
+$label = Str::of('order')->counted(1);
+
+// 1 order
+
+$label = Str::of('order')->counted(1000);
+
+// 1,000 orders
+```
+
 <a name="method-fluent-str-plural"></a>
 #### `plural` {.collection-method}
 
@@ -3340,7 +3376,7 @@ $singular = Str::of('children')->singular();
 <a name="method-fluent-str-slug"></a>
 #### `slug` {.collection-method}
 
-The `slug` method generates a URL friendly "slug" from the given string:
+The `slug` method generates a URL-friendly "slug" from the given string:
 
 ```php
 use Illuminate\Support\Str;
@@ -3954,7 +3990,7 @@ $string = Str::of('foo/bar')->whenIs('foo/*', function (Stringable $string) {
 <a name="method-fluent-str-when-is-ascii"></a>
 #### `whenIsAscii` {.collection-method}
 
-The `whenIsAscii` method invokes the given closure if the string is 7 bit ASCII. The closure will receive the fluent string instance:
+The `whenIsAscii` method invokes the given closure if the string is 7-bit ASCII. The closure will receive the fluent string instance:
 
 ```php
 use Illuminate\Support\Str;

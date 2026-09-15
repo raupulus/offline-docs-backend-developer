@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Redis</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Redis</a>
       <h1 class="doc-title">Redis</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/redis" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/redis" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -573,21 +573,47 @@ class="is-current" aria-current="page">Redis</a>
 <span class="x">],</span>
 </code></pre></div>
 
-<p>Predis 3.4.0 and later supports built-in retry and backoff configuration via the <code>Retry</code> class. Configure it using the <code>retry</code> option with one of the following strategies: <code>NoBackoff</code>, <code>EqualBackoff</code>, or <code>ExponentialBackoff</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">use Predis\Retry;</span>
-<span class="x">use Predis\Retry\Strategy\ExponentialBackoff;</span>
+<p>Laravel automatically retries safe read commands once after a transient connection failure. You may use the <code>command_retries</code> option to configure the number of retries for all Redis commands:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;default&#39; =&gt; [</span>
+<span class="x">    // ...</span>
+<span class="x">    &#39;command_retries&#39; =&gt; env(&#39;REDIS_COMMAND_RETRIES&#39;, 0),</span>
+<span class="x">],</span>
+</code></pre></div>
+
+<p>Predis 3.4.0 and later supports built-in retry and backoff configuration via the <code>Retry</code> class. You may configure retries using the <code>max_retries</code> option and configure the backoff strategy using the <code>retry</code> option. The <code>retry</code> option should be an array keyed by one of the following strategy classes: <code>NoBackoff</code>, <code>EqualBackoff</code>, or <code>ExponentialBackoff</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Predis\Retry\Strategy\ExponentialBackoff;</span>
 
 <span class="x">&#39;default&#39; =&gt; [</span>
 <span class="x">    &#39;url&#39; =&gt; env(&#39;REDIS_URL&#39;),</span>
 <span class="x">    // ...</span>
-<span class="x">    &#39;retry&#39; =&gt; new Retry(</span>
-<span class="x">        new ExponentialBackoff(</span>
+<span class="x">    &#39;retry&#39; =&gt; [</span>
+<span class="x">        ExponentialBackoff::class =&gt; [</span>
 <span class="x">            env(&#39;REDIS_BACKOFF_BASE&#39;, 100),</span>
 <span class="x">            env(&#39;REDIS_BACKOFF_CAP&#39;, 1000),</span>
-<span class="x">            true, // Enables jitter</span>
-<span class="x">        ),</span>
-<span class="x">        env(&#39;REDIS_MAX_RETRIES&#39;, 3)</span>
-<span class="x">    )</span>
+<span class="x">            true, // Enable jitter...</span>
+<span class="x">        ],</span>
+<span class="x">    ],</span>
+<span class="x">    &#39;max_retries&#39; =&gt; env(&#39;REDIS_MAX_RETRIES&#39;, 3),</span>
+<span class="x">],</span>
+</code></pre></div>
+
+<p>When using Predis with a Redis cluster, you may define retry configuration in the <code>parameters</code> option of your cluster configuration:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Predis\Retry\Strategy\NoBackoff;</span>
+
+<span class="x">&#39;clusters&#39; =&gt; [</span>
+<span class="x">    &#39;default&#39; =&gt; [</span>
+<span class="x">        // ...</span>
+<span class="x">    ],</span>
+<span class="x">],</span>
+
+<span class="x">&#39;options&#39; =&gt; [</span>
+<span class="x">    &#39;cluster&#39; =&gt; env(&#39;REDIS_CLUSTER&#39;, &#39;redis&#39;),</span>
+<span class="x">    &#39;parameters&#39; =&gt; [</span>
+<span class="x">        &#39;retry&#39; =&gt; [</span>
+<span class="x">            NoBackoff::class =&gt; [],</span>
+<span class="x">        ],</span>
+<span class="x">        &#39;max_retries&#39; =&gt; env(&#39;REDIS_MAX_RETRIES&#39;, 3),</span>
+<span class="x">    ],</span>
 <span class="x">],</span>
 </code></pre></div>
 

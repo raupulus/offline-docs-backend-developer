@@ -1,15 +1,15 @@
 ---
 title: Laravel Pint
-source_url: https://laravel.com/docs/12.x/pint
+source_url: https://laravel.com/docs/13.x/pint
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: pint.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 650
+retrieved_at: '2026-09-15'
+order: 670
 ---
 
 # Laravel Pint
@@ -67,6 +67,12 @@ You may also run Pint on specific files or directories:
 ./vendor/bin/pint app/Models
 
 ./vendor/bin/pint app/Models/User.php
+```
+
+By default, Pint does not format Blade templates. If you would like to format your `.blade.php` files as well, you may use the `--blade` option, which enables the [`Pint/laravel_blade`](#laravel-blade) rule for the current run without modifying your `pint.json` file:
+
+```shell
+./vendor/bin/pint --blade
 ```
 
 Pint will display a thorough list of all of the files that it updates. You can view even more detail about Pint's changes by providing the `-v` option when invoking Pint:
@@ -162,6 +168,37 @@ Pint is built on top of [PHP CS Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fi
 #### Custom Rules
 
 In addition to PHP CS Fixer rules, Pint provides custom rules prefixed with `Pint/`. These rules are not enabled by default, but you may enable them in your `pint.json` file.
+
+<a name="laravel-blade"></a>
+##### `Pint/laravel_blade`
+
+This rule formats your Blade templates, applying consistent indentation, spacing, and attribute formatting to your `.blade.php` files. By default, Pint does not format Blade files, so you must enable this rule in your `pint.json` file to opt in:
+
+```json
+{
+    "preset": "laravel",
+    "rules": {
+        "Pint/laravel_blade": true
+    }
+}
+```
+
+Once enabled, Pint will format your Blade templates in addition to your PHP files whenever it runs:
+
+```shell
+./vendor/bin/pint
+```
+
+Alternatively, if you would like to enable this rule for a single run without modifying your `pint.json` file, you may use the `--blade` option:
+
+```shell
+./vendor/bin/pint --blade
+```
+
+Under the hood, this rule uses [Prettier](https://prettier.io) along with the `prettier-plugin-blade` and `prettier-plugin-tailwindcss` plugins, so [Node.js](https://nodejs.org) must be installed on your machine. The first time you run Pint with this rule enabled, Pint will detect any missing Prettier dependencies and prompt you to install them.
+
+> [!NOTE]
+> This rule automatically skips files that typically rely on their own formatting, such as [Laravel Boost](https://github.com/laravel/boost) guidelines and email views located in the `resources/views/emails` and `resources/views/mail` directories.
 
 <a name="phpdoc-type-annotations-only"></a>
 ##### `Pint/phpdoc_type_annotations_only`

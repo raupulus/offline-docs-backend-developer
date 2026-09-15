@@ -1,15 +1,15 @@
 ---
 title: Logging
-source_url: https://laravel.com/docs/12.x/logging
+source_url: https://laravel.com/docs/13.x/logging
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: logging.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 500
+retrieved_at: '2026-09-15'
+order: 520
 ---
 
 # Logging
@@ -59,6 +59,7 @@ Each log channel is powered by a "driver". The driver determines how and where t
 | ------------ | -------------------------------------------------------------------- |
 | `custom`     | A driver that calls a specified factory to create a channel.         |
 | `daily`      | A `RotatingFileHandler` based Monolog driver which rotates daily.    |
+| `monthly`    | A `RotatingFileHandler` based Monolog driver which rotates monthly.  |
 | `errorlog`   | An `ErrorLogHandler` based Monolog driver.                           |
 | `monolog`    | A Monolog factory driver that may use any supported Monolog handler. |
 | `papertrail` | A `SyslogUdpHandler` based Monolog driver.                           |
@@ -88,10 +89,10 @@ By default, Monolog is instantiated with a "channel name" that matches the curre
 <a name="channel-prerequisites"></a>
 ### Channel Prerequisites
 
-<a name="configuring-the-single-and-daily-channels"></a>
-#### Configuring the Single and Daily Channels
+<a name="configuring-the-single-daily-and-monthly-channels"></a>
+#### Configuring the Single, Daily, and Monthly Channels
 
-The `single` and `daily` channels have three optional configuration options: `bubble`, `permission`, and `locking`.
+The `single`, `daily`, and `monthly` channels have three optional configuration options: `bubble`, `permission`, and `locking`.
 
 <div class="overflow-auto">
 
@@ -103,15 +104,7 @@ The `single` and `daily` channels have three optional configuration options: `bu
 
 </div>
 
-Additionally, the retention policy for the `daily` channel can be configured via the `LOG_DAILY_DAYS` environment variable or by setting the `days` configuration option.
-
-<div class="overflow-auto">
-
-| Name   | Description                                                 | Default |
-| ------ | ----------------------------------------------------------- | ------- |
-| `days` | The number of days that daily log files should be retained. | `14`    |
-
-</div>
+Additionally, the retention policy for the `daily` and `monthly` channels can be configured via the `max_files` configuration option. The `LOG_DAILY_DAYS` environment variable may also be used to configure retention for the `daily` channel.
 
 <a name="configuring-the-papertrail-channel"></a>
 #### Configuring the Papertrail Channel
@@ -535,7 +528,7 @@ class CreateCustomLogger
 
 Often you may need to tail your application's logs in real time. For example, when debugging an issue or when monitoring your application's logs for specific types of errors.
 
-Laravel Pail is a package that allows you to easily dive into your Laravel application's log files directly from the command line. Unlike the standard `tail` command, Pail is designed to work with any log driver, including Sentry or Flare. In addition, Pail provides a set of useful filters to help you quickly find what you're looking for.
+Laravel Pail is a package that allows you to easily dive into your Laravel application's log files directly from the command line. Unlike the standard `tail` command, Pail is designed to work with any log driver, including [Laravel Nightwatch](https://nightwatch.laravel.com), Sentry, or Flare. In addition, Pail provides a set of useful filters to help you quickly find what you're looking for.
 
 <img src="https://laravel.com/img/docs/pail-example.png">
 

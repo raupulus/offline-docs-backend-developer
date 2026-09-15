@@ -1,8 +1,8 @@
-# Laravel v12.x — Documentación técnica oficial
+# Laravel v13.x — Documentación técnica oficial
 
 > **Espejo Offline de Documentación Técnica**
-> Licencia: MIT | Documentos incluidos: 99 | Versión: 12.x
-> Descargado/sincronizado: 2026-08-02
+> Licencia: MIT | Documentos incluidos: 101 | Versión: 13.x
+> Descargado/sincronizado: 2026-09-15
 > Documentación oficial en línea: https://laravel.com/docs
 > Mantenedor del espejo: Raúl Caro Pastorino (@raupulus) · https://raupulus.dev
 
@@ -54,11 +54,13 @@
 - [Laravel Fortify](#laravel-fortify)
 - [Frontend](#frontend)
 - [Hashing](#hashing)
+- [Laravel Head](#laravel-head)
 - [Helpers](#helpers)
 - [Laravel Homestead](#laravel-homestead)
 - [Laravel Horizon](#laravel-horizon)
 - [HTTP Client](#http-client)
 - [HTTP Tests](#http-tests)
+- [Image Manipulation](#image-manipulation)
 - [Installation](#installation)
 - [Request Lifecycle](#request-lifecycle)
 - [Localization](#localization)
@@ -121,12 +123,13 @@
 
 # Laravel AI SDK
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/ai-sdk*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/ai-sdk*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
     - [Configuration](#configuration)
     - [Custom Base URLs](#custom-base-urls)
+    - [OpenAI-Compatible Providers](#openai-compatible-providers)
     - [Provider Support](#provider-support)
 - [Agents](#agents)
     - [Prompting](#prompting)
@@ -137,15 +140,24 @@
     - [Broadcasting](#broadcasting)
     - [Queueing](#queueing)
     - [Tools](#tools)
+    - [Deferred Tool Loading](#deferred-tool-loading)
+    - [File Storage Tools](#file-storage-tools)
+    - [MCP Tools](#mcp-tools)
     - [Provider Tools](#provider-tools)
+    - [Sub-Agents](#sub-agents)
     - [Middleware](#middleware)
     - [Anonymous Agents](#anonymous-agents)
     - [Agent Configuration](#agent-configuration)
     - [Provider Options](#provider-options)
+    - [Prompt Caching](#prompt-caching)
+- [Human Tool Approval](#human-tool-approval)
+    - [Complete Approval Flow](#complete-approval-flow)
 - [Images](#images)
 - [Audio (TTS)](#audio)
 - [Transcription (STT)](#transcription)
+- [Text Summarization](#text-summarization)
 - [Embeddings](#embeddings)
+    - [Multimodal Embeddings](#multimodal-embeddings)
     - [Querying Embeddings](#querying-embeddings)
     - [Caching Embeddings](#caching-embeddings)
 - [Reranking](#reranking)
@@ -197,12 +209,18 @@ You may define your AI provider credentials in your application's `config/ai.php
 
 ```ini
 ANTHROPIC_API_KEY=
+AZURE_OPENAI_API_KEY=
 COHERE_API_KEY=
+DEEPSEEK_API_KEY=
 ELEVENLABS_API_KEY=
 GEMINI_API_KEY=
+GROQ_API_KEY=
 MISTRAL_API_KEY=
 OLLAMA_API_KEY=
 OPENAI_API_KEY=
+OPENAI_COMPATIBLE_API_KEY=
+OPENAI_COMPATIBLE_URL=
+OPENROUTER_API_KEY=
 JINA_API_KEY=
 VOYAGEAI_API_KEY=
 XAI_API_KEY=
@@ -222,7 +240,7 @@ You may configure custom base URLs by adding a `url` parameter to your provider 
     'openai' => [
         'driver' => 'openai',
         'key' => env('OPENAI_API_KEY'),
-        'url' => env('OPENAI_BASE_URL'),
+        'url' => env('OPENAI_URL'),
     ],
 
     'anthropic' => [
@@ -237,20 +255,115 @@ This is useful when routing requests through a proxy service (such as LiteLLM or
 
 Custom base URLs are supported for the following providers: OpenAI, Anthropic, Gemini, Groq, Cohere, DeepSeek, xAI, and OpenRouter.
 
+<a name="openai-compatible-providers"></a>
+### OpenAI-Compatible Providers
+
+If you are using an OpenAI-compatible API, such as LM Studio, vLLM, Together, Fireworks, or a local gateway, you may configure an `openai-compatible` provider. The `url` option is required, while the `key` option is optional and will be sent as a bearer token when present:
+
+```php
+'providers' => [
+    'local' => [
+        'driver' => 'openai-compatible',
+        'url' => env('LOCAL_AI_URL'),
+        'key' => env('LOCAL_AI_API_KEY'),
+    ],
+],
+```
+
+Once configured, you may use the named provider like any other provider:
+
+```php
+agent()->prompt('What is Laravel?', provider: 'local', model: 'local-model');
+```
+
+You may also configure a default text model for the provider so that you do not need to pass a model explicitly:
+
+```php
+'local' => [
+    'driver' => 'openai-compatible',
+    'url' => env('LOCAL_AI_URL'),
+    'key' => env('LOCAL_AI_API_KEY'),
+    'models' => [
+        'text' => [
+            'default' => env('LOCAL_AI_MODEL'),
+        ],
+    ],
+],
+```
+
+You may add custom HTTP headers to every outgoing request for the provider by defining a `headers` array in its configuration. This is useful when an endpoint requires an additional identifying or authentication header beyond the bearer token:
+
+```php
+'local' => [
+    'driver' => 'openai-compatible',
+    'url' => env('LOCAL_AI_URL'),
+    'key' => env('LOCAL_AI_API_KEY'),
+    'headers' => [
+        'X-Tenant-Id' => env('LOCAL_AI_TENANT_ID'),
+    ],
+],
+```
+
+OpenAI-compatible providers support text generation, streaming, tools, structured output, image attachments, embeddings, and transcription. If your endpoint requires additional request body fields, provide them using [provider options](#provider-options).
+
+<a name="openai-compatible-embeddings"></a>
+#### OpenAI-Compatible Embeddings
+
+Since arbitrary endpoints have no known models, you must configure a default embeddings model to use `embeddings()` with an OpenAI-compatible provider. You may also configure a fixed dimensions value; if omitted, the request is sent without a `dimensions` parameter and the model's native dimensions are used.
+
+```php
+'local' => [
+    'driver' => 'openai-compatible',
+    'url' => env('LOCAL_AI_URL'),
+    'key' => env('LOCAL_AI_API_KEY'),
+    'models' => [
+        'embeddings' => [
+            'default' => 'text-embedding-qwen3-embedding-0.6b',
+            'dimensions' => 1024, // optional
+        ],
+    ],
+],
+```
+
+<a name="openai-compatible-transcriptions"></a>
+#### OpenAI-Compatible Transcriptions
+
+Likewise, you must configure a default transcription model to use `Transcription` with an OpenAI-compatible provider. The audio will be uploaded to the endpoint's `/audio/transcriptions` route as a standard multipart request:
+
+```php
+'local' => [
+    'driver' => 'openai-compatible',
+    'url' => env('LOCAL_AI_URL'),
+    'key' => env('LOCAL_AI_API_KEY'),
+    'models' => [
+        'transcription' => [
+            'default' => 'whisper-1',
+        ],
+    ],
+],
+```
+
+> [!NOTE]
+> OpenAI-compatible and Groq providers do not support diarization. Invoking the `diarize` method when using these providers will throw an exception.
+
 <a name="provider-support"></a>
 ### Provider Support
 
 The AI SDK supports a variety of providers across its features. The following table summarizes which providers are available for each feature:
 
+<div class="overflow-auto">
+
 | Feature | Providers |
 |---|---|
-| Text | OpenAI, Anthropic, Gemini, Azure, Groq, xAI, DeepSeek, Mistral, Ollama |
-| Images | OpenAI, Gemini, xAI |
-| TTS | OpenAI, ElevenLabs |
-| STT | OpenAI, ElevenLabs, Mistral |
-| Embeddings | OpenAI, Gemini, Azure, Cohere, Mistral, Jina, VoyageAI |
-| Reranking | Cohere, Jina |
-| Files | OpenAI, Anthropic, Gemini |
+| Text | OpenAI, OpenAI Compatible, Anthropic, Gemini, Azure, Bedrock, Groq, xAI, DeepSeek, Mistral, Ollama, OpenRouter |
+| Images | OpenAI, Gemini, xAI, Azure, Bedrock, OpenRouter |
+| TTS | OpenAI, ElevenLabs, Gemini, Mistral |
+| STT | OpenAI, OpenAI Compatible, ElevenLabs, Groq, Mistral, Gemini |
+| Embeddings | OpenAI, OpenAI Compatible, Gemini, Azure, Bedrock, Cohere, Mistral, Jina, VoyageAI, Ollama, OpenRouter |
+| Reranking | Cohere, Jina, VoyageAI, Bedrock |
+| Files | OpenAI, Anthropic, Gemini, Azure |
+
+</div>
 
 The `Laravel\Ai\Enums\Lab` enum may be used to reference providers throughout your code instead of using plain strings:
 
@@ -259,6 +372,7 @@ use Laravel\Ai\Enums\Lab;
 
 Lab::Anthropic;
 Lab::OpenAI;
+Lab::OpenAiCompatible;
 Lab::Gemini;
 // ...
 ```
@@ -373,10 +487,34 @@ By passing additional arguments to the `prompt` method, you may override the def
 $response = (new SalesCoach)->prompt(
     'Analyze this sales transcript...',
     provider: Lab::Anthropic,
-    model: 'claude-haiku-4-5-20251001',
+    model: 'claude-sonnet-5',
     timeout: 120,
 );
 ```
+
+<a name="raw-http-responses"></a>
+#### Raw HTTP Responses
+
+Every response returned from a text-generating agent exposes the raw HTTP response from the underlying provider API call via a `raw` property. This gives you access to provider-specific information that isn't part of the AI SDK's generic response - rate-limit headers, request IDs, or other exact payload fields:
+
+```php
+$response = (new SalesCoach)->prompt('Analyze this sales transcript...');
+
+$response->raw; // Illuminate\Http\Client\Response|null
+
+$response->raw->header('X-RateLimit-Remaining-Requests');
+$response->raw->json('id');
+```
+
+In a tool-call loop, each step retains the raw response of its own request:
+
+```php
+foreach ($response->steps as $step) {
+    $step->raw?->header('X-RateLimit-Remaining-Requests');
+}
+```
+
+> **Note:** The `raw` property is `null` when streaming a response, when using the Bedrock provider (which performs its API calls via the AWS SDK instead of an HTTP client), and on faked responses unless one is provided explicitly via `withRawResponse`.
 
 <a name="conversation-context"></a>
 ### Conversation Context
@@ -406,7 +544,7 @@ public function messages(): iterable
 <a name="remembering-conversations"></a>
 #### Remembering Conversations
 
-> **Note:** Before using the `RemembersConversations` trait, you should publish and run the AI SDK migrations using the `vendor:publish` Artisan command. These migrations will create the necessary database tables to store conversations.
+> **Warning:** Before using the `RemembersConversations` trait, you should publish and run the AI SDK migrations using the `vendor:publish` Artisan command. These migrations will create the necessary database tables to store conversations.
 
 If you would like Laravel to automatically store and retrieve conversation history for your agent, you may use the `RemembersConversations` trait. This trait provides a simple way to persist conversation messages to the database without manually implementing the `Conversational` interface:
 
@@ -434,6 +572,8 @@ class SalesCoach implements Agent, Conversational
 }
 ```
 
+When using the `RemembersConversations` trait, do not manually define a `messages` method in your agent class. If a `messages` method is present, it will take precedence over the trait's implementation and conversation history will not be loaded from the database.
+
 To start a new conversation for a user, call the `forUser` method before prompting:
 
 ```php
@@ -442,7 +582,29 @@ $response = (new SalesCoach)->forUser($user)->prompt('Hello!');
 $conversationId = $response->conversationId;
 ```
 
-The conversation ID is returned on the response and can be stored for future reference, or you can retrieve all of a user's conversations from the `agent_conversations` table directly.
+The conversation ID is returned on the response and can be stored for future reference. If you would like to retrieve all of a user's conversations using Eloquent, you may add the `HasConversations` trait to your user model:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Ai\Concerns\HasConversations;
+
+class User extends Authenticatable
+{
+    use HasConversations;
+}
+```
+
+Once the trait has been added to your model, you may retrieve and query the user's conversations via the `conversations` relationship:
+
+```php
+$conversations = $user->conversations()
+    ->latest('updated_at')
+    ->paginate(20);
+```
 
 To continue an existing conversation, use the `continue` method:
 
@@ -453,6 +615,48 @@ $response = (new SalesCoach)
 ```
 
 When using the `RemembersConversations` trait, previous messages are automatically loaded and included in the conversation context when prompting. New messages (both user and assistant) are automatically stored after each interaction.
+
+<a name="conversation-participants"></a>
+#### Conversation Participants
+
+Although users are the most common conversation participants, conversations may belong to any Eloquent model. Use the `forParticipant` method to start a conversation for another type of model:
+
+```php
+$response = (new SalesCoach)
+    ->forParticipant($team)
+    ->prompt('Review our latest sales results.');
+```
+
+The participant's morph class and primary key are stored with the conversation. Therefore, models of different types that have the same primary key, such as `User` ID `1` and `Team` ID `1`, have separate conversation histories. The `forUser` method is an alias for `forParticipant`.
+
+You may continue the participant's most recent conversation using the `continueLastConversation` method:
+
+```php
+$response = (new SalesCoach)
+    ->continueLastConversation($team)
+    ->prompt('Tell me more about that.');
+```
+
+When continuing a specific conversation, pass the participant to the `continue` method:
+
+```php
+$response = (new SalesCoach)
+    ->continue($conversationId, as: $team)
+    ->prompt('Tell me more about that.');
+```
+
+The `HasConversations` trait may be added to any Eloquent model that participates in conversations. The resulting `conversations` relationship is a polymorphic relationship scoped to that model's type and primary key. You may also access the participant that owns a conversation through its inverse relationship:
+
+```php
+$conversations = $team->conversations;
+
+$participant = $conversation->participant;
+```
+
+If your application uses multiple participant model types, you should consider defining an [Eloquent morph map](/docs/{{version}}/eloquent-relationships#custom-polymorphic-types) so that stored participant types are not coupled to your model class names.
+
+> [!WARNING]
+> The `continue` method does not verify that the given participant owns the conversation. Your application should authorize access to the conversation before continuing it.
 
 <a name="structured-output"></a>
 ### Structured Output
@@ -495,6 +699,84 @@ $response = (new SalesCoach)->prompt('Analyze this sales transcript...');
 return $response['score'];
 ```
 
+<a name="structured-output-nested-objects"></a>
+#### Nested Objects
+
+To define nested structured output, use the `object` method with a closure:
+
+```php
+<?php
+
+namespace App\Ai\Agents;
+
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Contracts\HasStructuredOutput;
+use Laravel\Ai\Promptable;
+
+class SalesCoach implements Agent, HasStructuredOutput
+{
+    use Promptable;
+
+    // ...
+
+    /**
+     * Get the agent's structured output schema definition.
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'score' => $schema->integer()->required(),
+            'metadata' => $schema->object(fn ($schema) => [
+                'confidence' => $schema->string()->enum(['low', 'medium', 'high'])->required(),
+                'language' => $schema->string()->required(),
+            ])->required(),
+        ];
+    }
+}
+```
+
+<a name="structured-output-arrays-of-objects"></a>
+#### Arrays of Objects
+
+If your agent should return a list of structured items, combine the `array` and `object` methods:
+
+```php
+public function schema(JsonSchema $schema): array
+{
+    return [
+        'feedback' => $schema->array()
+            ->items(
+                $schema->object(fn ($schema) => [
+                    'comment' => $schema->string()->required(),
+                    'score' => $schema->integer()->required(),
+                ])
+            )
+            ->required(),
+    ];
+}
+```
+
+If a value may match one of several schemas, use the `anyOf` method:
+
+```php
+public function schema(JsonSchema $schema): array
+{
+    return [
+        'content' => $schema->anyOf([
+            $schema->object(fn ($schema) => [
+                'type' => $schema->string()->enum(['article'])->required(),
+                'title' => $schema->string()->required(),
+            ]),
+            $schema->object(fn ($schema) => [
+                'type' => $schema->string()->enum(['image'])->required(),
+                'url' => $schema->string()->required(),
+            ]),
+        ])->required(),
+    ];
+}
+```
+
 <a name="attachments"></a>
 ### Attachments
 
@@ -507,8 +789,8 @@ use Laravel\Ai\Files;
 $response = (new SalesCoach)->prompt(
     'Analyze the attached sales transcript...',
     attachments: [
-        Files\Document::fromStorage('transcript.pdf') // Attach a document from a filesystem disk...
-        Files\Document::fromPath('/home/laravel/transcript.md') // Attach a document from a local path...
+        Files\Document::fromStorage('transcript.pdf'), // Attach a document from a filesystem disk...
+        Files\Document::fromPath('/home/laravel/transcript.md'), // Attach a document from a local path...
         $request->file('transcript'), // Attach an uploaded file...
     ]
 );
@@ -523,8 +805,8 @@ use Laravel\Ai\Files;
 $response = (new ImageAnalyzer)->prompt(
     'What is in this image?',
     attachments: [
-        Files\Image::fromStorage('photo.jpg') // Attach an image from a filesystem disk...
-        Files\Image::fromPath('/home/laravel/photo.jpg') // Attach an image from a local path...
+        Files\Image::fromStorage('photo.jpg'), // Attach an image from a filesystem disk...
+        Files\Image::fromPath('/home/laravel/photo.jpg'), // Attach an image from a local path...
         $request->file('photo'), // Attach an uploaded file...
     ]
 );
@@ -608,6 +890,34 @@ Or, you can invoke an agent's `broadcastOnQueue` method to queue the agent opera
 );
 ```
 
+<a name="skipping-oversized-events"></a>
+#### Skipping Oversized Events
+
+Some broadcasting platforms limit WebSocket messages to around 10KB. Data-heavy stream events, like large tool results, can exceed this limit and cause broadcasting to fail. You may exclude specific event types from broadcasting using the `WithoutBroadcasting` attribute:
+
+```php
+<?php
+
+namespace App\Ai\Agents;
+
+use Laravel\Ai\Attributes\WithoutBroadcasting;
+use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Promptable;
+use Laravel\Ai\Streaming\Events\ToolCall;
+use Laravel\Ai\Streaming\Events\ToolResult;
+
+#[WithoutBroadcasting(ToolCall::class, ToolResult::class)]
+class SearchAgent implements Agent, HasTools
+{
+    use Promptable;
+
+    // ...
+}
+```
+
+The excluded events are never broadcast, but they are still persisted to the `agent_conversation_messages` table, so your frontend can load the full tool data after the stream completes. This works for both queued (`broadcastOnQueue`) and synchronous (`broadcast` / `broadcastNow`) broadcasting.
+
 <a name="queueing"></a>
 ### Queueing
 
@@ -619,7 +929,7 @@ use Laravel\Ai\Responses\AgentResponse;
 use Throwable;
 
 Route::post('/coach', function (Request $request) {
-    return (new SalesCoach)
+    (new SalesCoach)
         ->queue($request->input('transcript'))
         ->then(function (AgentResponse $response) {
             // ...
@@ -702,6 +1012,47 @@ public function tools(): iterable
 }
 ```
 
+<a name="validating-tool-arguments"></a>
+#### Validating Tool Arguments
+
+Although your tool's schema constrains the arguments a model may provide, you may validate the incoming arguments using the request's `validate` method:
+
+```php
+public function handle(Request $request): Stringable|string
+{
+    $validated = $request->validate([
+        'city' => 'required|string',
+        'days' => 'required|integer|max:7',
+    ]);
+
+    return $this->forecast($validated['city'], $validated['days']);
+}
+```
+
+When validation fails, the validation messages are returned to the model as the tool's result, allowing it to correct the arguments and call the tool again.
+
+<a name="repairing-tool-calls"></a>
+#### Repairing Tool Calls
+
+Use the `RepairToolCalls` attribute to let an agent recover when a model calls an unknown local tool. Laravel returns the failed call to the model with the names of the available local tools, allowing it to correct the call:
+
+```php
+use Laravel\Ai\Attributes\RepairToolCalls;
+use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Promptable;
+
+#[RepairToolCalls]
+class SupportAgent implements Agent, HasTools
+{
+    use Promptable;
+
+    // ...
+}
+```
+
+When Laravel derives the maximum number of steps automatically, this attribute adds one step for the repaired call. Explicit `MaxSteps` limits are unchanged.
+
 <a name="similarity-search"></a>
 #### Similarity Search
 
@@ -762,6 +1113,135 @@ SimilaritySearch::usingModel(Document::class, 'embedding')
     ->withDescription('Search the knowledge base for relevant articles.'),
 ```
 
+<a name="deferred-tool-loading"></a>
+### Deferred Tool Loading
+
+By default, every tool an agent exposes is sent to the provider with each request. When an agent provides a large number of tools, this consumes tokens and may reduce the accuracy of the model's tool selection. Using the `ToolSearch` provider tool with OpenAI or Anthropic, you may defer tool definitions so that the provider only loads them when they are needed:
+
+```php
+use App\Ai\Tools\RefundOrder;
+use App\Ai\Tools\SearchInvoices;
+use App\Ai\Tools\Weather;
+use Laravel\Ai\Providers\Tools\ToolSearch;
+
+public function tools(): iterable
+{
+    return [
+        new Weather,
+        new ToolSearch(tools: [
+            new SearchInvoices,
+            new RefundOrder,
+        ]),
+    ];
+}
+```
+
+The wrapped tools do not require any modification. The provider will search for and load them when they are relevant to the prompt, after which the agent may call them like any other tool.
+
+When using Anthropic, the `strategy` argument may be used to determine how the provider should search for deferred tools. The supported strategies are `regex` (default) and `bm25`:
+
+```php
+new ToolSearch(tools: [new SearchInvoices], strategy: 'bm25'),
+```
+
+When using Anthropic, additional provider-specific options may be passed to the search tool using the `withProviderOptions` method:
+
+```php
+(new ToolSearch(tools: [new SearchInvoices]))
+    ->withProviderOptions(['cache_control' => ['type' => 'ephemeral']]),
+```
+
+> [!WARNING]
+> Providers that do not support tool search will throw an exception rather than silently discarding the deferred tools. In addition, Anthropic requires that at least one tool is provided outside of the `ToolSearch` wrapper.
+
+<a name="file-storage-tools"></a>
+### File Storage Tools
+
+The `FileStorage` tool factory allows you to give agents access to a Laravel [filesystem disk](/docs/{{version}}/filesystem). The `all` method returns tools that allow the agent to list, read, inspect, generate URLs for, write, delete, and copy files on the given disk:
+
+```php
+use Laravel\Ai\Tools\FileStorage;
+
+public function tools(): iterable
+{
+    return FileStorage::all('local');
+}
+```
+
+If your agent should only be able to inspect files, use the `readOnly` method:
+
+```php
+return FileStorage::readOnly('local');
+```
+
+These methods return an `Illuminate\Support\Collection`, allowing you to further filter the tools that are provided to the agent:
+
+```php
+use Laravel\Ai\Tools\Filesystem\DeleteFile;
+
+return FileStorage::all('s3')
+    ->reject(fn ($tool) => $tool instanceof DeleteFile);
+```
+
+<a name="mcp-tools"></a>
+### MCP Tools
+
+If your application uses [Laravel MCP](/docs/{{version}}/mcp), you may give your agents tools exposed by [Model Context Protocol](https://modelcontextprotocol.io) servers. Using the [Laravel MCP client](/docs/{{version}}/mcp#client), you may connect to a remote or local MCP server and pass its tools directly to your agent.
+
+> [!NOTE]
+> MCP tools require the [Laravel MCP](/docs/{{version}}/mcp) package to be installed in your application.
+
+Because an MCP client's `tools` method returns a collection, spread it into your agent's `tools` array using the `...` operator:
+
+```php
+use App\Ai\Tools\RandomNumberGenerator;
+use Laravel\Mcp\Client;
+
+/**
+ * Get the tools available to the agent.
+ *
+ * @return Tool[]
+ */
+public function tools(): iterable
+{
+    return [
+        ...Client::web('https://mcp.example.com')
+            ->withToken($token)
+            ->tools(),
+
+        new RandomNumberGenerator,
+    ];
+}
+```
+
+The AI SDK automatically wraps each MCP tool so the agent can call it like any other tool. You may also use a [named MCP client](/docs/{{version}}/mcp#named-clients):
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+public function tools(): iterable
+{
+    return [
+        ...Mcp::client('github')->tools(),
+    ];
+}
+```
+
+Or connect to a [local MCP server](/docs/{{version}}/mcp#client-connecting):
+
+```php
+use Laravel\Mcp\Client;
+
+public function tools(): iterable
+{
+    return [
+        ...Client::local('php', ['artisan', 'mcp:start'])->tools(),
+    ];
+}
+```
+
+For more information on creating and authenticating MCP clients, including bearer tokens and OAuth, consult the [MCP client documentation](/docs/{{version}}/mcp#client).
+
 <a name="provider-tools"></a>
 ### Provider Tools
 
@@ -774,7 +1254,7 @@ Provider tools can be returned by your agent's `tools` method.
 
 The `WebSearch` provider tool allows agents to search the web for real-time information. This is useful for answering questions about current events, recent data, or topics that may have changed since the model's training cutoff.
 
-**Supported Providers:** Anthropic, OpenAI, Gemini
+**Supported providers:** Anthropic, OpenAI, Azure, Gemini, xAI, OpenRouter
 
 ```php
 use Laravel\Ai\Providers\Tools\WebSearch;
@@ -808,7 +1288,7 @@ To refine search results based on user location, use the `location` method:
 
 The `WebFetch` provider tool allows agents to fetch and read the contents of web pages. This is useful when you need the agent to analyze specific URLs or retrieve detailed information from known web pages.
 
-**Supported providers:** Anthropic, Gemini
+**Supported providers:** Anthropic, Gemini, OpenRouter
 
 ```php
 use Laravel\Ai\Providers\Tools\WebFetch;
@@ -832,7 +1312,7 @@ You may configure the web fetch tool to limit the number of fetches or restrict 
 
 The `FileSearch` provider tool allows agents to search through [files](#files) stored in [vector stores](#vector-stores). This enables retrieval-augmented generation (RAG) by allowing the agent to search your uploaded documents for relevant information.
 
-**Supported providers:** OpenAI, Gemini
+**Supported providers:** OpenAI, Gemini, xAI
 
 ```php
 use Laravel\Ai\Providers\Tools\FileSearch;
@@ -871,6 +1351,108 @@ new FileSearch(stores: ['store_id'], where: fn (FileSearchQuery $query) =>
         ->whereIn('category', ['news', 'updates'])
 );
 ```
+
+<a name="sub-agents"></a>
+### Sub-Agents
+
+Agents may also be returned from another agent's `tools` method. When an agent is returned as a tool, the parent agent may delegate a specific task to the sub-agent and use the sub-agent's response while answering the original prompt. This is useful when a general-purpose agent needs access to specialized agents with their own instructions, tools, model configuration, or provider preferences.
+
+For example, a customer support agent could delegate refund eligibility questions to a dedicated refunds agent:
+
+```php
+<?php
+
+namespace App\Ai\Agents;
+
+use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Promptable;
+
+class CustomerSupportAgent implements Agent, HasTools
+{
+    use Promptable;
+
+    /**
+     * Get the instructions that the agent should follow.
+     */
+    public function instructions(): string
+    {
+        return 'You help customers with account, order, and billing questions. Delegate refund policy questions to the refunds specialist.';
+    }
+
+    /**
+     * Get the tools available to the agent.
+     *
+     * @return Tool[]
+     */
+    public function tools(): iterable
+    {
+        return [
+            new RefundsAgent,
+        ];
+    }
+}
+```
+
+To customize how the sub-agent is exposed to the parent agent, implement the `CanActAsTool` interface on the sub-agent and define a tool-facing name and description:
+
+```php
+<?php
+
+namespace App\Ai\Agents;
+
+use App\Ai\Tools\LookupOrder;
+use Laravel\Ai\Attributes\Provider;
+use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Contracts\CanActAsTool;
+use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Enums\Lab;
+use Laravel\Ai\Promptable;
+
+#[Provider(Lab::Anthropic)]
+class RefundsAgent implements Agent, CanActAsTool, HasTools
+{
+    use Promptable;
+
+    /**
+     * Get the instructions that the agent should follow.
+     */
+    public function instructions(): string
+    {
+        return 'You are a refunds specialist. Use order details and the refund policy to give concise eligibility guidance.';
+    }
+
+    /**
+     * Get the agent's tool name.
+     */
+    public function name(): string
+    {
+        return 'refunds_specialist';
+    }
+
+    /**
+     * Get the agent's tool description.
+     */
+    public function description(): string
+    {
+        return 'Determine whether an order is eligible for a refund and explain the next step.';
+    }
+
+    /**
+     * Get the tools available to the agent.
+     *
+     * @return Tool[]
+     */
+    public function tools(): iterable
+    {
+        return [
+            new LookupOrder,
+        ];
+    }
+}
+```
+
+If a sub-agent does not implement `CanActAsTool`, Laravel will use the agent's class basename as the tool name and a generic description that asks the parent agent to pass a clear, self-contained task description. Each sub-agent invocation runs in isolation and does not receive the parent agent's conversation history.
 
 <a name="middleware"></a>
 ### Middleware
@@ -986,6 +1568,7 @@ You may configure text generation options for an agent using PHP attributes. The
 - `Provider`: The AI provider (or providers for failover) to use for the agent.
 - `Temperature`: The sampling temperature to use for generation (0.0 to 1.0).
 - `Timeout`: The HTTP timeout in seconds for agent requests (default: 60).
+- `TopP`: The nucleus sampling probability to use for generation (0.0 to 1.0).
 - `UseCheapestModel`: Use the provider's cheapest text model for cost optimization.
 - `UseSmartestModel`: Use the provider's most capable text model for complex tasks.
 
@@ -1000,16 +1583,18 @@ use Laravel\Ai\Attributes\Model;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Attributes\Timeout;
+use Laravel\Ai\Attributes\TopP;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
 
 #[Provider(Lab::Anthropic)]
-#[Model('claude-haiku-4-5-20251001')]
+#[Model('claude-sonnet-5')]
 #[MaxSteps(10)]
 #[MaxTokens(4096)]
 #[Temperature(0.7)]
 #[Timeout(120)]
+#[TopP(0.9)]
 class SalesCoach implements Agent
 {
     use Promptable;
@@ -1043,38 +1628,8 @@ class ComplexReasoner implements Agent
 }
 ```
 
-In addition to the `Provider`, `Model`, and `Timeout` attributes, you may also define `provider`, `model`, and `timeout` methods on your agent to resolve these values at runtime, which is useful when the configuration depends on a database record, configuration value, or other runtime state. The same applies to `maxSteps`, `maxTokens`, and `temperature`:
-
-```php
-<?php
-
-namespace App\Ai\Agents;
-
-use Laravel\Ai\Contracts\Agent;
-use Laravel\Ai\Promptable;
-
-class SalesCoach implements Agent
-{
-    use Promptable;
-
-    public function maxSteps(): int
-    {
-        return config('agents.sales_coach.max_steps', 5);
-    }
-
-    public function maxTokens(): int
-    {
-        return $this->user->plan->maxTokens();
-    }
-
-    public function temperature(): float
-    {
-        return Setting::get('sales_coach_temperature', 0.7);
-    }
-}
-```
-
-When both a method and an attribute are defined for the same option, the method takes precedence.
+> [!NOTE]
+> The underlying model selected by `UseCheapestModel` and `UseSmartestModel` may change between releases of the Laravel AI SDK as providers release new models. Switching models can introduce behavioral changes, deprecated parameters, and significant cost differences. If you need a stable, predictable model and pricing, specify the model explicitly using the `Model` attribute.
 
 <a name="provider-options"></a>
 ### Provider Options
@@ -1110,6 +1665,7 @@ class SalesCoach implements Agent, HasProviderOptions
             ],
             Lab::Anthropic => [
                 'thinking' => ['budget_tokens' => 1024],
+                'cache_control' => ['type' => 'ephemeral'],
             ],
             default => [],
         };
@@ -1118,6 +1674,265 @@ class SalesCoach implements Agent, HasProviderOptions
 ```
 
 The `providerOptions` method receives the provider currently being used (`Lab` enum or string), allowing you to return different options per provider. This is especially useful when using [failover](#failover), since each fallback provider can receive its own configuration.
+
+The Anthropic example above also enables [prompt caching](#prompt-caching) via `cache_control`.
+
+<a name="prompt-caching"></a>
+### Prompt Caching
+
+Most providers cache repeated prompt prefixes automatically and bill the cached portion at a discount. OpenAI, Gemini, Groq, DeepSeek, and xAI require no configuration, and you may inspect the savings via the response's usage:
+
+```php
+$response->usage->cacheReadInputTokens;
+$response->usage->cacheWriteInputTokens;
+```
+
+The `anthropic` and `bedrock` providers only cache when asked. The `CacheInstructions` and `CacheToolDefinitions` attributes place a cache breakpoint at the end of your agent's instructions and tool definitions, so every conversation reads that prefix from the cache instead of writing it again:
+
+```php
+use Laravel\Ai\Attributes\CacheInstructions;
+use Laravel\Ai\Attributes\CacheToolDefinitions;
+
+#[CacheInstructions]
+#[CacheToolDefinitions]
+class SalesCoach implements Agent
+{
+    use Promptable;
+
+    // ...
+}
+```
+
+If your instructions change on every request, such as when they embed the current date, use `CacheToolDefinitions` alone. Caching a prefix that changes on every request creates a new cache entry each time, so you pay to write it to the cache without ever reusing it.
+
+Providers that do not support these attributes ignore them, so an agent may safely declare them while using [failover](#failover).
+
+Cached prefixes are retained for five minutes by default. Anthropic may retain them for an hour if you pass a TTL to the attribute:
+
+```php
+#[CacheInstructions('1h')]
+#[CacheToolDefinitions('1h')]
+```
+
+Alternatively, Anthropic's automatic caching may be enabled via a top-level `cache_control` [provider option](#provider-options). This places a single breakpoint after the last block of the request, so the breakpoint advances as the conversation grows and each turn reads the previous turns from the cache. Both mechanisms may be combined.
+
+> [!WARNING]
+> Because providers build prompts in the order tools, instructions, and messages, caching instructions for an hour also requires caching tool definitions for an hour. Mixing the two throws an `InvalidArgumentException`.
+
+<a name="human-tool-approval"></a>
+## Human Tool Approval
+
+> [!WARNING]
+> Tool approval requires a `Conversational` agent whose conversation history is persisted so the paused call can be resumed. The `RemembersConversations` trait provides the necessary persistence.
+
+Tools that perform sensitive or irreversible actions may require human approval before they are executed. To make a tool approvable, implement the `Approvable` contract and use the `InteractsWithApprovals` trait. Approvable tools require approval by default:
+
+```php
+<?php
+
+namespace App\Ai\Tools;
+
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Ai\Concerns\InteractsWithApprovals;
+use Laravel\Ai\Contracts\Approvable;
+use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Tools\Request;
+use Stringable;
+
+class DeleteFile implements Approvable, Tool
+{
+    use InteractsWithApprovals;
+
+    /**
+     * Get the description of the tool's purpose.
+     */
+    public function description(): Stringable|string
+    {
+        return 'Delete a file from storage.';
+    }
+
+    /**
+     * Execute the tool.
+     */
+    public function handle(Request $request): Stringable|string
+    {
+        Storage::delete($request['path']);
+
+        return "Deleted [{$request['path']}].";
+    }
+
+    /**
+     * Get the tool's schema definition.
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'path' => $schema->string()->required(),
+        ];
+    }
+}
+```
+
+To determine whether approval is needed based on the tool call's arguments, define a `needsApproval` method on the tool. This method may return a boolean or an `Approval` instance that includes a reason for the approval request:
+
+```php
+use Laravel\Ai\Approvals\Approval;
+
+/**
+ * Determine whether the tool needs approval for the given request.
+ */
+protected function needsApproval(Request $request): Approval|bool
+{
+    return str_starts_with($request['path'], 'temporary/')
+        ? false
+        : Approval::required('This will permanently delete a file.');
+}
+```
+
+You may override a tool's approval requirement when returning it from an agent's `tools` method:
+
+```php
+public function tools(): iterable
+{
+    return [
+        (new SendNotification)->withoutApproval(),
+        (new DeleteFile)->requireApproval('Deletion review required.'),
+    ];
+}
+```
+
+When an approvable tool is called, the agent pauses before executing it. You may inspect the response's pending approvals, which contain each tool call's ID, tool name, arguments, and approval reason:
+
+```php
+$response = (new FileAssistant)
+    ->forUser($user)
+    ->prompt('Delete the old invoice.');
+
+if ($response->hasPendingApprovals()) {
+    foreach ($response->pendingApprovals as $approval) {
+        // $approval->id
+        // $approval->tool
+        // $approval->arguments
+        // $approval->reason
+    }
+}
+```
+
+To resume the agent, continue the conversation and provide a `Decisions` instance containing a decision for each pending tool call. Decisions may approve the call, reject it, or edit its arguments before execution:
+
+```php
+use Laravel\Ai\Approvals\Decision;
+use Laravel\Ai\Approvals\Decisions;
+
+$response = (new FileAssistant)
+    ->continue($conversationId, as: $user)
+    ->prompt(Decisions::from([
+        'call_abc' => Decision::approve(),
+        'call_ghi' => Decision::reject('The invoice must be retained.'),
+    ]));
+```
+
+The boolean values `true` and `false` may be used as shorthand for approval and rejection. Every pending tool call must receive a decision. Unknown, missing, or previously resolved tool call IDs will cause an `ApprovalMismatchException` to be thrown. You may provide a default for calls without an explicit decision using the `approveRemaining` or `rejectRemaining` methods:
+
+```php
+$decisions = Decisions::from([
+    'call_abc' => true,
+])->rejectRemaining('Not approved.');
+
+$response = (new FileAssistant)
+    ->continue($conversationId, as: $user)
+    ->prompt($decisions);
+```
+
+A rejection with a result, such as `Decision::reject('Not approved.')`, is returned to the model so it may continue responding. A rejection without a result stops the generation loop after recording the rejection.
+
+Tool approval is supported by the `prompt`, `stream`, `queue`, `broadcast`, `broadcastNow`, and `broadcastOnQueue` methods.
+
+During streaming and broadcasting, a pause is represented by a `tool_approval_request` event. When using the [Vercel AI SDK stream protocol](#streaming-using-the-vercel-ai-sdk-protocol), approval requests and results are emitted using the protocol's native tool approval parts.
+
+For queued agents, the resulting response is passed to the `then` callback, and Laravel also dispatches a `ToolApprovalRequested` event.
+
+Laravel stores the result of an approved tool before asking the model to continue. If generation then fails, the approval has already been resolved. Continue the conversation with a normal text prompt instead of submitting the same approval decisions again.
+
+<a name="complete-approval-flow"></a>
+### Complete Approval Flow
+
+The following routes demonstrate a complete approval flow. The `GET` route returns the chat screen, while the `POST` route accepts either a new text prompt or approval decisions from the chat screen. This example assumes the application's `User` model uses the `HasConversations` trait:
+
+```php
+use App\Ai\Agents\FileAssistant;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rule;
+use Laravel\Ai\Approvals\Decision;
+use Laravel\Ai\Approvals\Decisions;
+use Laravel\Ai\Models\Conversation;
+
+Route::get('/chat/{conversation}', function (Request $request, Conversation $conversation) {
+    Gate::authorize('view', $conversation);
+
+    return view('chat', [
+        'conversation' => $conversation,
+    ]);
+})->middleware('auth');
+
+Route::post('/chat/{conversation}', function (Request $request, Conversation $conversation) {
+    Gate::authorize('view', $conversation);
+
+    $validated = $request->validate([
+        'message' => ['nullable', 'string', 'required_without:decisions', 'prohibits:decisions'],
+        'decisions' => ['nullable', 'array', 'required_without:message', 'prohibits:message'],
+        'decisions.*.action' => ['required_with:decisions', Rule::in(['approve', 'reject'])],
+        'decisions.*.result' => ['nullable', 'string'],
+    ]);
+
+    $prompt = isset($validated['decisions'])
+        ? Decisions::from(collect($validated['decisions'])->map(
+            fn (array $decision) => match ($decision['action']) {
+                'approve' => Decision::approve(),
+                'reject' => Decision::reject($decision['result'] ?? null),
+            }
+        )->all())
+        : $validated['message'];
+
+    $response = (new FileAssistant)
+        ->continue($conversation->id, as: $request->user())
+        ->prompt($prompt);
+
+    return [
+        'conversation_id' => $response->conversationId,
+        'status' => $response->hasPendingApprovals() ? 'awaiting_approval' : 'complete',
+        'message' => $response->text,
+        'approvals' => $response->pendingApprovals,
+    ];
+})->middleware('auth');
+```
+
+When the response status is `awaiting_approval`, the chat screen should render the pending approvals and submit the user's choices to the same endpoint using the tool call ID as each decision's key:
+
+```json
+{
+    "decisions": {
+        "call_abc": {
+            "action": "approve"
+        },
+        "call_def": {
+            "action": "reject",
+            "result": "The invoice must be retained."
+        }
+    }
+}
+```
+
+For a normal chat message, the screen may instead submit a `message` value:
+
+```json
+{
+    "message": "Delete the old invoice."
+}
+```
 
 <a name="images"></a>
 ## Images
@@ -1199,6 +2014,14 @@ use Laravel\Ai\Audio;
 $audio = Audio::of('I love coding with Laravel.')->generate();
 
 $rawContent = (string) $audio;
+```
+
+You may also generate audio from a string using the `toAudio` method available via Laravel's `Stringable` class:
+
+```php
+use Illuminate\Support\Str;
+
+$audio = Str::of('I love coding with Laravel.')->toAudio();
 ```
 
 The `male`, `female`, and `voice` methods may be used to determine the voice of the generated audio:
@@ -1284,6 +2107,32 @@ Transcription::fromStorage('audio.mp3')
     });
 ```
 
+<a name="text-summarization"></a>
+## Text Summarization
+
+You may summarize text using the `summarize` method available via Laravel's `Stringable` class. By default, the summary will contain no more than three sentences and will be generated using the configured provider's cheapest text model:
+
+```php
+use Illuminate\Support\Str;
+
+$summary = Str::of($article)->summarize();
+```
+
+You may specify the maximum number of sentences, provider, model, and timeout used to generate the summary. The `Str` class also offers a static version of the method:
+
+```php
+use Laravel\Ai\Enums\Lab;
+
+$summary = Str::of($article)->summarize(
+    sentences: 4,
+    provider: Lab::Anthropic,
+    model: 'claude-sonnet-5',
+    timeout: 30,
+);
+
+$summary = Str::summarize($article, sentences: 4);
+```
+
 <a name="embeddings"></a>
 ## Embeddings
 
@@ -1316,10 +2165,56 @@ $response = Embeddings::for(['Napa Valley has great wine.'])
     ->generate(Lab::OpenAI, 'text-embedding-3-small');
 ```
 
+<a name="multimodal-embeddings"></a>
+### Multimodal Embeddings
+
+In addition to strings, the `Embeddings::for` method accepts image, audio, document, and video inputs, allowing you to generate embeddings for non-text content. Gemini supports image, audio, document, and video embeddings, while VoyageAI supports image and video embeddings:
+
+```php
+use Laravel\Ai\Embeddings;
+use Laravel\Ai\Enums\Lab;
+use Laravel\Ai\Files\Image;
+use Laravel\Ai\Files\Video;
+
+$response = Embeddings::for([
+    'A vineyard at sunset.',
+    Image::fromStorage('vineyard.jpg'),
+    Video::fromPath('/home/laravel/tour.mp4'),
+])->generate(Lab::Gemini);
+```
+
+Multimodal inputs use the same [file classes used for attachments](#attachments). These files may be created from a local path, a filesystem disk, a remote URL, or Base64-encoded content. Images, documents, and videos may also be created from uploaded files, while documents may be created from raw string content:
+
+```php
+use Laravel\Ai\Files\Audio;
+use Laravel\Ai\Files\Document;
+use Laravel\Ai\Files\Image;
+use Laravel\Ai\Files\Video;
+
+Image::fromPath('/home/laravel/photo.jpg');
+Image::fromStorage('photo.jpg');
+Image::fromUpload($request->file('photo'));
+
+Audio::fromPath('/home/laravel/clip.mp3');
+Audio::fromStorage('clip.mp3');
+Audio::fromUpload($request->file('clip.mp3'));
+
+Video::fromPath('/home/laravel/video.mp4');
+Video::fromStorage('video.mp4');
+Video::fromUpload($request->file('video'));
+
+Document::fromUrl('https://example.com/report.pdf');
+Document::fromString('Laravel is a PHP framework.', 'text/plain');
+Document::fromUpload($request->file('report'));
+```
+
+> [!NOTE]
+> VoyageAI does not allow remote URL media and Base64-encoded media to be mixed in a single request. Local, stored, and uploaded files are sent as Base64-encoded content, and text inputs may be combined with either media source. Consult your provider's documentation to determine which multimodal models and inputs are available.
+
 <a name="querying-embeddings"></a>
 ### Querying Embeddings
 
-Once you have generated embeddings, you will typically store them in a `vector` column in your database for later querying. Laravel provides native support for vector columns on PostgreSQL via the `pgvector` extension. To get started, define a `vector` column in your migration, specifying the number of dimensions:
+Once you have generated embeddings, you will typically store them in a `vector` column in your database for later querying. Laravel provides native support for vector columns on PostgreSQL via the `pgvector` extension and MariaDB. To get started, define a `vector` column in your migration, specifying the number of dimensions:
 
 ```php
 Schema::ensureVectorExtensionExists();
@@ -1339,13 +2234,15 @@ You may also add a vector index to speed up similarity searches. When calling `i
 $table->vector('embedding', dimensions: 1536)->index();
 ```
 
-On your Eloquent model, you should cast the vector column to an `array`:
+On your Eloquent model, you should cast the vector column using the `AsVector` cast:
 
 ```php
+use Illuminate\Database\Eloquent\Casts\AsVector;
+
 protected function casts(): array
 {
     return [
-        'embedding' => 'array',
+        'embedding' => AsVector::class,
     ];
 }
 ```
@@ -1385,7 +2282,7 @@ $documents = Document::query()
 If you would like to give an agent the ability to perform similarity searches as a tool, check out the [Similarity Search](#similarity-search) tool documentation.
 
 > [!NOTE]
-> Vector queries are currently only supported on PostgreSQL connections using the `pgvector` extension.
+> Vector queries are currently supported on PostgreSQL connections using the `pgvector` extension and MariaDB 11.7 or later.
 
 <a name="caching-embeddings"></a>
 ### Caching Embeddings
@@ -1397,12 +2294,15 @@ Embedding generation can be cached to avoid redundant API calls for identical in
     'embeddings' => [
         'cache' => true,
         'store' => env('CACHE_STORE', 'database'),
+        'individually' => true,
         // ...
     ],
 ],
 ```
 
 When caching is enabled, embeddings are cached for 30 days. The cache key is based on the provider, model, dimensions, and input content, ensuring that identical requests return cached results while different configurations generate fresh embeddings.
+
+By default, each input's embedding is cached under its own key, so a later request may hit the cache for inputs it has seen before even when the set of inputs or their order has changed. To instead cache the entire set of inputs under a single key, set the `ai.caching.embeddings.individually` configuration option to `false`.
 
 You may also enable caching for a specific request using the `cache` method, even when global caching is disabled:
 
@@ -1567,6 +2467,30 @@ $response = Document::fromPath(
 )->put(provider: Lab::Anthropic);
 ```
 
+You may pass provider-specific upload options using the `withProviderOptions` method. For example, you may set OpenAI's file `purpose`:
+
+```php
+use Laravel\Ai\Files\Document;
+
+$response = Document::fromPath('/home/laravel/knowledge.txt')
+    ->withProviderOptions(['purpose' => 'assistants'])
+    ->put();
+```
+
+To scope options per provider, pass a closure that receives the current provider:
+
+```php
+use Laravel\Ai\Enums\Lab;
+use Laravel\Ai\Files\Document;
+
+$response = Document::fromPath('/home/laravel/training.jsonl')
+    ->withProviderOptions(fn (Lab|string $provider) => match ($provider) {
+        Lab::OpenAI => ['purpose' => 'fine-tune'],
+        default => [],
+    })
+    ->put();
+```
+
 <a name="using-stored-files-in-conversations"></a>
 ### Using Stored Files in Conversations
 
@@ -1706,6 +2630,7 @@ When prompting or generating other media, you may provide an array of providers 
 
 ```php
 use App\Ai\Agents\SalesCoach;
+use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Image;
 
 $response = (new SalesCoach)->prompt(
@@ -1717,8 +2642,26 @@ $image = Image::of('A donut sitting on the kitchen counter')
     ->generate(provider: [Lab::Gemini, Lab::xAI]);
 ```
 
+Failover only occurs when a `FailoverableException` is thrown — such as a rate limit (`RateLimitedException`), an overloaded or unavailable provider (`ProviderOverloadedException`), or insufficient credits (`InsufficientCreditsException`). Ordinary errors, like a validation or bad request error, will not trigger failover.
+
+When you pass a plain list of providers, such as `[Lab::OpenAI, Lab::Anthropic]`, each provider uses its default model. To specify a particular model for each provider in the failover chain, pass an associative array keyed by the provider, using the `Lab` enum's `value` as the key (enum cases cannot be used directly as PHP array keys):
+
+```php
+use Laravel\Ai\Enums\Lab;
+
+$response = (new SalesCoach)->prompt(
+    'Analyze this sales transcript...',
+    provider: [
+        Lab::Gemini->value => 'gemini-3-flash-preview',
+        Lab::DeepSeek->value => 'deepseek-v4-pro',
+    ],
+);
+```
+
 <a name="testing"></a>
 ## Testing
+
+When faking queued image, audio, transcription, or embeddings generation, any `then` callback registered on the queued generation will be invoked with the faked response, allowing you to test the logic contained within the callback. If you would prefer that these callbacks are not invoked, you may fake the queue using `Queue::fake()` as well.
 
 <a name="testing-agents"></a>
 ### Agents
@@ -1744,7 +2687,37 @@ SalesCoach::fake(function (AgentPrompt $prompt) {
 });
 ```
 
-> **Note:** When `Agent::fake()` is invoked on an agent that returns structured output, Laravel will automatically generate fake data that matches your agent's defined output schema.
+When faking an agent that returns structured output, you may provide arrays as responses. The agent will return a structured response containing the given data:
+
+```php
+SalesCoach::fake([
+    ['score' => 87],
+]);
+```
+
+You may also fake a response that is awaiting tool approval:
+
+```php
+use Laravel\Ai\Approvals\PendingApproval;
+use Laravel\Ai\Responses\AgentResponse;
+
+FileAssistant::fake([
+    AgentResponse::fakeWithPendingApprovals([
+        new PendingApproval(
+            id: 'call_abc',
+            tool: 'DeleteFile',
+            arguments: ['path' => 'invoice.pdf'],
+            reason: 'This will permanently delete a file.',
+        ),
+    ]),
+]);
+
+$response = (new FileAssistant)->prompt('Delete the invoice.');
+
+$response->hasPendingApprovals(); // true
+```
+
+> **Note:** When `Agent::fake()` is invoked on an agent that returns structured output and fake output was not explicitly provided, Laravel will automatically generate fake data that matches your agent's defined output schema.
 
 After prompting the agent, you may make assertions about the prompts that were received:
 
@@ -1757,9 +2730,29 @@ SalesCoach::assertPrompted(function (AgentPrompt $prompt) {
     return $prompt->contains('Analyze');
 });
 
+SalesCoach::assertPromptedTimes(3);
+
 SalesCoach::assertNotPrompted('Missing prompt');
 
 SalesCoach::assertNeverPrompted();
+```
+
+When asserting an approval continuation, you may inspect the prompt's approval decisions:
+
+```php
+use Laravel\Ai\Approvals\Decisions;
+use Laravel\Ai\Prompts\AgentPrompt;
+
+FileAssistant::fake();
+
+(new FileAssistant)->prompt(Decisions::from([
+    'call_abc' => true,
+]));
+
+FileAssistant::assertPrompted(function (AgentPrompt $prompt) {
+    return $prompt->hasApprovalDecisions()
+        && $prompt->approvalDecisions->get('call_abc')->isApproved();
+});
 ```
 
 For queued agent invocations, use the queued assertion methods:
@@ -2170,6 +3163,8 @@ $store->assertAdded(fn (StorableFile $file) => $file->content() === 'Hello, Worl
 The Laravel AI SDK dispatches a variety of [events](/docs/{{version}}/events), including:
 
 - `AddingFileToStore`
+- `AgentFailed`
+- `AgentFailedOver`
 - `AgentPrompted`
 - `AgentStreamed`
 - `AudioGenerated`
@@ -2186,12 +3181,20 @@ The Laravel AI SDK dispatches a variety of [events](/docs/{{version}}/events), i
 - `ImageGenerated`
 - `InvokingTool`
 - `PromptingAgent`
+- `ProviderFailedOver`
 - `RemovingFileFromStore`
 - `Reranked`
 - `Reranking`
+- `StartingStep`
+- `StepCompleted`
+- `StepFailed`
 - `StoreCreated`
+- `StoreDeleted`
 - `StoringFile`
 - `StreamingAgent`
+- `ToolApprovalRequested`
+- `ToolApprovalResolved`
+- `ToolFailed`
 - `ToolInvoked`
 - `TranscriptionGenerated`
 
@@ -2202,7 +3205,7 @@ You can listen to any of these events to log or store AI SDK usage information.
 
 # AI Assisted Development
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/ai*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/ai*
 
 - [Introduction](#introduction)
      - [Why Laravel for AI Development?](#why-laravel-for-ai-development)
@@ -2236,7 +3239,7 @@ Boost provides three major capabilities: a suite of MCP tools for inspecting and
 <a name="installation"></a>
 ### Installation
 
-Boost can be installed in Laravel 10, 11, and 12 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
+Boost can be installed in Laravel 10, 11, 12, and 13 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
 
 ```shell
 composer require laravel/boost --dev
@@ -2307,7 +3310,7 @@ Boost includes a powerful documentation API that gives AI agents access to over 
 
 When an agent needs to understand how a feature works, it can search Boost's documentation API and receive accurate, version-specific information. This eliminates the common problem of AI agents suggesting deprecated methods or syntax from older framework versions.
 
-<a name="agent-integration"></a>
+<a name="agents-integration"></a>
 ### Agents Integration
 
 Boost integrates with popular IDEs and AI tools that support the Model Context Protocol. For detailed setup instructions for Cursor, Claude Code, Codex, Gemini CLI, GitHub Copilot, and Junie, see the [Set Up Your Agents](/docs/{{version}}/boost#set-up-your-agents) section of the Boost documentation.
@@ -2317,7 +3320,7 @@ Boost integrates with popular IDEs and AI tools that support the Model Context P
 
 # Artisan Console
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/artisan*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/artisan*
 
 - [Introduction](#introduction)
     - [Tinker (REPL)](#tinker)
@@ -2340,13 +3343,16 @@ Boost integrates with popular IDEs and AI tools that support the Model Context P
 - [Programmatically Executing Commands](#programmatically-executing-commands)
     - [Calling Commands From Other Commands](#calling-commands-from-other-commands)
 - [Signal Handling](#signal-handling)
+- [The Dev Command](#the-dev-command)
+    - [Customizing Dev Processes](#customizing-dev-processes)
+    - [Filtering Dev Processes](#filtering-dev-processes)
 - [Stub Customization](#stub-customization)
 - [Events](#events)
 
 <a name="introduction"></a>
 ## Introduction
 
-Artisan is the command line interface included with Laravel. Artisan exists at the root of your application as the `artisan` script and provides a number of helpful commands that can assist you while you build your application. To view a list of all available Artisan commands, you may use the `list` command:
+Artisan is the command line interface included with Laravel. Artisan exists at the root of your application as the `artisan` script and provides a number of helpful commands you can use while building your application. To view a list of all available Artisan commands, you may use the `list` command:
 
 ```shell
 php artisan list
@@ -2441,7 +3447,7 @@ php artisan make:command SendEmails
 <a name="command-structure"></a>
 ### Command Structure
 
-After generating your command, you should define appropriate values for the `signature` and `description` properties of the class. These properties will be used when displaying your command on the `list` screen. The `signature` property also allows you to define [your command's input expectations](#defining-input-expectations). The `handle` method will be called when your command is executed. You may place your command logic in this method.
+After generating your command, you should define the command's signature and description using the `Signature` and `Description` attributes. The `Signature` attribute also allows you to define [your command's input expectations](#defining-input-expectations). The `handle` method will be called when your command is executed. You may place your command logic in this method.
 
 Let's take a look at an example command. Note that we are able to request any dependencies we need via the command's `handle` method. The Laravel [service container](/docs/{{version}}/container) will automatically inject all dependencies that are type-hinted in this method's signature:
 
@@ -2452,24 +3458,14 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Support\DripEmailer;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('mail:send {user}')]
+#[Description('Send a marketing email to a user')]
 class SendEmails extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'mail:send {user}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send a marketing email to a user';
-
     /**
      * Execute the console command.
      */
@@ -2481,7 +3477,7 @@ class SendEmails extends Command
 ```
 
 > [!NOTE]
-> For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example above, note that we inject a service class to do the "heavy lifting" of sending the e-mails.
+> For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example above, note that we inject a service class to do the "heavy lifting" of sending the emails.
 
 <a name="exit-codes"></a>
 #### Exit Codes
@@ -2877,6 +3873,28 @@ $queueName = $this->option('queue');
 $options = $this->options();
 ```
 
+You may use the `input` method to retrieve a command's arguments and options as an `Illuminate\Console\CommandInput` instance, which provides the same typed accessors that are available on HTTP requests and other data containers:
+
+```php
+use App\Enums\ReportType;
+
+/**
+ * Execute the console command.
+ */
+public function handle(): void
+{
+    $input = $this->input()->date('from');
+
+    // ...
+}
+```
+
+The `input` method may also be used to retrieve a single input value from either the arguments or options:
+
+```php
+$queue = $this->input('queue', 'default');
+```
+
 <a name="prompting-for-input"></a>
 ### Prompting for Input
 
@@ -3218,6 +4236,121 @@ $this->trap([SIGTERM, SIGQUIT], function (int $signal) {
 });
 ```
 
+<a name="the-dev-command"></a>
+## The Dev Command
+
+The `dev` Artisan command starts all of the processes needed for local development in a single terminal window. By default, it concurrently runs the PHP development server, a queue worker, log tailing via [Pail](/docs/{{version}}/logging#tailing-log-messages-using-pail), and Vite asset compilation:
+
+```shell
+php artisan dev
+```
+
+Under the hood, the `dev` command uses the `@laravel/multiplex` npm package to manage the processes, giving each process its own tab with searchable, scrollable output. Each process is labeled and color-coded so you can easily distinguish between them. If a process crashes, it will be restarted automatically, and when you quit, all of the output is written back to your terminal so nothing is lost.
+
+> [!NOTE]
+> The `dev` command requires Node 22.13 or later. On Windows, it falls back to the `concurrently` npm package and the tabbed interface is not available.
+
+The default processes are:
+
+| Name | Command |
+| --- | --- |
+| `server` | `php artisan serve --host=localhost` |
+| `queue` | `php artisan queue:listen --tries=1 --timeout=0` |
+| `logs` | `php artisan pail --timeout=0` |
+| `vite` | `npm run dev` |
+
+> [!NOTE]
+> The `vite` process automatically detects your Node package manager (npm, pnpm, Yarn, or Bun) and uses the appropriate run command.
+
+<a name="customizing-dev-processes"></a>
+### Customizing Dev Processes
+
+You may customize the processes that the `dev` command runs by using the `DevCommands` class, typically within the `boot` method of your application's `AppServiceProvider`. The `register` method accepts a command string and an optional name:
+
+```php
+use Illuminate\Foundation\DevCommands;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    DevCommands::register('some-command --flag', 'my-process');
+}
+```
+
+When registering an Artisan command, you may use the `artisan` method which automatically prefixes the command with `php artisan`:
+
+```php
+DevCommands::artisan('horizon', 'horizon');
+```
+
+Likewise, the `node` method prefixes the command with your detected package manager's run command (e.g. `npm run`), and the `nodeExec` method prefixes the command with the package manager's exec command (e.g. `npx`):
+
+```php
+DevCommands::node('storybook', 'storybook');
+
+DevCommands::nodeExec('tailwindcss -i resources/css/app.css -o public/css/app.css --watch', 'tailwind');
+```
+
+If you register a process with the same name as a default process, your process will replace the default. For example, you may customize the server process to use a different port:
+
+```php
+DevCommands::artisan('serve --host=localhost --port=9000', 'server');
+```
+
+You may also customize the color of a process label in your terminal. The available color methods are `blue`, `purple`, `pink`, `orange`, `green`, and `yellow`. You may also pass a custom hex color to the `color` method:
+
+```php
+DevCommands::register('my-command', 'my-process')->green();
+
+DevCommands::register('my-command', 'my-process')->color('#ff6347');
+```
+
+To see all registered dev processes without starting them, use the `dev:list` command:
+
+```shell
+php artisan dev:list
+```
+
+<a name="restarting-failed-processes"></a>
+#### Restarting Failed Processes
+
+If a process crashes, Laravel will restart it after a short delay, up to five times, before marking it as failed. A process that dies within a second of starting is not restarted, since it likely never started successfully in the first place. Restarting a process manually with `r` resets the counter.
+
+You may disable this behavior for a single run using the `--no-restart` option:
+
+```shell
+php artisan dev --no-restart
+```
+
+Or, you may disable it for your entire application using the `disableAutoRestart` method:
+
+```php
+DevCommands::disableAutoRestart();
+```
+
+<a name="filtering-dev-processes"></a>
+### Filtering Dev Processes
+
+You may instruct the `dev` command to only run specific processes when it is invoked using the `only` method. Similarly, you may exclude specific processes using the `except` method:
+
+```php
+// Only run the server and vite processes...
+DevCommands::only('server', 'vite');
+
+// Run all processes except the queue worker...
+DevCommands::except('queue');
+```
+
+You may exclude commands registered by packages or Laravel's default commands using the `withoutVendorCommands` and `withoutDefaultCommands` methods:
+
+```php
+DevCommands::withoutVendorCommands();
+
+DevCommands::withoutDefaultCommands();
+```
+
 <a name="stub-customization"></a>
 ## Stub Customization
 
@@ -3239,7 +4372,7 @@ Artisan dispatches three events when running commands: `Illuminate\Console\Event
 
 # Authentication
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/authentication*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/authentication*
 
 - [Introduction](#introduction)
     - [Starter Kits](#starter-kits)
@@ -3344,7 +4477,7 @@ Next, if your application offers an API that will be consumed by third parties, 
 
 If you are building a single-page application (SPA) that will be powered by a Laravel backend, you should use [Laravel Sanctum](/docs/{{version}}/sanctum). When using Sanctum, you will either need to [manually implement your own backend authentication routes](#authenticating-users) or utilize [Laravel Fortify](/docs/{{version}}/fortify) as a headless authentication backend service that provides routes and controllers for features such as registration, password reset, email verification, and more.
 
-Passport may be chosen when your application absolutely needs all of the features provided by the OAuth2 specification.
+Passport may be chosen when your application absolutely needs all of the features provided by the OAuth2 specification. Additionally, if you are building an [MCP server](/docs/{{version}}/mcp) that will be accessed by AI clients, you should use Passport, as MCP clients typically expect to [authenticate using OAuth](/docs/{{version}}/mcp#oauth).
 
 And, if you would like to get started quickly, we are pleased to recommend [our application starter kits](/docs/{{version}}/starter-kits) as a quick way to start a new Laravel application that already uses our preferred authentication stack of Laravel's built-in authentication services.
 
@@ -3596,7 +4729,7 @@ if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
 }
 ```
 
-If your application offers "remember me" functionality, you may use the `viaRemember`  method to determine if the currently authenticated user was authenticated using the "remember me" cookie:
+If your application offers "remember me" functionality, you may use the `viaRemember` method to determine if the currently authenticated user was authenticated using the "remember me" cookie:
 
 ```php
 use Illuminate\Support\Facades\Auth;
@@ -4088,7 +5221,7 @@ Laravel dispatches a variety of [events](/docs/{{version}}/events) during the au
 
 # Authorization
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/authorization*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/authorization*
 
 - [Introduction](#introduction)
 - [Gates](#gates)
@@ -4791,6 +5924,18 @@ Route::put('/post/{post}', function (Post $post) {
 })->can('update', 'post');
 ```
 
+If you are using [controller middleware attributes](/docs/{{version}}/controllers#middleware-attributes), you may apply the `can` middleware via the `Authorize` attribute:
+
+```php
+use Illuminate\Routing\Attributes\Controllers\Authorize;
+
+#[Authorize('update', 'post')]
+public function update(Post $post)
+{
+    // The current user may update the post...
+}
+```
+
 <a name="middleware-actions-that-dont-require-models"></a>
 #### Actions That Don't Require Models
 
@@ -4951,7 +6096,7 @@ class HandleInertiaRequests extends Middleware
 
 # Laravel Cashier (Stripe)
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/billing*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/billing*
 
 - [Introduction](#introduction)
 - [Upgrading Cashier](#upgrading-cashier)
@@ -5602,130 +6747,163 @@ $url = $request->user()->billingPortalUrl(route('billing'));
 <a name="storing-payment-methods"></a>
 ### Storing Payment Methods
 
-In order to create subscriptions or perform "one-off" charges with Stripe, you will need to store a payment method and retrieve its identifier from Stripe. The approach used to accomplish this differs based on whether you plan to use the payment method for subscriptions or single charges, so we will examine both below.
+In order to create subscriptions or perform "one-off" charges with Stripe, your application will need to securely collect payment details from the customer. The approach used to accomplish this differs based on whether you plan to store the payment method for future subscriptions or immediately process a single charge, so we will examine both below.
 
-<a name="payment-methods-for-subscriptions"></a>
-#### Payment Methods for Subscriptions
+Stripe's [Payment Element](https://stripe.com/docs/payments/payment-element) may be used to support multiple payment methods, such as cards, Apple Pay, Google Pay, and iDEAL.
 
-When storing a customer's credit card information for future use by a subscription, the Stripe "Setup Intents" API must be used to securely gather the customer's payment method details. A "Setup Intent" indicates to Stripe the intention to charge a customer's payment method. Cashier's `Billable` trait includes the `createSetupIntent` method to easily create a new Setup Intent. You should invoke this method from the route or controller that will render the form which gathers your customer's payment method details:
+<a name="payment-element-for-subscriptions"></a>
+#### Payment Element for Subscriptions
+
+First, create a Setup Intent and pass it to your view:
 
 ```php
-return view('update-payment-method', [
+return view('subscribe', [
     'intent' => $user->createSetupIntent()
 ]);
 ```
 
-After you have created the Setup Intent and passed it to the view, you should attach its secret to the element that will gather the payment method. For example, consider this "update payment method" form:
+Mount the Payment Element using the Setup Intent's `client_secret`:
 
 ```html
-<input id="card-holder-name" type="text">
+<div id="payment-element"></div>
+<button id="submit">Subscribe</button>
 
-<!-- Stripe Elements Placeholder -->
-<div id="card-element"></div>
-
-<button id="card-button" data-secret="{{ $intent->client_secret }}">
-    Update Payment Method
-</button>
-```
-
-Next, the Stripe.js library may be used to attach a [Stripe Element](https://stripe.com/docs/stripe-js) to the form and securely gather the customer's payment details:
-
-```html
 <script src="https://js.stripe.com/v3/"></script>
-
 <script>
     const stripe = Stripe('stripe-public-key');
 
-    const elements = stripe.elements();
-    const cardElement = elements.create('card');
+    const elements = stripe.elements({
+        clientSecret: '{{ $intent->client_secret }}'
+    });
 
-    cardElement.mount('#card-element');
+    const paymentElement = elements.create('payment');
+
+    paymentElement.mount('#payment-element');
+
+    document.getElementById('submit').addEventListener('click', async () => {
+        const { error } = await stripe.confirmSetup({
+            elements,
+            confirmParams: {
+                return_url: '{{ route("subscription.complete") }}',
+            },
+        });
+
+        if (error) {
+            // Display "error.message" to the user...
+        }
+    });
 </script>
 ```
 
-Next, the card can be verified and a secure "payment method identifier" can be retrieved from Stripe using [Stripe's `confirmCardSetup` method](https://stripe.com/docs/js/setup_intents/confirm_card_setup):
+After Stripe redirects to your `return_url`, the `setup_intent` ID will be available as a query string parameter. You may use this value to retrieve the payment method and create the subscription:
 
-```js
-const cardHolderName = document.getElementById('card-holder-name');
-const cardButton = document.getElementById('card-button');
-const clientSecret = cardButton.dataset.secret;
+```php
+use Illuminate\Http\Request;
 
-cardButton.addEventListener('click', async (e) => {
-    const { setupIntent, error } = await stripe.confirmCardSetup(
-        clientSecret, {
-            payment_method: {
-                card: cardElement,
-                billing_details: { name: cardHolderName.value }
-            }
-        }
+Route::get('/subscription/complete', function (Request $request) {
+    $setupIntent = $request->user()->findSetupIntent(
+        $request->setup_intent
     );
 
-    if (error) {
-        // Display "error.message" to the user...
-    } else {
-        // The card has been verified successfully...
-    }
+    $paymentMethod = $setupIntent->payment_method;
+
+    $request->user()
+        ->newSubscription('default', 'price_xxx')
+        ->create($paymentMethod);
+
+    return redirect('/dashboard');
+})->name('subscription.complete');
+```
+
+If you are using the Payment Element to update a customer's default payment method instead of creating a subscription, you may pass the payment method identifier to the [`updateDefaultPaymentMethod`](#updating-the-default-payment-method) method.
+
+<a name="payment-element-for-single-charges"></a>
+#### Payment Element for Single Charges
+
+For one-off payments, create a Payment Intent using Cashier's `pay` method. Typically, you should store the Payment Intent ID on your application's corresponding order so that the order can be retrieved after Stripe redirects the customer back to your application. The following example assumes your application has an `Order` model with `user_id`, `amount`, `status`, and `stripe_payment_intent_id` columns:
+
+```php
+use App\Models\Order;
+use Illuminate\Http\Request;
+
+Route::post('/pay', function (Request $request) {
+    $amount = 1000;
+
+    $payment = $request->user()->pay($amount);
+
+    $order = Order::create([
+        'user_id' => $request->user()->id,
+        'amount' => $amount,
+        'status' => 'pending',
+        'stripe_payment_intent_id' => $payment->id,
+    ]);
+
+    return view('checkout', [
+        'clientSecret' => $payment->client_secret,
+        'order' => $order,
+    ]);
 });
 ```
 
-After the card has been verified by Stripe, you may pass the resulting `setupIntent.payment_method` identifier to your Laravel application, where it can be attached to the customer. The payment method can either be [added as a new payment method](#adding-payment-methods) or [used to update the default payment method](#updating-the-default-payment-method). You can also immediately use the payment method identifier to [create a new subscription](#creating-subscriptions).
-
-> [!NOTE]
-> If you would like more information about Setup Intents and gathering customer payment details please [review this overview provided by Stripe](https://stripe.com/docs/payments/save-and-reuse#php).
-
-<a name="payment-methods-for-single-charges"></a>
-#### Payment Methods for Single Charges
-
-Of course, when making a single charge against a customer's payment method, we will only need to use a payment method identifier once. Due to Stripe limitations, you may not use the stored default payment method of a customer for single charges. You must allow the customer to enter their payment method details using the Stripe.js library. For example, consider the following form:
+Then, mount the Payment Element and confirm the payment:
 
 ```html
-<input id="card-holder-name" type="text">
+<div id="payment-element"></div>
+<button id="submit">Pay Now</button>
 
-<!-- Stripe Elements Placeholder -->
-<div id="card-element"></div>
-
-<button id="card-button">
-    Process Payment
-</button>
-```
-
-After defining such a form, the Stripe.js library may be used to attach a [Stripe Element](https://stripe.com/docs/stripe-js) to the form and securely gather the customer's payment details:
-
-```html
 <script src="https://js.stripe.com/v3/"></script>
-
 <script>
     const stripe = Stripe('stripe-public-key');
 
-    const elements = stripe.elements();
-    const cardElement = elements.create('card');
+    const elements = stripe.elements({
+        clientSecret: '{{ $clientSecret }}'
+    });
 
-    cardElement.mount('#card-element');
+    const paymentElement = elements.create('payment');
+
+    paymentElement.mount('#payment-element');
+
+    document.getElementById('submit').addEventListener('click', async () => {
+        const { error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                return_url: '{{ route("payment.complete") }}',
+            },
+        });
+
+        if (error) {
+            // Display "error.message" to the user...
+        }
+    });
 </script>
 ```
 
-Next, the card can be verified and a secure "payment method identifier" can be retrieved from Stripe using [Stripe's `createPaymentMethod` method](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method):
+After the redirect, you may use the `payment_intent` query string parameter to retrieve the corresponding order and Payment Intent. Before fulfilling the order, you should verify that the order belongs to the authenticated customer and that the Payment Intent belongs to the authenticated customer and has succeeded:
 
-```js
-const cardHolderName = document.getElementById('card-holder-name');
-const cardButton = document.getElementById('card-button');
+```php
+use App\Models\Order;
+use Illuminate\Http\Request;
 
-cardButton.addEventListener('click', async (e) => {
-    const { paymentMethod, error } = await stripe.createPaymentMethod(
-        'card', cardElement, {
-            billing_details: { name: cardHolderName.value }
-        }
-    );
+Route::get('/payment/complete', function (Request $request) {
+    $order = Order::where('user_id', $request->user()->id)
+        ->where('stripe_payment_intent_id', $request->payment_intent)
+        ->firstOrFail();
 
-    if (error) {
-        // Display "error.message" to the user...
-    } else {
-        // The card has been verified successfully...
+    $paymentIntent = $request->user()
+        ->stripe()
+        ->paymentIntents
+        ->retrieve($request->payment_intent);
+
+    if ($paymentIntent->customer === $request->user()->stripe_id &&
+        $paymentIntent->status === 'succeeded') {
+        $order->update(['status' => 'paid']);
+
+        // Fulfill the order...
     }
-});
-```
 
-If the card is verified successfully, you may pass the `paymentMethod.id` to your Laravel application and process a [single charge](#simple-charge).
+    return redirect('/dashboard');
+})->name('payment.complete');
+```
 
 <a name="retrieving-payment-methods"></a>
 ### Retrieving Payment Methods
@@ -6875,7 +8053,7 @@ Since Stripe webhooks need to bypass Laravel's [CSRF protection](/docs/{{version
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->validateCsrfTokens(except: [
+    $middleware->preventRequestForgery(except: [
         'stripe/*',
     ]);
 })
@@ -6925,13 +8103,13 @@ To enable webhook verification, ensure that the `STRIPE_WEBHOOK_SECRET` environm
 <a name="simple-charge"></a>
 ### Simple Charge
 
-If you would like to make a one-time charge against a customer, you may use the `charge` method on a billable model instance. You will need to [provide a payment method identifier](#payment-methods-for-single-charges) as the second argument to the `charge` method:
+If you would like to make a one-time charge against a customer using a payment method identifier, you may use the `charge` method on a billable model instance. If you need to collect payment details from a customer before processing a one-time charge, see the [Payment Element for Single Charges](#payment-element-for-single-charges) documentation:
 
 ```php
 use Illuminate\Http\Request;
 
 Route::post('/purchase', function (Request $request) {
-    $stripeCharge = $request->user()->charge(
+    $payment = $request->user()->charge(
         100, $request->paymentMethodId
     );
 
@@ -6939,7 +8117,7 @@ Route::post('/purchase', function (Request $request) {
 });
 ```
 
-The `charge` method accepts an array as its third argument, allowing you to pass any options you wish to the underlying Stripe charge creation. More information regarding the options available to you when creating charges may be found in the [Stripe documentation](https://stripe.com/docs/api/charges/create):
+The `charge` method accepts an array as its third argument, allowing you to pass any options you wish to the underlying Stripe Payment Intent creation. More information regarding the options available to you when creating Payment Intents may be found in the [Stripe documentation](https://stripe.com/docs/api/payment_intents/create):
 
 ```php
 $user->charge(100, $paymentMethod, [
@@ -6952,7 +8130,7 @@ You may also use the `charge` method without an underlying customer or user. To 
 ```php
 use App\Models\User;
 
-$stripeCharge = (new User)->charge(100, $paymentMethod);
+$payment = (new User)->charge(100, $paymentMethod);
 ```
 
 The `charge` method will throw an exception if the charge fails. If the charge is successful, an instance of `Laravel\Cashier\Payment` will be returned from the method:
@@ -7047,7 +8225,7 @@ Route::post('/pay', function (Request $request) {
 <a name="refunding-charges"></a>
 ### Refunding Charges
 
-If you need to refund a Stripe charge, you may use the `refund` method. This method accepts the Stripe [payment intent ID](#payment-methods-for-single-charges) as its first argument:
+If you need to refund a Stripe payment, you may use the `refund` method. This method accepts the Stripe Payment Intent ID as its first argument:
 
 ```php
 $payment = $user->charge(100, $paymentMethodId);
@@ -7439,7 +8617,7 @@ On the payment confirmation page, the customer will be prompted to enter their c
 
 </div>
 
-Alternatively, you could allow Stripe to handle the payment confirmation for you. In this case, instead of redirecting to the payment confirmation page, you may [setup Stripe's automatic billing emails](https://dashboard.stripe.com/account/billing/automatic) in your Stripe dashboard. However, if an `IncompletePayment` exception is caught, you should still inform the user they will receive an email with further payment confirmation instructions.
+Alternatively, you could allow Stripe to handle the payment confirmation for you. In this case, instead of redirecting to the payment confirmation page, you may [set up Stripe's automatic billing emails](https://dashboard.stripe.com/account/billing/automatic) in your Stripe dashboard. However, if an `IncompletePayment` exception is caught, you should still inform the user they will receive an email with further payment confirmation instructions.
 
 Payment exceptions may be thrown for the following methods: `charge`, `invoiceFor`, and `invoice` on models using the `Billable` trait. When interacting with subscriptions, the `create` method on the `SubscriptionBuilder`, and the `incrementAndInvoice` and `swapAndInvoice` methods on the `Subscription` and `SubscriptionItem` models may throw incomplete payment exceptions.
 
@@ -7491,7 +8669,7 @@ You may consult the [Stripe API documentation](https://stripe.com/docs/api/payme
 <a name="strong-customer-authentication"></a>
 ## Strong Customer Authentication
 
-If your business or one of your customers is based in Europe you will need to abide by the EU's Strong Customer Authentication (SCA) regulations. These regulations were imposed in September 2019 by the European Union to prevent payment fraud. Luckily, Stripe and Cashier are prepared for building SCA compliant applications.
+If your business or one of your customers is based in Europe you will need to abide by the EU's Strong Customer Authentication (SCA) regulations. These regulations were imposed in September 2019 by the European Union to prevent payment fraud. Luckily, Stripe and Cashier are prepared for building SCA compliant applications.
 
 > [!WARNING]
 > Before getting started, review [Stripe's guide on PSD2 and SCA](https://stripe.com/guides/strong-customer-authentication) as well as their [documentation on the new SCA APIs](https://stripe.com/docs/strong-customer-authentication).
@@ -7574,7 +8752,7 @@ Now, whenever you interact with Cashier while testing, it will send actual API r
 
 # Blade Templates
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/blade*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/blade*
 
 - [Introduction](#introduction)
     - [Supercharging Blade With Livewire](#supercharging-blade-with-livewire)
@@ -7591,6 +8769,7 @@ Now, whenever you interact with Cashier while testing, it will send actual API r
     - [Including Subviews](#including-subviews)
     - [The `@once` Directive](#the-once-directive)
     - [Raw PHP](#raw-php)
+    - [Fonts](#fonts)
     - [Comments](#comments)
 - [Components](#components)
     - [Rendering Components](#rendering-components)
@@ -7606,7 +8785,7 @@ Now, whenever you interact with Cashier while testing, it will send actual API r
     - [Anonymous Index Components](#anonymous-index-components)
     - [Data Properties / Attributes](#data-properties-attributes)
     - [Accessing Parent Data](#accessing-parent-data)
-    - [Anonymous Components Paths](#anonymous-component-paths)
+    - [Anonymous Component Paths](#anonymous-component-paths)
 - [Building Layouts](#building-layouts)
     - [Layouts Using Components](#layouts-using-components)
     - [Layouts Using Template Inheritance](#layouts-using-template-inheritance)
@@ -8284,6 +9463,39 @@ Grouped imports are also supported with both function and const modifiers, allow
 ```blade
 @use(function App\Helpers\{format_currency, format_date})
 @use(const App\Constants\{MAX_ATTEMPTS, DEFAULT_TIMEOUT})
+```
+
+<a name="fonts"></a>
+### Fonts
+
+When using [Laravel's Vite font optimization](/docs/{{version}}/vite#working-with-fonts), you may use the `@fonts` directive to render your configured font preload links and inline font CSS in your application's layout:
+
+```blade
+<!doctype html>
+<head>
+    {{-- ... --}}
+
+    @fonts
+    @vite('resources/js/app.js')
+</head>
+```
+
+The `@fonts` directive renders all font families configured in your `vite.config.js` file. The directive should typically be placed in the `<head>` of your application's root layout before any content that uses those fonts.
+
+If a page only needs some of your configured fonts, you may pass one or more font aliases to the directive:
+
+```blade
+{{-- Load a single font alias... --}}
+@fonts('sans')
+
+{{-- Load multiple font aliases... --}}
+@fonts(['sans', 'mono'])
+```
+
+Font aliases are configured using the `alias` option when defining fonts in your Vite configuration. The `@fonts` directive calls the `fonts` method provided by the `Vite` facade, which may also be invoked directly:
+
+```blade
+{{ Vite::fonts(['sans', 'mono']) }}
 ```
 
 <a name="comments"></a>
@@ -9636,12 +10848,12 @@ Once the custom conditional has been defined, you can use it within your templat
 
 # Laravel Boost
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/boost*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/boost*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
-    - [Keeping Boost Resources Updated](#keeping-boost-resources-updated)
     - [Set Up Your Agents](#set-up-your-agents)
+    - [Keeping Boost Resources Updated](#keeping-boost-resources-updated)
 - [MCP Server](#mcp-server)
     - [Available MCP Tools](#available-mcp-tools)
     - [Manually Registering the MCP Server](#manually-registering-the-mcp-server)
@@ -9656,6 +10868,10 @@ Once the custom conditional has been defined, you can use it within your templat
     - [Overriding Skills](#overriding-skills)
     - [Third-Party Package Skills](#third-party-package-skills)
 - [Guidelines vs. Skills](#guidelines-vs-skills)
+- [Project Rules](#project-rules)
+    - [Recording Rules](#recording-rules)
+    - [Inferring Your Application's Conventions](#inferring-your-applications-conventions)
+    - [Disabling Project Rules](#disabling-project-rules)
 - [Documentation API](#documentation-api)
 - [Extending Boost](#extending-boost)
     - [Adding Support for Other IDEs / AI Agents](#adding-support-for-other-ides-ai-agents)
@@ -9751,6 +10967,12 @@ You may also automate this process by adding it to your Composer "post-update-cm
 }
 ```
 
+By default, the `boost:update` command will only update the existing Boost resources already published within your application. If you would like Boost to scan your application for any newly installed packages and offer to publish their corresponding guidelines and skills, you may use the `--discover` option:
+
+```shell
+php artisan boost:update --discover
+```
+
 <a name="mcp-server"></a>
 ## MCP Server
 
@@ -9758,6 +10980,8 @@ Laravel Boost provides an MCP (Model Context Protocol) server that exposes tools
 
 <a name="available-mcp-tools"></a>
 ### Available MCP Tools
+
+<div class="overflow-auto">
 
 | Name                 | Notes                                                                                                       |
 | -------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -9769,7 +10993,10 @@ Laravel Boost provides an MCP (Model Context Protocol) server that exposes tools
 | Get Absolute URL     | Convert relative path URIs to absolute so agents generate valid URLs                                        |
 | Last Error           | Read the last error from the application's log files                                                        |
 | Read Log Entries     | Read the last N log entries                                                                                 |
+| Record Rule          | Record a durable [project rule](#project-rules) into `.ai/rules` so future agents inherit it                |
 | Search Docs          | Query the Laravel hosted documentation API service to retrieve documentation based on installed packages    |
+
+</div>
 
 <a name="manually-registering-the-mcp-server"></a>
 ### Manually Registering the MCP Server
@@ -9804,10 +11031,12 @@ AI guidelines are composable instruction files that are loaded upfront to provid
 
 Laravel Boost includes AI guidelines for the following packages and frameworks. The `core` guidelines provide generic, generalized advice to the AI for the given package that is applicable across all versions.
 
+<div class="overflow-auto">
+
 | Package           | Versions Supported     |
 | ----------------- | ---------------------- |
 | Core & Boost      | core                   |
-| Laravel Framework | core, 10.x, 11.x, 12.x |
+| Laravel Framework | core, 10.x, 11.x, 12.x, 13.x |
 | Livewire          | core, 2.x, 3.x, 4.x    |
 | Flux UI           | core, free, pro        |
 | Folio             | core                   |
@@ -9826,6 +11055,8 @@ Laravel Boost includes AI guidelines for the following packages and frameworks. 
 | Livewire Volt     | core                   |
 | Wayfinder         | core                   |
 | Enforce Tests     | conditional            |
+
+</div>
 
 > **Note:** To keep your AI guidelines up-to-date, see the [Keeping Boost Resources Updated](#keeping-boost-resources-updated) section.
 
@@ -9870,15 +11101,18 @@ $result = PackageName::featureTwo($param1, $param2);
 
 [Agent Skills](https://agentskills.io/home) are lightweight, targeted knowledge modules that agents can activate on-demand when working on specific domains. Unlike guidelines, which are loaded upfront, skills allow detailed patterns and best practices to be loaded only when relevant, reducing context bloat and improving the relevance of AI-generated code.
 
-When you run `boost:install` and select skills as a feature, skills are automatically installed based on the packages detected in your `composer.json`. For example, if your project includes `livewire/livewire`, the `livewire-development` skill will be installed automatically.
+When you run `boost:install` and select skills as a feature, skills are automatically installed based on the packages detected in your `composer.json`. For example, if your project includes `livewire/livewire`, the `livewire-development` skill will be installed automatically. Skills included with Boost, such as `infer-conventions`, are installed regardless of which packages you have.
 
 <a name="available-skills"></a>
 ### Available Skills
+
+<div class="overflow-auto">
 
 | Skill                      | Package        |
 | -------------------------- | -------------- |
 | fluxui-development         | Flux UI        |
 | folio-routing              | Folio          |
+| infer-conventions          | Boost          |
 | inertia-react-development  | Inertia React  |
 | inertia-svelte-development | Inertia Svelte |
 | inertia-vue-development    | Inertia Vue    |
@@ -9889,6 +11123,8 @@ When you run `boost:install` and select skills as a feature, skills are automati
 | tailwindcss-development    | Tailwind CSS   |
 | volt-development           | Volt           |
 | wayfinder-development      | Wayfinder      |
+
+</div>
 
 > **Note:** To keep your skills up-to-date, see the [Keeping Boost Resources Updated](#keeping-boost-resources-updated) section.
 
@@ -9947,11 +11183,100 @@ Laravel Boost provides two distinct ways to give AI agents context about your ap
 
 **Skills** are activated on-demand when working on specific tasks, containing detailed patterns for particular domains (like Livewire components or Pest tests). Loading skills only when relevant reduces context bloat and improves code quality.
 
+<div class="overflow-auto">
+
 | Aspect      | Guidelines                        | Skills                           |
 | ----------- | --------------------------------- | -------------------------------- |
 | **Loaded**  | Upfront, always present           | On-demand, when relevant         |
 | **Scope**   | Broad, foundational               | Focused, task-specific           |
 | **Purpose** | Core conventions & best practices | Detailed implementation patterns |
+
+</div>
+
+Both guidelines and skills describe the Laravel ecosystem. To capture the conventions of your own application, you should use [project rules](#project-rules).
+
+<a name="project-rules"></a>
+## Project Rules
+
+While guidelines and skills teach agents how to write Laravel, project rules teach them how to write your application. A rule is anything you would otherwise need to explain again in every new session:
+
+<div class="content-list" markdown="1">
+
+- Decisions made along the way by you, your agents, or your teammates.
+- Style guidelines and preferences that are difficult to get an agent to follow.
+- Traps and constraints that can't be inferred from the surrounding code.
+
+</div>
+
+Rules are stored as Markdown files within your application's `.ai/rules` directory and should be committed to source control. Unlike an agent's own memory, which is personal and session-scoped, your rules are shared with your team and with every agent that works on your application.
+
+Each rule file declares the file globs it applies to within its frontmatter:
+
+```markdown
+---
+paths:
+  - app/Http/Controllers/**
+---
+
+# Http Controllers
+
+## Extend BaseController for tenant scoping
+
+All controllers must extend `App\Http\Controllers\BaseController`, which applies the
+current tenant's query scope. Extending Laravel's base controller directly will leak
+data across tenants.
+```
+
+In addition, Boost maintains an `.ai/rules/index.md` file which maps globs to their rule files. Agents are instructed to consult this index before planning or editing any file, so a rule is only loaded when it is relevant:
+
+```markdown
+# Project Rules Index
+
+Before planning or editing, find the row whose globs match the file's path and read that rule file.
+
+| Applies to | Rule file |
+| --- | --- |
+| app/Http/Controllers/** | .ai/rules/controllers.md |
+| app/Models/** | .ai/rules/models.md |
+```
+
+> [!NOTE]
+> Unlike the `.mcp.json` and generated guideline files, the `.ai/rules` directory should be committed to source control so that your rules are shared with your team.
+
+<a name="recording-rules"></a>
+### Recording Rules
+
+To record a rule, you may simply ask your agent to remember it:
+
+```text
+Remember that all money values are stored as integer cents, never as floats.
+```
+
+The agent will invoke Boost's `record-rule` MCP tool with a `glob`, a short `title`, and a `note`. Boost will then file the rule under the matching area, creating the rule file if needed, and update the index.
+
+You should always record rules using the `record-rule` tool rather than creating rule files by hand. Boost regenerates `.ai/rules/index.md` as part of recording a rule, and agents rely on that index to discover which rules apply to the file they are working on. A rule file that is added manually will not be discovered until the index is next regenerated.
+
+<a name="inferring-your-applications-conventions"></a>
+### Inferring Your Application's Conventions
+
+Recording rules one at a time works well going forward; however, an existing application already contains years of conventions. The `infer-conventions` skill will bootstrap your rules from the code you have already written. To get started, ask your agent to use the skill:
+
+```text
+Use the infer-conventions skill
+```
+
+The skill will sweep your application across a checklist of Laravel convention dimensions, including validation, controllers, authorization, models, architecture, testing, frontend, database, and console, followed by an open-ended pass for patterns such as base classes, shared traits, and module layouts.
+
+The skill documents what your code actually does rather than what it should do. It records only well-supported, non-default conventions, skips framework defaults and anything Pint or Rector already enforces, and reports genuinely mixed patterns instead of recording them. Before writing any rules, the skill will present each convention it discovered, along with its supporting evidence, for your approval. If you would like the skill to record all discovered conventions without confirmation, you may tell it to "yolo".
+
+<a name="disabling-project-rules"></a>
+### Disabling Project Rules
+
+Project rules are enabled by default. To disable them entirely, define the following environment variable. This removes the `record-rule` MCP tool and stops Boost from managing the `.ai/rules` directory:
+
+```ini
+BOOST_RULES_ENABLED=false
+```
 
 <a name="documentation-api"></a>
 ## Documentation API
@@ -9960,9 +11285,11 @@ Laravel Boost includes a Documentation API that provides AI agents with access t
 
 The `Search Docs` MCP tool allows agents to query the Laravel hosted documentation API service to retrieve documentation based on your installed packages. Boost's AI guidelines and skills will automatically instruct your coding agent to use this API.
 
+<div class="overflow-auto">
+
 | Package           | Versions Supported |
 | ----------------- | ------------------ |
-| Laravel Framework | 10.x, 11.x, 12.x   |
+| Laravel Framework | 10.x, 11.x, 12.x, 13.x |
 | Filament          | 2.x, 3.x, 4.x, 5.x |
 | Flux UI           | 2.x Free, 2.x Pro  |
 | Inertia           | 1.x, 2.x           |
@@ -9970,6 +11297,8 @@ The `Search Docs` MCP tool allows agents to query the Laravel hosted documentati
 | Nova              | 4.x, 5.x           |
 | Pest              | 3.x, 4.x           |
 | Tailwind CSS      | 3.x, 4.x           |
+
+</div>
 
 <a name="extending-boost"></a>
 ## Extending Boost
@@ -10029,7 +11358,7 @@ Once registered, your agent will be available for selection when running `php ar
 
 # Broadcasting
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/broadcasting*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/broadcasting*
 
 - [Introduction](#introduction)
 - [Quickstart](#quickstart)
@@ -10061,7 +11390,7 @@ Once registered, your agent will be available for selection when running `php ar
     - [Listening for Events](#listening-for-events)
     - [Leaving a Channel](#leaving-a-channel)
     - [Namespaces](#namespaces)
-    - [Using React or Vue](#using-react-or-vue)
+    - [Using React, Vue, or Svelte](#using-react-or-vue)
 - [Presence Channels](#presence-channels)
     - [Authorizing Presence Channels](#authorizing-presence-channels)
     - [Joining Presence Channels](#joining-presence-channels)
@@ -10109,7 +11438,7 @@ All of your application's event broadcasting configuration is stored in the `con
 <a name="quickstart-next-steps"></a>
 #### Next Steps
 
-Once you have enabled event broadcasting, you're ready to learn more about [defining broadcast events](#defining-broadcast-events) and [listening for events](#listening-for-events). If you're using Laravel's React or Vue [starter kits](/docs/{{version}}/starter-kits), you may listen for events using Echo's [useEcho hook](#using-react-or-vue).
+Once you have enabled event broadcasting, you're ready to learn more about [defining broadcast events](#defining-broadcast-events) and [listening for events](#listening-for-events). If you're using Laravel's React, Vue, or Svelte [starter kits](/docs/{{version}}/starter-kits), you may listen for events using Echo's [useEcho hook](#using-react-or-vue).
 
 > [!NOTE]
 > Before broadcasting any events, you should first configure and run a [queue worker](/docs/{{version}}/queues). All event broadcasting is done via queued jobs so that the response time of your application is not seriously affected by events being broadcast.
@@ -10243,7 +11572,7 @@ To manually configure Laravel Echo for your application's frontend, first instal
 npm install --save-dev laravel-echo pusher-js
 ```
 
-Once Echo is installed, you are ready to create a fresh Echo instance in your application's JavaScript. A great place to do this is at the bottom of the `resources/js/bootstrap.js` file that is included with the Laravel framework:
+Once Echo is installed, you are ready to create a fresh Echo instance in your application's JavaScript. A great place to do this is at the bottom of the `resources/js/app.js` file that is included with the Laravel framework:
 
 ```js tab=JavaScript
 import Echo from 'laravel-echo';
@@ -10290,6 +11619,20 @@ configureEcho({
 });
 ```
 
+```js tab=Svelte
+import { configureEcho } from "@laravel/echo-svelte";
+
+configureEcho({
+    broadcaster: "reverb",
+    // key: import.meta.env.VITE_REVERB_APP_KEY,
+    // wsHost: import.meta.env.VITE_REVERB_HOST,
+    // wsPort: import.meta.env.VITE_REVERB_PORT,
+    // wssPort: import.meta.env.VITE_REVERB_PORT,
+    // forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+    // enabledTransports: ['ws', 'wss'],
+});
+```
+
 Next, you should compile your application's assets:
 
 ```shell
@@ -10315,7 +11658,7 @@ To manually configure Laravel Echo for your application's frontend, first instal
 npm install --save-dev laravel-echo pusher-js
 ```
 
-Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/bootstrap.js` file:
+Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/app.js` file:
 
 ```js tab=JavaScript
 import Echo from 'laravel-echo';
@@ -10348,6 +11691,21 @@ configureEcho({
 
 ```js tab=Vue
 import { configureEcho } from "@laravel/echo-vue";
+
+configureEcho({
+    broadcaster: "pusher",
+    // key: import.meta.env.VITE_PUSHER_APP_KEY,
+    // cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    // forceTLS: true,
+    // wsHost: import.meta.env.VITE_PUSHER_HOST,
+    // wsPort: import.meta.env.VITE_PUSHER_PORT,
+    // wssPort: import.meta.env.VITE_PUSHER_PORT,
+    // enabledTransports: ["ws", "wss"],
+});
+```
+
+```js tab=Svelte
+import { configureEcho } from "@laravel/echo-svelte";
 
 configureEcho({
     broadcaster: "pusher",
@@ -10430,7 +11788,7 @@ npm install --save-dev laravel-echo pusher-js
 
 **Before continuing, you should enable Pusher protocol support in your Ably application settings. You may enable this feature within the "Protocol Adapter Settings" portion of your Ably application's settings dashboard.**
 
-Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/bootstrap.js` file:
+Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/app.js` file:
 
 ```js tab=JavaScript
 import Echo from 'laravel-echo';
@@ -10463,6 +11821,19 @@ configureEcho({
 
 ```js tab=Vue
 import { configureEcho } from "@laravel/echo-vue";
+
+configureEcho({
+    broadcaster: "ably",
+    // key: import.meta.env.VITE_ABLY_PUBLIC_KEY,
+    // wsHost: "realtime-pusher.ably.io",
+    // wsPort: 443,
+    // disableStats: true,
+    // encrypted: true,
+});
+```
+
+```js tab=Svelte
+import { configureEcho } from "@laravel/echo-svelte";
 
 configureEcho({
     broadcaster: "ably",
@@ -10588,7 +11959,7 @@ All authorization callbacks receive the currently authenticated user as their fi
 <a name="listening-for-event-broadcasts"></a>
 #### Listening for Event Broadcasts
 
-Next, all that remains is to listen for the event in our JavaScript application. We can do this using [Laravel Echo](#client-side-installation). Laravel Echo's built-in React and Vue hooks make it simple to get started, and, by default, all of the event's public properties will be included on the broadcast event:
+Next, all that remains is to listen for the event in our JavaScript application. We can do this using [Laravel Echo](#client-side-installation). Laravel Echo's built-in React, Vue, and Svelte hooks make it simple to get started, and, by default, all of the event's public properties will be included on the broadcast event:
 
 ```js tab=React
 import { useEcho } from "@laravel/echo-react";
@@ -10605,6 +11976,20 @@ useEcho(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEcho } from "@laravel/echo-vue";
+
+useEcho(
+    `orders.${orderId}`,
+    "OrderShipmentStatusUpdated",
+    (e) => {
+        console.log(e.order);
+    },
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
 
 useEcho(
     `orders.${orderId}`,
@@ -10718,22 +12103,18 @@ public function broadcastWith(): array
 <a name="broadcast-queue"></a>
 ### Broadcast Queue
 
-By default, each broadcast event is placed on the default queue for the default queue connection specified in your `queue.php` configuration file. You may customize the queue connection and name used by the broadcaster by defining `connection` and `queue` properties on your event class:
+By default, each broadcast event is placed on the default queue for the default queue connection specified in your `queue.php` configuration file. You may customize the queue connection and name used by the broadcaster by using the `Connection` and `Queue` attributes on your event class:
 
 ```php
-/**
- * The name of the queue connection to use when broadcasting the event.
- *
- * @var string
- */
-public $connection = 'redis';
+use Illuminate\Queue\Attributes\Connection;
+use Illuminate\Queue\Attributes\Queue;
 
-/**
- * The name of the queue on which to place the broadcasting job.
- *
- * @var string
- */
-public $queue = 'default';
+#[Connection('redis')]
+#[Queue('default')]
+class ServerCreated implements ShouldBroadcast
+{
+    // ...
+}
 ```
 
 Alternatively, you may customize the queue name by defining a `broadcastQueue` method on your event:
@@ -11154,9 +12535,9 @@ Echo.channel('orders')
 ```
 
 <a name="using-react-or-vue"></a>
-### Using React or Vue
+### Using React, Vue, or Svelte
 
-Laravel Echo includes React and Vue hooks that make it painless to listen for events. To get started, invoke the `useEcho` hook, which is used to listen for private events. The `useEcho` hook will automatically leave channels when the consuming component is unmounted:
+Laravel Echo includes React, Vue, and Svelte hooks that make it painless to listen for events. To get started, invoke the `useEcho` hook, which is used to listen for private events. The `useEcho` hook will automatically leave channels when the consuming component is unmounted:
 
 ```js tab=React
 import { useEcho } from "@laravel/echo-react";
@@ -11173,6 +12554,20 @@ useEcho(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEcho } from "@laravel/echo-vue";
+
+useEcho(
+    `orders.${orderId}`,
+    "OrderShipmentStatusUpdated",
+    (e) => {
+        console.log(e.order);
+    },
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
 
 useEcho(
     `orders.${orderId}`,
@@ -11268,6 +12663,32 @@ leave();
 </script>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
+
+const { leaveChannel, leave, stopListening, listen } = useEcho(
+    `orders.${orderId}`,
+    "OrderShipmentStatusUpdated",
+    (e) => {
+        console.log(e.order);
+    },
+);
+
+// Stop listening without leaving channel...
+stopListening();
+
+// Start listening again...
+listen();
+
+// Leave channel...
+leaveChannel();
+
+// Leave a channel and also its associated private and presence channels...
+leave();
+</script>
+```
+
 <a name="react-vue-connecting-to-public-channels"></a>
 #### Connecting to Public Channels
 
@@ -11291,6 +12712,16 @@ useEchoPublic("posts", "PostPublished", (e) => {
 </script>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useEchoPublic } from "@laravel/echo-svelte";
+
+useEchoPublic("posts", "PostPublished", (e) => {
+    console.log(e.post);
+});
+</script>
+```
+
 <a name="react-vue-connecting-to-presence-channels"></a>
 #### Connecting to Presence Channels
 
@@ -11307,6 +12738,16 @@ useEchoPresence("posts", "PostPublished", (e) => {
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoPresence } from "@laravel/echo-vue";
+
+useEchoPresence("posts", "PostPublished", (e) => {
+    console.log(e.post);
+});
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoPresence } from "@laravel/echo-svelte";
 
 useEchoPresence("posts", "PostPublished", (e) => {
     console.log(e.post);
@@ -11341,6 +12782,16 @@ const status = useConnectionStatus();
 </template>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useConnectionStatus } from "@laravel/echo-svelte";
+
+const status = useConnectionStatus();
+</script>
+
+<div>Connection: {status()}</div>
+```
+
 The possible status values are:
 
 <div class="content-list" markdown="1">
@@ -11352,6 +12803,43 @@ The possible status values are:
 - `failed` - Connection failed and won't retry.
 
 </div>
+
+<a name="react-vue-socket-id"></a>
+#### Socket ID
+
+You may retrieve the current WebSocket socket ID using the `useSocketId` hook, which provides a reactive value that automatically updates when the connection reconnects with a new socket ID:
+
+```js tab=React
+import { useSocketId } from "@laravel/echo-react";
+
+function SocketIndicator() {
+    const socketId = useSocketId();
+
+    return <div>Socket ID: {socketId}</div>;
+}
+```
+
+```vue tab=Vue
+<script setup lang="ts">
+import { useSocketId } from "@laravel/echo-vue";
+
+const socketId = useSocketId();
+</script>
+
+<template>
+    <div>Socket ID: {{ socketId }}</div>
+</template>
+```
+
+```svelte tab=Svelte
+<script>
+import { useSocketId } from "@laravel/echo-svelte";
+
+const socketId = useSocketId();
+</script>
+
+<div>Socket ID: {socketId()}</div>
+```
 
 <a name="presence-channels"></a>
 ## Presence Channels
@@ -11627,9 +13115,9 @@ Echo.private(`App.Models.User.${this.user.id}`)
 ```
 
 <a name="model-broadcasts-with-react-or-vue"></a>
-#### Using React or Vue
+#### Using React, Vue, or Svelte
 
-If you are using React or Vue, you may use Laravel Echo's included `useEchoModel` hook to easily listen for model broadcasts:
+If you are using React, Vue, or Svelte, you may use Laravel Echo's included `useEchoModel` hook to easily listen for model broadcasts:
 
 ```js tab=React
 import { useEchoModel } from "@laravel/echo-react";
@@ -11642,6 +13130,16 @@ useEchoModel("App.Models.User", userId, ["UserUpdated"], (e) => {
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoModel } from "@laravel/echo-vue";
+
+useEchoModel("App.Models.User", userId, ["UserUpdated"], (e) => {
+    console.log(e.model);
+});
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoModel } from "@laravel/echo-svelte";
 
 useEchoModel("App.Models.User", userId, ["UserUpdated"], (e) => {
     console.log(e.model);
@@ -11703,6 +13201,18 @@ channel().whisper('typing', { name: user.name });
 </script>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
+
+const { channel } = useEcho(`chat.${roomId}`, ['update'], (e) => {
+    console.log('Chat event received:', e);
+});
+
+channel().whisper('typing', { name: user.name });
+</script>
+```
+
 To listen for client events, you may use the `listenForWhisper` method:
 
 ```js tab=JavaScript
@@ -11727,6 +13237,20 @@ channel().listenForWhisper('typing', (e) => {
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEcho } from "@laravel/echo-vue";
+
+const { channel } = useEcho(`chat.${roomId}`, ['update'], (e) => {
+    console.log('Chat event received:', e);
+});
+
+channel().listenForWhisper('typing', (e) => {
+    console.log(e.name);
+});
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
 
 const { channel } = useEcho(`chat.${roomId}`, ['update'], (e) => {
     console.log('Chat event received:', e);
@@ -11774,6 +13298,18 @@ channel().notification((notification) => {
 </script>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useEchoModel } from "@laravel/echo-svelte";
+
+const { channel } = useEchoModel('App.Models.User', userId);
+
+channel().notification((notification) => {
+    console.log(notification.type);
+});
+</script>
+```
+
 In this example, all notifications sent to `App\Models\User` instances via the `broadcast` channel would be received by the callback. A channel authorization callback for the `App.Models.User.{id}` channel is included in your application's `routes/channels.php` file.
 
 <a name="stop-listening-for-notifications"></a>
@@ -11800,7 +13336,7 @@ Echo.private(`App.Models.User.${userId}`)
 
 # Cache
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/cache*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/cache*
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
@@ -11809,13 +13345,18 @@ Echo.private(`App.Models.User.${userId}`)
     - [Obtaining a Cache Instance](#obtaining-a-cache-instance)
     - [Retrieving Items From the Cache](#retrieving-items-from-the-cache)
     - [Storing Items in the Cache](#storing-items-in-the-cache)
+    - [Extending Item Lifetime](#extending-item-lifetime)
     - [Removing Items From the Cache](#removing-items-from-the-cache)
     - [Cache Memoization](#cache-memoization)
     - [The Cache Helper](#the-cache-helper)
 - [Cache Tags](#cache-tags)
+    - [Storing Tagged Cache Items](#storing-tagged-cache-items)
+    - [Accessing Tagged Cache Items](#accessing-tagged-cache-items)
+    - [Removing Tagged Cache Items](#removing-tagged-cache-items)
 - [Atomic Locks](#atomic-locks)
     - [Managing Locks](#managing-locks)
     - [Managing Locks Across Processes](#managing-locks-across-processes)
+    - [Refreshing Locks](#refreshing-locks)
     - [Concurrency Limiting](#concurrency-limiting)
 - [Cache Failover](#cache-failover)
 - [Adding Custom Cache Drivers](#adding-custom-cache-drivers)
@@ -11833,7 +13374,7 @@ Thankfully, Laravel provides an expressive, unified API for various cache backen
 <a name="configuration"></a>
 ## Configuration
 
-Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache store you would like to be used by default throughout your application. Laravel supports popular caching backends like [Memcached](https://memcached.org), [Redis](https://redis.io), [DynamoDB](https://aws.amazon.com/dynamodb), and relational databases out of the box. In addition, a file based cache driver is available, while `array` and `null` cache drivers provide convenient cache backends for your automated tests.
+Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache store you would like to be used by default throughout your application. Laravel supports popular caching backends like [Memcached](https://memcached.org), [Redis](https://redis.io), [DynamoDB](https://aws.amazon.com/dynamodb), relational databases, and filesystem disks out of the box. In addition, a file based cache driver is available, while `array` and `null` cache drivers provide convenient cache backends for your automated tests.
 
 The cache configuration file also contains a variety of other options that you may review. By default, Laravel is configured to use the `database` cache driver, which stores the serialized, cached objects in your application's database.
 
@@ -11889,9 +13430,22 @@ If needed, you may set the `host` option to a UNIX socket path. If you do this, 
 <a name="redis"></a>
 #### Redis
 
-Before using a Redis cache with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the `predis/predis` package (~2.0) via Composer. [Laravel Sail](/docs/{{version}}/sail) already includes this extension. In addition, official Laravel application platforms such as [Laravel Cloud](https://cloud.laravel.com) and [Laravel Forge](https://forge.laravel.com) have the PhpRedis extension installed by default.
+Before using a Redis cache with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the `predis/predis` package via Composer. [Laravel Sail](/docs/{{version}}/sail) already includes this extension. In addition, official Laravel application platforms such as [Laravel Cloud](https://cloud.laravel.com) and [Laravel Forge](https://forge.laravel.com) have the PhpRedis extension installed by default.
 
 For more information on configuring Redis, consult its [Laravel documentation page](/docs/{{version}}/redis#configuration).
+
+<a name="storage"></a>
+#### Storage
+
+The `storage` cache driver allows you to store cached values on any of your application's configured [filesystem disks](/docs/{{version}}/filesystem). This can be useful when you want to use an existing disk, such as an S3 disk, as a key / value cache store:
+
+```php
+'storage' => [
+    'driver' => 'storage',
+    'disk' => env('CACHE_STORAGE_DISK'),
+    'path' => env('CACHE_STORAGE_PATH', 'framework/cache/data'),
+],
+```
 
 <a name="dynamodb"></a>
 #### DynamoDB
@@ -12029,6 +13583,14 @@ $value = Cache::remember('users', $seconds, function () {
 
 If the item does not exist in the cache, the closure passed to the `remember` method will be executed and its result will be placed in the cache.
 
+If you need to know whether the item was retrieved from the cache instead of by executing the given closure, you may use the `rememberWithWarmth` method. This method returns an array containing the cached value and a boolean indicating whether the item was "warm", meaning it was retrieved from the cache and not resolved from the closure:
+
+```php
+[$value, $warm] = Cache::rememberWithWarmth('users', $seconds, function () {
+    return DB::table('users')->get();
+});
+```
+
 You may use the `rememberForever` method to retrieve an item from the cache or store it forever if it does not exist:
 
 ```php
@@ -12093,6 +13655,21 @@ The `add` method will only add the item to the cache if it does not already exis
 Cache::add('key', 'value', $seconds);
 ```
 
+<a name="extending-item-lifetime"></a>
+### Extending Item Lifetime
+
+The `touch` method allows you to extend the lifetime (TTL) of an existing cache item. The `touch` method will return `true` if the cache item exists and its expiration time was successfully extended. If the item does not exist in the cache, the method will return `false`:
+
+```php
+Cache::touch('key', 3600);
+```
+
+You may provide a `DateTimeInterface`, `DateInterval`, or `Carbon` instance to specify an exact expiration time:
+
+```php
+Cache::touch('key', now()->addHours(2));
+```
+
 <a name="storing-items-forever"></a>
 #### Storing Items Forever
 
@@ -12126,6 +13703,12 @@ You may clear the entire cache using the `flush` method:
 
 ```php
 Cache::flush();
+```
+
+You may clear all atomic locks in the cache using the `flushLocks` method:
+
+```php
+Cache::flushLocks();
 ```
 
 > [!WARNING]
@@ -12207,7 +13790,7 @@ cache()->remember('users', $seconds, function () {
 ## Cache Tags
 
 > [!WARNING]
-> Cache tags are not supported when using the `file`, `dynamodb`, or `database` cache drivers.
+> Cache tags are not supported when using the `file`, `dynamodb`, `database`, or `storage` cache drivers.
 
 <a name="storing-tagged-cache-items"></a>
 ### Storing Tagged Cache Items
@@ -12331,6 +13914,26 @@ If you would like to release a lock without respecting its current owner, you ma
 
 ```php
 Cache::lock('processing')->forceRelease();
+```
+
+<a name="refreshing-locks"></a>
+### Refreshing Locks
+
+If you need to extend the expiration of a lock that you currently own, you may use the `refresh` method. If no number of seconds is provided, the lock's original duration will be used. This is useful for long-running operations where you prefer to acquire a short lock and periodically extend it instead of acquiring a lock with a very long expiration time:
+
+```php
+$lock = Cache::lock('generate-reports', 60);
+
+if ($lock->get()) {
+    foreach ($reports as $report) {
+        $report->generate();
+
+        // Extend the lock for another 60 seconds...
+        $lock->refresh();
+    }
+
+    $lock->release();
+}
 ```
 
 <a name="concurrency-limiting"></a>
@@ -12518,21 +14121,25 @@ To execute code on every cache operation, you may listen for various [events](/d
 
 <div class="overflow-auto">
 
-| Event Name                                   |
-|----------------------------------------------|
-| `Illuminate\Cache\Events\CacheFlushed`       |
-| `Illuminate\Cache\Events\CacheFlushing`      |
-| `Illuminate\Cache\Events\CacheHit`           |
-| `Illuminate\Cache\Events\CacheMissed`        |
-| `Illuminate\Cache\Events\ForgettingKey`      |
-| `Illuminate\Cache\Events\KeyForgetFailed`    |
-| `Illuminate\Cache\Events\KeyForgotten`       |
-| `Illuminate\Cache\Events\KeyWriteFailed`     |
-| `Illuminate\Cache\Events\KeyWritten`         |
-| `Illuminate\Cache\Events\RetrievingKey`      |
-| `Illuminate\Cache\Events\RetrievingManyKeys` |
-| `Illuminate\Cache\Events\WritingKey`         |
-| `Illuminate\Cache\Events\WritingManyKeys`    |
+| Event Name                                      |
+|-------------------------------------------------|
+| `Illuminate\Cache\Events\CacheFlushed`          |
+| `Illuminate\Cache\Events\CacheFlushing`         |
+| `Illuminate\Cache\Events\CacheFlushFailed`      |
+| `Illuminate\Cache\Events\CacheLocksFlushed`     |
+| `Illuminate\Cache\Events\CacheLocksFlushing`    |
+| `Illuminate\Cache\Events\CacheLocksFlushFailed` |
+| `Illuminate\Cache\Events\CacheHit`              |
+| `Illuminate\Cache\Events\CacheMissed`           |
+| `Illuminate\Cache\Events\ForgettingKey`         |
+| `Illuminate\Cache\Events\KeyForgetFailed`       |
+| `Illuminate\Cache\Events\KeyForgotten`          |
+| `Illuminate\Cache\Events\KeyWriteFailed`        |
+| `Illuminate\Cache\Events\KeyWritten`            |
+| `Illuminate\Cache\Events\RetrievingKey`         |
+| `Illuminate\Cache\Events\RetrievingManyKeys`    |
+| `Illuminate\Cache\Events\WritingKey`            |
+| `Illuminate\Cache\Events\WritingManyKeys`       |
 
 </div>
 
@@ -12551,7 +14158,7 @@ To increase performance, you may disable cache events by setting the `events` co
 
 # Laravel Cashier (Paddle)
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/cashier-paddle*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/cashier-paddle*
 
 - [Introduction](#introduction)
 - [Upgrading Cashier](#upgrading-cashier)
@@ -13022,7 +14629,7 @@ Cashier includes a `paddle-button` [Blade component](/docs/{{version}}/blade#com
 </x-paddle-button>
 ```
 
-By default, this will display the widget using Paddle's default styling. You can customize the widget by adding [Paddle supported attributes](https://developer.paddle.com/paddlejs/html-data-attributes) like the  `data-theme='light'` attribute to the component:
+By default, this will display the widget using Paddle's default styling. You can customize the widget by adding [Paddle supported attributes](https://developer.paddle.com/paddlejs/html-data-attributes) like the `data-theme='light'` attribute to the component:
 
 ```html
 <x-paddle-button :checkout="$checkout" class="px-8 py-4" data-theme="light">
@@ -13326,7 +14933,7 @@ Once a subscription checkout session has been created, the checkout session may 
 </x-paddle-button>
 ```
 
-After the user has finished their checkout, a `subscription_created` webhook will be dispatched from Paddle. Cashier will receive this webhook and setup the subscription for your customer. In order to make sure all webhooks are properly received and handled by your application, ensure you have properly [setup webhook handling](#handling-paddle-webhooks).
+After the user has finished their checkout, a `subscription_created` webhook will be dispatched from Paddle. Cashier will receive this webhook and set up the subscription for your customer. In order to make sure all webhooks are properly received and handled by your application, ensure you have properly [set up webhook handling](#handling-paddle-webhooks).
 
 <a name="checking-subscription-status"></a>
 ### Checking Subscription Status
@@ -13913,7 +15520,7 @@ Since Paddle webhooks need to bypass Laravel's [CSRF protection](/docs/{{version
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->validateCsrfTokens(except: [
+    $middleware->preventRequestForgery(except: [
         'paddle/*',
     ]);
 })
@@ -14140,7 +15747,7 @@ For automated tests, including those executed within a CI environment, you may u
 
 # Collections
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/collections*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/collections*
 
 - [Introduction](#introduction)
     - [Creating Collections](#creating-collections)
@@ -14254,6 +15861,7 @@ For the majority of the remaining collection documentation, we'll discuss each m
 [avg](#method-avg)
 [before](#method-before)
 [chunk](#method-chunk)
+[chunkBy](#method-chunkby)
 [chunkWhile](#method-chunkwhile)
 [collapse](#method-collapse)
 [collapseWithKeys](#method-collapsewithkeys)
@@ -14341,6 +15949,7 @@ For the majority of the remaining collection documentation, we'll discuss each m
 [random](#method-random)
 [range](#method-range)
 [reduce](#method-reduce)
+[reduceInto](#method-reduce-into)
 [reduceSpread](#method-reduce-spread)
 [reject](#method-reject)
 [replace](#method-replace)
@@ -14542,6 +16151,27 @@ This method is especially useful in [views](/docs/{{version}}/views) when workin
         @endforeach
     </div>
 @endforeach
+```
+
+<a name="method-chunkby"></a>
+#### `chunkBy()` {.collection-method}
+
+The `chunkBy` method breaks the collection into multiple, smaller collections by grouping adjacent items that have the same value for a given key or callback. For example, you may group adjacent products that share the same parent:
+
+```php
+$chunks = $products->chunkBy('parent');
+```
+
+Unlike the `groupBy` method, items with the same value that are not adjacent are placed in separate chunks:
+
+```php
+$collection = collect([1, 1, 2, 2, 1]);
+
+$chunks = $collection->chunkBy(fn (int $value) => $value);
+
+$chunks->all();
+
+// [[1, 1], [2, 2], [1]]
 ```
 
 <a name="method-chunkwhile"></a>
@@ -14772,7 +16402,7 @@ $counted->all();
 <a name="method-crossjoin"></a>
 #### `crossJoin()` {.collection-method}
 
-The `crossJoin` method cross joins the collection's values among the given arrays or collections, returning a Cartesian product with all possible permutations:
+The `crossJoin` method cross joins the collection's values among the given arrays or collections, returning a Cartesian product with all possible combinations:
 
 ```php
 $collection = collect([1, 2]);
@@ -16642,6 +18272,49 @@ $collection->reduce(function (int $carry, int $value, string $key) use ($ratio) 
 // 4264
 ```
 
+<a name="method-reduce-into"></a>
+#### `reduceInto()` {.collection-method}
+
+The `reduceInto` method reduces the collection to a single value by mutating the given initial value. Unlike the `reduce` method, the given callback does not need to return the accumulated value:
+
+```php
+class OrderStats
+{
+    public int $total = 0;
+
+    public int $count = 0;
+}
+
+$orders = collect([
+    ['amount' => 100],
+    ['amount' => 250],
+    ['amount' => 50],
+]);
+
+$stats = $orders->reduceInto(new OrderStats, function (OrderStats $stats, array $order) {
+    $stats->total += $order['amount'];
+    $stats->count++;
+});
+
+$stats->total;
+
+// 400
+```
+
+When reducing into a scalar or array, you should accept it by reference in the callback so that your mutations are applied to the original value:
+
+```php
+$collection = collect([1, 2, 3, 4, 5]);
+
+$even = $collection->reduceInto([], function (array &$result, int $value) {
+    if ($value % 2 === 0) {
+        $result[] = $value;
+    }
+});
+
+// [2, 4]
+```
+
 <a name="method-reduce-spread"></a>
 #### `reduceSpread()` {.collection-method}
 
@@ -18299,6 +19972,7 @@ Almost all methods available on the `Collection` class are also available on the
 [average](#method-average)
 [avg](#method-avg)
 [chunk](#method-chunk)
+[chunkBy](#method-chunkby)
 [chunkWhile](#method-chunkwhile)
 [collapse](#method-collapse)
 [collect](#method-collect)
@@ -18362,6 +20036,7 @@ Almost all methods available on the `Collection` class are also available on the
 [pluck](#method-pluck)
 [random](#method-random)
 [reduce](#method-reduce)
+[reduceInto](#method-reduce-into)
 [reject](#method-reject)
 [replace](#method-replace)
 [replaceRecursive](#method-replacerecursive)
@@ -18536,10 +20211,12 @@ if ($lock->get()) {
 
 # Concurrency
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/concurrency*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/concurrency*
 
 - [Introduction](#introduction)
 - [Running Concurrent Tasks](#running-concurrent-tasks)
+    - [Named Results](#named-results)
+    - [Task Timeouts](#task-timeouts)
 - [Deferring Concurrent Tasks](#deferring-concurrent-tasks)
 
 <a name="introduction"></a>
@@ -18589,6 +20266,49 @@ Or, to change the default concurrency driver, you should publish the `concurrenc
 php artisan config:publish concurrency
 ```
 
+<a name="named-results"></a>
+### Named Results
+
+If you would like to access concurrent task results by name rather than by position, you may provide an associative array of closures. Each result will be returned using the same key as its corresponding closure:
+
+```php
+use Illuminate\Support\Facades\Concurrency;
+use Illuminate\Support\Facades\DB;
+
+$results = Concurrency::run([
+    'users' => fn () => DB::table('users')->count(),
+    'orders' => fn () => DB::table('orders')->count(),
+]);
+
+$userCount = $results['users'];
+$orderCount = $results['orders'];
+```
+
+<a name="task-timeouts"></a>
+### Task Timeouts
+
+When using the `process` driver (the default), you may specify a maximum number of seconds a concurrent task is allowed to run before it is terminated by providing a timeout to the `run` method:
+
+```php
+use Illuminate\Support\Facades\Concurrency;
+use Illuminate\Support\Facades\DB;
+
+[$userCount, $orderCount] = Concurrency::run([
+    fn () => DB::table('users')->count(),
+    fn () => DB::table('orders')->count(),
+], timeout: 30);
+```
+
+You may also provide a `CarbonInterval` instance if you prefer a more expressive timeout definition:
+
+```php
+use Illuminate\Support\Facades\Concurrency;
+
+use function Illuminate\Support\seconds;
+
+Concurrency::run([...], timeout: seconds(30));
+```
+
 <a name="deferring-concurrent-tasks"></a>
 ## Deferring Concurrent Tasks
 
@@ -18609,7 +20329,7 @@ Concurrency::defer([
 
 # Configuration
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/configuration*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/configuration*
 
 - [Introduction](#introduction)
 - [Environment Configuration](#environment-configuration)
@@ -19014,7 +20734,7 @@ Since maintenance mode requires your application to have several seconds of down
 
 # Console Tests
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/console-tests*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/console-tests*
 
 - [Introduction](#introduction)
 - [Success / Failure Expectations](#success-failure-expectations)
@@ -19245,7 +20965,7 @@ class ConsoleEventTest extends TestCase
 
 # Service Container
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/container*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/container*
 
 - [Introduction](#introduction)
     - [Zero Configuration Resolution](#zero-configuration-resolution)
@@ -19564,6 +21284,23 @@ interface EventPusher
 }
 ```
 
+For bindings that depend on an arbitrary condition, you may use the `BindWhen` attribute. The closure may receive the container and should return `true` when the binding should be applied. `Bind` and `BindWhen` attributes are evaluated in the order they are declared:
+
+```php
+use App\Services\BetaEventPusher;
+use Illuminate\Container\Attributes\BindWhen;
+use Laravel\Pennant\Feature;
+
+#[BindWhen(BetaEventPusher::class, static fn () => Feature::active('beta-events'))]
+interface EventPusher
+{
+    // ...
+}
+```
+
+> [!NOTE]
+> The `BindWhen` attribute requires PHP 8.5 or greater.
+
 <a name="contextual-binding"></a>
 ### Contextual Binding
 
@@ -19614,7 +21351,7 @@ class PhotoController extends Controller
 }
 ```
 
-In addition to the `Storage` attribute, Laravel offers `Auth`, `Cache`, `Config`, `Context`, `DB`, `Give`, `Log`, `RouteParameter`, and [Tag](#tagging) attributes:
+In addition to the `Storage` attribute, Laravel offers `Auth`, `Cache`, `Config`, `Context`, `DB`, `Give`, `Log`, `RequestAttribute`, `RouteParameter`, and [Tag](#tagging) attributes:
 
 ```php
 <?php
@@ -19622,6 +21359,7 @@ In addition to the `Storage` attribute, Laravel offers `Auth`, `Cache`, `Config`
 namespace App\Http\Controllers;
 
 use App\Contracts\UserRepository;
+use App\Models\Organization;
 use App\Models\Photo;
 use App\Repositories\DatabaseRepository;
 use Illuminate\Container\Attributes\Auth;
@@ -19631,6 +21369,7 @@ use Illuminate\Container\Attributes\Context;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Container\Attributes\Give;
 use Illuminate\Container\Attributes\Log;
+use Illuminate\Container\Attributes\RequestAttribute;
 use Illuminate\Container\Attributes\RouteParameter;
 use Illuminate\Container\Attributes\Tag;
 use Illuminate\Contracts\Auth\Guard;
@@ -19649,7 +21388,8 @@ class PhotoController extends Controller
         #[DB('mysql')] protected Connection $connection,
         #[Give(DatabaseRepository::class)] protected UserRepository $users,
         #[Log('daily')] protected LoggerInterface $log,
-        #[RouteParameter('photo')] protected Photo $photo,
+        #[RequestAttribute('organization')] protected Organization $organization,
+        #[RouteParameter] protected Photo $photo,
         #[Tag('reports')] protected iterable $reports,
     ) {
         // ...
@@ -19657,7 +21397,11 @@ class PhotoController extends Controller
 }
 ```
 
-Furthermore, Laravel provides a `CurrentUser` attribute for injecting the currently authenticated user into a given route or class:
+The `RouteParameter` attribute will resolve the route parameter matching the variable name. If needed, you may specify the route parameter name explicitly: `#[RouteParameter('photo')]`.
+
+The `RequestAttribute` attribute will resolve the value stored under the given key in the current request's [attribute bag](https://symfony.com/doc/current/components/http_foundation.html#accessing-request-data): `#[RequestAttribute('organization')]`.
+
+In addition, Laravel provides a `CurrentUser` attribute for injecting the currently authenticated user into a given route or class:
 
 ```php
 use App\Models\User;
@@ -19681,6 +21425,7 @@ namespace App\Attributes;
 use Attribute;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Container\ContextualAttribute;
+use ReflectionParameter;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
 class Config implements ContextualAttribute
@@ -19697,9 +21442,10 @@ class Config implements ContextualAttribute
      *
      * @param  self  $attribute
      * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \ReflectionParameter  $parameter
      * @return mixed
      */
-    public static function resolve(self $attribute, Container $container)
+    public static function resolve(self $attribute, Container $container, ReflectionParameter $parameter)
     {
         return $container->make('config')->get($attribute->key, $attribute->default);
     }
@@ -20040,7 +21786,7 @@ An exception is thrown if the given identifier can't be resolved. The exception 
 
 # Context
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/context*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/context*
 
 - [Introduction](#introduction)
     - [How it Works](#how-it-works)
@@ -20062,7 +21808,7 @@ Laravel's "context" capabilities enable you to capture, retrieve, and share info
 <a name="how-it-works"></a>
 ### How it Works
 
-The best way to understand Laravel's context capabilities is to see it in action using  the built-in logging features. To get started, you may [add information to the context](#capturing-context) using the `Context` facade. In this example, we will use a [middleware](/docs/{{version}}/middleware) to add the request URL and a unique trace ID to the context on every incoming request:
+The best way to understand Laravel's context capabilities is to see it in action using the built-in logging features. To get started, you may [add information to the context](#capturing-context) using the `Context` facade. In this example, we will use a [middleware](/docs/{{version}}/middleware) to add the request URL and a unique trace ID to the context on every incoming request:
 
 ```php
 <?php
@@ -20499,7 +22245,7 @@ public function boot(): void
 
 # Contracts
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/contracts*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/contracts*
 
 - [Introduction](#introduction)
     - [Contracts vs. Facades](#contracts-vs-facades)
@@ -20664,13 +22410,15 @@ This table provides a quick reference to all of the Laravel contracts and their 
 
 # Controllers
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/controllers*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/controllers*
 
 - [Introduction](#introduction)
 - [Writing Controllers](#writing-controllers)
     - [Basic Controllers](#basic-controllers)
     - [Single Action Controllers](#single-action-controllers)
 - [Controller Middleware](#controller-middleware)
+    - [Middleware Attributes](#middleware-attributes)
+    - [Authorization Attributes](#authorization-attributes)
 - [Resource Controllers](#resource-controllers)
     - [Partial Resource Routes](#restful-partial-resource-routes)
     - [Nested Resources](#restful-nested-resources)
@@ -20831,6 +22579,120 @@ public static function middleware(): array
     ];
 }
 ```
+
+<a name="middleware-attributes"></a>
+### Middleware Attributes
+
+You may also assign middleware to controllers using PHP attributes:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Routing\Attributes\Controllers\Middleware;
+
+#[Middleware('auth')]
+#[Middleware('log', only: ['index'])]
+#[Middleware('subscribed', except: ['store'])]
+class UserController
+{
+    // ...
+}
+```
+
+You may place middleware attributes on individual controller methods as well. Middleware assigned to methods will be merged with middleware assigned at the class level:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
+
+#[Middleware('auth')]
+class UserController
+{
+    #[Middleware('log')]
+    #[Middleware('subscribed')]
+    public function index()
+    {
+        // ...
+    }
+
+    #[Middleware(static function (Request $request, Closure $next) {
+        // ...
+
+        return $next($request);
+    })]
+    public function store()
+    {
+        // ...
+    }
+}
+```
+
+To exclude middleware from a controller or individual controller methods, use the `WithoutMiddleware` attribute. You may use the `only` and `except` arguments to limit a class-level attribute to particular controller methods:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Middleware\EnsureTokenIsValid;
+use Illuminate\Routing\Attributes\Controllers\WithoutMiddleware;
+
+#[WithoutMiddleware('subscribed', except: ['index'])]
+class UserController
+{
+    #[WithoutMiddleware(EnsureTokenIsValid::class)]
+    public function index()
+    {
+        // ...
+    }
+
+    public function show()
+    {
+        // ...
+    }
+}
+```
+
+Class-level `WithoutMiddleware` attributes are inherited by child controllers. The attribute can only remove route middleware and does not apply to [global middleware](/docs/{{version}}/middleware#global-middleware).
+
+<a name="authorization-attributes"></a>
+### Authorization Attributes
+
+If you are authorizing controller actions via policies, you may use the `Authorize` attribute as a convenient shortcut for the `can` middleware:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Comment;
+use App\Models\Post;
+use Illuminate\Routing\Attributes\Controllers\Authorize;
+
+class CommentController
+{
+    #[Authorize('create', [Comment::class, 'post'])]
+    public function store(Post $post)
+    {
+        // ...
+    }
+
+    #[Authorize('delete', 'comment')]
+    public function destroy(Comment $comment)
+    {
+        // ...
+    }
+}
+```
+
+The first argument is the ability you wish to authorize. The second argument is the model class, route parameter, or parameters that should be passed to the policy.
 
 <a name="resource-controllers"></a>
 ## Resource Controllers
@@ -21365,10 +23227,11 @@ class UserController extends Controller
 
 # CSRF Protection
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/csrf*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/csrf*
 
 - [Introduction](#csrf-introduction)
 - [Preventing CSRF Requests](#preventing-csrf-requests)
+    - [Origin Verification](#origin-verification)
     - [Excluding URIs](#csrf-excluding-uris)
 - [X-CSRF-Token](#csrf-x-csrf-token)
 - [X-XSRF-Token](#csrf-x-xsrf-token)
@@ -21402,6 +23265,12 @@ To prevent this vulnerability, we need to inspect every incoming `POST`, `PUT`, 
 <a name="preventing-csrf-requests"></a>
 ## Preventing CSRF Requests
 
+The `Illuminate\Foundation\Http\Middleware\PreventRequestForgery` [middleware](/docs/{{version}}/middleware), which is included in the `web` middleware group by default, protects your application from cross-site request forgeries using a two-layer approach.
+
+First, the middleware checks the browser's `Sec-Fetch-Site` header. Modern browsers automatically set this header on every request, indicating whether it originated from the same origin, the same site, or a cross-site source. If the header indicates the request came from the same origin, the request is allowed immediately without any token verification.
+
+If origin verification does not pass — for example, because the request comes from an older browser that doesn't send the `Sec-Fetch-Site` header or because the connection is not secure — the middleware falls back to traditional CSRF token validation.
+
 Laravel automatically generates a CSRF "token" for each active [user session](/docs/{{version}}/session) managed by the application. This token is used to verify that the authenticated user is the person actually making the requests to the application. Since this token is stored in the user's session and changes each time the session is regenerated, a malicious application is unable to access it.
 
 The current session's CSRF token can be accessed via the request's session or via the `csrf_token` helper function:
@@ -21429,23 +23298,47 @@ Anytime you define a "POST", "PUT", "PATCH", or "DELETE" HTML form in your appli
 </form>
 ```
 
-The `Illuminate\Foundation\Http\Middleware\ValidateCsrfToken` [middleware](/docs/{{version}}/middleware), which is included in the `web` middleware group by default, will automatically verify that the token in the request input matches the token stored in the session. When these two tokens match, we know that the authenticated user is the one initiating the request.
-
 <a name="csrf-tokens-and-spas"></a>
-### CSRF Tokens & SPAs
+#### CSRF Tokens & SPAs
 
 If you are building an SPA that is utilizing Laravel as an API backend, you should consult the [Laravel Sanctum documentation](/docs/{{version}}/sanctum) for information on authenticating with your API and protecting against CSRF vulnerabilities.
+
+<a name="origin-verification"></a>
+### Origin Verification
+
+As discussed above, Laravel's request forgery middleware first checks the `Sec-Fetch-Site` header to determine if the request is from the same origin. By default, if this check does not pass, the middleware falls back to CSRF token validation.
+
+However, if you would like to rely solely on origin verification and disable the CSRF token fallback entirely, you may do so using the `preventRequestForgery` method in your application's `bootstrap/app.php` file:
+
+```php
+->withMiddleware(function (Middleware $middleware): void {
+    $middleware->preventRequestForgery(originOnly: true);
+})
+```
+
+When using origin-only mode, requests that fail origin verification will receive a `403` HTTP response instead of the `419` response typically associated with CSRF token mismatches.
+
+> [!WARNING]
+> The `Sec-Fetch-Site` header is only sent by browsers over secure (HTTPS) connections. If your application is not served over HTTPS, origin verification will not be available and the middleware will fall back to CSRF token validation.
+
+If your application needs to accept requests from subdomains (for example, `dashboard.example.com` accepting requests from `example.com`), you may allow same-site requests in addition to same-origin requests:
+
+```php
+->withMiddleware(function (Middleware $middleware): void {
+    $middleware->preventRequestForgery(allowSameSite: true);
+})
+```
 
 <a name="csrf-excluding-uris"></a>
 ### Excluding URIs From CSRF Protection
 
 Sometimes you may wish to exclude a set of URIs from CSRF protection. For example, if you are using [Stripe](https://stripe.com) to process payments and are utilizing their webhook system, you will need to exclude your Stripe webhook handler route from CSRF protection since Stripe will not know what CSRF token to send to your routes.
 
-Typically, you should place these kinds of routes outside of the `web` middleware group that Laravel applies to all routes in the `routes/web.php` file. However, you may also exclude specific routes by providing their URIs to the `validateCsrfTokens` method in your application's `bootstrap/app.php` file:
+Typically, you should place these kinds of routes outside of the `web` middleware group that Laravel applies to all routes in the `routes/web.php` file. However, you may also exclude specific routes by providing their URIs to the `preventRequestForgery` method in your application's `bootstrap/app.php` file:
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->validateCsrfTokens(except: [
+    $middleware->preventRequestForgery(except: [
         'stripe/*',
         'http://example.com/foo/bar',
         'http://example.com/foo/*',
@@ -21459,7 +23352,7 @@ Typically, you should place these kinds of routes outside of the `web` middlewar
 <a name="csrf-x-csrf-token"></a>
 ## X-CSRF-TOKEN
 
-In addition to checking for the CSRF token as a POST parameter, the `Illuminate\Foundation\Http\Middleware\ValidateCsrfToken` middleware, which is included in the `web` middleware group by default, will also check for the `X-CSRF-TOKEN` request header. You could, for example, store the token in an HTML `meta` tag:
+In addition to checking for the CSRF token as a POST parameter, the `PreventRequestForgery` middleware will also check for the `X-CSRF-TOKEN` request header. You could, for example, store the token in an HTML `meta` tag:
 
 ```blade
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -21482,15 +23375,12 @@ Laravel stores the current CSRF token in an encrypted `XSRF-TOKEN` cookie that i
 
 This cookie is primarily sent as a developer convenience since some JavaScript frameworks and libraries, like Angular and Axios, automatically place its value in the `X-XSRF-TOKEN` header on same-origin requests.
 
-> [!NOTE]
-> By default, the `resources/js/bootstrap.js` file includes the Axios HTTP library which will automatically send the `X-XSRF-TOKEN` header for you.
-
 
 ---
 
 # Database Testing
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/database-testing*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/database-testing*
 
 - [Introduction](#introduction)
     - [Resetting the Database After Each Test](#resetting-the-database-after-each-test)
@@ -21647,37 +23537,41 @@ class ExampleTest extends TestCase
 }
 ```
 
-Alternatively, you may instruct Laravel to automatically seed the database before each test that uses the `RefreshDatabase` trait. You may accomplish this by defining a `$seed` property on your base test class:
+Alternatively, you may instruct Laravel to automatically seed the database before each test that uses the `RefreshDatabase` trait. You may accomplish this by adding the `Seed` attribute to your base test class:
 
 ```php
 <?php
 
 namespace Tests;
 
+use Illuminate\Foundation\Testing\Attributes\Seed;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
+#[Seed]
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * Indicates whether the default seeder should run before each test.
-     *
-     * @var bool
-     */
-    protected $seed = true;
 }
 ```
 
-When the `$seed` property is `true`, the test will run the `Database\Seeders\DatabaseSeeder` class before each test that uses the `RefreshDatabase` trait. However, you may specify a specific seeder that should be executed by defining a `$seeder` property on your test class:
+When the `Seed` attribute is present, the test will run the `Database\Seeders\DatabaseSeeder` class before each test that uses the `RefreshDatabase` trait. However, you may specify a specific seeder that should be executed by using the `Seeder` attribute on your test class:
 
 ```php
-use Database\Seeders\OrderStatusSeeder;
+<?php
 
-/**
- * Run a specific seeder before each test.
- *
- * @var string
- */
-protected $seeder = OrderStatusSeeder::class;
+namespace Tests\Feature;
+
+use Database\Seeders\OrderStatusSeeder;
+use Illuminate\Foundation\Testing\Attributes\Seeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+#[Seeder(OrderStatusSeeder::class)]
+class OrderTest extends TestCase
+{
+    use RefreshDatabase;
+
+    // ...
+}
 ```
 
 <a name="available-assertions"></a>
@@ -21787,11 +23681,12 @@ $this->expectsDatabaseQueryCount(5);
 
 # Database: Getting Started
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/database*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/database*
 
 - [Introduction](#introduction)
     - [Configuration](#configuration)
     - [Read and Write Connections](#read-and-write-connections)
+    - [Pooled PostgreSQL Connections](#pooled-postgresql-connections)
 - [Running SQL Queries](#running-queries)
     - [Using Multiple Database Connections](#using-multiple-database-connections)
     - [Listening for Query Events](#listening-for-query-events)
@@ -21917,6 +23812,42 @@ You only need to place items in the `read` and `write` arrays if you wish to ove
 #### The `sticky` Option
 
 The `sticky` option is an *optional* value that can be used to allow the immediate reading of records that have been written to the database during the current request cycle. If the `sticky` option is enabled and a "write" operation has been performed against the database during the current request cycle, any further "read" operations will use the "write" connection. This ensures that any data written during the request cycle can be immediately read back from the database during that same request. It is up to you to decide if this is the desired behavior for your application.
+
+<a name="pooled-postgresql-connections"></a>
+### Pooled PostgreSQL Connections
+
+Many managed PostgreSQL providers offer transaction-mode connection pooling through services such as PgBouncer or connection proxying. These poolers are ideal for application queries, but some schema operations, migrations, and maintenance commands require a direct database connection.
+
+To use a transaction pooler with PostgreSQL, configure the pooled connection as usual and provide direct connection details via the `direct` configuration option:
+
+```php
+'pgsql' => [
+    'driver' => 'pgsql',
+    // ...
+    'pooled' => env('DB_POOLED', false),
+    'direct' => array_filter([
+        'host' => env('DB_DIRECT_HOST'),
+        'port' => env('DB_DIRECT_PORT'),
+        'username' => env('DB_DIRECT_USERNAME'),
+        'password' => env('DB_DIRECT_PASSWORD'),
+        'sslmode' => env('DB_DIRECT_SSLMODE'),
+    ]),
+],
+```
+
+When a PostgreSQL connection is configured as pooled, Laravel automatically enables emulated prepares for the pooled connection. The direct connection inherits any options not explicitly defined in the `direct` configuration and uses native prepares by default.
+
+Laravel automatically uses the direct connection for migrations, schema dumps and restores, `db:wipe`, `db:show`, and `db:table`. The `db` command also uses the direct connection by default when pooled mode is enabled and a direct connection is configured; you may pass the `--pooled` option to connect to the pooled connection instead:
+
+```shell
+php artisan db --pooled
+```
+
+If you need to explicitly use the direct connection in your application, append the `::direct` suffix to the connection name:
+
+```php
+DB::connection('pgsql::direct')->statement('create extension if not exists "uuid-ossp"');
+```
 
 <a name="running-queries"></a>
 ## Running SQL Queries
@@ -22314,7 +24245,7 @@ public function boot(): void
 
 # Deployment
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/deployment*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/deployment*
 
 - [Introduction](#introduction)
 - [Server Requirements](#server-requirements)
@@ -22344,7 +24275,7 @@ The Laravel framework has a few system requirements. You should ensure that your
 
 <div class="content-list" markdown="1">
 
-- PHP >= 8.2
+- PHP >= 8.3
 - Ctype PHP Extension
 - cURL PHP Extension
 - DOM PHP Extension
@@ -22395,9 +24326,12 @@ server {
     error_page 404 /index.php;
 
     location ~ ^/index\.php(/|$) {
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
+        fastcgi_buffer_size 32k;
+        fastcgi_buffers 8 32k;
+        fastcgi_busy_buffers_size 64k;
         fastcgi_hide_header X-Powered-By;
     }
 
@@ -22497,7 +24431,7 @@ After deploying a new version of your application, any long-running services suc
 php artisan reload
 ```
 
-If you are not using [Laravel Cloud](https://cloud.laravel.com), you should manually  configure a process monitor that can detect when your reloadable processes exit and automatically restart them.
+If you are not using [Laravel Cloud](https://cloud.laravel.com), you should manually configure a process monitor that can detect when your reloadable processes exit and automatically restart them.
 
 <a name="debug-mode"></a>
 ## Debug Mode
@@ -22547,7 +24481,7 @@ Laravel Forge can create servers on various infrastructure providers such as Dig
 
 # Laravel Dusk
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/dusk*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/dusk*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -22713,7 +24647,6 @@ The `DatabaseMigrations` trait will run your database migrations before each tes
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
 
 pest()->use(DatabaseMigrations::class);
 
@@ -22749,7 +24682,6 @@ The `DatabaseTruncation` trait will migrate your database on the first test in o
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTruncation;
-use Laravel\Dusk\Browser;
 
 pest()->use(DatabaseTruncation::class);
 
@@ -22907,7 +24839,6 @@ To get started, let's write a test that verifies we can log into our application
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
 
 pest()->use(DatabaseMigrations::class);
 
@@ -23543,6 +25474,13 @@ The `controlClick` method may be used to simulate the `ctrl+click` event within 
 $browser->controlClick();
 
 $browser->controlClick('.selector');
+```
+
+The `clickWhenVisible` or `clickWhenEnabled` method may be used to wait for an element to be ready before clicking it exactly once:
+
+```php
+$browser->clickWhenVisible('@save-button');
+$browser->clickWhenEnabled('@submit-button');
 ```
 
 <a name="mouseover"></a>
@@ -24560,7 +26498,7 @@ Assert that the element matching the given selector has the given value in the p
 $browser->assertDataAttribute($selector, $attribute, $value);
 ```
 
-For example, given the markup `<tr id="row-1" data-content="attendees"></tr>`, you may assert against the `data-label` attribute like so:
+For example, given the markup `<tr id="row-1" data-content="attendees"></tr>`, you may assert against the `data-content` attribute like so:
 
 ```php
 $browser->assertDataAttribute('#row-1', 'content', 'attendees')
@@ -25023,7 +26961,6 @@ Once the component has been defined, we can easily select a date within the date
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
 use Tests\Browser\Components\DatePicker;
 
 pest()->use(DatabaseMigrations::class);
@@ -25237,7 +27174,7 @@ To learn more about running Dusk tests on Chipper CI, including how to use datab
 
 # Eloquent: Collections
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/eloquent-collections*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/eloquent-collections*
 
 - [Introduction](#introduction)
 - [Available Methods](#available-methods)
@@ -25634,7 +27571,7 @@ If you would like to use a custom collection for every model in your application
 
 # Eloquent: Factories
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/eloquent-factories*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/eloquent-factories*
 
 - [Introduction](#introduction)
 - [Defining Model Factories](#defining-model-factories)
@@ -25758,20 +27695,17 @@ protected static function newFactory()
 }
 ```
 
-Then, define a `model` property on the corresponding factory:
+Then, use the `UseModel` attribute on the corresponding factory to specify the model:
 
 ```php
 use App\Administration\Flight;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(Flight::class)]
 class FlightFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var class-string<\Illuminate\Database\Eloquent\Model>
-     */
-    protected $model = Flight::class;
+    // ...
 }
 ```
 
@@ -26051,6 +27985,18 @@ $user = User::factory()
     ->create();
 ```
 
+You may also pass multiple attribute arrays to create related models with per-model state. Laravel will apply each array in sequence:
+
+```php
+$user = User::factory()
+    ->hasPosts(
+        ['title' => 'First Post'],
+        ['title' => 'Second Post'],
+        ['title' => 'Third Post'],
+    )
+    ->create();
+```
+
 You may provide a closure-based state transformation if your state change requires access to the parent model:
 
 ```php
@@ -26145,6 +28091,20 @@ $user = User::factory()
                 return ['name' => $user->name.' Role'];
             }),
         ['active' => true]
+    )
+    ->create();
+```
+
+You may also pass an array of pivot arrays to provide unique pivot data for each related model:
+
+```php
+$user = User::factory()
+    ->hasAttached(
+        Role::factory(),
+        [
+            ['active' => true],
+            ['active' => false],
+        ]
     )
     ->create();
 ```
@@ -26292,7 +28252,7 @@ Ticket::factory()
 
 # Eloquent: Mutators & Casting
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/eloquent-mutators*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/eloquent-mutators*
 
 - [Introduction](#introduction)
 - [Accessors and Mutators](#accessors-and-mutators)
@@ -26300,6 +28260,7 @@ Ticket::factory()
     - [Defining a Mutator](#defining-a-mutator)
 - [Attribute Casting](#attribute-casting)
     - [Array and JSON Casting](#array-and-json-casting)
+    - [Vector Casting](#vector-casting)
     - [Binary Casting](#binary-casting)
     - [Date Casting](#date-casting)
     - [Enum Casting](#enum-casting)
@@ -26512,6 +28473,7 @@ The `casts` method should return an array where the key is the name of the attri
 - `AsFluent::class`
 - `AsStringable::class`
 - `AsUri::class`
+- `AsVector::class`
 - `boolean`
 - `collection`
 - `date`
@@ -26818,6 +28780,29 @@ class Option implements Arrayable, JsonSerializable
 }
 ```
 
+<a name="vector-casting"></a>
+### Vector Casting
+
+You may use the `Illuminate\Database\Eloquent\Casts\AsVector` cast class to cast a database vector column to and from a PHP array:
+
+```php
+use Illuminate\Database\Eloquent\Casts\AsVector;
+
+/**
+ * Get the attributes that should be cast.
+ *
+ * @return array<string, string>
+ */
+protected function casts(): array
+{
+    return [
+        'embedding' => AsVector::class,
+    ];
+}
+```
+
+When setting the attribute, the cast accepts a PHP array or an `Arrayable` instance, such as a Laravel collection. When retrieving the attribute, the cast returns an array of floats.
+
 <a name="binary-casting"></a>
 ### Binary Casting
 
@@ -26887,15 +28872,16 @@ protected function serializeDate(DateTimeInterface $date): string
 }
 ```
 
-To specify the format that should be used when actually storing a model's dates within your database, you should define a `$dateFormat` property on your model:
+To specify the format that should be used when actually storing a model's dates within your database, you should use the `dateFormat` argument on your model's `Table` attribute:
 
 ```php
-/**
- * The storage format of the model's date columns.
- *
- * @var string
- */
-protected $dateFormat = 'U';
+use Illuminate\Database\Eloquent\Attributes\Table;
+
+#[Table(dateFormat: 'U')]
+class Flight extends Model
+{
+    // ...
+}
 ```
 
 <a name="date-casting-and-timezones"></a>
@@ -27396,7 +29382,7 @@ class Address implements Castable
 
 # Eloquent: Relationships
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/eloquent-relationships*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/eloquent-relationships*
 
 - [Introduction](#introduction)
 - [Defining Relationships](#defining-relationships)
@@ -27412,6 +29398,7 @@ class Address implements Castable
     - [Filtering Queries via Intermediate Table Columns](#filtering-queries-via-intermediate-table-columns)
     - [Ordering Queries via Intermediate Table Columns](#ordering-queries-via-intermediate-table-columns)
     - [Defining Custom Intermediate Table Models](#defining-custom-intermediate-table-models)
+        - [Automatically Hydrating Pivot Relationships](#automatically-hydrating-pivot-relationships)
 - [Polymorphic Relationships](#polymorphic-relationships)
     - [One to One](#one-to-one-polymorphic-relations)
     - [One to Many](#one-to-many-polymorphic-relations)
@@ -27506,7 +29493,7 @@ Eloquent determines the foreign key of the relationship based on the parent mode
 return $this->hasOne(Phone::class, 'foreign_key');
 ```
 
-Additionally, Eloquent assumes that the foreign key should have a value matching the primary key column of the parent. In other words, Eloquent will look for the value of the user's `id` column in the `user_id` column of the `Phone` record. If you would like the relationship to use a primary key value other than `id` or your model's `$primaryKey` property, you may pass a third argument to the `hasOne` method:
+Additionally, Eloquent assumes that the foreign key should have a value matching the primary key column of the parent. In other words, Eloquent will look for the value of the user's `id` column in the `user_id` column of the `Phone` record. If you would like the relationship to use a primary key value other than `id` or your model's primary key, you may pass a third argument to the `hasOne` method:
 
 ```php
 return $this->hasOne(Phone::class, 'foreign_key', 'local_key');
@@ -28399,15 +30386,60 @@ class RoleUser extends Pivot
 <a name="custom-pivot-models-and-incrementing-ids"></a>
 #### Custom Pivot Models and Incrementing IDs
 
-If you have defined a many-to-many relationship that uses a custom pivot model, and that pivot model has an auto-incrementing primary key, you should ensure your custom pivot model class defines an `incrementing` property that is set to `true`.
+If you have defined a many-to-many relationship that uses a custom pivot model, and that pivot model has an auto-incrementing primary key, you should ensure your custom pivot model class uses the `Table` attribute with `incrementing` set to `true`:
 
 ```php
-/**
- * Indicates if the IDs are auto-incrementing.
- *
- * @var bool
- */
-public $incrementing = true;
+use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+
+#[Table(incrementing: true)]
+class RoleUser extends Pivot
+{
+    // ...
+}
+```
+
+<a name="automatically-hydrating-pivot-relationships"></a>
+#### Automatically Hydrating Pivot Relationships
+
+When a custom pivot model defines `belongsTo` relationships for the declaring and related models, you may invoke `chaperone` to automatically hydrate those relationships on each pivot model. This avoids additional queries when accessing the models through the pivot:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+
+class RoleUser extends Pivot
+{
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+
+class Role extends Model
+{
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)
+            ->using(RoleUser::class)
+            ->chaperone();
+    }
+}
+```
+
+Eloquent will attempt to infer the pivot relationship names. If your pivot model uses non-standard names, pass the declaring and related relationship names to `chaperone`:
+
+```php
+return $this->belongsToMany(User::class)
+    ->using(RoleUser::class)
+    ->chaperone(declaring: 'role', related: 'user');
 ```
 
 <a name="polymorphic-relationships"></a>
@@ -28435,8 +30467,8 @@ users
 images
     id - integer
     url - string
-    imageable_id - integer
     imageable_type - string
+    imageable_id - integer
 ```
 
 Note the `imageable_id` and `imageable_type` columns on the `images` table. The `imageable_id` column will contain the ID value of the post or user, while the `imageable_type` column will contain the class name of the parent model. The `imageable_type` column is used by Eloquent to determine which "type" of parent model to return when accessing the `imageable` relation. In this case, the column would contain either `App\Models\Post` or `App\Models\User`.
@@ -28556,8 +30588,8 @@ videos
 comments
     id - integer
     body - text
-    commentable_id - integer
     commentable_type - string
+    commentable_id - integer
 ```
 
 <a name="one-to-many-polymorphic-model-structure"></a>
@@ -28749,8 +30781,8 @@ tags
 
 taggables
     tag_id - integer
-    taggable_id - integer
     taggable_type - string
+    taggable_id - integer
 ```
 
 > [!NOTE]
@@ -29645,9 +31677,6 @@ $activities = ActivityFeed::with('parentable')
 <a name="automatic-eager-loading"></a>
 ### Automatic Eager Loading
 
-> [!WARNING]
-> This feature is currently in beta in order to gather community feedback. The behavior and functionality of this feature may change even on patch releases.
-
 In many cases, Laravel can automatically eager load the relationships you access. To enable automatic eager loading, you should invoke the `Model::automaticallyEagerLoadRelationships` method within the `boot` method of your application's `AppServiceProvider`:
 
 ```php
@@ -29941,6 +31970,17 @@ $user->roles()->toggle([
 ]);
 ```
 
+<a name="transactional-pivot-operations"></a>
+#### Transactional Pivot Operations
+
+Each of the pivot operations discussed above also has an `OrFail` variant (`attachOrFail`, `detachOrFail`, `syncOrFail`, `syncWithoutDetachingOrFail`, and `toggleOrFail`) that wraps the operation within a database transaction, so that all changes are automatically rolled back if an exception is thrown:
+
+```php
+$user->roles()->attachOrFail([1, 2, 3]);
+
+$user->roles()->syncOrFail([1, 2, 3]);
+```
+
 <a name="updating-a-record-on-the-intermediate-table"></a>
 #### Updating a Record on the Intermediate Table
 
@@ -29959,25 +31999,20 @@ $user->roles()->updateExistingPivot($roleId, [
 
 When a model defines a `belongsTo` or `belongsToMany` relationship to another model, such as a `Comment` which belongs to a `Post`, it is sometimes helpful to update the parent's timestamp when the child model is updated.
 
-For example, when a `Comment` model is updated, you may want to automatically "touch" the `updated_at` timestamp of the owning `Post` so that it is set to the current date and time. To accomplish this, you may add a `touches` property to your child model containing the names of the relationships that should have their `updated_at` timestamps updated when the child model is updated:
+For example, when a `Comment` model is updated, you may want to automatically "touch" the `updated_at` timestamp of the owning `Post` so that it is set to the current date and time. To accomplish this, you may use the `Touches` attribute on your child model containing the names of the relationships that should have their `updated_at` timestamps updated when the child model is updated:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Touches;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Touches(['post'])]
 class Comment extends Model
 {
-    /**
-     * All of the relationships to be touched.
-     *
-     * @var array
-     */
-    protected $touches = ['post'];
-
     /**
      * Get the post that the comment belongs to.
      */
@@ -29996,7 +32031,7 @@ class Comment extends Model
 
 # Eloquent: API Resources
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/eloquent-resources*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/eloquent-resources*
 
 - [Introduction](#introduction)
 - [Generating Resources](#generating-resources)
@@ -30008,6 +32043,13 @@ class Comment extends Model
     - [Conditional Attributes](#conditional-attributes)
     - [Conditional Relationships](#conditional-relationships)
     - [Adding Meta Data](#adding-meta-data)
+- [JSON:API Resources](#jsonapi-resources)
+    - [Generating JSON:API Resources](#generating-jsonapi-resources)
+    - [Defining Attributes](#defining-jsonapi-attributes)
+    - [Defining Relationships](#defining-jsonapi-relationships)
+    - [Resource Type and ID](#jsonapi-resource-type-and-id)
+    - [Sparse Fieldsets and Includes](#jsonapi-sparse-fieldsets-and-includes)
+    - [Links and Meta](#jsonapi-links-and-meta)
 - [Resource Responses](#resource-responses)
 
 <a name="introduction"></a>
@@ -30226,23 +32268,20 @@ When invoking the `toResourceCollection` method, Laravel will attempt to locate 
 <a name="preserving-collection-keys"></a>
 #### Preserving Collection Keys
 
-When returning a resource collection from a route, Laravel resets the collection's keys so that they are in numerical order. However, you may add a `preserveKeys` property to your resource class indicating whether a collection's original keys should be preserved:
+When returning a resource collection from a route, Laravel resets the collection's keys so that they are in numerical order. However, you may use the `PreserveKeys` attribute on your resource class indicating whether a collection's original keys should be preserved:
 
 ```php
 <?php
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Resources\Attributes\PreserveKeys;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+#[PreserveKeys]
 class UserResource extends JsonResource
 {
-    /**
-     * Indicates if the resource's collection keys should be preserved.
-     *
-     * @var bool
-     */
-    public $preserveKeys = true;
+    // ...
 }
 ```
 
@@ -30262,23 +32301,20 @@ Route::get('/users', function () {
 
 Typically, the `$this->collection` property of a resource collection is automatically populated with the result of mapping each item of the collection to its singular resource class. The singular resource class is assumed to be the collection's class name without the trailing `Collection` portion of the class name. In addition, depending on your personal preference, the singular resource class may or may not be suffixed with `Resource`.
 
-For example, `UserCollection` will attempt to map the given user instances into the `UserResource` resource. To customize this behavior, you may override the `$collects` property of your resource collection:
+For example, `UserCollection` will attempt to map the given user instances into the `UserResource` resource. To customize this behavior, you may use the `Collects` attribute on your resource collection:
 
 ```php
 <?php
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Resources\Attributes\Collects;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
+#[Collects(Member::class)]
 class UserCollection extends ResourceCollection
 {
-    /**
-     * The resource that this resource collects.
-     *
-     * @var string
-     */
-    public $collects = Member::class;
+    // ...
 }
 ```
 
@@ -30893,6 +32929,355 @@ return User::all()
     ]]);
 ```
 
+<a name="jsonapi-resources"></a>
+## JSON:API Resources
+
+Laravel ships with `JsonApiResource`, a resource class that produces responses compliant with the [JSON:API specification](https://jsonapi.org/). It extends the standard `JsonResource` class and automatically handles resource object structure, relationships, sparse fieldsets, includes, lazy attribute evaluation, and sets the `Content-Type` header to `application/vnd.api+json`.
+
+> [!NOTE]
+> Laravel's JSON:API resources handle the serialization of your responses. If you also need to parse incoming JSON:API query parameters such as filters and sorts, [Spatie's Laravel Query Builder](https://spatie.be/docs/laravel-query-builder) is a great companion package.
+
+<a name="generating-jsonapi-resources"></a>
+### Generating JSON:API Resources
+
+To generate a JSON:API resource, use the `make:resource` Artisan command with the `--json-api` flag:
+
+```shell
+php artisan make:resource PostResource --json-api
+```
+
+The generated class will extend `Illuminate\Http\Resources\JsonApi\JsonApiResource` and include `$attributes` and `$relationships` properties for you to define:
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\JsonApi\JsonApiResource;
+
+class PostResource extends JsonApiResource
+{
+    /**
+     * The resource's attributes.
+     */
+    public $attributes = [
+        // ...
+    ];
+
+    /**
+     * The resource's relationships.
+     */
+    public $relationships = [
+        // ...
+    ];
+}
+```
+
+JSON:API resources may be returned from routes and controllers just like standard resources:
+
+```php
+use App\Http\Resources\PostResource;
+use App\Models\Post;
+
+Route::get('/api/posts/{post}', function (Post $post) {
+    return new PostResource($post);
+});
+```
+
+Or, for convenience, you may use the model's `toResource` method:
+
+```php
+Route::get('/api/posts/{post}', function (Post $post) {
+    return $post->toResource();
+});
+```
+
+This will produce a JSON:API compliant response:
+
+```json
+{
+    "data": {
+        "id": "1",
+        "type": "posts",
+        "attributes": {
+            "title": "Hello World",
+            "body": "This is my first post."
+        }
+    }
+}
+```
+
+To return a collection of JSON:API resources, use the `collection` method or the `toResourceCollection` convenience method:
+
+```php
+return PostResource::collection(Post::all());
+
+return Post::all()->toResourceCollection();
+```
+
+<a name="defining-jsonapi-attributes"></a>
+### Defining Attributes
+
+There are two ways to define which attributes are included in your JSON:API resource.
+
+The simplest approach is to define an `$attributes` property on your resource. You may list attribute names as values, which will be read directly from the underlying model:
+
+```php
+public $attributes = [
+    'title',
+    'body',
+    'created_at',
+];
+```
+
+If an attribute is expensive to calculate, you may return it from `toAttributes` as a closure so it is only evaluated when the attribute is actually needed in the response.
+
+Or, for full control over the resource's attributes, you may override the `toAttributes` method on the resource:
+
+```php
+/**
+ * Get the resource's attributes.
+ *
+ * @return array<string, mixed>
+ */
+public function toAttributes(Request $request): array
+{
+    return [
+        'title' => $this->title,
+        'body' => $this->body,
+        'is_published' => fn () => $this->published_at !== null,
+        'created_at' => $this->created_at,
+        'updated_at' => $this->updated_at,
+    ];
+}
+```
+
+<a name="defining-jsonapi-relationships"></a>
+### Defining Relationships
+
+JSON:API resources support defining relationships that follow the JSON:API specification. Relationships are only serialized when requested by the client via the `include` query parameter.
+
+#### The `$relationships` Property
+
+You may define your resource's includable relationships via the `$relationships` property on your resource:
+
+```php
+public $relationships = [
+    'author',
+    'comments',
+];
+```
+
+When listing a relationship name as a value, Laravel will resolve the corresponding Eloquent relationship and automatically discover the appropriate resource class. If you need to specify the resource class explicitly, you may define the relationship as a key / class pair:
+
+```php
+use App\Http\Resources\UserResource;
+
+public $relationships = [
+    'author' => UserResource::class,
+    'comments',
+];
+```
+
+Alternatively, you may override the `toRelationships` method on the resource:
+
+```php
+/**
+ * Get the resource's relationships.
+ */
+public function toRelationships(Request $request): array
+{
+    return [
+        'author' => UserResource::class,
+        'comments' => fn () => CommentResource::collection(
+            $request->user()->is($this->resource)
+                ? $this->comments
+                : $this->comments->where('is_public', true),
+        ),
+    ];
+}
+```
+
+Using closures gives you more control over the relationship payload, while still only resolving the relationship when the client requests it.
+
+#### Including Relationships
+
+Clients may request related resources using the `include` query parameter:
+
+```
+GET /api/posts/1?include=author,comments
+```
+
+This produces a response with resource identifier objects in the `relationships` key and full resource objects in the top-level `included` array:
+
+```json
+{
+    "data": {
+        "id": "1",
+        "type": "posts",
+        "attributes": {
+            "title": "Hello World"
+        },
+        "relationships": {
+            "author": {
+                "data": {
+                    "id": "1",
+                    "type": "users"
+                }
+            },
+            "comments": {
+                "data": [
+                    {
+                        "id": "1",
+                        "type": "comments"
+                    }
+                ]
+            }
+        }
+    },
+    "included": [
+        {
+            "id": "1",
+            "type": "users",
+            "attributes": {
+                "name": "Taylor Otwell"
+            }
+        },
+        {
+            "id": "1",
+            "type": "comments",
+            "attributes": {
+                "body": "Great post!"
+            }
+        }
+    ]
+}
+```
+
+Nested relationships may be included using dot notation:
+
+```
+GET /api/posts/1?include=comments.author
+```
+
+<a name="jsonapi-relationship-depth"></a>
+#### Relationship Depth
+
+By default, nested relationship includes are limited to a maximum depth. You may customize this limit using the `maxRelationshipDepth` method, typically in one of you application's service provider:
+
+```php
+use Illuminate\Http\Resources\JsonApi\JsonApiResource;
+
+JsonApiResource::maxRelationshipDepth(3);
+```
+
+<a name="jsonapi-resource-type-and-id"></a>
+### Resource Type and ID
+
+By default, the resource's `type` is derived from the resource class name. For example, `PostResource` produces the type `posts` and `BlogPostResource` produces `blog-posts`. The resource's `id` is resolved from the model's primary key.
+
+If you need to customize these values, you may override the `toType` and `toId` methods on your resource:
+
+```php
+/**
+ * Get the resource's type.
+ */
+public function toType(Request $request): string
+{
+    return 'articles';
+}
+
+/**
+ * Get the resource's ID.
+ */
+public function toId(Request $request): string
+{
+    return (string) $this->uuid;
+}
+```
+
+This is particularly useful when a resource's type should differ from its class name, such as when an `AuthorResource` wraps a `User` model and should output the type `authors`.
+
+<a name="jsonapi-sparse-fieldsets-and-includes"></a>
+### Sparse Fieldsets and Includes
+
+JSON:API resources support [sparse fieldsets](https://jsonapi.org/format/#fetching-sparse-fieldsets), allowing clients to request only specific attributes for each resource type using the `fields` query parameter:
+
+```
+GET /api/posts?fields[posts]=title,created_at&fields[users]=name
+```
+
+This will only include the `title` and `created_at` attributes for `posts` resources, and the `name` attribute for `users` resources.
+
+<a name="jsonapi-ignoring-query-string"></a>
+#### Ignoring the Query String
+
+If you would like to disable sparse fieldset filtering for a given resource response, you may call the `ignoreFieldsAndIncludesInQueryString` method:
+
+```php
+return $post->toResource()
+    ->ignoreFieldsAndIncludesInQueryString();
+```
+
+<a name="jsonapi-including-previously-loaded-relationships"></a>
+#### Including Previously Loaded Relationships
+
+By default, relationships are only included in the response when requested via the `include` query parameter. If you would like to include all previously eager-loaded relationships regardless of the query string, you may call the `includePreviouslyLoadedRelationships` method:
+
+```php
+return $post->load('author', 'comments')
+    ->toResource()
+    ->includePreviouslyLoadedRelationships();
+```
+
+<a name="jsonapi-links-and-meta"></a>
+### Links and Meta
+
+You may add links and meta information to your JSON:API resource objects by overriding the `toLinks` and `toMeta` methods on the resource:
+
+```php
+/**
+ * Get the resource's links.
+ */
+public function toLinks(Request $request): array
+{
+    return [
+        'self' => route('api.posts.show', $this->resource),
+    ];
+}
+
+/**
+ * Get the resource's meta information.
+ */
+public function toMeta(Request $request): array
+{
+    return [
+        'readable_created_at' => $this->created_at->diffForHumans(),
+    ];
+}
+```
+
+This will add `links` and `meta` keys to the resource object in the response:
+
+```json
+{
+    "data": {
+        "id": "1",
+        "type": "posts",
+        "attributes": {
+            "title": "Hello World"
+        },
+        "links": {
+            "self": "https://example.com/api/posts/1"
+        },
+        "meta": {
+            "readable_created_at": "2 hours ago"
+        }
+    }
+}
+```
+
 <a name="resource-responses"></a>
 ## Resource Responses
 
@@ -30960,7 +33345,7 @@ class UserResource extends JsonResource
 
 # Eloquent: Serialization
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/eloquent-serialization*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/eloquent-serialization*
 
 - [Introduction](#introduction)
 - [Serializing Models and Collections](#serializing-models-and-collections)
@@ -31047,46 +33432,41 @@ When an Eloquent model is converted to JSON, its loaded relationships will autom
 <a name="hiding-attributes-from-json"></a>
 ## Hiding Attributes From JSON
 
-Sometimes you may wish to limit the attributes, such as passwords, that are included in your model's array or JSON representation. To do so, add a `$hidden` property to your model. Attributes that are listed in the `$hidden` property's array will not be included in the serialized representation of your model:
+Sometimes you may wish to limit the attributes, such as passwords, that are included in your model's array or JSON representation. To do so, you may use the `Hidden` attribute on your model. Attributes that are listed in the `Hidden` attribute will not be included in the serialized representation of your model:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Model;
 
+#[Hidden(['password'])]
 class User extends Model
 {
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<string>
-     */
-    protected $hidden = ['password'];
+    // ...
 }
 ```
 
-> [!NOTE]
-> To hide relationships, add the relationship's method name to your Eloquent model's `$hidden` property.
 
-Alternatively, you may use the `visible` property to define an "allow list" of attributes that should be included in your model's array and JSON representation. All attributes that are not present in the `$visible` array will be hidden when the model is converted to an array or JSON:
+> [!NOTE]
+> To hide relationships, add the relationship's method name to your Eloquent model's `Hidden` attribute.
+
+Alternatively, you may use the `Visible` attribute to define an "allow list" of attributes that should be included in your model's array and JSON representation. All attributes that are not present in the `Visible` attribute will be hidden when the model is converted to an array or JSON:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Model;
 
+#[Visible(['first_name', 'last_name'])]
 class User extends Model
 {
-    /**
-     * The attributes that should be visible in arrays.
-     *
-     * @var array
-     */
-    protected $visible = ['first_name', 'last_name'];
+    // ...
 }
 ```
 
@@ -31144,23 +33524,20 @@ class User extends Model
 }
 ```
 
-If you would like the accessor to always be appended to your model's array and JSON representations, you may add the attribute name to the `appends` property of your model. Note that attribute names are typically referenced using their "snake case" serialized representation, even though the accessor's PHP method is defined using "camel case":
+If you would like the accessor to always be appended to your model's array and JSON representations, you may use the `Appends` attribute on your model. Note that attribute names are typically referenced using their "snake case" serialized representation, even though the accessor's PHP method is defined using "camel case":
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Model;
 
+#[Appends(['is_admin'])]
 class User extends Model
 {
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['is_admin'];
+    // ...
 }
 ```
 
@@ -31223,7 +33600,7 @@ protected function casts(): array
 
 # Eloquent: Getting Started
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/eloquent*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/eloquent*
 
 - [Introduction](#introduction)
 - [Generating Model Classes](#generating-model-classes)
@@ -31238,7 +33615,7 @@ protected function casts(): array
 - [Retrieving Models](#retrieving-models)
     - [Collections](#collections)
     - [Chunking Results](#chunking-results)
-    - [Chunk Using Lazy Collections](#chunking-using-lazy-collections)
+    - [Chunking Using Lazy Collections](#chunking-using-lazy-collections)
     - [Cursors](#cursors)
     - [Advanced Subqueries](#advanced-subqueries)
 - [Retrieving Single Models / Aggregates](#retrieving-single-models)
@@ -31353,78 +33730,75 @@ class Flight extends Model
 
 After glancing at the example above, you may have noticed that we did not tell Eloquent which database table corresponds to our `Flight` model. By convention, the "snake case", plural name of the class will be used as the table name unless another name is explicitly specified. So, in this case, Eloquent will assume the `Flight` model stores records in the `flights` table, while an `AirTrafficController` model would store records in an `air_traffic_controllers` table.
 
-If your model's corresponding database table does not fit this convention, you may manually specify the model's table name by defining a `table` property on the model:
+If your model's corresponding database table does not fit this convention, you may manually specify the model's table name using the `Table` attribute:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 
+#[Table('my_flights')]
 class Flight extends Model
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'my_flights';
+    // ...
 }
 ```
+
 
 <a name="primary-keys"></a>
 ### Primary Keys
 
-Eloquent will also assume that each model's corresponding database table has a primary key column named `id`. If necessary, you may define a protected `$primaryKey` property on your model to specify a different column that serves as your model's primary key:
+Eloquent will also assume that each model's corresponding database table has a primary key column named `id`. If necessary, you may specify a different column that serves as your model's primary key using the `key` argument on the `Table` attribute:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 
+#[Table(key: 'flight_id')]
 class Flight extends Model
 {
-    /**
-     * The primary key associated with the table.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'flight_id';
+    // ...
 }
 ```
 
-In addition, Eloquent assumes that the primary key is an incrementing integer value, which means that Eloquent will automatically cast the primary key to an integer. If you wish to use a non-incrementing or a non-numeric primary key you must define a public `$incrementing` property on your model that is set to `false`:
+In addition, Eloquent assumes that the primary key is an incrementing integer value, which means that Eloquent will automatically cast the primary key to an integer. If you wish to use a non-incrementing or a non-numeric primary key, you should specify the `keyType` and `incrementing` arguments on the `Table` attribute:
 
 ```php
 <?php
 
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Model;
+
+#[Table(key: 'uuid', keyType: 'string', incrementing: false)]
 class Flight extends Model
 {
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    // ...
 }
 ```
 
-If your model's primary key is not an integer, you should define a protected `$keyType` property on your model. This property should have a value of `string`:
+If you only need to disable auto-incrementing IDs, you may use the `WithoutIncrementing` attribute:
 
 ```php
 <?php
 
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\WithoutIncrementing;
+use Illuminate\Database\Eloquent\Model;
+
+#[WithoutIncrementing]
 class Flight extends Model
 {
-    /**
-     * The data type of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
+    // ...
 }
 ```
 
@@ -31503,43 +33877,71 @@ $article->id; // "01gd4d3tgrrfqeda94gdbtdk5c"
 <a name="timestamps"></a>
 ### Timestamps
 
-By default, Eloquent expects `created_at` and `updated_at` columns to exist on your model's corresponding database table. Eloquent will automatically set these column's values when models are created or updated. If you do not want these columns to be automatically managed by Eloquent, you should define a `$timestamps` property on your model with a value of `false`:
+By default, Eloquent expects `created_at` and `updated_at` columns to exist on your model's corresponding database table. Eloquent will automatically set these column's values when models are created or updated. If you do not want these columns to be automatically managed by Eloquent, you may set `timestamps` to `false` on your model's `Table` attribute:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 
+#[Table(timestamps: false)]
 class Flight extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
+    // ...
 }
 ```
 
-If you need to customize the format of your model's timestamps, set the `$dateFormat` property on your model. This property determines how date attributes are stored in the database as well as their format when the model is serialized to an array or JSON:
+If you only need to disable timestamps, you may use the `WithoutTimestamps` attribute:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Model;
 
+#[WithoutTimestamps]
 class Flight extends Model
 {
-    /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
-    protected $dateFormat = 'U';
+    // ...
+}
+```
+
+If you need to customize the format of your model's timestamps, you may use the `dateFormat` argument on the `Table` attribute. This determines how date attributes are stored in the database as well as their format when the model is serialized to an array or JSON:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Model;
+
+#[Table(dateFormat: 'U')]
+class Flight extends Model
+{
+    // ...
+}
+```
+
+If you only need to define a date format, you may use the `DateFormat` attribute:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\DateFormat;
+use Illuminate\Database\Eloquent\Model;
+
+#[DateFormat('U')]
+class Flight extends Model
+{
+    // ...
 }
 ```
 
@@ -31575,23 +33977,20 @@ Model::withoutTimestamps(fn () => $post->increment('reads'));
 <a name="database-connections"></a>
 ### Database Connections
 
-By default, all Eloquent models will use the default database connection that is configured for your application. If you would like to specify a different connection that should be used when interacting with a particular model, you should define a `$connection` property on the model:
+By default, all Eloquent models will use the default database connection that is configured for your application. If you would like to specify a different connection that should be used when interacting with a particular model, you may use the `Connection` attribute:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Connection;
 use Illuminate\Database\Eloquent\Model;
 
+#[Connection('mysql')]
 class Flight extends Model
 {
-    /**
-     * The database connection that should be used by the model.
-     *
-     * @var string
-     */
-    protected $connection = 'mysql';
+    // ...
 }
 ```
 
@@ -31612,7 +34011,7 @@ class Flight extends Model
     /**
      * The model's default values for attributes.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $attributes = [
         'options' => '[]',
@@ -31695,6 +34094,16 @@ $flight->number = 'FR 456';
 $flight->refresh();
 
 $flight->number; // "FR 900"
+```
+
+If you need to refresh a model and acquire a pessimistic lock within a transaction, you may use the `refreshForUpdate` method. This method reloads the model using a `FOR UPDATE` lock:
+
+```php
+DB::transaction(function () use ($flight) {
+    $flight->refreshForUpdate();
+
+    // Update the locked model...
+});
 ```
 
 <a name="collections"></a>
@@ -31992,6 +34401,12 @@ class FlightController extends Controller
 
 In this example, we assign the `name` field from the incoming HTTP request to the `name` attribute of the `App\Models\Flight` model instance. When we call the `save` method, a record will be inserted into the database. The model's `created_at` and `updated_at` timestamps will automatically be set when the `save` method is called, so there is no need to set them manually.
 
+If you would like to save the model within a database transaction, you may use the `saveOrFail` method. If an exception is thrown during the save, the transaction will automatically be rolled back:
+
+```php
+$flight->saveOrFail();
+```
+
 Alternatively, you may use the `create` method to "save" a new model using a single PHP statement. The inserted model instance will be returned to you by the `create` method:
 
 ```php
@@ -32002,7 +34417,7 @@ $flight = Flight::create([
 ]);
 ```
 
-However, before using the `create` method, you will need to specify either a `fillable` or `guarded` property on your model class. These properties are required because all Eloquent models are protected against mass assignment vulnerabilities by default. To learn more about mass assignment, please consult the [mass assignment documentation](#mass-assignment).
+However, before using the `create` method, you will need to specify either a `Fillable` or `Guarded` attribute on your model class. These attributes are required because all Eloquent models are protected against mass assignment vulnerabilities by default. To learn more about mass assignment, please consult the [mass assignment documentation](#mass-assignment).
 
 <a name="updates"></a>
 ### Updates
@@ -32017,6 +34432,12 @@ $flight = Flight::find(1);
 $flight->name = 'Paris to London';
 
 $flight->save();
+```
+
+If you would like to update the model within a database transaction, you may use the `updateOrFail` method. If an exception is thrown during the update, the transaction will automatically be rolled back:
+
+```php
+$flight->updateOrFail(['name' => 'Paris to London']);
 ```
 
 Occasionally, you may need to update an existing model or create a new model if no matching model exists. Like the `firstOrCreate` method, the `updateOrCreate` method persists the model, so there's no need to manually call the `save` method.
@@ -32172,27 +34593,24 @@ $flight = Flight::create([
 ]);
 ```
 
-However, before using the `create` method, you will need to specify either a `fillable` or `guarded` property on your model class. These properties are required because all Eloquent models are protected against mass assignment vulnerabilities by default.
+However, before using the `create` method, you will need to specify either a `Fillable` or `Guarded` attribute on your model class. These attributes are required because all Eloquent models are protected against mass assignment vulnerabilities by default.
 
 A mass assignment vulnerability occurs when a user passes an unexpected HTTP request field and that field changes a column in your database that you did not expect. For example, a malicious user might send an `is_admin` parameter through an HTTP request, which is then passed to your model's `create` method, allowing the user to escalate themselves to an administrator.
 
-So, to get started, you should define which model attributes you want to make mass assignable. You may do this using the `$fillable` property on the model. For example, let's make the `name` attribute of our `Flight` model mass assignable:
+So, to get started, you should define which model attributes you want to make mass assignable. You may do this using the `Fillable` attribute on the model. For example, let's make the `name` attribute of our `Flight` model mass assignable:
 
 ```php
 <?php
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable(['name'])]
 class Flight extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = ['name'];
+    // ...
 }
 ```
 
@@ -32211,37 +34629,42 @@ $flight->fill(['name' => 'Amsterdam to Frankfurt']);
 <a name="mass-assignment-json-columns"></a>
 #### Mass Assignment and JSON Columns
 
-When assigning JSON columns, each column's mass assignable key must be specified in your model's `$fillable` array. For security, Laravel does not support updating nested JSON attributes when using the `guarded` property:
+When assigning JSON columns, each column's mass assignable key must be specified in your model's `Fillable` attribute. For security, Laravel does not support updating nested JSON attributes when using the `Guarded` attribute:
 
 ```php
-/**
- * The attributes that are mass assignable.
- *
- * @var array<int, string>
- */
-protected $fillable = [
-    'options->enabled',
-];
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+
+#[Fillable(['options->enabled'])]
+class Flight extends Model
+{
+    // ...
+}
 ```
 
 <a name="allowing-mass-assignment"></a>
 #### Allowing Mass Assignment
 
-If you would like to make all of your attributes mass assignable, you may define your model's `$guarded` property as an empty array. If you choose to unguard your model, you should take special care to always hand-craft the arrays passed to Eloquent's `fill`, `create`, and `update` methods:
+If you would like to make all of your attributes mass assignable, you may use the `Unguarded` attribute on your model. If you choose to unguard your model, you should take special care to always hand-craft the arrays passed to Eloquent's `fill`, `create`, and `update` methods:
 
 ```php
-/**
- * The attributes that aren't mass assignable.
- *
- * @var array<string>
- */
-protected $guarded = [];
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
+use Illuminate\Database\Eloquent\Model;
+
+#[Unguarded]
+class Flight extends Model
+{
+    // ...
+}
 ```
 
 <a name="mass-assignment-exceptions"></a>
 #### Mass Assignment Exceptions
 
-By default, attributes that are not included in the `$fillable` array are silently discarded when performing mass-assignment operations. In production, this is expected behavior; however, during local development it can lead to confusion as to why model changes are not taking effect.
+By default, attributes that are not included in the `Fillable` attribute are silently discarded when performing mass-assignment operations. In production, this is expected behavior; however, during local development it can lead to confusion as to why model changes are not taking effect.
 
 If you wish, you may instruct Laravel to throw an exception when attempting to fill an unfillable attribute by invoking the `preventSilentlyDiscardingAttributes` method. Typically, this method should be invoked in the `boot` method of your application's `AppServiceProvider` class:
 
@@ -32283,6 +34706,12 @@ use App\Models\Flight;
 $flight = Flight::find(1);
 
 $flight->delete();
+```
+
+If you would like to delete the model within a database transaction, you may use the `deleteOrFail` method. If an exception is thrown during the delete, the transaction will automatically be rolled back:
+
+```php
+$flight->deleteOrFail();
 ```
 
 <a name="deleting-an-existing-model-by-its-primary-key"></a>
@@ -32834,6 +35263,8 @@ Once the expected arguments have been added to your scope method's signature, yo
 $users = User::ofType('admin')->get();
 ```
 
+Attributed scope methods should be `protected`. When calling an attributed scope from within the model class, call the scope through a query builder instance, such as `static::query()->ofType('admin')`, to ensure the call is routed through Eloquent's scope handling.
+
 <a name="pending-attributes"></a>
 ### Pending Attributes
 
@@ -32971,7 +35402,7 @@ class User extends Model
 }
 ```
 
-If needed, you may utilize [queueable anonymous event listeners](/docs/{{version}}/events#queuable-anonymous-event-listeners) when registering model events. This will instruct Laravel to execute the model event listener in the background using your application's [queue](/docs/{{version}}/queues):
+If needed, you may utilize [queueable anonymous event listeners](/docs/{{version}}/events#queueable-anonymous-event-listeners) when registering model events. This will instruct Laravel to execute the model event listener in the background using your application's [queue](/docs/{{version}}/queues):
 
 ```php
 use function Illuminate\Events\queueable;
@@ -33143,7 +35574,7 @@ $user->restoreQuietly();
 
 # Encryption
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/encryption*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/encryption*
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
@@ -33230,7 +35661,7 @@ try {
 
 # Laravel Envoy
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/envoy*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/envoy*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -33252,7 +35683,7 @@ try {
 <a name="introduction"></a>
 ## Introduction
 
-[Laravel Envoy](https://github.com/laravel/envoy) is a tool for executing common tasks you run on your remote servers. Using [Blade](/docs/{{version}}/blade) style syntax, you can easily setup tasks for deployment, Artisan commands, and more. Currently, Envoy only supports the Mac and Linux operating systems. However, Windows support is achievable using [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+[Laravel Envoy](https://github.com/laravel/envoy) is a tool for executing common tasks you run on your remote servers. Using [Blade](/docs/{{version}}/blade) style syntax, you can easily set up tasks for deployment, Artisan commands, and more. Currently, Envoy only supports the Mac and Linux operating systems. However, Windows support is achievable using [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 <a name="installation"></a>
 ## Installation
@@ -33568,7 +35999,7 @@ Envoy also supports sending notifications to [Microsoft Teams](https://www.micro
 
 # Error Handling
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/errors*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/errors*
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
@@ -33605,7 +36036,7 @@ During local development, you should set the `APP_DEBUG` environment variable to
 <a name="reporting-exceptions"></a>
 ### Reporting Exceptions
 
-In Laravel, exception reporting is used to log exceptions or send them to an external service like [Sentry](https://github.com/getsentry/sentry-laravel) or [Flare](https://flareapp.io). By default, exceptions will be logged based on your [logging](/docs/{{version}}/logging) configuration. However, you are free to log exceptions however you wish.
+In Laravel, exception reporting is used to log exceptions or send them to an external service like [Laravel Nightwatch](https://nightwatch.laravel.com), [Sentry](https://github.com/getsentry/sentry-laravel), or [Flare](https://flareapp.io). By default, exceptions will be logged based on your [logging](/docs/{{version}}/logging) configuration. However, you are free to log exceptions however you wish.
 
 If you need to report different types of exceptions in different ways, you may use the `report` exception method in your application's `bootstrap/app.php` to register a closure that should be executed when an exception of a given type needs to be reported. Laravel will determine what type of exception the closure reports by examining the type-hint of the closure:
 
@@ -33790,7 +36221,7 @@ use Throwable;
 })
 ```
 
-Internally, Laravel already ignores some types of errors for you, such as exceptions resulting from 404 HTTP errors or 419 HTTP responses generated by invalid CSRF tokens. If you would like to instruct Laravel to stop ignoring a given type of exception, you may use the `stopIgnoring` exception method in your application's `bootstrap/app.php` file:
+Internally, Laravel already ignores some types of errors for you, such as exceptions resulting from 404 HTTP errors, 403 HTTP responses generated by origin mismatches, or 419 HTTP responses generated by invalid CSRF tokens. If you would like to instruct Laravel to stop ignoring a given type of exception, you may use the `stopIgnoring` exception method in your application's `bootstrap/app.php` file:
 
 ```php
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -34071,7 +36502,7 @@ When defining fallback error pages, the fallback pages will not affect `404`, `5
 
 # Events
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/events*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/events*
 
 - [Introduction](#introduction)
 - [Generating Events and Listeners](#generating-events-and-listeners)
@@ -34089,6 +36520,7 @@ When defining fallback error pages, the fallback pages will not affect `404`, `5
     - [Unique Event Listeners](#unique-event-listeners)
         - [Keeping Listeners Unique Until Processing Begins](#keeping-listeners-unique-until-processing-begins)
         - [Unique Listener Locks](#unique-listener-locks)
+    - [Debounced Event Listeners](#debounced-event-listeners)
     - [Handling Failed Jobs](#handling-failed-jobs)
 - [Dispatching Events](#dispatching-events)
     - [Dispatching Events After Database Transactions](#dispatching-events-after-database-transactions)
@@ -34098,7 +36530,7 @@ When defining fallback error pages, the fallback pages will not affect `404`, `5
     - [Registering Event Subscribers](#registering-event-subscribers)
 - [Testing](#testing)
     - [Faking a Subset of Events](#faking-a-subset-of-events)
-    - [Scoped Events Fakes](#scoped-event-fakes)
+    - [Scoped Event Fakes](#scoped-event-fakes)
 
 <a name="introduction"></a>
 ## Introduction
@@ -34188,6 +36620,34 @@ php artisan event:list
 
 To give your application a speed boost, you should cache a manifest of all of your application's listeners using the `optimize` or `event:cache` Artisan commands. Typically, this command should be run as part of your application's [deployment process](/docs/{{version}}/deployment#optimization). This manifest will be used by the framework to speed up the event registration process. The `event:clear` command may be used to destroy the event cache.
 
+<a name="dynamic-event-discovery"></a>
+#### Dynamic Event Discovery
+
+To dynamically control whether a given listener is discovered, you may implement the `ShouldBeDiscovered` interface on the listener class and define a `shouldBeDiscovered` method that returns a boolean value. If the method returns `false`, the listener will not be registered during event discovery:
+
+```php
+use Illuminate\Contracts\Events\ShouldBeDiscovered;
+
+class SendPodcastNotification implements ShouldBeDiscovered
+{
+    /**
+     * Handle the event.
+     */
+    public function handle(PodcastProcessed $event): void
+    {
+        // ...
+    }
+
+    /**
+     * Determine if the listener should be discovered.
+     */
+    public static function shouldBeDiscovered(): bool
+    {
+        return app()->environment('production');
+    }
+}
+```
+
 <a name="manually-registering-events"></a>
 ### Manually Registering Events
 
@@ -34236,7 +36696,7 @@ public function boot(): void
 }
 ```
 
-<a name="queuable-anonymous-event-listeners"></a>
+<a name="queueable-anonymous-event-listeners"></a>
 #### Queueable Anonymous Event Listeners
 
 When registering closure-based event listeners, you may wrap the listener closure within the `Illuminate\Events\queueable` function to instruct Laravel to execute the listener using the [queue](/docs/{{version}}/queues):
@@ -34384,7 +36844,7 @@ That's it! Now, when an event handled by this listener is dispatched, the listen
 <a name="customizing-the-queue-connection-queue-name"></a>
 #### Customizing The Queue Connection, Name, & Delay
 
-If you would like to customize the queue connection, queue name, or queue delay time of an event listener, you may define the `$connection`, `$queue`, or `$delay` properties on your listener class:
+If you would like to customize the queue connection, queue name, or queue delay time of an event listener, you may use the `Connection`, `Queue`, and `Delay` attributes on your listener class:
 
 ```php
 <?php
@@ -34393,32 +36853,18 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Connection;
+use Illuminate\Queue\Attributes\Delay;
+use Illuminate\Queue\Attributes\Queue;
 
+#[Connection('sqs')]
+#[Queue('listeners')]
+#[Delay(60)]
 class SendShipmentNotification implements ShouldQueue
 {
-    /**
-     * The name of the connection the job should be sent to.
-     *
-     * @var string|null
-     */
-    public $connection = 'sqs';
-
-    /**
-     * The name of the queue the job should be sent to.
-     *
-     * @var string|null
-     */
-    public $queue = 'listeners';
-
-    /**
-     * The time (seconds) before the job should be processed.
-     *
-     * @var int
-     */
-    public $delay = 60;
+    // ...
 }
 ```
-
 If you would like to define the listener's queue connection, queue name, or delay at runtime, you may define `viaConnection`, `viaQueue`, or `withDelay` methods on the listener:
 
 ```php
@@ -34709,6 +37155,70 @@ class AcquireProductKey implements ShouldQueue, ShouldBeUnique
 > [!NOTE]
 > If you only need to limit the concurrent processing of a listener, use the [WithoutOverlapping](/docs/{{version}}/queues#preventing-job-overlaps) job middleware instead.
 
+<a name="debounced-event-listeners"></a>
+### Debounced Event Listeners
+
+Sometimes, you may want to handle only the latest instance of an event dispatched repeatedly within a short period. You may do so by adding the `DebounceFor` attribute to a queued listener:
+
+```php
+<?php
+
+namespace App\Listeners;
+
+use App\Events\ProductUpdated;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\DebounceFor;
+
+#[DebounceFor(30)]
+class UpdateProductSearchIndex implements ShouldQueue
+{
+    /**
+     * Handle the event.
+     */
+    public function handle(ProductUpdated $event): void
+    {
+        // Update the product's search index...
+    }
+
+    /**
+     * Get the debounce ID for the listener.
+     */
+    public function debounceId(ProductUpdated $event): string
+    {
+        return (string) $event->product->getKey();
+    }
+}
+```
+
+In the example above, repeatedly dispatching `ProductUpdated` events for the same product within `30` seconds will debounce the listener so that only the latest event is handled. Different debounce IDs are handled independently.
+
+If you would like to cap how long a frequently dispatched event can defer a listener, you may provide the `maxWait` argument to the `DebounceFor` attribute:
+
+```php
+#[DebounceFor(30, maxWait: 120)]
+class UpdateProductSearchIndex implements ShouldQueue
+{
+    // ...
+}
+```
+
+You may customize the cache store used for debounce tracking by defining a `debounceVia` method on your listener. The method receives the event instance and should return a cache repository:
+
+```php
+use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Support\Facades\Cache;
+
+public function debounceVia(ProductUpdated $event): Repository
+{
+    return Cache::driver('redis');
+}
+```
+
+Debounced listeners and unique listeners are mutually exclusive. A listener using the `DebounceFor` attribute should not implement `ShouldBeUnique`.
+
+> [!WARNING]
+> If your application dispatches events from multiple web servers or containers, you should ensure that all of your servers are communicating with the same central cache server.
+
 <a name="handling-failed-jobs"></a>
 ### Handling Failed Jobs
 
@@ -34751,7 +37261,7 @@ class SendShipmentNotification implements ShouldQueue
 
 If one of your queued listeners is encountering an error, you likely do not want it to keep retrying indefinitely. Therefore, Laravel provides various ways to specify how many times or for how long a listener may be attempted.
 
-You may define a `tries` property or method on your listener class to specify how many times the listener may be attempted before it is considered to have failed:
+You may use the `Tries` attribute on your listener class to specify how many times the listener may be attempted before it is considered to have failed:
 
 ```php
 <?php
@@ -34760,30 +37270,27 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\InteractsWithQueue;
 
+#[Tries(5)]
 class SendShipmentNotification implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    /**
-     * The number of times the queued listener may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 5;
+    // ...
 }
 ```
 
-As an alternative to defining how many times a listener may be attempted before it fails, you may define a time at which the listener should no longer be attempted. This allows a listener to be attempted any number of times within a given time frame. To define the time at which a listener should no longer be attempted, add a `retryUntil` method to your listener class. This method should return a `DateTime` instance:
+As an alternative to defining how many times a listener may be attempted before it fails, you may define a time at which the listener should no longer be attempted. This allows a listener to be attempted any number of times within a given time frame. To define the time at which a listener should no longer be attempted, add a `retryUntil` method to your listener class. This method should return a `DateTimeInterface` instance:
 
 ```php
-use DateTime;
+use DateTimeInterface;
 
 /**
  * Determine the time at which the listener should timeout.
  */
-public function retryUntil(): DateTime
+public function retryUntil(): DateTimeInterface
 {
     return now()->plus(minutes: 5);
 }
@@ -34794,15 +37301,21 @@ If both `retryUntil` and `tries` are defined, Laravel gives precedence to the `r
 <a name="specifying-queued-listener-backoff"></a>
 #### Specifying Queued Listener Backoff
 
-If you would like to configure how many seconds Laravel should wait before retrying a listener that has encountered an exception, you may do so by defining a `backoff` property on your listener class:
+If you would like to configure how many seconds Laravel should wait before retrying a listener that has encountered an exception, you may use the `Backoff` attribute on your listener class:
 
 ```php
-/**
- * The number of seconds to wait before retrying the queued listener.
- *
- * @var int
- */
-public $backoff = 3;
+<?php
+
+namespace App\Listeners;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Backoff;
+
+#[Backoff(3)]
+class SendShipmentNotification implements ShouldQueue
+{
+    // ...
+}
 ```
 
 If you require more complex logic for determining the listeners's backoff time, you may define a `backoff` method on your listener class:
@@ -34834,7 +37347,7 @@ public function backoff(OrderShipped $event): array
 <a name="specifying-queued-listener-max-exceptions"></a>
 #### Specifying Queued Listener Max Exceptions
 
-Sometimes you may wish to specify that a queued listener may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the `release` method directly). To accomplish this, you may define a `maxExceptions` property on your listener class:
+Sometimes you may wish to specify that a queued listener may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the `release` method directly). To accomplish this, you may use the `Tries` and `MaxExceptions` attributes on your listener class:
 
 ```php
 <?php
@@ -34843,25 +37356,15 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\MaxExceptions;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\InteractsWithQueue;
 
+#[Tries(25)]
+#[MaxExceptions(3)]
 class SendShipmentNotification implements ShouldQueue
 {
     use InteractsWithQueue;
-
-    /**
-     * The number of times the queued listener may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 25;
-
-    /**
-     * The maximum number of unhandled exceptions to allow before failing.
-     *
-     * @var int
-     */
-    public $maxExceptions = 3;
 
     /**
      * Handle the event.
@@ -34878,7 +37381,7 @@ In this example, the listener will be retried up to 25 times. However, the liste
 <a name="specifying-queued-listener-timeout"></a>
 #### Specifying Queued Listener Timeout
 
-Often, you know roughly how long you expect your queued listeners to take. For this reason, Laravel allows you to specify a "timeout" value. If a listener is processing for longer than the number of seconds specified by the timeout value, the worker processing the listener will exit with an error. You may define the maximum number of seconds a listener should be allowed to run by defining a `timeout` property on your listener class:
+Often, you know roughly how long you expect your queued listeners to take. For this reason, Laravel allows you to specify a "timeout" value. If a listener is processing for longer than the number of seconds specified by the timeout value, the worker processing the listener will exit with an error. You may define the maximum number of seconds a listener should be allowed to run by using the `Timeout` attribute on your listener class:
 
 ```php
 <?php
@@ -34887,19 +37390,16 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Timeout;
 
+#[Timeout(120)]
 class SendShipmentNotification implements ShouldQueue
 {
-    /**
-     * The number of seconds the listener can run before timing out.
-     *
-     * @var int
-     */
-    public $timeout = 120;
+    // ...
 }
 ```
 
-If you would like to indicate that a listener should be marked as failed on timeout, you may define the `failOnTimeout` property on the listener class:
+If you would like to indicate that a listener should be marked as failed on timeout, you may use the `FailOnTimeout` attribute on the listener class:
 
 ```php
 <?php
@@ -34908,15 +37408,12 @@ namespace App\Listeners;
 
 use App\Events\OrderShipped;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\FailOnTimeout;
 
+#[FailOnTimeout]
 class SendShipmentNotification implements ShouldQueue
 {
-    /**
-     * Indicate if the listener should be marked as failed on timeout.
-     *
-     * @var bool
-     */
-    public $failOnTimeout = true;
+    // ...
 }
 ```
 
@@ -35351,7 +37848,7 @@ class ExampleTest extends TestCase
 
 # Facades
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/facades*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/facades*
 
 - [Introduction](#introduction)
 - [When to Utilize Facades](#when-to-use-facades)
@@ -35668,6 +38165,7 @@ Below you will find every facade and its underlying class. This is a useful tool
 | Bus | [Illuminate\Contracts\Bus\Dispatcher](https://api.laravel.com/docs/{{version}}/Illuminate/Contracts/Bus/Dispatcher.html) | &nbsp; |
 | Cache (Instance) | [Illuminate\Cache\Repository](https://api.laravel.com/docs/{{version}}/Illuminate/Cache/Repository.html) | `cache.store` |
 | Cache | [Illuminate\Cache\CacheManager](https://api.laravel.com/docs/{{version}}/Illuminate/Cache/CacheManager.html) | `cache` |
+| Cloud | [Illuminate\Foundation\Cloud\CloudManager](https://api.laravel.com/docs/{{version}}/Illuminate/Foundation/Cloud/CloudManager.html) | &nbsp; |
 | Config | [Illuminate\Config\Repository](https://api.laravel.com/docs/{{version}}/Illuminate/Config/Repository.html) | `config` |
 | Context | [Illuminate\Log\Context\Repository](https://api.laravel.com/docs/{{version}}/Illuminate/Log/Context/Repository.html) | &nbsp; |
 | Cookie | [Illuminate\Cookie\CookieJar](https://api.laravel.com/docs/{{version}}/Illuminate/Cookie/CookieJar.html) | `cookie` |
@@ -35721,14 +38219,14 @@ Below you will find every facade and its underlying class. This is a useful tool
 
 # File Storage
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/filesystem*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/filesystem*
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
     - [The Local Driver](#the-local-driver)
     - [The Public Disk](#the-public-disk)
     - [Driver Prerequisites](#driver-prerequisites)
-    - [Scoped and Read-Only Filesystems](#scoped-and-read-only-filesystems)
+    - [Scoped, Read-Only, and Read-Through Filesystems](#scoped-and-read-only-filesystems)
     - [Amazon S3 Compatible Filesystems](#amazon-s3-compatible-filesystems)
 - [Obtaining Disk Instances](#obtaining-disk-instances)
     - [On-Demand Disks](#on-demand-disks)
@@ -35743,6 +38241,7 @@ Below you will find every facade and its underlying class. This is a useful tool
     - [Automatic Streaming](#automatic-streaming)
     - [File Uploads](#file-uploads)
     - [File Visibility](#file-visibility)
+    - [Image Manipulation](#image-manipulation)
 - [Deleting Files](#deleting-files)
 - [Directories](#directories)
 - [Testing](#testing)
@@ -35899,7 +38398,7 @@ Laravel's Flysystem integrations work great with SFTP; however, a sample configu
 ```
 
 <a name="scoped-and-read-only-filesystems"></a>
-### Scoped and Read-Only Filesystems
+### Scoped, Read-Only, and Read-Through Filesystems
 
 Scoped disks allow you to define a filesystem where all paths are automatically prefixed with a given path prefix. Before creating a scoped filesystem disk, you will need to install an additional Flysystem package via the Composer package manager:
 
@@ -35932,6 +38431,18 @@ Next, you may include the `read-only` configuration option in one or more of you
     'read-only' => true,
 ],
 ```
+
+Read-through disks allow you to migrate files between disks without downtime. When reading a file, Laravel checks the primary disk first. If the file only exists on the fallback disk, Laravel reads the file from the fallback disk and copies it to the primary disk for future requests:
+
+```php
+'assets' => [
+    'driver' => 'read-through',
+    'primary' => 's3',
+    'fallback' => 'legacy-s3',
+],
+```
+
+Writes and directory listings target the primary disk. File existence and metadata checks use either disk without copying files to the primary disk. If copying a fallback file to the primary disk fails, the read still succeeds by default. To throw an exception instead, set the `throw_on_promotion_failure` configuration option to `true`.
 
 <a name="amazon-s3-compatible-filesystems"></a>
 ### Amazon S3 Compatible Filesystems
@@ -36391,6 +38902,24 @@ $path = $request->file('avatar')->storePubliclyAs(
 );
 ```
 
+<a name="image-manipulation"></a>
+### Image Manipulation
+
+If you need to resize, crop, or convert an uploaded image before storing it, you may use Laravel's [image manipulation features](/docs/{{version}}/images):
+
+```php
+$path = $request->image('avatar')
+    ->cover(400, 400)
+    ->toWebp()
+    ->storePublicly('avatars', 'public');
+```
+
+You may also create an image instance from a file already stored on one of your filesystem disks:
+
+```php
+$image = Storage::disk('public')->image('avatars/photo.jpg');
+```
+
 <a name="local-files-and-visibility"></a>
 #### Local Files and Visibility
 
@@ -36512,6 +39041,9 @@ test('albums can be uploaded', function () {
 
     // Assert that a given directory is empty...
     Storage::disk('photos')->assertDirectoryEmpty('/wallpapers');
+
+    // Assert that the disk contains no files...
+    Storage::disk('photos')->assertEmpty();
 });
 ```
 
@@ -36548,6 +39080,9 @@ class ExampleTest extends TestCase
 
         // Assert that a given directory is empty...
         Storage::disk('photos')->assertDirectoryEmpty('/wallpapers');
+
+        // Assert that the disk contains no files...
+        Storage::disk('photos')->assertEmpty();
     }
 }
 ```
@@ -36622,7 +39157,7 @@ Once you have created and registered the extension's service provider, you may u
 
 # Laravel Folio
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/folio*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/folio*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -36969,7 +39504,7 @@ When using Folio, you should always take advantage of [Laravel's route caching c
 
 # Laravel Fortify
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/fortify*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/fortify*
 
 - [Introduction](#introduction)
     - [What is Fortify?](#what-is-fortify)
@@ -36985,6 +39520,13 @@ When using Folio, you should always take advantage of [Laravel's route caching c
     - [Enabling Two-Factor Authentication](#enabling-two-factor-authentication)
     - [Authenticating With Two-Factor Authentication](#authenticating-with-two-factor-authentication)
     - [Disabling Two-Factor Authentication](#disabling-two-factor-authentication)
+- [Passkeys](#passkeys)
+    - [Enabling Passkeys](#enabling-passkeys)
+    - [JavaScript Client](#passkeys-javascript-client)
+    - [Authenticating With Passkeys](#authenticating-with-passkeys)
+    - [Confirming Password With Passkeys](#confirming-password-with-passkeys)
+    - [Registering Passkeys](#registering-passkeys)
+    - [Deleting Passkeys](#deleting-passkeys)
 - [Registration](#registration)
     - [Customizing Registration](#customizing-registration)
 - [Password Reset](#password-reset)
@@ -37327,6 +39869,170 @@ If the request was not successful, the user will be redirected back to the two-f
 
 To disable two-factor authentication, your application should make a DELETE request to the `/user/two-factor-authentication` endpoint. Remember, Fortify's two-factor authentication endpoints require [password confirmation](#password-confirmation) prior to being called.
 
+<a name="passkeys"></a>
+## Passkeys
+
+Fortify supports passkey authentication using WebAuthn. Passkeys allow users to authenticate without passwords using platform authenticators such as Face ID, Touch ID, Windows Hello, or hardware security keys.
+
+<a name="enabling-passkeys"></a>
+### Enabling Passkeys
+
+To get started, ensure the `passkeys` feature is enabled in your application's `fortify` configuration file:
+
+```php
+use Laravel\Fortify\Features;
+
+'features' => [
+    // ...
+    Features::passkeys([
+        'confirmPassword' => true,
+    ]),
+],
+```
+
+The `confirmPassword` option determines whether Fortify requires [password confirmation](#password-confirmation) before passkeys may be registered or deleted.
+
+Next, ensure your application's `App\Models\User` model implements `Laravel\Fortify\Contracts\PasskeyUser` and uses the `Laravel\Fortify\PasskeyAuthenticatable` trait:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\Contracts\PasskeyUser;
+use Laravel\Fortify\PasskeyAuthenticatable;
+
+class User extends Authenticatable implements PasskeyUser
+{
+    use Notifiable, PasskeyAuthenticatable;
+}
+```
+
+Fortify's passkeys configuration options may be customized using the `passkeys` configuration array in your application's `config/fortify.php` file:
+
+```php
+'passkeys' => [
+    'relying_party_id' => parse_url(config('app.url'), PHP_URL_HOST),
+    'allowed_origins' => [config('app.url')],
+    'user_handle_secret' => config('app.key'),
+    'timeout' => 60000,
+],
+```
+
+> [!NOTE]
+> Fortify wraps the `laravel/passkeys` Composer package and configures it for you. If you are using Fortify's passkeys feature, you should configure passkeys using your application's `config/fortify.php` file. You do not need to publish the `laravel/passkeys` configuration file, and any values defined there will be overridden by Fortify.
+
+The `relying_party_id` should match your application's domain. The `allowed_origins` array lists the browser origins that may complete passkey registration and authentication. The `user_handle_secret` is used to derive opaque user identifiers, ensuring the same user is recognized across passkey registrations. The `timeout` option controls how long passkey registration and authentication operations may remain active.
+
+Fortify applies a dedicated passkeys rate limiter to its passkey login, confirmation, and registration routes. If needed, you may customize it using the `fortify.limiters.passkeys` configuration option and a corresponding `RateLimiter::for(...)` definition.
+
+<a name="passkeys-javascript-client"></a>
+### JavaScript Client
+
+If you are building a custom frontend, including a Blade application with browser-side scripts, you may use the official [`@laravel/passkeys`](https://www.npmjs.com/package/@laravel/passkeys) package. This package handles browser WebAuthn ceremonies and sends requests to Fortify's passkey endpoints.
+
+Install the package via npm:
+
+```shell
+npm install @laravel/passkeys
+```
+
+Then, you may initiate passkey registration and verification from your frontend:
+
+```js
+import { Passkeys } from "@laravel/passkeys";
+
+await Passkeys.register({ name: "MacBook Pro" });
+await Passkeys.verify();
+```
+
+If your application uses custom passkey endpoint URIs, you may override the routes on a per-call basis:
+
+```js
+await Passkeys.verify({
+    routes: {
+        options: "/passkeys/confirm/options",
+        submit: "/passkeys/confirm",
+    },
+});
+
+await Passkeys.register({
+    name: "MacBook Pro",
+    routes: {
+        options: "/user/passkeys/options",
+        submit: "/user/passkeys",
+    },
+});
+```
+
+The package also provides React, Vue, and Svelte helpers via `@laravel/passkeys/react`, `@laravel/passkeys/vue`, and `@laravel/passkeys/svelte`.
+
+<a name="authenticating-with-passkeys"></a>
+### Authenticating With Passkeys
+
+To authenticate a user with a passkey, your application should first make a GET request to the `/passkeys/login/options` endpoint. This endpoint returns the WebAuthn challenge options that your frontend should pass to `navigator.credentials.get(...)`.
+
+After the browser returns a credential, your application should make a POST request to `/passkeys/login` with the credential payload. You may also include a boolean `remember` field.
+
+If the request is successful, Fortify will log the user into the configured guard and return either:
+
+<div class="content-list" markdown="1">
+
+- A redirect response to your intended destination for standard requests.
+- A `200` HTTP response containing a JSON payload with a `redirect` key for XHR requests.
+
+</div>
+
+<a name="confirming-password-with-passkeys"></a>
+### Confirming Password With Passkeys
+
+For authenticated sessions, Fortify provides passkey confirmation endpoints that satisfy Laravel's password confirmation requirement for the current session.
+
+To confirm with a passkey, your application should first make a GET request to `/passkeys/confirm/options`. This endpoint returns the WebAuthn challenge options that your frontend should pass to `navigator.credentials.get(...)`.
+
+After the browser returns a credential, your application should make a POST request to `/passkeys/confirm` with the credential payload.
+
+If the request is successful, Fortify marks the current session as password confirmed and returns either:
+
+<div class="content-list" markdown="1">
+
+- A redirect response to your intended destination for standard requests.
+- A `200` HTTP response containing a JSON payload with a `redirect` key for XHR requests.
+
+</div>
+
+<a name="registering-passkeys"></a>
+### Registering Passkeys
+
+To register a passkey for an authenticated user, your application should first make a GET request to `/user/passkeys/options`. This endpoint returns the WebAuthn creation options that your frontend should pass to `navigator.credentials.create(...)`.
+
+After the browser returns a credential, your application should make a POST request to `/user/passkeys` with a `name` field and a `credential` field containing the serialized [`PublicKeyCredential`](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential) object returned by `navigator.credentials.create(...)`.
+
+If the request is successful, Fortify will return either:
+
+<div class="content-list" markdown="1">
+
+- A redirect back response with a `passkey-registered` status in the session for standard requests.
+- A `200` HTTP response with a JSON payload containing a `status` key, along with the newly registered passkey's `id` and `name`.
+
+</div>
+
+<a name="deleting-passkeys"></a>
+### Deleting Passkeys
+
+To delete a passkey, your application should make a DELETE request to `/user/passkeys/{passkey}`.
+
+If the request is successful, Fortify will return either:
+
+<div class="content-list" markdown="1">
+
+- A redirect back response with a `passkey-deleted` status in the session for standard requests.
+- A `200` HTTP response with a JSON payload containing a `status` key for XHR requests.
+
+</div>
+
 <a name="registration"></a>
 ## Registration
 
@@ -37553,7 +40259,7 @@ If the request was not successful, the user will be redirected back to the confi
 
 # Frontend
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/frontend*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/frontend*
 
 - [Introduction](#introduction)
 - [Using PHP](#using-php)
@@ -37715,7 +40421,7 @@ If you're concerned about diving into Inertia because your application requires 
 <a name="inertia-starter-kits"></a>
 ### Starter Kits
 
-If you would like to build your frontend using Inertia and React / Svelte / Vue, you can leverage our [React, Svelte, or Vue application starter kits](/docs/{{version}}/starter-kits) to jump-start your application's development. Both of these starter kits scaffold your application's backend and frontend authentication flow using Inertia, React / Svelte / Vue, [Tailwind](https://tailwindcss.com), and [Vite](https://vitejs.dev) so that you can start building your next big idea.
+If you would like to build your frontend using Inertia and React / Svelte / Vue, you can leverage our [React, Svelte, or Vue application starter kits](/docs/{{version}}/starter-kits) to jump-start your application's development. All of these starter kits scaffold your application's backend and frontend authentication flow using Inertia, React / Svelte / Vue, [Tailwind](https://tailwindcss.com), and [Vite](https://vitejs.dev) so that you can start building your next big idea.
 
 <a name="bundling-assets"></a>
 ## Bundling Assets
@@ -37734,7 +40440,7 @@ The fastest way to get started with Laravel and Vite is by beginning your applic
 
 # Hashing
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/hashing*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/hashing*
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
@@ -37860,9 +40566,777 @@ HASH_VERIFY=false
 
 ---
 
+# Laravel Head
+
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/head*
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Quickstart](#quickstart)
+- [Resolution Precedence](#resolution-precedence)
+- [Defining Metadata](#defining-metadata)
+    - [Defaults](#defaults)
+    - [Route Metadata](#route-metadata)
+    - [Runtime Metadata](#runtime-metadata)
+    - [Error Pages](#error-pages)
+- [Open Graph](#open-graph)
+    - [X / Twitter Cards](#twitter-cards)
+- [Theme Colors](#theme-colors)
+- [Application Metadata and Icons](#app-metadata-and-icons)
+- [Progressive Web Apps](#progressive-web-apps)
+- [Performance and Discovery](#performance-and-discovery)
+- [Custom Tags](#custom-tags)
+- [Schemas](#schemas)
+    - [Breadcrumbs](#breadcrumbs)
+    - [FAQs](#faqs)
+    - [Custom Schemas](#custom-schemas)
+- [Rendering](#rendering)
+    - [Blade](#blade)
+    - [Livewire](#livewire)
+    - [Inertia](#inertia)
+
+<a name="introduction"></a>
+## Introduction
+
+[Laravel Head](https://github.com/laravel/head) provides a fluent API for managing your application's document `<head>` element, including title and meta tags, Open Graph metadata, canonical URLs, robots directives, performance hints, and structured data. It works with Blade, Livewire, and Inertia.
+
+<a name="installation"></a>
+## Installation
+
+You may install Laravel Head using the Composer package manager:
+
+```shell
+composer require laravel/head
+```
+
+<a name="quickstart"></a>
+## Quickstart
+
+Register site-wide defaults in a service provider:
+
+```php
+use Laravel\Head\Facades\Head;
+use Laravel\Head\HeadBuilder;
+
+Head::defaults(fn (HeadBuilder $head) => $head
+    ->title('Laravel', suffix: ' - Laravel')
+    ->description('Build something great.'));
+```
+
+Set page-specific metadata at runtime:
+
+```php
+Head::title($post->title)
+    ->description($post->description);
+```
+
+Render the resolved tags in your layout:
+
+```blade
+<head>
+    @head
+</head>
+```
+
+<a name="resolution-precedence"></a>
+## Resolution Precedence
+
+Page metadata resolves from five layers, listed from lowest to highest priority:
+
+1. Page defaults
+2. Route group metadata
+3. Route metadata
+4. Runtime metadata
+5. Error metadata
+
+Higher layers replace lower layers field by field. For example, a runtime title replaces the route title without replacing the route description. The sections that follow describe how to set metadata at each layer. For information about rendering the resolved metadata in Blade, Livewire, and Inertia, see [Rendering](#rendering).
+
+<a name="defining-metadata"></a>
+## Defining Metadata
+
+Laravel Head allows you to define metadata using site-wide defaults, route metadata, runtime calls, and error page definitions.
+
+<a name="defaults"></a>
+### Defaults
+
+Register page defaults in a service provider:
+
+```php
+use Laravel\Head\Enums\OgType;
+use Laravel\Head\Facades\Head;
+use Laravel\Head\HeadBuilder;
+
+Head::defaults(function (HeadBuilder $head) {
+    $head
+        ->title('Laravel', suffix: ' - Laravel')
+        ->description('Build something great.')
+        ->canonical()
+        ->og(siteName: 'Laravel', type: OgType::Website)
+        ->searchableByRobots()
+        ->preconnect('https://fonts.example.com');
+});
+```
+
+Defaults are the lowest-priority page metadata layer. If no route, runtime, or error metadata sets a title, `Laravel` renders as-is. When a higher layer sets a page title, the inherited suffix is applied, so `Head::title('About')` renders `About - Laravel`. Pass `exact: true` for titles that should ignore an inherited prefix or suffix.
+
+Calling `Head::canonical()` renders a canonical URL using the current request URL. To set an explicit URL, pass a string such as `Head::canonical('/about')`. Canonical URLs are normalized to `https` by default; pass `forceHttps: false` to preserve the request scheme.
+
+Robots directives may be passed as a raw string, as `RobotsRule` enum cases, or as a list mixing both forms. Lists are rendered as comma-separated directives, so `Head::robots([RobotsRule::NoIndex, RobotsRule::NoFollow])` renders `noindex, nofollow`.
+
+For convenience, the `searchableByRobots` method renders `all`, while the `hiddenFromRobots` method renders `none`.
+
+<a name="route-metadata"></a>
+### Route Metadata
+
+You may define metadata directly on routes, which is especially useful for semi-static pages whose metadata is known ahead of time.
+
+<a name="routes-and-groups"></a>
+#### Routes and Groups
+
+```php
+Route::view('/contact', 'contact')
+    ->name('contact')
+    ->withHead(
+        title: 'Contact Us',
+        description: 'Get in touch.',
+    );
+```
+
+Shared route metadata may be applied to a group at any position in the chain:
+
+```php
+Route::withHead(robots: 'noindex, nofollow')
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', DashboardController::class)
+            ->name('dashboard')
+            ->withHead(title: 'Dashboard');
+    });
+```
+
+You may also define metadata for resource and singleton routes:
+
+```php
+Route::resource('posts', PostController::class)->withHead(
+    robots: 'index, follow',
+);
+
+Route::singleton('profile', ProfileController::class)->withHead(
+    title: 'Your Profile',
+);
+```
+
+The `withHead` method stores plain arrays through Laravel's native route metadata API. It is equivalent to calling the `metadata` method with the attributes nested under a `head` key, so the metadata remains compatible with cached routes.
+
+The named arguments are intentionally limited to Laravel Head's built-in route properties so editors and static analysis can catch misspelled names. Route attributes registered by custom tag builders may be passed through `extensions`:
+
+```php
+Route::get('/article', ArticleController::class)->withHead(
+    title: 'Article',
+    extensions: ['readingTime' => 4],
+);
+```
+
+<a name="supported-properties"></a>
+#### Supported Properties
+
+The supported route properties map to the same names as the fluent builder methods:
+
+| Category | Properties |
+| --- | --- |
+| Document | `title`, `description`, `canonical`, `robots` |
+| Application metadata | `themeColor`, `applicationName`, `colorScheme`, `referrer`, `viewport`, `appleWebAppTitle`, `webAppCapable`, `appleWebAppStatusBarStyle` |
+| Social | `og`, `ogImage`, `ogVideo`, `ogAudio`, `twitter`, `twitterImage` |
+| Performance | `preload`, `prefetch`, `preconnect`, `dnsPrefetch` |
+| Discovery | `alternates`, `feed`, `icon`, `favicon`, `appleTouchIcon`, `appleTouchStartupImage`, `maskIcon`, `manifest` |
+| Structured data | `schema` |
+| Custom tags | `meta`, `link` |
+
+Nested option names use the same `camelCase` naming as the fluent API, such as `forceHttps`, `siteName`, and `secureUrl`.
+
+Repeatable properties, such as `ogImage`, `preload`, `feed`, `schema`, `icon`, and `appleTouchStartupImage`, accept either a single value or a list.
+
+<a name="runtime-metadata"></a>
+### Runtime Metadata
+
+When a value isn't known until a request arrives, such as the title of a post being viewed, you may set it at runtime:
+
+```php
+use Laravel\Head\Facades\Head;
+
+public function __invoke(Post $post): Response
+{
+    Head::title($post->title);
+
+    // ...
+}
+```
+
+Runtime calls made via the `Head` facade override route metadata for request-dependent data. Controllers and actions are the most common places to make these calls:
+
+```php
+use App\Models\Post;
+use Laravel\Head\Facades\Head;
+
+public function show(Post $post)
+{
+    Head::title($post->title)
+        ->description($post->description);
+
+    return view('posts.show', ['post' => $post]);
+}
+```
+
+Multiple runtime calls are merged in the order they run. For single-value fields such as title, description, canonical URL, and robots directives, the later call takes precedence. Repeatable fields retain multiple entries, but adding the same key again updates the earlier entry. For the `ogImage` method, the URL is the key:
+
+```php
+Head::ogImage('/images/cover.jpg', alt: 'Draft cover')
+    ->ogImage('/images/gallery.jpg', alt: 'Gallery image')
+    ->ogImage('/images/cover.jpg', alt: 'Final cover', width: 1200, height: 630);
+```
+
+```html
+<meta property="og:image" content="/images/cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Final cover">
+<meta property="og:image" content="/images/gallery.jpg">
+<meta property="og:image:alt" content="Gallery image">
+```
+
+Open Graph media inherited from your defaults acts as a fallback. When route, runtime, or error metadata defines its own media of the same type, the default media is replaced instead of merged, so a page's `og:image` takes precedence over a site-wide default image.
+
+You may fluently define conditional metadata using the `when` and `unless` methods:
+
+```php
+Head::title($post->title)
+    ->when($post->isDraft(), fn ($head) => $head->hiddenFromRobots());
+```
+
+<a name="error-pages"></a>
+### Error Pages
+
+Typically, you should register error metadata within the `boot` method of your application's `AppServiceProvider` class:
+
+```php
+use Laravel\Head\ErrorPages;
+use Laravel\Head\Facades\Head;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    Head::errors(function (ErrorPages $errors) {
+        $errors->defaults(robots: 'noindex, follow');
+
+        $errors->status(
+            404,
+            title: 'Page Not Found',
+            description: 'The page you are looking for could not be found.',
+        );
+    });
+}
+```
+
+The `defaults` and `status` methods also accept the same fluent builder callback used by `Head::defaults()`:
+
+```php
+use Laravel\Head\ErrorPages;
+use Laravel\Head\Facades\Head;
+use Laravel\Head\HeadBuilder;
+
+Head::errors(function (ErrorPages $errors) {
+    $errors->status(404, fn (HeadBuilder $head) => $head
+        ->title('Page Not Found')
+        ->description('The page you are looking for could not be found.'));
+});
+```
+
+When a response is rendered for a registered error status, that metadata takes precedence over every other layer.
+
+Laravel automatically detects the response status when rendering an error view or executing a respond-phase hook such as Inertia's `handleExceptionsUsing()` method. If you render an error response inside an `$exceptions->render()` callback, call `Head::status(404)` before rendering so the error metadata is applied.
+
+<a name="open-graph"></a>
+## Open Graph
+
+You may set Open Graph properties using the `og` method. Repeatable media may be added using the top-level methods, which accept named arguments directly:
+
+```php
+use Laravel\Head\Enums\ImageType;
+use Laravel\Head\Enums\OgType;
+
+Head::og(type: OgType::Article, title: $post->title)
+    ->ogImage($post->hero_image_url)
+    ->ogImage(
+        $post->gallery_image_url,
+        alt: $post->gallery_image_alt,
+        width: 1200,
+        height: 630,
+        type: ImageType::Jpeg,
+    );
+```
+
+The `ogImage`, `ogVideo`, and `ogAudio` methods accept a URL as their first argument, along with optional named arguments such as `alt`, `width`, `height`, `type`, and `secureUrl` where supported by the Open Graph specification.
+
+You may pass image MIME types as `ImageType` enum cases anywhere the API accepts an image `type`, such as `ImageType::Svg`, `ImageType::Png`, `ImageType::Jpeg`, and `ImageType::Webp`.
+
+> [!NOTE]
+> Document `title` and `description` automatically fill missing `og:title` and `og:description` values.
+
+For a single Open Graph image with no other attributes, you may pass the `image` named argument to the `og` method:
+
+```php
+Head::og(
+    type: OgType::Website,
+    title: $page->title,
+    description: $page->description,
+    image: $page->og_image_url,
+);
+```
+
+The `og(image: ...)` and `ogImage(...)` calls write to the same underlying image list, so you may use whichever is more expressive at the call site. You may use the [`meta`](#custom-tags) method for custom Open Graph extensions such as product or article properties.
+
+<a name="twitter-cards"></a>
+### X / Twitter Cards
+
+To render X / Twitter cards from the same title, description, and image used by Open Graph, register `twitter()` in your defaults:
+
+```php
+use Laravel\Head\Enums\TwitterCard;
+use Laravel\Head\Facades\Head;
+use Laravel\Head\HeadBuilder;
+
+Head::defaults(fn (HeadBuilder $head) => $head->twitter(
+    card: TwitterCard::SummaryWithLargeImage,
+));
+```
+
+Then set page-level metadata:
+
+```php
+Head::title('Introducing Laravel Head')
+    ->description('A fluent API for Laravel document head metadata.')
+    ->ogImage('https://example.com/social.jpg', alt: 'Introducing Laravel Head');
+```
+
+This renders matching Twitter tags:
+
+```html
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Introducing Laravel Head">
+<meta name="twitter:description" content="A fluent API for Laravel document head metadata.">
+<meta name="twitter:image" content="https://example.com/social.jpg">
+<meta name="twitter:image:alt" content="Introducing Laravel Head">
+```
+
+You may customize individual pages with explicit Twitter values:
+
+```php
+Head::twitter(title: $post->social_title)
+    ->twitterImage($post->social_image_url, alt: $post->title);
+```
+
+Route metadata accepts `twitter` and `twitterImage`.
+
+<a name="theme-colors"></a>
+## Theme Colors
+
+You may set theme colors globally, per route, or at runtime:
+
+```php
+Head::themeColor('#0f172a');
+```
+
+This renders a `<meta name="theme-color">` tag. For media-specific theme colors, you may use the `Media` enum:
+
+```php
+use Laravel\Head\Enums\Media;
+
+Head::themeColor('#ffffff', media: Media::Light)
+    ->themeColor('#111827', media: Media::Dark);
+```
+
+The `Media` enum also includes `Portrait` and `Landscape`. The `media` argument also accepts a custom media query string.
+
+Route metadata supports a single theme color through the same `camelCase` key:
+
+```php
+Route::view('/dashboard', 'dashboard')->withHead(
+    themeColor: '#0f172a',
+);
+```
+
+<a name="app-metadata-and-icons"></a>
+## Application Metadata and Icons
+
+Laravel Head includes methods for common browser and application metadata:
+
+```php
+use Laravel\Head\Enums\ImageType;
+use Laravel\Head\Enums\Media;
+
+Head::applicationName('Laravel')
+    ->colorScheme('light dark')
+    ->referrer('strict-origin-when-cross-origin')
+    ->viewport('width=device-width, initial-scale=1')
+    ->appleWebAppTitle('Laravel')
+    ->webAppCapable()
+    ->appleWebAppStatusBarStyle('black')
+    ->favicon('/favicon.svg', type: ImageType::Svg)
+    ->icon('/favicon-32x32.png', type: ImageType::Png, sizes: '32x32')
+    ->appleTouchIcon('/apple-touch-icon.png', sizes: '180x180')
+    ->appleTouchStartupImage('/launch.png', media: Media::Portrait)
+    ->maskIcon('/safari-pinned-tab.svg', color: '#111827')
+    ->manifest('/site.webmanifest');
+```
+
+The `favicon` method is an alias for the `icon` method and accepts the same `type`, `sizes`, and `media` arguments.
+
+Route metadata uses the same names:
+
+```php
+use Laravel\Head\Enums\ImageType;
+use Laravel\Head\Enums\Media;
+
+Route::view('/dashboard', 'dashboard')->withHead(
+    applicationName: 'Laravel',
+    colorScheme: 'light dark',
+    appleWebAppTitle: 'Laravel',
+    webAppCapable: true,
+    appleWebAppStatusBarStyle: 'black',
+    favicon: [
+        ['href' => '/favicon.svg', 'type' => ImageType::Svg],
+        ['href' => '/favicon-32x32.png', 'type' => ImageType::Png, 'sizes' => '32x32'],
+    ],
+    appleTouchIcon: ['href' => '/apple-touch-icon.png', 'sizes' => '180x180'],
+    appleTouchStartupImage: ['href' => '/launch.png', 'media' => Media::Portrait],
+    manifest: '/site.webmanifest',
+);
+```
+
+<a name="progressive-web-apps"></a>
+## Progressive Web Apps
+
+The `pwa` method configures the common document `<head>` tags needed for an installable web app:
+
+```php
+Head::pwa(
+    name: 'Laravel',
+    manifest: '/site.webmanifest',
+    themeColor: '#0f172a',
+    appleTouchIcon: '/apple-touch-icon.png',
+    appleWebAppStatusBarStyle: 'black',
+);
+```
+
+This renders the application name, web application manifest link, and iOS standalone metadata. If provided, the theme color, Apple status bar style, and Apple touch icon are also rendered. Creating the web application manifest and registering a service worker remain your application's responsibility.
+
+You may use the `pwa` method in defaults or runtime metadata. Route metadata supports the individual properties shown above.
+
+<a name="performance-and-discovery"></a>
+## Performance and Discovery
+
+Laravel Head renders performance hints, pagination links, locale alternates, and feed discovery:
+
+```php
+Head::preload(asset('fonts/inter.woff2'), as: 'font', crossorigin: true)
+    ->prefetch(asset('images/next.webp'))
+    ->preconnect('https://cdn.example.com')
+    ->dnsPrefetch('https://analytics.example.com')
+    ->paginate($posts)
+    ->alternates([
+        'en' => 'https://example.com/en/about',
+        'fr' => 'https://example.com/fr/about',
+        'x-default' => 'https://example.com/about',
+    ])
+    ->feed('/feed', title: 'Laravel RSS')
+    ->feed('/feed.atom', type: 'atom', title: 'Laravel Atom');
+```
+
+For local assets, `preloadAsset()` and `prefetchAsset()` resolve the URL through the `asset()` helper and detect the `as` attribute from the file extension. Font preloads automatically include `crossorigin`, which the preload specification requires even for same-origin fonts:
+
+```php
+Head::preloadAsset('fonts/inter.woff2')
+    ->prefetchAsset('images/next.webp');
+```
+
+```html
+<link rel="preload" href="https://example.com/fonts/inter.woff2" as="font" crossorigin>
+<link rel="prefetch" href="https://example.com/images/next.webp" as="image">
+```
+
+You may pass `as` explicitly to override detection. The `preloadAsset` method will throw an exception when the `as` attribute cannot be detected from the extension because browsers ignore preloads without this attribute; the `prefetchAsset` method will simply omit it.
+
+<a name="custom-tags"></a>
+## Custom Tags
+
+For tags without a dedicated method, use `meta()` and `link()`:
+
+```php
+Head::meta('format-detection', 'telephone=no')
+    ->meta('article:author', $post->author->name)
+    ->link('search', '/opensearch.xml', [
+        'type' => 'application/opensearchdescription+xml',
+        'title' => 'Laravel Search',
+    ])
+    ->link('me', 'https://social.example.com/@laravel');
+```
+
+You may include a media query on a meta tag when the browser should only apply the tag under matching conditions:
+
+```php
+use Laravel\Head\Enums\Media;
+
+Head::meta('theme-color', '#ffffff', media: Media::Light)
+    ->meta('theme-color', '#111827', media: Media::Dark);
+```
+
+The `meta` method uses the `name` attribute for regular meta tags. For keys that typically use the `property` attribute, such as Open Graph (`og:`) or article metadata (`article:`), the method switches automatically:
+
+```php
+Head::meta('description', 'About Laravel')
+    ->meta('og:title', 'About Laravel');
+```
+
+```html
+<meta name="description" content="About Laravel">
+<meta property="og:title" content="About Laravel">
+```
+
+You may pass `property: true` or `property: false` to explicitly select either attribute.
+
+<a name="schemas"></a>
+## Schemas
+
+Built-in schema builders cover the common JSON-LD types:
+
+```php
+use Laravel\Head\Enums\OfferAvailability;
+use Laravel\Head\Facades\Schema;
+
+Head::schema(
+    Schema::product()
+        ->name($product->name)
+        ->offers(
+            Schema::offer()
+                ->price($product->price)
+                ->currency('USD')
+                ->availability(OfferAvailability::InStock)
+        )
+);
+```
+
+The built-in factory methods are `article`, `blogPosting`, `product`, `offer`, `brand`, `breadcrumbs`, `faq`, `organization`, `person`, `webPage`, and `webSite`. Unknown factory methods create a generic schema object, so you can still express custom schema.org types.
+
+When JSON-LD schema data is invalid, Laravel Head throws an exception in non-production environments and logs a warning in production.
+
+<a name="breadcrumbs"></a>
+### Breadcrumbs
+
+Breadcrumb items may be added one at a time or in bulk. Positions are assigned automatically in the order the items are added:
+
+```php
+Head::schema(
+    Schema::breadcrumbs()->items([
+        'Home' => route('home'),
+        'Shop' => route('shop.index'),
+        'Shoes' => route('shop.category', 'shoes'),
+    ])
+);
+```
+
+You may use the `item` method to append a single breadcrumb item:
+
+```php
+Schema::breadcrumbs()
+    ->item('Home', route('home'))
+    ->item('Shop', route('shop.index'));
+```
+
+<a name="faqs"></a>
+### FAQs
+
+FAQ entries follow the same pattern. You may add them one at a time using the `question` method or in bulk using the `questions` method:
+
+```php
+Head::schema(
+    Schema::faq()->questions([
+        'What is Laravel Head?' => 'A fluent API for managing the document head.',
+        'Is it free?' => 'Yes, it is open source.',
+    ])
+);
+```
+
+<a name="custom-schemas"></a>
+### Custom Schemas
+
+You may explicitly register custom schema types:
+
+```php
+use DateTimeInterface;
+use Laravel\Head\Facades\Schema;
+use Laravel\Head\Schema\SchemaObject;
+use Laravel\Head\SchemaType;
+
+#[SchemaType('JobPosting')]
+class JobPosting extends SchemaObject
+{
+    public function title(string $title): static
+    {
+        return $this->set('title', $title);
+    }
+
+    public function datePosted(DateTimeInterface|string $date): static
+    {
+        return $this->date('datePosted', $date);
+    }
+}
+
+Schema::register(JobPosting::class);
+
+Head::schema(
+    Schema::jobPosting()
+        ->title('Senior Laravel Developer')
+        ->datePosted(now())
+);
+```
+
+<a name="rendering"></a>
+## Rendering
+
+Laravel Head resolves page metadata into tags for the current response. How these tags are rendered depends on your application stack.
+
+The HTML renderer powers the `@head` directive and the rendered elements that Laravel Head shares with Inertia via the `head` prop. The array renderer powers `Head::toArray()` for applications that need the resolved metadata as structured data.
+
+<a name="blade"></a>
+### Blade
+
+Render the accumulated tags in your layout's `<head>` with the `@head` directive:
+
+```blade
+<head>
+    <meta charset="utf-8">
+    @head
+</head>
+```
+
+The `@head` directive renders synchronously, so you should define page metadata before the layout is rendered.
+
+<a name="livewire"></a>
+### Livewire
+
+Livewire applications use the same `@head` directive in their document layout:
+
+```blade
+<head>
+    @head
+</head>
+
+<body>
+    {{ $slot }}
+
+    @livewireScripts
+</body>
+```
+
+No Livewire-specific configuration is required. Laravel Head metadata is resolved per request, and the resolver is request-scoped. Therefore, each `wire:navigate` visit fetches a fresh document whose `@head` output reflects the destination route's metadata. Pages visited using `wire:navigate` receive the appropriate route, runtime, and error metadata without requiring component-level head code.
+
+<a name="inertia"></a>
+### Inertia
+
+Use the same `@head` directive in your Inertia root template, alongside Inertia's own components:
+
+```blade
+<html>
+<head>
+    <meta charset="utf-8">
+    @head
+
+    @viteReactRefresh
+    @vite(['resources/css/app.css', 'resources/js/app.tsx'])
+    <x-inertia::head />
+</head>
+<body>
+    <x-inertia::app />
+</body>
+</html>
+```
+
+When Inertia is installed, Laravel Head automatically shares the page-managed head as an array of rendered element strings under a `head` prop on every page object:
+
+```json
+{
+    "props": {
+        "head": [
+            "<title data-inertia=\"title\">Dashboard - Laravel</title>",
+            "<meta data-inertia=\"description\" name=\"description\" content=\"Your application overview.\">"
+        ]
+    }
+}
+```
+
+Enable Inertia's `serverHead` option wherever your application calls `createInertiaApp()`. The option is available in Inertia 3.5 and later:
+
+```js
+createInertiaApp({
+    // ...
+    serverHead: true,
+});
+```
+
+Each page-managed element has a stable `data-inertia` key. The `@head` directive renders the initial document, after which Inertia adopts those elements and keeps them synchronized during standard visits, [instant visits](https://inertiajs.com/docs/v3/the-basics/instant-visits), and back and forward navigation. The elements are present in the initial HTML response, so crawlers and link-preview bots can read them without executing JavaScript. No client-side `<Head>` component is required.
+
+This works with or without [server-side rendering (SSR)](https://inertiajs.com/docs/v3/advanced/server-side-rendering). If your application has a separate SSR entry point, enable `serverHead` there too. Laravel Head automatically deduplicates page-managed elements between `@head` and `<x-inertia::head />`, regardless of their order, while preserving other head elements produced by JavaScript SSR.
+
+> [!NOTE]
+> When adding Laravel Head to an existing Inertia application, remove any title callbacks from `resources/js/app.tsx` and `resources/js/ssr.tsx` so Laravel Head can manage the final document title, and move tags managed by Inertia's [`<Head>` component](https://inertiajs.com/docs/v3/the-basics/title-and-meta) into Laravel Head so the two never define the same element.
+
+The `head` prop is omitted from partial reload responses, so Inertia retains the last full page's head. Instant visits likewise retain the current head until the background response arrives. If your application already uses the `head` prop, change its name in a service provider:
+
+```php
+use Laravel\Head\Facades\Head;
+
+public function boot(): void
+{
+    Head::inertia(prop: '_head');
+}
+```
+
+Then point Inertia at the same prop with `serverHead: '_head'`.
+
+<a name="static-inertia-tags"></a>
+#### Static Inertia Tags
+
+Most tags should live in defaults, route metadata, or runtime metadata so Laravel Head can resolve the right value for each page. Use Inertia globals only for document tags rendered in the first HTML response and left unchanged by Inertia for the rest of the session.
+
+Register them in a service provider with `Head::inertiaGlobals()`:
+
+```php
+use Laravel\Head\Facades\Head;
+use Laravel\Head\HeadBuilder;
+
+Head::inertiaGlobals(function (HeadBuilder $head) {
+    $head
+        ->viewport('width=device-width, initial-scale=1')
+        ->colorScheme('light dark')
+        ->icon('/favicon.svg', type: 'image/svg+xml')
+        ->appleTouchIcon('/apple-touch-icon.png', sizes: '180x180')
+        ->manifest('/site.webmanifest');
+});
+```
+
+Inertia globals are excluded from the `head` prop, rendered without `data-inertia` ownership attributes, and never updated after the first response. These globals are suitable for stable browser hints such as viewport, color scheme, favicons, touch icons, and manifests. If a tag is page-specific, SEO-relevant, or may be overridden later, put it in `defaults`, route metadata, or runtime metadata instead.
+
+Applications that need the resolved metadata as structured data instead of rendered tags may call `Head::toArray()`. The returned data includes titles, Open Graph values, JSON-LD schemas, and other resolved metadata.
+
+
+---
+
 # Helpers
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/helpers*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/helpers*
 
 - [Introduction](#introduction)
 - [Available Methods](#available-methods)
@@ -37982,6 +41456,7 @@ Laravel includes a variety of global "helper" PHP functions. Many of these funct
 [Number::format](#method-number-format)
 [Number::ordinal](#method-number-ordinal)
 [Number::pairs](#method-number-pairs)
+[Number::parse](#method-number-parse)
 [Number::parseInt](#method-number-parse-int)
 [Number::parseFloat](#method-number-parse-float)
 [Number::percentage](#method-number-percentage)
@@ -38146,7 +41621,7 @@ $array = Arr::add(['name' => 'Desk', 'price' => null], 'price', 100);
 
 The `Arr::array` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not an `array`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'languages' => ['PHP', 'Ruby']];
@@ -38165,7 +41640,7 @@ $value = Arr::array($array, 'name');
 
 The `Arr::boolean` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not a `boolean`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'available' => true];
@@ -38383,7 +41858,7 @@ $flattened = Arr::flatten($array);
 
 The `Arr::float` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not a `float`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'balance' => 123.45];
@@ -38520,7 +41995,7 @@ $contains = Arr::hasAny($array, ['category', 'product.discount']);
 
 The `Arr::integer` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not an `int`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'age' => 42];
@@ -39149,7 +42624,7 @@ $sorted = Arr::sortRecursiveDesc($array);
 
 The `Arr::string` method retrieves a value from a deeply nested array using "dot" notation (just as [Arr::get()](#method-array-get) does), but throws an `InvalidArgumentException` if the requested value is not a `string`:
 
-```
+```php
 use Illuminate\Support\Arr;
 
 $array = ['name' => 'Joe', 'languages' => ['PHP', 'Ruby']];
@@ -39701,6 +43176,23 @@ $result = Number::pairs(25, 10);
 $result = Number::pairs(25, 10, offset: 0);
 
 // [[0, 10], [10, 20], [20, 25]]
+```
+
+<a name="method-number-parse"></a>
+#### `Number::parse()` {.collection-method}
+
+The `Number::parse` method parses a localized numeric string using PHP's `NumberFormatter`:
+
+```php
+use Illuminate\Support\Number;
+
+$result = Number::parse('10,123', locale: 'en');
+
+// 10123.0
+
+$result = Number::parse('10,123', locale: 'fr');
+
+// 10.123
 ```
 
 <a name="method-number-parse-int"></a>
@@ -40833,6 +44325,16 @@ return retry(5, function () {
 }, 100);
 ```
 
+The sleep duration also accepts a `CarbonInterval` instance:
+
+```php
+use function Illuminate\Support\seconds;
+
+return retry(5, function () {
+    // Attempt 5 times while resting 5 seconds between attempts...
+}, seconds(5));
+```
+
 If you would like to manually calculate the number of milliseconds to sleep between attempts, you may pass a closure as the third argument to the `retry` function:
 
 ```php
@@ -41655,7 +45157,7 @@ Route::get('/redirect', function () {
 
 # Laravel Homestead
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/homestead*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/homestead*
 
 - [Introduction](#introduction)
 - [Installation and Setup](#installation-and-setup)
@@ -42515,7 +46017,7 @@ natdnshostresolver: 'off'
 
 # Laravel Horizon
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/horizon*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/horizon*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -42524,6 +46026,7 @@ natdnshostresolver: 'off'
     - [Max Job Attempts](#max-job-attempts)
     - [Job Timeout](#job-timeout)
     - [Job Backoff](#job-backoff)
+    - [Other Worker Options](#other-worker-options)
     - [Silenced Jobs](#silenced-jobs)
 - [Balancing Strategies](#balancing-strategies)
     - [Auto Balancing](#auto-balancing)
@@ -42575,6 +46078,34 @@ After publishing Horizon's assets, its primary configuration file will be locate
 
 > [!WARNING]
 > Horizon uses a Redis connection named `horizon` internally. This Redis connection name is reserved and should not be assigned to another Redis connection in the `database.php` configuration file or as the value of the `use` option in the `horizon.php` configuration file.
+
+<a name="content-security-policy-csp-nonce"></a>
+#### Content Security Policy (CSP) Nonce
+
+If you would like to use a [nonce attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/nonce) on the script and style tags used in Horizon views as part of your [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP), you may use the `Horizon::cspNonce` method to specify the nonce to use. This method should typically be invoked within middleware so that a new nonce is assigned for each request:
+
+```php
+use Closure;
+use Illuminate\Http\Request;
+use Laravel\Horizon\Horizon;
+use Symfony\Component\HttpFoundation\Response;
+
+public function handle(Request $request, Closure $next): Response
+{
+    Horizon::cspNonce('csp-nonce');
+
+    return $next($request);
+}
+```
+
+You may add this middleware to the `middleware` option in your application's `config/horizon.php` configuration file:
+
+```php
+'middleware' => [
+    'web',
+    App\Http\Middleware\AddHorizonCspNonce::class,
+],
+```
 
 <a name="environments"></a>
 #### Environments
@@ -42709,7 +46240,7 @@ Similarly, you can set a `timeout` value at the supervisor level, which specifie
 'environments' => [
     'production' => [
         'supervisor-1' => [
-            // ...¨
+            // ...
             'timeout' => 60,
         ],
     ],
@@ -42747,6 +46278,38 @@ You may also configure "exponential" backoffs by using an array for the `backoff
     ],
 ],
 ```
+
+<a name="other-worker-options"></a>
+### Other Worker Options
+
+In addition to `tries`, `timeout`, and `backoff`, each supervisor accepts several other options that control how its worker processes behave and when they are automatically restarted. Periodically restarting workers is a good practice for long-running processes, as it helps guard against memory leaks:
+
+```php
+'environments' => [
+    'production' => [
+        'supervisor-1' => [
+            // ...
+            'memory' => 128,
+            'maxJobs' => 1000,
+            'maxTime' => 3600,
+            'sleep' => 3,
+            'rest' => 0,
+            'nice' => 0,
+        ],
+    ],
+],
+```
+
+<div class="content-list" markdown="1">
+
+- `memory` defines the maximum amount of memory, in megabytes, that a single worker process may consume before it is restarted. By default, this value is `128`.
+- `maxJobs` defines the number of jobs a worker should process before restarting. A value of `0` indicates that workers should not be restarted based on the number of jobs processed. By default, this value is `0`.
+- `maxTime` defines the number of seconds a worker should run before restarting. A value of `0` indicates that workers should not be restarted based on time. By default, this value is `0`.
+- `sleep` defines the number of seconds a worker should wait when no job is available before polling the queue for new jobs again. By default, this value is `3`.
+- `rest` defines the number of seconds to pause between processing each job. By default, this value is `0`.
+- `nice` defines the "niceness" (scheduling priority) of the worker processes. A higher value gives the process a lower priority. By default, this value is `0`.
+
+</div>
 
 <a name="silenced-jobs"></a>
 ### Silenced Jobs
@@ -43228,6 +46791,17 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('horizon:snapshot')->everyFiveMinutes();
 ```
 
+You may configure how many snapshots Horizon retains for its metrics graphs using the `metrics.trim_snapshots` option in your application's `config/horizon.php` configuration file. Because this option limits the number of snapshots rather than their age, the retention period depends on how frequently the `horizon:snapshot` command runs:
+
+```php
+'metrics' => [
+    'trim_snapshots' => [
+        'job' => 24,
+        'queue' => 24,
+    ],
+],
+```
+
 If you would like to delete all metric data, you can invoke the `horizon:clear-metrics` Artisan command:
 
 ```shell
@@ -43269,7 +46843,7 @@ php artisan horizon:clear --queue=emails
 
 # HTTP Client
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/http-client*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/http-client*
 
 - [Introduction](#introduction)
 - [Making Requests](#making-requests)
@@ -43360,7 +46934,7 @@ The HTTP client also allows you to construct request URLs using the [URI templat
 Http::withUrlParameters([
     'endpoint' => 'https://laravel.com',
     'page' => 'docs',
-    'version' => '12.x',
+    'version' => '13.x',
     'topic' => 'validation',
 ])->get('{+endpoint}/{page}/{version}/{topic}');
 ```
@@ -43522,7 +47096,7 @@ The `timeout` method may be used to specify the maximum number of seconds to wai
 $response = Http::timeout(3)->get(/* ... */);
 ```
 
-If the given timeout is exceeded, an instance of `Illuminate\Http\Client\ConnectionException` will  be thrown.
+If the given timeout is exceeded, an instance of `Illuminate\Http\Client\ConnectionException` will be thrown.
 
 You may specify the maximum number of seconds to wait while trying to connect to a server using the `connectTimeout` method. The default is 10 seconds:
 
@@ -43645,6 +47219,12 @@ $response->throwIfStatus(403);
 
 // Throw an exception unless the response has a specific status code...
 $response->throwUnlessStatus(200);
+
+// Throw an exception if a server error occurred (status >500)...
+$response->throwIfServerError();
+
+// Throw an exception if a client error occurred (status >400 and <500)...
+$response->throwIfClientError();
 
 return $response['user']['id'];
 ```
@@ -43814,6 +47394,18 @@ The maximum concurrency of the request pool may be controlled by providing the `
 $responses = Http::pool(fn (Pool $pool) => [
     // ...
 ], concurrency: 5);
+```
+
+If a pooled request fails at the connection level (for example, a timeout or DNS failure), the corresponding entry in the `$responses` array will be an `Illuminate\Http\Client\ConnectionException` instance instead of a `Response` instance:
+
+```php
+foreach ($responses as $response) {
+    if ($response instanceof Throwable) {
+        // The request failed to connect...
+    } elseif ($response->failed()) {
+        // The request connected but received an error response...
+    }
+}
 ```
 
 <a name="customizing-concurrent-requests"></a>
@@ -44245,7 +47837,7 @@ class LogRequest
 
 # HTTP Tests
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/http-tests*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/http-tests*
 
 - [Introduction](#introduction)
 - [Making Requests](#making-requests)
@@ -44844,6 +48436,25 @@ The `assertJsonPath` method also accepts a closure, which may be used to dynamic
 $response->assertJsonPath('team.owner.name', fn (string $name) => strlen($name) >= 3);
 ```
 
+If you need to assert multiple JSON paths at once, you may use the `assertJsonPaths` method. The expected value for each path may also be a closure:
+
+```php
+$response->assertJsonPaths([
+    'team.owner.name' => 'Darian',
+    'team.owner.email' => fn (string $email) => str($email)->is('*@laravel.com'),
+    'team.members.0.name' => 'Sally',
+]);
+```
+
+You may use the `assertJsonMissingPaths` method to assert that multiple JSON paths are missing from the response:
+
+```php
+$response->assertJsonMissingPaths([
+    'team.owner.password',
+    'team.members.0.api_token',
+]);
+```
+
 <a name="fluent-json-testing"></a>
 ### Fluent JSON Testing
 
@@ -45301,7 +48912,9 @@ Laravel's `Illuminate\Testing\TestResponse` class provides a variety of custom a
 [assertJsonMissingExact](#assert-json-missing-exact)
 [assertJsonMissingValidationErrors](#assert-json-missing-validation-errors)
 [assertJsonPath](#assert-json-path)
+[assertJsonPaths](#assert-json-paths)
 [assertJsonMissingPath](#assert-json-missing-path)
+[assertJsonMissingPaths](#assert-json-missing-paths)
 [assertJsonStructure](#assert-json-structure)
 [assertJsonValidationErrors](#assert-json-validation-errors)
 [assertJsonValidationErrorFor](#assert-json-validation-error-for)
@@ -45338,6 +48951,7 @@ Laravel's `Illuminate\Testing\TestResponse` class provides a variety of custom a
 [assertSessionHasNoErrors](#assert-session-has-no-errors)
 [assertSessionDoesntHaveErrors](#assert-session-doesnt-have-errors)
 [assertSessionMissing](#assert-session-missing)
+[assertSessionMissingInput](#assert-session-missing-input)
 [assertStatus](#assert-status)
 [assertSuccessful](#assert-successful)
 [assertTooManyRequests](#assert-too-many-requests)
@@ -45671,6 +49285,24 @@ You may assert that the `name` property of the `user` object matches a given val
 $response->assertJsonPath('user.name', 'Steve Schoger');
 ```
 
+<a name="assert-json-paths"></a>
+#### assertJsonPaths
+
+Assert that the response contains the given data at the specified paths:
+
+```php
+$response->assertJsonPaths(array $paths);
+```
+
+For example, you may assert multiple values within the response at once:
+
+```php
+$response->assertJsonPaths([
+    'user.name' => 'Steve Schoger',
+    'user.email' => fn (string $email) => str($email)->endsWith('@laravel.com'),
+]);
+```
+
 <a name="assert-json-missing-path"></a>
 #### assertJsonMissingPath
 
@@ -45694,6 +49326,24 @@ You may assert that it does not contain the `email` property of the `user` objec
 
 ```php
 $response->assertJsonMissingPath('user.email');
+```
+
+<a name="assert-json-missing-paths"></a>
+#### assertJsonMissingPaths
+
+Assert that the response does not contain the given paths:
+
+```php
+$response->assertJsonMissingPaths($paths);
+```
+
+For example, you may assert that multiple paths are missing from the response:
+
+```php
+$response->assertJsonMissingPaths([
+    'user.email',
+    'user.password',
+]);
 ```
 
 <a name="assert-json-structure"></a>
@@ -46125,6 +49775,15 @@ Assert that the session does not contain the given key:
 $response->assertSessionMissing($key);
 ```
 
+<a name="assert-session-missing-input"></a>
+#### assertSessionMissingInput
+
+Assert that the session is missing the given input key in the flashed input array:
+
+```php
+$response->assertSessionMissingInput($key);
+```
+
 <a name="assert-status"></a>
 #### assertStatus
 
@@ -46359,13 +50018,461 @@ $response->assertInvalid([
 
 ---
 
+# Image Manipulation
+
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/images*
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+    - [Configuration](#configuration)
+- [Reading Images](#reading-images)
+    - [Uploaded Files](#uploaded-files)
+    - [Storage Files](#storage-files)
+    - [Other Sources](#other-sources)
+- [Manipulating Images](#manipulating-images)
+    - [Resizing Images](#resizing-images)
+    - [Other Transformations](#other-transformations)
+- [Encoding Images](#encoding-images)
+- [Storing Images](#storing-images)
+- [Inspecting Images](#inspecting-images)
+- [Image Drivers](#image-drivers)
+    - [Custom Image Drivers](#custom-image-drivers)
+    - [Custom Transformations](#custom-transformations)
+
+<a name="introduction"></a>
+## Introduction
+
+Laravel provides a fluent image manipulation API that allows you to resize, crop, encode, and store images using the same expressive conventions found throughout the framework. Laravel's image features are powered by [Intervention Image](https://image.intervention.io/) and support the GD and Imagick PHP extensions.
+
+The image API is useful when working with uploaded files, files stored on Laravel [filesystem disks](/docs/{{version}}/filesystem), local files, remote URLs, or raw image bytes:
+
+```php
+use Illuminate\Support\Facades\Image;
+
+$path = Image::fromStorage('avatars/photo.jpg', 'public')
+    ->cover(400, 400)
+    ->toWebp()
+    ->quality(80)
+    ->storePublicly('avatars', 'public');
+```
+
+> [!WARNING]
+> Image manipulation can be CPU and memory-intensive. Consider performing large image processing workloads on a [queued job](/docs/{{version}}/queues) instead of during the HTTP request that receives the upload.
+
+<a name="installation"></a>
+## Installation
+
+Before using Laravel's image manipulation features, install the Intervention Image package via Composer:
+
+```shell
+composer require intervention/image:^4.0
+```
+
+You should also ensure your PHP installation has either the GD or Imagick extension installed, depending on which driver your application will use.
+
+<a name="configuration"></a>
+### Configuration
+
+Laravel's image configuration file is located at `config/images.php`. If your application does not have an `images` configuration file, you may publish it using the `config:publish` Artisan command:
+
+```shell
+php artisan config:publish images
+```
+
+The image configuration file allows you to specify your application's default image driver. You may also specify the default driver using the `IMAGE_DRIVER` environment variable. The supported drivers are `gd` and `imagick`:
+
+```ini
+IMAGE_DRIVER=imagick
+```
+
+<a name="reading-images"></a>
+## Reading Images
+
+The `Image` facade provides several methods for reading images from common sources. Image contents are loaded lazily, so the source is typically not read until the image is processed or its bytes are requested.
+
+<a name="uploaded-files"></a>
+### Uploaded Files
+
+You may retrieve an uploaded image from an incoming request using the `image` method. This method returns an `Illuminate\Image\Image` instance for the uploaded file, or `null` if the file is not present:
+
+```php
+use Illuminate\Http\Request;
+
+Route::post('/avatar', function (Request $request) {
+    $request->validate(['avatar' => ['required', 'image']]);
+
+    $path = $request->image('avatar')
+        ->cover(400, 400)
+        ->toWebp()
+        ->storePublicly('avatars', 'public');
+
+    // ...
+});
+```
+
+Alternatively, you may create an image instance from an `Illuminate\Http\UploadedFile` instance using the `fromUpload` method:
+
+```php
+use Illuminate\Support\Facades\Image;
+
+$image = Image::fromUpload($request->file('avatar'));
+```
+
+When an image is created from an uploaded file, you may retrieve the underlying uploaded file using the `file` method:
+
+```php
+$file = $image->file();
+```
+
+<a name="storage-files"></a>
+### Storage Files
+
+You may create an image instance from a file stored on one of your application's [filesystem disks](/docs/{{version}}/filesystem) using the `fromStorage` method. The first argument is the path to the file, while the second argument is the disk name:
+
+```php
+use Illuminate\Support\Facades\Image;
+
+$image = Image::fromStorage('avatars/photo.jpg', disk: 'public');
+```
+
+You may also create image instances directly from a filesystem disk instance using the `image` method:
+
+```php
+use Illuminate\Support\Facades\Storage;
+
+$image = Storage::disk('public')->image('avatars/photo.jpg');
+```
+
+<a name="other-sources"></a>
+### Other Sources
+
+The `Image` facade also includes methods for creating image instances from raw bytes, local file paths, remote URLs, and Base64 encoded strings:
+
+```php
+use Illuminate\Support\Facades\Image;
+
+$image = Image::fromBytes($contents);
+$image = Image::fromBase64($base64);
+$image = Image::fromPath(storage_path('app/avatars/photo.jpg'));
+$image = Image::fromUrl('https://example.com/photo.jpg');
+```
+
+<a name="manipulating-images"></a>
+## Manipulating Images
+
+Image instances are immutable. Each manipulation method returns a new image instance with the transformation appended to its processing pipeline, allowing methods to be chained fluently:
+
+```php
+$image = $request->image('avatar')
+    ->orient()
+    ->cover(400, 400)
+    ->sharpen(10);
+```
+
+Transformations are processed in the order they are added to the image pipeline and the image is only encoded once at the end.
+
+<a name="resizing-images"></a>
+### Resizing Images
+
+The `resize` method resizes an image to the given dimensions. You may provide both a width and height, or provide only one dimension using named arguments:
+
+```php
+$image = $image->resize(800, 600);
+$image = $image->resize(width: 800);
+$image = $image->resize(height: 600);
+```
+
+The `scale` method proportionally scales an image down so that it fits within the given dimensions. This method will never increase the size of an image:
+
+```php
+$image = $image->scale(800, 600);
+$image = $image->scale(width: 800);
+$image = $image->scale(height: 600);
+```
+
+The `cover` method resizes and crops an image to completely cover the given dimensions:
+
+```php
+$image = $image->cover(400, 400);
+```
+
+The `contain` method resizes an image to fit within the given dimensions while preserving the entire image. If necessary, empty space will be filled using the optional background color:
+
+```php
+$image = $image->contain(400, 400);
+$image = $image->contain(400, 400, '#ffffff');
+$image = $image->contain(400, 400, 'dominant');
+```
+
+You may specify `dominant` as the background color to fill empty space using the image's dominant color.
+
+You may crop an image using the `crop` method. The first two arguments are the desired width and height, and the optional third and fourth arguments specify the crop's `x` and `y` coordinates:
+
+```php
+$image = $image->crop(300, 200);
+$image = $image->crop(300, 200, x: 50, y: 25);
+```
+
+<a name="other-transformations"></a>
+### Other Transformations
+
+Laravel also provides a variety of additional image transformation methods:
+
+```php
+$image = $image->orient();
+$image = $image->rotate(90);
+$image = $image->rotate(90, '#ffffff');
+$image = $image->rotate(90, 'dominant');
+$image = $image->blur(5);
+$image = $image->grayscale();
+$image = $image->sharpen(10);
+$image = $image->flipVertically();
+$image = $image->flipHorizontally();
+```
+
+The `orient` method rotates the image according to its EXIF orientation data. The `rotate` method rotates the image clockwise by the given angle and accepts an optional background color. The `blur` and `sharpen` methods accept values between `0` and `100`.
+
+<a name="conditional-transformations"></a>
+#### Conditional Transformations
+
+Image instances support Laravel's `Conditionable` trait, allowing you to conditionally apply transformations using the `when` and `unless` methods:
+
+```php
+$image = $request->image('avatar')
+    ->when($request->boolean('crop'), fn ($image) => $image->cover(400, 400))
+    ->unless($request->boolean('preserve_format'), fn ($image) => $image->toWebp());
+```
+
+<a name="encoding-images"></a>
+## Encoding Images
+
+By default, processed images are encoded using their original format. However, you may convert the image to another supported format before retrieving or storing it:
+
+```php
+$image = $image->toWebp();
+$image = $image->toJpg();
+$image = $image->toJpeg();
+$image = $image->toPng();
+$image = $image->toGif();
+$image = $image->toAvif();
+$image = $image->toBmp();
+```
+
+You may use the `quality` method to set the output quality. The quality will be clamped between `1` and `100`:
+
+```php
+$image = $image->toWebp()->quality(80);
+```
+
+The `optimize` method is a convenient shortcut for converting the image to a given format and setting its quality. By default, images are optimized as WebP images with a quality of `70`:
+
+```php
+$image = $image->optimize();
+
+$image = $image->optimize(format: 'jpg', quality: 85);
+```
+
+You may retrieve the processed image contents as a string of bytes, base64 encoded string, or data URI:
+
+```php
+$bytes = $image->toBytes();
+$base64 = $image->toBase64();
+$dataUri = $image->toDataUri();
+```
+
+An image instance may also be cast to a string to retrieve a data URI:
+
+```php
+$dataUri = (string) $image;
+```
+
+<a name="storing-images"></a>
+## Storing Images
+
+The `store` method stores the processed image on one of your application's filesystem disks. Like uploaded files, Laravel will generate a unique filename and return the stored path. The second argument may be used to specify the disk:
+
+```php
+$path = $request->image('avatar')
+    ->cover(400, 400)
+    ->store(path: 'avatars');
+
+$path = $request->image('avatar')
+    ->cover(400, 400)
+    ->store(path: 'avatars', disk: 's3');
+```
+
+You may use the `storeAs` method to specify the stored filename:
+
+```php
+$path = $request->image('avatar')
+    ->cover(400, 400)
+    ->storeAs(path: 'avatars', name: 'avatar.jpg', disk: 'public');
+```
+
+The `storePublicly` and `storePubliclyAs` methods store the image with `public` visibility:
+
+```php
+$path = $request->image('avatar')
+    ->cover(400, 400)
+    ->storePublicly(path: 'avatars', disk: 'public');
+
+$path = $request->image('avatar')
+    ->cover(400, 400)
+    ->storePubliclyAs(path: 'avatars', name: 'avatar.webp', disk: 'public');
+```
+
+If the image could not be stored, the storage methods return `false`.
+
+<a name="inspecting-images"></a>
+## Inspecting Images
+
+You may retrieve the image's MIME type, extension, dimensions, width, height, and dominant color using the following methods:
+
+```php
+$mimeType = $image->mimeType();
+$extension = $image->extension();
+
+[$width, $height] = $image->dimensions();
+$width = $image->width();
+$height = $image->height();
+
+$dominantColor = $image->dominantColor();
+```
+
+These methods operate on the processed image. For example, calling `width` after `cover(400, 400)` will return `400`.
+
+<a name="image-drivers"></a>
+## Image Drivers
+
+<a name="custom-image-drivers"></a>
+### Custom Image Drivers
+
+Laravel's image manager extends Laravel's base `Illuminate\Support\Manager` class. This means you may register custom image drivers using the `extend` method available on the image manager and `Image` facade.
+
+Custom image drivers should implement the `Illuminate\Contracts\Image\Driver` interface. The `process` method receives the original image contents and the ordered `Illuminate\Image\ImagePipeline` that should be applied to the image, and should return the processed image bytes:
+
+```php
+<?php
+
+namespace App\Images;
+
+use Illuminate\Contracts\Image\Driver;
+use Illuminate\Image\ImagePipeline;
+
+class VipsDriver implements Driver
+{
+    /**
+     * Process the given image contents with the specified pipeline.
+     */
+    public function process(string $contents, ImagePipeline $pipeline): string
+    {
+        // Apply the pipeline's transformations and output options...
+
+        return $contents;
+    }
+
+    /**
+     * Register a transformation handler.
+     */
+    public function transformUsing(string $transformation, callable $callback): static
+    {
+        // Store the handler so it may be applied while processing the pipeline...
+
+        return $this;
+    }
+}
+```
+
+> [!NOTE]
+> To better understand how to implement a custom image driver, you may review the framework's built-in `Illuminate\Image\Drivers\InterventionDriver` class.
+
+Once you have implemented your custom driver, you may register it using the `Image` facade's `extend` method. Typically, this should be done in the `boot` method of a service provider:
+
+```php
+use App\Images\VipsDriver;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Image;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    Image::extend('vips', function (Application $app) {
+        return new VipsDriver;
+    });
+}
+```
+
+After registering the driver, you may use it for a specific image using the `using` method:
+
+```php
+$image = $request->image('avatar')
+    ->using('vips')
+    ->cover(400, 400);
+```
+
+You may also configure a custom driver as your application's default image driver using the `default` option in your application's `config/images.php` configuration file or the `IMAGE_DRIVER` environment variable:
+
+```ini
+IMAGE_DRIVER=vips
+```
+
+<a name="custom-transformations"></a>
+### Custom Transformations
+
+Applications and packages may define custom transformations by creating a class that implements the `Illuminate\Contracts\Image\Transformation` contract. Custom transformations can then be added to an image pipeline using the `transform` method:
+
+```php
+<?php
+
+namespace App\Images\Transformations;
+
+use Illuminate\Contracts\Image\Transformation;
+
+class Pixelate implements Transformation
+{
+    public function __construct(
+        public readonly int $size,
+    ) {
+        //
+    }
+}
+```
+
+Next, register a handler for the transformation and driver using the `Image` facade's `transformUsing` method. Typically, this should be done in the `boot` method of a service provider:
+
+```php
+use App\Images\Transformations\Pixelate;
+use Illuminate\Support\Facades\Image;
+use Intervention\Image\Interfaces\ImageInterface;
+
+Image::transformUsing('gd', Pixelate::class, function (ImageInterface $image, Pixelate $transformation) {
+    return $image->pixelate($transformation->size);
+});
+```
+
+Once the transformation handler has been registered, you may apply the transformation to an image:
+
+```php
+use App\Images\Transformations\Pixelate;
+
+$image = $request->image('avatar')
+    ->transform(new Pixelate(12))
+    ->store('avatars');
+```
+
+
+---
+
 # Installation
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/installation*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/installation*
 
 - [Meet Laravel](#meet-laravel)
     - [Why Laravel?](#why-laravel)
 - [Creating a Laravel Application](#creating-a-laravel-project)
+    - [Getting Started Using AI](#getting-started-using-ai)
     - [Installing PHP and the Laravel Installer](#installing-php)
     - [Creating an Application](#creating-an-application)
 - [Initial Configuration](#initial-configuration)
@@ -46423,6 +50530,21 @@ Laravel combines the best packages in the PHP ecosystem to offer the most robust
 <a name="creating-a-laravel-project"></a>
 ## Creating a Laravel Application
 
+<a name="getting-started-using-ai"></a>
+### Getting Started Using AI
+
+If you are using an AI coding agent like [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or [OpenCode](https://opencode.ai), you can start with a prompt that gives the agent a Laravel-specific playbook before it touches your project.
+
+The prompt below tells the agent where to find Laravel's installation guidance, what to prioritize, and how to make sensible defaults when you haven't made a choice yet. Paste this into your agent to get started:
+
+```text
+I'm building a new Laravel application.
+
+Fetch and follow the instructions from https://laravel.com/for/agents. Treat the returned Markdown as the source of truth for how to install and set up Laravel in this session.
+```
+
+After the agent reads the instructions, it should guide you step by step and keep the setup aligned with Laravel's defaults.
+
 <a name="installing-php"></a>
 ### Installing PHP and the Laravel Installer
 
@@ -46431,16 +50553,16 @@ Before creating your first Laravel application, make sure that your local machin
 If you don't have PHP and Composer installed on your local machine, the following commands will install PHP, Composer, and the Laravel installer on macOS, Windows, or Linux:
 
 ```shell tab=macOS
-/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.4)"
+/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.5)"
 ```
 
 ```shell tab=Windows PowerShell
 # Run as administrator...
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.5'))
 ```
 
 ```shell tab=Linux
-/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.4)"
+/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.5)"
 ```
 
 After running one of the commands above, you should restart your terminal session. To update PHP, Composer, and the Laravel installer after installing them via `php.new`, you can re-run the command in your terminal.
@@ -46457,7 +50579,7 @@ composer global require laravel/installer
 <a name="creating-an-application"></a>
 ### Creating an Application
 
-After you have installed PHP, Composer, and the Laravel installer, you're ready to create a new Laravel application. The Laravel installer will prompt you to select your preferred testing framework, database, and starter kit:
+After you have installed PHP, Composer, and the Laravel installer, you are ready to create a new Laravel application:
 
 ```shell
 laravel new example-app
@@ -46471,7 +50593,7 @@ npm install && npm run build
 composer run dev
 ```
 
-Once you have started the development server, your application will be accessible in your web browser at [http://localhost:8000](http://localhost:8000). Next, you're ready to [start taking your next steps into the Laravel ecosystem](#next-steps). Of course, you may also want to [configure a database](#databases-and-migrations).
+Once you have started the development server, you can access your application in your web browser at [http://localhost:8000](http://localhost:8000). Next, you're ready to [start taking your next steps into the Laravel ecosystem](#next-steps). Of course, you may also want to [configure a database](#databases-and-migrations) and run the necessary migrations.
 
 > [!NOTE]
 > If you would like a head start when developing your Laravel application, consider using one of our [starter kits](/docs/{{version}}/starter-kits). Laravel's starter kits provide backend and frontend authentication scaffolding for your new Laravel application.
@@ -46479,7 +50601,7 @@ Once you have started the development server, your application will be accessibl
 <a name="initial-configuration"></a>
 ## Initial Configuration
 
-All of the configuration files for the Laravel framework are stored in the `config` directory. Each option is documented, so feel free to look through the files and get familiar with the options available to you.
+All configuration files for the Laravel framework are stored in the `config` directory. Each option is documented, so feel free to look through the files and get familiar with the options available to you.
 
 Laravel needs almost no additional configuration out of the box. You are free to get started developing! However, you may wish to review the `config/app.php` file and its documentation. It contains several options such as `url` and `locale` that you may wish to change according to your application.
 
@@ -46578,7 +50700,15 @@ You can learn more about Herd by checking out the [Herd documentation for Window
 <a name="ide-support"></a>
 ## IDE Support
 
-You are free to use any code editor you wish when developing Laravel applications. If you're looking for lightweight and extensible editors, [VS Code](https://code.visualstudio.com) or [Cursor](https://cursor.com) combined with the official [Laravel VS Code Extension](https://marketplace.visualstudio.com/items?itemName=laravel.vscode-laravel) offers excellent Laravel support with features like syntax highlighting, snippets, artisan command integration, and smart autocompletion for Eloquent models, routes, middleware, assets, config, and Inertia.js.
+You are free to use any code editor you wish when developing Laravel applications. The [Laravel LSP](https://github.com/laravel/lsp) provides framework-aware editor support, including code completions, hover information, diagnostics, document links, go-to definition, and quick fixes for Laravel and Blade code.
+
+To install the Laravel LSP, install it globally via Composer. Ensure that Composer's global vendor bin directory is on your `PATH`:
+
+```shell
+composer global require laravel/lsp
+```
+
+If you're looking for lightweight and extensible editors, [VS Code](https://code.visualstudio.com) or [Cursor](https://cursor.com) combined with the official [Laravel VS Code Extension](https://marketplace.visualstudio.com/items?itemName=laravel.vscode-laravel) provides syntax highlighting, snippets, Artisan command integration, and automatic Laravel LSP support. Official Laravel extensions are also available for [Sublime Text](https://github.com/laravel/sublime-extension) and [Zed](https://github.com/laravel/zed-extension). Refer to the [Laravel LSP repository](https://github.com/laravel/lsp) for setup instructions for other language-server-compatible editors, including Neovim and OpenCode.
 
 For extensive and robust support of Laravel, take a look at [PhpStorm](https://www.jetbrains.com/phpstorm/laravel/?utm_source=laravel.com&utm_medium=link&utm_campaign=laravel-2025&utm_content=partner&ref=laravel-2025), a JetBrains IDE. PhpStorm's built-in Laravel framework support includes Blade templates, smart autocompletion for Eloquent models, routes, views, translations, and components, along with powerful code generation and navigation across Laravel projects.
 
@@ -46598,7 +50728,7 @@ Boost also includes Laravel-maintained AI guidelines that help agents to follow 
 <a name="installing-laravel-boost"></a>
 ### Installing Laravel Boost
 
-Boost can be installed in Laravel 10, 11, and 12 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
+Boost can be installed in Laravel 10, 11, 12, and 13 applications running PHP 8.1 or higher. To get started, install Boost as a development dependency:
 
 ```shell
 composer require laravel/boost --dev
@@ -46662,7 +50792,7 @@ If this is how you plan to use Laravel, you may want to check out our documentat
 
 # Request Lifecycle
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/lifecycle*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/lifecycle*
 
 - [Introduction](#introduction)
 - [Lifecycle Overview](#lifecycle-overview)
@@ -46742,7 +50872,7 @@ By default, the `AppServiceProvider` is fairly empty. This provider is a great p
 
 # Localization
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/localization*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/localization*
 
 - [Introduction](#introduction)
     - [Publishing the Language Files](#publishing-the-language-files)
@@ -47035,7 +51165,7 @@ So, for example, if you need to override the English translation strings in `mes
 
 # Logging
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/logging*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/logging*
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
@@ -47082,6 +51212,7 @@ Each log channel is powered by a "driver". The driver determines how and where t
 | ------------ | -------------------------------------------------------------------- |
 | `custom`     | A driver that calls a specified factory to create a channel.         |
 | `daily`      | A `RotatingFileHandler` based Monolog driver which rotates daily.    |
+| `monthly`    | A `RotatingFileHandler` based Monolog driver which rotates monthly.  |
 | `errorlog`   | An `ErrorLogHandler` based Monolog driver.                           |
 | `monolog`    | A Monolog factory driver that may use any supported Monolog handler. |
 | `papertrail` | A `SyslogUdpHandler` based Monolog driver.                           |
@@ -47111,10 +51242,10 @@ By default, Monolog is instantiated with a "channel name" that matches the curre
 <a name="channel-prerequisites"></a>
 ### Channel Prerequisites
 
-<a name="configuring-the-single-and-daily-channels"></a>
-#### Configuring the Single and Daily Channels
+<a name="configuring-the-single-daily-and-monthly-channels"></a>
+#### Configuring the Single, Daily, and Monthly Channels
 
-The `single` and `daily` channels have three optional configuration options: `bubble`, `permission`, and `locking`.
+The `single`, `daily`, and `monthly` channels have three optional configuration options: `bubble`, `permission`, and `locking`.
 
 <div class="overflow-auto">
 
@@ -47126,15 +51257,7 @@ The `single` and `daily` channels have three optional configuration options: `bu
 
 </div>
 
-Additionally, the retention policy for the `daily` channel can be configured via the `LOG_DAILY_DAYS` environment variable or by setting the `days` configuration option.
-
-<div class="overflow-auto">
-
-| Name   | Description                                                 | Default |
-| ------ | ----------------------------------------------------------- | ------- |
-| `days` | The number of days that daily log files should be retained. | `14`    |
-
-</div>
+Additionally, the retention policy for the `daily` and `monthly` channels can be configured via the `max_files` configuration option. The `LOG_DAILY_DAYS` environment variable may also be used to configure retention for the `daily` channel.
 
 <a name="configuring-the-papertrail-channel"></a>
 #### Configuring the Papertrail Channel
@@ -47558,7 +51681,7 @@ class CreateCustomLogger
 
 Often you may need to tail your application's logs in real time. For example, when debugging an issue or when monitoring your application's logs for specific types of errors.
 
-Laravel Pail is a package that allows you to easily dive into your Laravel application's log files directly from the command line. Unlike the standard `tail` command, Pail is designed to work with any log driver, including Sentry or Flare. In addition, Pail provides a set of useful filters to help you quickly find what you're looking for.
+Laravel Pail is a package that allows you to easily dive into your Laravel application's log files directly from the command line. Unlike the standard `tail` command, Pail is designed to work with any log driver, including [Laravel Nightwatch](https://nightwatch.laravel.com), Sentry, or Flare. In addition, Pail provides a set of useful filters to help you quickly find what you're looking for.
 
 <img src="https://laravel.com/img/docs/pail-example.png">
 
@@ -47641,7 +51764,7 @@ php artisan pail --user=1
 
 # Mail
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/mail*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/mail*
 
 - [Introduction](#introduction)
     - [Configuration](#configuration)
@@ -47679,7 +51802,7 @@ php artisan pail --user=1
 <a name="introduction"></a>
 ## Introduction
 
-Sending email doesn't have to be complicated. Laravel provides a clean, simple email API powered by the popular [Symfony Mailer](https://symfony.com/doc/current/mailer.html) component. Laravel and Symfony Mailer provide drivers for sending email via SMTP, Mailgun, Postmark, Resend, Amazon SES, and `sendmail`, allowing you to quickly get started sending mail through a local or cloud-based service of your choice.
+Sending email doesn't have to be complicated. Laravel provides a clean, simple email API powered by the popular [Symfony Mailer](https://symfony.com/doc/current/mailer.html) component. Laravel and Symfony Mailer provide drivers for sending email via SMTP, Cloudflare, Mailgun, Postmark, Resend, Amazon SES, and `sendmail`, allowing you to quickly get started sending mail through a local or cloud-based service of your choice.
 
 <a name="configuration"></a>
 ### Configuration
@@ -47692,6 +51815,38 @@ Within your `mail` configuration file, you will find a `mailers` configuration a
 ### Driver / Transport Prerequisites
 
 The API based drivers such as Mailgun, Postmark, and Resend are often simpler and faster than sending mail via SMTP servers. Whenever possible, we recommend that you use one of these drivers.
+
+<a name="cloudflare-driver"></a>
+#### Cloudflare Driver
+
+To use the Cloudflare driver, install Symfony's HTTP Client via Composer:
+
+```shell
+composer require symfony/http-client
+```
+
+Next, you will need to make two changes in your application's `config/mail.php` configuration file. First, set your default mailer to `cloudflare`:
+
+```php
+'default' => env('MAIL_MAILER', 'cloudflare'),
+```
+
+Second, add the following configuration array to your array of `mailers`:
+
+```php
+'cloudflare' => [
+    'transport' => 'cloudflare',
+],
+```
+
+After configuring your application's default mailer, add the following options to your `config/services.php` configuration file:
+
+```php
+'cloudflare' => [
+    'account_id' => env('CLOUDFLARE_ACCOUNT_ID'),
+    'key' => env('CLOUDFLARE_KEY'),
+],
+```
 
 <a name="mailgun-driver"></a>
 #### Mailgun Driver
@@ -47730,7 +51885,7 @@ After configuring your application's default mailer, add the following options t
 ],
 ```
 
-If you are not using the United States [Mailgun region](https://documentation.mailgun.com/docs/mailgun/api-reference/#mailgun-regions), you may define your region's endpoint in the `services` configuration file:
+If you are not using the United States [Mailgun region](https://documentation.mailgun.com/docs/mailgun/api-reference/api-overview#mailgun-regions), you may define your region's endpoint in the `services` configuration file:
 
 ```php
 'mailgun' => [
@@ -47830,6 +51985,19 @@ public function headers(): Headers
     return new Headers(
         text: [
             'X-Ses-List-Management-Options' => 'contactListName=MyContactList;topicName=MyTopic',
+        ],
+    );
+}
+```
+
+To send an email through an SES [tenant](https://docs.aws.amazon.com/ses/latest/dg/tenants.html), you may return the `X-Ses-Tenant-Name` header from the `headers` method. Laravel will pass the header value as the `TenantName` option to SES when sending the message:
+
+```php
+public function headers(): Headers
+{
+    return new Headers(
+        text: [
+            'X-Ses-Tenant-Name' => 'tenant-id',
         ],
     );
 }
@@ -48639,6 +52807,20 @@ Mail::to($request->user())
     ->queue($message);
 ```
 
+Alternatively, you may specify the connection and queue using the `Connection` and `Queue` attributes on the mailable class:
+
+```php
+use Illuminate\Queue\Attributes\Connection;
+use Illuminate\Queue\Attributes\Queue;
+
+#[Connection('sqs')]
+#[Queue('emails')]
+class OrderShipped extends Mailable
+{
+    // ...
+}
+```
+
 <a name="queueing-by-default"></a>
 #### Queueing by Default
 
@@ -48908,6 +53090,9 @@ test('orders can be shipped', function () {
     // Assert a mailable was sent twice...
     Mail::assertSentTimes(OrderShipped::class, 2);
 
+    // Assert that a mailable was sent exactly once...
+    Mail::assertSentOnce(OrderShipped::class);
+
     // Assert 3 total mailables were sent...
     Mail::assertSentCount(3);
 });
@@ -48951,6 +53136,9 @@ class ExampleTest extends TestCase
         // Assert a mailable was sent twice...
         Mail::assertSentTimes(OrderShipped::class, 2);
 
+        // Assert that a mailable was sent exactly once...
+        Mail::assertSentOnce(OrderShipped::class);
+
         // Assert 3 total mailables were sent...
         Mail::assertSentCount(3);
     }
@@ -48961,6 +53149,7 @@ If you are queueing mailables for delivery in the background, you should use the
 
 ```php
 Mail::assertQueued(OrderShipped::class);
+Mail::assertQueuedOnce(OrderShipped::class);
 Mail::assertNotQueued(OrderShipped::class);
 Mail::assertNothingQueued();
 Mail::assertQueuedCount(3);
@@ -49231,7 +53420,7 @@ Once your transport has been registered, you may create a mailer definition with
 
 # Laravel MCP
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/mcp*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/mcp*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -49240,8 +53429,10 @@ Once your transport has been registered, you may create a mailer definition with
     - [Server Registration](#server-registration)
     - [Web Servers](#web-servers)
     - [Local Servers](#local-servers)
+    - [Cache Hints](#cache-hints)
 - [Tools](#tools)
     - [Creating Tools](#creating-tools)
+    - [Searchable Tool Catalogs](#searchable-tool-catalogs)
     - [Tool Input Schemas](#tool-input-schemas)
     - [Tool Output Schemas](#tool-output-schemas)
     - [Validating Tool Arguments](#validating-tool-arguments)
@@ -49265,11 +53456,25 @@ Once your transport has been registered, you may create a mailer definition with
     - [Resource Annotations](#resource-annotations)
     - [Conditional Resource Registration](#conditional-resource-registration)
     - [Resource Responses](#resource-responses)
+- [Apps](#apps)
+    - [Creating App Resources](#creating-app-resources)
+    - [Rendering Apps From Tools](#rendering-apps-from-tools)
+    - [App Tool Visibility](#app-tool-visibility)
+    - [App Configuration](#app-configuration)
+    - [Building Apps With Boost](#building-apps-with-boost)
 - [Metadata](#metadata)
+- [Icons](#icons)
 - [Authentication](#authentication)
     - [OAuth 2.1](#oauth)
     - [Sanctum](#sanctum)
 - [Authorization](#authorization)
+- [MCP Client](#client)
+    - [Connecting to Servers](#client-connecting)
+    - [Named Clients](#named-clients)
+    - [Client Authentication](#client-authentication)
+    - [Tools](#client-tools)
+    - [Prompts](#client-prompts)
+    - [Resources](#client-resources)
 - [Testing Servers](#testing-servers)
     - [MCP Inspector](#mcp-inspector)
     - [Unit Tests](#unit-tests)
@@ -49392,6 +53597,48 @@ Mcp::local('weather', WeatherServer::class);
 
 Once registered, you should not typically need to manually run the `mcp:start` Artisan command yourself. Instead, configure your MCP client (AI agent) to start the server or use the [MCP Inspector](#mcp-inspector).
 
+<a name="cache-hints"></a>
+### Cache Hints
+
+Laravel MCP includes cache hints with responses that may be cached, such as server discovery, primitive listings, and resource reads. By default, these responses are marked as private with a time to live of zero milliseconds.
+
+You may customize the default cache hint for a server using the `Cacheable` attribute:
+
+```php
+use Laravel\Mcp\Enums\CacheScope;
+use Laravel\Mcp\Server\Attributes\Cacheable;
+
+#[Cacheable(ttlMs: 60_000, scope: CacheScope::Public)]
+class WeatherServer extends Server
+{
+    /**
+     * Get the cache hints for individual MCP methods.
+     *
+     * @return array<string, \Laravel\Mcp\Server\Attributes\Cacheable>
+     */
+    protected function cacheHints(): array
+    {
+        return [
+            'tools/list' => new Cacheable(ttlMs: 30_000, scope: CacheScope::Public),
+        ];
+    }
+}
+```
+
+The `CacheScope::Private` scope limits cached responses to the same authorization context, while `CacheScope::Public` allows responses to be shared between users. Cache hints are advisory; the MCP client or host determines whether a response is actually cached. Method-specific hints returned by `cacheHints` take precedence over the server's `Cacheable` attribute.
+
+You may override the server's cache hint for an individual resource by applying the `Cacheable` attribute to the resource class:
+
+```php
+#[Cacheable(ttlMs: 300_000, scope: CacheScope::Public)]
+class WeatherGuidelinesResource extends Resource
+{
+    // ...
+}
+```
+
+A resource's `Cacheable` attribute takes precedence over both the method-specific hint and the server's default hint.
+
 <a name="tools"></a>
 ## Tools
 
@@ -49471,6 +53718,46 @@ class WeatherServer extends Server
 }
 ```
 
+<a name="searchable-tool-catalogs"></a>
+### Searchable Tool Catalogs
+
+Servers with many tools can place some tools in a searchable catalog instead of advertising every tool to the AI client. A searchable catalog exposes two tools: `search_tools`, which searches the catalog by tool name, description, and input schema; and `execute_tools`, which invokes one or more tools returned by a search.
+
+To create a searchable catalog, use the `ToolSearch` class as an array key in your server's `$tools` property:
+
+```php
+<?php
+
+namespace App\Mcp\Servers;
+
+use App\Mcp\Tools\CurrentWeatherTool;
+use App\Mcp\Tools\HistoricalWeatherTool;
+use App\Mcp\Tools\WeatherAlertsTool;
+use Laravel\Mcp\Server;
+use Laravel\Mcp\Server\Tools\ToolSearch;
+
+class WeatherServer extends Server
+{
+    /**
+     * The tools registered with this MCP server.
+     *
+     * @var array<int|string, \Laravel\Mcp\Server\Tool|class-string<\Laravel\Mcp\Server\Tool>|array<int, \Laravel\Mcp\Server\Tool|class-string<\Laravel\Mcp\Server\Tool>>>
+     */
+    protected array $tools = [
+        CurrentWeatherTool::class,
+
+        ToolSearch::class => [
+            HistoricalWeatherTool::class,
+            WeatherAlertsTool::class,
+        ],
+    ];
+}
+```
+
+In this example, `CurrentWeatherTool` is advertised directly, while the historical weather and weather alert tools are available through the searchable catalog. Conditional tool registration is still respected when catalog tools are searched or executed.
+
+The maximum number of tools that may be executed in one `execute_tools` call and the maximum response size are controlled by the `mcp.tool_search.max_tool_calls` and `mcp.tool_search.max_output_bytes` configuration values.
+
 <a name="tool-name-title-description"></a>
 #### Tool Name, Title, and Description
 
@@ -49542,7 +53829,7 @@ class CurrentWeatherTool extends Tool
 <a name="tool-output-schemas"></a>
 ### Tool Output Schemas
 
-Tools can define [output schemas](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#output-schema) to specify the structure of their responses. This enables better integration with AI clients that need parseable tool results. Use the `outputSchema` method to define your tool's output structure:
+Tools can define [output schemas](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#output-schema) to specify the structure of their responses. This enables better integration with AI clients that need parseable tool results. Use the `outputSchema` method to define your tool's output structure:
 
 ```php
 <?php
@@ -49680,7 +53967,7 @@ class CurrentWeatherTool extends Tool
 <a name="tool-annotations"></a>
 ### Tool Annotations
 
-You may enhance your tools with [annotations](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations) to provide additional metadata to AI clients. These annotations help AI models understand the tool's behavior and capabilities. Annotations are added to tools via attributes:
+You may enhance your tools with [annotations](https://modelcontextprotocol.io/specification/2026-07-28/schema#toolannotations) to provide additional metadata to AI clients. These annotations help AI models understand the tool's behavior and capabilities. Annotations are added to tools via attributes:
 
 ```php
 <?php
@@ -49701,12 +53988,16 @@ class CurrentWeatherTool extends Tool
 
 Available annotations include:
 
+<div class="overflow-auto">
+
 | Annotation         | Type    | Description                                                                                  |
 | ------------------ | ------- | -------------------------------------------------------------------------------------------- |
 | `#[IsReadOnly]`    | boolean | Indicates the tool does not modify its environment.                                          |
 | `#[IsDestructive]` | boolean | Indicates the tool may perform destructive updates (only meaningful when not read-only).     |
 | `#[IsIdempotent]`  | boolean | Indicates repeated calls with same arguments have no additional effect (when not read-only). |
 | `#[IsOpenWorld]`   | boolean | Indicates the tool may interact with external entities.                                      |
+
+</div>
 
 Annotation values can be explicitly set using boolean arguments:
 
@@ -49824,7 +54115,7 @@ public function handle(Request $request): array
 
     return [
         Response::text('Weather Summary: Sunny, 72°F'),
-        Response::text('**Detailed Forecast**\n- Morning: 65°F\n- Afternoon: 78°F\n- Evening: 70°F')
+        Response::text("**Detailed Forecast**\n- Morning: 65°F\n- Afternoon: 78°F\n- Evening: 70°F")
     ];
 }
 ```
@@ -49832,7 +54123,7 @@ public function handle(Request $request): array
 <a name="structured-responses"></a>
 #### Structured Responses
 
-Tools can return [structured content](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#structured-content) using the `structured` method. This provides parseable data for AI clients while maintaining backward compatibility with a JSON-encoded text representation:
+Tools can return [structured content](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#structured-content) using the `structured` method. This provides parseable data for AI clients while maintaining backward compatibility with a JSON-encoded text representation:
 
 ```php
 return Response::structured([
@@ -49897,7 +54188,7 @@ When using web-based servers, streaming responses automatically open an SSE (Ser
 <a name="prompts"></a>
 ## Prompts
 
-[Prompts](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts) enable your server to share reusable prompt templates that AI clients can use to interact with language models. They provide a standardized way to structure common queries and interactions.
+[Prompts](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts) enable your server to share reusable prompt templates that AI clients can use to interact with language models. They provide a standardized way to structure common queries and interactions.
 
 <a name="creating-prompts"></a>
 ### Creating Prompts
@@ -50161,7 +54452,7 @@ You can use the `asAssistant()` method to indicate that a response message shoul
 <a name="resources"></a>
 ## Resources
 
-[Resources](https://modelcontextprotocol.io/specification/2025-06-18/server/resources) enable your server to expose data and content that AI clients can read and use as context when interacting with language models. They provide a way to share static or dynamic information like documentation, configuration, or any data that helps inform AI responses.
+[Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources) enable your server to expose data and content that AI clients can read and use as context when interacting with language models. They provide a way to share static or dynamic information like documentation, configuration, or any data that helps inform AI responses.
 
 <a name="creating-resources"></a>
 ## Creating Resources
@@ -50230,7 +54521,7 @@ class WeatherGuidelinesResource extends Resource
 <a name="resource-templates"></a>
 ### Resource Templates
 
-[Resource templates](https://modelcontextprotocol.io/specification/2025-06-18/server/resources#resource-templates) enable your server to expose dynamic resources that match URI patterns with variables. Instead of defining a static URI for each resource, you can create a single resource that handles multiple URIs based on a template pattern.
+[Resource templates](https://modelcontextprotocol.io/specification/2026-07-28/server/resources#resource-templates) enable your server to expose dynamic resources that match URI patterns with variables. Instead of defining a static URI for each resource, you can create a single resource that handles multiple URIs based on a template pattern.
 
 <a name="creating-resource-templates"></a>
 #### Creating Resource Templates
@@ -50360,7 +54651,7 @@ The URI and MIME type help AI clients determine how to process and interpret the
 <a name="resource-request"></a>
 ### Resource Request
 
-Unlike tools and prompts, resources can not define input schemas or arguments. However, you can still interact with request object within your resource's `handle` method:
+Unlike tools and prompts, resources cannot define input schemas or arguments. However, you can still interact with the request object within your resource's `handle` method:
 
 ```php
 <?php
@@ -50438,7 +54729,7 @@ class WeatherGuidelinesResource extends Resource
 <a name="resource-annotations"></a>
 ### Resource Annotations
 
-You may enhance your resources with [annotations](https://modelcontextprotocol.io/specification/2025-06-18/schema#resourceannotations) to provide additional metadata to AI clients. Annotations are added to resources via attributes:
+You may enhance your resources with [annotations](https://modelcontextprotocol.io/specification/2026-07-28/schema#annotations) to provide additional metadata to AI clients. Annotations are added to resources via attributes:
 
 ```php
 <?php
@@ -50462,11 +54753,15 @@ class UserDashboardResource extends Resource
 
 Available annotations include:
 
+<div class="overflow-auto">
+
 | Annotation        | Type          | Description                                                                 |
 | ----------------- | ------------- | --------------------------------------------------------------------------- |
 | `#[Audience]`     | Role or array | Specifies the intended audience (`Role::User`, `Role::Assistant`, or both). |
 | `#[Priority]`     | float         | A numerical score between 0.0 and 1.0 indicating resource importance.       |
 | `#[LastModified]` | string        | An ISO 8601 timestamp showing when the resource was last updated.           |
+
+</div>
 
 <a name="conditional-resource-registration"></a>
 ### Conditional Resource Registration
@@ -50517,6 +54812,25 @@ public function handle(Request $request): Response
 }
 ```
 
+<a name="resource-link-responses"></a>
+#### Resource Link Responses
+
+To return a resource link, use the `resourceLink` method, providing the URI and name. Unlike an embedded resource, a resource link returns a URI pointer that the AI client fetches independently:
+
+```php
+return Response::resourceLink(
+    uri: 'file:///data/report.json',
+    name: 'monthly-report',
+    mimeType: 'application/json',
+);
+```
+
+You may also pass a registered resource class or instance, which will automatically inherit the resource's URI, name, title, description, and MIME type:
+
+```php
+return Response::resourceLink(new WeatherForecastResource);
+```
+
 <a name="resource-blob-responses"></a>
 #### Blob Responses
 
@@ -50552,10 +54866,165 @@ To indicate an error occurred during resource retrieval, use the `error()` metho
 return Response::error('Unable to fetch weather data for the specified location.');
 ```
 
+<a name="apps"></a>
+## Apps
+
+Laravel MCP supports [MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview), an extension of the Model Context Protocol that allows tools to render interactive HTML applications within sandboxed iframes in supported hosts. This allows you to build dashboards, forms, visualizations, and other rich experiences that go beyond plain text responses.
+
+An MCP app consists of two parts working together:
+
+- An **app resource** that returns the self-contained HTML for your application.
+- A **tool** that is linked to the app resource using the `#[RendersApp]` attribute. When the tool is called, the host fetches and renders the linked resource.
+
+<a name="creating-app-resources"></a>
+### Creating App Resources
+
+You may create an app resource using the `make:mcp-app-resource` Artisan command:
+
+```shell
+php artisan make:mcp-app-resource WeatherDashboardApp
+```
+
+This command creates two files: a PHP class in `app/Mcp/Resources` and a Blade view in `resources/views/mcp`. The view name is automatically inferred from the class name. For example, `WeatherDashboardApp` maps to `mcp.weather-dashboard-app`:
+
+```php
+<?php
+
+namespace App\Mcp\Resources;
+
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Attributes\AppMeta;
+use Laravel\Mcp\Server\Attributes\Description;
+use Laravel\Mcp\Server\AppResource;
+
+#[Description('An interactive weather dashboard.')]
+#[AppMeta]
+class WeatherDashboardApp extends AppResource
+{
+    /**
+     * Handle the app resource request.
+     */
+    public function handle(Request $request): Response
+    {
+        return Response::view('mcp.weather-dashboard-app', [
+            'title' => $this->title(),
+        ]);
+    }
+}
+```
+
+`AppResource` extends the base `Resource` class and automatically configures the `ui://` URI scheme and the `text/html;profile=mcp-app` MIME type required by the MCP Apps specification. Like any other resource, you must register it in your server's `$resources` array.
+
+The generated Blade view uses the `<x-mcp::app>` component, which renders a complete HTML document with the client-side MCP SDK bundled and ready to use:
+
+```blade
+<x-mcp::app :title="$title">
+    <x-slot:head>
+        <script type="module">
+        createMcpApp(async (app) => {
+            document.getElementById('run-btn').addEventListener('click', async () => {
+                const result = await app.callServerTool('get-weather-data', {});
+                document.getElementById('output').textContent = result.content[0]?.text ?? '';
+            });
+        });
+        </script>
+    </x-slot:head>
+
+    <div id="app">
+        <button id="run-btn">Refresh</button>
+        <p id="output"></p>
+    </div>
+</x-mcp::app>
+```
+
+The `createMcpApp` global is provided by the bundled SDK and handles connecting the iframe to the server, applying host theming, and exposing helpers such as `callServerTool`, `sendMessage`, `openLink`, and event callbacks. For the full client-side API, refer to the [MCP Apps specification](https://modelcontextprotocol.io/extensions/apps/overview).
+
+<a name="rendering-apps-from-tools"></a>
+### Rendering Apps From Tools
+
+To display an app resource, link a tool to it using the `#[RendersApp]` attribute. When the tool is called, Laravel MCP includes the resource's URI in the tool metadata so the host can render the app in a sandboxed iframe:
+
+```php
+<?php
+
+namespace App\Mcp\Tools;
+
+use App\Mcp\Resources\WeatherDashboardApp;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Attributes\RendersApp;
+use Laravel\Mcp\Server\Tool;
+
+#[RendersApp(resource: WeatherDashboardApp::class)]
+class ShowWeatherDashboard extends Tool
+{
+    /**
+     * Handle the tool request.
+     */
+    public function handle(Request $request): Response
+    {
+        return Response::text('Weather dashboard loaded.');
+    }
+}
+```
+
+Laravel MCP automatically advertises the `io.modelcontextprotocol/ui` extension within the server's `extensions` capability whenever any `AppResource` is registered, so no additional server configuration is required.
+
+<a name="app-tool-visibility"></a>
+### App Tool Visibility
+
+Each `#[RendersApp]` tool can limit who may invoke it via the `visibility` argument. This is useful for exposing private, app-only tools that the UI calls to load or refresh data without making those tools visible to the model:
+
+```php
+use Laravel\Mcp\Server\Attributes\RendersApp;
+use Laravel\Mcp\Server\Ui\Enums\Visibility;
+
+#[RendersApp(resource: WeatherDashboardApp::class, visibility: [Visibility::App])]
+class GetWeatherData extends Tool
+{
+    // ...
+}
+```
+
+The `Visibility` enum has two cases, `Model` and `App`, and defaults to both. Use `[Visibility::App]` for backend actions the UI calls directly, or `[Visibility::Model]` to make a tool unavailable to the UI.
+
+<a name="app-configuration"></a>
+### App Configuration
+
+The `#[AppMeta]` attribute on your app resource configures the iframe's Content Security Policy, browser permissions, and any library scripts that should be included in the view's `<head>`:
+
+```php
+use Laravel\Mcp\Server\Attributes\AppMeta;
+use Laravel\Mcp\Server\Ui\Enums\Library;
+use Laravel\Mcp\Server\Ui\Enums\Permission;
+
+#[AppMeta(
+    connectDomains: ['https://api.weather.com'],
+    permissions: [Permission::Geolocation],
+    libraries: [Library::Tailwind, Library::Alpine],
+)]
+class WeatherDashboardApp extends AppResource
+{
+    // ...
+}
+```
+
+The `Library` enum includes pre-configured CDN scripts for common front-end libraries, such as `Library::Tailwind` and `Library::Alpine`, and their CDN origins are automatically merged into the CSP. The `Permission` enum covers browser permissions such as `Camera`, `Microphone`, `Geolocation`, and `ClipboardWrite`.
+
+For computed or dynamic configuration, override the `appMeta` method on your resource using the fluent `AppMeta`, `Csp`, and `Permissions` builders from the `Laravel\Mcp\Server\Ui` namespace.
+
+<a name="building-apps-with-boost"></a>
+### Building Apps With Boost
+
+Laravel MCP includes a dedicated [Boost](/docs/{{version}}/boost) skill reference for building MCP Apps. If you have [Laravel Boost](/docs/{{version}}/boost) installed, your AI coding agent can invoke the `mcp-development` skill and ask it to scaffold an app resource, Blade view, and linked tool for you.
+
+For the complete protocol reference, including the full client-side API and schema details, see the official [MCP Apps documentation](https://modelcontextprotocol.io/extensions/apps/overview).
+
 <a name="metadata"></a>
 ## Metadata
 
-Laravel MCP also supports the `_meta` field as defined in the [MCP specification](https://modelcontextprotocol.io/specification/2025-06-18/basic#meta), which is required by certain MCP clients or integrations. Metadata can be applied to all MCP primitives, including tools, resources, and prompts, as well as their responses.
+Laravel MCP also supports the `_meta` field as defined in the [MCP specification](https://modelcontextprotocol.io/specification/2026-07-28/basic#_meta), which is required by certain MCP clients or integrations. Metadata can be applied to all MCP primitives, including tools, resources, and prompts, as well as their responses.
 
 You can attach metadata to individual response content using the `withMeta` method:
 
@@ -50609,6 +55078,55 @@ class CurrentWeatherTool extends Tool
 }
 ```
 
+<a name="icons"></a>
+## Icons
+
+MCP clients can display icons for your server and its primitives. You may declare icons on a server, tool, resource, or prompt using the `Icon` attribute:
+
+```php
+use Laravel\Mcp\Enums\IconTheme;
+use Laravel\Mcp\Server\Attributes\Icon;
+
+#[Icon('mcp/server.png', mimeType: 'image/png', sizes: ['48x48'])]
+#[Icon('mcp/server-dark.svg', theme: IconTheme::Dark)]
+class WeatherServer extends Server
+{
+    // ...
+}
+```
+
+The `Icon` attribute is repeatable, so you may declare multiple icons to provide different sizes or light and dark theme variants.
+
+Alternatively, you may define icons programmatically by overriding the `icons` method, which is useful when an icon depends on runtime conditions:
+
+```php
+use Laravel\Mcp\Schema\Icon;
+
+class CurrentWeatherTool extends Tool
+{
+    /**
+     * Get the tool's icons.
+     *
+     * @return array<int, Icon>
+     */
+    public function icons(): array
+    {
+        return [
+            Icon::from('mcp/tool.png', mimeType: 'image/png'),
+        ];
+    }
+}
+```
+
+Icons defined via the attribute and the `icons` method are combined automatically. Icon paths are resolved as follows:
+
+<div class="content-list" markdown="1">
+
+- Paths with a URI scheme, such as `https:` or `data:`, are used as-is.
+- Relative paths are resolved to a URL using Laravel's `asset` helper.
+
+</div>
+
 <a name="authentication"></a>
 ## Authentication
 
@@ -50635,7 +55153,7 @@ Mcp::web('/mcp/weather', WeatherExample::class)
 
 #### New Passport Installation
 
-If your application is not already using Laravel Passport, follow Passport's  [installation and deployment guide](/docs/{{version}}/passport#installation) to add Passport to your application. You should have an `OAuthenticatable` model, new authentication guard, and passport keys before moving on.
+If your application is not already using Laravel Passport, follow Passport's [installation and deployment guide](/docs/{{version}}/passport#installation) to add Passport to your application. You should have an `OAuthenticatable` model, new authentication guard, and passport keys before moving on.
 
 Next, you should publish Laravel MCP's provided Passport authorization view:
 
@@ -50716,6 +55234,278 @@ public function handle(Request $request): Response
 
     // ...
 }
+```
+
+<a name="client"></a>
+## MCP Client
+
+In addition to building servers, Laravel MCP includes a client for connecting to other MCP servers, whether first-party or third-party. The client lets your application discover and call the tools exposed by an MCP server, which is especially useful for giving your [AI agents](/docs/{{version}}/ai-sdk#mcp-tools) access to capabilities provided by external MCP servers.
+
+<a name="client-connecting"></a>
+### Connecting to Servers
+
+You may connect to an HTTP-accessible MCP server using the `Client::web` method, passing the server's URL:
+
+```php
+use Laravel\Mcp\Client;
+
+$client = Client::web('https://mcp.example.com');
+```
+
+To connect to a local MCP server that runs as a command, use the `Client::local` method, providing the command and any arguments needed to start the server:
+
+```php
+use Laravel\Mcp\Client;
+
+$client = Client::local('php', ['artisan', 'mcp:start']);
+```
+
+The client connects lazily, automatically establishing the connection the first time you list or call tools. If you need to manage the connection manually, you may use the `connect`, `connected`, and `disconnect` methods:
+
+```php
+$client->connect();
+
+if ($client->connected()) {
+    $capabilities = $client->capabilities();
+    $server = $client->serverInfo();
+}
+
+$client->disconnect();
+```
+
+You may customize the request timeout using the `withTimeout` method:
+
+```php
+$client = Client::web('https://mcp.example.com')->withTimeout(30);
+```
+
+<a name="named-clients"></a>
+### Named Clients
+
+Instead of constructing a client each time you need it, you may register reusable, named clients. This is typically done in the `boot` method of a service provider using the `Mcp` facade:
+
+```php
+use Laravel\Mcp\Client;
+use Laravel\Mcp\Facades\Mcp;
+
+Mcp::registerClient('github', fn () => Client::web('https://mcp.example.com'));
+```
+
+Once registered, you may resolve the client anywhere in your application by name:
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+$client = Mcp::client('github');
+```
+
+Named clients are resolved once per request and automatically disconnected at the end of the request lifecycle.
+
+<a name="client-authentication"></a>
+### Client Authentication
+
+To connect to a web MCP server that is protected by a bearer token, use the `withToken` method. You may pass a token string or a closure that lazily resolves the token:
+
+```php
+use Illuminate\Support\Facades\Auth;
+use Laravel\Mcp\Client;
+
+$client = Client::web('https://mcp.example.com')->withToken($token);
+
+$client = Client::web('https://mcp.example.com')->withToken(
+    fn () => Auth::user()->mcpToken(),
+);
+```
+
+For servers protected by [OAuth 2.1](#oauth), configure the client using the `withOAuth` method. This is the client-side counterpart to protecting your own servers with OAuth:
+
+```php
+use Laravel\Mcp\Client;
+use Laravel\Mcp\Facades\Mcp;
+
+Mcp::registerClient('github', fn () => Client::web('https://mcp.example.com')->withOAuth(
+    clientId: config('services.github_mcp.client_id'),
+    clientSecret: config('services.github_mcp.client_secret'),
+));
+```
+
+> [!NOTE]
+> The `clientId` and `clientSecret` arguments may be omitted. Laravel will use a [Client ID Metadata Document](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration#client-id-metadata-documents) when the authorization server supports them, falling back to [dynamic client registration](https://datatracker.ietf.org/doc/html/rfc7591) for legacy servers.
+
+The authorization server must advertise support for the `S256` PKCE code challenge method in its authorization server metadata. Laravel will reject the authorization attempt if PKCE support is not advertised.
+
+Next, register the OAuth routes for the named client in your `routes/ai.php` file using the `oAuthRoutesFor` method. The closure you provide receives the client name and resulting `TokenSet` after the authorization code has been exchanged for an access token:
+
+```php
+use Illuminate\Support\Facades\Auth;
+use Laravel\Mcp\Client\OAuth\TokenSet;
+use Laravel\Mcp\Facades\Mcp;
+
+Mcp::oAuthRoutesFor('github', function (string $client, TokenSet $token) {
+    Auth::user()->update([
+        'github_mcp_token' => $token->accessToken,
+    ]);
+
+    return redirect('/dashboard');
+});
+```
+
+This registers three named routes: a connect route (`mcp.oauth.{client}.connect`) that redirects the user to the authorization server, a callback route (`mcp.oauth.{client}.callback`) that exchanges the authorization code and invokes your handler, and a public Client ID Metadata Document route (`mcp.oauth.{client}.client-metadata`). The connect and callback routes use the `web` middleware group by default, which you may override using the `middleware` argument. The metadata route does not use this middleware because the authorization server must be able to retrieve it.
+
+The metadata document describes your application as a public OAuth client and uses your application's `APP_URL` to generate the client ID and callback URL. Therefore, you should ensure the `APP_URL` environment variable is set correctly in production. You may customize the metadata route and provide additional metadata using the `clientMetadataUri` and `clientMetadata` arguments:
+
+```php
+use Laravel\Mcp\Client\OAuth\TokenSet;
+use Laravel\Mcp\Facades\Mcp;
+
+Mcp::oAuthRoutesFor(
+    'github',
+    function (string $client, TokenSet $token) {
+        // Store the token...
+
+        return redirect('/dashboard');
+    },
+    clientMetadataUri: 'oauth/github/client.json',
+    clientMetadata: [
+        'client_name' => 'Acme Weather Dashboard',
+        'logo_uri' => 'https://acme.com/logo.png',
+    ],
+);
+```
+
+To begin the authorization flow, redirect the user to the connect route:
+
+```php
+return redirect()->route('mcp.oauth.github.connect');
+```
+
+<a name="client-tools"></a>
+### Tools
+
+You may retrieve the tools exposed by an MCP server using the `tools` method, which returns a collection of tools keyed by name:
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+$tools = Mcp::client('github')->tools();
+
+foreach ($tools as $tool) {
+    $tool->name;
+    $tool->title;
+    $tool->description;
+    $tool->inputSchema;
+}
+```
+
+The client automatically paginates through all available tools. You may limit the number of tools returned using the `limit` argument:
+
+```php
+$tools = Mcp::client('github')->tools(limit: 10);
+```
+
+To invoke a tool, use the `callTool` method, passing the tool name and an array of arguments. The returned `ToolResult` instance exposes the tool response:
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+$result = Mcp::client('github')->callTool('current-weather', [
+    'location' => 'New York',
+]);
+
+$result->text(); // The text content of the response...
+(string) $result; // Equivalent to calling text()...
+$result->isError; // Whether the tool reported an error...
+$result->structuredContent;  // Structured content, if any...
+```
+
+Alternatively, you may call a tool directly from a listed tool instance:
+
+```php
+$tools = Mcp::client('github')->tools();
+
+$result = $tools['current-weather']->call([
+    'location' => 'New York',
+]);
+```
+
+If you are building agents with the [Laravel AI SDK](/docs/{{version}}/ai-sdk), you may also provide tools from an MCP client directly to an agent, allowing the model to call them while responding to a prompt. See the [MCP Tools](/docs/{{version}}/ai-sdk#mcp-tools) section of the AI SDK documentation for more information.
+
+<a name="client-prompts"></a>
+### Prompts
+
+You may retrieve the prompts exposed by an MCP server using the `prompts` method, which returns a collection of prompts keyed by name:
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+$prompts = Mcp::client('github')->prompts();
+
+foreach ($prompts as $prompt) {
+    $prompt->name;
+    $prompt->title;
+    $prompt->description;
+    $prompt->arguments;
+}
+```
+
+The client automatically paginates through all available prompts. You may limit the number of prompts returned using the `limit` argument:
+
+```php
+$prompts = Mcp::client('github')->prompts(limit: 10);
+```
+
+To retrieve a prompt, use the `getPrompt` method, passing the prompt name and an array of arguments. The returned `PromptResult` instance exposes the generated messages:
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+$result = Mcp::client('github')->getPrompt('describe-weather', [
+    'location' => 'New York',
+]);
+
+$result->text(); // The text content of the messages...
+(string) $result; // Equivalent to calling text()...
+$result->messages; // The raw messages returned by the prompt...
+$result->description; // The prompt description, if any...
+```
+
+<a name="client-resources"></a>
+### Resources
+
+You may retrieve the resources exposed by an MCP server using the `resources` method, which returns a collection of resources keyed by URI:
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+$resources = Mcp::client('github')->resources();
+
+foreach ($resources as $resource) {
+    $resource->uri;
+    $resource->name;
+    $resource->title;
+    $resource->description;
+    $resource->mimeType;
+    $resource->size;
+}
+```
+
+The client automatically paginates through all available resources. You may limit the number of resources returned using the `limit` argument:
+
+```php
+$resources = Mcp::client('github')->resources(limit: 10);
+```
+
+To read a resource, use the `readResource` method, passing the resource URI. The returned `ResourceReadResult` instance exposes the resource content:
+
+```php
+use Laravel\Mcp\Facades\Mcp;
+
+$result = Mcp::client('github')->readResource('weather://guidelines');
+
+$result->content(); // The content of the resource, decoding base64 blobs as needed...
+(string) $result; // Equivalent to calling content()...
+$result->mimeType(); // The MIME type of the resource, if any...
+$result->contents; // The raw contents returned by the resource...
 ```
 
 <a name="testing-servers"></a>
@@ -50856,7 +55646,7 @@ $response->dump();
 
 # Middleware
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/middleware*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/middleware*
 
 - [Introduction](#introduction)
 - [Defining Middleware](#defining-middleware)
@@ -51109,7 +55899,7 @@ Laravel includes predefined `web` and `api` middleware groups that contain commo
 | `Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse` |
 | `Illuminate\Session\Middleware\StartSession`              |
 | `Illuminate\View\Middleware\ShareErrorsFromSession`       |
-| `Illuminate\Foundation\Http\Middleware\ValidateCsrfToken` |
+| `Illuminate\Foundation\Http\Middleware\PreventRequestForgery` |
 | `Illuminate\Routing\Middleware\SubstituteBindings`        |
 
 </div>
@@ -51170,7 +55960,7 @@ If you would like to manually manage all of the middleware within Laravel's defa
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         // \Illuminate\Session\Middleware\AuthenticateSession::class,
     ]);
@@ -51243,7 +56033,7 @@ Rarely, you may need your middleware to execute in a specific order but not have
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         \Illuminate\Routing\Middleware\ThrottleRequests::class,
         \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
@@ -51253,6 +56043,24 @@ Rarely, you may need your middleware to execute in a specific order but not have
     ]);
 })
 ```
+
+If you would like to add middleware to the existing priority list without replacing it, you may use the `prependToPriorityList` or `appendToPriorityList` methods. The `prependToPriorityList` method inserts the given middleware before another middleware, while the `appendToPriorityList` method inserts it after another middleware:
+
+```php
+->withMiddleware(function (Middleware $middleware): void {
+    $middleware->prependToPriorityList(
+        before: \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        prepend: \App\Http\Middleware\EnsureTokenIsValid::class,
+    );
+
+    $middleware->appendToPriorityList(
+        after: \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        append: \App\Http\Middleware\EnsureUserIsSubscribed::class,
+    );
+})
+```
+
+The `before` and `after` arguments may also be an array of middleware classes.
 
 <a name="middleware-parameters"></a>
 ## Middleware Parameters
@@ -51363,7 +56171,7 @@ public function register(): void
 
 # Database: Migrations
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/migrations*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/migrations*
 
 - [Introduction](#introduction)
 - [Generating Migrations](#generating-migrations)
@@ -51933,12 +56741,13 @@ The schema builder blueprint offers a variety of methods that correspond to the 
 [foreignIdFor](#column-method-foreignIdFor)
 [foreignUlid](#column-method-foreignUlid)
 [foreignUuid](#column-method-foreignUuid)
+[foreignUuidFor](#column-method-foreignUuidFor)
 [morphs](#column-method-morphs)
 [nullableMorphs](#column-method-nullableMorphs)
 
 </div>
 
-<a name="spacifics-method-list"></a>
+<a name="specifics-method-list"></a>
 #### Specialty Types
 
 <div class="collection-method-list" markdown="1">
@@ -52112,6 +56921,15 @@ The `foreignUuid` method creates a `UUID` equivalent column:
 $table->foreignUuid('user_id');
 ```
 
+<a name="column-method-foreignUuidFor"></a>
+#### `foreignUuidFor()` {.collection-method}
+
+The `foreignUuidFor` method adds a `{column}_id` UUID equivalent column for a given model class:
+
+```php
+$table->foreignUuidFor(User::class);
+```
+
 <a name="column-method-geography"></a>
 #### `geography()` {.collection-method}
 
@@ -52256,9 +57074,9 @@ $table->mediumText('data')->charset('binary'); // MEDIUMBLOB
 <a name="column-method-morphs"></a>
 #### `morphs()` {.collection-method}
 
-The `morphs` method is a convenience method that adds a `{column}_id` equivalent column and a `{column}_type` `VARCHAR` equivalent column. The column type for the `{column}_id` will be `UNSIGNED BIGINT`, `CHAR(36)`, or `CHAR(26)` depending on the model key type.
+The `morphs` method is a convenience method that adds a `{column}_type` `VARCHAR` equivalent column and a `{column}_id` equivalent column. The column type for the `{column}_id` will be `UNSIGNED BIGINT`, `CHAR(36)`, or `CHAR(26)` depending on the model key type.
 
-This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships). In the following example, `taggable_id` and `taggable_type` columns would be created:
+This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships). In the following example, `taggable_type` and `taggable_id` columns would be created:
 
 ```php
 $table->morphs('taggable');
@@ -52504,9 +57322,9 @@ $table->unsignedTinyInteger('votes');
 <a name="column-method-ulidMorphs"></a>
 #### `ulidMorphs()` {.collection-method}
 
-The `ulidMorphs` method is a convenience method that adds a `{column}_id` `CHAR(26)` equivalent column and a `{column}_type` `VARCHAR` equivalent column.
+The `ulidMorphs` method is a convenience method that adds a `{column}_type` `VARCHAR` equivalent column and a `{column}_id` `CHAR(26)` equivalent column.
 
-This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships) that use ULID identifiers. In the following example, `taggable_id` and `taggable_type` columns would be created:
+This method is intended to be used when defining the columns necessary for a polymorphic [Eloquent relationship](/docs/{{version}}/eloquent-relationships) that use ULID identifiers. In the following example, `taggable_type` and `taggable_id` columns would be created:
 
 ```php
 $table->ulidMorphs('taggable');
@@ -52515,9 +57333,9 @@ $table->ulidMorphs('taggable');
 <a name="column-method-uuidMorphs"></a>
 #### `uuidMorphs()` {.collection-method}
 
-The `uuidMorphs` method is a convenience method that adds a `{column}_id` `CHAR(36)` equivalent column and a `{column}_type` `VARCHAR` equivalent column.
+The `uuidMorphs` method is a convenience method that adds a `{column}_type` `VARCHAR` equivalent column and a `{column}_id` `CHAR(36)` equivalent column.
 
-This method is intended to be used when defining the columns necessary for a [polymorphic Eloquent relationship](/docs/{{version}}/eloquent-relationships#polymorphic-relationships) that use UUID identifiers. In the following example, `taggable_id` and `taggable_type` columns would be created:
+This method is intended to be used when defining the columns necessary for a [polymorphic Eloquent relationship](/docs/{{version}}/eloquent-relationships#polymorphic-relationships) that use UUID identifiers. In the following example, `taggable_type` and `taggable_id` columns would be created:
 
 ```php
 $table->uuidMorphs('taggable');
@@ -52599,6 +57417,7 @@ The following table contains all of the available column modifiers. This list do
 | `->nullable($value = true)`         | Allow `NULL` values to be inserted into the column.                                            |
 | `->storedAs($expression)`           | Create a stored generated column (MariaDB / MySQL / PostgreSQL / SQLite).                      |
 | `->unsigned()`                      | Set `INTEGER` columns as `UNSIGNED` (MariaDB / MySQL).                                         |
+| `->using($expression)`              | Specify a casting expression when changing the column type (PostgreSQL).                       |
 | `->useCurrent()`                    | Set `TIMESTAMP` columns to use `CURRENT_TIMESTAMP` as default value.                           |
 | `->useCurrentOnUpdate()`            | Set `TIMESTAMP` columns to use `CURRENT_TIMESTAMP` when a record is updated (MariaDB / MySQL). |
 | `->virtualAs($expression)`          | Create a virtual generated column (MariaDB / MySQL / SQLite).                                  |
@@ -52711,6 +57530,17 @@ $table->bigIncrements('id')->primary()->change();
 $table->char('postal_code', 10)->unique(false)->change();
 ```
 
+<a name="postgresql-column-modifications"></a>
+#### PostgreSQL Column Modifications
+
+When changing a column's type on PostgreSQL, you may use the `using` modifier to specify the expression used to cast the existing values:
+
+```php
+Schema::table('users', function (Blueprint $table) {
+    $table->date('birthday')->using('birthday::date')->change();
+});
+```
+
 <a name="renaming-columns"></a>
 ### Renaming Columns
 
@@ -52750,7 +57580,7 @@ Laravel provides several convenient methods related to dropping common types of 
 
 | Command                             | Description                                           |
 | ----------------------------------- | ----------------------------------------------------- |
-| `$table->dropMorphs('morphable');`  | Drop the `morphable_id` and `morphable_type` columns. |
+| `$table->dropMorphs('morphable');`  | Drop the `morphable_type` and `morphable_id` columns. |
 | `$table->dropRememberToken();`      | Drop the `remember_token` column.                     |
 | `$table->dropSoftDeletes();`        | Drop the `deleted_at` column.                         |
 | `$table->dropSoftDeletesTz();`      | Alias of `dropSoftDeletes()` method.                  |
@@ -52968,12 +57798,13 @@ For convenience, each migration operation will dispatch an [event](/docs/{{versi
 
 | Class                                            | Description                                      |
 | ------------------------------------------------ | ------------------------------------------------ |
+| `Illuminate\Database\Events\DatabaseRefreshed`   | The `migrate:refresh` command has finished.      |
 | `Illuminate\Database\Events\MigrationsStarted`   | A batch of migrations is about to be executed.   |
-| `Illuminate\Database\Events\MigrationsEnded`     | A batch of migrations has finished executing.    |
+| `Illuminate\Database\Events\MigrationsEnded`     | A batch of migrations has finished.              |
 | `Illuminate\Database\Events\MigrationStarted`    | A single migration is about to be executed.      |
-| `Illuminate\Database\Events\MigrationEnded`      | A single migration has finished executing.       |
+| `Illuminate\Database\Events\MigrationEnded`      | A single migration has finished.                 |
 | `Illuminate\Database\Events\NoPendingMigrations` | A migration command found no pending migrations. |
-| `Illuminate\Database\Events\SchemaDumped`        | A database schema dump has completed.            |
+| `Illuminate\Database\Events\SchemaDumped`        | A database schema dump has finished.             |
 | `Illuminate\Database\Events\SchemaLoaded`        | An existing database schema dump has loaded.     |
 
 </div>
@@ -52983,7 +57814,7 @@ For convenience, each migration operation will dispatch an [event](/docs/{{versi
 
 # Laravel Mix
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/mix*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/mix*
 
 - [Introduction](#introduction)
 
@@ -53012,7 +57843,7 @@ If you've ever been confused and overwhelmed about getting started with webpack 
 
 # Mocking
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/mocking*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/mocking*
 
 - [Introduction](#introduction)
 - [Mocking Objects](#mocking-objects)
@@ -53315,7 +58146,7 @@ public function test_forum_threads_lock_after_one_week_of_inactivity()
 
 # MongoDB
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/mongodb*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/mongodb*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -53348,6 +58179,12 @@ To connect to a MongoDB database, the `mongodb` PHP extension is required. If yo
 
 ```shell
 pecl install mongodb
+```
+
+Alternatively, you may install the extension using [PIE](https://github.com/php/pie), the official PHP extension installer:
+
+```shell
+pie install mongodb/mongodb-extension
 ```
 
 For more information on installing the MongoDB PHP extension, check out the [MongoDB PHP extension installation instructions](https://www.php.net/manual/en/mongodb.installation.php).
@@ -53408,9 +58245,11 @@ Once your configuration is complete, you can use the `mongodb` package and datab
 
 - [Using Eloquent](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/eloquent-models/), models can be stored in MongoDB collections. In addition to the standard Eloquent features, the Laravel MongoDB package provides additional features such as embedded relationships. The package also provides direct access to the MongoDB driver, which can be used to execute operations such as raw queries and aggregation pipelines.
 - [Write complex queries](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/query-builder/) using the query builder.
+- [Similarity / vector search](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/fundamentals/vector-search/) using vector embeddings and the `vectorSearch` Eloquent method.
 - The `mongodb` [cache driver](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/cache/) is optimized to use MongoDB features such as TTL indexes to automatically clear expired cache entries.
 - [Dispatch and process queued jobs](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/queues/) with the `mongodb` queue driver.
 - [Storing files in GridFS](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/filesystems/), via the [GridFS Adapter for Flysystem](https://flysystem.thephpleague.com/docs/adapter/gridfs/).
+- [Full-text search](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/scout/) using the `mongodb` Scout engine.
 - Most third party packages using a database connection or Eloquent can be used with MongoDB.
 
 To continue learning how to use MongoDB and Laravel, refer to MongoDB's [Quick Start guide](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/quick-start/).
@@ -53420,7 +58259,7 @@ To continue learning how to use MongoDB and Laravel, refer to MongoDB's [Quick S
 
 # Notifications
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/notifications*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/notifications*
 
 - [Introduction](#introduction)
 - [Generating Notifications](#generating-notifications)
@@ -53698,9 +58537,9 @@ public function viaQueues(): array
 ```
 
 <a name="customizing-queued-notification-job-properties"></a>
-#### Customizing Queued Notification Job Properties
+#### Customizing Queued Notification Job Attributes
 
-You may customize the behavior of the underlying queued job by defining properties on your notification class. These properties will be inherited by the queued job that sends the notification:
+You may customize the behavior of the underlying queued job by defining queue attributes on your notification class. These attributes will be inherited by the queued job that sends the notification:
 
 ```php
 <?php
@@ -53710,31 +58549,18 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Queue\Attributes\FailOnTimeout;
+use Illuminate\Queue\Attributes\MaxExceptions;
+use Illuminate\Queue\Attributes\Timeout;
+use Illuminate\Queue\Attributes\Tries;
 
+#[Tries(5)]
+#[Timeout(120)]
+#[MaxExceptions(3)]
+#[FailOnTimeout]
 class InvoicePaid extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    /**
-     * The number of times the notification may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 5;
-
-    /**
-     * The number of seconds the notification can run before timing out.
-     *
-     * @var int
-     */
-    public $timeout = 120;
-
-    /**
-     * The maximum number of unhandled exceptions to allow before failing.
-     *
-     * @var int
-     */
-    public $maxExceptions = 3;
 
     // ...
 }
@@ -53760,7 +58586,7 @@ class InvoicePaid extends Notification implements ShouldQueue, ShouldBeEncrypted
 }
 ```
 
-In addition to defining these properties directly on your notification class, you may also define `backoff` and `retryUntil` methods to specify the backoff strategy and retry timeout for the queued notification job:
+In addition to defining these attributes directly on your notification class, you may also define `backoff` and `retryUntil` methods to specify the backoff strategy and retry timeout for the queued notification job:
 
 ```php
 use DateTime;
@@ -53783,7 +58609,7 @@ public function retryUntil(): DateTime
 ```
 
 > [!NOTE]
-> For more information on these job properties and methods, please review the documentation on [queued jobs](/docs/{{version}}/queues#max-job-attempts-and-timeout).
+> For more information on these job attributes and methods, please review the documentation on [queued jobs](/docs/{{version}}/queues#max-job-attempts-and-timeout).
 
 <a name="queued-notification-middleware"></a>
 #### Queued Notification Middleware
@@ -54146,22 +58972,6 @@ public function toMail(object $notifiable): MailMessage
 }
 ```
 
-Unlike attaching files in mailable objects, you may not attach a file directly from a storage disk using `attachFromStorage`. You should rather use the `attach` method with an absolute path to the file on the storage disk. Alternatively, you could return a [mailable](/docs/{{version}}/mail#generating-mailables) from the `toMail` method:
-
-```php
-use App\Mail\InvoicePaid as InvoicePaidMailable;
-
-/**
- * Get the mail representation of the notification.
- */
-public function toMail(object $notifiable): Mailable
-{
-    return (new InvoicePaidMailable($this->invoice))
-        ->to($notifiable->email)
-        ->attachFromStorage('/path/to/file');
-}
-```
-
 When necessary, multiple files may be attached to a message using the `attachMany` method:
 
 ```php
@@ -54178,6 +58988,24 @@ public function toMail(object $notifiable): MailMessage
                 'as' => 'Logo.svg',
                 'mime' => 'image/svg+xml',
             ],
+        ]);
+}
+```
+
+You may use the `attachFromStorageDisk` method to attach a file that exists on a specific [filesystem disk](/docs/{{version}}/filesystem). This method accepts the disk name and the path to the file on that disk:
+
+```php
+use App\Mail\InvoicePaid as InvoicePaidMailable;
+
+/**
+ * Get the mail representation of the notification.
+ */
+public function toMail(object $notifiable): Mailable
+{
+    return (new InvoicePaidMailable($this->invoice))
+        ->to($notifiable->email)
+        ->attachFromStorageDisk('s3', '/path/to/file', 'invoice.pdf', [
+            'mime' => 'application/pdf',
         ]);
 }
 ```
@@ -54629,9 +59457,9 @@ Echo.private('App.Models.User.' + userId)
 ```
 
 <a name="using-react-or-vue"></a>
-#### Using React or Vue
+#### Using React, Vue, or Svelte
 
-Laravel Echo includes React and Vue hooks that make it painless to listen for notifications. To get started, invoke the `useEchoNotification` hook, which is used to listen for notifications. The `useEchoNotification` hook will automatically leave channels when the consuming component is unmounted:
+Laravel Echo includes React, Vue, and Svelte hooks that make it painless to listen for notifications. To get started, invoke the `useEchoNotification` hook, which is used to listen for notifications. The `useEchoNotification` hook will automatically leave channels when the consuming component is unmounted:
 
 ```js tab=React
 import { useEchoNotification } from "@laravel/echo-react";
@@ -54647,6 +59475,19 @@ useEchoNotification(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoNotification } from "@laravel/echo-vue";
+
+useEchoNotification(
+    `App.Models.User.${userId}`,
+    (notification) => {
+        console.log(notification.type);
+    },
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoNotification } from "@laravel/echo-svelte";
 
 useEchoNotification(
     `App.Models.User.${userId}`,
@@ -54674,6 +59515,20 @@ useEchoNotification(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoNotification } from "@laravel/echo-vue";
+
+useEchoNotification(
+    `App.Models.User.${userId}`,
+    (notification) => {
+        console.log(notification.type);
+    },
+    'App.Notifications.InvoicePaid',
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoNotification } from "@laravel/echo-svelte";
 
 useEchoNotification(
     `App.Models.User.${userId}`,
@@ -55196,6 +60051,9 @@ test('orders can be shipped', function () {
     // Assert a notification was sent twice...
     Notification::assertSentTimes(WeeklyReminder::class, 2);
 
+    // Assert that a notification was sent to a user exactly once...
+    Notification::assertSentToOnce($user, OrderShipped::class);
+
     // Assert that a given number of notifications were sent...
     Notification::assertCount(3);
 });
@@ -55234,6 +60092,9 @@ class ExampleTest extends TestCase
         // Assert a notification was sent twice...
         Notification::assertSentTimes(WeeklyReminder::class, 2);
 
+        // Assert that a notification was sent to a user exactly once...
+        Notification::assertSentToOnce($user, OrderShipped::class);
+
         // Assert that a given number of notifications were sent...
         Notification::assertCount(3);
     }
@@ -55251,13 +60112,14 @@ Notification::assertSentTo(
 );
 ```
 
-<a name="on-demand-notifications"></a>
+<a name="testing-on-demand-notifications"></a>
 #### On-Demand Notifications
 
 If the code you are testing sends [on-demand notifications](#on-demand-notifications), you can test that the on-demand notification was sent via the `assertSentOnDemand` method:
 
 ```php
 Notification::assertSentOnDemand(OrderShipped::class);
+Notification::assertSentOnDemandOnce(OrderShipped::class);
 ```
 
 By passing a closure as the second argument to the `assertSentOnDemand` method, you may determine if an on-demand notification was sent to the correct "route" address:
@@ -55423,7 +60285,7 @@ class InvoicePaid extends Notification
 
 # Laravel Octane
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/octane*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/octane*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -55448,6 +60310,7 @@ class InvoicePaid extends Notification
 - [Concurrent Tasks](#concurrent-tasks)
 - [Ticks and Intervals](#ticks-and-intervals)
 - [The Octane Cache](#the-octane-cache)
+    - [Cache Intervals](#cache-intervals)
 - [Tables](#tables)
 
 <a name="introduction"></a>
@@ -55860,7 +60723,7 @@ php artisan octane:status
 
 Since Octane boots your application once and keeps it in memory while serving requests, there are a few caveats you should consider while building your application. For example, the `register` and `boot` methods of your application's service providers will only be executed once when the request worker initially boots. On subsequent requests, the same application instance will be reused.
 
-In light of this, you should take special care when injecting the application service container or request into any object's constructor. By doing so, that object may have a  stale version of the container or request on subsequent requests.
+In light of this, you should take special care when injecting the application service container or request into any object's constructor. By doing so, that object may have a stale version of the container or request on subsequent requests.
 
 Octane will automatically handle resetting any first-party framework state between requests. However, Octane does not always know how to reset the global state created by your application. Therefore, you should be aware of how to build your application in a way that is Octane friendly. Below, we will discuss the most common situations that may cause problems while using Octane.
 
@@ -56135,9 +60998,10 @@ return Octane::table('example')->get('uuid');
 
 # Package Development
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/packages*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/packages*
 
 - [Introduction](#introduction)
+    - [Creating a Package](#creating-a-package)
     - [A Note on Facades](#a-note-on-facades)
 - [Package Discovery](#package-discovery)
 - [Service Providers](#service-providers)
@@ -56163,6 +61027,17 @@ Packages are the primary way of adding functionality to Laravel. Packages might 
 There are different types of packages. Some packages are stand-alone, meaning they work with any PHP framework. Carbon and Pest are examples of stand-alone packages. Any of these packages may be used with Laravel by requiring them in your `composer.json` file.
 
 On the other hand, other packages are specifically intended for use with Laravel. These packages may have routes, controllers, views, and configuration specifically intended to enhance a Laravel application. This guide primarily covers the development of those packages that are Laravel specific.
+
+<a name="creating-a-package"></a>
+### Creating a Package
+
+The easiest way to start building a new Laravel package is the official [Laravel package skeleton](https://github.com/laravel/package-skeleton). The skeleton provides everything you need to build a Laravel package, including a service provider, testing via Pest, static analysis via Larastan, code formatting via Pint, and a workbench application for end-to-end package development. You can create a new package using the `package` command of the [Laravel installer CLI](/docs/{{version}}/installation#creating-a-laravel-project):
+
+```shell
+laravel package my-package
+```
+
+An interactive configuration script will personalize the skeleton for your package, setting up your namespace, service provider, and only the features you need, such as configuration files, routes, views, translations, migrations, assets, commands, and a facade.
 
 <a name="a-note-on-facades"></a>
 ### A Note on Facades
@@ -56606,7 +61481,7 @@ php artisan vendor:publish --provider="Your\Package\ServiceProvider"
 
 # Database: Pagination
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/pagination*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/pagination*
 
 - [Introduction](#introduction)
 - [Basic Usage](#basic-usage)
@@ -57029,7 +61904,7 @@ Each cursor paginator instance provides additional pagination information via th
 
 # Laravel Passport
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/passport*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/passport*
 
 - [Introduction](#introduction)
     - [Passport or Sanctum?](#passport-or-sanctum)
@@ -57051,7 +61926,7 @@ Each cursor paginator instance provides additional pagination information via th
     - [Creating the Client](#creating-a-auth-pkce-grant-client)
     - [Requesting Tokens](#requesting-auth-pkce-grant-tokens)
 - [Device Authorization Grant](#device-authorization-grant)
-    - [Creating a Device Code Grant Client](#creating-a-device-authorization-grant-client)
+    - [Creating a Device Authorization Grant Client](#creating-a-device-authorization-grant-client)
     - [Requesting Tokens](#requesting-device-authorization-grant-tokens)
 - [Password Grant](#password-grant)
     - [Creating a Password Grant Client](#creating-a-password-grant-client)
@@ -57062,6 +61937,7 @@ Each cursor paginator instance provides additional pagination information via th
     - [Customizing the Password Validation](#customizing-the-password-validation)
 - [Implicit Grant](#implicit-grant)
 - [Client Credentials Grant](#client-credentials-grant)
+    - [Retrieving Tokens](#retrieving-tokens)
 - [Personal Access Tokens](#personal-access-tokens)
     - [Creating a Personal Access Client](#creating-a-personal-access-client)
     - [Customizing the User Provider](#customizing-the-user-provider-for-pat)
@@ -57585,7 +62461,7 @@ php artisan passport:client --public
 
 As this authorization grant does not provide a client secret, developers will need to generate a combination of a code verifier and a code challenge in order to request a token.
 
-The code verifier should be a random string of between 43 and 128 characters containing letters, numbers, and  `"-"`, `"."`, `"_"`, `"~"` characters, as defined in the [RFC 7636 specification](https://tools.ietf.org/html/rfc7636).
+The code verifier should be a random string of between 43 and 128 characters containing letters, numbers, and `"-"`, `"."`, `"_"`, `"~"` characters, as defined in the [RFC 7636 specification](https://tools.ietf.org/html/rfc7636).
 
 The code challenge should be a Base64 encoded string with URL and filename-safe characters. The trailing `'='` characters should be removed and no line breaks, whitespace, or other additional characters should be present.
 
@@ -58245,6 +63121,37 @@ Route::get('/orders', function () {
 })->middleware(['auth:api', CheckTokenForAnyScope::using('orders:read', 'orders:create')]);
 ```
 
+<a name="scope-attributes"></a>
+#### Scope Attributes
+
+If your application uses [controller middleware attributes](/docs/{{version}}/controllers#middleware-attributes), you may use the `Laravel\Passport\Attributes\AuthorizeToken` attribute as a convenient shortcut for Passport's scope middleware:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Laravel\Passport\Attributes\AuthorizeToken;
+
+#[AuthorizeToken('orders:read')]
+#[AuthorizeToken('orders:create', only: ['store'])]
+class OrderController
+{
+    #[AuthorizeToken(['orders:read', 'orders:create'], anyScope: true)]
+    public function index()
+    {
+        // Access token has either "orders:read" or "orders:create" scope...
+    }
+
+    public function store()
+    {
+        // Access token has both "orders:read" and "orders:create" scopes...
+    }
+}
+```
+
+By default, the `AuthorizeToken` attribute requires all given scopes. If you pass `anyScope: true`, the request is authorized when the token has at least one of the given scopes.
+
 <a name="checking-scopes-on-a-token-instance"></a>
 #### Checking Scopes on a Token Instance
 
@@ -58434,7 +63341,7 @@ public function test_servers_can_be_retrieved(): void
 
 # Resetting Passwords
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/passwords*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/passwords*
 
 - [Introduction](#introduction)
     - [Configuration](#configuration)
@@ -58696,7 +63603,7 @@ public function sendPasswordResetNotification($token): void
 
 # Laravel Pennant
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/pennant*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/pennant*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -58712,6 +63619,7 @@ public function sendPasswordResetNotification($token): void
     - [In-Memory Cache](#in-memory-cache)
 - [Scope](#scope)
     - [Specifying the Scope](#specifying-the-scope)
+    - [Global Scope](#global-scope)
     - [Default Scope](#default-scope)
     - [Nullable Scope](#nullable-scope)
     - [Identifying Scope](#identifying-scope)
@@ -59242,6 +64150,17 @@ if (Feature::for($user->team)->active('billing-v2')) {
 }
 
 // ...
+```
+
+<a name="global-scope"></a>
+### Global Scope
+
+To check or interact with a feature using a global scope, regardless of the configured default scope resolver, use the `globally` method. This is useful for application-wide feature flags, such as temporarily enabling maintenance behavior or rolling out a feature to every user:
+
+```php
+Feature::globally()->active('new-api');
+
+Feature::globally()->activate('new-api');
 ```
 
 <a name="default-scope"></a>
@@ -59899,7 +64818,7 @@ This event is dispatched when purging all features.
 
 # Laravel Pint
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/pint*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/pint*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -59954,6 +64873,12 @@ You may also run Pint on specific files or directories:
 ./vendor/bin/pint app/Models
 
 ./vendor/bin/pint app/Models/User.php
+```
+
+By default, Pint does not format Blade templates. If you would like to format your `.blade.php` files as well, you may use the `--blade` option, which enables the [`Pint/laravel_blade`](#laravel-blade) rule for the current run without modifying your `pint.json` file:
+
+```shell
+./vendor/bin/pint --blade
 ```
 
 Pint will display a thorough list of all of the files that it updates. You can view even more detail about Pint's changes by providing the `-v` option when invoking Pint:
@@ -60049,6 +64974,37 @@ Pint is built on top of [PHP CS Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fi
 #### Custom Rules
 
 In addition to PHP CS Fixer rules, Pint provides custom rules prefixed with `Pint/`. These rules are not enabled by default, but you may enable them in your `pint.json` file.
+
+<a name="laravel-blade"></a>
+##### `Pint/laravel_blade`
+
+This rule formats your Blade templates, applying consistent indentation, spacing, and attribute formatting to your `.blade.php` files. By default, Pint does not format Blade files, so you must enable this rule in your `pint.json` file to opt in:
+
+```json
+{
+    "preset": "laravel",
+    "rules": {
+        "Pint/laravel_blade": true
+    }
+}
+```
+
+Once enabled, Pint will format your Blade templates in addition to your PHP files whenever it runs:
+
+```shell
+./vendor/bin/pint
+```
+
+Alternatively, if you would like to enable this rule for a single run without modifying your `pint.json` file, you may use the `--blade` option:
+
+```shell
+./vendor/bin/pint --blade
+```
+
+Under the hood, this rule uses [Prettier](https://prettier.io) along with the `prettier-plugin-blade` and `prettier-plugin-tailwindcss` plugins, so [Node.js](https://nodejs.org) must be installed on your machine. The first time you run Pint with this rule enabled, Pint will detect any missing Prettier dependencies and prompt you to install them.
+
+> [!NOTE]
+> This rule automatically skips files that typically rely on their own formatting, such as [Laravel Boost](https://github.com/laravel/boost) guidelines and email views located in the `resources/views/emails` and `resources/views/mail` directories.
 
 <a name="phpdoc-type-annotations-only"></a>
 ##### `Pint/phpdoc_type_annotations_only`
@@ -60160,7 +65116,7 @@ jobs:
 
 # Precognition
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/precognition*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/precognition*
 
 - [Introduction](#introduction)
 - [Live Validation](#live-validation)
@@ -60182,7 +65138,7 @@ Laravel Precognition allows you to anticipate the outcome of a future HTTP reque
 When Laravel receives a "precognitive request", it will execute all of the route's middleware and resolve the route's controller dependencies, including validating [form requests](/docs/{{version}}/validation#form-request-validation) - but it will not actually execute the route's controller method.
 
 > [!NOTE]
-> As of Inertia 2.3, Precognition support is built-in. Please consult the [Inertia Forms documentation](https://inertiajs.com/docs/v2/the-basics/forms) for more information. Earlier Inertia versions require Precognition 0.x.
+> As of Inertia 2.3, Precognition support is built-in. Please consult the [Inertia Forms documentation](https://inertiajs.com/forms) for more information. Earlier Inertia versions require Precognition 0.x.
 
 <a name="live-validation"></a>
 ## Live Validation
@@ -60870,7 +65826,7 @@ public function test_it_validates_registration_form_with_precognition()
 
 # Processes
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/processes*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/processes*
 
 - [Introduction](#introduction)
 - [Invoking Processes](#invoking-processes)
@@ -60964,6 +65920,14 @@ By default, processes will throw an instance of `Illuminate\Process\Exceptions\P
 
 ```php
 $result = Process::timeout(120)->run('bash import.sh');
+```
+
+The `timeout` and `idleTimeout` methods also accept `CarbonInterval` instances:
+
+```php
+use function Illuminate\Support\minutes;
+
+$result = Process::timeout(minutes(2))->run('bash import.sh');
 ```
 
 Or, if you would like to disable the process timeout entirely, you may invoke the `forever` method:
@@ -61457,6 +66421,14 @@ use Illuminate\Support\Facades\Process;
 Process::assertRan('ls -la');
 ```
 
+When the process was invoked with an array of arguments, you may pass the same array to the assertion:
+
+```php
+Process::assertRan(['php', 'artisan', 'migrate']);
+```
+
+The `assertRanTimes` and `assertDidntRun` methods also accept array commands.
+
 The `assertRan` method also accepts a closure, which will receive an instance of a process and a process result, allowing you to inspect the process' configured options. If this closure returns `true`, the assertion will "pass":
 
 ```php
@@ -61507,6 +66479,20 @@ Process::assertRanTimes(function (PendingProcess $process, ProcessResult $result
 }, times: 3);
 ```
 
+<a name="assert-processes-ran-in-order"></a>
+#### assertRanInOrder
+
+Assert that processes were invoked in a given order:
+
+```php
+Process::assertRanInOrder([
+    'git fetch',
+    'composer install',
+]);
+```
+
+The `assertRanInOrder` method accepts command strings, arrays of command arguments, or closures like the other process assertions.
+
 <a name="preventing-stray-processes"></a>
 ### Preventing Stray Processes
 
@@ -61533,7 +66519,7 @@ Process::run('bash import.sh');
 
 # Prompts
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/prompts*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/prompts*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -61553,13 +66539,13 @@ Process::run('bash import.sh');
 - [Transforming Input Before Validation](#transforming-input-before-validation)
 - [Forms](#forms)
 - [Informational Messages](#informational-messages)
+- [Callouts](#callouts)
 - [Tables](#tables)
 - [Spin](#spin)
 - [Progress Bar](#progress)
 - [Task](#task)
 - [Stream](#stream)
 - [Terminal Title](#terminal-title)
-- [Notifications](#notifications)
 - [Clearing the Terminal](#clear)
 - [Terminal Considerations](#terminal-considerations)
 - [Unsupported Environments and Fallbacks](#fallbacks)
@@ -62342,7 +67328,7 @@ If you have a lot of searchable options and need the user to be able to select m
 use function Laravel\Prompts\multisearch;
 
 $ids = multisearch(
-    'Search for the users that should receive the mail',
+    'Search for users who should receive the mail',
     fn (string $value) => strlen($value) > 0
         ? User::whereLike('name', "%{$value}%")->pluck('name', 'id')->all()
         : []
@@ -62357,7 +67343,7 @@ When filtering an array where you intend to return the value, you should use the
 $names = collect(['Taylor', 'Abigail']);
 
 $selected = multisearch(
-    label: 'Search for the users that should receive the mail',
+    label: 'Search for users who should receive the mail',
     options: fn (string $value) => $names
         ->filter(fn ($name) => Str::contains($name, $value, ignoreCase: true))
         ->values()
@@ -62369,7 +67355,7 @@ You may also include placeholder text and an informational hint:
 
 ```php
 $ids = multisearch(
-    label: 'Search for the users that should receive the mail',
+    label: 'Search for users who should receive the mail',
     placeholder: 'E.g. Taylor Otwell',
     options: fn (string $value) => strlen($value) > 0
         ? User::whereLike('name', "%{$value}%")->pluck('name', 'id')->all()
@@ -62633,6 +67619,100 @@ use function Laravel\Prompts\info;
 info('Package installed successfully.');
 ```
 
+<a name="callouts"></a>
+## Callouts
+
+The `callout` function displays a boxed message with a label and content. Callouts are useful for displaying important information that should stand out, such as deployment summaries, error details, or status updates:
+
+```php
+use function Laravel\Prompts\callout;
+
+callout(
+    label: 'Environment Configured',
+    content: 'Your application is running in production mode with 4 workers.',
+);
+```
+
+You may pass `warning` or `error` as the `type` argument to change the callout's visual style:
+
+```php
+callout(
+    label: 'Deprecation Notice',
+    content: 'The `--prefer-stable` flag will be removed in v4.0. Use `--stability=stable` instead.',
+    type: 'warning',
+);
+
+callout(
+    label: 'Database Connection Failed',
+    content: 'Could not connect to MySQL on 127.0.0.1:3306.',
+    type: 'error',
+);
+```
+
+The `info` argument adds a footer line to the callout, which is useful for displaying metadata like IDs or timestamps:
+
+```php
+callout(
+    label: 'Deployment Summary',
+    content: 'Your application was deployed to production.',
+    info: 'deploy-id: d4f8a2c',
+);
+```
+
+<a name="callout-rich-content"></a>
+#### Rich Content
+
+Instead of passing a string, you may pass an array of strings and elements to build rich, structured callouts. The `Element` class provides factory methods for creating headings, bulleted lists, numbered lists, key-value lists, and links:
+
+```php
+use Laravel\Prompts\Elements\Element;
+
+use function Laravel\Prompts\callout;
+
+callout('Deployment Summary', [
+    'Your application was deployed to production at 2024-03-15 14:32 UTC.',
+    Element::heading('What Changed'),
+    Element::bulletedList([
+        'Migrated 3 pending database migrations',
+        'Cleared and rebuilt route cache',
+        'Restarted 4 queue workers',
+    ]),
+    Element::heading('Next Steps'),
+    Element::numberedList([
+        'Verify the health check endpoint at /up',
+        'Monitor error rates for the next 15 minutes',
+        'Confirm background jobs are processing',
+    ]),
+]);
+```
+
+You may also use `Element::keyValueList` to display labeled data:
+
+```php
+callout('Database Connection Failed', [
+    'Could not connect to the database server.',
+    Element::keyValueList([
+        'Host' => '127.0.0.1',
+        'Port' => '3306',
+        'Database' => 'forge',
+        'Status' => 'Connection refused',
+    ]),
+], type: 'error');
+```
+
+The `Element::link` method creates a clickable hyperlink in terminals that support [OSC 8](https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda). You may provide a URL alone, or a URL with a custom label:
+
+```php
+callout('Server Health Check', [
+    'Multiple services are reporting degraded performance.',
+    Element::heading('Affected Services'),
+    'Look here: '.Element::link('https://example.com/health', 'Health Dashboard'),
+    Element::link('https://example.com/health'),
+]);
+```
+
+If no label is provided, the URL itself will be displayed as the link text.
+
 <a name="tables"></a>
 ## Tables
 
@@ -62797,6 +67877,36 @@ task(
 );
 ```
 
+<a name="task-sub-label"></a>
+#### Displaying a Sub-Label
+
+The `subLabel` method displays a dim line beneath the task's main label, which is useful for communicating ephemeral status such as the step currently in progress. Pass an empty string to clear the sub-label:
+
+```php
+task(
+    label: 'Deploying',
+    callback: function ($logger) {
+        $logger->subLabel('Building assets...');
+        // ...
+        $logger->subLabel('Running migrations...');
+        // ...
+        $logger->subLabel('');
+    }
+);
+```
+
+You may also provide an initial sub-label via the `subLabel` argument:
+
+```php
+task(
+    label: 'Deploying',
+    callback: function ($logger) {
+        // ...
+    },
+    subLabel: 'Preparing...'
+);
+```
+
 <a name="task-streaming"></a>
 #### Streaming Text
 
@@ -62827,6 +67937,23 @@ task(
         // ...
     },
     limit: 20
+);
+```
+
+<a name="task-keep-summary"></a>
+#### Keeping the Summary
+
+By default, the task's output is erased once the callback finishes. If you would like to keep the status messages on screen after the task has completed, you may pass the `keepSummary` argument:
+
+```php
+task(
+    label: 'Deploying',
+    callback: function ($logger) {
+        $logger->success('Assets built');
+        // ...
+        $logger->success('Migrations complete');
+    },
+    keepSummary: true,
 );
 ```
 
@@ -62865,40 +67992,6 @@ To reset the terminal title back to its default, pass an empty string:
 
 ```php
 title('');
-```
-
-<a name="notifications"></a>
-## Notifications
-
-The `notify` function sends a native desktop notification from the terminal:
-
-```php
-use function Laravel\Prompts\notify;
-
-notify('Build Complete', 'Deployed to production');
-```
-
-Notifications are supported on macOS (via `osascript`) and Linux (via `notify-send` with `kdialog` fallback).
-
-On macOS, you may also include a `subtitle` and a `sound`:
-
-```php
-notify(
-    title: 'Build Complete',
-    body: 'Deployed to production',
-    subtitle: 'staging-server',
-    sound: 'Glass',
-);
-```
-
-On Linux, you may provide a custom `icon`:
-
-```php
-notify(
-    title: 'Build Complete',
-    body: 'Deployed to production',
-    icon: '/path/to/icon.png',
-);
 ```
 
 <a name="clear"></a>
@@ -63036,7 +68129,7 @@ public function test_report_generation(): void
 
 # Service Providers
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/providers*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/providers*
 
 - [Introduction](#introduction)
 - [Writing Service Providers](#writing-service-providers)
@@ -63260,7 +68353,7 @@ class RiakServiceProvider extends ServiceProvider implements DeferrableProvider
 
 # Laravel Pulse
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/pulse*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/pulse*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -64089,7 +69182,7 @@ class Deployments
 
 # Database: Query Builder
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/queries*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/queries*
 
 - [Introduction](#introduction)
 - [Running Database Queries](#running-database-queries)
@@ -64454,7 +69547,7 @@ $orders = DB::table('orders')
 ```
 
 <a name="groupbyraw"></a>
-### `groupByRaw`
+#### `groupByRaw`
 
 The `groupByRaw` method may be used to provide a raw string as the value of the `group by` clause:
 
@@ -64669,7 +69762,7 @@ $users = DB::table('users')
 If you need to group an "or" condition within parentheses, you may pass a closure as the first argument to the `orWhere` method:
 
 ```php
-use Illuminate\Database\Query\Builder; 
+use Illuminate\Database\Query\Builder;
 
 $users = DB::table('users')
     ->where('votes', '>', 100)
@@ -65007,6 +70100,18 @@ $users = DB::table('users')
     ->get();
 ```
 
+**whereNullSafeEquals / orWhereNullSafeEquals**
+
+The `whereNullSafeEquals` and `orWhereNullSafeEquals` methods may be used to compare a column's value against a given value while treating two `NULL` values as equal:
+
+```php
+$lastLoginIp = $request->input('last_login_ip');
+
+$users = DB::table('users')
+    ->whereNullSafeEquals('last_login_ip', $lastLoginIp)
+    ->get();
+```
+
 **whereDate / whereMonth / whereDay / whereYear / whereTime**
 
 The `whereDate` method may be used to compare a column's value against a date:
@@ -65243,7 +70348,7 @@ $users = DB::table('users')
 ### Vector Similarity Clauses
 
 > [!NOTE]
-> Vector similarity clauses are currently only supported on PostgreSQL connections using the `pgvector` extension. For information on defining vector columns and indexes, consult the [migration documentation](/docs/{{version}}/migrations#available-column-types).
+> Vector similarity clauses are currently supported on PostgreSQL connections using the `pgvector` extension and MariaDB 11.7 or later. For information on defining vector columns and indexes, consult the [migration documentation](/docs/{{version}}/migrations#available-column-types).
 
 The `whereVectorSimilarTo` method filters results by cosine similarity to a given vector and orders the results by relevance. The `minSimilarity` threshold should be a value between `0.0` and `1.0`, where `1.0` is identical:
 
@@ -65831,7 +70936,7 @@ DB::table('users')->where('votes', '>', 100)->ddRawSql();
 
 # Queues
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/queues*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/queues*
 
 - [Introduction](#introduction)
     - [Connections vs. Queues](#connections-vs-queues)
@@ -65840,15 +70945,19 @@ DB::table('users')->where('votes', '>', 100)->ddRawSql();
     - [Generating Job Classes](#generating-job-classes)
     - [Class Structure](#class-structure)
     - [Unique Jobs](#unique-jobs)
+    - [Debounced Jobs](#debounced-jobs)
     - [Encrypted Jobs](#encrypted-jobs)
 - [Job Middleware](#job-middleware)
     - [Rate Limiting](#rate-limiting)
     - [Preventing Job Overlaps](#preventing-job-overlaps)
     - [Throttling Exceptions](#throttling-exceptions)
+    - [Releasing Jobs](#releasing-jobs)
     - [Skipping Jobs](#skipping-jobs)
 - [Dispatching Jobs](#dispatching-jobs)
     - [Delayed Dispatching](#delayed-dispatching)
     - [Synchronous Dispatching](#synchronous-dispatching)
+    - [Bulk Dispatching](#bulk-dispatching)
+    - [Preparing Jobs Before Dispatch](#preparing-jobs-before-dispatch)
     - [Jobs & Database Transactions](#jobs-and-database-transactions)
     - [Job Chaining](#job-chaining)
     - [Customizing The Queue and Connection](#customizing-the-queue-and-connection)
@@ -65871,6 +70980,7 @@ DB::table('users')->where('votes', '>', 100)->ddRawSql();
     - [The `queue:work` Command](#the-queue-work-command)
     - [Queue Priorities](#queue-priorities)
     - [Queue Workers and Deployment](#queue-workers-and-deployment)
+    - [Reacting to Worker Signals](#reacting-to-worker-signals)
     - [Job Expirations and Timeouts](#job-expirations-and-timeouts)
     - [Pausing and Resuming Queue Workers](#pausing-and-resuming-queue-workers)
 - [Supervisor Configuration](#supervisor-configuration)
@@ -65985,6 +71095,35 @@ Adjusting this value based on your queue load can be more efficient than continu
 > [!WARNING]
 > Setting `block_for` to `0` will cause queue workers to block indefinitely until a job is available. This will also prevent signals such as `SIGTERM` from being handled until the next job has been processed.
 
+<a name="sqs-overflow-storage"></a>
+#### SQS Overflow Storage
+
+Amazon SQS limits the maximum size of a queued message payload. If you need to dispatch jobs with payloads that may exceed this limit, you may configure Laravel to store oversized SQS payloads in a cache store and send a pointer through SQS instead. To enable this feature, add an `overflow` array to your SQS queue connection configuration:
+
+```php
+'sqs' => [
+    'driver' => 'sqs',
+    'key' => env('AWS_ACCESS_KEY_ID'),
+    'secret' => env('AWS_SECRET_ACCESS_KEY'),
+    'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+    'queue' => env('SQS_QUEUE', 'default'),
+    'suffix' => env('SQS_SUFFIX'),
+    'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+    'after_commit' => false,
+    'overflow' => [
+        'enabled' => env('SQS_OVERFLOW_ENABLED', false),
+        'store' => env('SQS_OVERFLOW_STORE'),
+        'always' => false,
+        'delete_after_processing' => true,
+        'flush_on_clear' => env('SQS_OVERFLOW_FLUSH_ON_CLEAR', false),
+    ],
+],
+```
+
+When overflow storage is enabled, Laravel will store payloads that are at least 1 MB in the configured cache store. If the `always` option is `true`, every SQS payload will be stored in the cache store regardless of its size. Since queued jobs will need to retrieve their payloads from the cache store when they are processed, you should choose a store that can retain the payloads until your workers process them. By default, stored payloads are deleted after their jobs have been successfully processed and deleted from SQS.
+
+If the `flush_on_clear` option is `true`, the configured overflow cache store will be flushed when the `queue:clear` command clears the SQS queue. Since flushing a cache store may remove all items from that store, you should configure SQS overflow storage to use a dedicated cache store when enabling this option.
+
 <a name="other-driver-prerequisites"></a>
 #### Other Driver Prerequisites
 
@@ -65994,7 +71133,7 @@ The following dependencies are needed for the listed queue drivers. These depend
 
 - Amazon SQS: `aws/aws-sdk-php ~3.0`
 - Beanstalkd: `pda/pheanstalk ~5.0`
-- Redis: `predis/predis ~2.0` or phpredis PHP extension
+- Redis: `predis/predis ~3.0` or phpredis PHP extension
 - [MongoDB](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/current/queues/): `mongodb/laravel-mongodb`
 
 </div>
@@ -66094,6 +71233,12 @@ public function __construct(
 }
 ```
 
+If you only need to remove specific relations while keeping the rest, you may use the `withoutRelation` method:
+
+```php
+$this->podcast = $podcast->withoutRelation('comments');
+```
+
 If you are using [PHP constructor property promotion](https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion) and would like to indicate that an Eloquent model should not have its relations serialized, you may use the `WithoutRelations` attribute:
 
 ```php
@@ -66163,7 +71308,7 @@ class UpdateSearchIndex implements ShouldQueue, ShouldBeUnique
 
 In the example above, the `UpdateSearchIndex` job is unique. So, the job will not be dispatched if another instance of the job is already on the queue and has not finished processing.
 
-In certain cases, you may want to define a specific "key" that makes the job unique or you may want to specify a timeout beyond which the job no longer stays unique. To accomplish this, you may define `uniqueId` and `uniqueFor` properties or methods on your job class:
+In certain cases, you may want to define a specific "key" that makes the job unique or you may want to specify a timeout beyond which the job no longer stays unique. To accomplish this, you may use the `UniqueFor` attribute and define a `uniqueId` method on your job class:
 
 ```php
 <?php
@@ -66172,7 +71317,9 @@ namespace App\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\Attributes\UniqueFor;
 
+#[UniqueFor(3600)]
 class UpdateSearchIndex implements ShouldQueue, ShouldBeUnique
 {
     /**
@@ -66183,13 +71330,6 @@ class UpdateSearchIndex implements ShouldQueue, ShouldBeUnique
     public $product;
 
     /**
-     * The number of seconds after which the job's unique lock will be released.
-     *
-     * @var int
-     */
-    public $uniqueFor = 3600;
-
-    /**
      * Get the unique ID for the job.
      */
     public function uniqueId(): string
@@ -66198,7 +71338,6 @@ class UpdateSearchIndex implements ShouldQueue, ShouldBeUnique
     }
 }
 ```
-
 In the example above, the `UpdateSearchIndex` job is unique by a product ID. So, any new dispatches of the job with the same product ID will be ignored until the existing job has completed processing. In addition, if the existing job is not processed within one hour, the unique lock will be released and another job with the same unique key can be dispatched to the queue.
 
 > [!WARNING]
@@ -66246,6 +71385,76 @@ class UpdateSearchIndex implements ShouldQueue, ShouldBeUnique
 
 > [!NOTE]
 > If you only need to limit the concurrent processing of a job, use the [WithoutOverlapping](/docs/{{version}}/queues#preventing-job-overlaps) job middleware instead.
+
+<a name="debounced-jobs"></a>
+### Debounced Jobs
+
+Sometimes, you may want to ensure that when the same job is dispatched many times in a short window, only the latest dispatch actually executes. You may do so by adding the `DebounceFor` attribute to your job:
+
+```php
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Attributes\DebounceFor;
+
+#[DebounceFor(30)]
+class UpdateSearchIndex implements ShouldQueue
+{
+    use Queueable;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(public int $productId)
+    {
+    }
+
+    /**
+     * Get the debounce ID for the job.
+     */
+    public function debounceId(): string
+    {
+        return (string) $this->productId;
+    }
+}
+```
+
+In the example above, repeatedly dispatching `UpdateSearchIndex` for the same product within `30` seconds will debounce the job so that only the latest dispatch runs.
+
+If you would like to cap how long a frequently re-dispatched job can be deferred, you may provide the `maxWait` argument to the `DebounceFor` attribute:
+
+```php
+#[DebounceFor(30, maxWait: 120)]
+class UpdateSearchIndex implements ShouldQueue
+{
+    use Queueable;
+
+    // ...
+}
+```
+
+You may customize the cache store used for debounce tracking by defining a `debounceVia` method on your job:
+
+```php
+use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Support\Facades\Cache;
+
+public function debounceVia(): Repository
+{
+    return Cache::driver('redis');
+}
+```
+
+If a debounced job is superseded by a newer dispatch, Laravel will dispatch the `Illuminate\Queue\Events\JobDebounced` event and remove the superseded job from the queue.
+
+> [!WARNING]
+> Debounced jobs and unique jobs are mutually exclusive. A job using the `DebounceFor` attribute should not implement `ShouldBeUnique`.
+
+> [!WARNING]
+> If your application dispatches debounced jobs from multiple web servers or containers, you should ensure that all of your servers are communicating with the same central cache server.
 
 <a name="encrypted-jobs"></a>
 ### Encrypted Jobs
@@ -66390,7 +71599,7 @@ public function middleware(): array
 }
 ```
 
-Releasing a rate limited job back onto the queue will still increment the job's total number of `attempts`. You may wish to tune your `tries` and `maxExceptions` properties on your job class accordingly. Or, you may wish to use the [retryUntil method](#time-based-attempts) to define the amount of time until the job should no longer be attempted.
+Releasing a rate limited job back onto the queue will still increment the job's total number of `attempts`. You may wish to tune your `Tries` and `MaxExceptions` attributes on your job class accordingly. Or, you may wish to use the [retryUntil method](#time-based-attempts) to define the amount of time until the job should no longer be attempted.
 
 Using the `releaseAfter` method, you may also specify the number of seconds that must elapse before the released job will be attempted again:
 
@@ -66461,7 +71670,7 @@ public function middleware(): array
 }
 ```
 
-Releasing an overlapping job back onto the queue will still increment the job's total number of attempts. You may wish to tune your `tries` and `maxExceptions` properties on your job class accordingly. For example, leaving the `tries` property to 1 as it is by default would prevent any overlapping job from being retried later.
+Releasing an overlapping job back onto the queue will still increment the job's total number of attempts. You may wish to tune your `Tries` and `MaxExceptions` attributes on your job class accordingly. For example, leaving `Tries` to 1 as it is by default would prevent any overlapping job from being retried later.
 
 Any overlapping jobs of the same type will be released back to the queue. You may also specify the number of seconds that must elapse before the released job will be attempted again:
 
@@ -66589,6 +71798,28 @@ public function middleware(): array
 }
 ```
 
+The `backoff` method also accepts a closure that receives the thrown exception, allowing the delay to be determined dynamically:
+
+```php
+use App\Exceptions\RateLimitedException;
+use Illuminate\Queue\Middleware\ThrottlesExceptions;
+use Throwable;
+
+/**
+ * Get the middleware the job should pass through.
+ *
+ * @return array<int, object>
+ */
+public function middleware(): array
+{
+    return [(new ThrottlesExceptions(10, 5 * 60))->backoff(
+        fn (Throwable $throwable) => $throwable instanceof RateLimitedException
+            ? $throwable->retryAfterMinutes()
+            : 5
+    )];
+}
+```
+
 Internally, this middleware uses Laravel's cache system to implement rate limiting, and the job's class name is utilized as the cache "key". You may override this key by calling the `by` method when attaching the middleware to your job. This may be useful if you have multiple jobs interacting with the same third-party service and you would like them to share a common throttling "bucket" ensuring they respect a single shared limit:
 
 ```php
@@ -66678,6 +71909,45 @@ The `connection` method may be used to specify which Redis connection the middle
 
 ```php
 return [(new ThrottlesExceptionsWithRedis(10, 10 * 60))->connection('limiter')];
+```
+
+<a name="releasing-jobs"></a>
+### Releasing Jobs
+
+The `Release` middleware allows you to release a job back onto the queue without executing it. The `Release::when` method will release the job if the given condition evaluates to `true`, while the `Release::unless` method will release the job if the condition evaluates to `false`:
+
+```php
+use Illuminate\Queue\Middleware\Release;
+
+/**
+ * Get the middleware the job should pass through.
+ */
+public function middleware(): array
+{
+    return [
+        Release::when($condition, releaseAfter: 60),
+    ];
+}
+```
+
+Releasing a job back onto the queue will still increment the job's total number of attempts. You may wish to tune your `Tries` and `MaxExceptions` attributes on your job class accordingly.
+
+You can also pass a `Closure` to the `when` and `unless` methods for more complex conditional evaluation:
+
+```php
+use Illuminate\Queue\Middleware\Release;
+
+/**
+ * Get the middleware the job should pass through.
+ */
+public function middleware(): array
+{
+    return [
+        Release::when(function (): bool {
+            return ! $this->order->isPaid();
+        }, releaseAfter: 60),
+    ];
+}
 ```
 
 <a name="skipping-jobs"></a>
@@ -66851,6 +72121,58 @@ Similarly, the `background` connection processes jobs after the HTTP response ha
 
 ```php
 RecordDelivery::dispatch($order)->onConnection('background');
+```
+
+<a name="bulk-dispatching"></a>
+### Bulk Dispatching
+
+If you need to dispatch many independent jobs at once and do not need [batch](#job-batching) tracking or callbacks, you may use the `bulk` method of the `Bus` facade. Laravel will group the jobs by their configured queue connection and queue name and push each group to the appropriate queue in bulk:
+
+```php
+use App\Jobs\ProcessUser;
+use Illuminate\Support\Facades\Bus;
+
+Bus::bulk(
+    $users->map(fn ($user) => new ProcessUser($user))
+);
+```
+
+<a name="preparing-jobs-before-dispatch"></a>
+### Preparing Jobs Before Dispatch
+
+If a job needs to prepare or inspect its state before it is pushed onto the queue, the job may implement the `Illuminate\Contracts\Queue\PreparesForDispatch` interface. Laravel will invoke the job's `prepareForDispatch` method before dispatching the job. If this method returns `false`, the job will not be dispatched:
+
+```php
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Contracts\Queue\PreparesForDispatch;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Cache;
+
+class SyncPodcasts implements PreparesForDispatch, ShouldQueue
+{
+    use Queueable;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(
+        public array $podcastIds,
+    ) {}
+
+    /**
+     * Prepare the job before dispatching.
+     */
+    public function prepareForDispatch(): bool
+    {
+        return collect($this->podcastIds)
+            ->reject(fn (int $id) => Cache::has("podcast-syncing:{$id}"))
+            ->isNotEmpty();
+    }
+}
 ```
 
 <a name="jobs-and-database-transactions"></a>
@@ -67040,9 +72362,6 @@ class ProcessPodcast implements ShouldQueue
 }
 ```
 
-> [!WARNING]
-> Constructor-based queue assignment via `onQueue` only works for job classes. For [queued event listeners](/docs/{{version}}/events#customizing-the-queue-connection-queue-name), define a `viaQueue` method or a `$queue` property on the listener class instead.
-
 <a name="dispatching-to-a-particular-connection"></a>
 #### Dispatching to a Particular Connection
 
@@ -67108,6 +72427,68 @@ class ProcessPodcast implements ShouldQueue
 }
 ```
 
+<a name="queue-routing"></a>
+#### Queue Routing
+
+You may use the `Queue` facade's `route` method to define a default connection and queue for specific job classes. This is useful when you want to ensure certain jobs always use specific queues without needing to specify the connection or queue on the job.
+
+In addition to routing specific job classes, you may also pass an interface, trait, or parent class to the `route` method. When you do this, any job that implements the interface, uses the trait, or extends the parent class will automatically use the configured connection and queue.
+
+Typically, you should call the `route` method from the `boot` method of a service provider:
+
+```php
+use App\Concerns\RequiresVideo;
+use App\Jobs\ProcessPodcast;
+use App\Jobs\ProcessVideo;
+use Illuminate\Support\Facades\Queue;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    Queue::route(ProcessPodcast::class, connection: 'redis', queue: 'podcasts');
+    Queue::route(RequiresVideo::class, queue: 'video');
+}
+```
+
+When a connection is specified without a queue, the job will be sent to the default queue:
+
+```php
+Queue::route(ProcessPodcast::class, connection: 'redis');
+```
+
+You may also route multiple job classes at once by passing an array to the `route` method:
+
+```php
+Queue::route([
+    ProcessPodcast::class => ['redis', 'podcasts'], // Connection and queue
+    ProcessVideo::class => 'videos', // Queue only (uses default connection)
+]);
+```
+
+> [!NOTE]
+> Queue routing can still be overridden by the job on a per-job basis.
+
+You may use the `forward` method to forward jobs from one queue to another queue and / or connection. This is useful when you need to change queue infrastructure without modifying individual jobs or dispatch locations:
+
+```php
+Queue::forward('reports', 'reports.fifo', 'sqs');
+Queue::forward('payments', connection: 'sqs');
+Queue::forward('updates', 'notifications');
+```
+
+You may also forward multiple queues at once by passing an array:
+
+```php
+Queue::forward([
+    'reports' => 'reports.fifo',
+    'emails' => 'emails.fifo',
+], connection: 'sqs');
+```
+
+An explicit connection configured on a job takes precedence over a forwarded connection.
+
 <a name="max-job-attempts-and-timeout"></a>
 ### Specifying Max Job Attempts / Timeout Values
 
@@ -67143,21 +72524,19 @@ php artisan queue:work --tries=3
 
 If a job exceeds its maximum number of attempts, it will be considered a "failed" job. For more information on handling failed jobs, consult the [failed job documentation](#dealing-with-failed-jobs). If `--tries=0` is provided to the `queue:work` command, the job will be retried indefinitely.
 
-You may take a more granular approach by defining the maximum number of times a job may be attempted on the job class itself. If the maximum number of attempts is specified on the job, it will take precedence over the `--tries` value provided on the command line:
+You may take a more granular approach by defining the maximum number of times a job may be attempted on the job class itself using the `Tries` attribute. If the maximum number of attempts is specified on the job, it will take precedence over the `--tries` value provided on the command line:
 
 ```php
 <?php
 
 namespace App\Jobs;
 
+use Illuminate\Queue\Attributes\Tries;
+
+#[Tries(5)]
 class ProcessPodcast implements ShouldQueue
 {
-    /**
-     * The number of times the job may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 5;
+    // ...
 }
 ```
 
@@ -67193,12 +72572,12 @@ public function retryUntil(): DateTime
 If both `retryUntil` and `tries` are defined, Laravel gives precedence to the `retryUntil` method.
 
 > [!NOTE]
-> You may also define a `tries` property or `retryUntil` method on your [queued event listeners](/docs/{{version}}/events#queued-event-listeners) and [queued notifications](/docs/{{version}}/notifications#queueing-notifications).
+> You may also define a `Tries` attribute or `retryUntil` method on your [queued event listeners](/docs/{{version}}/events#queued-event-listeners) and [queued notifications](/docs/{{version}}/notifications#queueing-notifications).
 
 <a name="max-exceptions"></a>
 #### Max Exceptions
 
-Sometimes you may wish to specify that a job may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the `release` method directly). To accomplish this, you may define a `maxExceptions` property on your job class:
+Sometimes you may wish to specify that a job may be attempted many times, but should fail if the retries are triggered by a given number of unhandled exceptions (as opposed to being released by the `release` method directly). To accomplish this, you may use the `Tries` and `MaxExceptions` attributes on your job class:
 
 ```php
 <?php
@@ -67207,25 +72586,15 @@ namespace App\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Attributes\MaxExceptions;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Support\Facades\Redis;
 
+#[Tries(25)]
+#[MaxExceptions(3)]
 class ProcessPodcast implements ShouldQueue
 {
     use Queueable;
-
-    /**
-     * The number of times the job may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 25;
-
-    /**
-     * The maximum number of unhandled exceptions to allow before failing.
-     *
-     * @var int
-     */
-    public $maxExceptions = 3;
 
     /**
      * Execute the job.
@@ -67244,6 +72613,35 @@ class ProcessPodcast implements ShouldQueue
 
 In this example, the job is released for ten seconds if the application is unable to obtain a Redis lock and will continue to be retried up to 25 times. However, the job will fail if three unhandled exceptions are thrown by the job.
 
+<a name="stopping-retries-by-exception"></a>
+#### Stopping Retries by Exception
+
+Sometimes an exception indicates that a queued job should fail immediately instead of being released for another attempt. You may configure exception types that should stop job retries using the `dontRetry` exception method in your application's `bootstrap/app.php` file:
+
+```php
+use App\Exceptions\InvalidPodcastSourceException;
+use Illuminate\Foundation\Configuration\Exceptions;
+
+->withExceptions(function (Exceptions $exceptions): void {
+    $exceptions->dontRetry([
+        InvalidPodcastSourceException::class,
+    ]);
+})
+```
+
+If you need more control over when retries should stop, you may provide a closure to the `dontRetryWhen` method. When the closure returns `true`, the job will be marked as failed and will not be retried:
+
+```php
+use App\Exceptions\PodcastProcessingException;
+use Illuminate\Foundation\Configuration\Exceptions;
+
+->withExceptions(function (Exceptions $exceptions): void {
+    $exceptions->dontRetryWhen(function (PodcastProcessingException $e) {
+        return $e->reason() === 'Subscription expired';
+    });
+})
+```
+
 <a name="timeout"></a>
 #### Timeout
 
@@ -67257,41 +72655,44 @@ php artisan queue:work --timeout=30
 
 If the job exceeds its maximum attempts by continually timing out, it will be marked as failed.
 
-You may also define the maximum number of seconds a job should be allowed to run on the job class itself. If the timeout is specified on the job, it will take precedence over any timeout specified on the command line:
+You may also define the maximum number of seconds a job should be allowed to run using the `Timeout` attribute on the job class. If the timeout is specified on the job, it will take precedence over any timeout specified on the command line:
 
 ```php
 <?php
 
 namespace App\Jobs;
 
+use Illuminate\Queue\Attributes\Timeout;
+
+#[Timeout(120)]
 class ProcessPodcast implements ShouldQueue
 {
-    /**
-     * The number of seconds the job can run before timing out.
-     *
-     * @var int
-     */
-    public $timeout = 120;
+    // ...
 }
 ```
 
 Sometimes, IO blocking processes such as sockets or outgoing HTTP connections may not respect your specified timeout. Therefore, when using these features, you should always attempt to specify a timeout using their APIs as well. For example, when using [Guzzle](https://docs.guzzlephp.org), you should always specify a connection and request timeout value.
 
 > [!WARNING]
-> The [PCNTL](https://www.php.net/manual/en/book.pcntl.php) PHP extension must be installed in order to specify job timeouts. In addition, a job's "timeout" value should always be less than its ["retry after"](#job-expiration) value. Otherwise, the job may be re-attempted before it has actually finished executing or timed out.
+> The [PCNTL](https://www.php.net/manual/en/book.pcntl.php) PHP extension must be installed in order to specify job timeouts. In addition, a job's "timeout" value should always be less than its ["retry after"](#job-expiration) value. Otherwise, the job may be re-attempted before it has actually finished executing or timed out. The `--timeout` option has no effect when the `queue:work` command is invoked with the `--once` option.
 
 <a name="failing-on-timeout"></a>
 #### Failing on Timeout
 
-If you would like to indicate that a job should be marked as [failed](#dealing-with-failed-jobs) on timeout, you may define the `$failOnTimeout` property on the job class:
+If you would like to indicate that a job should be marked as [failed](#dealing-with-failed-jobs) on timeout, you may use the `FailOnTimeout` attribute on the job class:
 
 ```php
-/**
- * Indicate if the job should be marked as failed on timeout.
- *
- * @var bool
- */
-public $failOnTimeout = true;
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Queue\Attributes\FailOnTimeout;
+
+#[FailOnTimeout]
+class ProcessPodcast implements ShouldQueue
+{
+    // ...
+}
 ```
 
 > [!NOTE]
@@ -67300,7 +72701,7 @@ public $failOnTimeout = true;
 <a name="sqs-fifo-and-fair-queues"></a>
 ### SQS FIFO and Fair Queues
 
-Laravel supports [Amazon SQS FIFO (First-In-First-Out)](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queues.html) queues, allowing you to process jobs in the exact order they were sent while ensuring exactly-once processing through message deduplication.
+Laravel supports [Amazon SQS FIFO (First-In-First-Out)](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queues.html) and [fair](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fair-queues.html) queues. FIFO queues allow you to process jobs in the exact order they were sent while ensuring exactly-once processing through message deduplication.
 
 FIFO queues require a message group ID to determine which jobs can be processed in parallel. Jobs with the same group ID are processed sequentially, while messages with different group IDs can be processed concurrently.
 
@@ -67333,6 +72734,37 @@ class ProcessSubscriptionRenewal implements ShouldQueue
     public function deduplicationId(): string
     {
         return "renewal-{$this->subscription->id}";
+    }
+}
+```
+
+<a name="fair-queues"></a>
+#### Fair Queues
+
+If you are using an SQS standard queue, setting a message group enables fair queueing. In other words, once you assign groups, SQS will use them to maintain fair delivery across tenants / workloads. No additional Laravel configuration is required.
+
+Instead of calling `onGroup` at dispatch time, you may also define a `messageGroup` method directly on the job:
+
+```php
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+
+class ProcessOrder implements ShouldQueue
+{
+    use Queueable;
+
+    // ...
+
+    /**
+     * Get the job's message group.
+     */
+    public function messageGroup(): string
+    {
+        return "customer-{$this->order->customer_id}";
     }
 }
 ```
@@ -67507,14 +72939,14 @@ use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\Middleware\FailOnException;
 use Illuminate\Support\Facades\Http;
 
+#[Tries(3)]
 class SyncChatHistory implements ShouldQueue
 {
     use Queueable;
-
-    public $tries = 3;
 
     /**
      * Create a new job instance.
@@ -68108,7 +73540,7 @@ php artisan queue:work --force
 <a name="resource-considerations"></a>
 #### Resource Considerations
 
-Daemon queue workers do not "reboot" the framework before processing each job. Therefore, you should release any heavy resources after each job completes. For example, if you are doing image manipulation with the [GD library](https://www.php.net/manual/en/book.image.php), you should free the memory with `imagedestroy` when you are done processing the image.
+Daemon queue workers do not "reboot" the framework before processing each job. Therefore, you should release any heavy resources after each job completes. For example, if you are doing [image manipulation](/docs/{{version}}/images) with the [GD library](https://www.php.net/manual/en/book.image.php), you should free the memory with `imagedestroy` when you are done processing the image.
 
 <a name="queue-priorities"></a>
 ### Queue Priorities
@@ -68138,6 +73570,64 @@ This command will instruct all queue workers to gracefully exit after they finis
 
 > [!NOTE]
 > The queue uses the [cache](/docs/{{version}}/cache) to store restart signals, so you should verify that a cache driver is properly configured for your application before using this feature.
+
+<a name="reacting-to-worker-signals"></a>
+### Reacting to Worker Signals
+
+When a queue worker receives a termination signal such as `SIGQUIT`, `SIGTERM`, or `SIGINT` while processing a job, the worker will finish its current job before exiting. However, your job may need to react to the signal before the process is stopped by your server or container orchestrator. For example, a long-running import job may need to stop pulling new records and save its current progress.
+
+To react to worker signals from within a job, implement the `Illuminate\Contracts\Queue\Interruptible` interface and define an `interrupted` method on your job. The signal number received by the worker will be passed to the `interrupted` method:
+
+```php
+<?php
+
+namespace App\Jobs;
+
+use App\Models\Import;
+use Illuminate\Contracts\Queue\Interruptible;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+
+class ImportProducts implements ShouldQueue, Interruptible
+{
+    use Queueable;
+
+    protected bool $shouldStop = false;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(
+        public Import $import,
+    ) {}
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        foreach ($this->import->pendingRows() as $row) {
+            if ($this->shouldStop) {
+                break;
+            }
+
+            // Import the product row...
+        }
+
+        $this->import->saveProgress();
+    }
+
+    /**
+     * Handle a signal received by the queue worker.
+     */
+    public function interrupted(int $signal): void
+    {
+        $this->shouldStop = true;
+    }
+}
+```
+
+The `interrupted` method is only invoked when the worker receives a process signal while the job is currently running. It is not a replacement for [timeouts](#worker-timeouts) or the job's [`failed` method](#cleaning-up-after-failed-jobs).
 
 <a name="job-expirations-and-timeouts"></a>
 ### Job Expirations and Timeouts
@@ -68177,13 +73667,25 @@ php artisan queue:pause database:default
 
 In this example, `database` is the queue connection name and `default` is the queue name. Once a queue is paused, any workers processing jobs from that queue will continue to finish their current job, but will not pick up any new jobs until the queue is resumed.
 
+To pause job processing for every queue on every connection, use the `--all` option:
+
+```shell
+php artisan queue:pause --all
+```
+
 To resume processing jobs on a paused queue, use the `queue:continue` command:
 
 ```shell
 php artisan queue:continue database:default
 ```
 
-After resuming a queue, workers will begin processing new jobs from that queue immediately. Note that pausing a queue does not stop the worker process itself - it only prevents the worker from processing new jobs from the specified queue.
+To resume job processing for every queue on every connection, use the `--all` option with the `queue:resume` command:
+
+```shell
+php artisan queue:resume --all
+```
+
+After resuming a queue, workers will begin processing new jobs from that queue immediately. Resuming all queues does not resume queues that were paused individually. Note that pausing a queue does not stop the worker process itself - it only prevents the worker from processing new jobs from the specified queue.
 
 <a name="worker-restart-and-pause-signals"></a>
 #### Worker Restart and Pause Signals
@@ -68294,7 +73796,7 @@ php artisan make:queue-failed-table
 php artisan migrate
 ```
 
-When running a [queue worker](#running-the-queue-worker) process, you may specify the maximum number of times a job should be attempted using the `--tries` switch on the `queue:work` command. If you do not specify a value for the `--tries` option, jobs will only be attempted once or as many times as specified by the job class' `$tries` property:
+When running a [queue worker](#running-the-queue-worker) process, you may specify the maximum number of times a job should be attempted using the `--tries` switch on the `queue:work` command. If you do not specify a value for the `--tries` option, jobs will only be attempted once or as many times as specified by the job class' `Tries` attribute:
 
 ```shell
 php artisan queue:work redis --tries=3
@@ -68306,15 +73808,20 @@ Using the `--backoff` option, you may specify how many seconds Laravel should wa
 php artisan queue:work redis --tries=3 --backoff=3
 ```
 
-If you would like to configure how many seconds Laravel should wait before retrying a job that has encountered an exception on a per-job basis, you may do so by defining a `backoff` property on your job class:
+If you would like to configure how many seconds Laravel should wait before retrying a job that has encountered an exception on a per-job basis, you may use the `Backoff` attribute on your job class:
 
 ```php
-/**
- * The number of seconds to wait before retrying the job.
- *
- * @var int
- */
-public $backoff = 3;
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Queue\Attributes\Backoff;
+
+#[Backoff(3)]
+class ProcessPodcast implements ShouldQueue
+{
+    // ...
+}
 ```
 
 If you require more complex logic for determining the job's backoff time, you may define a `backoff` method on your job class:
@@ -68329,17 +73836,19 @@ public function backoff(): int
 }
 ```
 
-You may easily configure "exponential" backoffs by returning an array of backoff values from the `backoff` method. In this example, the retry delay will be 1 second for the first retry, 5 seconds for the second retry, 10 seconds for the third retry, and 10 seconds for every subsequent retry if there are more attempts remaining:
+You may easily configure "exponential" backoffs by defining an array of backoff values. In this example, the retry delay will be 1 second for the first retry, 5 seconds for the second retry, 10 seconds for the third retry, and 10 seconds for every subsequent retry if there are more attempts remaining:
 
 ```php
-/**
- * Calculate the number of seconds to wait before retrying the job.
- *
- * @return array<int, int>
- */
-public function backoff(): array
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Queue\Attributes\Backoff;
+
+#[Backoff([1, 5, 10])]
+class ProcessPodcast implements ShouldQueue
 {
-    return [1, 5, 10];
+    // ...
 }
 ```
 
@@ -68462,15 +73971,20 @@ php artisan queue:flush --hours=48
 
 When injecting an Eloquent model into a job, the model is automatically serialized before being placed on the queue and re-retrieved from the database when the job is processed. However, if the model has been deleted while the job was waiting to be processed by a worker, your job may fail with a `ModelNotFoundException`.
 
-For convenience, you may choose to automatically delete jobs with missing models by setting your job's `deleteWhenMissingModels` property to `true`. When this property is set to `true`, Laravel will quietly discard the job without raising an exception:
+For convenience, you may choose to automatically delete jobs with missing models using the `DeleteWhenMissingModels` attribute on your job class. When this attribute is present, Laravel will quietly discard the job without raising an exception:
 
 ```php
-/**
- * Delete the job if its models no longer exist.
- *
- * @var bool
- */
-public $deleteWhenMissingModels = true;
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Queue\Attributes\DeleteWhenMissingModels;
+
+#[DeleteWhenMissingModels]
+class ProcessPodcast implements ShouldQueue
+{
+    // ...
+}
 ```
 
 <a name="pruning-failed-jobs"></a>
@@ -68608,7 +74122,7 @@ public function boot(): void
     Event::listen(function (QueueBusy $event) {
         Notification::route('mail', 'dev@example.com')
             ->notify(new QueueHasLongWaitTime(
-                $event->connection,
+                $event->connectionName,
                 $event->queue,
                 $event->size
             ));
@@ -68643,6 +74157,9 @@ test('orders can be shipped', function () {
 
     // Assert a job was pushed
     Queue::assertPushed(ShipOrder::class);
+
+    // Assert a job was pushed exactly once...
+    Queue::assertPushedOnce(ShipOrder::class);
 
     // Assert a job was pushed twice...
     Queue::assertPushedTimes(ShipOrder::class, 2);
@@ -68687,6 +74204,9 @@ class ExampleTest extends TestCase
 
         // Assert a job was pushed
         Queue::assertPushed(ShipOrder::class);
+
+        // Assert a job was pushed exactly once...
+        Queue::assertPushedOnce(ShipOrder::class);
 
         // Assert a job was pushed twice...
         Queue::assertPushedTimes(ShipOrder::class, 2);
@@ -68991,12 +74511,25 @@ Queue::looping(function () {
 });
 ```
 
+Laravel also dispatches an `Illuminate\Queue\Events\WorkerIdle` event when a queue worker is unable to retrieve a job from the queue:
+
+```php
+use Illuminate\Queue\Events\WorkerIdle;
+use Illuminate\Support\Facades\Event;
+
+Event::listen(function (WorkerIdle $event) {
+    // $event->connectionName
+    // $event->queue
+    // $event->workerOptions
+});
+```
+
 
 ---
 
 # Rate Limiting
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/rate-limiting*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/rate-limiting*
 
 - [Introduction](#introduction)
     - [Cache Configuration](#cache-configuration)
@@ -69076,6 +74609,20 @@ RateLimiter::increment('send-message:'.$user->id);
 // Send message...
 ```
 
+When rate limiting an endpoint that may receive many simultaneous requests, you may wish to check the value returned by the `increment` method instead of using `tooManyAttempts` and `increment` as separate operations. When using the `redis`, `memcached`, or `database` cache stores, this value is incremented atomically, ensuring each concurrent request receives a unique count:
+
+```php
+use Illuminate\Support\Facades\RateLimiter;
+
+$perMinute = 5;
+
+if (RateLimiter::increment('send-message:'.$user->id) > $perMinute) {
+    return 'Too many attempts!';
+}
+
+// Send message...
+```
+
 Alternatively, you may use the `remaining` method to retrieve the number of attempts remaining for a given key. If a given key has retries remaining, you may invoke the `increment` method to increment the number of total attempts:
 
 ```php
@@ -69140,7 +74687,7 @@ public function read(Message $message): Message
 
 # Redis
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/redis*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/redis*
 
 - [Introduction](#introduction)
 - [Configuration](#configuration)
@@ -69372,23 +74919,53 @@ The `retry_interval`, `max_retries`, `backoff_algorithm`, `backoff_base`, and `b
 ],
 ```
 
-Predis 3.4.0 and later supports built-in retry and backoff configuration via the `Retry` class. Configure it using the `retry` option with one of the following strategies: `NoBackoff`, `EqualBackoff`, or `ExponentialBackoff`:
+Laravel automatically retries safe read commands once after a transient connection failure. You may use the `command_retries` option to configure the number of retries for all Redis commands:
 
 ```php
-use Predis\Retry;
+'default' => [
+    // ...
+    'command_retries' => env('REDIS_COMMAND_RETRIES', 0),
+],
+```
+
+Predis 3.4.0 and later supports built-in retry and backoff configuration via the `Retry` class. You may configure retries using the `max_retries` option and configure the backoff strategy using the `retry` option. The `retry` option should be an array keyed by one of the following strategy classes: `NoBackoff`, `EqualBackoff`, or `ExponentialBackoff`:
+
+```php
 use Predis\Retry\Strategy\ExponentialBackoff;
 
 'default' => [
     'url' => env('REDIS_URL'),
     // ...
-    'retry' => new Retry(
-        new ExponentialBackoff(
+    'retry' => [
+        ExponentialBackoff::class => [
             env('REDIS_BACKOFF_BASE', 100),
             env('REDIS_BACKOFF_CAP', 1000),
-            true, // Enables jitter
-        ),
-        env('REDIS_MAX_RETRIES', 3)
-    )
+            true, // Enable jitter...
+        ],
+    ],
+    'max_retries' => env('REDIS_MAX_RETRIES', 3),
+],
+```
+
+When using Predis with a Redis cluster, you may define retry configuration in the `parameters` option of your cluster configuration:
+
+```php
+use Predis\Retry\Strategy\NoBackoff;
+
+'clusters' => [
+    'default' => [
+        // ...
+    ],
+],
+
+'options' => [
+    'cluster' => env('REDIS_CLUSTER', 'redis'),
+    'parameters' => [
+        'retry' => [
+            NoBackoff::class => [],
+        ],
+        'max_retries' => env('REDIS_MAX_RETRIES', 3),
+    ],
 ],
 ```
 
@@ -69619,18 +75196,18 @@ Redis::psubscribe(['users.*'], function (string $message, string $channel) {
 
 # Release Notes
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/releases*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/releases*
 
 - [Versioning Scheme](#versioning-scheme)
 - [Support Policy](#support-policy)
-- [Laravel 12](#laravel-12)
+- [Laravel 13](#laravel-13)
 
 <a name="versioning-scheme"></a>
 ## Versioning Scheme
 
 Laravel and its other first-party packages follow [Semantic Versioning](https://semver.org). Major framework releases are released every year (~Q1), while minor and patch releases may be released as often as every week. Minor and patch releases should **never** contain breaking changes.
 
-When referencing the Laravel framework or its components from your application or package, you should always use a version constraint such as `^12.0`, since major releases of Laravel do include breaking changes. However, we strive to always ensure you may update to a new major release in one day or less.
+When referencing the Laravel framework or its components from your application or package, you should always use a version constraint such as `^13.0`, since major releases of Laravel do include breaking changes. However, we strive to always ensure you may update to a new major release in one day or less.
 
 <a name="named-arguments"></a>
 #### Named Arguments
@@ -69649,7 +75226,7 @@ For all Laravel releases, bug fixes are provided for 18 months and security fixe
 | 10      | 8.1 - 8.3 | February 14th, 2023 | August 6th, 2024    | February 4th, 2025   |
 | 11      | 8.2 - 8.4 | March 12th, 2024    | September 3rd, 2025 | March 12th, 2026     |
 | 12      | 8.2 - 8.5 | February 24th, 2025 | August 13th, 2026   | February 24th, 2027  |
-| 13      | 8.3 - 8.5 | Q1 2026             | Q3 2027             | Q1 2028              |
+| 13      | 8.3 - 8.5 | March 17th, 2026    | Q3 2027             | March 17th, 2028     |
 
 </div>
 
@@ -69666,35 +75243,151 @@ For all Laravel releases, bug fixes are provided for 18 months and security fixe
 
 (*) Supported PHP versions
 
-<a name="laravel-12"></a>
-## Laravel 12
+<a name="laravel-13"></a>
+## Laravel 13
 
-Laravel 12 continues the improvements made in Laravel 11.x by updating upstream dependencies and introducing new starter kits for React, Svelte, Vue, and Livewire, including the option of using [WorkOS AuthKit](https://authkit.com) for user authentication. The WorkOS variant of our starter kits offers social authentication, passkeys, and SSO support.
+Laravel 13 continues Laravel's annual release cadence with a focus on AI-native workflows, stronger defaults, and more expressive developer APIs. This release includes first-party AI primitives, JSON:API resources, semantic / vector search capabilities, and incremental improvements across queues, cache, and security.
 
 <a name="minimal-breaking-changes"></a>
 ### Minimal Breaking Changes
 
 Much of our focus during this release cycle has been minimizing breaking changes. Instead, we have dedicated ourselves to shipping continuous quality-of-life improvements throughout the year that do not break existing applications.
 
-Therefore, the Laravel 12 release is a relatively minor "maintenance release" in order to upgrade existing dependencies. In light of this, most Laravel applications may upgrade to Laravel 12 without changing any application code.
+Therefore, the Laravel 13 release is a relatively minor upgrade in terms of effort, while still delivering substantial new capabilities. In light of this, most Laravel applications may upgrade to Laravel 13 without changing much application code.
 
-<a name="new-application-starter-kits"></a>
-### New Application Starter Kits
+<a name="php-8"></a>
+### PHP 8.3
 
-Laravel 12 introduces new [application starter kits](/docs/{{version}}/starter-kits) for React, Svelte, Vue, and Livewire. The React, Svelte, and Vue starter kits utilize Inertia 2, TypeScript, [shadcn/ui](https://ui.shadcn.com), and Tailwind, while the Livewire starter kits utilize the Tailwind-based [Flux UI](https://fluxui.dev) component library and Laravel Volt.
+Laravel 13.x requires a minimum PHP version of 8.3.
 
-The React, Svelte, Vue, and Livewire starter kits all utilize Laravel's built-in authentication system to offer login, registration, password reset, email verification, and more. In addition, we are introducing a [WorkOS AuthKit-powered](https://authkit.com) variant of each starter kit, offering social authentication, passkeys, and SSO support. WorkOS offers free authentication for applications up to 1 million monthly active users.
+<a name="ai-sdk"></a>
+### Laravel AI SDK
 
-With the introduction of our new application starter kits, Laravel Breeze and Laravel Jetstream will no longer receive additional updates.
+Laravel 13 introduces the first-party [Laravel AI SDK](https://laravel.com/ai), providing a unified API for text generation, tool-calling agents, embeddings, audio, images, and vector-store integrations.
 
-To get started with our new starter kits, check out the [starter kit documentation](/docs/{{version}}/starter-kits).
+With the AI SDK, you can build provider-agnostic AI features while keeping a consistent, Laravel-native developer experience.
+
+For example, a basic agent can be prompted with a single call:
+
+```php
+use App\Ai\Agents\SalesCoach;
+
+$response = SalesCoach::make()->prompt('Analyze this sales transcript...');
+
+return (string) $response;
+```
+
+The Laravel AI SDK can also generate images, audio, and embeddings:
+
+For visual generation use cases, the SDK offers a clean API for creating images from plain-language prompts:
+
+```php
+use Laravel\Ai\Image;
+
+$image = Image::of('A donut sitting on the kitchen counter')->generate();
+
+$rawContent = (string) $image;
+```
+
+For voice experiences, you can synthesize natural-sounding audio from text for assistants, narrations, and accessibility features:
+
+```php
+use Laravel\Ai\Audio;
+
+$audio = Audio::of('I love coding with Laravel.')->generate();
+
+$rawContent = (string) $audio;
+```
+
+And for semantic search and retrieval workflows, you can generate embeddings directly from strings:
+
+```php
+use Illuminate\Support\Str;
+
+$embeddings = Str::of('Napa Valley has great wine.')->toEmbeddings();
+```
+
+<a name="json-api"></a>
+### JSON:API Resources
+
+Laravel now includes first-party [JSON:API resources](/docs/{{version}}/eloquent-resources#jsonapi-resources), making it straightforward to return responses compliant with the JSON:API specification.
+
+JSON:API resources handle resource object serialization, relationship inclusion, sparse fieldsets, links, and JSON:API-compliant response headers.
+
+<a name="request-forgery-protection"></a>
+### Request Forgery Protection
+
+For security, Laravel's [request forgery protection](/docs/{{version}}/csrf#preventing-csrf-requests) middleware has been enhanced and formalized as `PreventRequestForgery`, adding origin-aware request verification while preserving compatibility with token-based CSRF protection.
+
+<a name="queue-routing"></a>
+### Queue Routing
+
+Laravel 13 adds [queue routing by class](/docs/{{version}}/queues#queue-routing) via `Queue::route(...)`, allowing you to define default queue / connection routing rules for specific jobs in a central place:
+
+```php
+Queue::route(ProcessPodcast::class, connection: 'redis', queue: 'podcasts');
+```
+
+<a name="php-attributes"></a>
+### Expanded PHP Attributes
+
+Laravel 13 continues to expand first-party PHP attribute support across the framework, making common configuration and behavioral concerns more declarative and colocated with your classes and methods.
+
+Notable additions include controller and authorization attributes like [`#[Middleware]`](/docs/{{version}}/controllers#controller-middleware) and [`#[Authorize]`](/docs/{{version}}/controllers#authorization-attributes), as well as queue-oriented job controls like [`#[Tries]`](/docs/{{version}}/queues#max-job-attempts-and-timeout), [`#[Backoff]`](/docs/{{version}}/queues#dealing-with-failed-jobs), [`#[Timeout]`](/docs/{{version}}/queues#max-job-attempts-and-timeout), and [`#[FailOnTimeout]`](/docs/{{version}}/queues#failing-on-timeout).
+
+For example, controller middleware and policy checks can now be declared directly on classes and methods:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Comment;
+use App\Models\Post;
+use Illuminate\Routing\Attributes\Controllers\Authorize;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
+
+#[Middleware('auth')]
+class CommentController
+{
+    #[Middleware('subscribed')]
+    #[Authorize('create', [Comment::class, 'post'])]
+    public function store(Post $post)
+    {
+        // ...
+    }
+}
+```
+
+Additional attributes have also been introduced across Eloquent, events, notifications, validation, testing, and resource serialization APIs, giving you a consistent attribute-first option in more areas of the framework.
+
+<a name="cache-touch"></a>
+### Cache TTL Extension
+
+Laravel now includes [`Cache::touch(...)`](/docs/{{version}}/cache), which lets you extend an existing cache item's TTL without retrieving and re-storing its value.
+
+<a name="semantic-search"></a>
+### Semantic / Vector Search
+
+Laravel 13 deepens its semantic search story with native vector query support, embedding workflows, and related APIs documented across [search](/docs/{{version}}/search#semantic-vector-search), [queries](/docs/{{version}}/queries#vector-similarity-clauses), and the [AI SDK](/docs/{{version}}/ai-sdk#embeddings).
+
+These features make it straightforward to build AI-powered search experiences using PostgreSQL + `pgvector`, including similarity search against embeddings generated directly from strings.
+
+For example, you may run semantic similarity searches directly from the query builder:
+
+```php
+$documents = DB::table('documents')
+    ->whereVectorSimilarTo('embedding', 'Best wineries in Napa Valley')
+    ->limit(10)
+    ->get();
+```
 
 
 ---
 
 # HTTP Requests
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/requests*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/requests*
 
 - [Introduction](#introduction)
 - [Interacting With The Request](#interacting-with-the-request)
@@ -69861,9 +75554,10 @@ $request->fullUrlWithoutQuery(['type']);
 You may retrieve the "host" of the incoming request via the `host`, `httpHost`, and `schemeAndHttpHost` methods:
 
 ```php
-$request->host();
-$request->httpHost();
-$request->schemeAndHttpHost();
+// http://localhost:8000
+$request->host(); // localhost
+$request->httpHost(); // localhost:8000
+$request->schemeAndHttpHost(); // http://localhost:8000
 ```
 
 <a name="retrieving-the-request-method"></a>
@@ -69949,6 +75643,18 @@ Since many applications only serve HTML or JSON, you may use the `expectsJson` m
 ```php
 if ($request->expectsJson()) {
     // ...
+}
+```
+
+If you need to determine whether the request specifically prefers Markdown or will accept Markdown among other content types, such as when serving AI agents or other clients that consume Markdown responses, you may use the `wantsMarkdown` and `acceptsMarkdown` methods:
+
+```php
+if ($request->wantsMarkdown()) {
+    // The client's most preferred content type is text/markdown...
+}
+
+if ($request->acceptsMarkdown()) {
+    // The client accepts Markdown responses...
 }
 ```
 
@@ -70115,6 +75821,27 @@ $elapsed = $request->date('elapsed', '!H:i', 'Europe/Madrid');
 ```
 
 If the input value is present but has an invalid format, an `InvalidArgumentException` will be thrown; therefore, it is recommended that you validate the input before invoking the `date` method.
+
+<a name="retrieving-interval-input-values"></a>
+#### Retrieving Interval Input Values
+
+Input values containing durations may be retrieved as `CarbonInterval` instances using the `interval` method. If the request does not contain an input value with the given name, `null` will be returned:
+
+```php
+$duration = $request->interval('duration');
+```
+
+If the input value is numeric, you may provide a unit as the second argument. The unit may be a string such as `second`, `minute`, or `day`, or a `Carbon\Unit` enum instance:
+
+```php
+use Carbon\Unit;
+
+$timeout = $request->interval('timeout', 'second');
+
+$delay = $request->interval('delay', Unit::Minute);
+```
+
+If the input value is present but has an invalid format, an `InvalidArgumentException` will be thrown; therefore, it is recommended that you validate the input before invoking the `interval` method.
 
 <a name="retrieving-enum-input-values"></a>
 #### Retrieving Enum Input Values
@@ -70415,6 +76142,14 @@ if ($request->hasFile('photo')) {
 }
 ```
 
+If the uploaded file is an image that you need to manipulate before storing, you may use the `image` method to retrieve an `Illuminate\Image\Image` instance, or `null` if the file is not present:
+
+```php
+$image = $request->image('photo');
+```
+
+For more information on manipulating images, please consult the complete [image manipulation documentation](/docs/{{version}}/images).
+
 <a name="validating-successful-uploads"></a>
 #### Validating Successful Uploads
 
@@ -70547,7 +76282,7 @@ If you need to access your application's configuration files or database to dete
 
 # HTTP Responses
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/responses*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/responses*
 
 - [Creating Responses](#creating-responses)
     - [Attaching Headers to Responses](#attaching-headers-to-responses)
@@ -70711,10 +76446,16 @@ return response('Hello World')->cookie($cookie);
 <a name="expiring-cookies-early"></a>
 #### Expiring Cookies Early
 
-You may remove a cookie by expiring it via the `withoutCookie` method of an outgoing response:
+You may remove a cookie by expiring it via the `withoutCookie` or `withoutCookies` method of an outgoing response:
 
 ```php
 return response('Hello World')->withoutCookie('name');
+
+return response('Hello World')->withoutCookies([
+    'name',
+    'email',
+    'preferences',
+]);
 ```
 
 If you do not yet have an instance of the outgoing response, you may use the `Cookie` facade's `expire` method to expire a cookie:
@@ -71637,7 +77378,7 @@ return response()->caps('foo');
 
 # Laravel Reverb
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/reverb*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/reverb*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -71989,7 +77730,7 @@ Dispatched when a message is sent to a client connection. The event receives the
 
 # Routing
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/routing*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/routing*
 
 - [Basic Routing](#basic-routing)
     - [The Default Route Files](#the-default-route-files)
@@ -72537,9 +78278,6 @@ Route::domain('{account}.example.com')->group(function () {
 });
 ```
 
-> [!WARNING]
-> In order to ensure your subdomain routes are reachable, you should register subdomain routes before registering root domain routes. This will prevent root domain routes from overwriting subdomain routes which have the same URI path.
-
 <a name="route-group-prefixes"></a>
 ### Route Prefixes
 
@@ -72628,15 +78366,16 @@ Route::get('/posts/{post:slug}', function (Post $post) {
 });
 ```
 
-If you would like model binding to always use a database column other than `id` when retrieving a given model class, you may override the `getRouteKeyName` method on the Eloquent model:
+If you would like model binding to always use a database column other than `id` when retrieving a given model class, you may apply the `RouteKey` attribute to the Eloquent model:
 
 ```php
-/**
- * Get the route key for the model.
- */
-public function getRouteKeyName(): string
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
+use Illuminate\Database\Eloquent\Model;
+
+#[RouteKey('slug')]
+class Post extends Model
 {
-    return 'slug';
+    // ...
 }
 ```
 
@@ -72884,7 +78623,7 @@ Since rate limiter callbacks receive the incoming HTTP request instance, you may
 
 ```php
 RateLimiter::for('uploads', function (Request $request) {
-    return $request->user()->vipCustomer()
+    return $request->user()?->vipCustomer()
         ? Limit::none()
         : Limit::perHour(10);
 });
@@ -73064,11 +78803,10 @@ php artisan route:clear
 
 # Laravel Sail
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/sail*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/sail*
 
 - [Introduction](#introduction)
 - [Installation and Setup](#installation)
-    - [Installing Sail Into Existing Applications](#installing-sail-into-existing-applications)
     - [Rebuilding Sail Images](#rebuilding-sail-images)
     - [Configuring A Shell Alias](#configuring-a-shell-alias)
 - [Starting and Stopping Sail](#starting-and-stopping-sail)
@@ -73090,11 +78828,12 @@ php artisan route:clear
 - [Previewing Emails](#previewing-emails)
 - [Container CLI](#sail-container-cli)
 - [PHP Versions](#sail-php-versions)
+    - [Additional PHP Extensions](#sail-php-extensions)
 - [Node Versions](#sail-node-versions)
 - [Sharing Your Site](#sharing-your-site)
 - [Debugging With Xdebug](#debugging-with-xdebug)
-  - [Xdebug CLI Usage](#xdebug-cli-usage)
-  - [Xdebug Browser Usage](#xdebug-browser-usage)
+    - [Xdebug CLI Usage](#xdebug-cli-usage)
+    - [Xdebug Browser Usage](#xdebug-browser-usage)
 - [Customization](#sail-customization)
 
 <a name="introduction"></a>
@@ -73109,12 +78848,7 @@ Laravel Sail is supported on macOS, Linux, and Windows (via [WSL2](https://docs.
 <a name="installation"></a>
 ## Installation and Setup
 
-Laravel Sail is automatically installed with all new Laravel applications so you may start using it immediately.
-
-<a name="installing-sail-into-existing-applications"></a>
-### Installing Sail Into Existing Applications
-
-If you are interested in using Sail with an existing Laravel application, you may simply install Sail using the Composer package manager. Of course, these steps assume that your existing local development environment allows you to install Composer dependencies:
+You may install Sail using the Composer package manager:
 
 ```shell
 composer require laravel/sail --dev
@@ -73497,10 +79231,24 @@ sail build --no-cache
 sail up
 ```
 
+<a name="sail-php-extensions"></a>
+### Additional PHP Extensions
+
+Sail's runtime images include a common set of PHP extensions. If your application requires additional extensions, you may install them when building the image by adding a space-separated `PHP_EXTENSIONS` build argument to the `laravel.test` service in your application's `compose.yaml` file:
+
+```yaml
+build:
+    args:
+        WWWGROUP: '${WWWGROUP}'
+        PHP_EXTENSIONS: 'gmp imagick'
+```
+
+After updating your application's `compose.yaml` file, you should rebuild your container images.
+
 <a name="sail-node-versions"></a>
 ## Node Versions
 
-Sail installs Node 22 by default. To change the Node version that is installed when building your images, you may update the `build.args` definition of the `laravel.test` service in your application's `compose.yaml` file:
+Sail installs Node 24 by default. To change the Node version that is installed when building your images, you may update the `build.args` definition of the `laravel.test` service in your application's `compose.yaml` file:
 
 ```yaml
 build:
@@ -73634,7 +79382,7 @@ sail build --no-cache
 
 # Laravel Sanctum
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/sanctum*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/sanctum*
 
 - [Introduction](#introduction)
     - [How it Works](#how-it-works)
@@ -73945,7 +79693,7 @@ php artisan config:publish cors
 
 Next, you should ensure that your application's CORS configuration is returning the `Access-Control-Allow-Credentials` header with a value of `True`. This may be accomplished by setting the `supports_credentials` option within your application's `config/cors.php` configuration file to `true`.
 
-In addition, you should enable the `withCredentials` and `withXSRFToken` options on your application's global `axios` instance. Typically, this should be performed in your `resources/js/bootstrap.js` file. If you are not using Axios to make HTTP requests from your frontend, you should perform the equivalent configuration on your own HTTP client:
+In addition, you should enable the `withCredentials` and `withXSRFToken` options on your application's global `axios` instance. This can be performed in your `resources/js/app.js` file. If you are not using Axios to make HTTP requests from your frontend, you should perform the equivalent configuration on your own HTTP client:
 
 ```js
 axios.defaults.withCredentials = true;
@@ -73982,6 +79730,8 @@ Once CSRF protection has been initialized, you should make a `POST` request to y
 If the login request is successful, you will be authenticated and subsequent requests to your application's routes will automatically be authenticated via the session cookie that the Laravel application issued to your client. In addition, since your application already made a request to the `/sanctum/csrf-cookie` route, subsequent requests should automatically receive CSRF protection as long as your JavaScript HTTP client sends the value of the `XSRF-TOKEN` cookie in the `X-XSRF-TOKEN` header.
 
 Of course, if your user's session expires due to lack of activity, subsequent requests to the Laravel application may receive a 401 or 419 HTTP error response. In this case, you should redirect the user to your SPA's login page.
+
+Since this approach to SPA authentication is session based, you may use Laravel's standard authentication services, including ["remember me"](/docs/{{version}}/authentication#remembering-users) functionality.
 
 > [!WARNING]
 > You are free to write your own `/login` endpoint; however, you should ensure that it authenticates the user using the standard, [session based authentication services that Laravel provides](/docs/{{version}}/authentication#authenticating-users). Typically, this means using the `web` authentication guard.
@@ -74161,7 +79911,7 @@ Sanctum::actingAs(
 
 # Task Scheduling
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/scheduling*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/scheduling*
 
 - [Introduction](#introduction)
 - [Defining Schedules](#defining-schedules)
@@ -74174,6 +79924,7 @@ Sanctum::actingAs(
     - [Running Tasks on One Server](#running-tasks-on-one-server)
     - [Background Tasks](#background-tasks)
     - [Maintenance Mode](#maintenance-mode)
+    - [Pausing Scheduled Tasks](#pausing-scheduled-tasks)
     - [Schedule Groups](#schedule-groups)
 - [Running the Scheduler](#running-the-scheduler)
     - [Sub-Minute Scheduled Tasks](#sub-minute-scheduled-tasks)
@@ -74484,7 +80235,7 @@ If you are repeatedly assigning the same timezone to all of your scheduled tasks
 ```
 
 > [!WARNING]
-> Remember that some timezones utilize daylight savings time. When daylight saving time changes occur, your scheduled task may run twice or even not run at all. For this reason, we recommend avoiding timezone scheduling when possible.
+> Remember that some timezones utilize daylight saving time. When daylight saving time changes occur, your scheduled task may run twice or even not run at all. For this reason, we recommend avoiding timezone scheduling when possible.
 
 <a name="preventing-task-overlaps"></a>
 ### Preventing Task Overlaps
@@ -74581,6 +80332,27 @@ Your application's scheduled tasks will not run when the application is in [main
 
 ```php
 Schedule::command('emails:send')->evenInMaintenanceMode();
+```
+
+<a name="pausing-scheduled-tasks"></a>
+### Pausing Scheduled Tasks
+
+You may temporarily pause scheduled task processing without changing your deployed code by using the `schedule:pause` Artisan command:
+
+```shell
+php artisan schedule:pause
+```
+
+While the scheduler is paused, no scheduled tasks will run. You may resume scheduled task processing using the `schedule:continue` command:
+
+```shell
+php artisan schedule:continue
+```
+
+If a task should still run while the scheduler is paused, you may mark it with the `evenWhenPaused` method:
+
+```php
+Schedule::command('emails:send')->evenWhenPaused();
 ```
 
 <a name="schedule-groups"></a>
@@ -74802,12 +80574,16 @@ Laravel dispatches a variety of [events](/docs/{{version}}/events) during the sc
 
 # Laravel Scout
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/scout*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/scout*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
     - [Queueing](#queueing)
 - [Driver Prerequisites](#driver-prerequisites)
+    - [Algolia](#algolia)
+    - [Meilisearch](#meilisearch)
+    - [Typesense](#typesense)
+    - [Turbopuffer](#turbopuffer)
 - [Configuration](#configuration)
     - [Configuring Searchable Data](#configuring-searchable-data)
 - [Database / Collection Engines](#database-and-collection-engines)
@@ -74818,6 +80594,7 @@ Laravel dispatches a variety of [events](/docs/{{version}}/events) during the sc
     - [Algolia](#algolia-configuration)
     - [Meilisearch](#meilisearch-configuration)
     - [Typesense](#typesense-configuration)
+    - [Turbopuffer](#turbopuffer-configuration)
 - [Third-Party Engine Indexing](#indexing)
     - [Batch Import](#batch-import)
     - [Adding Records](#adding-records)
@@ -74827,6 +80604,7 @@ Laravel dispatches a variety of [events](/docs/{{version}}/events) during the sc
     - [Conditionally Searchable Model Instances](#conditionally-searchable-model-instances)
 - [Searching](#searching)
     - [Where Clauses](#where-clauses)
+    - [Semantic Search](#semantic-search)
     - [Pagination](#pagination)
     - [Soft Deleting](#soft-deleting)
     - [Customizing Engine Searches](#customizing-engine-searches)
@@ -74839,7 +80617,7 @@ Laravel dispatches a variety of [events](/docs/{{version}}/events) during the sc
 
 Scout ships with a built-in `database` engine that uses MySQL / PostgreSQL full-text indexes and `LIKE` clauses to search your existing database — no external service required. For most applications, this is all you need. For an overview of all search options available in Laravel, consult the [search documentation](/docs/{{version}}/search).
 
-Scout also includes drivers for [Algolia](https://www.algolia.com/), [Meilisearch](https://www.meilisearch.com), and [Typesense](https://typesense.org) when you need features like typo tolerance, faceted filtering, or geo-search at massive scale. A "collection" driver is also available for local development, and you are free to write [custom engines](#custom-engines) as well.
+Scout also includes drivers for [Algolia](https://www.algolia.com/), [Meilisearch](https://www.meilisearch.com), [Typesense](https://typesense.org), and [Turbopuffer](https://turbopuffer.com) when you need features like typo tolerance, faceted filtering, vector search, or geo-search at massive scale. A "collection" driver is also available for local development, and you are free to write [custom engines](#custom-engines) as well.
 
 <a name="installation"></a>
 ## Installation
@@ -74899,6 +80677,22 @@ Of course, if you customize the connection and queue that Scout jobs utilize, yo
 ```shell
 php artisan queue:work redis --queue=scout
 ```
+
+<a name="unique-jobs"></a>
+#### Unique Jobs
+
+In write-heavy applications, you may wish to prevent Scout from queueing duplicate jobs for the same model records. You may opt into unique indexing jobs by registering the `MakeSearchableUniquely` and `RemoveFromSearchUniquely` job classes, typically within the `boot` method of a service provider:
+
+```php
+use Laravel\Scout\Jobs\MakeSearchableUniquely;
+use Laravel\Scout\Jobs\RemoveFromSearchUniquely;
+use Laravel\Scout\Scout;
+
+Scout::makeSearchableUsing(MakeSearchableUniquely::class);
+Scout::removeFromSearchUsing(RemoveFromSearchUniquely::class);
+```
+
+These jobs use Laravel's [unique job locks](/docs/{{version}}/queues#unique-jobs) to avoid dispatching duplicate queued indexing operations for the same searchable model records while a matching job is already queued.
 
 <a name="driver-prerequisites"></a>
 ## Driver Prerequisites
@@ -74968,6 +80762,19 @@ TYPESENSE_PROTOCOL=http
 ```
 
 Additional settings and schema definitions for your Typesense collections can be found within your application's `config/scout.php` configuration file. For more information regarding Typesense, please consult the [Typesense documentation](https://typesense.org/docs/guide/#quick-start).
+
+<a name="turbopuffer"></a>
+### Turbopuffer
+
+[Turbopuffer](https://turbopuffer.com) is a search engine that supports full-text, semantic, and hybrid search. To use the Turbopuffer driver, set the `SCOUT_DRIVER` environment variable and provide your Turbopuffer API key:
+
+```ini
+SCOUT_DRIVER=turbopuffer
+TURBOPUFFER_API_KEY=tpuf_...
+TURBOPUFFER_REGION=gcp-us-central1
+```
+
+The `TURBOPUFFER_REGION` environment variable is optional and defaults to `gcp-us-central1`.
 
 <a name="configuration"></a>
 ## Configuration
@@ -75052,6 +80859,25 @@ SCOUT_DRIVER=database
 ```
 
 Once configured, you may [define your searchable data](#configuring-searchable-data) and start [executing search queries](#searching) against your models. Unlike third-party engines, the database engine requires no separate indexing step — it searches your database tables directly.
+
+<a name="database-semantic-and-hybrid-search"></a>
+#### Semantic and Hybrid Search
+
+The database engine supports semantic and hybrid search when using PostgreSQL with the `pgvector` extension. To get started, add a nullable vector column and a full-text index to your model's table. The vector column must be nullable because Scout stores the embedding after the model has been persisted:
+
+```php
+Schema::ensureVectorExtensionExists();
+
+Schema::table('articles', function (Blueprint $table) {
+    // ...
+
+    $table->vector('embedding', dimensions: 1536)->nullable();
+    $table->vectorIndex('embedding');
+    $table->fullText(['title', 'body']);
+});
+```
+
+Next, define a `toSearchableEmbedding` method on the model. This method may return the source text that Scout should embed or a precomputed embedding array. Scout stores embeddings in the `embedding` column by default; to use another column, define a `searchableEmbeddingColumn` method on the model.
 
 #### Customizing Database Searching Strategies
 
@@ -75276,6 +81102,37 @@ After configuring your application's index settings, you must invoke the `scout:
 php artisan scout:sync-index-settings
 ```
 
+<a name="meilisearch-semantic-and-hybrid-search"></a>
+#### Semantic and Hybrid Search
+
+To use semantic or hybrid search with Meilisearch, configure an embedder in the index settings and embedding settings for each searchable model:
+
+```php
+'meilisearch' => [
+    // ...
+    'index-settings' => [
+        Article::class => [
+            'embedders' => [
+                'default' => [
+                    'source' => 'userProvided',
+                    'dimensions' => 1536,
+                ],
+            ],
+        ],
+    ],
+    'model-settings' => [
+        Article::class => [
+            'embedding' => [
+                'embedder' => 'default',
+                'dimensions' => 1536,
+            ],
+        ],
+    ],
+],
+```
+
+The model's `toSearchableEmbedding` method may return source text, which Scout embeds using the [Laravel AI SDK](/docs/{{version}}/ai-sdk), or a precomputed embedding array. After updating the configuration, run the `scout:sync-index-settings` command.
+
 <a name="meilisearch-data-types"></a>
 #### Searchable Data Types
 
@@ -75336,6 +81193,40 @@ User::class => [
 ],
 ```
 
+<a name="typesense-embeddings"></a>
+#### Embeddings
+
+To enable semantic and hybrid search, define an `embedding` setting and vector field in the model's Typesense configuration. By default, Scout uses the [Laravel AI SDK](/docs/{{version}}/ai-sdk) to generate embeddings:
+
+```php
+use App\Models\Article;
+
+'model-settings' => [
+    Article::class => [
+        'collection-schema' => [
+            'fields' => [
+                ['name' => 'title', 'type' => 'string'],
+                ['name' => 'embedding', 'type' => 'float[]', 'num_dim' => 1536],
+            ],
+        ],
+        'search-parameters' => ['query_by' => 'title'],
+        'embedding' => [
+            'attribute' => 'embedding',
+            'dimensions' => 1536,
+        ],
+    ],
+],
+```
+
+Your model's `toSearchableEmbedding` method should return the source text that Scout should embed or a precomputed embedding array:
+
+```php
+public function toSearchableEmbedding(): string|array
+{
+    return $this->title.' '.$this->body;
+}
+```
+
 <a name="typesense-dynamic-search-parameters"></a>
 #### Dynamic Search Parameters
 
@@ -75349,11 +81240,89 @@ Todo::search('Groceries')->options([
 ])->get();
 ```
 
+<a name="turbopuffer-configuration"></a>
+### Turbopuffer
+
+Turbopuffer requires a schema and searchable attributes for each model. Define them in the `model-settings` array of your `turbopuffer` configuration within the `scout` configuration file:
+
+```php
+use App\Models\Article;
+
+'turbopuffer' => [
+    // ...
+    'model-settings' => [
+        Article::class => [
+            'searchable-attributes' => [
+                'title' => 3,
+                'body' => 1,
+            ],
+            'schema' => [
+                'title' => ['type' => 'string', 'full_text_search' => true],
+                'body' => ['type' => 'string', 'full_text_search' => true],
+                'status' => ['type' => 'string'],
+            ],
+        ],
+    ],
+],
+```
+
+The numeric values assigned to `searchable-attributes` are relative BM25 weights. In the example above, matches in the article title contribute three times the score of matches in the body.
+
+To enable semantic and hybrid search, add an `embedding` setting and vector schema to the model's configuration:
+
+```php
+'turbopuffer' => [
+    // ...
+    'model-settings' => [
+        Article::class => [
+            'searchable-attributes' => [
+                'title' => 3,
+                'body' => 1,
+            ],
+            'embedding' => [
+                'attribute' => 'embedding',
+                'dimensions' => 1536,
+            ],
+            'schema' => [
+                'title' => ['type' => 'string', 'full_text_search' => true],
+                'body' => ['type' => 'string', 'full_text_search' => true],
+                'embedding' => ['type' => '[1536]f32', 'ann' => true],
+            ],
+        ],
+    ],
+],
+```
+
+Your model's `toSearchableEmbedding` method should return the source text that Scout should embed or a precomputed embedding array. Scout generates source-text embeddings using the [Laravel AI SDK](/docs/{{version}}/ai-sdk).
+
+Alternatively, you may use Turbopuffer's native embeddings without installing the Laravel AI SDK or defining a `toSearchableEmbedding` method. Set the embedding driver to `turbopuffer` and configure an `embed` schema on the searchable source attribute:
+
+```php
+'embedding' => [
+    'driver' => 'turbopuffer',
+    'attribute' => 'embedding_text',
+],
+
+'schema' => [
+    // ...
+    'embedding_text' => [
+        'type' => 'string',
+        'embed' => [
+            'model' => 'voyage/voyage-4',
+            'dimensions' => 1024,
+            'attribute' => 'embedding',
+        ],
+    ],
+],
+```
+
+The source attribute must be included in the model's `toSearchableArray` output.
+
 <a name="indexing"></a>
 ## Third-Party Engine Indexing
 
 > [!NOTE]
-> The indexing features described in this section are primarily relevant when using a third-party engine (Algolia, Meilisearch, or Typesense). The database engine searches your database tables directly, so it does not require manual index management.
+> The indexing features described in this section are primarily relevant when using a third-party engine (Algolia, Meilisearch, Typesense, or Turbopuffer). The database engine searches your database tables directly, so it does not require manual index management.
 
 <a name="batch-import"></a>
 ### Batch Import
@@ -75600,6 +81569,35 @@ If you would like to get the raw search results before they are converted to Elo
 $orders = Order::search('Star Trek')->raw();
 ```
 
+<a name="semantic-search"></a>
+### Semantic Search
+
+The database, Meilisearch, Typesense, and Turbopuffer engines support semantic search, which matches records based on the meaning of a query. When Scout generates embeddings, semantic and hybrid searches require the [Laravel AI SDK](/docs/{{version}}/ai-sdk). [Typesense's native embeddings](#typesense-embeddings), [Turbopuffer's native embeddings](#turbopuffer-configuration), and precomputed query vectors do not require the Laravel AI SDK.
+
+After configuring embeddings for the selected engine, invoke the `semantic` method on a search query:
+
+```php
+$articles = Article::search('staying cool in the summer')
+    ->semantic()
+    ->get();
+```
+
+You may provide a minimum similarity threshold when supported by the selected engine:
+
+```php
+$articles = Article::search('renewable energy storage')
+    ->semantic(minSimilarity: 0.6)
+    ->get();
+```
+
+To combine full-text and semantic search, use the `hybrid` method. Its first two arguments control the relative weights of text and semantic results:
+
+```php
+$articles = Article::search('renewable energy storage')
+    ->hybrid(textWeight: 1, semanticWeight: 2)
+    ->get();
+```
+
 <a name="custom-indexes"></a>
 #### Custom Indexes
 
@@ -75614,12 +81612,25 @@ $orders = Order::search('Star Trek')
 <a name="where-clauses"></a>
 ### Where Clauses
 
-Scout allows you to add simple "where" clauses to your search queries. Currently, these clauses only support basic equality checks and are primarily useful for scoping search queries by an owner ID:
+Scout allows you to add "where" clauses to your search queries. For example, basic equality checks are useful for scoping search queries by an owner ID:
 
 ```php
 use App\Models\Order;
 
 $orders = Order::search('Star Trek')->where('user_id', 1)->get();
+```
+
+You may also use the `=`, `!=`, `<`, `>`, `>=`, `<=` comparison operators to build more advanced queries:
+
+```php
+Order::search('Star Trek')
+  ->where('status', '=', 'completed')
+  ->where('is_refunded', '!=', true)
+  ->where('total_price', '>', 100)
+  ->where('shipping_cost', '<', 20)
+  ->where('discount_percent', '>=', 10)
+  ->where('item_count', '<=', 5)
+  ->get();
 ```
 
 In addition, the `whereIn` method may be used to verify that a given column's value is contained within the given array:
@@ -75806,7 +81817,7 @@ Once your engine has been registered, you may specify it as your default Scout `
 
 # Search
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/search*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/search*
 
 - [Introduction](#introduction)
     - [Full-Text Search](#introduction-full-text-search)
@@ -75841,7 +81852,7 @@ When you need keyword relevance ranking — where the database scores and sorts 
 <a name="introduction-semantic-vector-search"></a>
 #### Semantic / Vector Search
 
-For AI-powered semantic search that matches results by *meaning* rather than exact keywords, the `whereVectorSimilarTo` query builder method uses vector embeddings stored in PostgreSQL with the `pgvector` extension. For example, a search for "best wineries in Napa Valley" can surface an article titled "Top Vineyards to Visit" — even though the words don't overlap. Vector search requires PostgreSQL with the `pgvector` extension and the [Laravel AI SDK](/docs/{{version}}/ai-sdk).
+For AI-powered semantic search that matches results by *meaning* rather than exact keywords, the `whereVectorSimilarTo` query builder method uses vector embeddings stored in PostgreSQL with the `pgvector` extension or MariaDB. For example, a search for "best wineries in Napa Valley" can surface an article titled "Top Vineyards to Visit" — even though the words don't overlap. Vector search requires PostgreSQL with the `pgvector` extension or MariaDB 11.7 or later, as well as the [Laravel AI SDK](/docs/{{version}}/ai-sdk).
 
 <a name="introduction-reranking"></a>
 #### Reranking
@@ -75851,7 +81862,7 @@ Laravel's [AI SDK](/docs/{{version}}/ai-sdk) provides reranking capabilities tha
 <a name="introduction-scout-search-engines"></a>
 #### Laravel Scout Search
 
-For applications that want a `Searchable` trait that automatically keeps search indexes in sync with Eloquent models, [Laravel Scout](/docs/{{version}}/scout) offers both a built-in database engine and drivers for third-party services like Algolia, Meilisearch, and Typesense.
+For applications that want a `Searchable` trait that automatically keeps search indexes in sync with Eloquent models, [Laravel Scout](/docs/{{version}}/scout) offers both a built-in database engine and drivers for third-party services like Algolia, Meilisearch, Typesense, and Turbopuffer.
 
 <a name="full-text-search"></a>
 ## Full-Text Search
@@ -75916,7 +81927,7 @@ Full-text search relies on matching keywords — the words in the query must app
 The basic workflow for vector search is: generate an embedding (a numeric array) for each piece of content and store it alongside your data, then at search time, generate an embedding for the user's query and find the stored embeddings that are closest to it in vector space.
 
 > [!NOTE]
-> Vector search requires a PostgreSQL database with the `pgvector` extension and the [Laravel AI SDK](/docs/{{version}}/ai-sdk). All [Laravel Cloud](https://cloud.laravel.com) Serverless Postgres databases already include `pgvector`.
+> Vector search requires the [Laravel AI SDK](/docs/{{version}}/ai-sdk) and is supported by PostgreSQL (requires the `pgvector` extension), MariaDB 11.7 or later, and MongoDB (requires the [Laravel MongoDB package](https://laravel.com/docs/13.x/mongodb)). All Postgres databases on [Laravel Cloud](https://laravel.com/cloud) already have `pgvector` installed.
 
 <a name="generating-embeddings"></a>
 ### Generating Embeddings
@@ -75963,13 +81974,15 @@ Schema::create('documents', function (Blueprint $table) {
 
 The `Schema::ensureVectorExtensionExists` method ensures the `pgvector` extension is enabled on your PostgreSQL database before creating the table.
 
-On your Eloquent model, cast the vector column to an `array` so that Laravel automatically handles the conversion between PHP arrays and the database's vector format:
+On your Eloquent model, use the `AsVector` cast so that Laravel automatically handles the conversion between PHP arrays and the database's vector format:
 
 ```php
+use Illuminate\Database\Eloquent\Casts\AsVector;
+
 protected function casts(): array
 {
     return [
-        'embedding' => 'array',
+        'embedding' => AsVector::class,
     ];
 }
 ```
@@ -76125,7 +82138,7 @@ $documents = Document::query()
 
 # Database: Seeding
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/seeding*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/seeding*
 
 - [Introduction](#introduction)
 - [Writing Seeders](#writing-seeders)
@@ -76287,7 +82300,7 @@ php artisan db:seed --force
 
 # HTTP Session
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/session*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/session*
 
 - [Introduction](#introduction)
     - [Configuration](#configuration)
@@ -76349,7 +82362,7 @@ php artisan migrate
 <a name="redis"></a>
 #### Redis
 
-Before using Redis sessions with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the `predis/predis` package (~1.0) via Composer. For more information on configuring Redis, consult Laravel's [Redis documentation](/docs/{{version}}/redis#configuration).
+Before using Redis sessions with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the `predis/predis` package via Composer. For more information on configuring Redis, consult Laravel's [Redis documentation](/docs/{{version}}/redis#configuration).
 
 > [!NOTE]
 > The `SESSION_CONNECTION` environment variable, or the `connection` option in the `session.php` configuration file, may be used to specify which Redis connection is used for session storage.
@@ -76702,7 +82715,7 @@ Once the session driver has been registered, you may specify the `mongo` driver 
 
 # Laravel Socialite
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/socialite*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/socialite*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -76922,7 +82935,11 @@ use Laravel\Socialite\Socialite;
 $user = Socialite::driver('github')->userFromToken($token);
 ```
 
-If you are using Facebook Limited Login via an iOS application, Facebook will return an OIDC token instead of an access token. Like an access token, the OIDC token can be provided to the `userFromToken` method in order to retrieve user details.
+If you are using Facebook Limited Login via an iOS application, Facebook will return an OIDC token instead of an access token. To retrieve user details from the OIDC token, provide the nonce used to initiate the login to the `userFromToken` method:
+
+```php
+$user = Socialite::driver('facebook')->userFromToken($token, $nonce);
+```
 
 <a name="stateless-authentication"></a>
 #### Stateless Authentication
@@ -76960,14 +82977,14 @@ test('user is redirected to github', function () {
 <a name="faking-the-callback"></a>
 #### Faking the Callback
 
-To test your application's callback route, you may invoke the `fake` method and provide a `User` instance that should be returned when your application requests the user's details from the provider. The `User` instance may be created using the `map` method:
+To test your application's callback route, you may invoke the `fake` method and provide a `User` instance that should be returned when your application requests the user's details from the provider. The `User` instance may be created using the `fake` method:
 
 ```php
 use Laravel\Socialite\Socialite;
 use Laravel\Socialite\Two\User;
 
 test('user can login with github', function () {
-    Socialite::fake('github', (new User)->map([
+    Socialite::fake('github', User::fake([
         'id' => 'github-123',
         'name' => 'Jason Beggs',
         'email' => 'jason@example.com',
@@ -76985,25 +83002,28 @@ test('user can login with github', function () {
 });
 ```
 
-By default, the `User` instance will also include a `token` property. If needed, you may manually specify additional properties on the `User` instance:
+By default, the `User` instance will include fake OAuth token values. If needed, you may override these values by passing additional attributes to the `fake` method:
 
 ```php
-$fakeUser = (new User)->map([
+$fakeUser = User::fake([
     'id' => 'github-123',
     'name' => 'Jason Beggs',
     'email' => 'jason@example.com',
-])->setToken('fake-token')
-  ->setRefreshToken('fake-refresh-token')
-  ->setExpiresIn(3600)
-  ->setApprovedScopes(['read', 'write'])
+    'token' => 'fake-token',
+    'refreshToken' => 'fake-refresh-token',
+    'expiresIn' => 3600,
+    'approvedScopes' => ['read', 'write'],
+]);
 ```
+
+OAuth 1 users may be faked using the `Laravel\Socialite\One\User` class.
 
 
 ---
 
 # Starter Kits
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/starter-kits*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/starter-kits*
 
 - [Introduction](#introduction)
 - [Creating an Application Using a Starter Kit](#creating-an-application)
@@ -77022,7 +83042,9 @@ $fakeUser = (new User)->map([
     - [Customizing User Creation and Password Reset](#customizing-actions)
     - [Two-Factor Authentication](#two-factor-authentication)
     - [Rate Limiting](#rate-limiting)
+- [Teams](#teams)
 - [WorkOS AuthKit Authentication](#workos)
+    - [Configuring Your WorkOS Starter Kit](#configuring-your-workos-starter-kit)
 - [Inertia SSR](#inertia-ssr)
 - [Community Maintained Starter Kits](#community-maintained-starter-kits)
 - [Frequently Asked Questions](#faqs)
@@ -77104,7 +83126,7 @@ The Livewire starter kit utilizes Livewire, Tailwind, and the [Flux UI](https://
 <a name="react-customization"></a>
 ### React
 
-Our React starter kit is built with Inertia 2, React 19, Tailwind 4, and [shadcn/ui](https://ui.shadcn.com). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
+Our React starter kit is built with Inertia 3, React 19, Tailwind 4, and [shadcn/ui](https://ui.shadcn.com). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
 
 The majority of the frontend code is located in the `resources/js` directory. You are free to modify any of the code to customize the appearance and behavior of your application:
 
@@ -77175,7 +83197,7 @@ import AuthLayoutTemplate from '@/layouts/auth/auth-split-layout'; // [tl! add]
 <a name="svelte-customization"></a>
 ### Svelte
 
-Our Svelte starter kit is built with Inertia 2, Svelte 5, Tailwind, and [shadcn-svelte](https://www.shadcn-svelte.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
+Our Svelte starter kit is built with Inertia 3, Svelte 5, Tailwind, and [shadcn-svelte](https://www.shadcn-svelte.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
 
 The majority of the frontend code is located in the `resources/js` directory. You are free to modify any of the code to customize the appearance and behavior of your application:
 
@@ -77241,7 +83263,7 @@ import AuthLayout from '@/layouts/auth/AuthSplitLayout.svelte'; // [tl! add]
 <a name="vue-customization"></a>
 ### Vue
 
-Our Vue starter kit is built with Inertia 2, Vue 3 Composition API, Tailwind, and [shadcn-vue](https://www.shadcn-vue.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
+Our Vue starter kit is built with Inertia 3, Vue 3 Composition API, Tailwind, and [shadcn-vue](https://www.shadcn-vue.com/). As with all of our starter kits, all of the backend and frontend code exists within your application to allow for full customization.
 
 The majority of the frontend code is located in the `resources/js` directory. You are free to modify any of the code to customize the appearance and behavior of your application:
 
@@ -77358,6 +83380,8 @@ All starter kits use [Laravel Fortify](/docs/{{version}}/fortify) to handle auth
 
 Fortify automatically registers the following authentication routes based on the features that are enabled in your application's `config/fortify.php` configuration file:
 
+<div class="overflow-auto">
+
 | Route                              | Method | Description                         |
 | ---------------------------------- | ------ | ----------------------------------- |
 | `/login`                           | `GET`    | Display login form                  |
@@ -77376,6 +83400,8 @@ Fortify automatically registers the following authentication routes based on the
 | `/user/confirm-password`           | `POST`   | Confirm password                    |
 | `/two-factor-challenge`            | `GET`    | Display 2FA challenge form          |
 | `/two-factor-challenge`            | `POST`   | Verify 2FA code                     |
+
+</div>
 
 The `php artisan route:list` Artisan command can be used to display all of the routes in your application.
 
@@ -77407,11 +83433,15 @@ When using the [React](#react), [Svelte](#svelte) or [Vue](#vue) starter kits, y
 
 When a user registers or resets their password, Fortify invokes action classes located in your application's `app/Actions/Fortify` directory:
 
+<div class="overflow-auto">
+
 | File                          | Description                           |
 | ----------------------------- | ------------------------------------- |
 | `CreateNewUser.php`           | Validates and creates new users       |
 | `ResetUserPassword.php`       | Validates and updates user passwords  |
 | `PasswordValidationRules.php` | Defines password validation rules     |
+
+</div>
 
 For example, to customize your application's registration logic, you should edit the `CreateNewUser` action:
 
@@ -77455,6 +83485,17 @@ RateLimiter::for('login', function ($request) {
 });
 ```
 
+<a name="teams"></a>
+## Teams
+
+The React, Svelte, Vue, and Livewire starter kits may also be generated with team support. When the teams feature is enabled, each user belongs to one or more teams and has a current team. During registration, new users are automatically given a personal team. The starter kits also include team management screens for creating teams, switching between teams, inviting members, and updating team details.
+
+When a route is scoped to the current team, the current team's slug is included in the URL. For example, the dashboard route becomes `/{current_team}/dashboard`, while team management pages use routes such as `settings/teams/{team}`. When using the `{current_team}` and `{team}` route parameters, the starter kits automatically ensure that the authenticated user belongs to the requested team before allowing access to the route.
+
+To make generating team-aware URLs more convenient, the starter kits register URL defaults for the authenticated user's current team. This allows calls to helpers such as `route('dashboard')` to automatically include the current team's slug. When a user signs in, registers, or switches teams, the starter kits update the current team and refresh these URL defaults so generated links continue to use the correct team context.
+
+When creating or renaming a team, the starter kits also prevent users from choosing reserved names that could produce unsafe or conflicting route segments. For example, names that would collide with route prefixes such as `settings`, `login`, or `dashboard` may not be used.
+
 <a name="workos"></a>
 ## WorkOS AuthKit Authentication
 
@@ -77473,6 +83514,7 @@ Using WorkOS as your authentication provider [requires a WorkOS account](https:/
 
 To use WorkOS AuthKit as your application's authentication provider, select the WorkOS option when creating your new starter kit powered application via `laravel new`.
 
+<a name="configuring-your-workos-starter-kit"></a>
 ### Configuring Your WorkOS Starter Kit
 
 After creating a new application using a WorkOS powered starter kit, you should set the `WORKOS_CLIENT_ID`, `WORKOS_API_KEY`, and `WORKOS_REDIRECT_URL` environment variables in your application's `.env` file. These variables should match the values provided to you in the WorkOS dashboard for your application:
@@ -77569,7 +83611,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 You may want to customize the default email template to better align with your application's branding. To modify this template, you should publish the email views to your application with the following command:
 
-```
+```shell
 php artisan vendor:publish --tag=laravel-mail
 ```
 
@@ -77580,7 +83622,7 @@ This will generate several files in `resources/views/vendor/mail`. You can modif
 
 # Strings
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/strings*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/strings*
 
 - [Introduction](#introduction)
 - [Available Methods](#available-methods)
@@ -77629,6 +83671,7 @@ Laravel includes a variety of functions for manipulating string values. Many of 
 [Str::chopEnd](#method-str-chop-end)
 [Str::contains](#method-str-contains)
 [Str::containsAll](#method-str-contains-all)
+[Str::counted](#method-str-counted)
 [Str::doesntContain](#method-str-doesnt-contain)
 [Str::doesntEndWith](#method-str-doesnt-end-with)
 [Str::doesntStartWith](#method-str-doesnt-start-with)
@@ -77733,6 +83776,7 @@ Laravel includes a variety of functions for manipulating string values. Many of 
 [chopEnd](#method-fluent-str-chop-end)
 [contains](#method-fluent-str-contains)
 [containsAll](#method-fluent-str-contains-all)
+[counted](#method-fluent-str-counted)
 [decrypt](#method-fluent-str-decrypt)
 [deduplicate](#method-fluent-str-deduplicate)
 [dirname](#method-fluent-str-dirname)
@@ -78402,7 +84446,7 @@ $matches = Str::is('*.jpg', 'photo.JPG', ignoreCase: true);
 <a name="method-str-is-ascii"></a>
 #### `Str::isAscii()` {.collection-method}
 
-The `Str::isAscii` method determines if a given string is 7 bit ASCII:
+The `Str::isAscii` method determines if a given string is 7-bit ASCII:
 
 ```php
 use Illuminate\Support\Str;
@@ -78636,7 +84680,7 @@ $string = Str::mask('taylor@example.com', '*', 3);
 // tay***************
 ```
 
-If needed, you provide a negative number as the third argument to the `mask` method, which will instruct the method to begin masking at the given distance from the end of the string:
+If needed, you may provide a negative number as the third argument to the `mask` method, which will instruct the method to begin masking at the given distance from the end of the string:
 
 ```php
 $string = Str::mask('taylor@example.com', '*', -15, 3);
@@ -78780,6 +84824,23 @@ $password = Str::password();
 $password = Str::password(12);
 
 // 'qwuar>#V|i]N'
+```
+
+<a name="method-str-counted"></a>
+#### `Str::counted()` {.collection-method}
+
+The `Str::counted` method converts a singular word string to its singular or plural form based on the given count and prefixes the result with the formatted count:
+
+```php
+use Illuminate\Support\Str;
+
+$label = Str::counted('order', 1);
+
+// 1 order
+
+$label = Str::counted('order', 1000);
+
+// 1,000 orders
 ```
 
 <a name="method-str-plural"></a>
@@ -79093,7 +85154,7 @@ $singular = Str::singular('children');
 <a name="method-str-slug"></a>
 #### `Str::slug()` {.collection-method}
 
-The `Str::slug` method generates a URL friendly "slug" from the given string:
+The `Str::slug` method generates a URL-friendly "slug" from the given string:
 
 ```php
 use Illuminate\Support\Str;
@@ -80655,6 +86716,23 @@ $closure = Str::of('foo')->pipe(function (Stringable $str) {
 // 'bar'
 ```
 
+<a name="method-fluent-str-counted"></a>
+#### `counted` {.collection-method}
+
+The `counted` method converts a singular word string to its singular or plural form based on the given count and prefixes the result with the formatted count:
+
+```php
+use Illuminate\Support\Str;
+
+$label = Str::of('order')->counted(1);
+
+// 1 order
+
+$label = Str::of('order')->counted(1000);
+
+// 1,000 orders
+```
+
 <a name="method-fluent-str-plural"></a>
 #### `plural` {.collection-method}
 
@@ -80908,7 +86986,7 @@ $singular = Str::of('children')->singular();
 <a name="method-fluent-str-slug"></a>
 #### `slug` {.collection-method}
 
-The `slug` method generates a URL friendly "slug" from the given string:
+The `slug` method generates a URL-friendly "slug" from the given string:
 
 ```php
 use Illuminate\Support\Str;
@@ -81522,7 +87600,7 @@ $string = Str::of('foo/bar')->whenIs('foo/*', function (Stringable $string) {
 <a name="method-fluent-str-when-is-ascii"></a>
 #### `whenIsAscii` {.collection-method}
 
-The `whenIsAscii` method invokes the given closure if the string is 7 bit ASCII. The closure will receive the fluent string instance:
+The `whenIsAscii` method invokes the given closure if the string is 7-bit ASCII. The closure will receive the fluent string instance:
 
 ```php
 use Illuminate\Support\Str;
@@ -81628,7 +87706,7 @@ Str::is('is')->wrap(before: 'This ', after: ' Laravel!');
 
 # Directory Structure
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/structure*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/structure*
 
 - [Introduction](#introduction)
 - [The Root Directory](#the-root-directory)
@@ -81811,7 +87889,7 @@ This directory does not exist by default, but will be created for you if you exe
 
 # Laravel Telescope
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/telescope*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/telescope*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -81920,6 +87998,35 @@ If desired, you may disable Telescope's data collection entirely using the `enab
 
 ```php
 'enabled' => env('TELESCOPE_ENABLED', true),
+```
+
+<a name="content-security-policy-csp-nonce"></a>
+#### Content Security Policy (CSP) Nonce
+
+If you would like to use a [nonce attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/nonce) on the script and style tags used in Telescope views as part of your [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP), you may use the `Telescope::cspNonce` method to specify the nonce to use. This method should typically be invoked within middleware so that a new nonce is assigned for each request:
+
+```php
+use Closure;
+use Illuminate\Http\Request;
+use Laravel\Telescope\Telescope;
+use Symfony\Component\HttpFoundation\Response;
+
+public function handle(Request $request, Closure $next): Response
+{
+    Telescope::cspNonce('csp-nonce');
+
+    return $next($request);
+}
+```
+
+You may add this middleware to the `middleware` option in your application's `config/telescope.php` configuration file:
+
+```php
+'middleware' => [
+    'web',
+    App\Http\Middleware\AddTelescopeCspNonce::class,
+    Authorize::class,
+],
 ```
 
 <a name="data-pruning"></a>
@@ -82301,7 +88408,7 @@ public function register(): void
 
 # Testing: Getting Started
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/testing*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/testing*
 
 - [Introduction](#introduction)
 - [Environment](#environment)
@@ -82348,6 +88455,31 @@ If you would like to create a test within the `tests/Unit` directory, you may us
 
 ```shell
 php artisan make:test UserTest --unit
+```
+
+If you have a test class that mostly relies on Laravel's testing features, but a specific test method does not need the framework booted, you may apply the `#[UnitTest]` attribute to that method to skip booting the application for just that test.
+
+```php tab=PHPUnit
+<?php
+
+namespace Tests\Feature;
+
+use Illuminate\Foundation\Testing\Attributes\UnitTest;
+use Tests\TestCase;
+
+class LocationServiceTest extends TestCase
+{
+    public function test_get_coordinates_resolves_address(): void
+    {
+        // This test uses Laravel's testing features...
+    }
+
+    #[UnitTest]
+    public function test_get_state_returns_state_from_abbreviation(): void
+    {
+        // This test runs without booting the application...
+    }
+}
 ```
 
 > [!NOTE]
@@ -82529,7 +88661,7 @@ php artisan test --profile
 <a name="configuration-caching"></a>
 ## Configuration Caching
 
-When running tests, Laravel boots the application for each individual test method.  Without a cached configuration file, each configuration file in your application must be loaded at the start of a test. To build the configuration once and re-use it for all tests in a single run, you may use the `Illuminate\Foundation\Testing\WithCachedConfig` trait:
+When running tests, Laravel boots the application for each individual test method. Without a cached configuration file, each configuration file in your application must be loaded at the start of a test. To build the configuration once and re-use it for all tests in a single run, you may use the `Illuminate\Foundation\Testing\WithCachedConfig` trait:
 
 ```php tab=Pest
 <?php
@@ -82562,9 +88694,10 @@ class ConfigTest extends TestCase
 
 # Upgrade Guide
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/upgrade*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/upgrade*
 
-- [Upgrading To 12.0 From 11.x](#upgrade-12.0)
+- [Upgrading To 13.0 From 12.x](#upgrade-13.0)
+    - [Upgrading Using AI](#upgrading-using-ai)
 
 <a name="high-impact-changes"></a>
 ## High Impact Changes
@@ -82573,6 +88706,7 @@ class ConfigTest extends TestCase
 
 - [Updating Dependencies](#updating-dependencies)
 - [Updating the Laravel Installer](#updating-the-laravel-installer)
+- [Request Forgery Protection](#request-forgery-protection)
 
 </div>
 
@@ -82581,7 +88715,8 @@ class ConfigTest extends TestCase
 
 <div class="content-list" markdown="1">
 
-- [Models and UUIDv7](#models-and-uuidv7)
+- [Cache `serializable_classes` Configuration](#cache-serializable_classes-configuration)
+- [Database `upsert` With MySQL or MariaDB](#database-upsert-mariadb-mysql)
 
 </div>
 
@@ -82590,23 +88725,33 @@ class ConfigTest extends TestCase
 
 <div class="content-list" markdown="1">
 
-- [Carbon 3](#carbon-3)
-- [Concurrency Result Index Mapping](#concurrency-result-index-mapping)
-- [Container Class Dependency Resolution](#container-class-dependency-resolution)
-- [Image Validation Now Excludes SVGs](#image-validation)
-- [Local Filesystem Disk Default Root Path](#local-filesystem-disk-default-root-path)
-- [Multi-Schema Database Inspecting](#multi-schema-database-inspecting)
-- [Nested Array Request Merging](#nested-array-request-merging)
+- [Cache Prefixes and Session Cookie Names](#cache-prefixes-and-session-cookie-names)
+- [Collection Model Serialization Restores Eager-Loaded Relations](#collection-model-serialization-restores-eager-loaded-relations)
+- [`Container::call` and Nullable Class Defaults](#containercall-and-nullable-class-defaults)
+- [Domain Route Registration Precedence](#domain-route-registration-precedence)
+- [`JobAttempted` Event Exception Payload](#jobattempted-event-exception-payload)
+- [Manager `extend` Callback Binding](#manager-extend-callback-binding)
+- [MySQL `DELETE` Queries With `JOIN`, `ORDER BY`, and `LIMIT`](#mysql-delete-queries-with-join-order-by-and-limit)
+- [Pagination Bootstrap View Names](#pagination-bootstrap-view-names)
+- [Polymorphic Pivot Table Name Generation](#polymorphic-pivot-table-name-generation)
+- [`QueueBusy` Event Property Rename](#queuebusy-event-property-rename)
+- [Session `serialization` Configuration](#session-serialization-configuration)
+- [`Str` Factories Reset Between Tests](#str-factories-reset-between-tests)
 
 </div>
 
-<a name="upgrade-12.0"></a>
-## Upgrading To 12.0 From 11.x
+<a name="upgrade-13.0"></a>
+## Upgrading To 13.0 From 12.x
 
-#### Estimated Upgrade Time: 5 Minutes
+#### Estimated Upgrade Time: 10 Minutes
 
 > [!NOTE]
-> We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application. Want to save time? You can use [Laravel Shift](https://laravelshift.com/) to help automate your application upgrades.
+> We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application. To save time, you may use [Shift](https://laravelshift.com). Shift is a community-maintained service that automates Laravel upgrades.
+
+<a name="upgrading-using-ai"></a>
+### Upgrading Using AI
+
+You can automate your upgrade using [Laravel Boost](https://github.com/laravel/boost). Boost is a first-party MCP server that provides your AI assistant with guided upgrade prompts — once installed in any Laravel 12 application, use the `/upgrade-laravel-v13` slash command in Claude Code, Cursor, OpenCode, Gemini, or VS Code to begin the upgrade to Laravel 13. This command requires Laravel Boost `^2.0`.
 
 <a name="updating-dependencies"></a>
 ### Updating Dependencies
@@ -82617,263 +88762,438 @@ You should update the following dependencies in your application's `composer.jso
 
 <div class="content-list" markdown="1">
 
-- `laravel/framework` to `^12.0`
-- `phpunit/phpunit` to `^11.0`
-- `pestphp/pest` to `^3.0`
+- `laravel/framework` to `^13.0`
+- `laravel/boost` to `^2.0`
+- `laravel/tinker` to `^3.0`
+- `phpunit/phpunit` to `^12.0`
+- `pestphp/pest` to `^4.0`
 
 </div>
-
-<a name="carbon-3"></a>
-#### Carbon 3
-
-**Likelihood Of Impact: Low**
-
-Support for Carbon 2.x has been removed. All Laravel 12 applications now require [Carbon 3.x](https://carbon.nesbot.com/guide/getting-started/migration.html).
 
 <a name="updating-the-laravel-installer"></a>
 ### Updating the Laravel Installer
 
-If you are using the Laravel installer CLI tool to create new Laravel applications, you should update your installer installation to be compatible with Laravel 12.x and the [new Laravel starter kits](https://laravel.com/starter-kits). If you installed the Laravel installer via `composer global require`, you may update the installer using `composer global update`:
+If you are using the Laravel installer CLI tool to create new Laravel applications, you should update your installer installation for Laravel 13.x compatibility.
+
+If you installed the Laravel installer via `composer global require`, you may update the installer using `composer global update`:
 
 ```shell
 composer global update laravel/installer
 ```
 
-If you originally installed PHP and Laravel via `php.new`, you may simply re-run the `php.new` installation commands for your operating system to install the latest version of PHP and the Laravel installer:
-
-```shell tab=macOS
-/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.4)"
-```
-
-```shell tab=Windows PowerShell
-# Run as administrator...
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
-```
-
-```shell tab=Linux
-/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.4)"
-```
-
 Or, if you are using [Laravel Herd's](https://herd.laravel.com) bundled copy of the Laravel installer, you should update your Herd installation to the latest release.
 
-<a name="authentication"></a>
-### Authentication
+<a name="cache"></a>
+### Cache
 
-<a name="updated-databasetokenrepository-constructor-signature"></a>
-#### Updated `DatabaseTokenRepository` Constructor Signature
-
-**Likelihood Of Impact: Very Low**
-
-The constructor of the `Illuminate\Auth\Passwords\DatabaseTokenRepository` class now expects the `$expires` parameter to be given in seconds, rather than minutes.
-
-<a name="concurrency"></a>
-### Concurrency
-
-<a name="concurrency-result-index-mapping"></a>
-#### Concurrency Result Index Mapping
+<a name="cache-prefixes-and-session-cookie-names"></a>
+#### Cache Prefixes and Session Cookie Names
 
 **Likelihood Of Impact: Low**
 
-When invoking the `Concurrency::run` method with an associative array, the results of the concurrent operations are now returned with their associated keys:
+Laravel's default cache and Redis key prefixes now use hyphenated suffixes.
+
+In most applications, this change will not apply because application-level configuration files already define these values. This primarily affects applications that rely on framework-level fallback configuration when corresponding application config values are not present.
+
+If your application relies on these generated defaults, cache keys and session cookie names may change after upgrading:
 
 ```php
-$result = Concurrency::run([
-    'task-1' => fn () => 1 + 1,
-    'task-2' => fn () => 2 + 2,
-]);
+// Laravel <= 12.x
+Str::slug((string) env('APP_NAME', 'laravel'), '_').'_cache_';
+Str::slug((string) env('APP_NAME', 'laravel'), '_').'_database_';
+Str::slug((string) env('APP_NAME', 'laravel'), '_').'_session';
 
-// ['task-1' => 2, 'task-2' => 4]
+// Laravel >= 13.x
+Str::slug((string) env('APP_NAME', 'laravel')).'-cache-';
+Str::slug((string) env('APP_NAME', 'laravel')).'-database-';
+Str::slug((string) env('APP_NAME', 'laravel')).'-session';
 ```
+
+To retain previous behavior, explicitly configure `CACHE_PREFIX`, `REDIS_PREFIX`, and `SESSION_COOKIE` in your environment.
+
+<a name="store-and-repository-contracts-touch"></a>
+#### `Store` and `Repository` Contracts: `touch`
+
+**Likelihood Of Impact: Very Low**
+
+The cache contracts now include a `touch` method for extending item TTLs. If you maintain custom cache store implementations, you should add this method:
+
+```php
+// Illuminate\Contracts\Cache\Store
+public function touch($key, $seconds);
+```
+
+<a name="cache-serializable_classes-configuration"></a>
+#### Cache `serializable_classes` Configuration
+
+**Likelihood Of Impact: Medium**
+
+The default application `cache` configuration now includes a `serializable_classes` option set to `false`. This hardens cache unserialization behavior to help prevent PHP deserialization gadget chain attacks if your application's `APP_KEY` is leaked. If your application intentionally stores PHP objects in cache, you should explicitly list the classes that may be unserialized:
+
+```php
+'serializable_classes' => [
+    App\Data\CachedDashboardStats::class,
+    App\Support\CachedPricingSnapshot::class,
+],
+```
+
+If your application previously relied on unserializing arbitrary cached objects, you will need to migrate that usage to explicit class allow-lists or to non-object cache payloads (such as arrays).
 
 <a name="container"></a>
 ### Container
 
-<a name="container-class-dependency-resolution"></a>
-#### Container Class Dependency Resolution
+<a name="containercall-and-nullable-class-defaults"></a>
+#### `Container::call` and Nullable Class Defaults
 
 **Likelihood Of Impact: Low**
 
-The dependency injection container now respects the default value of class properties when resolving a class instance. If you were previously relying on the container to resolve a class instance without the default value, you may need to adjust your application to account for this new behavior:
+`Container::call` now respects nullable class parameter defaults when no binding exists, matching constructor injection behavior introduced in Laravel 12:
 
 ```php
-class Example
-{
-    public function __construct(public ?Carbon $date = null) {}
-}
+$container->call(function (?Carbon $date = null) {
+    return $date;
+});
 
-$example = resolve(Example::class);
-
-// <= 11.x
-$example->date instanceof Carbon;
-
-// >= 12.x
-$example->date === null;
+// Laravel <= 12.x: Carbon instance
+// Laravel >= 13.x: null
 ```
+
+If your method-call injection logic depended on the previous behavior, you may need to update it.
+
+<a name="contracts"></a>
+### Contracts
+
+<a name="dispatcher-contract-dispatchafterresponse"></a>
+#### `Dispatcher` Contract: `dispatchAfterResponse`
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Bus\Dispatcher` contract now includes the `dispatchAfterResponse($command, $handler = null)` method.
+
+If you maintain a custom dispatcher implementation, add this method to your class.
+
+<a name="responsefactory-contract-eventstream"></a>
+#### `ResponseFactory` Contract: `eventStream`
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Routing\ResponseFactory` contract now includes an `eventStream` signature.
+
+If you maintain a custom implementation of this contract, you should add this method.
+
+<a name="mustverifyemail-contract-markemailasunverified"></a>
+#### `MustVerifyEmail` Contract: `markEmailAsUnverified`
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Auth\MustVerifyEmail` contract now includes `markEmailAsUnverified()`.
+
+If you provide a custom implementation of this contract, add this method to remain compatible.
 
 <a name="database"></a>
 ### Database
 
-<a name="multi-schema-database-inspecting"></a>
-#### Multi-Schema Database Inspecting
+<a name="database-upsert-mariadb-mysql"></a>
+#### Database `upsert` With MySQL or MariaDB
+
+**Likelihood Of Impact: Medium**
+
+Laravel now validates that the caller provides a non-empty value for `uniqueBy`, and will throw an `InvalidArgumentException` instead of generating invalid SQL.
+
+Although the MariaDB and MySQL database drivers ignore the `uniqueBy` value and always use the table's primary and unique indexes to detect existing records, the validation still applies. An `InvalidArgumentException` will be thrown if `uniqueBy` is empty.
+
+<a name="mysql-delete-queries-with-join-order-by-and-limit"></a>
+#### MySQL `DELETE` Queries With `JOIN`, `ORDER BY`, and `LIMIT`
 
 **Likelihood Of Impact: Low**
 
-The `Schema::getTables()`, `Schema::getViews()`, and `Schema::getTypes()` methods now include the results from all schemas by default. You may pass the `schema` argument to retrieve the result for the given schema only:
+Laravel now compiles full `DELETE ... JOIN` queries including `ORDER BY` and `LIMIT` for MySQL grammar.
 
-```php
-// All tables on all schemas...
-$tables = Schema::getTables();
-
-// All tables on the 'main' schema...
-$tables = Schema::getTables(schema: 'main');
-
-// All tables on the 'main' and 'blog' schemas...
-$tables = Schema::getTables(schema: ['main', 'blog']);
-```
-
-The `Schema::getTableListing()` method now returns schema-qualified table names by default. You may pass the `schemaQualified` argument to change the behavior as desired:
-
-```php
-$tables = Schema::getTableListing();
-// ['main.migrations', 'main.users', 'blog.posts']
-
-$tables = Schema::getTableListing(schema: 'main');
-// ['main.migrations', 'main.users']
-
-$tables = Schema::getTableListing(schema: 'main', schemaQualified: false);
-// ['migrations', 'users']
-```
-
-The `db:table` and `db:show` commands now output the results of all schemas on MySQL, MariaDB, and SQLite, just like PostgreSQL and SQL Server.
-
-<a name="database-constructor-signature-changes"></a>
-#### Database Constructor Signature Changes
-
-**Likelihood Of Impact: Very Low**
-
-In Laravel 12, several low-level database classes now require an `Illuminate\Database\Connection` instance to be provided via their constructors.
-
-**These changes are primarily applicable to database package maintainers - it is extremely unlikely any of these changes affect normal application development.**
-
-`Illuminate\Database\Schema\Blueprint`
-
-The constructor of the `Illuminate\Database\Schema\Blueprint` class now expects a `Connection` instance as its first argument. This primarily affects applications or packages that manually instantiate `Blueprint` instances.
-
-`Illuminate\Database\Grammar`
-
-The constructor of the `Illuminate\Database\Grammar` class also now requires a `Connection` instance. In previous versions, the connection was assigned after construction using the `setConnection()` method. This method has been removed in Laravel 12:
-
-```php
-// Laravel <= 11.x
-$grammar = new MySqlGrammar;
-$grammar->setConnection($connection);
-
-// Laravel >= 12.x
-$grammar = new MySqlGrammar($connection);
-````
-
-In addition, the following APIs have been removed or deprecated:
-
-<div class="content-list" markdown="1">
-
-- The `Blueprint::getPrefix()` method is deprecated.
-- The `Connection::withTablePrefix()` method has been removed.
-- The `Grammar::getTablePrefix()` and `setTablePrefix()` methods are deprecated.
-- The `Grammar::setConnection()` method has been removed.
-
-</div>
-
-When working with table prefixes, you should now retrieve them directly from the database connection:
-
-```php
-$prefix = $connection->getTablePrefix();
-```
-
-If you maintain custom database drivers, schema builders, or grammar implementations, you should review their constructors and ensure a `Connection` instance is provided.
+In previous versions, `ORDER BY` / `LIMIT` clauses could be silently ignored on joined deletes. In Laravel 13, these clauses are included in the generated SQL. As a result, database engines that do not support this syntax (such as standard MySQL / MariaDB variants) may now throw a `QueryException` instead of executing an unbounded delete.
 
 <a name="eloquent"></a>
 ### Eloquent
 
-<a name="models-and-uuidv7"></a>
-#### Models and UUIDv7
+<a name="model-booting-and-nested-instantiation"></a>
+#### Model Booting and Nested Instantiation
 
-**Likelihood Of Impact: Medium**
+**Likelihood Of Impact: Very Low**
 
-The `HasUuids` trait now returns UUIDs that are compatible with version 7 of the UUID spec (ordered UUIDs). If you would like to continue using ordered UUIDv4 strings for your model's IDs, you should now use the `HasVersion4Uuids` trait:
+Creating a new model instance while that model is still booting is now disallowed and throws a `LogicException`.
+
+This affects code that instantiates models from inside model `boot` methods or trait `boot*` methods:
 
 ```php
-use Illuminate\Database\Eloquent\Concerns\HasUuids; // [tl! remove]
-use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids; // [tl! add]
+protected static function boot()
+{
+    parent::boot();
+
+    // No longer allowed during booting...
+    (new static())->getTable();
+}
 ```
 
-The `HasVersion7Uuids` trait has been removed. If you were previously using this trait, you should use the `HasUuids` trait instead, which now provides the same behavior.
+Move this logic outside the boot cycle to avoid nested booting.
 
-<a name="requests"></a>
-### Requests
-
-<a name="nested-array-request-merging"></a>
-#### Nested Array Request Merging
+<a name="polymorphic-pivot-table-name-generation"></a>
+#### Polymorphic Pivot Table Name Generation
 
 **Likelihood Of Impact: Low**
 
-The `$request->mergeIfMissing()` method now allows merging nested array data using "dot" notation. If you were previously relying on this method to create a top-level array key containing the "dot" notation version of the key, you may need to adjust your application to account for this new behavior:
+When table names are inferred for polymorphic pivot models using custom pivot model classes, Laravel now generates pluralized names.
+
+If your application depended on the previous singular inferred names for morph pivot tables and used custom pivot classes, you should explicitly define the table name on your pivot model.
+
+<a name="collection-model-serialization-restores-eager-loaded-relations"></a>
+#### Collection Model Serialization Restores Eager-Loaded Relations
+
+**Likelihood Of Impact: Low**
+
+When Eloquent model collections are serialized and restored (such as in queued jobs), eager-loaded relations are now restored for the collection's models.
+
+If your code depended on relations not being present after deserialization, you may need to adjust that logic.
+
+<a name="http-client"></a>
+### HTTP Client
+
+<a name="http-client-response-throw-and-throwif-signatures"></a>
+#### HTTP Client `Response::throw` and `throwIf` Signatures
+
+**Likelihood Of Impact: Very Low**
+
+The HTTP client response methods now declare their callback parameters in the method signatures:
 
 ```php
-$request->mergeIfMissing([
-    'user.last_name' => 'Otwell',
-]);
+public function throw($callback = null);
+public function throwIf($condition, $callback = null);
 ```
+
+If you override these methods in custom response classes, ensure your method signatures are compatible.
+
+<a name="notifications"></a>
+### Notifications
+
+<a name="default-password-reset-subject"></a>
+#### Default Password Reset Subject
+
+**Likelihood Of Impact: Very Low**
+
+Laravel's default password reset mail subject has changed:
+
+```text
+// Laravel <= 12.x
+Reset Password Notification
+
+// Laravel >= 13.x
+Reset your password
+```
+
+If your tests, assertions, or translation overrides depend on the previous default string, update them accordingly.
+
+<a name="queued-notifications-and-missing-models"></a>
+#### Queued Notifications and Missing Models
+
+**Likelihood Of Impact: Very Low**
+
+Queued notifications now respect the `#[DeleteWhenMissingModels]` attribute and `$deleteWhenMissingModels` property defined on the notification class.
+
+In previous versions, missing models could still cause queued notification jobs to fail in cases where you expected them to be deleted.
+
+<a name="queue"></a>
+### Queue
+
+<a name="jobattempted-event-exception-payload"></a>
+#### `JobAttempted` Event Exception Payload
+
+**Likelihood Of Impact: Low**
+
+The `Illuminate\Queue\Events\JobAttempted` event now exposes the exception object (or `null`) via `$exception`, replacing the previous boolean `$exceptionOccurred` property:
+
+```php
+// Laravel <= 12.x
+$event->exceptionOccurred;
+
+// Laravel >= 13.x
+$event->exception;
+```
+
+If you listen for this event, update your listener code accordingly.
+
+<a name="queuebusy-event-property-rename"></a>
+#### `QueueBusy` Event Property Rename
+
+**Likelihood Of Impact: Low**
+
+The `Illuminate\Queue\Events\QueueBusy` event property `$connection` has been renamed to `$connectionName` for consistency with other queue events.
+
+If your listeners reference `$connection`, update them to `$connectionName`.
+
+<a name="queue-contract-method-additions"></a>
+#### `Queue` Contract Method Additions
+
+**Likelihood Of Impact: Very Low**
+
+The `Illuminate\Contracts\Queue\Queue` contract now includes queue size inspection methods that were previously only declared in docblocks.
+
+If you maintain custom queue driver implementations of this contract, add implementations for:
+
+<div class="content-list" markdown="1">
+
+- `pendingSize`
+- `delayedSize`
+- `reservedSize`
+- `creationTimeOfOldestPendingJob`
+
+</div>
 
 <a name="routing"></a>
 ### Routing
 
-<a name="route-precedence"></a>
-#### Route Precedence
+<a name="domain-route-registration-precedence"></a>
+#### Domain Route Registration Precedence
 
 **Likelihood Of Impact: Low**
 
-The routing behavior when multiple routes have the same name has been unified between cached and uncached routing. This means that uncached routing now matches the first route registered with a given name instead of the last one.
+Routes with an explicit domain are now prioritized before non-domain routes in route matching.
 
-<a name="storage"></a>
-### Storage
+This allows catch-all subdomain routes to behave consistently even when non-domain routes are registered earlier. If your application relied on previous registration precedence between domain and non-domain routes, review route matching behavior.
 
-<a name="local-filesystem-disk-default-root-path"></a>
-#### Local Filesystem Disk Default Root Path
+<a name="session"></a>
+### Session
 
-**Likelihood Of Impact: Low**
-
-If your application does not explicitly define a `local` disk in your filesystems configuration, Laravel will now default the local disk's root to `storage/app/private`. In previous releases, this defaulted to `storage/app`. As a result, calls to `Storage::disk('local')` will read from and write to `storage/app/private` unless otherwise configured. To restore the previous behavior, you may define the `local` disk manually and set the desired root path.
-
-<a name="validation"></a>
-### Validation
-
-<a name="image-validation"></a>
-#### Image Validation Now Excludes SVGs
+<a name="session-serialization-configuration"></a>
+#### Session `serialization` Configuration
 
 **Likelihood Of Impact: Low**
 
-The `image` validation rule no longer allows SVG images by default. If you would like to allow SVGs when using the `image` rule, you must explicitly allow them:
+To help prevent PHP deserialization gadget chain attacks, the default application skeleton now sets the session `serialization` option to `json` in the `config/session.php` file.
+
+If you are upgrading an existing application and syncing your configuration files with the Laravel 13 skeleton, updating this value from `php` to `json` will invalidate all active user sessions.
+
+If you wish to seamlessly maintain active sessions during your upgrade, you should ensure this value remains set to `php`. However, if your application does not store PHP objects in the session and you are comfortable requiring your users to re-authenticate, we recommend updating this value to `json` for improved security.
+
+<a name="scheduling"></a>
+### Scheduling
+
+<a name="withscheduling-registration-timing"></a>
+#### `withScheduling` Registration Timing
+
+**Likelihood Of Impact: Very Low**
+
+Schedules registered via `ApplicationBuilder::withScheduling()` are now deferred until `Schedule` is resolved.
+
+If your application relied on immediate schedule registration timing during bootstrap, you may need to adjust that logic.
+
+<a name="security"></a>
+### Security
+
+<a name="request-forgery-protection"></a>
+#### Request Forgery Protection
+
+**Likelihood Of Impact: High**
+
+Laravel's CSRF middleware has been renamed from `VerifyCsrfToken` to `PreventRequestForgery`, and now includes request-origin verification using the `Sec-Fetch-Site` header.
+
+`VerifyCsrfToken` and `ValidateCsrfToken` remain as deprecated aliases, but direct references should be updated to `PreventRequestForgery`, especially when excluding middleware in tests or route definitions:
 
 ```php
-use Illuminate\Validation\Rules\File;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
-'photo' => 'required|image:allow_svg'
+// Laravel <= 12.x
+->withoutMiddleware([VerifyCsrfToken::class]);
 
-// Or...
-'photo' => ['required', File::image(allowSvg: true)],
+// Laravel >= 13.x
+->withoutMiddleware([PreventRequestForgery::class]);
 ```
+
+The middleware configuration API now also provides `preventRequestForgery(...)`.
+
+<a name="support"></a>
+### Support
+
+<a name="manager-extend-callback-binding"></a>
+#### Manager `extend` Callback Binding
+
+**Likelihood Of Impact: Low**
+
+Custom driver closures registered via manager `extend` methods are now bound to the manager instance.
+
+If you previously relied on another bound object (such as a service provider instance) as `$this` inside these callbacks, you should move those values into closure captures using `use (...)`.
+
+<a name="str-factories-reset-between-tests"></a>
+#### `Str` Factories Reset Between Tests
+
+**Likelihood Of Impact: Low**
+
+Laravel now resets custom `Str` factories during test teardown.
+
+If your tests depended on custom UUID / ULID / random string factories persisting between test methods, you should set them in each relevant test or setup hook.
+
+<a name="jsfrom-uses-unescaped-unicode-by-default"></a>
+#### `Js::from` Uses Unescaped Unicode By Default
+
+**Likelihood Of Impact: Very Low**
+
+`Illuminate\Support\Js::from` now uses `JSON_UNESCAPED_UNICODE` by default.
+
+If your tests or frontend output comparisons depended on escaped Unicode sequences (for example `\u00e8`), update your expectations.
+
+<a name="utilities"></a>
+### Utilities
+
+<a name="symfony-polyfill"></a>
+#### Symfony PHP 8.5 Polyfill and Global Function Conflicts
+
+**Likelihood Of Impact: Low**
+
+Laravel 13 introduces a dependency on `symfony/polyfill-php85`. On PHP versions below 8.5, this polyfill defines global functions such as `array_first()` and `array_last()` unless they have already been defined earlier during bootstrap.
+
+These functions may conflict with legacy helper packages like `laravel/helpers` or custom global helpers using the same names. For example, the historical `array_first()` helper accepted a callback to return the first matching element, while the polyfilled version only returns the first element of the array.
+
+To avoid conflicts and ensure consistent behavior across PHP versions, you should prefer the `Illuminate\Support\Arr` methods:
+
+```php
+use Illuminate\Support\Arr;
+
+Arr::first($array, function ($value) {
+  return /* condition */;
+});
+```
+
+<a name="views"></a>
+### Views
+
+<a name="pagination-bootstrap-view-names"></a>
+#### Pagination Bootstrap View Names
+
+**Likelihood Of Impact: Low**
+
+The internal pagination view names for Bootstrap 3 defaults are now explicit:
+
+```nothing
+// Laravel <= 12.x
+pagination::default
+pagination::simple-default
+
+// Laravel >= 13.x
+pagination::bootstrap-3
+pagination::simple-bootstrap-3
+```
+
+If your application references the old pagination view names directly, update those references.
 
 <a name="miscellaneous"></a>
 ### Miscellaneous
 
-We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/11.x...12.x) and choose which updates are important to you.
+We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/12.x...13.x) and choose which updates are important to you.
 
 
 ---
 
 # URL Generation
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/urls*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/urls*
 
 - [Introduction](#introduction)
 - [The Basics](#the-basics)
@@ -83244,7 +89564,7 @@ Setting URL default values can interfere with Laravel's handling of implicit mod
 
 # Laravel Valet
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/valet*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/valet*
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -83522,7 +89842,7 @@ valet unisolate
 
 Valet includes a command to share your local sites with the world, providing an easy way to test your site on mobile devices or share it with team members and clients.
 
-Out of the box, Valet supports sharing your sites via ngrok or Expose. Before sharing a site, you should update your Valet configuration using the `share-tool` command, specifying `ngrok`, `expose`, or  `cloudflared`:
+Out of the box, Valet supports sharing your sites via ngrok or Expose. Before sharing a site, you should update your Valet configuration using the `share-tool` command, specifying `ngrok`, `expose`, or `cloudflared`:
 
 ```shell
 valet share-tool ngrok
@@ -83810,7 +90130,7 @@ However, if you wish to serve sites from within one of those locations, you will
 
 # Validation
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/validation*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/validation*
 
 - [Introduction](#introduction)
 - [Validation Quickstart](#validation-quickstart)
@@ -83928,8 +90248,8 @@ To get a better understanding of the `validate` method, let's jump back into the
 public function store(Request $request): RedirectResponse
 {
     $validated = $request->validate([
-        'title' => 'required|unique:posts|max:255',
-        'body' => 'required',
+        'title' => ['required', 'unique:posts', 'max:255'],
+        'body' => ['required'],
     ]);
 
     // The blog post is valid...
@@ -83940,19 +90260,10 @@ public function store(Request $request): RedirectResponse
 
 As you can see, the validation rules are passed into the `validate` method. Don't worry - all available validation rules are [documented](#available-validation-rules). Again, if the validation fails, the proper response will automatically be generated. If the validation passes, our controller will continue executing normally.
 
-Alternatively, validation rules may be specified as arrays of rules instead of a single `|` delimited string:
-
-```php
-$validatedData = $request->validate([
-    'title' => ['required', 'unique:posts', 'max:255'],
-    'body' => ['required'],
-]);
-```
-
 In addition, you may use the `validateWithBag` method to validate a request and store any error messages within a [named error bag](#named-error-bags):
 
 ```php
-$validatedData = $request->validateWithBag('post', [
+$validated = $request->validateWithBag('post', [
     'title' => ['required', 'unique:posts', 'max:255'],
     'body' => ['required'],
 ]);
@@ -83965,8 +90276,8 @@ Sometimes you may wish to stop running validation rules on an attribute after th
 
 ```php
 $request->validate([
-    'title' => 'bail|required|unique:posts|max:255',
-    'body' => 'required',
+    'title' => ['bail', 'required', 'unique:posts', 'max:255'],
+    'body' => ['required'],
 ]);
 ```
 
@@ -83979,9 +90290,9 @@ If the incoming HTTP request contains "nested" field data, you may specify these
 
 ```php
 $request->validate([
-    'title' => 'required|unique:posts|max:255',
-    'author.name' => 'required',
-    'author.description' => 'required',
+    'title' => ['required', 'unique:posts', 'max:255'],
+    'author.name' => ['required'],
+    'author.description' => ['required'],
 ]);
 ```
 
@@ -83989,8 +90300,8 @@ On the other hand, if your field name contains a literal period, you can explici
 
 ```php
 $request->validate([
-    'title' => 'required|unique:posts|max:255',
-    'v1\.0' => 'required',
+    'title' => ['required', 'unique:posts', 'max:255'],
+    'v1\.0' => ['required'],
 ]);
 ```
 
@@ -84090,9 +90401,9 @@ By default, Laravel includes the `TrimStrings` and `ConvertEmptyStringsToNull` m
 
 ```php
 $request->validate([
-    'title' => 'required|unique:posts|max:255',
-    'body' => 'required',
-    'publish_at' => 'nullable|date',
+    'title' => ['required', 'unique:posts', 'max:255'],
+    'body' => ['required'],
+    'publish_at' => ['nullable', 'date'],
 ]);
 ```
 
@@ -84151,8 +90462,8 @@ As you might have guessed, the `authorize` method is responsible for determining
 public function rules(): array
 {
     return [
-        'title' => 'required|unique:posts|max:255',
-        'body' => 'required',
+        'title' => ['required', 'unique:posts', 'max:255'],
+        'body' => ['required'],
     ];
 }
 ```
@@ -84241,40 +90552,130 @@ public function after(): array
 <a name="request-stopping-on-first-validation-rule-failure"></a>
 #### Stopping on the First Validation Failure
 
-By adding a `stopOnFirstFailure` property to your request class, you may inform the validator that it should stop validating all attributes once a single validation failure has occurred:
+By adding the `StopOnFirstFailure` attribute to your request class, you may inform the validator that it should stop validating all attributes once a single validation failure has occurred:
 
 ```php
-/**
- * Indicates if the validator should stop on the first rule failure.
- *
- * @var bool
- */
-protected $stopOnFirstFailure = true;
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\Attributes\StopOnFirstFailure;
+use Illuminate\Foundation\Http\FormRequest;
+
+#[StopOnFirstFailure]
+class StorePostRequest extends FormRequest
+{
+    // ...
+}
 ```
+
+<a name="request-failing-on-unknown-fields"></a>
+#### Failing on Unknown Fields
+
+By adding the `FailOnUnknownFields` attribute to your request class, you may instruct Laravel to reject any incoming fields that are not defined by your request's validation rules:
+
+```php
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\Attributes\FailOnUnknownFields;
+use Illuminate\Foundation\Http\FormRequest;
+
+#[FailOnUnknownFields]
+class StorePostRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'title' => ['required', 'string'],
+            'body' => ['required', 'string'],
+        ];
+    }
+}
+```
+
+You may also enable this behavior globally for all form requests from your `AppServiceProvider`:
+
+```php
+use Illuminate\Foundation\Http\FormRequest;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    FormRequest::failOnUnknownFields();
+}
+```
+
+If needed, you may disable this behavior for a specific request by passing `false` to the attribute:
+
+```php
+#[FailOnUnknownFields(false)]
+class PublicWebhookRequest extends FormRequest
+{
+    // ...
+}
+```
+
+Rejecting unknown fields can provide additional protection against mass-assignment style issues by preventing unexpected input keys from flowing deeper into your application. However, you should still configure your model's `$fillable` / `$guarded` properties and only persist trusted, validated input.
 
 <a name="customizing-the-redirect-location"></a>
 #### Customizing the Redirect Location
 
-When form request validation fails, a redirect response will be generated to send the user back to their previous location. However, you are free to customize this behavior. To do so, define a `$redirect` property on your form request:
+When form request validation fails, a redirect response will be generated to send the user back to their previous location. However, you are free to customize this behavior. To do so, you may use the `RedirectTo` attribute on your form request:
 
 ```php
-/**
- * The URI that users should be redirected to if validation fails.
- *
- * @var string
- */
-protected $redirect = '/dashboard';
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\Attributes\RedirectTo;
+use Illuminate\Foundation\Http\FormRequest;
+
+#[RedirectTo('/dashboard')]
+class StorePostRequest extends FormRequest
+{
+    // ...
+}
 ```
 
-Or, if you would like to redirect users to a named route, you may define a `$redirectRoute` property instead:
+Or, if you would like to redirect users to a named route, you may use the `RedirectToRoute` attribute instead:
 
 ```php
-/**
- * The route that users should be redirected to if validation fails.
- *
- * @var string
- */
-protected $redirectRoute = 'dashboard';
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\Attributes\RedirectToRoute;
+use Illuminate\Foundation\Http\FormRequest;
+
+#[RedirectToRoute('dashboard')]
+class StorePostRequest extends FormRequest
+{
+    // ...
+}
+```
+
+<a name="customizing-the-error-bag"></a>
+#### Customizing the Error Bag
+
+When form request validation fails, the errors are flashed to the `default` error bag. If you need to store the errors in a different [named error bag](#named-error-bags), you may use the `ErrorBag` attribute on your form request:
+
+```php
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\Attributes\ErrorBag;
+use Illuminate\Foundation\Http\FormRequest;
+
+#[ErrorBag('login')]
+class LoginRequest extends FormRequest
+{
+    // ...
+}
 ```
 
 <a name="authorizing-form-requests"></a>
@@ -84417,8 +90818,8 @@ class PostController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|unique:posts|max:255',
-            'body' => 'required',
+            'title' => ['required', 'unique:posts', 'max:255'],
+            'body' => ['required'],
         ]);
 
         if ($validator->fails()) {
@@ -84462,8 +90863,8 @@ If you would like to create a validator instance manually but still take advanta
 
 ```php
 Validator::make($request->all(), [
-    'title' => 'required|unique:posts|max:255',
-    'body' => 'required',
+    'title' => ['required', 'unique:posts', 'max:255'],
+    'body' => ['required'],
 ])->validate();
 ```
 
@@ -84471,8 +90872,8 @@ You may use the `validateWithBag` method to store the error messages in a [named
 
 ```php
 Validator::make($request->all(), [
-    'title' => 'required|unique:posts|max:255',
-    'body' => 'required',
+    'title' => ['required', 'unique:posts', 'max:255'],
+    'body' => ['required'],
 ])->validateWithBag('post');
 ```
 
@@ -84724,7 +91125,7 @@ Some of Laravel's built-in validation rule error messages contain a `:value` pla
 
 ```php
 Validator::make($request->all(), [
-    'credit_card_number' => 'required_if:payment_type,cc'
+    'credit_card_number' => ['required_if:payment_type,cc']
 ]);
 ```
 
@@ -84852,6 +91253,7 @@ Below is a list of all available validation rules and their function:
 <div class="collection-method-list" markdown="1">
 
 [Array](#rule-array)
+[Array Keys](#rule-array-keys)
 [Between](#rule-between)
 [Contains](#rule-contains)
 [Doesnt Contain](#rule-doesnt-contain)
@@ -84966,19 +91368,27 @@ The field under validation must be `"yes"`, `"on"`, `1`, `"1"`, `true`, or `"tru
 
 The field under validation must have a valid A or AAAA record according to the `dns_get_record` PHP function. The hostname of the provided URL is extracted using the `parse_url` PHP function before being passed to `dns_get_record`.
 
+When testing validation rules that perform DNS lookups, such as `active_url` and `email:dns`, you may use the `Validator::fakeDnsLookups` method. This fakes DNS lookups while preserving the rules' other validation behavior:
+
+```php
+use Illuminate\Support\Facades\Validator;
+
+Validator::fakeDnsLookups();
+```
+
 <a name="rule-after"></a>
 #### after:_date_
 
 The field under validation must be a value after a given date. The dates will be passed into the `strtotime` PHP function in order to be converted to a valid `DateTime` instance:
 
 ```php
-'start_date' => 'required|date|after:tomorrow'
+'start_date' => ['required', 'date', 'after:tomorrow']
 ```
 
 Instead of passing a date string to be evaluated by `strtotime`, you may specify another field to compare against the date:
 
 ```php
-'finish_date' => 'required|date|after:start_date'
+'finish_date' => ['required', 'date', 'after:start_date']
 ```
 
 For convenience, date-based rules may be constructed using the fluent `date` rule builder:
@@ -85042,7 +91452,7 @@ The field under validation must be entirely Unicode alphabetic characters contai
 To restrict this validation rule to characters in the ASCII range (`a-z` and `A-Z`), you may provide the `ascii` option to the validation rule:
 
 ```php
-'username' => 'alpha:ascii',
+'username' => ['alpha:ascii'],
 ```
 
 <a name="rule-alpha-dash"></a>
@@ -85053,7 +91463,7 @@ The field under validation must be entirely Unicode alpha-numeric characters con
 To restrict this validation rule to characters in the ASCII range (`a-z`, `A-Z`, and `0-9`), you may provide the `ascii` option to the validation rule:
 
 ```php
-'username' => 'alpha_dash:ascii',
+'username' => ['alpha_dash:ascii'],
 ```
 
 <a name="rule-alpha-num"></a>
@@ -85064,7 +91474,7 @@ The field under validation must be entirely Unicode alpha-numeric characters con
 To restrict this validation rule to characters in the ASCII range (`a-z`, `A-Z`, and `0-9`), you may provide the `ascii` option to the validation rule:
 
 ```php
-'username' => 'alpha_num:ascii',
+'username' => ['alpha_num:ascii'],
 ```
 
 <a name="rule-array"></a>
@@ -85086,11 +91496,26 @@ $input = [
 ];
 
 Validator::make($input, [
-    'user' => 'array:name,username',
+    'user' => ['array:name,username'],
 ]);
 ```
 
 In general, you should always specify the array keys that are allowed to be present within your array.
+
+<a name="rule-array-keys"></a>
+#### array_keys:_foo_,_bar_,...
+
+The field under validation must be a PHP `array` whose keys are all included in the given list. At least one key must be provided:
+
+```php
+'user' => ['array_keys:name,username'],
+```
+
+For convenience, you may use the `Rule::arrayKeys` method:
+
+```php
+'user' => [Rule::arrayKeys('name', 'username')],
+```
 
 <a name="rule-ascii"></a>
 #### ascii
@@ -85164,7 +91589,7 @@ The field under validation must be able to be cast as a boolean. Accepted input 
 You may use the `strict` parameter to only consider the field valid if its value is `true` or `false`:
 
 ```php
-'foo' => 'boolean:strict'
+'foo' => ['boolean:strict']
 ```
 
 <a name="rule-confirmed"></a>
@@ -85216,7 +91641,7 @@ Validator::make($data, [
 The field under validation must match the authenticated user's password. You may specify an [authentication guard](/docs/{{version}}/authentication) using the rule's first parameter:
 
 ```php
-'password' => 'current_password:api'
+'password' => ['current_password:api']
 ```
 
 <a name="rule-date"></a>
@@ -85252,10 +91677,10 @@ The field under validation must be numeric and must contain the specified number
 
 ```php
 // Must have exactly two decimal places (9.99)...
-'price' => 'decimal:2'
+'price' => ['decimal:2']
 
 // Must have between 2 and 4 decimal places...
-'price' => 'decimal:2,4'
+'price' => ['decimal:2,4']
 ```
 
 <a name="rule-declined"></a>
@@ -85289,15 +91714,21 @@ The integer under validation must have a length between the given _min_ and _max
 The file under validation must be an image meeting the dimension constraints as specified by the rule's parameters:
 
 ```php
-'avatar' => 'dimensions:min_width=100,min_height=200'
+'avatar' => ['dimensions:min_width=100,min_height=200']
 ```
 
-Available constraints are: _min\_width_, _max\_width_, _min\_height_, _max\_height_, _width_, _height_, _ratio_.
+Available constraints are: _min\_width_, _max\_width_, _min\_height_, _max\_height_, _width_, _height_, _ratio_, _min\_ratio_, _max\_ratio_.
 
 A _ratio_ constraint should be represented as width divided by height. This can be specified either by a fraction like `3/2` or a float like `1.5`:
 
 ```php
-'avatar' => 'dimensions:ratio=3/2'
+'avatar' => ['dimensions:ratio=3/2']
+```
+
+The _min\_ratio_ and _max\_ratio_ constraints may be used to define a range of acceptable aspect ratios:
+
+```php
+'avatar' => ['dimensions:min_ratio=1/2,max_ratio=3/2']
 ```
 
 Since this rule requires several arguments, it is often more convenient to use the `Rule::dimensions` method to fluently construct the rule:
@@ -85317,25 +91748,31 @@ Validator::make($data, [
 ]);
 ```
 
+You may also use the `minRatio`, `maxRatio`, and `ratioBetween` methods to fluently define ratio constraints:
+
+```php
+Rule::dimensions()->ratioBetween(min: 1 / 2, max: 3 / 2)
+```
+
 <a name="rule-distinct"></a>
 #### distinct
 
 When validating arrays, the field under validation must not have any duplicate values:
 
 ```php
-'foo.*.id' => 'distinct'
+'foo.*.id' => ['distinct']
 ```
 
 Distinct uses loose variable comparisons by default. To use strict comparisons, you may add the `strict` parameter to your validation rule definition:
 
 ```php
-'foo.*.id' => 'distinct:strict'
+'foo.*.id' => ['distinct:strict']
 ```
 
 You may add `ignore_case` to the validation rule's arguments to make the rule ignore capitalization differences:
 
 ```php
-'foo.*.id' => 'distinct:ignore_case'
+'foo.*.id' => ['distinct:ignore_case']
 ```
 
 <a name="rule-doesnt-start-with"></a>
@@ -85354,7 +91791,7 @@ The field under validation must not end with one of the given values.
 The field under validation must be formatted as an email address. This validation rule utilizes the [egulias/email-validator](https://github.com/egulias/EmailValidator) package for validating the email address. By default, the `RFCValidation` validator is applied, but you can apply other validation styles as well:
 
 ```php
-'email' => 'email:rfc,dns'
+'email' => ['email:rfc,dns']
 ```
 
 The example above will apply the `RFCValidation` and `DNSCheckValidation` validations. Here's a full list of validation styles you can apply:
@@ -85384,6 +91821,22 @@ $request->validate([
             ->preventSpoofing()
     ],
 ]);
+```
+
+The `dns` validator performs a real DNS lookup to confirm the address's domain has a valid MX record. It does not determine whether an individual mailbox exists.
+
+Since your tests should not rely on live DNS lookups, you may use the `Validator::fakeDnsLookups` method to [fake DNS lookups](#rule-active-url) while any other requested validations, such as `rfc`, continue to run:
+
+```php
+use Illuminate\Support\Facades\Validator;
+
+Validator::fakeDnsLookups();
+```
+
+This allows your application to keep using its existing validation rules while testing:
+
+```php
+'email' => ['required', 'email:rfc,dns'],
 ```
 
 > [!WARNING]
@@ -85467,11 +91920,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 Validator::make($request->all(), [
-    'role_id' => Rule::excludeIf($request->user()->is_admin),
+    'role_id' => [Rule::excludeIf($request->user()->is_admin)],
 ]);
 
 Validator::make($request->all(), [
-    'role_id' => Rule::excludeIf(fn () => $request->user()->is_admin),
+    'role_id' => [Rule::excludeIf(fn () => $request->user()->is_admin)],
 ]);
 ```
 
@@ -85479,6 +91932,21 @@ Validator::make($request->all(), [
 #### exclude_unless:_anotherfield_,_value_
 
 The field under validation will be excluded from the request data returned by the `validate` and `validated` methods unless _anotherfield_'s field is equal to _value_. If _value_ is `null` (`exclude_unless:name,null`), the field under validation will be excluded unless the comparison field is `null` or the comparison field is missing from the request data.
+
+If complex conditional exclusion logic is required, you may utilize the `Rule::excludeUnless` method. This method accepts a boolean or a closure. When given a closure, the closure should return `true` or `false` to indicate if the field under validation should not be excluded:
+
+```php
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+Validator::make($request->all(), [
+    'role_id' => [Rule::excludeUnless($request->user()->is_admin)],
+]);
+
+Validator::make($request->all(), [
+    'role_id' => [Rule::excludeUnless(fn () => $request->user()->is_admin)],
+]);
+```
 
 <a name="rule-exclude-with"></a>
 #### exclude_with:_anotherfield_
@@ -85499,7 +91967,7 @@ The field under validation must exist in a given database table.
 #### Basic Usage of Exists Rule
 
 ```php
-'state' => 'exists:states'
+'state' => ['exists:states']
 ```
 
 If the `column` option is not specified, the field name will be used. So, in this case, the rule will validate that the `states` database table contains a record with a `state` column value matching the request's `state` attribute value.
@@ -85510,22 +91978,22 @@ If the `column` option is not specified, the field name will be used. So, in thi
 You may explicitly specify the database column name that should be used by the validation rule by placing it after the database table name:
 
 ```php
-'state' => 'exists:states,abbreviation'
+'state' => ['exists:states,abbreviation']
 ```
 
 Occasionally, you may need to specify a specific database connection to be used for the `exists` query. You can accomplish this by prepending the connection name to the table name:
 
 ```php
-'email' => 'exists:connection.staff,email'
+'email' => ['exists:connection.staff,email']
 ```
 
 Instead of specifying the table name directly, you may specify the Eloquent model which should be used to determine the table name:
 
 ```php
-'user_id' => 'exists:App\Models\User,id'
+'user_id' => ['exists:App\Models\User,id']
 ```
 
-If you would like to customize the query executed by the validation rule, you may use the `Rule` class to fluently define the rule. In this example, we'll also specify the validation rules as an array instead of using the `|` character to delimit them:
+If you would like to customize the query executed by the validation rule, you may use the `Rule` class to fluently define the rule.
 
 ```php
 use Illuminate\Database\Query\Builder;
@@ -85545,7 +92013,7 @@ Validator::make($data, [
 You may explicitly specify the database column name that should be used by the `exists` rule generated by the `Rule::exists` method by providing the column name as the second argument to the `exists` method:
 
 ```php
-'state' => Rule::exists('states', 'abbreviation'),
+'state' => [Rule::exists('states', 'abbreviation')],
 ```
 
 Sometimes, you may wish to validate whether an array of values exists in the database. You can do so by adding both the `exists` and [array](#rule-array) rules to the field being validated:
@@ -85648,7 +92116,7 @@ The field under validation must exist in _anotherfield_'s values.
 The field under validation must be an array having at least one of the given _values_ as a key within the array:
 
 ```php
-'config' => 'array|in_array_keys:timezone'
+'config' => ['array', 'in_array_keys:timezone']
 ```
 
 <a name="rule-integer"></a>
@@ -85659,7 +92127,7 @@ The field under validation must be an integer.
 You may use the `strict` parameter to only consider the field valid if its type is `integer`. Strings with integer values will be considered invalid:
 
 ```php
-'age' => 'integer:strict'
+'age' => ['integer:strict']
 ```
 
 > [!WARNING]
@@ -85726,9 +92194,9 @@ The integer under validation must have a maximum length of _value_.
 The file under validation must match one of the given MIME types:
 
 ```php
-'video' => 'mimetypes:video/avi,video/mpeg,video/quicktime',
+'video' => ['mimetypes:video/avi,video/mpeg,video/quicktime'],
 
-'media' => 'mimetypes:image/*,video/*',
+'media' => ['mimetypes:image/*,video/*'],
 ```
 
 To determine the MIME type of the uploaded file, the file's contents will be read and the framework will attempt to guess the MIME type, which may be different from the client's provided MIME type.
@@ -85739,7 +92207,7 @@ To determine the MIME type of the uploaded file, the file's contents will be rea
 The file under validation must have a MIME type corresponding to one of the listed extensions:
 
 ```php
-'photo' => 'mimes:jpg,bmp,png'
+'photo' => ['mimes:jpg,bmp,png']
 ```
 
 Even though you only need to specify the extensions, this rule actually validates the MIME type of the file by reading the file's contents and guessing its MIME type. A full listing of MIME types and their corresponding extensions may be found at the following location:
@@ -85812,10 +92280,7 @@ Validator::make($data, [
 
 The field under validation must not match the given regular expression.
 
-Internally, this rule uses the PHP `preg_match` function. The pattern specified should obey the same formatting required by `preg_match` and thus also include valid delimiters. For example: `'email' => 'not_regex:/^.+$/i'`.
-
-> [!WARNING]
-> When using the `regex` / `not_regex` patterns, it may be necessary to specify your validation rules using an array instead of using `|` delimiters, especially if the regular expression contains a `|` character.
+Internally, this rule uses the PHP `preg_match` function. The pattern specified should obey the same formatting required by `preg_match` and thus also include valid delimiters. For example: `'email' => ['not_regex:/^.+$/i']`.
 
 <a name="rule-nullable"></a>
 #### nullable
@@ -85830,7 +92295,7 @@ The field under validation must be [numeric](https://www.php.net/manual/en/funct
 You may use the `strict` parameter to only consider the field valid if its value is an integer or float type. Numeric strings will be considered invalid:
 
 ```php
-'amount' => 'numeric:strict'
+'amount' => ['numeric:strict']
 ```
 
 <a name="rule-present"></a>
@@ -85893,11 +92358,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 Validator::make($request->all(), [
-    'role_id' => Rule::prohibitedIf($request->user()->is_admin),
+    'role_id' => [Rule::prohibitedIf($request->user()->is_admin)],
 ]);
 
 Validator::make($request->all(), [
-    'role_id' => Rule::prohibitedIf(fn () => $request->user()->is_admin),
+    'role_id' => [Rule::prohibitedIf(fn () => $request->user()->is_admin)],
 ]);
 ```
 <a name="rule-prohibited-if-accepted"></a>
@@ -85924,6 +92389,21 @@ The field under validation must be missing or empty unless the _anotherfield_ fi
 
 </div>
 
+If complex conditional prohibition logic is required, you may utilize the `Rule::prohibitedUnless` method. This method accepts a boolean or a closure. When given a closure, the closure should return `true` or `false` to indicate if the field under validation should not be prohibited:
+
+```php
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+Validator::make($request->all(), [
+    'role_id' => [Rule::prohibitedUnless($request->user()->is_admin)],
+]);
+
+Validator::make($request->all(), [
+    'role_id' => [Rule::prohibitedUnless(fn () => $request->user()->is_admin)],
+]);
+```
+
 <a name="rule-prohibits"></a>
 #### prohibits:_anotherfield_,...
 
@@ -85943,10 +92423,7 @@ If the field under validation is not missing or empty, all fields in _anotherfie
 
 The field under validation must match the given regular expression.
 
-Internally, this rule uses the PHP `preg_match` function. The pattern specified should obey the same formatting required by `preg_match` and thus also include valid delimiters. For example: `'email' => 'regex:/^.+@.+$/i'`.
-
-> [!WARNING]
-> When using the `regex` / `not_regex` patterns, it may be necessary to specify rules in an array instead of using `|` delimiters, especially if the regular expression contains a `|` character.
+Internally, this rule uses the PHP `preg_match` function. The pattern specified should obey the same formatting required by `preg_match` and thus also include valid delimiters. For example: `'email' => ['regex:/^.+@.+$/i']`.
 
 <a name="rule-required"></a>
 #### required
@@ -85974,11 +92451,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 Validator::make($request->all(), [
-    'role_id' => Rule::requiredIf($request->user()->is_admin),
+    'role_id' => [Rule::requiredIf($request->user()->is_admin)],
 ]);
 
 Validator::make($request->all(), [
-    'role_id' => Rule::requiredIf(fn () => $request->user()->is_admin),
+    'role_id' => [Rule::requiredIf(fn () => $request->user()->is_admin)],
 ]);
 ```
 
@@ -85996,6 +92473,21 @@ The field under validation must be present and not empty if the _anotherfield_ f
 #### required_unless:_anotherfield_,_value_,...
 
 The field under validation must be present and not empty unless the _anotherfield_ field is equal to any _value_. This also means _anotherfield_ must be present in the request data unless _value_ is `null`. If _value_ is `null` (`required_unless:name,null`), the field under validation will be required unless the comparison field is `null` or the comparison field is missing from the request data.
+
+If you would like to construct a more complex condition for the `required_unless` rule, you may use the `Rule::requiredUnless` method. This method accepts a boolean or a closure. When passed a closure, the closure should return `true` or `false` to indicate if the field under validation is not required:
+
+```php
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+Validator::make($request->all(), [
+    'role_id' => [Rule::requiredUnless($request->user()->is_admin)],
+]);
+
+Validator::make($request->all(), [
+    'role_id' => [Rule::requiredUnless(fn () => $request->user()->is_admin)],
+]);
+```
 
 <a name="rule-required-with"></a>
 #### required_with:_foo_,_bar_,...
@@ -86034,16 +92526,16 @@ The field under validation must have a size matching the given _value_. For stri
 
 ```php
 // Validate that a string is exactly 12 characters long...
-'title' => 'size:12';
+'title' => ['size:12'];
 
 // Validate that a provided integer equals 10...
-'seats' => 'integer|size:10';
+'seats' => ['integer', 'size:10'];
 
 // Validate that an array has exactly 5 elements...
-'tags' => 'array|size:5';
+'tags' => ['array', 'size:5'];
 
 // Validate that an uploaded file is exactly 512 kilobytes...
-'image' => 'file|size:512';
+'image' => ['file', 'size:512'];
 ```
 
 <a name="rule-starts-with"></a>
@@ -86056,6 +92548,22 @@ The field under validation must start with one of the given values.
 
 The field under validation must be a string. If you would like to allow the field to also be `null`, you should assign the `nullable` rule to the field.
 
+For convenience, string validation rules may also be constructed using the fluent `Rule::string()` rule builder:
+
+```php
+use Illuminate\Validation\Rule;
+
+'title' => [
+    'required',
+    Rule::string()
+        ->min(3)
+        ->max(255)
+        ->alphaDash(ascii: true),
+],
+```
+
+The string rule builder provides methods for common string constraints, including `alpha`, `alphaDash`, `alphaNumeric`, `ascii`, `between`, `doesntEndWith`, `doesntStartWith`, `endsWith`, `exactly`, `lowercase`, `max`, `min`, `startsWith`, and `uppercase`. Since the rule builder is conditionable, you may also use the `when` and `unless` methods to conditionally apply constraints.
+
 <a name="rule-timezone"></a>
 #### timezone
 
@@ -86064,11 +92572,11 @@ The field under validation must be a valid timezone identifier according to the 
 The arguments [accepted by the `DateTimeZone::listIdentifiers` method](https://www.php.net/manual/en/datetimezone.listidentifiers.php) may also be provided to this validation rule:
 
 ```php
-'timezone' => 'required|timezone:all';
+'timezone' => ['required', 'timezone:all'];
 
-'timezone' => 'required|timezone:Africa';
+'timezone' => ['required', 'timezone:Africa'];
 
-'timezone' => 'required|timezone:per_country,US';
+'timezone' => ['required', 'timezone:per_country,US'];
 ```
 
 <a name="rule-unique"></a>
@@ -86081,13 +92589,13 @@ The field under validation must not exist within the given database table.
 Instead of specifying the table name directly, you may specify the Eloquent model which should be used to determine the table name:
 
 ```php
-'email' => 'unique:App\Models\User,email_address'
+'email' => ['unique:App\Models\User,email_address']
 ```
 
 The `column` option may be used to specify the field's corresponding database column. If the `column` option is not specified, the name of the field under validation will be used.
 
 ```php
-'email' => 'unique:users,email_address'
+'email' => ['unique:users,email_address']
 ```
 
 **Specifying a Custom Database Connection**
@@ -86095,14 +92603,14 @@ The `column` option may be used to specify the field's corresponding database co
 Occasionally, you may need to set a custom connection for database queries made by the Validator. To accomplish this, you may prepend the connection name to the table name:
 
 ```php
-'email' => 'unique:connection.users,email_address'
+'email' => ['unique:connection.users,email_address']
 ```
 
 **Forcing a Unique Rule to Ignore a Given ID:**
 
 Sometimes, you may wish to ignore a given ID during unique validation. For example, consider an "update profile" screen that includes the user's name, email address, and location. You will probably want to verify that the email address is unique. However, if the user only changes the name field and not the email field, you do not want a validation error to be thrown because the user is already the owner of the email address in question.
 
-To instruct the validator to ignore the user's ID, we'll use the `Rule` class to fluently define the rule. In this example, we'll also specify the validation rules as an array instead of using the `|` character to delimit the rules:
+To instruct the validator to ignore the user's ID, we'll use the `Rule` class to fluently define the rule.
 
 ```php
 use Illuminate\Support\Facades\Validator;
@@ -86172,9 +92680,9 @@ The field under validation must be a valid URL.
 If you would like to specify the URL protocols that should be considered valid, you may pass the protocols as validation rule parameters:
 
 ```php
-'url' => 'url:http,https',
+'url' => ['url:http,https'],
 
-'game' => 'url:minecraft,steam',
+'game' => ['url:minecraft,steam'],
 ```
 
 <a name="rule-ulid"></a>
@@ -86190,7 +92698,7 @@ The field under validation must be a valid RFC 9562 (version 1, 3, 4, 5, 6, 7, o
 You may also validate that the given UUID matches a UUID specification by version:
 
 ```php
-'uuid' => 'uuid:4'
+'uuid' => ['uuid:4']
 ```
 
 <a name="conditionally-adding-rules"></a>
@@ -86205,9 +92713,9 @@ You may occasionally wish to not validate a given field if another field has a g
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make($data, [
-    'has_appointment' => 'required|boolean',
-    'appointment_date' => 'exclude_if:has_appointment,false|required|date',
-    'doctor_name' => 'exclude_if:has_appointment,false|required|string',
+    'has_appointment' => ['required', 'boolean'],
+    'appointment_date' => ['exclude_if:has_appointment,false', 'required', 'date'],
+    'doctor_name' => ['exclude_if:has_appointment,false', 'required', 'string'],
 ]);
 ```
 
@@ -86215,9 +92723,9 @@ Alternatively, you may use the `exclude_unless` rule to not validate a given fie
 
 ```php
 $validator = Validator::make($data, [
-    'has_appointment' => 'required|boolean',
-    'appointment_date' => 'exclude_unless:has_appointment,true|required|date',
-    'doctor_name' => 'exclude_unless:has_appointment,true|required|string',
+    'has_appointment' => ['required', 'boolean'],
+    'appointment_date' => ['exclude_unless:has_appointment,true', 'required', 'date'],
+    'doctor_name' => ['exclude_unless:has_appointment,true', 'required', 'string'],
 ]);
 ```
 
@@ -86228,7 +92736,7 @@ In some situations, you may wish to run validation checks against a field **only
 
 ```php
 $validator = Validator::make($data, [
-    'email' => 'sometimes|required|email',
+    'email' => ['sometimes', 'required', 'email'],
 ]);
 ```
 
@@ -86246,8 +92754,8 @@ Sometimes you may wish to add validation rules based on more complex conditional
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make($request->all(), [
-    'email' => 'required|email',
-    'games' => 'required|integer|min:0',
+    'email' => ['required', 'email'],
+    'games' => ['required', 'integer', 'min:0'],
 ]);
 ```
 
@@ -86256,7 +92764,7 @@ Let's assume our web application is for game collectors. If a game collector reg
 ```php
 use Illuminate\Support\Fluent;
 
-$validator->sometimes('reason', 'required|max:500', function (Fluent $input) {
+$validator->sometimes('reason', ['required', 'max:500'], function (Fluent $input) {
     return $input->games >= 100;
 });
 ```
@@ -86319,7 +92827,7 @@ $input = [
 ];
 
 Validator::make($input, [
-    'user' => 'array:name,username',
+    'user' => ['array:name,username'],
 ]);
 ```
 
@@ -86334,7 +92842,7 @@ Validating nested array-based form input fields doesn't have to be a pain. You m
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make($request->all(), [
-    'photos.profile' => 'required|image',
+    'photos.profile' => ['required', 'image'],
 ]);
 ```
 
@@ -86342,8 +92850,8 @@ You may also validate each element of an array. For example, to validate that ea
 
 ```php
 $validator = Validator::make($request->all(), [
-    'users.*.email' => 'email|unique:users',
-    'users.*.first_name' => 'required_with:users.*.last_name',
+    'users.*.email' => ['email', 'unique:users'],
+    'users.*.first_name' => ['required_with:users.*.last_name'],
 ]);
 ```
 
@@ -86399,7 +92907,7 @@ $input = [
 ];
 
 Validator::validate($input, [
-    'photos.*.description' => 'required',
+    'photos.*.description' => ['required'],
 ], [
     'photos.*.description.required' => 'Please describe photo #:position.',
 ]);
@@ -86518,6 +93026,9 @@ The `Password` rule object allows you to easily customize the password complexit
 // Require at least 8 characters...
 Password::min(8)
 
+// Require at most 256 characters...
+Password::min(16)->max(256)
+
 // Require at least one letter...
 Password::min(8)->letters()
 
@@ -86550,11 +93061,23 @@ Of course, you may chain all the methods in the examples above:
 
 ```php
 Password::min(8)
+    ->max(256)
     ->letters()
     ->mixedCase()
     ->numbers()
     ->symbols()
     ->uncompromised()
+```
+
+You may convert a `Password` rule object to a string suitable for the HTML `passwordrules` attribute using the `toPasswordRulesString` method:
+
+```blade
+<input
+    type="password"
+    name="password"
+    autocomplete="new-password"
+    passwordrules="{{ Password::defaults()->toPasswordRulesString() }}"
+/>
 ```
 
 <a name="defining-default-password-rules"></a>
@@ -86763,7 +93286,7 @@ By default, when an attribute being validated is not present or contains an empt
 ```php
 use Illuminate\Support\Facades\Validator;
 
-$rules = ['name' => 'unique:users,name'];
+$rules = ['name' => ['unique:users,name']];
 
 $input = ['name' => ''];
 
@@ -86784,7 +93307,7 @@ php artisan make:rule Uppercase --implicit
 
 # Email Verification
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/verification*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/verification*
 
 - [Introduction](#introduction)
     - [Model Preparation](#model-preparation)
@@ -86957,7 +93480,7 @@ When using the [Laravel application starter kits](/docs/{{version}}/starter-kits
 
 # Views
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/views*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/views*
 
 - [Introduction](#introduction)
     - [Writing Views in React / Svelte / Vue](#writing-views-in-react-svelte-or-vue)
@@ -87262,7 +93785,7 @@ php artisan view:clear
 
 # Asset Bundling (Vite)
 
-*Sección: Laravel | Origen: https://laravel.com/docs/12.x/vite*
+*Sección: Laravel | Origen: https://laravel.com/docs/13.x/vite*
 
 - [Introduction](#introduction)
 - [Installation & Setup](#installation)
@@ -87279,6 +93802,10 @@ php artisan view:clear
   - [Inertia](#inertia)
   - [URL Processing](#url-processing)
 - [Working With Stylesheets](#working-with-stylesheets)
+- [Working With Fonts](#working-with-fonts)
+  - [Font Providers](#font-providers)
+  - [Local Fonts](#local-fonts)
+  - [Font Options](#font-options)
 - [Working With Blade and Routes](#working-with-blade-and-routes)
   - [Processing Static Assets With Vite](#blade-processing-static-assets)
   - [Refreshing on Save](#blade-refreshing-on-save)
@@ -87597,7 +94124,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Vue, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Vue, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Vue, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Vue, and Vite.
 
 <a name="react"></a>
 ### React
@@ -87635,7 +94162,7 @@ You will also need to include the additional `@viteReactRefresh` Blade directive
 The `@viteReactRefresh` directive must be called before the `@vite` directive.
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, React, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, React, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, React, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, React, and Vite.
 
 <a name="svelte"></a>
 ### Svelte
@@ -87666,7 +94193,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Svelte, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Svelte, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Svelte, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Svelte, and Vite.
 
 <a name="inertia"></a>
 ### Inertia
@@ -87691,7 +94218,7 @@ createInertiaApp({
 If you are using Vite's code splitting feature with Inertia, we recommend configuring [asset prefetching](#asset-prefetching).
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Inertia, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Inertia, and Vite.
 
 <a name="url-processing"></a>
 ### URL Processing
@@ -87737,21 +94264,144 @@ composer run dev
 
 Your application's CSS may be placed within the `resources/css/app.css` file.
 
+<a name="working-with-fonts"></a>
+## Working With Fonts
+
+The Laravel Vite plugin can serve optimized, self-hosted fonts for your application. When fonts are configured, the plugin resolves the requested font files, emits them as Vite assets, generates font CSS, and writes a font manifest that may be consumed by Blade's [`@fonts` directive](/docs/{{version}}/blade#fonts).
+
+To configure fonts, import one or more provider helpers from `laravel-vite-plugin/fonts` and add them to the Laravel plugin's `fonts` option:
+
+```js
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import { google } from 'laravel-vite-plugin/fonts';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: 'resources/js/app.js',
+            fonts: [
+                google('Inter', {
+                    alias: 'sans',
+                    weights: [400, 500, 600, 700],
+                    styles: ['normal', 'italic'],
+                    subsets: ['latin'],
+                    display: 'swap',
+                    preload: [
+                        { weight: 400 },
+                        { weight: 700 },
+                    ],
+                    fallbacks: ['system-ui', 'sans-serif'],
+                }),
+            ],
+        }),
+    ],
+});
+```
+
+In this example, the `Inter` font will be available through the `sans` alias. The plugin will generate a `--font-sans` CSS variable and a `.font-sans` utility class that applies the generated font stack.
+
+<a name="font-providers"></a>
+### Font Providers
+
+The Laravel Vite plugin includes provider helpers for Google Fonts, Bunny Fonts, Fontsource, and local fonts:
+
+```js
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import { bunny, fontsource, google, local } from 'laravel-vite-plugin/fonts';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: 'resources/js/app.js',
+            fonts: [
+                google('Inter', { alias: 'sans' }),
+                bunny('Figtree', { alias: 'body' }),
+                fontsource('JetBrains Mono', { alias: 'mono' }),
+                local('Brand Sans', {
+                    alias: 'brand',
+                    src: 'resources/fonts/brand-sans',
+                }),
+            ],
+        }),
+    ],
+});
+```
+
+The `fontsource` provider reads fonts from an installed Fontsource package. By default, the package name is derived from the font family, such as `@fontsource/jetbrains-mono`. If your application uses a different package name, you may specify it using the `package` option.
+
+<a name="local-fonts"></a>
+### Local Fonts
+
+When using local fonts, the `src` option may point to a single font file, a directory, or a glob pattern. The plugin will discover supported font files and infer their weight and style from their filenames:
+
+```js
+local('Brand Sans', {
+    alias: 'brand',
+    src: 'resources/fonts/brand-sans/*.woff2',
+})
+```
+
+If you need full control over the available variants, you may define them explicitly using the `variants` option:
+
+```js
+local('Brand Sans', {
+    alias: 'brand',
+    variants: [
+        { src: 'resources/fonts/BrandSans-Regular.woff2', weight: 400 },
+        { src: 'resources/fonts/BrandSans-Italic.woff2', weight: 400, style: 'italic' },
+        { src: ['resources/fonts/BrandSans-Bold.woff2', 'resources/fonts/BrandSans-Bold.ttf'], weight: 700 },
+    ],
+})
+```
+
+<a name="font-options"></a>
+### Font Options
+
+Depending on the provider, font definitions may accept several options that allow you to customize the generated font CSS:
+
+<div class="content-list" markdown="1">
+
+- `alias` defines the name used by Blade's `@fonts` directive and defaults to a slug of the font family.
+- `variable` defines the generated CSS variable and defaults to `--font-{alias}`.
+- `weights` defines the remote or Fontsource font weights that should be resolved and defaults to `[400]`.
+- `styles` defines the remote or Fontsource font styles that should be resolved and defaults to `['normal']`.
+- `subsets` defines the remote or Fontsource font subsets that should be resolved and defaults to `['latin']`.
+- `display` defines the `font-display` value and defaults to `swap`.
+- `preload` controls which WOFF2 font variants should be preloaded. This option may be `true`, `false`, or an array of `{ weight, style }` selectors.
+- `fallbacks` defines additional fallback fonts that should be appended to the generated font stack.
+- `optimizedFallbacks` attempts to generate metric-adjusted fallback font faces using the optional `fontaine` package and defaults to `true`.
+
+</div>
+
+Optimized fallbacks require the `fontaine` package, which is not installed by default. If you want Laravel to generate metric-adjusted fallback font faces, you should install `fontaine` as a development dependency:
+
+```shell
+npm install --save-dev fontaine
+```
+
+If `fontaine` is not installed or cannot read a font file, Laravel will skip the optimized fallback for that font and continue using any fonts configured via the `fallbacks` option.
+
+Local fonts are resolved from the `src` or `variants` options described above instead of using `weights`, `styles`, and `subsets`.
+
 <a name="working-with-blade-and-routes"></a>
 ## Working With Blade and Routes
 
 <a name="blade-processing-static-assets"></a>
 ### Processing Static Assets With Vite
 
-When referencing assets in your JavaScript or CSS, Vite automatically processes and versions them. In addition, when building Blade based applications, Vite can also process and version static assets that you reference solely in Blade templates.
+When referencing assets in your JavaScript or CSS, Vite automatically processes and versions them. In addition, when building Blade-based applications, Vite can also process and version static assets that you reference solely in Blade templates.
 
-However, in order to accomplish this, you need to make Vite aware of your assets by importing the static assets into the application's entry point. For example, if you want to process and version all images stored in `resources/images` and all fonts stored in `resources/fonts`, you should add the following in your application's `resources/js/app.js` entry point:
+However, to accomplish this, you need to make Vite aware of your assets by specifying them in the plugin's `assets` option. This option is intended for static files that you want to reference directly with `Vite::asset`. If you want Laravel to generate font CSS and preload links, use the [`fonts` option](#working-with-fonts) instead.
+
+For example, if you want to process and version all images stored in `resources/images` and all fonts stored in `resources/fonts`, you should add the following to your Vite configuration:
 
 ```js
-import.meta.glob([
-  '../images/**',
-  '../fonts/**',
-]);
+laravel({
+    input: 'resources/js/app.js',
+    assets: ['resources/images/**', 'resources/fonts/**'],
+})
 ```
 
 These assets will now be processed by Vite when running `npm run build`. You can then reference these assets in Blade templates using the `Vite::asset` method, which will return the versioned URL for a given asset:
@@ -87759,6 +94409,9 @@ These assets will now be processed by Vite when running `npm run build`. You can
 ```blade
 <img src="{{ Vite::asset('resources/images/logo.png') }}">
 ```
+
+> [!NOTE]
+> Prior to version 3 of the Laravel Vite plugin, static assets had to be imported in your application's entry point using `import.meta.glob`. The `assets` option was introduced due to changes in Vite 8.
 
 <a name="blade-refreshing-on-save"></a>
 ### Refreshing on Save
@@ -88039,7 +94692,7 @@ php artisan inertia:start-ssr
 ```
 
 > [!NOTE]
-> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia SSR, and Vite configuration.These starter kits offer the fastest way to get started with Laravel, Inertia SSR, and Vite.
+> Laravel's [starter kits](/docs/{{version}}/starter-kits) already include the proper Laravel, Inertia SSR, and Vite configuration. These starter kits offer the fastest way to get started with Laravel, Inertia SSR, and Vite.
 
 <a name="script-and-style-attributes"></a>
 ## Script and Style Tag Attributes

@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Eloquent: Getting Started</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Eloquent: Getting Started</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Eloquent: Getting Started</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Eloquent: Getting Started</a>
       <h1 class="doc-title">Eloquent: Getting Started</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/eloquent" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/eloquent" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -416,7 +416,7 @@ class="is-current" aria-current="page">Eloquent: Getting Started</a>
 <li><a href="#retrieving-models">Retrieving Models</a><ul>
 <li><a href="#collections">Collections</a></li>
 <li><a href="#chunking-results">Chunking Results</a></li>
-<li><a href="#chunking-using-lazy-collections">Chunk Using Lazy Collections</a></li>
+<li><a href="#chunking-using-lazy-collections">Chunking Using Lazy Collections</a></li>
 <li><a href="#cursors">Cursors</a></li>
 <li><a href="#advanced-subqueries">Advanced Subqueries</a></li>
 </ul>
@@ -527,69 +527,65 @@ php<span class="w"> </span>artisan<span class="w"> </span>make:model<span class=
 <p><a name="table-names"></a></p>
 <h3 id="table-names">Table Names<a class="headerlink" href="#table-names" title="Permanent link">#</a></h3>
 <p>After glancing at the example above, you may have noticed that we did not tell Eloquent which database table corresponds to our <code>Flight</code> model. By convention, the "snake case", plural name of the class will be used as the table name unless another name is explicitly specified. So, in this case, Eloquent will assume the <code>Flight</code> model stores records in the <code>flights</code> table, while an <code>AirTrafficController</code> model would store records in an <code>air_traffic_controllers</code> table.</p>
-<p>If your model's corresponding database table does not fit this convention, you may manually specify the model's table name by defining a <code>table</code> property on the model:</p>
+<p>If your model's corresponding database table does not fit this convention, you may manually specify the model's table name using the <code>Table</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Table</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Table</span><span class="p">(</span><span class="s1">&#39;my_flights&#39;</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The table associated with the model.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$table</span> <span class="o">=</span> <span class="s1">&#39;my_flights&#39;</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p><a name="primary-keys"></a></p>
 <h3 id="primary-keys">Primary Keys<a class="headerlink" href="#primary-keys" title="Permanent link">#</a></h3>
-<p>Eloquent will also assume that each model's corresponding database table has a primary key column named <code>id</code>. If necessary, you may define a protected <code>$primaryKey</code> property on your model to specify a different column that serves as your model's primary key:</p>
+<p>Eloquent will also assume that each model's corresponding database table has a primary key column named <code>id</code>. If necessary, you may specify a different column that serves as your model's primary key using the <code>key</code> argument on the <code>Table</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Table</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Table</span><span class="p">(</span><span class="nb">key</span><span class="o">:</span> <span class="s1">&#39;flight_id&#39;</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The primary key associated with the table.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$primaryKey</span> <span class="o">=</span> <span class="s1">&#39;flight_id&#39;</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>In addition, Eloquent assumes that the primary key is an incrementing integer value, which means that Eloquent will automatically cast the primary key to an integer. If you wish to use a non-incrementing or a non-numeric primary key you must define a public <code>$incrementing</code> property on your model that is set to <code>false</code>:</p>
+<p>In addition, Eloquent assumes that the primary key is an incrementing integer value, which means that Eloquent will automatically cast the primary key to an integer. If you wish to use a non-incrementing or a non-numeric primary key, you should specify the <code>keyType</code> and <code>incrementing</code> arguments on the <code>Table</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
+<span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Table</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Table</span><span class="p">(</span><span class="nb">key</span><span class="o">:</span> <span class="s1">&#39;uuid&#39;</span><span class="p">,</span> <span class="nx">keyType</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="nx">incrementing</span><span class="o">:</span> <span class="k">false</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * Indicates if the model&#39;s ID is auto-incrementing.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var bool</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$incrementing</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>If your model's primary key is not an integer, you should define a protected <code>$keyType</code> property on your model. This property should have a value of <code>string</code>:</p>
+<p>If you only need to disable auto-incrementing IDs, you may use the <code>WithoutIncrementing</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
+<span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\WithoutIncrementing</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">WithoutIncrementing</span><span class="p">]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The data type of the primary key ID.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$keyType</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -656,39 +652,63 @@ php<span class="w"> </span>artisan<span class="w"> </span>make:model<span class=
 
 <p><a name="timestamps"></a></p>
 <h3 id="timestamps">Timestamps<a class="headerlink" href="#timestamps" title="Permanent link">#</a></h3>
-<p>By default, Eloquent expects <code>created_at</code> and <code>updated_at</code> columns to exist on your model's corresponding database table. Eloquent will automatically set these column's values when models are created or updated. If you do not want these columns to be automatically managed by Eloquent, you should define a <code>$timestamps</code> property on your model with a value of <code>false</code>:</p>
+<p>By default, Eloquent expects <code>created_at</code> and <code>updated_at</code> columns to exist on your model's corresponding database table. Eloquent will automatically set these column's values when models are created or updated. If you do not want these columns to be automatically managed by Eloquent, you may set <code>timestamps</code> to <code>false</code> on your model's <code>Table</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Table</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Table</span><span class="p">(</span><span class="nx">timestamps</span><span class="o">:</span> <span class="k">false</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * Indicates if the model should be timestamped.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var bool</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$timestamps</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>If you need to customize the format of your model's timestamps, set the <code>$dateFormat</code> property on your model. This property determines how date attributes are stored in the database as well as their format when the model is serialized to an array or JSON:</p>
+<p>If you only need to disable timestamps, you may use the <code>WithoutTimestamps</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\WithoutTimestamps</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">WithoutTimestamps</span><span class="p">]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The storage format of the model&#39;s date columns.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$dateFormat</span> <span class="o">=</span> <span class="s1">&#39;U&#39;</span><span class="p">;</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If you need to customize the format of your model's timestamps, you may use the <code>dateFormat</code> argument on the <code>Table</code> attribute. This determines how date attributes are stored in the database as well as their format when the model is serialized to an array or JSON:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Table</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Table</span><span class="p">(</span><span class="nx">dateFormat</span><span class="o">:</span> <span class="s1">&#39;U&#39;</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If you only need to define a date format, you may use the <code>DateFormat</code> attribute:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\DateFormat</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">DateFormat</span><span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -719,21 +739,18 @@ php<span class="w"> </span>artisan<span class="w"> </span>make:model<span class=
 
 <p><a name="database-connections"></a></p>
 <h3 id="database-connections">Database Connections<a class="headerlink" href="#database-connections" title="Permanent link">#</a></h3>
-<p>By default, all Eloquent models will use the default database connection that is configured for your application. If you would like to specify a different connection that should be used when interacting with a particular model, you should define a <code>$connection</code> property on the model:</p>
+<p>By default, all Eloquent models will use the default database connection that is configured for your application. If you would like to specify a different connection that should be used when interacting with a particular model, you may use the <code>Connection</code> attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Connection</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Connection</span><span class="p">(</span><span class="s1">&#39;mysql&#39;</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The database connection that should be used by the model.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var string</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$connection</span> <span class="o">=</span> <span class="s1">&#39;mysql&#39;</span><span class="p">;</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -751,7 +768,7 @@ php<span class="w"> </span>artisan<span class="w"> </span>make:model<span class=
     <span class="sd">/**</span>
 <span class="sd">     * The model&#39;s default values for attributes.</span>
 <span class="sd">     *</span>
-<span class="sd">     * @var array</span>
+<span class="sd">     * @var array&lt;string, mixed&gt;</span>
 <span class="sd">     */</span>
     <span class="k">protected</span> <span class="nv">$attributes</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s1">&#39;options&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;[]&#39;</span><span class="p">,</span>
@@ -818,6 +835,14 @@ Since Eloquent models are query builders, you should review all of the methods p
 <span class="x">$flight-&gt;refresh();</span>
 
 <span class="x">$flight-&gt;number; // &quot;FR 900&quot;</span>
+</code></pre></div>
+
+<p>If you need to refresh a model and acquire a pessimistic lock within a transaction, you may use the <code>refreshForUpdate</code> method. This method reloads the model using a <code>FOR UPDATE</code> lock:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">DB::transaction(function () use ($flight) {</span>
+<span class="x">    $flight-&gt;refreshForUpdate();</span>
+
+<span class="x">    // Update the locked model...</span>
+<span class="x">});</span>
 </code></pre></div>
 
 <p><a name="collections"></a></p>
@@ -1056,6 +1081,10 @@ Since the <code>cursor</code> method only ever holds a single Eloquent model in 
 </code></pre></div>
 
 <p>In this example, we assign the <code>name</code> field from the incoming HTTP request to the <code>name</code> attribute of the <code>App\Models\Flight</code> model instance. When we call the <code>save</code> method, a record will be inserted into the database. The model's <code>created_at</code> and <code>updated_at</code> timestamps will automatically be set when the <code>save</code> method is called, so there is no need to set them manually.</p>
+<p>If you would like to save the model within a database transaction, you may use the <code>saveOrFail</code> method. If an exception is thrown during the save, the transaction will automatically be rolled back:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$flight-&gt;saveOrFail();</span>
+</code></pre></div>
+
 <p>Alternatively, you may use the <code>create</code> method to "save" a new model using a single PHP statement. The inserted model instance will be returned to you by the <code>create</code> method:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use App\Models\Flight;</span>
 
@@ -1064,7 +1093,7 @@ Since the <code>cursor</code> method only ever holds a single Eloquent model in 
 <span class="x">]);</span>
 </code></pre></div>
 
-<p>However, before using the <code>create</code> method, you will need to specify either a <code>fillable</code> or <code>guarded</code> property on your model class. These properties are required because all Eloquent models are protected against mass assignment vulnerabilities by default. To learn more about mass assignment, please consult the <a href="#mass-assignment">mass assignment documentation</a>.</p>
+<p>However, before using the <code>create</code> method, you will need to specify either a <code>Fillable</code> or <code>Guarded</code> attribute on your model class. These attributes are required because all Eloquent models are protected against mass assignment vulnerabilities by default. To learn more about mass assignment, please consult the <a href="#mass-assignment">mass assignment documentation</a>.</p>
 <p><a name="updates"></a></p>
 <h3 id="updates">Updates<a class="headerlink" href="#updates" title="Permanent link">#</a></h3>
 <p>The <code>save</code> method may also be used to update models that already exist in the database. To update a model, you should retrieve it and set any attributes you wish to update. Then, you should call the model's <code>save</code> method. Again, the <code>updated_at</code> timestamp will automatically be updated, so there is no need to manually set its value:</p>
@@ -1075,6 +1104,10 @@ Since the <code>cursor</code> method only ever holds a single Eloquent model in 
 <span class="x">$flight-&gt;name = &#39;Paris to London&#39;;</span>
 
 <span class="x">$flight-&gt;save();</span>
+</code></pre></div>
+
+<p>If you would like to update the model within a database transaction, you may use the <code>updateOrFail</code> method. If an exception is thrown during the update, the transaction will automatically be rolled back:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$flight-&gt;updateOrFail([&#39;name&#39; =&gt; &#39;Paris to London&#39;]);</span>
 </code></pre></div>
 
 <p>Occasionally, you may need to update an existing model or create a new model if no matching model exists. Like the <code>firstOrCreate</code> method, the <code>updateOrCreate</code> method persists the model, so there's no need to manually call the <code>save</code> method.</p>
@@ -1209,23 +1242,20 @@ When issuing a mass update via Eloquent, the <code>saving</code>, <code>saved</c
 <span class="x">]);</span>
 </code></pre></div>
 
-<p>However, before using the <code>create</code> method, you will need to specify either a <code>fillable</code> or <code>guarded</code> property on your model class. These properties are required because all Eloquent models are protected against mass assignment vulnerabilities by default.</p>
+<p>However, before using the <code>create</code> method, you will need to specify either a <code>Fillable</code> or <code>Guarded</code> attribute on your model class. These attributes are required because all Eloquent models are protected against mass assignment vulnerabilities by default.</p>
 <p>A mass assignment vulnerability occurs when a user passes an unexpected HTTP request field and that field changes a column in your database that you did not expect. For example, a malicious user might send an <code>is_admin</code> parameter through an HTTP request, which is then passed to your model's <code>create</code> method, allowing the user to escalate themselves to an administrator.</p>
-<p>So, to get started, you should define which model attributes you want to make mass assignable. You may do this using the <code>$fillable</code> property on the model. For example, let's make the <code>name</code> attribute of our <code>Flight</code> model mass assignable:</p>
+<p>So, to get started, you should define which model attributes you want to make mass assignable. You may do this using the <code>Fillable</code> attribute on the model. For example, let's make the <code>name</code> attribute of our <code>Flight</code> model mass assignable:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Fillable</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Fillable</span><span class="p">([</span><span class="s1">&#39;name&#39;</span><span class="p">])]</span>
 <span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * The attributes that are mass assignable.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var array&lt;int, string&gt;</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$fillable</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">];</span>
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1239,31 +1269,36 @@ When issuing a mass update via Eloquent, the <code>saving</code>, <code>saved</c
 
 <p><a name="mass-assignment-json-columns"></a></p>
 <h4 id="mass-assignment-and-json-columns">Mass Assignment and JSON Columns<a class="headerlink" href="#mass-assignment-and-json-columns" title="Permanent link">#</a></h4>
-<p>When assigning JSON columns, each column's mass assignable key must be specified in your model's <code>$fillable</code> array. For security, Laravel does not support updating nested JSON attributes when using the <code>guarded</code> property:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * The attributes that are mass assignable.</span>
-<span class="x"> *</span>
-<span class="x"> * @var array&lt;int, string&gt;</span>
-<span class="x"> */</span>
-<span class="x">protected $fillable = [</span>
-<span class="x">    &#39;options-&gt;enabled&#39;,</span>
-<span class="x">];</span>
+<p>When assigning JSON columns, each column's mass assignable key must be specified in your model's <code>Fillable</code> attribute. For security, Laravel does not support updating nested JSON attributes when using the <code>Guarded</code> attribute:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Attributes\Fillable;</span>
+
+<span class="x">#[Fillable([&#39;options-&gt;enabled&#39;])]</span>
+<span class="x">class Flight extends Model</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
 </code></pre></div>
 
 <p><a name="allowing-mass-assignment"></a></p>
 <h4 id="allowing-mass-assignment">Allowing Mass Assignment<a class="headerlink" href="#allowing-mass-assignment" title="Permanent link">#</a></h4>
-<p>If you would like to make all of your attributes mass assignable, you may define your model's <code>$guarded</code> property as an empty array. If you choose to unguard your model, you should take special care to always hand-craft the arrays passed to Eloquent's <code>fill</code>, <code>create</code>, and <code>update</code> methods:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * The attributes that aren&#39;t mass assignable.</span>
-<span class="x"> *</span>
-<span class="x"> * @var array&lt;string&gt;</span>
-<span class="x"> */</span>
-<span class="x">protected $guarded = [];</span>
+<p>If you would like to make all of your attributes mass assignable, you may use the <code>Unguarded</code> attribute on your model. If you choose to unguard your model, you should take special care to always hand-craft the arrays passed to Eloquent's <code>fill</code>, <code>create</code>, and <code>update</code> methods:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Attributes\Unguarded</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Unguarded</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">Flight</span> <span class="k">extends</span> <span class="nx">Model</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p><a name="mass-assignment-exceptions"></a></p>
 <h4 id="mass-assignment-exceptions">Mass Assignment Exceptions<a class="headerlink" href="#mass-assignment-exceptions" title="Permanent link">#</a></h4>
-<p>By default, attributes that are not included in the <code>$fillable</code> array are silently discarded when performing mass-assignment operations. In production, this is expected behavior; however, during local development it can lead to confusion as to why model changes are not taking effect.</p>
+<p>By default, attributes that are not included in the <code>Fillable</code> attribute are silently discarded when performing mass-assignment operations. In production, this is expected behavior; however, during local development it can lead to confusion as to why model changes are not taking effect.</p>
 <p>If you wish, you may instruct Laravel to throw an exception when attempting to fill an unfillable attribute by invoking the <code>preventSilentlyDiscardingAttributes</code> method. Typically, this method should be invoked in the <code>boot</code> method of your application's <code>AppServiceProvider</code> class:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Eloquent\Model;</span>
 
@@ -1297,6 +1332,10 @@ All databases except SQL Server require the columns in the second argument of th
 <span class="x">$flight = Flight::find(1);</span>
 
 <span class="x">$flight-&gt;delete();</span>
+</code></pre></div>
+
+<p>If you would like to delete the model within a database transaction, you may use the <code>deleteOrFail</code> method. If an exception is thrown during the delete, the transaction will automatically be rolled back:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$flight-&gt;deleteOrFail();</span>
 </code></pre></div>
 
 <p><a name="deleting-an-existing-model-by-its-primary-key"></a></p>
@@ -1751,6 +1790,7 @@ If your global scope is adding columns to the select clause of the query, you sh
 <div class="codehilite"><pre><span></span><code><span class="x">$users = User::ofType(&#39;admin&#39;)-&gt;get();</span>
 </code></pre></div>
 
+<p>Attributed scope methods should be <code>protected</code>. When calling an attributed scope from within the model class, call the scope through a query builder instance, such as <code>static::query()-&gt;ofType('admin')</code>, to ensure the call is routed through Eloquent's scope handling.</p>
 <p><a name="pending-attributes"></a></p>
 <h3 id="pending-attributes">Pending Attributes<a class="headerlink" href="#pending-attributes" title="Permanent link">#</a></h3>
 <p>If you would like to use scopes to create models that have the same attributes as those used to constrain the scope, you may use the <code>withAttributes</code> method when building the scope query:</p>
@@ -1869,7 +1909,7 @@ When issuing a mass update or delete query via Eloquent, the <code>saved</code>,
 <span class="p">}</span>
 </code></pre></div>
 
-<p>If needed, you may utilize <a href="./events.html#queuable-anonymous-event-listeners">queueable anonymous event listeners</a> when registering model events. This will instruct Laravel to execute the model event listener in the background using your application's <a href="./queues.html">queue</a>:</p>
+<p>If needed, you may utilize <a href="./events.html#queueable-anonymous-event-listeners">queueable anonymous event listeners</a> when registering model events. This will instruct Laravel to execute the model event listener in the background using your application's <a href="./queues.html">queue</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use function Illuminate\Events\queueable;</span>
 
 <span class="x">static::created(queueable(function (User $user) {</span>

@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Validation</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Validation</a>
       <h1 class="doc-title">Validation</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/validation" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/validation" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -509,8 +509,8 @@ class="is-current" aria-current="page">Validation</a>
 <span class="x">public function store(Request $request): RedirectResponse</span>
 <span class="x">{</span>
 <span class="x">    $validated = $request-&gt;validate([</span>
-<span class="x">        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,</span>
-<span class="x">        &#39;body&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">        &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">        &#39;body&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">    ]);</span>
 
 <span class="x">    // The blog post is valid...</span>
@@ -520,15 +520,8 @@ class="is-current" aria-current="page">Validation</a>
 </code></pre></div>
 
 <p>As you can see, the validation rules are passed into the <code>validate</code> method. Don't worry - all available validation rules are <a href="#available-validation-rules">documented</a>. Again, if the validation fails, the proper response will automatically be generated. If the validation passes, our controller will continue executing normally.</p>
-<p>Alternatively, validation rules may be specified as arrays of rules instead of a single <code>|</code> delimited string:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">$validatedData = $request-&gt;validate([</span>
-<span class="x">    &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
-<span class="x">    &#39;body&#39; =&gt; [&#39;required&#39;],</span>
-<span class="x">]);</span>
-</code></pre></div>
-
 <p>In addition, you may use the <code>validateWithBag</code> method to validate a request and store any error messages within a <a href="#named-error-bags">named error bag</a>:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">$validatedData = $request-&gt;validateWithBag(&#39;post&#39;, [</span>
+<div class="codehilite"><pre><span></span><code><span class="x">$validated = $request-&gt;validateWithBag(&#39;post&#39;, [</span>
 <span class="x">    &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
 <span class="x">    &#39;body&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">]);</span>
@@ -538,8 +531,8 @@ class="is-current" aria-current="page">Validation</a>
 <h4 id="stopping-on-first-validation-failure">Stopping on First Validation Failure<a class="headerlink" href="#stopping-on-first-validation-failure" title="Permanent link">#</a></h4>
 <p>Sometimes you may wish to stop running validation rules on an attribute after the first validation failure. To do so, assign the <code>bail</code> rule to the attribute:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$request-&gt;validate([</span>
-<span class="x">    &#39;title&#39; =&gt; &#39;bail|required|unique:posts|max:255&#39;,</span>
-<span class="x">    &#39;body&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">    &#39;title&#39; =&gt; [&#39;bail&#39;, &#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">    &#39;body&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -548,16 +541,16 @@ class="is-current" aria-current="page">Validation</a>
 <h4 id="a-note-on-nested-attributes">A Note on Nested Attributes<a class="headerlink" href="#a-note-on-nested-attributes" title="Permanent link">#</a></h4>
 <p>If the incoming HTTP request contains "nested" field data, you may specify these fields in your validation rules using "dot" syntax:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$request-&gt;validate([</span>
-<span class="x">    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,</span>
-<span class="x">    &#39;author.name&#39; =&gt; &#39;required&#39;,</span>
-<span class="x">    &#39;author.description&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">    &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">    &#39;author.name&#39; =&gt; [&#39;required&#39;],</span>
+<span class="x">    &#39;author.description&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
 <p>On the other hand, if your field name contains a literal period, you can explicitly prevent this from being interpreted as "dot" syntax by escaping the period with a backslash:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$request-&gt;validate([</span>
-<span class="x">    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,</span>
-<span class="x">    &#39;v1\.0&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">    &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">    &#39;v1\.0&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -633,9 +626,9 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <h3 id="a-note-on-optional-fields">A Note on Optional Fields<a class="headerlink" href="#a-note-on-optional-fields" title="Permanent link">#</a></h3>
 <p>By default, Laravel includes the <code>TrimStrings</code> and <code>ConvertEmptyStringsToNull</code> middleware in your application's global middleware stack. Because of this, you will often need to mark your "optional" request fields as <code>nullable</code> if you do not want the validator to consider <code>null</code> values as invalid. For example:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$request-&gt;validate([</span>
-<span class="x">    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,</span>
-<span class="x">    &#39;body&#39; =&gt; &#39;required&#39;,</span>
-<span class="x">    &#39;publish_at&#39; =&gt; &#39;nullable|date&#39;,</span>
+<span class="x">    &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">    &#39;body&#39; =&gt; [&#39;required&#39;],</span>
+<span class="x">    &#39;publish_at&#39; =&gt; [&#39;nullable&#39;, &#39;date&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -682,8 +675,8 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <span class="x">public function rules(): array</span>
 <span class="x">{</span>
 <span class="x">    return [</span>
-<span class="x">        &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,</span>
-<span class="x">        &#39;body&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">        &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">        &#39;body&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">    ];</span>
 <span class="x">}</span>
 </code></pre></div>
@@ -764,33 +757,112 @@ Need to add real-time form request validation to your Inertia powered Laravel fr
 
 <p><a name="request-stopping-on-first-validation-rule-failure"></a></p>
 <h4 id="stopping-on-the-first-validation-failure">Stopping on the First Validation Failure<a class="headerlink" href="#stopping-on-the-first-validation-failure" title="Permanent link">#</a></h4>
-<p>By adding a <code>stopOnFirstFailure</code> property to your request class, you may inform the validator that it should stop validating all attributes once a single validation failure has occurred:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * Indicates if the validator should stop on the first rule failure.</span>
-<span class="x"> *</span>
-<span class="x"> * @var bool</span>
-<span class="x"> */</span>
-<span class="x">protected $stopOnFirstFailure = true;</span>
+<p>By adding the <code>StopOnFirstFailure</code> attribute to your request class, you may inform the validator that it should stop validating all attributes once a single validation failure has occurred:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Requests</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\Attributes\StopOnFirstFailure</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\FormRequest</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">StopOnFirstFailure</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">StorePostRequest</span> <span class="k">extends</span> <span class="nx">FormRequest</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
+<p><a name="request-failing-on-unknown-fields"></a></p>
+<h4 id="failing-on-unknown-fields">Failing on Unknown Fields<a class="headerlink" href="#failing-on-unknown-fields" title="Permanent link">#</a></h4>
+<p>By adding the <code>FailOnUnknownFields</code> attribute to your request class, you may instruct Laravel to reject any incoming fields that are not defined by your request's validation rules:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Requests</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\Attributes\FailOnUnknownFields</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\FormRequest</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">FailOnUnknownFields</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">StorePostRequest</span> <span class="k">extends</span> <span class="nx">FormRequest</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">rules</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">],</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>You may also enable this behavior globally for all form requests from your <code>AppServiceProvider</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Foundation\Http\FormRequest;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Bootstrap any application services.</span>
+<span class="x"> */</span>
+<span class="x">public function boot(): void</span>
+<span class="x">{</span>
+<span class="x">    FormRequest::failOnUnknownFields();</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>If needed, you may disable this behavior for a specific request by passing <code>false</code> to the attribute:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">#[FailOnUnknownFields(false)]</span>
+<span class="x">class PublicWebhookRequest extends FormRequest</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>Rejecting unknown fields can provide additional protection against mass-assignment style issues by preventing unexpected input keys from flowing deeper into your application. However, you should still configure your model's <code>$fillable</code> / <code>$guarded</code> properties and only persist trusted, validated input.</p>
 <p><a name="customizing-the-redirect-location"></a></p>
 <h4 id="customizing-the-redirect-location">Customizing the Redirect Location<a class="headerlink" href="#customizing-the-redirect-location" title="Permanent link">#</a></h4>
-<p>When form request validation fails, a redirect response will be generated to send the user back to their previous location. However, you are free to customize this behavior. To do so, define a <code>$redirect</code> property on your form request:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * The URI that users should be redirected to if validation fails.</span>
-<span class="x"> *</span>
-<span class="x"> * @var string</span>
-<span class="x"> */</span>
-<span class="x">protected $redirect = &#39;/dashboard&#39;;</span>
+<p>When form request validation fails, a redirect response will be generated to send the user back to their previous location. However, you are free to customize this behavior. To do so, you may use the <code>RedirectTo</code> attribute on your form request:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Requests</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\Attributes\RedirectTo</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\FormRequest</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">RedirectTo</span><span class="p">(</span><span class="s1">&#39;/dashboard&#39;</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">StorePostRequest</span> <span class="k">extends</span> <span class="nx">FormRequest</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
-<p>Or, if you would like to redirect users to a named route, you may define a <code>$redirectRoute</code> property instead:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">/**</span>
-<span class="x"> * The route that users should be redirected to if validation fails.</span>
-<span class="x"> *</span>
-<span class="x"> * @var string</span>
-<span class="x"> */</span>
-<span class="x">protected $redirectRoute = &#39;dashboard&#39;;</span>
+<p>Or, if you would like to redirect users to a named route, you may use the <code>RedirectToRoute</code> attribute instead:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Requests</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\Attributes\RedirectToRoute</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\FormRequest</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">RedirectToRoute</span><span class="p">(</span><span class="s1">&#39;dashboard&#39;</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">StorePostRequest</span> <span class="k">extends</span> <span class="nx">FormRequest</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><a name="customizing-the-error-bag"></a></p>
+<h4 id="customizing-the-error-bag">Customizing the Error Bag<a class="headerlink" href="#customizing-the-error-bag" title="Permanent link">#</a></h4>
+<p>When form request validation fails, the errors are flashed to the <code>default</code> error bag. If you need to store the errors in a different <a href="#named-error-bags">named error bag</a>, you may use the <code>ErrorBag</code> attribute on your form request:</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Http\Requests</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\Attributes\ErrorBag</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Foundation\Http\FormRequest</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">ErrorBag</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">)]</span>
+<span class="k">class</span> <span class="nc">LoginRequest</span> <span class="k">extends</span> <span class="nx">FormRequest</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p><a name="authorizing-form-requests"></a></p>
@@ -910,8 +982,8 @@ You may type-hint any dependencies you need within the <code>authorize</code> me
     <span class="k">public</span> <span class="k">function</span> <span class="nf">store</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">)</span><span class="o">:</span> <span class="nx">RedirectResponse</span>
     <span class="p">{</span>
         <span class="nv">$validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="nv">$request</span><span class="o">-&gt;</span><span class="na">all</span><span class="p">(),</span> <span class="p">[</span>
-            <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;required|unique:posts|max:255&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;required&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="s1">&#39;unique:posts&#39;</span><span class="p">,</span> <span class="s1">&#39;max:255&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">],</span>
         <span class="p">]);</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">fails</span><span class="p">())</span> <span class="p">{</span>
@@ -947,15 +1019,15 @@ You may type-hint any dependencies you need within the <code>authorize</code> me
 <h3 id="automatic-redirection">Automatic Redirection<a class="headerlink" href="#automatic-redirection" title="Permanent link">#</a></h3>
 <p>If you would like to create a validator instance manually but still take advantage of the automatic redirection offered by the HTTP request's <code>validate</code> method, you may call the <code>validate</code> method on an existing validator instance. If validation fails, the user will automatically be redirected or, in the case of an XHR request, a <a href="#validation-error-response-format">JSON response will be returned</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,</span>
-<span class="x">    &#39;body&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">    &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">    &#39;body&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">])-&gt;validate();</span>
 </code></pre></div>
 
 <p>You may use the <code>validateWithBag</code> method to store the error messages in a <a href="#named-error-bags">named error bag</a> if validation fails:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;title&#39; =&gt; &#39;required|unique:posts|max:255&#39;,</span>
-<span class="x">    &#39;body&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">    &#39;title&#39; =&gt; [&#39;required&#39;, &#39;unique:posts&#39;, &#39;max:255&#39;],</span>
+<span class="x">    &#39;body&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">])-&gt;validateWithBag(&#39;post&#39;);</span>
 </code></pre></div>
 
@@ -1148,7 +1220,7 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <h3 id="specifying-values-in-language-files">Specifying Values in Language Files<a class="headerlink" href="#specifying-values-in-language-files" title="Permanent link">#</a></h3>
 <p>Some of Laravel's built-in validation rule error messages contain a <code>:value</code> placeholder that is replaced with the current value of the request attribute. However, you may occasionally need the <code>:value</code> portion of your validation message to be replaced with a custom representation of the value. For example, consider the following rule that specifies that a credit card number is required if the <code>payment_type</code> has a value of <code>cc</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;credit_card_number&#39; =&gt; &#39;required_if:payment_type,cc&#39;</span>
+<span class="x">    &#39;credit_card_number&#39; =&gt; [&#39;required_if:payment_type,cc&#39;]</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -1255,6 +1327,7 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <h4 id="arrays">Arrays<a class="headerlink" href="#arrays" title="Permanent link">#</a></h4>
 <div class="collection-method-list">
 <p><a href="#rule-array">Array</a>
+<a href="#rule-array-keys">Array Keys</a>
 <a href="#rule-between">Between</a>
 <a href="#rule-contains">Contains</a>
 <a href="#rule-doesnt-contain">Doesnt Contain</a>
@@ -1345,14 +1418,20 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <p><a name="rule-active-url"></a></p>
 <h4 id="active_url">active_url<a class="headerlink" href="#active_url" title="Permanent link">#</a></h4>
 <p>The field under validation must have a valid A or AAAA record according to the <code>dns_get_record</code> PHP function. The hostname of the provided URL is extracted using the <code>parse_url</code> PHP function before being passed to <code>dns_get_record</code>.</p>
+<p>When testing validation rules that perform DNS lookups, such as <code>active_url</code> and <code>email:dns</code>, you may use the <code>Validator::fakeDnsLookups</code> method. This fakes DNS lookups while preserving the rules' other validation behavior:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
+
+<span class="x">Validator::fakeDnsLookups();</span>
+</code></pre></div>
+
 <p><a name="rule-after"></a></p>
 <h4 id="afterdate">after:<em>date</em><a class="headerlink" href="#afterdate" title="Permanent link">#</a></h4>
 <p>The field under validation must be a value after a given date. The dates will be passed into the <code>strtotime</code> PHP function in order to be converted to a valid <code>DateTime</code> instance:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;start_date&#39; =&gt; &#39;required|date|after:tomorrow&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;start_date&#39; =&gt; [&#39;required&#39;, &#39;date&#39;, &#39;after:tomorrow&#39;]</span>
 </code></pre></div>
 
 <p>Instead of passing a date string to be evaluated by <code>strtotime</code>, you may specify another field to compare against the date:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;finish_date&#39; =&gt; &#39;required|date|after:start_date&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;finish_date&#39; =&gt; [&#39;required&#39;, &#39;date&#39;, &#39;after:start_date&#39;]</span>
 </code></pre></div>
 
 <p>For convenience, date-based rules may be constructed using the fluent <code>date</code> rule builder:</p>
@@ -1401,21 +1480,21 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <h4 id="alpha">alpha<a class="headerlink" href="#alpha" title="Permanent link">#</a></h4>
 <p>The field under validation must be entirely Unicode alphabetic characters contained in <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{L}</a> and <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{M}</a>.</p>
 <p>To restrict this validation rule to characters in the ASCII range (<code>a-z</code> and <code>A-Z</code>), you may provide the <code>ascii</code> option to the validation rule:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;username&#39; =&gt; &#39;alpha:ascii&#39;,</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;username&#39; =&gt; [&#39;alpha:ascii&#39;],</span>
 </code></pre></div>
 
 <p><a name="rule-alpha-dash"></a></p>
 <h4 id="alpha_dash">alpha_dash<a class="headerlink" href="#alpha_dash" title="Permanent link">#</a></h4>
 <p>The field under validation must be entirely Unicode alpha-numeric characters contained in <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{L}</a>, <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{M}</a>, <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AN%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{N}</a>, as well as ASCII dashes (<code>-</code>) and ASCII underscores (<code>_</code>).</p>
 <p>To restrict this validation rule to characters in the ASCII range (<code>a-z</code>, <code>A-Z</code>, and <code>0-9</code>), you may provide the <code>ascii</code> option to the validation rule:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;username&#39; =&gt; &#39;alpha_dash:ascii&#39;,</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;username&#39; =&gt; [&#39;alpha_dash:ascii&#39;],</span>
 </code></pre></div>
 
 <p><a name="rule-alpha-num"></a></p>
 <h4 id="alpha_num">alpha_num<a class="headerlink" href="#alpha_num" title="Permanent link">#</a></h4>
 <p>The field under validation must be entirely Unicode alpha-numeric characters contained in <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{L}</a>, <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{M}</a>, and <a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AN%3A%5D&amp;g=&amp;i=" rel="noopener" target="_blank">\p{N}</a>.</p>
 <p>To restrict this validation rule to characters in the ASCII range (<code>a-z</code>, <code>A-Z</code>, and <code>0-9</code>), you may provide the <code>ascii</code> option to the validation rule:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;username&#39; =&gt; &#39;alpha_num:ascii&#39;,</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;username&#39; =&gt; [&#39;alpha_num:ascii&#39;],</span>
 </code></pre></div>
 
 <p><a name="rule-array"></a></p>
@@ -1433,11 +1512,21 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <span class="x">];</span>
 
 <span class="x">Validator::make($input, [</span>
-<span class="x">    &#39;user&#39; =&gt; &#39;array:name,username&#39;,</span>
+<span class="x">    &#39;user&#39; =&gt; [&#39;array:name,username&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
 <p>In general, you should always specify the array keys that are allowed to be present within your array.</p>
+<p><a name="rule-array-keys"></a></p>
+<h4 id="array_keysfoobar">array_keys:<em>foo</em>,<em>bar</em>,...<a class="headerlink" href="#array_keysfoobar" title="Permanent link">#</a></h4>
+<p>The field under validation must be a PHP <code>array</code> whose keys are all included in the given list. At least one key must be provided:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;user&#39; =&gt; [&#39;array_keys:name,username&#39;],</span>
+</code></pre></div>
+
+<p>For convenience, you may use the <code>Rule::arrayKeys</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;user&#39; =&gt; [Rule::arrayKeys(&#39;name&#39;, &#39;username&#39;)],</span>
+</code></pre></div>
+
 <p><a name="rule-ascii"></a></p>
 <h4 id="ascii">ascii<a class="headerlink" href="#ascii" title="Permanent link">#</a></h4>
 <p>The field under validation must be entirely 7-bit ASCII characters.</p>
@@ -1488,7 +1577,7 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <h4 id="boolean">boolean<a class="headerlink" href="#boolean" title="Permanent link">#</a></h4>
 <p>The field under validation must be able to be cast as a boolean. Accepted input are <code>true</code>, <code>false</code>, <code>1</code>, <code>0</code>, <code>"1"</code>, and <code>"0"</code>.</p>
 <p>You may use the <code>strict</code> parameter to only consider the field valid if its value is <code>true</code> or <code>false</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo&#39; =&gt; &#39;boolean:strict&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo&#39; =&gt; [&#39;boolean:strict&#39;]</span>
 </code></pre></div>
 
 <p><a name="rule-confirmed"></a></p>
@@ -1528,7 +1617,7 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <p><a name="rule-current-password"></a></p>
 <h4 id="current_password">current_password<a class="headerlink" href="#current_password" title="Permanent link">#</a></h4>
 <p>The field under validation must match the authenticated user's password. You may specify an <a href="./authentication.html">authentication guard</a> using the rule's first parameter:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;password&#39; =&gt; &#39;current_password:api&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;password&#39; =&gt; [&#39;current_password:api&#39;]</span>
 </code></pre></div>
 
 <p><a name="rule-date"></a></p>
@@ -1553,10 +1642,10 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <h4 id="decimalminmax">decimal:<em>min</em>,<em>max</em><a class="headerlink" href="#decimalminmax" title="Permanent link">#</a></h4>
 <p>The field under validation must be numeric and must contain the specified number of decimal places:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">// Must have exactly two decimal places (9.99)...</span>
-<span class="x">&#39;price&#39; =&gt; &#39;decimal:2&#39;</span>
+<span class="x">&#39;price&#39; =&gt; [&#39;decimal:2&#39;]</span>
 
 <span class="x">// Must have between 2 and 4 decimal places...</span>
-<span class="x">&#39;price&#39; =&gt; &#39;decimal:2,4&#39;</span>
+<span class="x">&#39;price&#39; =&gt; [&#39;decimal:2,4&#39;]</span>
 </code></pre></div>
 
 <p><a name="rule-declined"></a></p>
@@ -1577,12 +1666,16 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <p><a name="rule-dimensions"></a></p>
 <h4 id="dimensions">dimensions<a class="headerlink" href="#dimensions" title="Permanent link">#</a></h4>
 <p>The file under validation must be an image meeting the dimension constraints as specified by the rule's parameters:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;avatar&#39; =&gt; &#39;dimensions:min_width=100,min_height=200&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;avatar&#39; =&gt; [&#39;dimensions:min_width=100,min_height=200&#39;]</span>
 </code></pre></div>
 
-<p>Available constraints are: <em>min_width</em>, <em>max_width</em>, <em>min_height</em>, <em>max_height</em>, <em>width</em>, <em>height</em>, <em>ratio</em>.</p>
+<p>Available constraints are: <em>min_width</em>, <em>max_width</em>, <em>min_height</em>, <em>max_height</em>, <em>width</em>, <em>height</em>, <em>ratio</em>, <em>min_ratio</em>, <em>max_ratio</em>.</p>
 <p>A <em>ratio</em> constraint should be represented as width divided by height. This can be specified either by a fraction like <code>3/2</code> or a float like <code>1.5</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;avatar&#39; =&gt; &#39;dimensions:ratio=3/2&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;avatar&#39; =&gt; [&#39;dimensions:ratio=3/2&#39;]</span>
+</code></pre></div>
+
+<p>The <em>min_ratio</em> and <em>max_ratio</em> constraints may be used to define a range of acceptable aspect ratios:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;avatar&#39; =&gt; [&#39;dimensions:min_ratio=1/2,max_ratio=3/2&#39;]</span>
 </code></pre></div>
 
 <p>Since this rule requires several arguments, it is often more convenient to use the <code>Rule::dimensions</code> method to fluently construct the rule:</p>
@@ -1600,18 +1693,22 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <span class="x">]);</span>
 </code></pre></div>
 
+<p>You may also use the <code>minRatio</code>, <code>maxRatio</code>, and <code>ratioBetween</code> methods to fluently define ratio constraints:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Rule::dimensions()-&gt;ratioBetween(min: 1 / 2, max: 3 / 2)</span>
+</code></pre></div>
+
 <p><a name="rule-distinct"></a></p>
 <h4 id="distinct">distinct<a class="headerlink" href="#distinct" title="Permanent link">#</a></h4>
 <p>When validating arrays, the field under validation must not have any duplicate values:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo.*.id&#39; =&gt; &#39;distinct&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo.*.id&#39; =&gt; [&#39;distinct&#39;]</span>
 </code></pre></div>
 
 <p>Distinct uses loose variable comparisons by default. To use strict comparisons, you may add the <code>strict</code> parameter to your validation rule definition:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo.*.id&#39; =&gt; &#39;distinct:strict&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo.*.id&#39; =&gt; [&#39;distinct:strict&#39;]</span>
 </code></pre></div>
 
 <p>You may add <code>ignore_case</code> to the validation rule's arguments to make the rule ignore capitalization differences:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo.*.id&#39; =&gt; &#39;distinct:ignore_case&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;foo.*.id&#39; =&gt; [&#39;distinct:ignore_case&#39;]</span>
 </code></pre></div>
 
 <p><a name="rule-doesnt-start-with"></a></p>
@@ -1623,7 +1720,7 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <p><a name="rule-email"></a></p>
 <h4 id="email">email<a class="headerlink" href="#email" title="Permanent link">#</a></h4>
 <p>The field under validation must be formatted as an email address. This validation rule utilizes the <a href="https://github.com/egulias/EmailValidator" rel="noopener" target="_blank">egulias/email-validator</a> package for validating the email address. By default, the <code>RFCValidation</code> validator is applied, but you can apply other validation styles as well:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; &#39;email:rfc,dns&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; [&#39;email:rfc,dns&#39;]</span>
 </code></pre></div>
 
 <p>The example above will apply the <code>RFCValidation</code> and <code>DNSCheckValidation</code> validations. Here's a full list of validation styles you can apply:</p>
@@ -1649,6 +1746,17 @@ By default, the Laravel application skeleton does not include the <code>lang</co
 <span class="x">            -&gt;preventSpoofing()</span>
 <span class="x">    ],</span>
 <span class="x">]);</span>
+</code></pre></div>
+
+<p>The <code>dns</code> validator performs a real DNS lookup to confirm the address's domain has a valid MX record. It does not determine whether an individual mailbox exists.</p>
+<p>Since your tests should not rely on live DNS lookups, you may use the <code>Validator::fakeDnsLookups</code> method to <a href="#rule-active-url">fake DNS lookups</a> while any other requested validations, such as <code>rfc</code>, continue to run:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
+
+<span class="x">Validator::fakeDnsLookups();</span>
+</code></pre></div>
+
+<p>This allows your application to keep using its existing validation rules while testing:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; [&#39;required&#39;, &#39;email:rfc,dns&#39;],</span>
 </code></pre></div>
 
 <blockquote>
@@ -1715,17 +1823,30 @@ The <code>dns</code> and <code>spoof</code> validators require the PHP <code>int
 <span class="x">use Illuminate\Validation\Rule;</span>
 
 <span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;role_id&#39; =&gt; Rule::excludeIf($request-&gt;user()-&gt;is_admin),</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::excludeIf($request-&gt;user()-&gt;is_admin)],</span>
 <span class="x">]);</span>
 
 <span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;role_id&#39; =&gt; Rule::excludeIf(fn () =&gt; $request-&gt;user()-&gt;is_admin),</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::excludeIf(fn () =&gt; $request-&gt;user()-&gt;is_admin)],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
 <p><a name="rule-exclude-unless"></a></p>
 <h4 id="exclude_unlessanotherfieldvalue">exclude_unless:<em>anotherfield</em>,<em>value</em><a class="headerlink" href="#exclude_unlessanotherfieldvalue" title="Permanent link">#</a></h4>
 <p>The field under validation will be excluded from the request data returned by the <code>validate</code> and <code>validated</code> methods unless <em>anotherfield</em>'s field is equal to <em>value</em>. If <em>value</em> is <code>null</code> (<code>exclude_unless:name,null</code>), the field under validation will be excluded unless the comparison field is <code>null</code> or the comparison field is missing from the request data.</p>
+<p>If complex conditional exclusion logic is required, you may utilize the <code>Rule::excludeUnless</code> method. This method accepts a boolean or a closure. When given a closure, the closure should return <code>true</code> or <code>false</code> to indicate if the field under validation should not be excluded:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
+<span class="x">use Illuminate\Validation\Rule;</span>
+
+<span class="x">Validator::make($request-&gt;all(), [</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::excludeUnless($request-&gt;user()-&gt;is_admin)],</span>
+<span class="x">]);</span>
+
+<span class="x">Validator::make($request-&gt;all(), [</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::excludeUnless(fn () =&gt; $request-&gt;user()-&gt;is_admin)],</span>
+<span class="x">]);</span>
+</code></pre></div>
+
 <p><a name="rule-exclude-with"></a></p>
 <h4 id="exclude_withanotherfield">exclude_with:<em>anotherfield</em><a class="headerlink" href="#exclude_withanotherfield" title="Permanent link">#</a></h4>
 <p>The field under validation will be excluded from the request data returned by the <code>validate</code> and <code>validated</code> methods if the <em>anotherfield</em> field is present.</p>
@@ -1737,25 +1858,25 @@ The <code>dns</code> and <code>spoof</code> validators require the PHP <code>int
 <p>The field under validation must exist in a given database table.</p>
 <p><a name="basic-usage-of-exists-rule"></a></p>
 <h4 id="basic-usage-of-exists-rule">Basic Usage of Exists Rule<a class="headerlink" href="#basic-usage-of-exists-rule" title="Permanent link">#</a></h4>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;state&#39; =&gt; &#39;exists:states&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;state&#39; =&gt; [&#39;exists:states&#39;]</span>
 </code></pre></div>
 
 <p>If the <code>column</code> option is not specified, the field name will be used. So, in this case, the rule will validate that the <code>states</code> database table contains a record with a <code>state</code> column value matching the request's <code>state</code> attribute value.</p>
 <p><a name="specifying-a-custom-column-name"></a></p>
 <h4 id="specifying-a-custom-column-name">Specifying a Custom Column Name<a class="headerlink" href="#specifying-a-custom-column-name" title="Permanent link">#</a></h4>
 <p>You may explicitly specify the database column name that should be used by the validation rule by placing it after the database table name:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;state&#39; =&gt; &#39;exists:states,abbreviation&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;state&#39; =&gt; [&#39;exists:states,abbreviation&#39;]</span>
 </code></pre></div>
 
 <p>Occasionally, you may need to specify a specific database connection to be used for the <code>exists</code> query. You can accomplish this by prepending the connection name to the table name:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; &#39;exists:connection.staff,email&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; [&#39;exists:connection.staff,email&#39;]</span>
 </code></pre></div>
 
 <p>Instead of specifying the table name directly, you may specify the Eloquent model which should be used to determine the table name:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;user_id&#39; =&gt; &#39;exists:App\Models\User,id&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;user_id&#39; =&gt; [&#39;exists:App\Models\User,id&#39;]</span>
 </code></pre></div>
 
-<p>If you would like to customize the query executed by the validation rule, you may use the <code>Rule</code> class to fluently define the rule. In this example, we'll also specify the validation rules as an array instead of using the <code>|</code> character to delimit them:</p>
+<p>If you would like to customize the query executed by the validation rule, you may use the <code>Rule</code> class to fluently define the rule.</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Database\Query\Builder;</span>
 <span class="x">use Illuminate\Support\Facades\Validator;</span>
 <span class="x">use Illuminate\Validation\Rule;</span>
@@ -1771,7 +1892,7 @@ The <code>dns</code> and <code>spoof</code> validators require the PHP <code>int
 </code></pre></div>
 
 <p>You may explicitly specify the database column name that should be used by the <code>exists</code> rule generated by the <code>Rule::exists</code> method by providing the column name as the second argument to the <code>exists</code> method:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;state&#39; =&gt; Rule::exists(&#39;states&#39;, &#39;abbreviation&#39;),</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;state&#39; =&gt; [Rule::exists(&#39;states&#39;, &#39;abbreviation&#39;)],</span>
 </code></pre></div>
 
 <p>Sometimes, you may wish to validate whether an array of values exists in the database. You can do so by adding both the <code>exists</code> and <a href="#rule-array">array</a> rules to the field being validated:</p>
@@ -1848,14 +1969,14 @@ By default, the image rule does not allow SVG files due to the possibility of XS
 <p><a name="rule-in-array-keys"></a></p>
 <h4 id="in_array_keysvalue">in_array_keys:<em>value</em>.*<a class="headerlink" href="#in_array_keysvalue" title="Permanent link">#</a></h4>
 <p>The field under validation must be an array having at least one of the given <em>values</em> as a key within the array:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;config&#39; =&gt; &#39;array|in_array_keys:timezone&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;config&#39; =&gt; [&#39;array&#39;, &#39;in_array_keys:timezone&#39;]</span>
 </code></pre></div>
 
 <p><a name="rule-integer"></a></p>
 <h4 id="integer">integer<a class="headerlink" href="#integer" title="Permanent link">#</a></h4>
 <p>The field under validation must be an integer.</p>
 <p>You may use the <code>strict</code> parameter to only consider the field valid if its type is <code>integer</code>. Strings with integer values will be considered invalid:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;age&#39; =&gt; &#39;integer:strict&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;age&#39; =&gt; [&#39;integer:strict&#39;]</span>
 </code></pre></div>
 
 <blockquote>
@@ -1898,16 +2019,16 @@ This validation rule does not verify that the input is of the "integer" variable
 <p><a name="rule-mimetypes"></a></p>
 <h4 id="mimetypestextplain">mimetypes:<em>text/plain</em>,...<a class="headerlink" href="#mimetypestextplain" title="Permanent link">#</a></h4>
 <p>The file under validation must match one of the given MIME types:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;video&#39; =&gt; &#39;mimetypes:video/avi,video/mpeg,video/quicktime&#39;,</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;video&#39; =&gt; [&#39;mimetypes:video/avi,video/mpeg,video/quicktime&#39;],</span>
 
-<span class="x">&#39;media&#39; =&gt; &#39;mimetypes:image/*,video/*&#39;,</span>
+<span class="x">&#39;media&#39; =&gt; [&#39;mimetypes:image/*,video/*&#39;],</span>
 </code></pre></div>
 
 <p>To determine the MIME type of the uploaded file, the file's contents will be read and the framework will attempt to guess the MIME type, which may be different from the client's provided MIME type.</p>
 <p><a name="rule-mimes"></a></p>
 <h4 id="mimesfoobar">mimes:<em>foo</em>,<em>bar</em>,...<a class="headerlink" href="#mimesfoobar" title="Permanent link">#</a></h4>
 <p>The file under validation must have a MIME type corresponding to one of the listed extensions:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;photo&#39; =&gt; &#39;mimes:jpg,bmp,png&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;photo&#39; =&gt; [&#39;mimes:jpg,bmp,png&#39;]</span>
 </code></pre></div>
 
 <p>Even though you only need to specify the extensions, this rule actually validates the MIME type of the file by reading the file's contents and guessing its MIME type. A full listing of MIME types and their corresponding extensions may be found at the following location:</p>
@@ -1955,11 +2076,7 @@ This validation rule does not verify that the input is of the "integer" variable
 <p><a name="rule-not-regex"></a></p>
 <h4 id="not_regexpattern">not_regex:<em>pattern</em><a class="headerlink" href="#not_regexpattern" title="Permanent link">#</a></h4>
 <p>The field under validation must not match the given regular expression.</p>
-<p>Internally, this rule uses the PHP <code>preg_match</code> function. The pattern specified should obey the same formatting required by <code>preg_match</code> and thus also include valid delimiters. For example: <code>'email' =&gt; 'not_regex:/^.+$/i'</code>.</p>
-<blockquote>
-<p>[!WARNING]
-When using the <code>regex</code> / <code>not_regex</code> patterns, it may be necessary to specify your validation rules using an array instead of using <code>|</code> delimiters, especially if the regular expression contains a <code>|</code> character.</p>
-</blockquote>
+<p>Internally, this rule uses the PHP <code>preg_match</code> function. The pattern specified should obey the same formatting required by <code>preg_match</code> and thus also include valid delimiters. For example: <code>'email' =&gt; ['not_regex:/^.+$/i']</code>.</p>
 <p><a name="rule-nullable"></a></p>
 <h4 id="nullable">nullable<a class="headerlink" href="#nullable" title="Permanent link">#</a></h4>
 <p>The field under validation may be <code>null</code>.</p>
@@ -1967,7 +2084,7 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <h4 id="numeric">numeric<a class="headerlink" href="#numeric" title="Permanent link">#</a></h4>
 <p>The field under validation must be <a href="https://www.php.net/manual/en/function.is-numeric.php" rel="noopener" target="_blank">numeric</a>.</p>
 <p>You may use the <code>strict</code> parameter to only consider the field valid if its value is an integer or float type. Numeric strings will be considered invalid:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;amount&#39; =&gt; &#39;numeric:strict&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;amount&#39; =&gt; [&#39;numeric:strict&#39;]</span>
 </code></pre></div>
 
 <p><a name="rule-present"></a></p>
@@ -2012,11 +2129,11 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <span class="x">use Illuminate\Validation\Rule;</span>
 
 <span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;role_id&#39; =&gt; Rule::prohibitedIf($request-&gt;user()-&gt;is_admin),</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::prohibitedIf($request-&gt;user()-&gt;is_admin)],</span>
 <span class="x">]);</span>
 
 <span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;role_id&#39; =&gt; Rule::prohibitedIf(fn () =&gt; $request-&gt;user()-&gt;is_admin),</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::prohibitedIf(fn () =&gt; $request-&gt;user()-&gt;is_admin)],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -2037,6 +2154,19 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <li>The value is an uploaded file with an empty path.</li>
 </ul>
 </div>
+<p>If complex conditional prohibition logic is required, you may utilize the <code>Rule::prohibitedUnless</code> method. This method accepts a boolean or a closure. When given a closure, the closure should return <code>true</code> or <code>false</code> to indicate if the field under validation should not be prohibited:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
+<span class="x">use Illuminate\Validation\Rule;</span>
+
+<span class="x">Validator::make($request-&gt;all(), [</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::prohibitedUnless($request-&gt;user()-&gt;is_admin)],</span>
+<span class="x">]);</span>
+
+<span class="x">Validator::make($request-&gt;all(), [</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::prohibitedUnless(fn () =&gt; $request-&gt;user()-&gt;is_admin)],</span>
+<span class="x">]);</span>
+</code></pre></div>
+
 <p><a name="rule-prohibits"></a></p>
 <h4 id="prohibitsanotherfield">prohibits:<em>anotherfield</em>,...<a class="headerlink" href="#prohibitsanotherfield" title="Permanent link">#</a></h4>
 <p>If the field under validation is not missing or empty, all fields in <em>anotherfield</em> must be missing or empty. A field is "empty" if it meets one of the following criteria:</p>
@@ -2051,11 +2181,7 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <p><a name="rule-regex"></a></p>
 <h4 id="regexpattern">regex:<em>pattern</em><a class="headerlink" href="#regexpattern" title="Permanent link">#</a></h4>
 <p>The field under validation must match the given regular expression.</p>
-<p>Internally, this rule uses the PHP <code>preg_match</code> function. The pattern specified should obey the same formatting required by <code>preg_match</code> and thus also include valid delimiters. For example: <code>'email' =&gt; 'regex:/^.+@.+$/i'</code>.</p>
-<blockquote>
-<p>[!WARNING]
-When using the <code>regex</code> / <code>not_regex</code> patterns, it may be necessary to specify rules in an array instead of using <code>|</code> delimiters, especially if the regular expression contains a <code>|</code> character.</p>
-</blockquote>
+<p>Internally, this rule uses the PHP <code>preg_match</code> function. The pattern specified should obey the same formatting required by <code>preg_match</code> and thus also include valid delimiters. For example: <code>'email' =&gt; ['regex:/^.+@.+$/i']</code>.</p>
 <p><a name="rule-required"></a></p>
 <h4 id="required">required<a class="headerlink" href="#required" title="Permanent link">#</a></h4>
 <p>The field under validation must be present in the input data and not empty. A field is "empty" if it meets one of the following criteria:</p>
@@ -2075,11 +2201,11 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <span class="x">use Illuminate\Validation\Rule;</span>
 
 <span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;role_id&#39; =&gt; Rule::requiredIf($request-&gt;user()-&gt;is_admin),</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::requiredIf($request-&gt;user()-&gt;is_admin)],</span>
 <span class="x">]);</span>
 
 <span class="x">Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;role_id&#39; =&gt; Rule::requiredIf(fn () =&gt; $request-&gt;user()-&gt;is_admin),</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::requiredIf(fn () =&gt; $request-&gt;user()-&gt;is_admin)],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -2092,6 +2218,19 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <p><a name="rule-required-unless"></a></p>
 <h4 id="required_unlessanotherfieldvalue">required_unless:<em>anotherfield</em>,<em>value</em>,...<a class="headerlink" href="#required_unlessanotherfieldvalue" title="Permanent link">#</a></h4>
 <p>The field under validation must be present and not empty unless the <em>anotherfield</em> field is equal to any <em>value</em>. This also means <em>anotherfield</em> must be present in the request data unless <em>value</em> is <code>null</code>. If <em>value</em> is <code>null</code> (<code>required_unless:name,null</code>), the field under validation will be required unless the comparison field is <code>null</code> or the comparison field is missing from the request data.</p>
+<p>If you would like to construct a more complex condition for the <code>required_unless</code> rule, you may use the <code>Rule::requiredUnless</code> method. This method accepts a boolean or a closure. When passed a closure, the closure should return <code>true</code> or <code>false</code> to indicate if the field under validation is not required:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
+<span class="x">use Illuminate\Validation\Rule;</span>
+
+<span class="x">Validator::make($request-&gt;all(), [</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::requiredUnless($request-&gt;user()-&gt;is_admin)],</span>
+<span class="x">]);</span>
+
+<span class="x">Validator::make($request-&gt;all(), [</span>
+<span class="x">    &#39;role_id&#39; =&gt; [Rule::requiredUnless(fn () =&gt; $request-&gt;user()-&gt;is_admin)],</span>
+<span class="x">]);</span>
+</code></pre></div>
+
 <p><a name="rule-required-with"></a></p>
 <h4 id="required_withfoobar">required_with:<em>foo</em>,<em>bar</em>,...<a class="headerlink" href="#required_withfoobar" title="Permanent link">#</a></h4>
 <p>The field under validation must be present and not empty <em>only if</em> any of the other specified fields are present and not empty.</p>
@@ -2114,16 +2253,16 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <h4 id="sizevalue">size:<em>value</em><a class="headerlink" href="#sizevalue" title="Permanent link">#</a></h4>
 <p>The field under validation must have a size matching the given <em>value</em>. For string data, <em>value</em> corresponds to the number of characters. For numeric data, <em>value</em> corresponds to a given integer value (the attribute must also have the <code>numeric</code> or <code>integer</code> rule). For an array, <em>size</em> corresponds to the <code>count</code> of the array. For files, <em>size</em> corresponds to the file size in kilobytes. Let's look at some examples:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">// Validate that a string is exactly 12 characters long...</span>
-<span class="x">&#39;title&#39; =&gt; &#39;size:12&#39;;</span>
+<span class="x">&#39;title&#39; =&gt; [&#39;size:12&#39;];</span>
 
 <span class="x">// Validate that a provided integer equals 10...</span>
-<span class="x">&#39;seats&#39; =&gt; &#39;integer|size:10&#39;;</span>
+<span class="x">&#39;seats&#39; =&gt; [&#39;integer&#39;, &#39;size:10&#39;];</span>
 
 <span class="x">// Validate that an array has exactly 5 elements...</span>
-<span class="x">&#39;tags&#39; =&gt; &#39;array|size:5&#39;;</span>
+<span class="x">&#39;tags&#39; =&gt; [&#39;array&#39;, &#39;size:5&#39;];</span>
 
 <span class="x">// Validate that an uploaded file is exactly 512 kilobytes...</span>
-<span class="x">&#39;image&#39; =&gt; &#39;file|size:512&#39;;</span>
+<span class="x">&#39;image&#39; =&gt; [&#39;file&#39;, &#39;size:512&#39;];</span>
 </code></pre></div>
 
 <p><a name="rule-starts-with"></a></p>
@@ -2132,15 +2271,28 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <p><a name="rule-string"></a></p>
 <h4 id="string">string<a class="headerlink" href="#string" title="Permanent link">#</a></h4>
 <p>The field under validation must be a string. If you would like to allow the field to also be <code>null</code>, you should assign the <code>nullable</code> rule to the field.</p>
+<p>For convenience, string validation rules may also be constructed using the fluent <code>Rule::string()</code> rule builder:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Validation\Rule;</span>
+
+<span class="x">&#39;title&#39; =&gt; [</span>
+<span class="x">    &#39;required&#39;,</span>
+<span class="x">    Rule::string()</span>
+<span class="x">        -&gt;min(3)</span>
+<span class="x">        -&gt;max(255)</span>
+<span class="x">        -&gt;alphaDash(ascii: true),</span>
+<span class="x">],</span>
+</code></pre></div>
+
+<p>The string rule builder provides methods for common string constraints, including <code>alpha</code>, <code>alphaDash</code>, <code>alphaNumeric</code>, <code>ascii</code>, <code>between</code>, <code>doesntEndWith</code>, <code>doesntStartWith</code>, <code>endsWith</code>, <code>exactly</code>, <code>lowercase</code>, <code>max</code>, <code>min</code>, <code>startsWith</code>, and <code>uppercase</code>. Since the rule builder is conditionable, you may also use the <code>when</code> and <code>unless</code> methods to conditionally apply constraints.</p>
 <p><a name="rule-timezone"></a></p>
 <h4 id="timezone">timezone<a class="headerlink" href="#timezone" title="Permanent link">#</a></h4>
 <p>The field under validation must be a valid timezone identifier according to the <code>DateTimeZone::listIdentifiers</code> method.</p>
 <p>The arguments <a href="https://www.php.net/manual/en/datetimezone.listidentifiers.php" rel="noopener" target="_blank">accepted by the <code>DateTimeZone::listIdentifiers</code> method</a> may also be provided to this validation rule:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;timezone&#39; =&gt; &#39;required|timezone:all&#39;;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;timezone&#39; =&gt; [&#39;required&#39;, &#39;timezone:all&#39;];</span>
 
-<span class="x">&#39;timezone&#39; =&gt; &#39;required|timezone:Africa&#39;;</span>
+<span class="x">&#39;timezone&#39; =&gt; [&#39;required&#39;, &#39;timezone:Africa&#39;];</span>
 
-<span class="x">&#39;timezone&#39; =&gt; &#39;required|timezone:per_country,US&#39;;</span>
+<span class="x">&#39;timezone&#39; =&gt; [&#39;required&#39;, &#39;timezone:per_country,US&#39;];</span>
 </code></pre></div>
 
 <p><a name="rule-unique"></a></p>
@@ -2148,21 +2300,21 @@ When using the <code>regex</code> / <code>not_regex</code> patterns, it may be n
 <p>The field under validation must not exist within the given database table.</p>
 <p><strong>Specifying a Custom Table / Column Name:</strong></p>
 <p>Instead of specifying the table name directly, you may specify the Eloquent model which should be used to determine the table name:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; &#39;unique:App\Models\User,email_address&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; [&#39;unique:App\Models\User,email_address&#39;]</span>
 </code></pre></div>
 
 <p>The <code>column</code> option may be used to specify the field's corresponding database column. If the <code>column</code> option is not specified, the name of the field under validation will be used.</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; &#39;unique:users,email_address&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; [&#39;unique:users,email_address&#39;]</span>
 </code></pre></div>
 
 <p><strong>Specifying a Custom Database Connection</strong></p>
 <p>Occasionally, you may need to set a custom connection for database queries made by the Validator. To accomplish this, you may prepend the connection name to the table name:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; &#39;unique:connection.users,email_address&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;email&#39; =&gt; [&#39;unique:connection.users,email_address&#39;]</span>
 </code></pre></div>
 
 <p><strong>Forcing a Unique Rule to Ignore a Given ID:</strong></p>
 <p>Sometimes, you may wish to ignore a given ID during unique validation. For example, consider an "update profile" screen that includes the user's name, email address, and location. You will probably want to verify that the email address is unique. However, if the user only changes the name field and not the email field, you do not want a validation error to be thrown because the user is already the owner of the email address in question.</p>
-<p>To instruct the validator to ignore the user's ID, we'll use the <code>Rule</code> class to fluently define the rule. In this example, we'll also specify the validation rules as an array instead of using the <code>|</code> character to delimit the rules:</p>
+<p>To instruct the validator to ignore the user's ID, we'll use the <code>Rule</code> class to fluently define the rule.</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
 <span class="x">use Illuminate\Validation\Rule;</span>
 
@@ -2211,9 +2363,9 @@ You should never pass any user controlled request input into the <code>ignore</c
 <h4 id="url">url<a class="headerlink" href="#url" title="Permanent link">#</a></h4>
 <p>The field under validation must be a valid URL.</p>
 <p>If you would like to specify the URL protocols that should be considered valid, you may pass the protocols as validation rule parameters:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;url&#39; =&gt; &#39;url:http,https&#39;,</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;url&#39; =&gt; [&#39;url:http,https&#39;],</span>
 
-<span class="x">&#39;game&#39; =&gt; &#39;url:minecraft,steam&#39;,</span>
+<span class="x">&#39;game&#39; =&gt; [&#39;url:minecraft,steam&#39;],</span>
 </code></pre></div>
 
 <p><a name="rule-ulid"></a></p>
@@ -2223,7 +2375,7 @@ You should never pass any user controlled request input into the <code>ignore</c
 <h4 id="uuid">uuid<a class="headerlink" href="#uuid" title="Permanent link">#</a></h4>
 <p>The field under validation must be a valid RFC 9562 (version 1, 3, 4, 5, 6, 7, or 8) universally unique identifier (UUID).</p>
 <p>You may also validate that the given UUID matches a UUID specification by version:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">&#39;uuid&#39; =&gt; &#39;uuid:4&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;uuid&#39; =&gt; [&#39;uuid:4&#39;]</span>
 </code></pre></div>
 
 <p><a name="conditionally-adding-rules"></a></p>
@@ -2234,17 +2386,17 @@ You should never pass any user controlled request input into the <code>ignore</c
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
 
 <span class="x">$validator = Validator::make($data, [</span>
-<span class="x">    &#39;has_appointment&#39; =&gt; &#39;required|boolean&#39;,</span>
-<span class="x">    &#39;appointment_date&#39; =&gt; &#39;exclude_if:has_appointment,false|required|date&#39;,</span>
-<span class="x">    &#39;doctor_name&#39; =&gt; &#39;exclude_if:has_appointment,false|required|string&#39;,</span>
+<span class="x">    &#39;has_appointment&#39; =&gt; [&#39;required&#39;, &#39;boolean&#39;],</span>
+<span class="x">    &#39;appointment_date&#39; =&gt; [&#39;exclude_if:has_appointment,false&#39;, &#39;required&#39;, &#39;date&#39;],</span>
+<span class="x">    &#39;doctor_name&#39; =&gt; [&#39;exclude_if:has_appointment,false&#39;, &#39;required&#39;, &#39;string&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
 <p>Alternatively, you may use the <code>exclude_unless</code> rule to not validate a given field unless another field has a given value:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$validator = Validator::make($data, [</span>
-<span class="x">    &#39;has_appointment&#39; =&gt; &#39;required|boolean&#39;,</span>
-<span class="x">    &#39;appointment_date&#39; =&gt; &#39;exclude_unless:has_appointment,true|required|date&#39;,</span>
-<span class="x">    &#39;doctor_name&#39; =&gt; &#39;exclude_unless:has_appointment,true|required|string&#39;,</span>
+<span class="x">    &#39;has_appointment&#39; =&gt; [&#39;required&#39;, &#39;boolean&#39;],</span>
+<span class="x">    &#39;appointment_date&#39; =&gt; [&#39;exclude_unless:has_appointment,true&#39;, &#39;required&#39;, &#39;date&#39;],</span>
+<span class="x">    &#39;doctor_name&#39; =&gt; [&#39;exclude_unless:has_appointment,true&#39;, &#39;required&#39;, &#39;string&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -2252,7 +2404,7 @@ You should never pass any user controlled request input into the <code>ignore</c
 <h4 id="validating-when-present">Validating When Present<a class="headerlink" href="#validating-when-present" title="Permanent link">#</a></h4>
 <p>In some situations, you may wish to run validation checks against a field <strong>only</strong> if that field is present in the data being validated. To quickly accomplish this, add the <code>sometimes</code> rule to your rule list:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$validator = Validator::make($data, [</span>
-<span class="x">    &#39;email&#39; =&gt; &#39;sometimes|required|email&#39;,</span>
+<span class="x">    &#39;email&#39; =&gt; [&#39;sometimes&#39;, &#39;required&#39;, &#39;email&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -2267,15 +2419,15 @@ If you are attempting to validate a field that should always be present but may 
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
 
 <span class="x">$validator = Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;email&#39; =&gt; &#39;required|email&#39;,</span>
-<span class="x">    &#39;games&#39; =&gt; &#39;required|integer|min:0&#39;,</span>
+<span class="x">    &#39;email&#39; =&gt; [&#39;required&#39;, &#39;email&#39;],</span>
+<span class="x">    &#39;games&#39; =&gt; [&#39;required&#39;, &#39;integer&#39;, &#39;min:0&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
 <p>Let's assume our web application is for game collectors. If a game collector registers with our application and they own more than 100 games, we want them to explain why they own so many games. For example, perhaps they run a game resale shop, or maybe they just enjoy collecting games. To conditionally add this requirement, we can use the <code>sometimes</code> method on the <code>Validator</code> instance.</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Fluent;</span>
 
-<span class="x">$validator-&gt;sometimes(&#39;reason&#39;, &#39;required|max:500&#39;, function (Fluent $input) {</span>
+<span class="x">$validator-&gt;sometimes(&#39;reason&#39;, [&#39;required&#39;, &#39;max:500&#39;], function (Fluent $input) {</span>
 <span class="x">    return $input-&gt;games &gt;= 100;</span>
 <span class="x">});</span>
 </code></pre></div>
@@ -2330,7 +2482,7 @@ The <code>$input</code> parameter passed to your closure will be an instance of 
 <span class="x">];</span>
 
 <span class="x">Validator::make($input, [</span>
-<span class="x">    &#39;user&#39; =&gt; &#39;array:name,username&#39;,</span>
+<span class="x">    &#39;user&#39; =&gt; [&#39;array:name,username&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -2341,14 +2493,14 @@ The <code>$input</code> parameter passed to your closure will be an instance of 
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
 
 <span class="x">$validator = Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;photos.profile&#39; =&gt; &#39;required|image&#39;,</span>
+<span class="x">    &#39;photos.profile&#39; =&gt; [&#39;required&#39;, &#39;image&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
 <p>You may also validate each element of an array. For example, to validate that each email in a given array input field is unique, you may do the following:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$validator = Validator::make($request-&gt;all(), [</span>
-<span class="x">    &#39;users.*.email&#39; =&gt; &#39;email|unique:users&#39;,</span>
-<span class="x">    &#39;users.*.first_name&#39; =&gt; &#39;required_with:users.*.last_name&#39;,</span>
+<span class="x">    &#39;users.*.email&#39; =&gt; [&#39;email&#39;, &#39;unique:users&#39;],</span>
+<span class="x">    &#39;users.*.first_name&#39; =&gt; [&#39;required_with:users.*.last_name&#39;],</span>
 <span class="x">]);</span>
 </code></pre></div>
 
@@ -2396,7 +2548,7 @@ The <code>$input</code> parameter passed to your closure will be an instance of 
 <span class="x">];</span>
 
 <span class="x">Validator::validate($input, [</span>
-<span class="x">    &#39;photos.*.description&#39; =&gt; &#39;required&#39;,</span>
+<span class="x">    &#39;photos.*.description&#39; =&gt; [&#39;required&#39;],</span>
 <span class="x">], [</span>
 <span class="x">    &#39;photos.*.description.required&#39; =&gt; &#39;Please describe photo #:position.&#39;,</span>
 <span class="x">]);</span>
@@ -2492,6 +2644,9 @@ More information regarding validating image dimensions may be found in the <a hr
 <div class="codehilite"><pre><span></span><code><span class="x">// Require at least 8 characters...</span>
 <span class="x">Password::min(8)</span>
 
+<span class="x">// Require at most 256 characters...</span>
+<span class="x">Password::min(16)-&gt;max(256)</span>
+
 <span class="x">// Require at least one letter...</span>
 <span class="x">Password::min(8)-&gt;letters()</span>
 
@@ -2517,11 +2672,21 @@ More information regarding validating image dimensions may be found in the <a hr
 
 <p>Of course, you may chain all the methods in the examples above:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">Password::min(8)</span>
+<span class="x">    -&gt;max(256)</span>
 <span class="x">    -&gt;letters()</span>
 <span class="x">    -&gt;mixedCase()</span>
 <span class="x">    -&gt;numbers()</span>
 <span class="x">    -&gt;symbols()</span>
 <span class="x">    -&gt;uncompromised()</span>
+</code></pre></div>
+
+<p>You may convert a <code>Password</code> rule object to a string suitable for the HTML <code>passwordrules</code> attribute using the <code>toPasswordRulesString</code> method:</p>
+<div class="codehilite"><pre><span></span><code>&lt;input
+    type=&quot;password&quot;
+    name=&quot;password&quot;
+    autocomplete=&quot;new-password&quot;
+    passwordrules=&quot;{{ Password::defaults()-&gt;toPasswordRulesString() }}&quot;
+/&gt;
 </code></pre></div>
 
 <p><a name="defining-default-password-rules"></a></p>
@@ -2699,7 +2864,7 @@ More information regarding validating image dimensions may be found in the <a hr
 <p>By default, when an attribute being validated is not present or contains an empty string, normal validation rules, including custom rules, are not run. For example, the <a href="#rule-unique">unique</a> rule will not be run against an empty string:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use Illuminate\Support\Facades\Validator;</span>
 
-<span class="x">$rules = [&#39;name&#39; =&gt; &#39;unique:users,name&#39;];</span>
+<span class="x">$rules = [&#39;name&#39; =&gt; [&#39;unique:users,name&#39;]];</span>
 
 <span class="x">$input = [&#39;name&#39; =&gt; &#39;&#39;];</span>
 

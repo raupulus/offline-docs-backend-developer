@@ -1,14 +1,14 @@
 ---
 title: Encryption
-source_url: https://laravel.com/docs/12.x/encryption
+source_url: https://laravel.com/docs/13.x/encryption
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: encryption.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 320
 ---
 

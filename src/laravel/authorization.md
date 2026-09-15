@@ -1,14 +1,14 @@
 ---
 title: Authorization
-source_url: https://laravel.com/docs/12.x/authorization
+source_url: https://laravel.com/docs/13.x/authorization
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: authorization.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 50
 ---
 
@@ -713,6 +713,18 @@ use App\Models\Post;
 Route::put('/post/{post}', function (Post $post) {
     // The current user may update the post...
 })->can('update', 'post');
+```
+
+If you are using [controller middleware attributes](/docs/{{version}}/controllers#middleware-attributes), you may apply the `can` middleware via the `Authorize` attribute:
+
+```php
+use Illuminate\Routing\Attributes\Controllers\Authorize;
+
+#[Authorize('update', 'post')]
+public function update(Post $post)
+{
+    // The current user may update the post...
+}
 ```
 
 <a name="middleware-actions-that-dont-require-models"></a>

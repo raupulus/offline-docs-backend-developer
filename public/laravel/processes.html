@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,14 +98,6 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./filesystem.html"
->File Storage</a>
-              </li>
-              <li>
-                <a href="./folio.html"
->Laravel Folio</a>
-              </li>
-              <li>
                 <a href="./fortify.html"
 >Laravel Fortify</a>
               </li>
@@ -116,6 +108,10 @@
               <li>
                 <a href="./hashing.html"
 >Hashing</a>
+              </li>
+              <li>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -136,6 +132,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Processes</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Processes</a>
       <h1 class="doc-title">Processes</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/processes" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/processes" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -456,6 +456,12 @@ class="is-current" aria-current="page">Processes</a>
 <h4 id="timeouts">Timeouts<a class="headerlink" href="#timeouts" title="Permanent link">#</a></h4>
 <p>By default, processes will throw an instance of <code>Illuminate\Process\Exceptions\ProcessTimedOutException</code> after executing for more than 60 seconds. However, you can customize this behavior via the <code>timeout</code> method:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$result = Process::timeout(120)-&gt;run(&#39;bash import.sh&#39;);</span>
+</code></pre></div>
+
+<p>The <code>timeout</code> and <code>idleTimeout</code> methods also accept <code>CarbonInterval</code> instances:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use function Illuminate\Support\minutes;</span>
+
+<span class="x">$result = Process::timeout(minutes(2))-&gt;run(&#39;bash import.sh&#39;);</span>
 </code></pre></div>
 
 <p>Or, if you would like to disable the process timeout entirely, you may invoke the <code>forever</code> method:</p>
@@ -892,6 +898,16 @@ Assert that a given process was invoked:
 
 
 
+When the process was invoked with an array of arguments, you may pass the same array to the assertion:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">Process::assertRan([&#39;php&#39;, &#39;artisan&#39;, &#39;migrate&#39;]);</span>
+</code></pre></div>
+
+
+
+The `assertRanTimes` and `assertDidntRun` methods also accept array commands.
+
 The `assertRan` method also accepts a closure, which will receive an instance of a process and a process result, allowing you to inspect the process' configured options. If this closure returns `true`, the assertion will "pass":
 
 
@@ -951,6 +967,22 @@ The `assertRanTimes` method also accepts a closure, which will receive an instan
 </code></pre></div>
 
 
+
+<a name="assert-processes-ran-in-order"></a>
+#### assertRanInOrder
+
+Assert that processes were invoked in a given order:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">Process::assertRanInOrder([</span>
+<span class="x">    &#39;git fetch&#39;,</span>
+<span class="x">    &#39;composer install&#39;,</span>
+<span class="x">]);</span>
+</code></pre></div>
+
+
+
+The `assertRanInOrder` method accepts command strings, arrays of command arguments, or closures like the other process assertions.
 
 <a name="preventing-stray-processes"></a>
 ### Preventing Stray Processes

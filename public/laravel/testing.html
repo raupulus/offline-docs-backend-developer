@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Testing: Getting Started</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Testing: Getting Started</a>
       <h1 class="doc-title">Testing: Getting Started</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/testing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/testing" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -400,20 +400,46 @@ class="is-current" aria-current="page">Testing: Getting Started</a>
 <div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span>make:test<span class="w"> </span>UserTest<span class="w"> </span>--unit
 </code></pre></div>
 
-<blockquote>
-<p>[!NOTE]
-Test stubs may be customized using <a href="./artisan.html#stub-customization">stub publishing</a>.</p>
-</blockquote>
-<p>Once the test has been generated, you may define test as you normally would using Pest or PHPUnit. To run your tests, execute the <code>vendor/bin/pest</code>, <code>vendor/bin/phpunit</code>, or <code>php artisan test</code> command from your terminal:</p>
-<p>```php tab=Pest</p>
+<p>If you have a test class that mostly relies on Laravel's testing features, but a specific test method does not need the framework booted, you may apply the <code>#[UnitTest]</code> attribute to that method to skip booting the application for just that test.</p>
+<p>```php tab=PHPUnit</p>
 <?php
 
-test('basic', function () {
-    expect(true)->toBeTrue();
-});
+namespace Tests\Feature;
 
-<div class="codehilite"><pre><span></span><code>```php tab=PHPUnit
+use Illuminate\Foundation\Testing\Attributes\UnitTest;
+use Tests\TestCase;
+
+class LocationServiceTest extends TestCase
+{
+    public function test_get_coordinates_resolves_address(): void
+    {
+        // This test uses Laravel's testing features...
+    }
+
+    #[UnitTest]
+    public function test_get_state_returns_state_from_abbreviation(): void
+    {
+        // This test runs without booting the application...
+    }
+}
+
+<div class="codehilite"><pre><span></span><code>&gt; [!NOTE]
+&gt; Test stubs may be customized using [stub publishing](/docs/{{version}}/artisan#stub-customization).
+
+Once the test has been generated, you may define test as you normally would using Pest or PHPUnit. To run your tests, execute the `vendor/bin/pest`, `vendor/bin/phpunit`, or `php artisan test` command from your terminal:
+
+```php tab=Pest
 &lt;?php
+
+test(&#39;basic&#39;, function () {
+    expect(true)-&gt;toBeTrue();
+});
+</code></pre></div>
+
+
+
+```php tab=PHPUnit
+<?php
 
 namespace Tests\Unit;
 
@@ -426,34 +452,31 @@ class ExampleTest extends TestCase
      */
     public function test_basic_test(): void
     {
-        $this-&gt;assertTrue(true);
+        $this->assertTrue(true);
     }
 }
-</code></pre></div>
 
+<div class="codehilite"><pre><span></span><code>&gt; [!WARNING]
+&gt; If you define your own `setUp` / `tearDown` methods within a test class, be sure to call the respective `parent::setUp()` / `parent::tearDown()` methods on the parent class. Typically, you should invoke `parent::setUp()` at the start of your own `setUp` method, and `parent::tearDown()` at the end of your `tearDown` method.
 
-
-> [!WARNING]
-> If you define your own `setUp` / `tearDown` methods within a test class, be sure to call the respective `parent::setUp()` / `parent::tearDown()` methods on the parent class. Typically, you should invoke `parent::setUp()` at the start of your own `setUp` method, and `parent::tearDown()` at the end of your `tearDown` method.
-
-<a name="running-tests"></a>
+&lt;a name=&quot;running-tests&quot;&gt;&lt;/a&gt;
 ## Running Tests
 
-As mentioned previously, once you've written tests, you may run them using `pest` or `phpunit`:
+As mentioned previously, once you&#39;ve written tests, you may run them using `pest` or `phpunit`:
 
 ```shell tab=Pest
 ./vendor/bin/pest
-
-<div class="codehilite"><pre><span></span><code>```shell tab=PHPUnit
-./vendor/bin/phpunit
 </code></pre></div>
 
 
 
-In addition to the `pest` or `phpunit` commands, you may use the `test` Artisan command to run your tests. The Artisan test runner provides verbose test reports in order to ease development and debugging:
+```shell tab=PHPUnit
+./vendor/bin/phpunit
 
+<div class="codehilite"><pre><span></span><code>In addition to the `pest` or `phpunit` commands, you may use the `test` Artisan command to run your tests. The Artisan test runner provides verbose test reports in order to ease development and debugging:
 
-<div class="codehilite"><pre><span></span><code>php<span class="w"> </span>artisan<span class="w"> </span><span class="nb">test</span>
+```shell
+php artisan test
 </code></pre></div>
 
 
@@ -599,7 +622,7 @@ The Artisan test runner also includes a convenient mechanism for listing your ap
 <a name="configuration-caching"></a>
 ## Configuration Caching
 
-When running tests, Laravel boots the application for each individual test method.  Without a cached configuration file, each configuration file in your application must be loaded at the start of a test. To build the configuration once and re-use it for all tests in a single run, you may use the `Illuminate\Foundation\Testing\WithCachedConfig` trait:
+When running tests, Laravel boots the application for each individual test method. Without a cached configuration file, each configuration file in your application must be loaded at the start of a test. To build the configuration once and re-use it for all tests in a single run, you may use the `Illuminate\Foundation\Testing\WithCachedConfig` trait:
 
 ```php tab=Pest
 <?php

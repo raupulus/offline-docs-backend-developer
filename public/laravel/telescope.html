@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -98,12 +98,8 @@
           </h2>
           <ul class="nav-list">
               <li>
-                <a href="./frontend.html"
->Frontend</a>
-              </li>
-              <li>
-                <a href="./hashing.html"
->Hashing</a>
+                <a href="./head.html"
+>Laravel Head</a>
               </li>
               <li>
                 <a href="./helpers.html"
@@ -124,6 +120,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Laravel Telescope</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Laravel Telescope</a>
       <h1 class="doc-title">Laravel Telescope</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/telescope" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/telescope" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -487,6 +487,30 @@ php<span class="w"> </span>artisan<span class="w"> </span>migrate
 <p>After publishing Telescope's assets, its primary configuration file will be located at <code>config/telescope.php</code>. This configuration file allows you to configure your <a href="#available-watchers">watcher options</a>. Each configuration option includes a description of its purpose, so be sure to thoroughly explore this file.</p>
 <p>If desired, you may disable Telescope's data collection entirely using the <code>enabled</code> configuration option:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">&#39;enabled&#39; =&gt; env(&#39;TELESCOPE_ENABLED&#39;, true),</span>
+</code></pre></div>
+
+<p><a name="content-security-policy-csp-nonce"></a></p>
+<h4 id="content-security-policy-csp-nonce">Content Security Policy (CSP) Nonce<a class="headerlink" href="#content-security-policy-csp-nonce" title="Permanent link">#</a></h4>
+<p>If you would like to use a <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/nonce" rel="noopener" target="_blank">nonce attribute</a> on the script and style tags used in Telescope views as part of your <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP" rel="noopener" target="_blank">Content Security Policy</a>, you may use the <code>Telescope::cspNonce</code> method to specify the nonce to use. This method should typically be invoked within middleware so that a new nonce is assigned for each request:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use Closure;</span>
+<span class="x">use Illuminate\Http\Request;</span>
+<span class="x">use Laravel\Telescope\Telescope;</span>
+<span class="x">use Symfony\Component\HttpFoundation\Response;</span>
+
+<span class="x">public function handle(Request $request, Closure $next): Response</span>
+<span class="x">{</span>
+<span class="x">    Telescope::cspNonce(&#39;csp-nonce&#39;);</span>
+
+<span class="x">    return $next($request);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You may add this middleware to the <code>middleware</code> option in your application's <code>config/telescope.php</code> configuration file:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;middleware&#39; =&gt; [</span>
+<span class="x">    &#39;web&#39;,</span>
+<span class="x">    App\Http\Middleware\AddTelescopeCspNonce::class,</span>
+<span class="x">    Authorize::class,</span>
+<span class="x">],</span>
 </code></pre></div>
 
 <p><a name="data-pruning"></a></p>

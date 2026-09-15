@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Service Container</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Service Container</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Service Container</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Service Container</a>
       <h1 class="doc-title">Service Container</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/container" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/container" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -649,6 +649,22 @@ There is no need to bind classes into the container if they do not depend on any
 <span class="x">}</span>
 </code></pre></div>
 
+<p>For bindings that depend on an arbitrary condition, you may use the <code>BindWhen</code> attribute. The closure may receive the container and should return <code>true</code> when the binding should be applied. <code>Bind</code> and <code>BindWhen</code> attributes are evaluated in the order they are declared:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Services\BetaEventPusher;</span>
+<span class="x">use Illuminate\Container\Attributes\BindWhen;</span>
+<span class="x">use Laravel\Pennant\Feature;</span>
+
+<span class="x">#[BindWhen(BetaEventPusher::class, static fn () =&gt; Feature::active(&#39;beta-events&#39;))]</span>
+<span class="x">interface EventPusher</span>
+<span class="x">{</span>
+<span class="x">    // ...</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]
+The <code>BindWhen</code> attribute requires PHP 8.5 or greater.</p>
+</blockquote>
 <p><a name="contextual-binding"></a></p>
 <h3 id="contextual-binding">Contextual Binding<a class="headerlink" href="#contextual-binding" title="Permanent link">#</a></h3>
 <p>Sometimes you may have two classes that utilize the same interface, but you wish to inject different implementations into each class. For example, two controllers may depend on different implementations of the <code>Illuminate\Contracts\Filesystem\Filesystem</code> <a href="./contracts.html">contract</a>. Laravel provides a simple, fluent interface for defining this behavior:</p>
@@ -692,12 +708,13 @@ There is no need to bind classes into the container if they do not depend on any
 <span class="p">}</span>
 </code></pre></div>
 
-<p>In addition to the <code>Storage</code> attribute, Laravel offers <code>Auth</code>, <code>Cache</code>, <code>Config</code>, <code>Context</code>, <code>DB</code>, <code>Give</code>, <code>Log</code>, <code>RouteParameter</code>, and <a href="#tagging">Tag</a> attributes:</p>
+<p>In addition to the <code>Storage</code> attribute, Laravel offers <code>Auth</code>, <code>Cache</code>, <code>Config</code>, <code>Context</code>, <code>DB</code>, <code>Give</code>, <code>Log</code>, <code>RequestAttribute</code>, <code>RouteParameter</code>, and <a href="#tagging">Tag</a> attributes:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Http\Controllers</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Contracts\UserRepository</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Models\Organization</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">App\Models\Photo</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">App\Repositories\DatabaseRepository</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Container\Attributes\Auth</span><span class="p">;</span>
@@ -707,6 +724,7 @@ There is no need to bind classes into the container if they do not depend on any
 <span class="k">use</span> <span class="nx">Illuminate\Container\Attributes\DB</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Container\Attributes\Give</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Container\Attributes\Log</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Container\Attributes\RequestAttribute</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Container\Attributes\RouteParameter</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Container\Attributes\Tag</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Auth\Guard</span><span class="p">;</span>
@@ -725,7 +743,8 @@ There is no need to bind classes into the container if they do not depend on any
         <span class="p">#[</span><span class="nd">DB</span><span class="p">(</span><span class="s1">&#39;mysql&#39;</span><span class="p">)]</span> <span class="k">protected</span> <span class="nx">Connection</span> <span class="nv">$connection</span><span class="p">,</span>
         <span class="p">#[</span><span class="nd">Give</span><span class="p">(</span><span class="nx">DatabaseRepository</span><span class="o">::</span><span class="na">class</span><span class="p">)]</span> <span class="k">protected</span> <span class="nx">UserRepository</span> <span class="nv">$users</span><span class="p">,</span>
         <span class="p">#[</span><span class="nd">Log</span><span class="p">(</span><span class="s1">&#39;daily&#39;</span><span class="p">)]</span> <span class="k">protected</span> <span class="nx">LoggerInterface</span> <span class="nv">$log</span><span class="p">,</span>
-        <span class="p">#[</span><span class="nd">RouteParameter</span><span class="p">(</span><span class="s1">&#39;photo&#39;</span><span class="p">)]</span> <span class="k">protected</span> <span class="nx">Photo</span> <span class="nv">$photo</span><span class="p">,</span>
+        <span class="p">#[</span><span class="nd">RequestAttribute</span><span class="p">(</span><span class="s1">&#39;organization&#39;</span><span class="p">)]</span> <span class="k">protected</span> <span class="nx">Organization</span> <span class="nv">$organization</span><span class="p">,</span>
+        <span class="p">#[</span><span class="nd">RouteParameter</span><span class="p">]</span> <span class="k">protected</span> <span class="nx">Photo</span> <span class="nv">$photo</span><span class="p">,</span>
         <span class="p">#[</span><span class="nd">Tag</span><span class="p">(</span><span class="s1">&#39;reports&#39;</span><span class="p">)]</span> <span class="k">protected</span> <span class="nx">iterable</span> <span class="nv">$reports</span><span class="p">,</span>
     <span class="p">)</span> <span class="p">{</span>
         <span class="c1">// ...</span>
@@ -733,7 +752,9 @@ There is no need to bind classes into the container if they do not depend on any
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Furthermore, Laravel provides a <code>CurrentUser</code> attribute for injecting the currently authenticated user into a given route or class:</p>
+<p>The <code>RouteParameter</code> attribute will resolve the route parameter matching the variable name. If needed, you may specify the route parameter name explicitly: <code>#[RouteParameter('photo')]</code>.</p>
+<p>The <code>RequestAttribute</code> attribute will resolve the value stored under the given key in the current request's <a href="https://symfony.com/doc/current/components/http_foundation.html#accessing-request-data" rel="noopener" target="_blank">attribute bag</a>: <code>#[RequestAttribute('organization')]</code>.</p>
+<p>In addition, Laravel provides a <code>CurrentUser</code> attribute for injecting the currently authenticated user into a given route or class:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use App\Models\User;</span>
 <span class="x">use Illuminate\Container\Attributes\CurrentUser;</span>
 
@@ -752,6 +773,7 @@ There is no need to bind classes into the container if they do not depend on any
 <span class="k">use</span> <span class="nx">Attribute</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Container\Container</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Container\ContextualAttribute</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">ReflectionParameter</span><span class="p">;</span>
 
 <span class="p">#[</span><span class="nd">Attribute</span><span class="p">(</span><span class="nx">Attribute</span><span class="o">::</span><span class="na">TARGET_PARAMETER</span><span class="p">)]</span>
 <span class="k">class</span> <span class="nc">Config</span> <span class="k">implements</span> <span class="nx">ContextualAttribute</span>
@@ -768,9 +790,10 @@ There is no need to bind classes into the container if they do not depend on any
 <span class="sd">     *</span>
 <span class="sd">     * @param  self  $attribute</span>
 <span class="sd">     * @param  \Illuminate\Contracts\Container\Container  $container</span>
+<span class="sd">     * @param  \ReflectionParameter  $parameter</span>
 <span class="sd">     * @return mixed</span>
 <span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">resolve</span><span class="p">(</span><span class="nx">self</span> <span class="nv">$attribute</span><span class="p">,</span> <span class="nx">Container</span> <span class="nv">$container</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">resolve</span><span class="p">(</span><span class="nx">self</span> <span class="nv">$attribute</span><span class="p">,</span> <span class="nx">Container</span> <span class="nv">$container</span><span class="p">,</span> <span class="nx">ReflectionParameter</span> <span class="nv">$parameter</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">make</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="nv">$attribute</span><span class="o">-&gt;</span><span class="na">key</span><span class="p">,</span> <span class="nv">$attribute</span><span class="o">-&gt;</span><span class="na">default</span><span class="p">);</span>
     <span class="p">}</span>

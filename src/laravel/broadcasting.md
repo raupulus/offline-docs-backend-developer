@@ -1,14 +1,14 @@
 ---
 title: Broadcasting
-source_url: https://laravel.com/docs/12.x/broadcasting
+source_url: https://laravel.com/docs/13.x/broadcasting
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: broadcasting.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 90
 ---
 
@@ -44,7 +44,7 @@ order: 90
     - [Listening for Events](#listening-for-events)
     - [Leaving a Channel](#leaving-a-channel)
     - [Namespaces](#namespaces)
-    - [Using React or Vue](#using-react-or-vue)
+    - [Using React, Vue, or Svelte](#using-react-or-vue)
 - [Presence Channels](#presence-channels)
     - [Authorizing Presence Channels](#authorizing-presence-channels)
     - [Joining Presence Channels](#joining-presence-channels)
@@ -92,7 +92,7 @@ All of your application's event broadcasting configuration is stored in the `con
 <a name="quickstart-next-steps"></a>
 #### Next Steps
 
-Once you have enabled event broadcasting, you're ready to learn more about [defining broadcast events](#defining-broadcast-events) and [listening for events](#listening-for-events). If you're using Laravel's React or Vue [starter kits](/docs/{{version}}/starter-kits), you may listen for events using Echo's [useEcho hook](#using-react-or-vue).
+Once you have enabled event broadcasting, you're ready to learn more about [defining broadcast events](#defining-broadcast-events) and [listening for events](#listening-for-events). If you're using Laravel's React, Vue, or Svelte [starter kits](/docs/{{version}}/starter-kits), you may listen for events using Echo's [useEcho hook](#using-react-or-vue).
 
 > [!NOTE]
 > Before broadcasting any events, you should first configure and run a [queue worker](/docs/{{version}}/queues). All event broadcasting is done via queued jobs so that the response time of your application is not seriously affected by events being broadcast.
@@ -226,7 +226,7 @@ To manually configure Laravel Echo for your application's frontend, first instal
 npm install --save-dev laravel-echo pusher-js
 ```
 
-Once Echo is installed, you are ready to create a fresh Echo instance in your application's JavaScript. A great place to do this is at the bottom of the `resources/js/bootstrap.js` file that is included with the Laravel framework:
+Once Echo is installed, you are ready to create a fresh Echo instance in your application's JavaScript. A great place to do this is at the bottom of the `resources/js/app.js` file that is included with the Laravel framework:
 
 ```js tab=JavaScript
 import Echo from 'laravel-echo';
@@ -273,6 +273,20 @@ configureEcho({
 });
 ```
 
+```js tab=Svelte
+import { configureEcho } from "@laravel/echo-svelte";
+
+configureEcho({
+    broadcaster: "reverb",
+    // key: import.meta.env.VITE_REVERB_APP_KEY,
+    // wsHost: import.meta.env.VITE_REVERB_HOST,
+    // wsPort: import.meta.env.VITE_REVERB_PORT,
+    // wssPort: import.meta.env.VITE_REVERB_PORT,
+    // forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+    // enabledTransports: ['ws', 'wss'],
+});
+```
+
 Next, you should compile your application's assets:
 
 ```shell
@@ -298,7 +312,7 @@ To manually configure Laravel Echo for your application's frontend, first instal
 npm install --save-dev laravel-echo pusher-js
 ```
 
-Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/bootstrap.js` file:
+Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/app.js` file:
 
 ```js tab=JavaScript
 import Echo from 'laravel-echo';
@@ -331,6 +345,21 @@ configureEcho({
 
 ```js tab=Vue
 import { configureEcho } from "@laravel/echo-vue";
+
+configureEcho({
+    broadcaster: "pusher",
+    // key: import.meta.env.VITE_PUSHER_APP_KEY,
+    // cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    // forceTLS: true,
+    // wsHost: import.meta.env.VITE_PUSHER_HOST,
+    // wsPort: import.meta.env.VITE_PUSHER_PORT,
+    // wssPort: import.meta.env.VITE_PUSHER_PORT,
+    // enabledTransports: ["ws", "wss"],
+});
+```
+
+```js tab=Svelte
+import { configureEcho } from "@laravel/echo-svelte";
 
 configureEcho({
     broadcaster: "pusher",
@@ -413,7 +442,7 @@ npm install --save-dev laravel-echo pusher-js
 
 **Before continuing, you should enable Pusher protocol support in your Ably application settings. You may enable this feature within the "Protocol Adapter Settings" portion of your Ably application's settings dashboard.**
 
-Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/bootstrap.js` file:
+Once Echo is installed, you are ready to create a fresh Echo instance in your application's `resources/js/app.js` file:
 
 ```js tab=JavaScript
 import Echo from 'laravel-echo';
@@ -446,6 +475,19 @@ configureEcho({
 
 ```js tab=Vue
 import { configureEcho } from "@laravel/echo-vue";
+
+configureEcho({
+    broadcaster: "ably",
+    // key: import.meta.env.VITE_ABLY_PUBLIC_KEY,
+    // wsHost: "realtime-pusher.ably.io",
+    // wsPort: 443,
+    // disableStats: true,
+    // encrypted: true,
+});
+```
+
+```js tab=Svelte
+import { configureEcho } from "@laravel/echo-svelte";
 
 configureEcho({
     broadcaster: "ably",
@@ -571,7 +613,7 @@ All authorization callbacks receive the currently authenticated user as their fi
 <a name="listening-for-event-broadcasts"></a>
 #### Listening for Event Broadcasts
 
-Next, all that remains is to listen for the event in our JavaScript application. We can do this using [Laravel Echo](#client-side-installation). Laravel Echo's built-in React and Vue hooks make it simple to get started, and, by default, all of the event's public properties will be included on the broadcast event:
+Next, all that remains is to listen for the event in our JavaScript application. We can do this using [Laravel Echo](#client-side-installation). Laravel Echo's built-in React, Vue, and Svelte hooks make it simple to get started, and, by default, all of the event's public properties will be included on the broadcast event:
 
 ```js tab=React
 import { useEcho } from "@laravel/echo-react";
@@ -588,6 +630,20 @@ useEcho(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEcho } from "@laravel/echo-vue";
+
+useEcho(
+    `orders.${orderId}`,
+    "OrderShipmentStatusUpdated",
+    (e) => {
+        console.log(e.order);
+    },
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
 
 useEcho(
     `orders.${orderId}`,
@@ -701,22 +757,18 @@ public function broadcastWith(): array
 <a name="broadcast-queue"></a>
 ### Broadcast Queue
 
-By default, each broadcast event is placed on the default queue for the default queue connection specified in your `queue.php` configuration file. You may customize the queue connection and name used by the broadcaster by defining `connection` and `queue` properties on your event class:
+By default, each broadcast event is placed on the default queue for the default queue connection specified in your `queue.php` configuration file. You may customize the queue connection and name used by the broadcaster by using the `Connection` and `Queue` attributes on your event class:
 
 ```php
-/**
- * The name of the queue connection to use when broadcasting the event.
- *
- * @var string
- */
-public $connection = 'redis';
+use Illuminate\Queue\Attributes\Connection;
+use Illuminate\Queue\Attributes\Queue;
 
-/**
- * The name of the queue on which to place the broadcasting job.
- *
- * @var string
- */
-public $queue = 'default';
+#[Connection('redis')]
+#[Queue('default')]
+class ServerCreated implements ShouldBroadcast
+{
+    // ...
+}
 ```
 
 Alternatively, you may customize the queue name by defining a `broadcastQueue` method on your event:
@@ -1137,9 +1189,9 @@ Echo.channel('orders')
 ```
 
 <a name="using-react-or-vue"></a>
-### Using React or Vue
+### Using React, Vue, or Svelte
 
-Laravel Echo includes React and Vue hooks that make it painless to listen for events. To get started, invoke the `useEcho` hook, which is used to listen for private events. The `useEcho` hook will automatically leave channels when the consuming component is unmounted:
+Laravel Echo includes React, Vue, and Svelte hooks that make it painless to listen for events. To get started, invoke the `useEcho` hook, which is used to listen for private events. The `useEcho` hook will automatically leave channels when the consuming component is unmounted:
 
 ```js tab=React
 import { useEcho } from "@laravel/echo-react";
@@ -1156,6 +1208,20 @@ useEcho(
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEcho } from "@laravel/echo-vue";
+
+useEcho(
+    `orders.${orderId}`,
+    "OrderShipmentStatusUpdated",
+    (e) => {
+        console.log(e.order);
+    },
+);
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
 
 useEcho(
     `orders.${orderId}`,
@@ -1251,6 +1317,32 @@ leave();
 </script>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
+
+const { leaveChannel, leave, stopListening, listen } = useEcho(
+    `orders.${orderId}`,
+    "OrderShipmentStatusUpdated",
+    (e) => {
+        console.log(e.order);
+    },
+);
+
+// Stop listening without leaving channel...
+stopListening();
+
+// Start listening again...
+listen();
+
+// Leave channel...
+leaveChannel();
+
+// Leave a channel and also its associated private and presence channels...
+leave();
+</script>
+```
+
 <a name="react-vue-connecting-to-public-channels"></a>
 #### Connecting to Public Channels
 
@@ -1274,6 +1366,16 @@ useEchoPublic("posts", "PostPublished", (e) => {
 </script>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useEchoPublic } from "@laravel/echo-svelte";
+
+useEchoPublic("posts", "PostPublished", (e) => {
+    console.log(e.post);
+});
+</script>
+```
+
 <a name="react-vue-connecting-to-presence-channels"></a>
 #### Connecting to Presence Channels
 
@@ -1290,6 +1392,16 @@ useEchoPresence("posts", "PostPublished", (e) => {
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoPresence } from "@laravel/echo-vue";
+
+useEchoPresence("posts", "PostPublished", (e) => {
+    console.log(e.post);
+});
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoPresence } from "@laravel/echo-svelte";
 
 useEchoPresence("posts", "PostPublished", (e) => {
     console.log(e.post);
@@ -1324,6 +1436,16 @@ const status = useConnectionStatus();
 </template>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useConnectionStatus } from "@laravel/echo-svelte";
+
+const status = useConnectionStatus();
+</script>
+
+<div>Connection: {status()}</div>
+```
+
 The possible status values are:
 
 <div class="content-list" markdown="1">
@@ -1335,6 +1457,43 @@ The possible status values are:
 - `failed` - Connection failed and won't retry.
 
 </div>
+
+<a name="react-vue-socket-id"></a>
+#### Socket ID
+
+You may retrieve the current WebSocket socket ID using the `useSocketId` hook, which provides a reactive value that automatically updates when the connection reconnects with a new socket ID:
+
+```js tab=React
+import { useSocketId } from "@laravel/echo-react";
+
+function SocketIndicator() {
+    const socketId = useSocketId();
+
+    return <div>Socket ID: {socketId}</div>;
+}
+```
+
+```vue tab=Vue
+<script setup lang="ts">
+import { useSocketId } from "@laravel/echo-vue";
+
+const socketId = useSocketId();
+</script>
+
+<template>
+    <div>Socket ID: {{ socketId }}</div>
+</template>
+```
+
+```svelte tab=Svelte
+<script>
+import { useSocketId } from "@laravel/echo-svelte";
+
+const socketId = useSocketId();
+</script>
+
+<div>Socket ID: {socketId()}</div>
+```
 
 <a name="presence-channels"></a>
 ## Presence Channels
@@ -1610,9 +1769,9 @@ Echo.private(`App.Models.User.${this.user.id}`)
 ```
 
 <a name="model-broadcasts-with-react-or-vue"></a>
-#### Using React or Vue
+#### Using React, Vue, or Svelte
 
-If you are using React or Vue, you may use Laravel Echo's included `useEchoModel` hook to easily listen for model broadcasts:
+If you are using React, Vue, or Svelte, you may use Laravel Echo's included `useEchoModel` hook to easily listen for model broadcasts:
 
 ```js tab=React
 import { useEchoModel } from "@laravel/echo-react";
@@ -1625,6 +1784,16 @@ useEchoModel("App.Models.User", userId, ["UserUpdated"], (e) => {
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoModel } from "@laravel/echo-vue";
+
+useEchoModel("App.Models.User", userId, ["UserUpdated"], (e) => {
+    console.log(e.model);
+});
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoModel } from "@laravel/echo-svelte";
 
 useEchoModel("App.Models.User", userId, ["UserUpdated"], (e) => {
     console.log(e.model);
@@ -1686,6 +1855,18 @@ channel().whisper('typing', { name: user.name });
 </script>
 ```
 
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
+
+const { channel } = useEcho(`chat.${roomId}`, ['update'], (e) => {
+    console.log('Chat event received:', e);
+});
+
+channel().whisper('typing', { name: user.name });
+</script>
+```
+
 To listen for client events, you may use the `listenForWhisper` method:
 
 ```js tab=JavaScript
@@ -1710,6 +1891,20 @@ channel().listenForWhisper('typing', (e) => {
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEcho } from "@laravel/echo-vue";
+
+const { channel } = useEcho(`chat.${roomId}`, ['update'], (e) => {
+    console.log('Chat event received:', e);
+});
+
+channel().listenForWhisper('typing', (e) => {
+    console.log(e.name);
+});
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEcho } from "@laravel/echo-svelte";
 
 const { channel } = useEcho(`chat.${roomId}`, ['update'], (e) => {
     console.log('Chat event received:', e);
@@ -1748,6 +1943,18 @@ channel().notification((notification) => {
 ```vue tab=Vue
 <script setup lang="ts">
 import { useEchoModel } from "@laravel/echo-vue";
+
+const { channel } = useEchoModel('App.Models.User', userId);
+
+channel().notification((notification) => {
+    console.log(notification.type);
+});
+</script>
+```
+
+```svelte tab=Svelte
+<script>
+import { useEchoModel } from "@laravel/echo-svelte";
 
 const { channel } = useEchoModel('App.Models.User', userId);
 

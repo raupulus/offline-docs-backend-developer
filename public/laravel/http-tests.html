@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -97,10 +97,6 @@
               Laravel
           </h2>
           <ul class="nav-list">
-              <li>
-                <a href="./container.html"
->Service Container</a>
-              </li>
               <li>
                 <a href="./context.html"
 >Context</a>
@@ -202,6 +198,10 @@
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -220,6 +220,10 @@
               <li>
                 <a href="./http-tests.html"
 class="is-current" aria-current="page">HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -333,15 +337,11 @@ class="is-current" aria-current="page">HTTP Tests</a>
                 <a href="./redis.html"
 >Redis</a>
               </li>
-              <li>
-                <a href="./releases.html"
->Release Notes</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">HTTP Tests</a>
       <h1 class="doc-title">HTTP Tests</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/http-tests" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/http-tests" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -998,6 +998,29 @@ The `assertJsonPath` method also accepts a closure, which may be used to dynamic
 
 
 
+If you need to assert multiple JSON paths at once, you may use the `assertJsonPaths` method. The expected value for each path may also be a closure:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertJsonPaths([</span>
+<span class="x">    &#39;team.owner.name&#39; =&gt; &#39;Darian&#39;,</span>
+<span class="x">    &#39;team.owner.email&#39; =&gt; fn (string $email) =&gt; str($email)-&gt;is(&#39;*@laravel.com&#39;),</span>
+<span class="x">    &#39;team.members.0.name&#39; =&gt; &#39;Sally&#39;,</span>
+<span class="x">]);</span>
+</code></pre></div>
+
+
+
+You may use the `assertJsonMissingPaths` method to assert that multiple JSON paths are missing from the response:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertJsonMissingPaths([</span>
+<span class="x">    &#39;team.owner.password&#39;,</span>
+<span class="x">    &#39;team.members.0.api_token&#39;,</span>
+<span class="x">]);</span>
+</code></pre></div>
+
+
+
 <a name="fluent-json-testing"></a>
 ### Fluent JSON Testing
 
@@ -1497,7 +1520,9 @@ Laravel's `Illuminate\Testing\TestResponse` class provides a variety of custom a
 [assertJsonMissingExact](#assert-json-missing-exact)
 [assertJsonMissingValidationErrors](#assert-json-missing-validation-errors)
 [assertJsonPath](#assert-json-path)
+[assertJsonPaths](#assert-json-paths)
 [assertJsonMissingPath](#assert-json-missing-path)
+[assertJsonMissingPaths](#assert-json-missing-paths)
 [assertJsonStructure](#assert-json-structure)
 [assertJsonValidationErrors](#assert-json-validation-errors)
 [assertJsonValidationErrorFor](#assert-json-validation-error-for)
@@ -1534,6 +1559,7 @@ Laravel's `Illuminate\Testing\TestResponse` class provides a variety of custom a
 [assertSessionHasNoErrors](#assert-session-has-no-errors)
 [assertSessionDoesntHaveErrors](#assert-session-doesnt-have-errors)
 [assertSessionMissing](#assert-session-missing)
+[assertSessionMissingInput](#assert-session-missing-input)
 [assertStatus](#assert-status)
 [assertSuccessful](#assert-successful)
 [assertTooManyRequests](#assert-too-many-requests)
@@ -1935,6 +1961,28 @@ You may assert that the `name` property of the `user` object matches a given val
 
 
 
+<a name="assert-json-paths"></a>
+#### assertJsonPaths
+
+Assert that the response contains the given data at the specified paths:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertJsonPaths(array $paths);</span>
+</code></pre></div>
+
+
+
+For example, you may assert multiple values within the response at once:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertJsonPaths([</span>
+<span class="x">    &#39;user.name&#39; =&gt; &#39;Steve Schoger&#39;,</span>
+<span class="x">    &#39;user.email&#39; =&gt; fn (string $email) =&gt; str($email)-&gt;endsWith(&#39;@laravel.com&#39;),</span>
+<span class="x">]);</span>
+</code></pre></div>
+
+
+
 <a name="assert-json-missing-path"></a>
 #### assertJsonMissingPath
 
@@ -1962,6 +2010,28 @@ You may assert that it does not contain the `email` property of the `user` objec
 
 
 <div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertJsonMissingPath(&#39;user.email&#39;);</span>
+</code></pre></div>
+
+
+
+<a name="assert-json-missing-paths"></a>
+#### assertJsonMissingPaths
+
+Assert that the response does not contain the given paths:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertJsonMissingPaths($paths);</span>
+</code></pre></div>
+
+
+
+For example, you may assert that multiple paths are missing from the response:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertJsonMissingPaths([</span>
+<span class="x">    &#39;user.email&#39;,</span>
+<span class="x">    &#39;user.password&#39;,</span>
+<span class="x">]);</span>
 </code></pre></div>
 
 
@@ -2483,6 +2553,17 @@ Assert that the session does not contain the given key:
 
 
 
+<a name="assert-session-missing-input"></a>
+#### assertSessionMissingInput
+
+Assert that the session is missing the given input key in the flashed input array:
+
+
+<div class="codehilite"><pre><span></span><code><span class="x">$response-&gt;assertSessionMissingInput($key);</span>
+</code></pre></div>
+
+
+
 <a name="assert-status"></a>
 #### assertStatus
 
@@ -2770,8 +2851,8 @@ You may also assert that a given key has a particular validation error message. 
         <a class="pager-prev" href="./http-client.html">
           <span class="muted">Anterior</span>HTTP Client
         </a>
-        <a class="pager-next" href="./installation.html">
-          <span class="muted">Siguiente</span>Installation
+        <a class="pager-next" href="./images.html">
+          <span class="muted">Siguiente</span>Image Manipulation
         </a>
     </nav>
   </main>

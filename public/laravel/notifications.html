@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -97,14 +97,6 @@
               Laravel
           </h2>
           <ul class="nav-list">
-              <li>
-                <a href="./eloquent-relationships.html"
->Eloquent: Relationships</a>
-              </li>
-              <li>
-                <a href="./eloquent-resources.html"
->Eloquent: API Resources</a>
-              </li>
               <li>
                 <a href="./eloquent-serialization.html"
 >Eloquent: Serialization</a>
@@ -154,6 +146,10 @@
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -172,6 +168,10 @@
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -341,7 +341,7 @@ class="is-current" aria-current="page">Notifications</a>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Notifications</a>
       <h1 class="doc-title">Notifications</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/notifications" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/notifications" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -660,8 +660,8 @@ Before queueing notifications, you should configure your queue and <a href="./qu
 </code></pre></div>
 
 <p><a name="customizing-queued-notification-job-properties"></a></p>
-<h4 id="customizing-queued-notification-job-properties">Customizing Queued Notification Job Properties<a class="headerlink" href="#customizing-queued-notification-job-properties" title="Permanent link">#</a></h4>
-<p>You may customize the behavior of the underlying queued job by defining properties on your notification class. These properties will be inherited by the queued job that sends the notification:</p>
+<h4 id="customizing-queued-notification-job-attributes">Customizing Queued Notification Job Attributes<a class="headerlink" href="#customizing-queued-notification-job-attributes" title="Permanent link">#</a></h4>
+<p>You may customize the behavior of the underlying queued job by defining queue attributes on your notification class. These attributes will be inherited by the queued job that sends the notification:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Notifications</span><span class="p">;</span>
@@ -669,31 +669,18 @@ Before queueing notifications, you should configure your queue and <a href="./qu
 <span class="k">use</span> <span class="nx">Illuminate\Bus\Queueable</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Contracts\Queue\ShouldQueue</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Notifications\Notification</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\FailOnTimeout</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\MaxExceptions</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Timeout</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Queue\Attributes\Tries</span><span class="p">;</span>
 
+<span class="p">#[</span><span class="nd">Tries</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">Timeout</span><span class="p">(</span><span class="mi">120</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">MaxExceptions</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">FailOnTimeout</span><span class="p">]</span>
 <span class="k">class</span> <span class="nc">InvoicePaid</span> <span class="k">extends</span> <span class="nx">Notification</span> <span class="k">implements</span> <span class="nx">ShouldQueue</span>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">Queueable</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The number of times the notification may be attempted.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$tries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The number of seconds the notification can run before timing out.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$timeout</span> <span class="o">=</span> <span class="mi">120</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * The maximum number of unhandled exceptions to allow before failing.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @var int</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="nv">$maxExceptions</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 
     <span class="c1">// ...</span>
 <span class="p">}</span>
@@ -717,7 +704,7 @@ Before queueing notifications, you should configure your queue and <a href="./qu
 <span class="p">}</span>
 </code></pre></div>
 
-<p>In addition to defining these properties directly on your notification class, you may also define <code>backoff</code> and <code>retryUntil</code> methods to specify the backoff strategy and retry timeout for the queued notification job:</p>
+<p>In addition to defining these attributes directly on your notification class, you may also define <code>backoff</code> and <code>retryUntil</code> methods to specify the backoff strategy and retry timeout for the queued notification job:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">use DateTime;</span>
 
 <span class="x">/**</span>
@@ -739,7 +726,7 @@ Before queueing notifications, you should configure your queue and <a href="./qu
 
 <blockquote>
 <p>[!NOTE]
-For more information on these job properties and methods, please review the documentation on <a href="./queues.html#max-job-attempts-and-timeout">queued jobs</a>.</p>
+For more information on these job attributes and methods, please review the documentation on <a href="./queues.html#max-job-attempts-and-timeout">queued jobs</a>.</p>
 </blockquote>
 <p><a name="queued-notification-middleware"></a></p>
 <h4 id="queued-notification-middleware">Queued Notification Middleware<a class="headerlink" href="#queued-notification-middleware" title="Permanent link">#</a></h4>
@@ -1046,20 +1033,6 @@ The <code>attach</code> method offered by notification mail messages also accept
 <span class="x">}</span>
 </code></pre></div>
 
-<p>Unlike attaching files in mailable objects, you may not attach a file directly from a storage disk using <code>attachFromStorage</code>. You should rather use the <code>attach</code> method with an absolute path to the file on the storage disk. Alternatively, you could return a <a href="./mail.html#generating-mailables">mailable</a> from the <code>toMail</code> method:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">use App\Mail\InvoicePaid as InvoicePaidMailable;</span>
-
-<span class="x">/**</span>
-<span class="x"> * Get the mail representation of the notification.</span>
-<span class="x"> */</span>
-<span class="x">public function toMail(object $notifiable): Mailable</span>
-<span class="x">{</span>
-<span class="x">    return (new InvoicePaidMailable($this-&gt;invoice))</span>
-<span class="x">        -&gt;to($notifiable-&gt;email)</span>
-<span class="x">        -&gt;attachFromStorage(&#39;/path/to/file&#39;);</span>
-<span class="x">}</span>
-</code></pre></div>
-
 <p>When necessary, multiple files may be attached to a message using the <code>attachMany</code> method:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">/**</span>
 <span class="x"> * Get the mail representation of the notification.</span>
@@ -1074,6 +1047,22 @@ The <code>attach</code> method offered by notification mail messages also accept
 <span class="x">                &#39;as&#39; =&gt; &#39;Logo.svg&#39;,</span>
 <span class="x">                &#39;mime&#39; =&gt; &#39;image/svg+xml&#39;,</span>
 <span class="x">            ],</span>
+<span class="x">        ]);</span>
+<span class="x">}</span>
+</code></pre></div>
+
+<p>You may use the <code>attachFromStorageDisk</code> method to attach a file that exists on a specific <a href="./filesystem.html">filesystem disk</a>. This method accepts the disk name and the path to the file on that disk:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">use App\Mail\InvoicePaid as InvoicePaidMailable;</span>
+
+<span class="x">/**</span>
+<span class="x"> * Get the mail representation of the notification.</span>
+<span class="x"> */</span>
+<span class="x">public function toMail(object $notifiable): Mailable</span>
+<span class="x">{</span>
+<span class="x">    return (new InvoicePaidMailable($this-&gt;invoice))</span>
+<span class="x">        -&gt;to($notifiable-&gt;email)</span>
+<span class="x">        -&gt;attachFromStorageDisk(&#39;s3&#39;, &#39;/path/to/file&#39;, &#39;invoice.pdf&#39;, [</span>
+<span class="x">            &#39;mime&#39; =&gt; &#39;application/pdf&#39;,</span>
 <span class="x">        ]);</span>
 <span class="x">}</span>
 </code></pre></div>
@@ -1437,8 +1426,8 @@ To access your notifications from your JavaScript client, you should define a no
 </code></pre></div>
 
 <p><a name="using-react-or-vue"></a></p>
-<h4 id="using-react-or-vue">Using React or Vue<a class="headerlink" href="#using-react-or-vue" title="Permanent link">#</a></h4>
-<p>Laravel Echo includes React and Vue hooks that make it painless to listen for notifications. To get started, invoke the <code>useEchoNotification</code> hook, which is used to listen for notifications. The <code>useEchoNotification</code> hook will automatically leave channels when the consuming component is unmounted:</p>
+<h4 id="using-react-vue-or-svelte">Using React, Vue, or Svelte<a class="headerlink" href="#using-react-vue-or-svelte" title="Permanent link">#</a></h4>
+<p>Laravel Echo includes React, Vue, and Svelte hooks that make it painless to listen for notifications. To get started, invoke the <code>useEchoNotification</code> hook, which is used to listen for notifications. The <code>useEchoNotification</code> hook will automatically leave channels when the consuming component is unmounted:</p>
 <p>```js tab=React
 import { useEchoNotification } from "@laravel/echo-react";</p>
 <p>useEchoNotification(
@@ -1460,19 +1449,48 @@ useEchoNotification(
 &lt;/script&gt;
 </code></pre></div>
 
-<p>By default, the hook listens to all notifications. To specify the notification types you would like to listen to, you can provide either a string or array of types to <code>useEchoNotification</code>:</p>
-<p>```js tab=React
-import { useEchoNotification } from "@laravel/echo-react";</p>
-<p>useEchoNotification(
-    <code>App.Models.User.${userId}</code>,
+<p>```svelte tab=Svelte</p>
+<script>
+import { useEchoNotification } from "@laravel/echo-svelte";
+
+useEchoNotification(
+    `App.Models.User.${userId}`,
+    (notification) => {
+        console.log(notification.type);
+    },
+);
+</script>
+
+<div class="codehilite"><pre><span></span><code>By default, the hook listens to all notifications. To specify the notification types you would like to listen to, you can provide either a string or array of types to `useEchoNotification`:
+
+```js tab=React
+import { useEchoNotification } from &quot;@laravel/echo-react&quot;;
+
+useEchoNotification(
+    `App.Models.User.${userId}`,
     (notification) =&gt; {
         console.log(notification.type);
     },
+    &#39;App.Notifications.InvoicePaid&#39;,
+);
+</code></pre></div>
+
+<p>```vue tab=Vue</p>
+<script setup lang="ts">
+import { useEchoNotification } from "@laravel/echo-vue";
+
+useEchoNotification(
+    `App.Models.User.${userId}`,
+    (notification) => {
+        console.log(notification.type);
+    },
     'App.Notifications.InvoicePaid',
-);</p>
-<div class="codehilite"><pre><span></span><code>```vue tab=Vue
-&lt;script setup lang=&quot;ts&quot;&gt;
-import { useEchoNotification } from &quot;@laravel/echo-vue&quot;;
+);
+</script>
+
+<div class="codehilite"><pre><span></span><code>```svelte tab=Svelte
+&lt;script&gt;
+import { useEchoNotification } from &quot;@laravel/echo-svelte&quot;;
 
 useEchoNotification(
     `App.Models.User.${userId}`,
@@ -1922,6 +1940,9 @@ test('orders can be shipped', function () {
     // Assert a notification was sent twice...
     Notification::assertSentTimes(WeeklyReminder::class, 2);
 
+    // Assert that a notification was sent to a user exactly once...
+    Notification::assertSentToOnce($user, OrderShipped::class);
+
     // Assert that a given number of notifications were sent...
     Notification::assertCount(3);
 });
@@ -1959,6 +1980,9 @@ class ExampleTest extends TestCase
         // Assert a notification was sent twice...
         Notification::assertSentTimes(WeeklyReminder::class, 2);
 
+        // Assert that a notification was sent to a user exactly once...
+        Notification::assertSentToOnce($user, OrderShipped::class);
+
         // Assert that a given number of notifications were sent...
         Notification::assertCount(3);
     }
@@ -1980,13 +2004,14 @@ You may pass a closure to the `assertSentTo` or `assertNotSentTo` methods in ord
 
 
 
-<a name="on-demand-notifications"></a>
+<a name="testing-on-demand-notifications"></a>
 #### On-Demand Notifications
 
 If the code you are testing sends [on-demand notifications](#on-demand-notifications), you can test that the on-demand notification was sent via the `assertSentOnDemand` method:
 
 
 <div class="codehilite"><pre><span></span><code><span class="x">Notification::assertSentOnDemand(OrderShipped::class);</span>
+<span class="x">Notification::assertSentOnDemandOnce(OrderShipped::class);</span>
 </code></pre></div>
 
 

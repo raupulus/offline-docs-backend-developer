@@ -1,15 +1,15 @@
 ---
 title: Middleware
-source_url: https://laravel.com/docs/12.x/middleware
+source_url: https://laravel.com/docs/13.x/middleware
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: middleware.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 530
+retrieved_at: '2026-09-15'
+order: 550
 ---
 
 # Middleware
@@ -265,7 +265,7 @@ Laravel includes predefined `web` and `api` middleware groups that contain commo
 | `Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse` |
 | `Illuminate\Session\Middleware\StartSession`              |
 | `Illuminate\View\Middleware\ShareErrorsFromSession`       |
-| `Illuminate\Foundation\Http\Middleware\ValidateCsrfToken` |
+| `Illuminate\Foundation\Http\Middleware\PreventRequestForgery` |
 | `Illuminate\Routing\Middleware\SubstituteBindings`        |
 
 </div>
@@ -326,7 +326,7 @@ If you would like to manually manage all of the middleware within Laravel's defa
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         // \Illuminate\Session\Middleware\AuthenticateSession::class,
     ]);
@@ -399,7 +399,7 @@ Rarely, you may need your middleware to execute in a specific order but not have
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         \Illuminate\Routing\Middleware\ThrottleRequests::class,
         \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
@@ -409,6 +409,24 @@ Rarely, you may need your middleware to execute in a specific order but not have
     ]);
 })
 ```
+
+If you would like to add middleware to the existing priority list without replacing it, you may use the `prependToPriorityList` or `appendToPriorityList` methods. The `prependToPriorityList` method inserts the given middleware before another middleware, while the `appendToPriorityList` method inserts it after another middleware:
+
+```php
+->withMiddleware(function (Middleware $middleware): void {
+    $middleware->prependToPriorityList(
+        before: \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        prepend: \App\Http\Middleware\EnsureTokenIsValid::class,
+    );
+
+    $middleware->appendToPriorityList(
+        after: \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        append: \App\Http\Middleware\EnsureUserIsSubscribed::class,
+    );
+})
+```
+
+The `before` and `after` arguments may also be an array of middleware classes.
 
 <a name="middleware-parameters"></a>
 ## Middleware Parameters

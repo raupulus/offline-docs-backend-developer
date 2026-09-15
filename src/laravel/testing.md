@@ -1,15 +1,15 @@
 ---
 title: 'Testing: Getting Started'
-source_url: https://laravel.com/docs/12.x/testing
+source_url: https://laravel.com/docs/13.x/testing
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: testing.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 920
+retrieved_at: '2026-09-15'
+order: 940
 ---
 
 # Testing: Getting Started
@@ -59,6 +59,31 @@ If you would like to create a test within the `tests/Unit` directory, you may us
 
 ```shell
 php artisan make:test UserTest --unit
+```
+
+If you have a test class that mostly relies on Laravel's testing features, but a specific test method does not need the framework booted, you may apply the `#[UnitTest]` attribute to that method to skip booting the application for just that test.
+
+```php tab=PHPUnit
+<?php
+
+namespace Tests\Feature;
+
+use Illuminate\Foundation\Testing\Attributes\UnitTest;
+use Tests\TestCase;
+
+class LocationServiceTest extends TestCase
+{
+    public function test_get_coordinates_resolves_address(): void
+    {
+        // This test uses Laravel's testing features...
+    }
+
+    #[UnitTest]
+    public function test_get_state_returns_state_from_abbreviation(): void
+    {
+        // This test runs without booting the application...
+    }
+}
 ```
 
 > [!NOTE]
@@ -240,7 +265,7 @@ php artisan test --profile
 <a name="configuration-caching"></a>
 ## Configuration Caching
 
-When running tests, Laravel boots the application for each individual test method.  Without a cached configuration file, each configuration file in your application must be loaded at the start of a test. To build the configuration once and re-use it for all tests in a single run, you may use the `Illuminate\Foundation\Testing\WithCachedConfig` trait:
+When running tests, Laravel boots the application for each individual test method. Without a cached configuration file, each configuration file in your application must be loaded at the start of a test. To build the configuration once and re-use it for all tests in a single run, you may use the `Illuminate\Foundation\Testing\WithCachedConfig` trait:
 
 ```php tab=Pest
 <?php

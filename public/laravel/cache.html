@@ -64,7 +64,7 @@
 
 <span class="topbar-tech">
   <a href="./index.html">Laravel</a>
-<span class="badge">12.x</span></span>
+<span class="badge">13.x</span></span>
 
   <div class="topbar-actions">
 <div class="search" data-search data-tech="laravel" data-index="./_search-index.js">
@@ -262,6 +262,10 @@ class="is-current" aria-current="page">Cache</a>
 >Hashing</a>
               </li>
               <li>
+                <a href="./head.html"
+>Laravel Head</a>
+              </li>
+              <li>
                 <a href="./helpers.html"
 >Helpers</a>
               </li>
@@ -280,6 +284,10 @@ class="is-current" aria-current="page">Cache</a>
               <li>
                 <a href="./http-tests.html"
 >HTTP Tests</a>
+              </li>
+              <li>
+                <a href="./images.html"
+>Image Manipulation</a>
               </li>
               <li>
                 <a href="./installation.html"
@@ -329,19 +337,11 @@ class="is-current" aria-current="page">Cache</a>
                 <a href="./notifications.html"
 >Notifications</a>
               </li>
-              <li>
-                <a href="./octane.html"
->Laravel Octane</a>
-              </li>
-              <li>
-                <a href="./packages.html"
->Package Development</a>
-              </li>
           </ul>
       </div>
 
       <p class="nav-more">
-        <a href="./index.html">Ver los 99 documentos de Laravel</a>
+        <a href="./index.html">Ver los 101 documentos de Laravel</a>
       </p>
   </nav>
 
@@ -350,8 +350,8 @@ class="is-current" aria-current="page">Cache</a>
       <h1 class="doc-title">Cache</h1>
 
       <p class="doc-meta">
-<span class="badge">12.x</span>          <a href="https://laravel.com/docs/12.x/cache" target="_blank" rel="noopener">Ver versión oficial en línea</a>
-<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-08-02</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.1 MB) ↓</a>
+<span class="badge">13.x</span>          <a href="https://laravel.com/docs/13.x/cache" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/laravel.md" download="laravel.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Laravel en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
       </p>
 
         <details class="doc-toc">
@@ -364,6 +364,7 @@ class="is-current" aria-current="page">Cache</a>
               <li class="lvl-3"><a href="#obtaining-a-cache-instance">Obtaining a Cache Instance#</a></li>
               <li class="lvl-3"><a href="#retrieving-items-from-the-cache">Retrieving Items From the Cache#</a></li>
               <li class="lvl-3"><a href="#storing-items-in-the-cache">Storing Items in the Cache#</a></li>
+              <li class="lvl-3"><a href="#extending-item-lifetime">Extending Item Lifetime#</a></li>
               <li class="lvl-3"><a href="#removing-items-from-the-cache">Removing Items From the Cache#</a></li>
               <li class="lvl-3"><a href="#cache-memoization">Cache Memoization#</a></li>
               <li class="lvl-3"><a href="#the-cache-helper">The Cache Helper#</a></li>
@@ -374,6 +375,7 @@ class="is-current" aria-current="page">Cache</a>
               <li class="lvl-2"><a href="#atomic-locks">Atomic Locks#</a></li>
               <li class="lvl-3"><a href="#managing-locks">Managing Locks#</a></li>
               <li class="lvl-3"><a href="#managing-locks-across-processes">Managing Locks Across Processes#</a></li>
+              <li class="lvl-3"><a href="#refreshing-locks">Refreshing Locks#</a></li>
               <li class="lvl-3"><a href="#concurrency-limiting">Concurrency Limiting#</a></li>
               <li class="lvl-2"><a href="#cache-failover">Cache Failover#</a></li>
               <li class="lvl-2"><a href="#adding-custom-cache-drivers">Adding Custom Cache Drivers#</a></li>
@@ -395,15 +397,22 @@ class="is-current" aria-current="page">Cache</a>
 <li><a href="#obtaining-a-cache-instance">Obtaining a Cache Instance</a></li>
 <li><a href="#retrieving-items-from-the-cache">Retrieving Items From the Cache</a></li>
 <li><a href="#storing-items-in-the-cache">Storing Items in the Cache</a></li>
+<li><a href="#extending-item-lifetime">Extending Item Lifetime</a></li>
 <li><a href="#removing-items-from-the-cache">Removing Items From the Cache</a></li>
 <li><a href="#cache-memoization">Cache Memoization</a></li>
 <li><a href="#the-cache-helper">The Cache Helper</a></li>
 </ul>
 </li>
-<li><a href="#cache-tags">Cache Tags</a></li>
+<li><a href="#cache-tags">Cache Tags</a><ul>
+<li><a href="#storing-tagged-cache-items">Storing Tagged Cache Items</a></li>
+<li><a href="#accessing-tagged-cache-items">Accessing Tagged Cache Items</a></li>
+<li><a href="#removing-tagged-cache-items">Removing Tagged Cache Items</a></li>
+</ul>
+</li>
 <li><a href="#atomic-locks">Atomic Locks</a><ul>
 <li><a href="#managing-locks">Managing Locks</a></li>
 <li><a href="#managing-locks-across-processes">Managing Locks Across Processes</a></li>
+<li><a href="#refreshing-locks">Refreshing Locks</a></li>
 <li><a href="#concurrency-limiting">Concurrency Limiting</a></li>
 </ul>
 </li>
@@ -421,7 +430,7 @@ class="is-current" aria-current="page">Cache</a>
 <p>Thankfully, Laravel provides an expressive, unified API for various cache backends, allowing you to take advantage of their blazing fast data retrieval and speed up your web application.</p>
 <p><a name="configuration"></a></p>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h2>
-<p>Your application's cache configuration file is located at <code>config/cache.php</code>. In this file, you may specify which cache store you would like to be used by default throughout your application. Laravel supports popular caching backends like <a href="https://memcached.org" rel="noopener" target="_blank">Memcached</a>, <a href="https://redis.io" rel="noopener" target="_blank">Redis</a>, <a href="https://aws.amazon.com/dynamodb" rel="noopener" target="_blank">DynamoDB</a>, and relational databases out of the box. In addition, a file based cache driver is available, while <code>array</code> and <code>null</code> cache drivers provide convenient cache backends for your automated tests.</p>
+<p>Your application's cache configuration file is located at <code>config/cache.php</code>. In this file, you may specify which cache store you would like to be used by default throughout your application. Laravel supports popular caching backends like <a href="https://memcached.org" rel="noopener" target="_blank">Memcached</a>, <a href="https://redis.io" rel="noopener" target="_blank">Redis</a>, <a href="https://aws.amazon.com/dynamodb" rel="noopener" target="_blank">DynamoDB</a>, relational databases, and filesystem disks out of the box. In addition, a file based cache driver is available, while <code>array</code> and <code>null</code> cache drivers provide convenient cache backends for your automated tests.</p>
 <p>The cache configuration file also contains a variety of other options that you may review. By default, Laravel is configured to use the <code>database</code> cache driver, which stores the serialized, cached objects in your application's database.</p>
 <p><a name="driver-prerequisites"></a></p>
 <h3 id="driver-prerequisites">Driver Prerequisites<a class="headerlink" href="#driver-prerequisites" title="Permanent link">#</a></h3>
@@ -465,8 +474,18 @@ php<span class="w"> </span>artisan<span class="w"> </span>migrate
 
 <p><a name="redis"></a></p>
 <h4 id="redis">Redis<a class="headerlink" href="#redis" title="Permanent link">#</a></h4>
-<p>Before using a Redis cache with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the <code>predis/predis</code> package (~2.0) via Composer. <a href="./sail.html">Laravel Sail</a> already includes this extension. In addition, official Laravel application platforms such as <a href="https://cloud.laravel.com" rel="noopener" target="_blank">Laravel Cloud</a> and <a href="https://forge.laravel.com" rel="noopener" target="_blank">Laravel Forge</a> have the PhpRedis extension installed by default.</p>
+<p>Before using a Redis cache with Laravel, you will need to either install the PhpRedis PHP extension via PECL or install the <code>predis/predis</code> package via Composer. <a href="./sail.html">Laravel Sail</a> already includes this extension. In addition, official Laravel application platforms such as <a href="https://cloud.laravel.com" rel="noopener" target="_blank">Laravel Cloud</a> and <a href="https://forge.laravel.com" rel="noopener" target="_blank">Laravel Forge</a> have the PhpRedis extension installed by default.</p>
 <p>For more information on configuring Redis, consult its <a href="./redis.html#configuration">Laravel documentation page</a>.</p>
+<p><a name="storage"></a></p>
+<h4 id="storage">Storage<a class="headerlink" href="#storage" title="Permanent link">#</a></h4>
+<p>The <code>storage</code> cache driver allows you to store cached values on any of your application's configured <a href="./filesystem.html">filesystem disks</a>. This can be useful when you want to use an existing disk, such as an S3 disk, as a key / value cache store:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">&#39;storage&#39; =&gt; [</span>
+<span class="x">    &#39;driver&#39; =&gt; &#39;storage&#39;,</span>
+<span class="x">    &#39;disk&#39; =&gt; env(&#39;CACHE_STORAGE_DISK&#39;),</span>
+<span class="x">    &#39;path&#39; =&gt; env(&#39;CACHE_STORAGE_PATH&#39;, &#39;framework/cache/data&#39;),</span>
+<span class="x">],</span>
+</code></pre></div>
+
 <p><a name="dynamodb"></a></p>
 <h4 id="dynamodb">DynamoDB<a class="headerlink" href="#dynamodb" title="Permanent link">#</a></h4>
 <p>Before using the <a href="https://aws.amazon.com/dynamodb" rel="noopener" target="_blank">DynamoDB</a> cache driver, you must create a DynamoDB table to store all of the cached data. Typically, this table should be named <code>cache</code>. However, you should name the table based on the value of the <code>stores.dynamodb.table</code> configuration value within the <code>cache</code> configuration file. The table name may also be set via the <code>DYNAMODB_CACHE_TABLE</code> environment variable.</p>
@@ -570,6 +589,12 @@ php<span class="w"> </span>artisan<span class="w"> </span>migrate
 </code></pre></div>
 
 <p>If the item does not exist in the cache, the closure passed to the <code>remember</code> method will be executed and its result will be placed in the cache.</p>
+<p>If you need to know whether the item was retrieved from the cache instead of by executing the given closure, you may use the <code>rememberWithWarmth</code> method. This method returns an array containing the cached value and a boolean indicating whether the item was "warm", meaning it was retrieved from the cache and not resolved from the closure:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">[$value, $warm] = Cache::rememberWithWarmth(&#39;users&#39;, $seconds, function () {</span>
+<span class="x">    return DB::table(&#39;users&#39;)-&gt;get();</span>
+<span class="x">});</span>
+</code></pre></div>
+
 <p>You may use the <code>rememberForever</code> method to retrieve an item from the cache or store it forever if it does not exist:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">$value = Cache::rememberForever(&#39;users&#39;, function () {</span>
 <span class="x">    return DB::table(&#39;users&#39;)-&gt;get();</span>
@@ -614,6 +639,16 @@ php<span class="w"> </span>artisan<span class="w"> </span>migrate
 <div class="codehilite"><pre><span></span><code><span class="x">Cache::add(&#39;key&#39;, &#39;value&#39;, $seconds);</span>
 </code></pre></div>
 
+<p><a name="extending-item-lifetime"></a></p>
+<h3 id="extending-item-lifetime">Extending Item Lifetime<a class="headerlink" href="#extending-item-lifetime" title="Permanent link">#</a></h3>
+<p>The <code>touch</code> method allows you to extend the lifetime (TTL) of an existing cache item. The <code>touch</code> method will return <code>true</code> if the cache item exists and its expiration time was successfully extended. If the item does not exist in the cache, the method will return <code>false</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Cache::touch(&#39;key&#39;, 3600);</span>
+</code></pre></div>
+
+<p>You may provide a <code>DateTimeInterface</code>, <code>DateInterval</code>, or <code>Carbon</code> instance to specify an exact expiration time:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Cache::touch(&#39;key&#39;, now()-&gt;addHours(2));</span>
+</code></pre></div>
+
 <p><a name="storing-items-forever"></a></p>
 <h4 id="storing-items-forever">Storing Items Forever<a class="headerlink" href="#storing-items-forever" title="Permanent link">#</a></h4>
 <p>The <code>forever</code> method may be used to store an item in the cache permanently. Since these items will not expire, they must be manually removed from the cache using the <code>forget</code> method:</p>
@@ -638,6 +673,10 @@ If you are using the Memcached driver, items that are stored "forever" may be re
 
 <p>You may clear the entire cache using the <code>flush</code> method:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">Cache::flush();</span>
+</code></pre></div>
+
+<p>You may clear all atomic locks in the cache using the <code>flushLocks</code> method:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">Cache::flushLocks();</span>
 </code></pre></div>
 
 <blockquote>
@@ -704,7 +743,7 @@ When testing calls to the global <code>cache</code> function, you may use the <c
 <h2 id="cache-tags">Cache Tags<a class="headerlink" href="#cache-tags" title="Permanent link">#</a></h2>
 <blockquote>
 <p>[!WARNING]
-Cache tags are not supported when using the <code>file</code>, <code>dynamodb</code>, or <code>database</code> cache drivers.</p>
+Cache tags are not supported when using the <code>file</code>, <code>dynamodb</code>, <code>database</code>, or <code>storage</code> cache drivers.</p>
 </blockquote>
 <p><a name="storing-tagged-cache-items"></a></p>
 <h3 id="storing-tagged-cache-items">Storing Tagged Cache Items<a class="headerlink" href="#storing-tagged-cache-items" title="Permanent link">#</a></h3>
@@ -800,6 +839,23 @@ To utilize this feature, your application must be using the <code>memcached</cod
 
 <p>If you would like to release a lock without respecting its current owner, you may use the <code>forceRelease</code> method:</p>
 <div class="codehilite"><pre><span></span><code><span class="x">Cache::lock(&#39;processing&#39;)-&gt;forceRelease();</span>
+</code></pre></div>
+
+<p><a name="refreshing-locks"></a></p>
+<h3 id="refreshing-locks">Refreshing Locks<a class="headerlink" href="#refreshing-locks" title="Permanent link">#</a></h3>
+<p>If you need to extend the expiration of a lock that you currently own, you may use the <code>refresh</code> method. If no number of seconds is provided, the lock's original duration will be used. This is useful for long-running operations where you prefer to acquire a short lock and periodically extend it instead of acquiring a lock with a very long expiration time:</p>
+<div class="codehilite"><pre><span></span><code><span class="x">$lock = Cache::lock(&#39;generate-reports&#39;, 60);</span>
+
+<span class="x">if ($lock-&gt;get()) {</span>
+<span class="x">    foreach ($reports as $report) {</span>
+<span class="x">        $report-&gt;generate();</span>
+
+<span class="x">        // Extend the lock for another 60 seconds...</span>
+<span class="x">        $lock-&gt;refresh();</span>
+<span class="x">    }</span>
+
+<span class="x">    $lock-&gt;release();</span>
+<span class="x">}</span>
 </code></pre></div>
 
 <p><a name="concurrency-limiting"></a></p>
@@ -956,21 +1012,25 @@ If you're wondering where to put your custom cache driver code, you could create
 <p>To execute code on every cache operation, you may listen for various <a href="./events.html">events</a> dispatched by the cache:</p>
 <div class="overflow-auto">
 
-| Event Name                                   |
-|----------------------------------------------|
-| `Illuminate\Cache\Events\CacheFlushed`       |
-| `Illuminate\Cache\Events\CacheFlushing`      |
-| `Illuminate\Cache\Events\CacheHit`           |
-| `Illuminate\Cache\Events\CacheMissed`        |
-| `Illuminate\Cache\Events\ForgettingKey`      |
-| `Illuminate\Cache\Events\KeyForgetFailed`    |
-| `Illuminate\Cache\Events\KeyForgotten`       |
-| `Illuminate\Cache\Events\KeyWriteFailed`     |
-| `Illuminate\Cache\Events\KeyWritten`         |
-| `Illuminate\Cache\Events\RetrievingKey`      |
-| `Illuminate\Cache\Events\RetrievingManyKeys` |
-| `Illuminate\Cache\Events\WritingKey`         |
-| `Illuminate\Cache\Events\WritingManyKeys`    |
+| Event Name                                      |
+|-------------------------------------------------|
+| `Illuminate\Cache\Events\CacheFlushed`          |
+| `Illuminate\Cache\Events\CacheFlushing`         |
+| `Illuminate\Cache\Events\CacheFlushFailed`      |
+| `Illuminate\Cache\Events\CacheLocksFlushed`     |
+| `Illuminate\Cache\Events\CacheLocksFlushing`    |
+| `Illuminate\Cache\Events\CacheLocksFlushFailed` |
+| `Illuminate\Cache\Events\CacheHit`              |
+| `Illuminate\Cache\Events\CacheMissed`           |
+| `Illuminate\Cache\Events\ForgettingKey`         |
+| `Illuminate\Cache\Events\KeyForgetFailed`       |
+| `Illuminate\Cache\Events\KeyForgotten`          |
+| `Illuminate\Cache\Events\KeyWriteFailed`        |
+| `Illuminate\Cache\Events\KeyWritten`            |
+| `Illuminate\Cache\Events\RetrievingKey`         |
+| `Illuminate\Cache\Events\RetrievingManyKeys`    |
+| `Illuminate\Cache\Events\WritingKey`            |
+| `Illuminate\Cache\Events\WritingManyKeys`       |
 
 </div>
 

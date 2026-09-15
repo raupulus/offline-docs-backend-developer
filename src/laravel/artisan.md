@@ -1,14 +1,14 @@
 ---
 title: Artisan Console
-source_url: https://laravel.com/docs/12.x/artisan
+source_url: https://laravel.com/docs/13.x/artisan
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: artisan.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
+retrieved_at: '2026-09-15'
 order: 30
 ---
 
@@ -35,13 +35,16 @@ order: 30
 - [Programmatically Executing Commands](#programmatically-executing-commands)
     - [Calling Commands From Other Commands](#calling-commands-from-other-commands)
 - [Signal Handling](#signal-handling)
+- [The Dev Command](#the-dev-command)
+    - [Customizing Dev Processes](#customizing-dev-processes)
+    - [Filtering Dev Processes](#filtering-dev-processes)
 - [Stub Customization](#stub-customization)
 - [Events](#events)
 
 <a name="introduction"></a>
 ## Introduction
 
-Artisan is the command line interface included with Laravel. Artisan exists at the root of your application as the `artisan` script and provides a number of helpful commands that can assist you while you build your application. To view a list of all available Artisan commands, you may use the `list` command:
+Artisan is the command line interface included with Laravel. Artisan exists at the root of your application as the `artisan` script and provides a number of helpful commands you can use while building your application. To view a list of all available Artisan commands, you may use the `list` command:
 
 ```shell
 php artisan list
@@ -136,7 +139,7 @@ php artisan make:command SendEmails
 <a name="command-structure"></a>
 ### Command Structure
 
-After generating your command, you should define appropriate values for the `signature` and `description` properties of the class. These properties will be used when displaying your command on the `list` screen. The `signature` property also allows you to define [your command's input expectations](#defining-input-expectations). The `handle` method will be called when your command is executed. You may place your command logic in this method.
+After generating your command, you should define the command's signature and description using the `Signature` and `Description` attributes. The `Signature` attribute also allows you to define [your command's input expectations](#defining-input-expectations). The `handle` method will be called when your command is executed. You may place your command logic in this method.
 
 Let's take a look at an example command. Note that we are able to request any dependencies we need via the command's `handle` method. The Laravel [service container](/docs/{{version}}/container) will automatically inject all dependencies that are type-hinted in this method's signature:
 
@@ -147,24 +150,14 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Support\DripEmailer;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('mail:send {user}')]
+#[Description('Send a marketing email to a user')]
 class SendEmails extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'mail:send {user}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send a marketing email to a user';
-
     /**
      * Execute the console command.
      */
@@ -176,7 +169,7 @@ class SendEmails extends Command
 ```
 
 > [!NOTE]
-> For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example above, note that we inject a service class to do the "heavy lifting" of sending the e-mails.
+> For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example above, note that we inject a service class to do the "heavy lifting" of sending the emails.
 
 <a name="exit-codes"></a>
 #### Exit Codes
@@ -572,6 +565,28 @@ $queueName = $this->option('queue');
 $options = $this->options();
 ```
 
+You may use the `input` method to retrieve a command's arguments and options as an `Illuminate\Console\CommandInput` instance, which provides the same typed accessors that are available on HTTP requests and other data containers:
+
+```php
+use App\Enums\ReportType;
+
+/**
+ * Execute the console command.
+ */
+public function handle(): void
+{
+    $input = $this->input()->date('from');
+
+    // ...
+}
+```
+
+The `input` method may also be used to retrieve a single input value from either the arguments or options:
+
+```php
+$queue = $this->input('queue', 'default');
+```
+
 <a name="prompting-for-input"></a>
 ### Prompting for Input
 
@@ -911,6 +926,121 @@ $this->trap([SIGTERM, SIGQUIT], function (int $signal) {
 
     dump($signal); // SIGTERM / SIGQUIT
 });
+```
+
+<a name="the-dev-command"></a>
+## The Dev Command
+
+The `dev` Artisan command starts all of the processes needed for local development in a single terminal window. By default, it concurrently runs the PHP development server, a queue worker, log tailing via [Pail](/docs/{{version}}/logging#tailing-log-messages-using-pail), and Vite asset compilation:
+
+```shell
+php artisan dev
+```
+
+Under the hood, the `dev` command uses the `@laravel/multiplex` npm package to manage the processes, giving each process its own tab with searchable, scrollable output. Each process is labeled and color-coded so you can easily distinguish between them. If a process crashes, it will be restarted automatically, and when you quit, all of the output is written back to your terminal so nothing is lost.
+
+> [!NOTE]
+> The `dev` command requires Node 22.13 or later. On Windows, it falls back to the `concurrently` npm package and the tabbed interface is not available.
+
+The default processes are:
+
+| Name | Command |
+| --- | --- |
+| `server` | `php artisan serve --host=localhost` |
+| `queue` | `php artisan queue:listen --tries=1 --timeout=0` |
+| `logs` | `php artisan pail --timeout=0` |
+| `vite` | `npm run dev` |
+
+> [!NOTE]
+> The `vite` process automatically detects your Node package manager (npm, pnpm, Yarn, or Bun) and uses the appropriate run command.
+
+<a name="customizing-dev-processes"></a>
+### Customizing Dev Processes
+
+You may customize the processes that the `dev` command runs by using the `DevCommands` class, typically within the `boot` method of your application's `AppServiceProvider`. The `register` method accepts a command string and an optional name:
+
+```php
+use Illuminate\Foundation\DevCommands;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    DevCommands::register('some-command --flag', 'my-process');
+}
+```
+
+When registering an Artisan command, you may use the `artisan` method which automatically prefixes the command with `php artisan`:
+
+```php
+DevCommands::artisan('horizon', 'horizon');
+```
+
+Likewise, the `node` method prefixes the command with your detected package manager's run command (e.g. `npm run`), and the `nodeExec` method prefixes the command with the package manager's exec command (e.g. `npx`):
+
+```php
+DevCommands::node('storybook', 'storybook');
+
+DevCommands::nodeExec('tailwindcss -i resources/css/app.css -o public/css/app.css --watch', 'tailwind');
+```
+
+If you register a process with the same name as a default process, your process will replace the default. For example, you may customize the server process to use a different port:
+
+```php
+DevCommands::artisan('serve --host=localhost --port=9000', 'server');
+```
+
+You may also customize the color of a process label in your terminal. The available color methods are `blue`, `purple`, `pink`, `orange`, `green`, and `yellow`. You may also pass a custom hex color to the `color` method:
+
+```php
+DevCommands::register('my-command', 'my-process')->green();
+
+DevCommands::register('my-command', 'my-process')->color('#ff6347');
+```
+
+To see all registered dev processes without starting them, use the `dev:list` command:
+
+```shell
+php artisan dev:list
+```
+
+<a name="restarting-failed-processes"></a>
+#### Restarting Failed Processes
+
+If a process crashes, Laravel will restart it after a short delay, up to five times, before marking it as failed. A process that dies within a second of starting is not restarted, since it likely never started successfully in the first place. Restarting a process manually with `r` resets the counter.
+
+You may disable this behavior for a single run using the `--no-restart` option:
+
+```shell
+php artisan dev --no-restart
+```
+
+Or, you may disable it for your entire application using the `disableAutoRestart` method:
+
+```php
+DevCommands::disableAutoRestart();
+```
+
+<a name="filtering-dev-processes"></a>
+### Filtering Dev Processes
+
+You may instruct the `dev` command to only run specific processes when it is invoked using the `only` method. Similarly, you may exclude specific processes using the `except` method:
+
+```php
+// Only run the server and vite processes...
+DevCommands::only('server', 'vite');
+
+// Run all processes except the queue worker...
+DevCommands::except('queue');
+```
+
+You may exclude commands registered by packages or Laravel's default commands using the `withoutVendorCommands` and `withoutDefaultCommands` methods:
+
+```php
+DevCommands::withoutVendorCommands();
+
+DevCommands::withoutDefaultCommands();
 ```
 
 <a name="stub-customization"></a>

@@ -1,15 +1,15 @@
 ---
 title: Mail
-source_url: https://laravel.com/docs/12.x/mail
+source_url: https://laravel.com/docs/13.x/mail
 source_repo: laravel/docs
-source_ref: 12.x
-source_commit: 5b8c61073
+source_ref: 13.x
+source_commit: e232d85d9
 source_path: mail.md
 technology: laravel
-version: 12.x
+version: 13.x
 license: MIT
-retrieved_at: '2026-08-02'
-order: 510
+retrieved_at: '2026-09-15'
+order: 530
 ---
 
 # Mail
@@ -50,7 +50,7 @@ order: 510
 <a name="introduction"></a>
 ## Introduction
 
-Sending email doesn't have to be complicated. Laravel provides a clean, simple email API powered by the popular [Symfony Mailer](https://symfony.com/doc/current/mailer.html) component. Laravel and Symfony Mailer provide drivers for sending email via SMTP, Mailgun, Postmark, Resend, Amazon SES, and `sendmail`, allowing you to quickly get started sending mail through a local or cloud-based service of your choice.
+Sending email doesn't have to be complicated. Laravel provides a clean, simple email API powered by the popular [Symfony Mailer](https://symfony.com/doc/current/mailer.html) component. Laravel and Symfony Mailer provide drivers for sending email via SMTP, Cloudflare, Mailgun, Postmark, Resend, Amazon SES, and `sendmail`, allowing you to quickly get started sending mail through a local or cloud-based service of your choice.
 
 <a name="configuration"></a>
 ### Configuration
@@ -63,6 +63,38 @@ Within your `mail` configuration file, you will find a `mailers` configuration a
 ### Driver / Transport Prerequisites
 
 The API based drivers such as Mailgun, Postmark, and Resend are often simpler and faster than sending mail via SMTP servers. Whenever possible, we recommend that you use one of these drivers.
+
+<a name="cloudflare-driver"></a>
+#### Cloudflare Driver
+
+To use the Cloudflare driver, install Symfony's HTTP Client via Composer:
+
+```shell
+composer require symfony/http-client
+```
+
+Next, you will need to make two changes in your application's `config/mail.php` configuration file. First, set your default mailer to `cloudflare`:
+
+```php
+'default' => env('MAIL_MAILER', 'cloudflare'),
+```
+
+Second, add the following configuration array to your array of `mailers`:
+
+```php
+'cloudflare' => [
+    'transport' => 'cloudflare',
+],
+```
+
+After configuring your application's default mailer, add the following options to your `config/services.php` configuration file:
+
+```php
+'cloudflare' => [
+    'account_id' => env('CLOUDFLARE_ACCOUNT_ID'),
+    'key' => env('CLOUDFLARE_KEY'),
+],
+```
 
 <a name="mailgun-driver"></a>
 #### Mailgun Driver
@@ -101,7 +133,7 @@ After configuring your application's default mailer, add the following options t
 ],
 ```
 
-If you are not using the United States [Mailgun region](https://documentation.mailgun.com/docs/mailgun/api-reference/#mailgun-regions), you may define your region's endpoint in the `services` configuration file:
+If you are not using the United States [Mailgun region](https://documentation.mailgun.com/docs/mailgun/api-reference/api-overview#mailgun-regions), you may define your region's endpoint in the `services` configuration file:
 
 ```php
 'mailgun' => [
@@ -201,6 +233,19 @@ public function headers(): Headers
     return new Headers(
         text: [
             'X-Ses-List-Management-Options' => 'contactListName=MyContactList;topicName=MyTopic',
+        ],
+    );
+}
+```
+
+To send an email through an SES [tenant](https://docs.aws.amazon.com/ses/latest/dg/tenants.html), you may return the `X-Ses-Tenant-Name` header from the `headers` method. Laravel will pass the header value as the `TenantName` option to SES when sending the message:
+
+```php
+public function headers(): Headers
+{
+    return new Headers(
+        text: [
+            'X-Ses-Tenant-Name' => 'tenant-id',
         ],
     );
 }
@@ -1010,6 +1055,20 @@ Mail::to($request->user())
     ->queue($message);
 ```
 
+Alternatively, you may specify the connection and queue using the `Connection` and `Queue` attributes on the mailable class:
+
+```php
+use Illuminate\Queue\Attributes\Connection;
+use Illuminate\Queue\Attributes\Queue;
+
+#[Connection('sqs')]
+#[Queue('emails')]
+class OrderShipped extends Mailable
+{
+    // ...
+}
+```
+
 <a name="queueing-by-default"></a>
 #### Queueing by Default
 
@@ -1279,6 +1338,9 @@ test('orders can be shipped', function () {
     // Assert a mailable was sent twice...
     Mail::assertSentTimes(OrderShipped::class, 2);
 
+    // Assert that a mailable was sent exactly once...
+    Mail::assertSentOnce(OrderShipped::class);
+
     // Assert 3 total mailables were sent...
     Mail::assertSentCount(3);
 });
@@ -1322,6 +1384,9 @@ class ExampleTest extends TestCase
         // Assert a mailable was sent twice...
         Mail::assertSentTimes(OrderShipped::class, 2);
 
+        // Assert that a mailable was sent exactly once...
+        Mail::assertSentOnce(OrderShipped::class);
+
         // Assert 3 total mailables were sent...
         Mail::assertSentCount(3);
     }
@@ -1332,6 +1397,7 @@ If you are queueing mailables for delivery in the background, you should use the
 
 ```php
 Mail::assertQueued(OrderShipped::class);
+Mail::assertQueuedOnce(OrderShipped::class);
 Mail::assertNotQueued(OrderShipped::class);
 Mail::assertNothingQueued();
 Mail::assertQueuedCount(3);
