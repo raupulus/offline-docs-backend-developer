@@ -228,15 +228,15 @@
   });
 
 
-  /* ── PWA: Service Worker (solo sobre HTTPS o localhost) ────────── */
-
-  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-    window.addEventListener('load', function () {
-      var manifest = document.querySelector('link[rel="manifest"]');
-      var swUrl = manifest ? manifest.getAttribute('href').replace(/manifest\.json$/, 'sw.js') : 'sw.js';
-      navigator.serviceWorker.register(swUrl).catch(function () {
-        // En caso de fallo de registro no afecta la navegación estándar
-      });
+  /* ── Desactivar cualquier Service Worker previo y purgar caché ─── */
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      for (var i = 0; i < regs.length; i++) { regs[i].unregister(); }
+    });
+  }
+  if (window.caches) {
+    caches.keys().then(function (keys) {
+      for (var i = 0; i < keys.length; i++) { caches.delete(keys[i]); }
     });
   }
 })();
