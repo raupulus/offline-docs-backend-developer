@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Write-Ahead Log Commit Hook · SQLite</title>
+<meta name="description" content="Write-Ahead Log Commit Hook - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/c-api/wal_hook.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Write-Ahead Log Commit Hook">
+<meta property="og:description" content="Write-Ahead Log Commit Hook - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Write-Ahead Log Commit Hook">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Write-Ahead Log Commit Hook",
+"url": "https://docs.raupulus.dev/sqlite/c-api/wal_hook.html",  "description": "Write-Ahead Log Commit Hook - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              C Api
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../c-api/reset_auto_extension.html"
+>Reset Automatic Extension Loading</a>
+              </li>
+              <li>
+                <a href="../c-api/c_abort.html"
+>Result Codes</a>
+              </li>
+              <li>
+                <a href="../c-api/column_blob.html"
+>Result Values From A Query</a>
+              </li>
+              <li>
+                <a href="../c-api/db_mutex.html"
+>Retrieve the mutex for a database connection</a>
+              </li>
+              <li>
+                <a href="../c-api/expanded_sql.html"
+>Retrieving Statement SQL</a>
+              </li>
+              <li>
+                <a href="../c-api/db_filename.html"
+>Return The Filename For A Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/db_name.html"
+>Return The Schema Name For A Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_bytes.html"
+>Return The Size Of An Open BLOB</a>
+              </li>
+              <li>
+                <a href="../c-api/compileoption_get.html"
+>Run-Time Library Compilation Options Diagnostics</a>
+              </li>
+              <li>
+                <a href="../c-api/libversion.html"
+>Run-Time Library Version Numbers</a>
+              </li>
+              <li>
+                <a href="../c-api/c_limit_attached.html"
+>Run-Time Limit Categories</a>
+              </li>
+              <li>
+                <a href="../c-api/limit.html"
+>Run-time Limits</a>
+              </li>
+              <li>
+                <a href="../c-api/serialize.html"
+>Serialize a database</a>
+              </li>
+              <li>
+                <a href="../c-api/busy_timeout.html"
+>Set A Busy Timeout</a>
+              </li>
+              <li>
+                <a href="../c-api/set_errmsg.html"
+>Set Error Code And Message</a>
+              </li>
+              <li>
+                <a href="../c-api/set_last_insert_rowid.html"
+>Set the Last Insert Rowid value.</a>
+              </li>
+              <li>
+                <a href="../c-api/setlk_timeout.html"
+>Set the Setlk Timeout</a>
+              </li>
+              <li>
+                <a href="../c-api/result_blob.html"
+>Setting The Result Of An SQL Function</a>
+              </li>
+              <li>
+                <a href="../c-api/result_subtype.html"
+>Setting The Subtype Of An SQL Function</a>
+              </li>
+              <li>
+                <a href="../c-api/column_database_name.html"
+>Source Of Data In A Query Result</a>
+              </li>
+              <li>
+                <a href="../c-api/context.html"
+>SQL Function Context Object</a>
+              </li>
+              <li>
+                <a href="../c-api/keyword_check.html"
+>SQL Keyword Checking</a>
+              </li>
+              <li>
+                <a href="../c-api/c_trace.html"
+>SQL Trace Event Codes</a>
+              </li>
+              <li>
+                <a href="../c-api/trace_v2.html"
+>SQL Trace Hook</a>
+              </li>
+              <li>
+                <a href="../c-api/status.html"
+>SQLite Runtime Status</a>
+              </li>
+              <li>
+                <a href="../c-api/c_fcntl_begin_atomic_write.html"
+>Standard File Control Opcodes</a>
+              </li>
+              <li>
+                <a href="../c-api/snapshot_open.html"
+>Start a read transaction on an historical snapshot</a>
+              </li>
+              <li>
+                <a href="../c-api/str_errcode.html"
+>Status Of A Dynamic String</a>
+              </li>
+              <li>
+                <a href="../c-api/c_status_malloc_count.html"
+>Status Parameters</a>
+              </li>
+              <li>
+                <a href="../c-api/c_dbstatus_options.html"
+>Status Parameters for database connections</a>
+              </li>
+              <li>
+                <a href="../c-api/c_stmtstatus_counter.html"
+>Status Parameters for prepared statements</a>
+              </li>
+              <li>
+                <a href="../c-api/stricmp.html"
+>String Comparison</a>
+              </li>
+              <li>
+                <a href="../c-api/strglob.html"
+>String Globbing</a>
+              </li>
+              <li>
+                <a href="../c-api/strlike.html"
+>String LIKE Matching</a>
+              </li>
+              <li>
+                <a href="../c-api/sleep.html"
+>Suspend Execution For A Short Time</a>
+              </li>
+              <li>
+                <a href="../c-api/c_sync_dataonly.html"
+>Synchronization Type Flags</a>
+              </li>
+              <li>
+                <a href="../c-api/get_autocommit.html"
+>Test For Auto-Commit Mode</a>
+              </li>
+              <li>
+                <a href="../c-api/threadsafe.html"
+>Test To See If The Library Is Threadsafe</a>
+              </li>
+              <li>
+                <a href="../c-api/test_control.html"
+>Testing Interface</a>
+              </li>
+              <li>
+                <a href="../c-api/c_testctrl_always.html"
+>Testing Interface Operation Codes</a>
+              </li>
+              <li>
+                <a href="../c-api/c_any.html"
+>Text Encodings</a>
+              </li>
+              <li>
+                <a href="../c-api/preupdate_blobwrite.html"
+>The pre-update hook.</a>
+              </li>
+              <li>
+                <a href="../c-api/total_changes.html"
+>Total Number Of Rows Modified</a>
+              </li>
+              <li>
+                <a href="../c-api/filename_database.html"
+>Translate filenames</a>
+              </li>
+              <li>
+                <a href="../c-api/unlock_notify.html"
+>Unlock Notification</a>
+              </li>
+              <li>
+                <a href="../c-api/user_data.html"
+>User Data For Functions</a>
+              </li>
+              <li>
+                <a href="../c-api/vfs_find.html"
+>Virtual File System Objects</a>
+              </li>
+              <li>
+                <a href="../c-api/c_vtab_constraint_support.html"
+>Virtual Table Configuration Options</a>
+              </li>
+              <li>
+                <a href="../c-api/c_index_constraint_eq.html"
+>Virtual Table Constraint Operator Codes</a>
+              </li>
+              <li>
+                <a href="../c-api/vtab_cursor.html"
+>Virtual Table Cursor Object</a>
+              </li>
+              <li>
+                <a href="../c-api/index_info.html"
+>Virtual Table Indexing Information</a>
+              </li>
+              <li>
+                <a href="../c-api/vtab.html"
+>Virtual Table Instance Object</a>
+              </li>
+              <li>
+                <a href="../c-api/vtab_config.html"
+>Virtual Table Interface Configuration</a>
+              </li>
+              <li>
+                <a href="../c-api/module.html"
+>Virtual Table Object</a>
+              </li>
+              <li>
+                <a href="../c-api/c_index_scan_hex.html"
+>Virtual Table Scan Flags</a>
+              </li>
+              <li>
+                <a href="../c-api/c_win32_data_directory_type.html"
+>Win32 Directory Types</a>
+              </li>
+              <li>
+                <a href="../c-api/win32_set_directory.html"
+>Win32 Specific Interface</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_write.html"
+>Write Data Into A BLOB Incrementally</a>
+              </li>
+              <li>
+                <a href="../c-api/wal_hook.html"
+class="is-current" aria-current="page">Write-Ahead Log Commit Hook</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_scanstatus_reset.html"
+>Zero Scan-Status Counters</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../guides/fasterthanfs.html">Guides</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Write-Ahead Log Commit Hook</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/c3ref/wal_hook.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+
+      <div class="doc-body">
+        <blockquote>
+<p>\
+void *sqlite3_wal_hook(\
+  sqlite3*,\
+  int(*)(void *,sqlite3*,const char*,int),\
+  void*\
+);\</p>
+</blockquote>
+<p>The <a href="../c3ref/wal_hook.html">sqlite3_wal_hook()</a> function is used to register a callback that is invoked each time data is committed to a database in wal mode.</p>
+<p>The callback is invoked by SQLite after the commit has taken place and the associated write-lock on the database released, so the implementation may read, write or <a href="../wal.html#ckpt">checkpoint</a> the database as required.</p>
+<p>The first parameter passed to the callback function when it is invoked is a copy of the third parameter passed to sqlite3_wal_hook() when registering the callback. The second is a copy of the database handle. The third parameter is the name of the database that was written to - either "main" or the name of an <a href="../lang_attach.html">ATTACH</a>-ed database. The fourth parameter is the number of pages currently in the write-ahead log file, including those that were just committed.</p>
+<p>The callback function should normally return <a href="../rescode.html#ok">SQLITE_OK</a>. If an error code is returned, that error will propagate back up through the SQLite code base to cause the statement that provoked the callback to report an error, though the commit will have still occurred. If the callback returns <a href="../rescode.html#row">SQLITE_ROW</a> or <a href="../rescode.html#done">SQLITE_DONE</a>, or if it returns a value that does not correspond to any valid SQLite error code, the results are undefined.</p>
+<p>A single database handle may have at most a single write-ahead log callback registered at one time. Calling <a href="../c3ref/wal_hook.html">sqlite3_wal_hook()</a> replaces the default behavior or previously registered write-ahead log callback.</p>
+<p>The return value is a copy of the third parameter from the previous call, if any, or 0.</p>
+<p>The <a href="../c3ref/wal_autocheckpoint.html">sqlite3_wal_autocheckpoint()</a> interface and the <a href="../pragma.html#pragma_wal_autocheckpoint">wal_autocheckpoint pragma</a> both invoke <a href="../c3ref/wal_hook.html">sqlite3_wal_hook()</a> and will overwrite any prior <a href="../c3ref/wal_hook.html">sqlite3_wal_hook()</a> settings.</p>
+<p>If a write-ahead log callback is set using this function then <a href="../c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a> or <a href="../pragma.html#pragma_wal_checkpoint">PRAGMA wal_checkpoint</a> should be invoked periodically to keep the write-ahead log file from growing without bound.</p>
+<p>Passing a NULL pointer for the callback disables automatic checkpointing entirely. To re-enable the default behavior, call sqlite3_wal_autocheckpoint(db,1000) or use <a href="../pragma.html#pragma_wal_checkpoint">PRAGMA wal_checkpoint</a>.</p>
+<p>See also lists of <a href="../c3ref/objlist.html">Objects</a>, <a href="../c3ref/constlist.html">Constants</a>, and <a href="../c3ref/funclist.html">Functions</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../c-api/blob_write.html">
+          <span class="muted">Anterior</span>Write Data Into A BLOB Incrementally
+        </a>
+        <a class="pager-next" href="../c-api/stmt_scanstatus_reset.html">
+          <span class="muted">Siguiente</span>Zero Scan-Status Counters
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

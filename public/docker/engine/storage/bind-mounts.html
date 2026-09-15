@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bind mounts · Docker</title>
+<meta name="description" content="Bind mounts - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/storage/bind-mounts.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Bind mounts">
+<meta property="og:description" content="Bind mounts - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bind mounts">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Bind mounts",
+"url": "https://docs.raupulus.dev/docker/engine/storage/bind-mounts.html",  "description": "Bind mounts - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+class="is-current" aria-current="page">Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Bind mounts</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#when-to-use-bind-mounts">When to use bind mounts#</a></li>
+              <li class="lvl-2"><a href="#bind-mounting-over-existing-data">Bind-mounting over existing data#</a></li>
+              <li class="lvl-2"><a href="#considerations-and-constraints">Considerations and constraints#</a></li>
+              <li class="lvl-2"><a href="#syntax">Syntax#</a></li>
+              <li class="lvl-3"><a href="#options-for-mount">Options for --mount#</a></li>
+              <li class="lvl-3"><a href="#mount-into-a-non-empty-directory-on-the-container">Mount into a non-empty directory on the container#</a></li>
+              <li class="lvl-2"><a href="#use-a-read-only-bind-mount">Use a read-only bind mount#</a></li>
+              <li class="lvl-2"><a href="#recursive-mounts">Recursive mounts#</a></li>
+              <li class="lvl-2"><a href="#configure-bind-propagation">Configure bind propagation#</a></li>
+              <li class="lvl-2"><a href="#configure-the-selinux-label">Configure the SELinux label#</a></li>
+              <li class="lvl-2"><a href="#use-a-bind-mount-with-docker-compose">Use a bind mount with Docker Compose#</a></li>
+              <li class="lvl-2"><a href="#next-steps">Next steps#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>When you use a bind mount, a file or directory on the host machine is mounted
+from the host into a container. By contrast, when you use a volume, a new
+directory is created within Docker's storage directory on the host machine.
+Docker creates and maintains this storage location, but containers access it
+directly using standard filesystem operations.</p>
+<h2 id="when-to-use-bind-mounts">When to use bind mounts<a class="headerlink" href="#when-to-use-bind-mounts" title="Permanent link">#</a></h2>
+<p>Bind mounts are appropriate for the following types of use case:</p>
+<ul>
+<li>
+<p>Sharing source code or build artifacts between a development environment on
+  the Docker host and a container.</p>
+</li>
+<li>
+<p>When you want to create or generate files in a container and persist the
+  files onto the host's filesystem.</p>
+</li>
+<li>
+<p>Sharing configuration files from the host machine to containers. This is how
+  Docker provides DNS resolution to containers by default, by mounting
+  <code>/etc/resolv.conf</code> from the host machine into each container.</p>
+</li>
+</ul>
+<p>Bind mounts are also available for builds: you can bind mount source code from
+the host into the build container to test, lint, or compile a project.</p>
+<h2 id="bind-mounting-over-existing-data">Bind-mounting over existing data<a class="headerlink" href="#bind-mounting-over-existing-data" title="Permanent link">#</a></h2>
+<p>If you bind mount file or directory into a directory in the container in which
+files or directories exist, the pre-existing files are obscured by the mount.
+This is similar to if you were to save files into <code>/mnt</code> on a Linux host, and
+then mounted a USB drive into <code>/mnt</code>. The contents of <code>/mnt</code> would be obscured
+by the contents of the USB drive until the USB drive was unmounted.</p>
+<p>With containers, there's no straightforward way of removing a mount to reveal
+the obscured files again. Your best option is to recreate the container without
+the mount.</p>
+<h2 id="considerations-and-constraints">Considerations and constraints<a class="headerlink" href="#considerations-and-constraints" title="Permanent link">#</a></h2>
+<ul>
+<li>Bind mounts have write access to files on the host by default.</li>
+</ul>
+<p>One side effect of using bind mounts is that you can change the host
+  filesystem via processes running in a container, including creating,
+  modifying, or deleting important system files or directories. This capability
+  can have security implications. For example, it may affect non-Docker
+  processes on the host system.</p>
+<p>You can use the <code>readonly</code> or <code>ro</code> option to prevent the container from
+  writing to the mount.</p>
+<ul>
+<li>Bind mounts are created to the Docker daemon host, not the client.</li>
+</ul>
+<p>If you're using a remote Docker daemon, you can't create a bind mount to
+  access files on the client machine in a container.</p>
+<p>For Docker Desktop, the daemon runs inside a Linux VM, not directly on the
+  native host. Docker Desktop has built-in mechanisms that transparently handle
+  bind mounts, allowing you to share native host filesystem paths with
+  containers running in the virtual machine.</p>
+<ul>
+<li>Containers with bind mounts are strongly tied to the host.</li>
+</ul>
+<p>Bind mounts rely on the host machine's filesystem having a specific directory
+  structure available. This reliance means that containers with bind mounts may
+  fail if run on a different host without the same directory structure.</p>
+<h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">#</a></h2>
+<p>To create a bind mount, you can use either the <code>--mount</code> or <code>--volume</code> flag.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,src<span class="o">=</span>&lt;host-path&gt;,dst<span class="o">=</span>&lt;container-path&gt;
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--volume<span class="w"> </span>&lt;host-path&gt;:&lt;container-path&gt;
+</code></pre></div>
+
+<p>In general, <code>--mount</code> is preferred. The main difference is that the <code>--mount</code>
+flag is more explicit and supports all the available options.</p>
+<p>If you use <code>--volume</code> to bind-mount a file or directory that does not yet
+exist on the Docker host, Docker automatically creates the directory on the
+host for you. It's always created as a directory. If the Docker daemon doesn't
+have permission to create the source directory, create it before starting the
+container.</p>
+<p>By default, <code>--mount</code> does not automatically create a directory if the specified mount
+path does not exist on the host. Instead, it produces an error:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,src<span class="o">=</span>/dev/noexist,dst<span class="o">=</span>/mnt/foo<span class="w"> </span>alpine
+<span class="go">docker: Error response from daemon: invalid mount config for type &quot;bind&quot;: bind source path does not exist: /dev/noexist.</span>
+</code></pre></div>
+
+<p>You can use the <code>bind-create-src</code> option to automatically create the source directory
+on the host if it doesn't exist:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,src<span class="o">=</span>/home/user/mydir,dst<span class="o">=</span>/mnt/foo,bind-create-src<span class="w"> </span>alpine
+</code></pre></div>
+
+<h3 id="options-for-mount">Options for --mount<a class="headerlink" href="#options-for-mount" title="Permanent link">#</a></h3>
+<p>The <code>--mount</code> flag consists of multiple key-value pairs, separated by commas
+and each consisting of a <code>&lt;key&gt;=&lt;value&gt;</code> tuple. The order of the keys isn't
+significant.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,src<span class="o">=</span>&lt;host-path&gt;,dst<span class="o">=</span>&lt;container-path&gt;<span class="o">[</span>,&lt;key&gt;<span class="o">=</span>&lt;value&gt;...<span class="o">]</span>
+</code></pre></div>
+
+<p>Valid options for <code>--mount type=bind</code> include:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code>, <code>src</code></td>
+<td>The location of the file or directory on the host. This can be an absolute or relative path.</td>
+</tr>
+<tr>
+<td><code>destination</code>, <code>dst</code>, <code>target</code></td>
+<td>The path where the file or directory is mounted in the container. Must be an absolute path.</td>
+</tr>
+<tr>
+<td><code>readonly</code>, <code>ro</code></td>
+<td>If present, causes the bind mount to be <a href="#use-a-read-only-bind-mount">mounted into the container as read-only</a>.</td>
+</tr>
+<tr>
+<td><code>bind-propagation</code></td>
+<td>If present, changes the <a href="#configure-bind-propagation">bind propagation</a>.</td>
+</tr>
+<tr>
+<td><code>bind-create-src</code></td>
+<td>Automatically creates the source directory on the host if it doesn't exist. By default, <code>--mount</code> produces an error if the source path doesn't exist on the daemon.</td>
+</tr>
+</tbody>
+</table>
+<p>```console {title="Example"}
+$ docker run --mount type=bind,src=.,dst=/project,ro,bind-propagation=rshared</p>
+<div class="codehilite"><pre><span></span><code>### Options for --volume
+
+The `--volume` or `-v` flag consists of three fields, separated by colon
+characters (`:`). The fields must be in the correct order.
+
+```console
+$ docker run -v &lt;host-path&gt;:&lt;container-path&gt;[:opts]
+</code></pre></div>
+
+<p>The first field is the path on the host to bind mount into the container. The
+second field is the path where the file or directory is mounted in the
+container.</p>
+<p>The third field is optional, and is a comma-separated list of options. Valid
+options for <code>--volume</code> with a bind mount include:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>readonly</code>, <code>ro</code></td>
+<td>If present, causes the bind mount to be <a href="#use-a-read-only-bind-mount">mounted into the container as read-only</a>.</td>
+</tr>
+<tr>
+<td><code>z</code>, <code>Z</code></td>
+<td>Configures SELinux labeling. See <a href="#configure-the-selinux-label">Configure the SELinux label</a></td>
+</tr>
+<tr>
+<td><code>rprivate</code> (default)</td>
+<td>Sets bind propagation to <code>rprivate</code> for this mount. See <a href="#configure-bind-propagation">Configure bind propagation</a>.</td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td>Sets bind propagation to <code>private</code> for this mount. See <a href="#configure-bind-propagation">Configure bind propagation</a>.</td>
+</tr>
+<tr>
+<td><code>rshared</code></td>
+<td>Sets bind propagation to <code>rshared</code> for this mount. See <a href="#configure-bind-propagation">Configure bind propagation</a>.</td>
+</tr>
+<tr>
+<td><code>shared</code></td>
+<td>Sets bind propagation to <code>shared</code> for this mount. See <a href="#configure-bind-propagation">Configure bind propagation</a>.</td>
+</tr>
+<tr>
+<td><code>rslave</code></td>
+<td>Sets bind propagation to <code>rslave</code> for this mount. See <a href="#configure-bind-propagation">Configure bind propagation</a>.</td>
+</tr>
+<tr>
+<td><code>slave</code></td>
+<td>Sets bind propagation to <code>slave</code> for this mount. See <a href="#configure-bind-propagation">Configure bind propagation</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>```console {title="Example"}
+$ docker run -v .:/project:ro,rshared</p>
+<div class="codehilite"><pre><span></span><code>## Start a container with a bind mount
+
+Consider a case where you have a directory `source` and that when you build the
+source code, the artifacts are saved into another directory, `source/target/`.
+You want the artifacts to be available to the container at `/app/`, and you
+want the container to get access to a new build each time you build the source
+on your development host. Use the following command to bind-mount the `target/`
+directory into your container at `/app/`. Run the command from within the
+`source` directory. The `$(pwd)` sub-command expands to the current working
+directory on Linux or macOS hosts.
+If you&#39;re on Windows, see also [Path conversions on Windows](../../desktop/troubleshoot-and-support/troubleshoot/topics.md).
+
+The following `--mount` and `-v` examples produce the same result. You can&#39;t
+run them both unless you remove the `devtest` container after running the first
+one.
+
+{{&lt; tabs &gt;}}
+{{&lt; tab name=&quot;`--mount`&quot; &gt;}}
+
+```console
+$ docker run -d \
+  -it \
+  --name devtest \
+  --mount type=bind,source=&quot;$(pwd)&quot;/target,target=/app \
+  nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="<code>-v</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target:/app<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>Use <code>docker inspect devtest</code> to verify that the bind mount was created
+correctly. Look for the <code>Mounts</code> section:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;Mounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bind&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/tmp/source/target&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Destination&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/app&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;RW&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Propagation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rprivate&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+
+<p>This shows that the mount is a <code>bind</code> mount, it shows the correct source and
+destination, it shows that the mount is read-write, and that the propagation is
+set to <code>rprivate</code>.</p>
+<p>Stop and remove the container:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>rm<span class="w"> </span>-fv<span class="w"> </span>devtest
+</code></pre></div>
+
+<h3 id="mount-into-a-non-empty-directory-on-the-container">Mount into a non-empty directory on the container<a class="headerlink" href="#mount-into-a-non-empty-directory-on-the-container" title="Permanent link">#</a></h3>
+<p>If you bind-mount a directory into a non-empty directory on the container, the
+directory's existing contents are obscured by the bind mount. This can be
+beneficial, such as when you want to test a new version of your application
+without building a new image. However, it can also be surprising and this
+behavior differs from that of <a href="volumes.html">volumes</a>.</p>
+<p>This example is contrived to be extreme, but replaces the contents of the
+container's <code>/usr/</code> directory with the <code>/tmp/</code> directory on the host machine. In
+most cases, this would result in a non-functioning container.</p>
+<p>The <code>--mount</code> and <code>-v</code> examples have the same end result.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="<code>--mount</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>broken-container<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span>/tmp,target<span class="o">=</span>/usr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+
+<span class="go">docker: Error response from daemon: oci runtime error: container_linux.go:262:</span>
+<span class="go">starting container process caused &quot;exec: \&quot;nginx\&quot;: executable file not found in $PATH&quot;.</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="<code>-v</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>broken-container<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>/tmp:/usr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+
+<span class="go">docker: Error response from daemon: oci runtime error: container_linux.go:262:</span>
+<span class="go">starting container process caused &quot;exec: \&quot;nginx\&quot;: executable file not found in $PATH&quot;.</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>The container is created but does not start. Remove it:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>rm<span class="w"> </span>broken-container
+</code></pre></div>
+
+<h2 id="use-a-read-only-bind-mount">Use a read-only bind mount<a class="headerlink" href="#use-a-read-only-bind-mount" title="Permanent link">#</a></h2>
+<p>For some development applications, the container needs to
+write into the bind mount, so changes are propagated back to the
+Docker host. At other times, the container only needs read access.</p>
+<p>This example modifies the previous one, but mounts the directory as a read-only
+bind mount, by adding <code>ro</code> to the (empty by default) list of options, after the
+mount point within the container. Where multiple options are present, separate
+them by commas.</p>
+<p>The <code>--mount</code> and <code>-v</code> examples have the same result.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="<code>--mount</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target,target<span class="o">=</span>/app,readonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="<code>-v</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target:/app:ro<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>Use <code>docker inspect devtest</code> to verify that the bind mount was created
+correctly. Look for the <code>Mounts</code> section:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;Mounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bind&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/tmp/source/target&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Destination&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/app&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ro&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;RW&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Propagation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rprivate&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+
+<p>Stop and remove the container:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>rm<span class="w"> </span>-fv<span class="w"> </span>devtest
+</code></pre></div>
+
+<h2 id="recursive-mounts">Recursive mounts<a class="headerlink" href="#recursive-mounts" title="Permanent link">#</a></h2>
+<p>When you bind mount a path that itself contains mounts, those submounts are
+also included in the bind mount by default. This behavior is configurable,
+using the <code>bind-recursive</code> option for <code>--mount</code>. This option is only supported
+with the <code>--mount</code> flag, not with <code>-v</code> or <code>--volume</code>.</p>
+<p>If the bind mount is read-only, the Docker Engine makes a best-effort attempt
+at making the submounts read-only as well. This is referred to as recursive
+read-only mounts. Recursive read-only mounts require Linux kernel version 5.12
+or later. If you're running an older kernel version, submounts are
+automatically mounted as read-write by default. Attempting to set submounts to
+be read-only on a kernel version earlier than 5.12, using the
+<code>bind-recursive=readonly</code> option, results in an error.</p>
+<p>Supported values for the <code>bind-recursive</code> option are:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>enabled</code> (default)</td>
+<td style="text-align: left;">Read-only mounts are made recursively read-only if kernel is v5.12 or later. Otherwise, submounts are read-write.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>disabled</code></td>
+<td style="text-align: left;">Submounts are ignored (not included in the bind mount).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>writable</code></td>
+<td style="text-align: left;">Submounts are read-write.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>readonly</code></td>
+<td style="text-align: left;">Submounts are read-only. Requires kernel v5.12 or later.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configure-bind-propagation">Configure bind propagation<a class="headerlink" href="#configure-bind-propagation" title="Permanent link">#</a></h2>
+<p>Bind propagation defaults to <code>rprivate</code> for both bind mounts and volumes. It is
+only configurable for bind mounts, and only on Linux host machines. Bind
+propagation is an advanced topic and many users never need to configure it.</p>
+<p>Bind propagation refers to whether or not mounts created within a given
+bind-mount can be propagated to replicas of that mount. Consider
+a mount point <code>/mnt</code>, which is also mounted on <code>/tmp</code>. The propagation settings
+control whether a mount on <code>/tmp/a</code> would also be available on <code>/mnt/a</code>. Each
+propagation setting has a recursive counterpoint. In the case of recursion,
+consider that <code>/tmp/a</code> is also mounted as <code>/foo</code>. The propagation settings
+control whether <code>/mnt/a</code> and/or <code>/tmp/a</code> would exist.</p>
+<blockquote>
+<p>[!NOTE]
+Mount propagation doesn't work with Docker Desktop.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Propagation setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>shared</code></td>
+<td style="text-align: left;">Sub-mounts of the original mount are exposed to replica mounts, and sub-mounts of replica mounts are also propagated to the original mount.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>slave</code></td>
+<td style="text-align: left;">similar to a shared mount, but only in one direction. If the original mount exposes a sub-mount, the replica mount can see it. However, if the replica mount exposes a sub-mount, the original mount cannot see it.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>private</code></td>
+<td style="text-align: left;">The mount is private. Sub-mounts within it are not exposed to replica mounts, and sub-mounts of replica mounts are not exposed to the original mount.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>rshared</code></td>
+<td style="text-align: left;">The same as shared, but the propagation also extends to and from mount points nested within any of the original or replica mount points.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>rslave</code></td>
+<td style="text-align: left;">The same as slave, but the propagation also extends to and from mount points nested within any of the original or replica mount points.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>rprivate</code></td>
+<td style="text-align: left;">The default. The same as private, meaning that no mount points anywhere within the original or replica mount points propagate in either direction.</td>
+</tr>
+</tbody>
+</table>
+<p>Before you can set bind propagation on a mount point, the host filesystem needs
+to already support bind propagation.</p>
+<p>For more information about bind propagation, see the
+<a href="https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt" rel="noopener" target="_blank">Linux kernel documentation for shared subtree</a>.</p>
+<p>The following example mounts the <code>target/</code> directory into the container twice,
+and the second mount sets both the <code>ro</code> option and the <code>rslave</code> bind propagation
+option.</p>
+<p>The <code>--mount</code> and <code>-v</code> examples have the same result.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="<code>--mount</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target,target<span class="o">=</span>/app<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target,target<span class="o">=</span>/app2,readonly,bind-propagation<span class="o">=</span>rslave<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="<code>-v</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target:/app<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target:/app2:ro,rslave<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>Now if you create <code>/app/foo/</code>, <code>/app2/foo/</code> also exists.</p>
+<h2 id="configure-the-selinux-label">Configure the SELinux label<a class="headerlink" href="#configure-the-selinux-label" title="Permanent link">#</a></h2>
+<p>If you use SELinux, you can add the <code>z</code> or <code>Z</code> options to modify the SELinux
+label of the host file or directory being mounted into the container. This
+affects the file or directory on the host machine itself and can have
+consequences outside of the scope of Docker.</p>
+<ul>
+<li>The <code>z</code> option indicates that the bind mount content is shared among multiple
+  containers.</li>
+<li>The <code>Z</code> option indicates that the bind mount content is private and unshared.</li>
+</ul>
+<p>Use extreme caution with these options. Bind-mounting a system directory
+such as <code>/home</code> or <code>/usr</code> with the <code>Z</code> option renders your host machine
+inoperable and you may need to relabel the host machine files by hand.</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>When using bind mounts with services, SELinux labels
+(<code>:Z</code> and <code>:z</code>), as well as <code>:ro</code> are ignored. See
+<a href="https://github.com/moby/moby/issues/32579" rel="noopener" target="_blank">moby/moby #32579</a> for details.</p>
+</blockquote>
+<p>This example sets the <code>z</code> option to specify that multiple containers can share
+the bind mount's contents:</p>
+<p>It is not possible to modify the SELinux label using the <code>--mount</code> flag.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/target:/app:z<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<h2 id="use-a-bind-mount-with-docker-compose">Use a bind mount with Docker Compose<a class="headerlink" href="#use-a-bind-mount-with-docker-compose" title="Permanent link">#</a></h2>
+<p>A single Docker Compose service with a bind mount looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">frontend</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">node:lts</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bind</span>
+<span class="w">        </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./static</span>
+<span class="w">        </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/app/static</span>
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">myapp</span><span class="p">:</span>
+</code></pre></div>
+
+<p>For more information about using volumes of the <code>bind</code> type with Compose, see
+<a href="../../reference/compose-file/volumes.html">Compose reference on the volumes top-level element</a>.
+and
+<a href="../../reference/compose-file/services.html#volumes">Compose reference on the volume attribute</a>.</p>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<ul>
+<li>Learn about <a href="volumes.html">volumes</a>.</li>
+<li>Learn about <a href="tmpfs.html">tmpfs mounts</a>.</li>
+<li>Learn about <a href="image-mounts.html">image mounts</a>.</li>
+<li>Learn about <a href="/engine/storage/drivers/">storage drivers</a>.</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/storage/index.html">
+          <span class="muted">Anterior</span>Storage
+        </a>
+        <a class="pager-next" href="../../engine/storage/containerd.html">
+          <span class="muted">Siguiente</span>containerd image store with Docker Engine
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

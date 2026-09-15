@@ -38,7 +38,7 @@ except ImportError:  # pragma: no cover
 
 RE_FRONT_MATTER = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 RE_H1 = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
-RE_NUMERIC_PREFIX = re.compile(r"^\d{1,3}[-_.]")
+RE_NUMERIC_PREFIX = re.compile(r"^\d{1,3}[-_]")
 RE_MDX_IMPORT = re.compile(r"^\s*(?:import|export)\s+.*?$\n?", re.MULTILINE)
 RE_MDX_TAG = re.compile(r"</?[A-Z][A-Za-z0-9._]*(?:\s[^<>]*?)?/?>")
 # Enlaces markdown a ficheros locales. Excluye URLs absolutas de forma
@@ -57,17 +57,27 @@ RE_MD_REF_LINK = re.compile(
 )
 
 
+RE_EXPORT_CONST = re.compile(
+    r'^\s*export\s+const\s+(\w+)\s*=\s*["\']([^"\']+)["\'];?\s*$', re.MULTILINE
+)
+RE_APITABLE = re.compile(r'<ApiTable\b(.*?)/>', re.DOTALL)
+
+
 # ── Utilidades de texto ─────────────────────────────────────────────
 
 def split_front_matter(text: str) -> tuple[dict[str, Any], str]:
     """Separa el front-matter existente del cuerpo.
 
     Varias fuentes ya traen front-matter propio (npm y pnpm lo usan para
-    Docusaurus). Se aprovecha su título en lugar de adivinarlo.
+    Docusaurus, Tailwind exporta variables JS). Se aprovecha su título
+    en lugar de adivinarlo.
     """
     match = RE_FRONT_MATTER.match(text)
     if not match:
-        return {}, text
+        data = {}
+        for m in RE_EXPORT_CONST.finditer(text):
+            data[m.group(1)] = m.group(2)
+        return data, text
     try:
         data = yaml.safe_load(match.group(1)) or {}
         if not isinstance(data, dict):
@@ -77,8 +87,123 @@ def split_front_matter(text: str) -> tuple[dict[str, Any], str]:
     return data, text[match.end():]
 
 
+def convert_api_tables(text: str) -> str:
+    """Convierte componentes <ApiTable rows={[...]} /> de Tailwind v4 a tablas Markdown."""
+    def apitable_to_markdown(match: re.Match) -> str:
+        content = match.group(1) or ""
+        rows: list[tuple[str, str]] = []
+        seen: set[str] = set()
+
+        def add_row(c: str, p: str) -> None:
+            c = c.strip()
+            p = p.strip().replace("\n", " ")
+            if "${" in c or "${" in p:
+                return
+            if c and not c.startswith("...") and c not in seen:
+                seen.add(c)
+                rows.append((c, p))
+
+        # flatMap con 2 variables: ([prefix, property])
+        flatmap2_pat = re.compile(
+            r'(\[\s*\[.*?\].*?\])\.flatMap\(\s*\(\[([^,]+),\s*([^)]+)\]\)\s*=>\s*\[(.*?)\]\s*\)',
+            re.DOTALL,
+        )
+        for m in flatmap2_pat.finditer(content):
+            base_raw = m.group(1)
+            p_var = m.group(2).strip()
+            prop_var = m.group(3).strip()
+            tpl_raw = m.group(4)
+            base_pairs = re.findall(r'\[\s*"([^"]+)"\s*,\s*"([^"]+)"\s*\]', base_raw)
+            templates = re.findall(
+                r'\[\s*[`"]([^`"]+)[`"]\s*,\s*[`"]([^`"]+)[`"]\s*\]', tpl_raw
+            )
+            for p_val, prop_val in base_pairs:
+                for t_cls, t_prop in templates:
+                    c = t_cls.replace(f"${{{p_var}}}", p_val)
+                    p = t_prop.replace(f"${{{prop_var}}}", prop_val)
+                    add_row(c, p)
+        content = flatmap2_pat.sub("", content)
+
+        # flatMap con 1 variable: ([prefix])
+        flatmap1_pat = re.compile(
+            r'(\[\s*\[.*?\].*?\])\.flatMap\(\s*\(\[([^\]]+)\]\)\s*=>\s*\[(.*?)\]\s*\)',
+            re.DOTALL,
+        )
+        for m in flatmap1_pat.finditer(content):
+            base_raw = m.group(1)
+            p_var = m.group(2).strip()
+            tpl_raw = m.group(3)
+            prefixes = [
+                s.strip().strip('"\'`')
+                for s in re.findall(r'["`]([^"`]+)["`]', base_raw)
+            ]
+            templates = re.findall(
+                r'\[\s*[`"]([^`"]+)[`"]\s*,\s*[`"]([^`"]+)[`"]\s*\]', tpl_raw
+            )
+            for p_val in prefixes:
+                for t_cls, t_prop in templates:
+                    c = t_cls.replace(f"${{{p_var}}}", p_val)
+                    add_row(c, t_prop)
+        content = flatmap1_pat.sub("", content)
+
+        # Array de propiedades: ["rounded", ["border-radius"]]
+        for m in re.finditer(
+            r'\[\s*["`]([^"`]+)["`]\s*,\s*\[([^\]]+)\]\s*\]', content
+        ):
+            c = m.group(1).strip()
+            props = [
+                s.strip().strip('"\'`')
+                for s in m.group(2).split(",")
+                if s.strip().strip('"\'`')
+            ]
+            if c and props:
+                add_row(c, ", ".join(props))
+
+        # Valor como función: ["border", (value) => `border-color: ${value}`]
+        for m in re.finditer(
+            r'\[\s*["`]([^"`]+)["`]\s*,\s*(?:\([^)]*\)|[a-zA-Z0-9_]+)\s*=>\s*[`"]([^`"]+)[`"]\s*\]',
+            content,
+        ):
+            c = m.group(1).strip()
+            p = m.group(2).replace("${value}", "<color>").replace("${name}", "<color>")
+            add_row(f"{c}-<color>", p)
+
+        # Par estándar: ["inline", "display: inline;"]
+        for m in re.finditer(
+            r'\[\s*["`]([^"`]+)["`]\s*,\s*(?:dedent)?\s*["`]([\s\S]*?)["`]\s*,?\s*\]',
+            content,
+        ):
+            add_row(m.group(1), m.group(2))
+
+        # Object.entries(...).map(...)
+        for m in re.finditer(
+            r'map\(\(\[([^,]+),\s*([^)]+)\]\)\s*=>\s*\[[`"]([^`"]+)[`"]\s*,\s*[`"]([^`"]+)[`"]\]',
+            content,
+        ):
+            t_cls = m.group(3)
+            t_prop = m.group(4)
+            c = re.sub(r"\$\{[^}]+\}", "<value>", t_cls)
+            p = re.sub(r"\$\{[^}]+\}", "<value>", t_prop)
+            add_row(c, p)
+
+        if not rows:
+            return ""
+
+        lines = [
+            "\n| Clase | Propiedades CSS |",
+            "| :--- | :--- |",
+        ]
+        for c, p in rows:
+            lines.append(f"| `{c}` | `{p}` |" if p else f"| `{c}` | |")
+        lines.append("\n")
+        return "\n".join(lines)
+
+    return RE_APITABLE.sub(apitable_to_markdown, text)
+
+
 def strip_mdx(text: str) -> str:
     """Elimina imports y componentes JSX, conservando el texto interior."""
+    text = convert_api_tables(text)
     text = RE_MDX_IMPORT.sub("", text)
     text = RE_MDX_TAG.sub("", text)
     return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
@@ -158,6 +283,10 @@ def target_path(source: Source, rel: Path) -> tuple[str, Path]:
     """
     drop = set(source.get("drop_segments") or ["docs", "content"])
     strip_prefixes = source.get("strip_numeric_prefix", True)
+
+    if len(rel.parts) == 2 and rel.parts[0] in drop and rel.stem in ("_index", "index"):
+        dest = Path(f"{slugify(rel.parts[0])}.md")
+        return "", dest
 
     parts = []
     for part in rel.parts[:-1]:
@@ -484,6 +613,24 @@ def main(argv: list[str] | None = None) -> int:
             from .normalize_text import normalize_text_source
 
             result = normalize_text_source(
+                source, work_dir, src_dir, lock, jobs=args.jobs
+            )
+        elif source.adapter == "asciidoc":
+            from .normalize_asciidoc import normalize_asciidoc_source
+
+            result = normalize_asciidoc_source(
+                source, work_dir, src_dir, lock, jobs=args.jobs
+            )
+        elif source.adapter == "html_tarball":
+            from .normalize_html import normalize_html_source
+
+            result = normalize_html_source(
+                source, work_dir, src_dir, lock, jobs=args.jobs
+            )
+        elif source.adapter == "rst":
+            from .normalize_rst import normalize_rst_source
+
+            result = normalize_rst_source(
                 source, work_dir, src_dir, lock, jobs=args.jobs
             )
         else:

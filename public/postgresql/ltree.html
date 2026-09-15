@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ltree — hierarchical tree-like data type · PostgreSQL</title>
+<meta name="description" content="ltree — hierarchical tree-like data type - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/ltree.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="ltree — hierarchical tree-like data type">
+<meta property="og:description" content="ltree — hierarchical tree-like data type - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ltree — hierarchical tree-like data type">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "ltree — hierarchical tree-like data type",
+"url": "https://docs.raupulus.dev/postgresql/ltree.html",  "description": "ltree — hierarchical tree-like data type - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+              <li>
+                <a href="./high-availability.html"
+>High Availability, Load Balancing, and Replication</a>
+              </li>
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+>hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+class="is-current" aria-current="page">ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+>pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">ltree — hierarchical tree-like data type</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/ltree.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#ltree-hierarchical-tree-like-data-type">ltree hierarchical tree-like data type#</a></li>
+              <li class="lvl-2"><a href="#definitions">Definitions#</a></li>
+              <li class="lvl-2"><a href="#operators-and-functions">Operators and Functions#</a></li>
+              <li class="lvl-2"><a href="#indexes">Indexes#</a></li>
+              <li class="lvl-2"><a href="#example">Example#</a></li>
+              <li class="lvl-2"><a href="#transforms">Transforms#</a></li>
+              <li class="lvl-2"><a href="#authors">Authors#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="ltree-hierarchical-tree-like-data-type">ltree hierarchical tree-like data type<a class="headerlink" href="#ltree-hierarchical-tree-like-data-type" title="Permanent link">#</a></h2>
+<p>ltree</p>
+<p>This module implements a data type <code>ltree</code> for representing labels of data stored in a hierarchical tree-like structure. Extensive facilities for searching through label trees are provided.</p>
+<p>This module is considered “trusted”, that is, it can be installed by non-superusers who have <code>CREATE</code> privilege on the current database.</p>
+<h2 id="definitions">Definitions<a class="headerlink" href="#definitions" title="Permanent link">#</a></h2>
+<p>A label is a sequence of alphanumeric characters, underscores, and hyphens. Valid alphanumeric character ranges are dependent on the database locale. For example, in C locale, the characters <code>A-Za-z0-9_-</code> are allowed. Labels must be no more than 1000 characters long.</p>
+<p>Examples: <code>42</code>, <code>Personal_Services</code></p>
+<p>A label path is a sequence of zero or more labels separated by dots, for example <code>L1.L2.L3</code>, representing a path from the root of a hierarchical tree to a particular node. The length of a label path cannot exceed 65535 labels.</p>
+<p>Example: <code>Top.Countries.Europe.Russia</code></p>
+<p>The <code>ltree</code> module provides several data types:</p>
+<ul>
+<li>
+<p><code>ltree</code> stores a label path.</p>
+</li>
+<li>
+<p><code>lquery</code> represents a regular-expression-like pattern for matching <code>ltree</code> values. A simple word matches that label within a path. A star symbol (<code>*</code>) matches zero or more labels. These can be joined with dots to form a pattern that must match the whole label path. For example: foo Match the exact label path <code>foo</code> *.foo.* Match any label path containing the label <code>foo</code> *.foo Match any label path whose last label is <code>foo</code></p>
+</li>
+</ul>
+<p>Both star symbols and simple words can be quantified to restrict how many labels they can match: *{\&lt;n&gt;} Match exactly \&lt;n&gt; labels *{\&lt;n&gt;,} Match at least \&lt;n&gt; labels *{\&lt;n&gt;,\&lt;m&gt;} Match at least \&lt;n&gt; but not more than \&lt;m&gt; labels *{,\&lt;m&gt;} Match at most \&lt;m&gt; labels same as *{0,\&lt;m&gt;} foo{\&lt;n&gt;,\&lt;m&gt;} Match at least \&lt;n&gt; but not more than \&lt;m&gt; occurrences of <code>foo</code> foo{,} Match any number of occurrences of <code>foo</code>, including zero In the absence of any explicit quantifier, the default for a star symbol is to match any number of labels (that is, <code>{,}</code>) while the default for a non-star item is to match exactly once (that is, <code>{1}</code>).</p>
+<p>There are several modifiers that can be put at the end of a non-star <code>lquery</code> item to make it match more than just the exact match: @ Match case-insensitively, for example <code>a@</code> matches <code>A</code> * Match any label with this prefix, for example <code>foo*</code> matches <code>foobar</code> % Match initial underscore-separated words The behavior of <code>%</code> is a bit complicated. It tries to match words rather than the entire label. For example <code>foo_bar%</code> matches <code>foo_bar_baz</code> but not <code>foo_barbaz</code>. If combined with <code>*</code>, prefix matching applies to each word separately, for example <code>foo_bar%*</code> matches <code>foo1_bar2_baz</code> but not <code>foo1_br2_baz</code>.</p>
+<p>Also, you can write several possibly-modified non-star items separated with <code>|</code> (OR) to match any of those items, and you can put <code>!</code> (NOT) at the start of a non-star group to match any label that doesn't match any of the alternatives. A quantifier, if any, goes at the end of the group; it means some number of matches for the group as a whole (that is, some number of labels matching or not matching any of the alternatives).</p>
+<p>Here's an annotated example of <code>lquery</code>:</p>
+<div class="codehilite"><pre><span></span><code>  Top.*{0,2}.sport*@.!football|tennis{1,}.Russ*|Spain
+  a.  b.     c.      d.                   e.
+</code></pre></div>
+
+<p>This query will match any label path that:</p>
+<ol>
+<li>
+<p>begins with the label <code>Top</code></p>
+</li>
+<li>
+<p>and next has zero to two labels before</p>
+</li>
+<li>
+<p>a label beginning with the case-insensitive prefix <code>sport</code></p>
+</li>
+<li>
+<p>then has one or more labels, none of which match <code>football</code> nor <code>tennis</code></p>
+</li>
+<li>
+<p>and then ends with a label beginning with <code>Russ</code> or exactly matching <code>Spain</code>.</p>
+</li>
+</ol>
+<ul>
+<li><code>ltxtquery</code> represents a full-text-search-like pattern for matching <code>ltree</code> values. An <code>ltxtquery</code> value contains words, possibly with the modifiers <code>@</code>, <code>*</code>, <code>%</code> at the end; the modifiers have the same meanings as in <code>lquery</code>. Words can be combined with <code>&amp;</code> (AND), <code>|</code> (OR), <code>!</code> (NOT), and parentheses. The key difference from <code>lquery</code> is that <code>ltxtquery</code> matches words without regard to their position in the label path.</li>
+</ul>
+<p>Here's an example <code>ltxtquery</code>:</p>
+<div class="codehilite"><pre><span></span><code>  Europe &amp; Russia*@ &amp; !Transportation
+</code></pre></div>
+
+<p>This will match paths that contain the label <code>Europe</code> and any label beginning with <code>Russia</code> (case-insensitive), but not paths containing the label <code>Transportation</code>. The location of these words within the path is not important. Also, when <code>%</code> is used, the word can be matched to any underscore-separated word within a label, regardless of position.</p>
+<p>Note: <code>ltxtquery</code> allows whitespace between symbols, but <code>ltree</code> and <code>lquery</code> do not.</p>
+<h2 id="operators-and-functions">Operators and Functions<a class="headerlink" href="#operators-and-functions" title="Permanent link">#</a></h2>
+<p>Type <code>ltree</code> has the usual comparison operators <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>. Comparison sorts in the order of a tree traversal, with the children of a node sorted by label text. In addition, the specialized operators shown in <a href="#ltree-op-table"> Operators</a> are available.</p>
+<table id="ltree-op-table">
+<caption><code>ltree</code> Operators</caption>
+<thead>
+<tr>
+<th><p role="func_signature">Operator</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="func_signature"><code>ltree</code> <code>@&gt;</code> <code>ltree</code> boolean</p>
+<p>Is left argument an ancestor of right (or equal)?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree</code> <code>&lt;@</code> <code>ltree</code> boolean</p>
+<p>Is left argument a descendant of right (or equal)?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree</code> <code>~</code> <code>lquery</code> boolean</p>
+<p role="func_signature"><code>lquery</code> <code>~</code> <code>ltree</code> boolean</p>
+<p>Does <code>ltree</code> match <code>lquery</code>?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree</code> <code>?</code> <code>lquery[]</code> boolean</p>
+<p role="func_signature"><code>lquery[]</code> <code>?</code> <code>ltree</code> boolean</p>
+<p>Does <code>ltree</code> match any <code>lquery</code> in array?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree</code> <code>@</code> <code>ltxtquery</code> boolean</p>
+<p role="func_signature"><code>ltxtquery</code> <code>@</code> <code>ltree</code> boolean</p>
+<p>Does <code>ltree</code> match <code>ltxtquery</code>?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree</code> <code>||</code> <code>ltree</code> ltree</p>
+<p>Concatenates <code>ltree</code> paths.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree</code> <code>||</code> <code>text</code> ltree</p>
+<p role="func_signature"><code>text</code> <code>||</code> <code>ltree</code> ltree</p>
+<p>Converts text to <code>ltree</code> and concatenates.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>@&gt;</code> <code>ltree</code> boolean</p>
+<p role="func_signature"><code>ltree</code> <code>&lt;@</code> <code>ltree[]</code> boolean</p>
+<p>Does array contain an ancestor of <code>ltree</code>?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>&lt;@</code> <code>ltree</code> boolean</p>
+<p role="func_signature"><code>ltree</code> <code>@&gt;</code> <code>ltree[]</code> boolean</p>
+<p>Does array contain a descendant of <code>ltree</code>?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>~</code> <code>lquery</code> boolean</p>
+<p role="func_signature"><code>lquery</code> <code>~</code> <code>ltree[]</code> boolean</p>
+<p>Does array contain any path matching <code>lquery</code>?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>?</code> <code>lquery[]</code> boolean</p>
+<p role="func_signature"><code>lquery[]</code> <code>?</code> <code>ltree[]</code> boolean</p>
+<p>Does <code>ltree</code> array contain any path matching any <code>lquery</code>?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>@</code> <code>ltxtquery</code> boolean</p>
+<p role="func_signature"><code>ltxtquery</code> <code>@</code> <code>ltree[]</code> boolean</p>
+<p>Does array contain any path matching <code>ltxtquery</code>?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>?@&gt;</code> <code>ltree</code> ltree</p>
+<p>Returns first array entry that is an ancestor of <code>ltree</code>, or <code>NULL</code> if none.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>?&lt;@</code> <code>ltree</code> ltree</p>
+<p>Returns first array entry that is a descendant of <code>ltree</code>, or <code>NULL</code> if none.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>?~</code> <code>lquery</code> ltree</p>
+<p>Returns first array entry that matches <code>lquery</code>, or <code>NULL</code> if none.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>ltree[]</code> <code>?@</code> <code>ltxtquery</code> ltree</p>
+<p>Returns first array entry that matches <code>ltxtquery</code>, or <code>NULL</code> if none.</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>The operators <code>&lt;@</code>, <code>@&gt;</code>, <code>@</code> and <code>~</code> have analogues <code>^&lt;@</code>, <code>^@&gt;</code>, <code>^@</code>, <code>^~</code>, which are the same except they do not use indexes. These are useful only for testing purposes.</p>
+<p>The available functions are shown in <a href="#ltree-func-table"> Functions</a>.</p>
+<table id="ltree-func-table">
+<caption><code>ltree</code> Functions</caption>
+<thead>
+<tr>
+<th><p role="func_signature">Function</p>
+<p>Description</p>
+<p>Example(s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>subltree</code> ( <code>ltree</code>, <code>start</code> <code>integer</code>, <code>end</code> <code>integer</code> ) ltree</p>
+<p>Returns subpath of <code>ltree</code> from position <code>start</code> to position <code>end</code>-1 (counting from 0).</p>
+<p><code>subltree('Top.Child1.Child2', 1, 2)</code> Child1</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>subpath</code> ( <code>ltree</code>, <code>offset</code> <code>integer</code>, <code>len</code> <code>integer</code> ) ltree</p>
+<p>Returns subpath of <code>ltree</code> starting at position <code>offset</code>, with length <code>len</code>. If <code>offset</code> is negative, subpath starts that far from the end of the path. If <code>len</code> is negative, leaves that many labels off the end of the path.</p>
+<p><code>subpath('Top.Child1.Child2', 0, 2)</code> Top.Child1</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>subpath</code> ( <code>ltree</code>, <code>offset</code> <code>integer</code> ) ltree</p>
+<p>Returns subpath of <code>ltree</code> starting at position <code>offset</code>, extending to end of path. If <code>offset</code> is negative, subpath starts that far from the end of the path.</p>
+<p><code>subpath('Top.Child1.Child2', 1)</code> Child1.Child2</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>nlevel</code> ( <code>ltree</code> ) integer</p>
+<p>Returns number of labels in path.</p>
+<p><code>nlevel('Top.Child1.Child2')</code> 3</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>index</code> ( <code>a</code> <code>ltree</code>, <code>b</code> <code>ltree</code> ) integer</p>
+<p>Returns position of first occurrence of <code>b</code> in <code>a</code>, or -1 if not found.</p>
+<p><code>index('0.1.2.3.5.4.5.6.8.5.6.8', '5.6')</code> 6</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>index</code> ( <code>a</code> <code>ltree</code>, <code>b</code> <code>ltree</code>, <code>offset</code> <code>integer</code> ) integer</p>
+<p>Returns position of first occurrence of <code>b</code> in <code>a</code>, or -1 if not found. The search starts at position <code>offset</code>; negative <code>offset</code> means start <code>-offset</code> labels from the end of the path.</p>
+<p><code>index('0.1.2.3.5.4.5.6.8.5.6.8', '5.6', -4)</code> 9</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>text2ltree</code> ( <code>text</code> ) ltree</p>
+<p>Casts <code>text</code> to <code>ltree</code>.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>ltree2text</code> ( <code>ltree</code> ) text</p>
+<p>Casts <code>ltree</code> to <code>text</code>.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>lca</code> ( <code>ltree</code> [, <code>ltree</code> [, ...]] ) ltree</p>
+<p>Computes longest common ancestor of paths (up to 8 arguments are supported).</p>
+<p><code>lca('1.2.3', '1.2.3.4.5.6')</code> 1.2</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>lca</code> ( <code>ltree[]</code> ) ltree</p>
+<p>Computes longest common ancestor of paths in array.</p>
+<p><code>lca(array['1.2.3'::ltree,'1.2.3.4'])</code> 1.2</p></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="indexes">Indexes<a class="headerlink" href="#indexes" title="Permanent link">#</a></h2>
+<p><code>ltree</code> supports several types of indexes that can speed up the indicated operators:</p>
+<ul>
+<li>
+<p>B-tree index over <code>ltree</code>: <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>&gt;=</code>, <code>&gt;</code></p>
+</li>
+<li>
+<p>Hash index over <code>ltree</code>: <code>=</code></p>
+</li>
+<li>
+<p>GiST index over <code>ltree</code> (<code>gist_ltree_ops</code> opclass): <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>&gt;=</code>, <code>&gt;</code>, <code>@&gt;</code>, <code>&lt;@</code>, <code>@</code>, <code>~</code>, <code>?</code></p>
+</li>
+</ul>
+<p><code>gist_ltree_ops</code> GiST opclass approximates a set of path labels as a bitmap signature. Its optional integer parameter <code>siglen</code> determines the signature length in bytes. The default signature length is 8 bytes. The length must be a positive multiple of <code>int</code> alignment (4 bytes on most machines)) up to 2024. Longer signatures lead to a more precise search (scanning a smaller fraction of the index and fewer heap pages), at the cost of a larger index.</p>
+<p>Example of creating such an index with the default signature length of 8 bytes:</p>
+<div class="codehilite"><pre><span></span><code>  CREATE INDEX path_gist_idx ON test USING GIST (path);
+</code></pre></div>
+
+<p>Example of creating such an index with a signature length of 100 bytes:</p>
+<div class="codehilite"><pre><span></span><code>  CREATE INDEX path_gist_idx ON test USING GIST (path gist_ltree_ops(siglen=100));
+</code></pre></div>
+
+<ul>
+<li>GiST index over <code>ltree[]</code> (<code>gist__ltree_ops</code> opclass): <code>ltree[] &lt;@ ltree</code>, <code>ltree @&gt; ltree[]</code>, <code>@</code>, <code>~</code>, <code>?</code></li>
+</ul>
+<p><code>gist__ltree_ops</code> GiST opclass works similarly to <code>gist_ltree_ops</code> and also takes signature length as a parameter. The default value of <code>siglen</code> in <code>gist__ltree_ops</code> is 28 bytes.</p>
+<p>Example of creating such an index with the default signature length of 28 bytes:</p>
+<div class="codehilite"><pre><span></span><code>  CREATE INDEX path_gist_idx ON test USING GIST (array_path);
+</code></pre></div>
+
+<p>Example of creating such an index with a signature length of 100 bytes:</p>
+<div class="codehilite"><pre><span></span><code>  CREATE INDEX path_gist_idx ON test USING GIST (array_path gist__ltree_ops(siglen=100));
+</code></pre></div>
+
+<p>Note: This index type is lossy.</p>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
+<p>This example uses the following data (also available in file <code>contrib/ltree/ltreetest.sql</code> in the source distribution):</p>
+<div class="codehilite"><pre><span></span><code>CREATE TABLE test (path ltree);
+INSERT INTO test VALUES (&#39;Top&#39;);
+INSERT INTO test VALUES (&#39;Top.Science&#39;);
+INSERT INTO test VALUES (&#39;Top.Science.Astronomy&#39;);
+INSERT INTO test VALUES (&#39;Top.Science.Astronomy.Astrophysics&#39;);
+INSERT INTO test VALUES (&#39;Top.Science.Astronomy.Cosmology&#39;);
+INSERT INTO test VALUES (&#39;Top.Hobbies&#39;);
+INSERT INTO test VALUES (&#39;Top.Hobbies.Amateurs_Astronomy&#39;);
+INSERT INTO test VALUES (&#39;Top.Collections&#39;);
+INSERT INTO test VALUES (&#39;Top.Collections.Pictures&#39;);
+INSERT INTO test VALUES (&#39;Top.Collections.Pictures.Astronomy&#39;);
+INSERT INTO test VALUES (&#39;Top.Collections.Pictures.Astronomy.Stars&#39;);
+INSERT INTO test VALUES (&#39;Top.Collections.Pictures.Astronomy.Galaxies&#39;);
+INSERT INTO test VALUES (&#39;Top.Collections.Pictures.Astronomy.Astronauts&#39;);
+CREATE INDEX path_gist_idx ON test USING GIST (path);
+CREATE INDEX path_idx ON test USING BTREE (path);
+CREATE INDEX path_hash_idx ON test USING HASH (path);
+</code></pre></div>
+
+<p>Now, we have a table test populated with data describing the hierarchy shown below:</p>
+<div class="codehilite"><pre><span></span><code>                        Top
+                     /   |  \
+             Science Hobbies Collections
+                 /       |              \
+        Astronomy   Amateurs_Astronomy Pictures
+           /  \                            |
+Astrophysics  Cosmology                Astronomy
+                                        /  |    \
+                                 Galaxies Stars Astronauts
+</code></pre></div>
+
+<p>We can do inheritance:</p>
+<div class="codehilite"><pre><span></span><code>ltreetest=&gt; SELECT path FROM test WHERE path &lt;@ &#39;Top.Science&#39;;
+                path
+------------------------------------
+ Top.Science
+ Top.Science.Astronomy
+ Top.Science.Astronomy.Astrophysics
+ Top.Science.Astronomy.Cosmology
+(4 rows)
+</code></pre></div>
+
+<p>Here are some examples of path matching:</p>
+<div class="codehilite"><pre><span></span><code>ltreetest=&gt; SELECT path FROM test WHERE path ~ &#39;*.Astronomy.*&#39;;
+                     path
+-----------------------------------------------
+ Top.Science.Astronomy
+ Top.Science.Astronomy.Astrophysics
+ Top.Science.Astronomy.Cosmology
+ Top.Collections.Pictures.Astronomy
+ Top.Collections.Pictures.Astronomy.Stars
+ Top.Collections.Pictures.Astronomy.Galaxies
+ Top.Collections.Pictures.Astronomy.Astronauts
+(7 rows)
+
+ltreetest=&gt; SELECT path FROM test WHERE path ~ &#39;*.!pictures@.Astronomy.*&#39;;
+                path
+------------------------------------
+ Top.Science.Astronomy
+ Top.Science.Astronomy.Astrophysics
+ Top.Science.Astronomy.Cosmology
+(3 rows)
+</code></pre></div>
+
+<p>Here are some examples of full text search:</p>
+<div class="codehilite"><pre><span></span><code>ltreetest=&gt; SELECT path FROM test WHERE path @ &#39;Astro*% &amp; !pictures@&#39;;
+                path
+------------------------------------
+ Top.Science.Astronomy
+ Top.Science.Astronomy.Astrophysics
+ Top.Science.Astronomy.Cosmology
+ Top.Hobbies.Amateurs_Astronomy
+(4 rows)
+
+ltreetest=&gt; SELECT path FROM test WHERE path @ &#39;Astro* &amp; !pictures@&#39;;
+                path
+------------------------------------
+ Top.Science.Astronomy
+ Top.Science.Astronomy.Astrophysics
+ Top.Science.Astronomy.Cosmology
+(3 rows)
+</code></pre></div>
+
+<p>Path construction using functions:</p>
+<div class="codehilite"><pre><span></span><code>ltreetest=&gt; SELECT subpath(path,0,2)||&#39;Space&#39;||subpath(path,2) FROM test WHERE path &lt;@ &#39;Top.Science.Astronomy&#39;;
+                 ?column?
+------------------------------------------
+ Top.Science.Space.Astronomy
+ Top.Science.Space.Astronomy.Astrophysics
+ Top.Science.Space.Astronomy.Cosmology
+(3 rows)
+</code></pre></div>
+
+<p>We could simplify this by creating an SQL function that inserts a label at a specified position in a path:</p>
+<div class="codehilite"><pre><span></span><code>CREATE FUNCTION ins_label(ltree, int, text) RETURNS ltree
+    AS &#39;select subpath($1,0,$2) || $3 || subpath($1,$2);&#39;
+    LANGUAGE SQL IMMUTABLE;
+
+ltreetest=&gt; SELECT ins_label(path,2,&#39;Space&#39;) FROM test WHERE path &lt;@ &#39;Top.Science.Astronomy&#39;;
+                ins_label
+------------------------------------------
+ Top.Science.Space.Astronomy
+ Top.Science.Space.Astronomy.Astrophysics
+ Top.Science.Space.Astronomy.Cosmology
+(3 rows)
+</code></pre></div>
+
+<h2 id="transforms">Transforms<a class="headerlink" href="#transforms" title="Permanent link">#</a></h2>
+<p>The <code>ltree_plpython3u</code> extension implements transforms for the <code>ltree</code> type for PL/Python. If installed and specified when creating a function, <code>ltree</code> values are mapped to Python lists. (The reverse is currently not supported, however.)</p>
+<blockquote>
+<p>[!CAUTION]
+It is strongly recommended that the transform extension be installed in the same schema as <code>ltree</code>. Otherwise there are installation-time security hazards if a transform extension's schema contains objects defined by a hostile user.</p>
+</blockquote>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">#</a></h2>
+<p>All work was done by Teodor Sigaev (<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#111;&#100;&#111;&#114;&#64;&#115;&#116;&#97;&#99;&#107;&#46;&#110;&#101;&#116;">&#116;&#101;&#111;&#100;&#111;&#114;&#64;&#115;&#116;&#97;&#99;&#107;&#46;&#110;&#101;&#116;</a>) and Oleg Bartunov (<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#108;&#101;&#103;&#64;&#115;&#97;&#105;&#46;&#109;&#115;&#117;&#46;&#115;&#117;">&#111;&#108;&#101;&#103;&#64;&#115;&#97;&#105;&#46;&#109;&#115;&#117;&#46;&#115;&#117;</a>). See <a href="http://www.sai.msu.su/~megera/postgres/gist/" rel="noopener" target="_blank"></a> for additional information. Authors would like to thank Eugeny Rodichev for helpful discussions. Comments and bug reports are welcome.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./logical-replication.html">
+          <span class="muted">Anterior</span>Logical Replication
+        </a>
+        <a class="pager-next" href="./manage-ag.html">
+          <span class="muted">Siguiente</span>Managing Databases
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

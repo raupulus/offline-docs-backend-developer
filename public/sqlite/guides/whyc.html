@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Is SQLite Coded In C · SQLite</title>
+<meta name="description" content="Why Is SQLite Coded In C - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/whyc.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Why Is SQLite Coded In C">
+<meta property="og:description" content="Why Is SQLite Coded In C - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Why Is SQLite Coded In C">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Why Is SQLite Coded In C",
+"url": "https://docs.raupulus.dev/sqlite/guides/whyc.html",  "description": "Why Is SQLite Coded In C - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/unlock_notify.html"
+>SQLite Unlock-Notify API</a>
+              </li>
+              <li>
+                <a href="../guides/version3.html"
+>SQLite Version 3 Overview</a>
+              </li>
+              <li>
+                <a href="../guides/printf.html"
+>SQLite&#39;s Built-in printf()</a>
+              </li>
+              <li>
+                <a href="../guides/staleexpridx.html"
+>Stale Expression Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add_strm.html"
+>Streaming Versions of API functions.</a>
+              </li>
+              <li>
+                <a href="../guides/stricttables.html"
+>STRICT Tables</a>
+              </li>
+              <li>
+                <a href="../guides/swarmvtab.html"
+>Swarmvtab Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/doc_target_crossref.html"
+>Target Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/tempfiles.html"
+>Temporary Files Used By SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/glossary.html"
+>Terms of Art Glossary</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_isempty.html"
+>Test if a changeset has recorded any changes.</a>
+              </li>
+              <li>
+                <a href="../guides/th3.html"
+>TH3</a>
+              </li>
+              <li>
+                <a href="../guides/flextypegood.html"
+>The Advantages Of Flexible Typing</a>
+              </li>
+              <li>
+                <a href="../guides/amalg-v-canon.html"
+>The Amalgamation Versus Canonical Sources</a>
+              </li>
+              <li>
+                <a href="../guides/base64.html"
+>The Base64() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/base85.html"
+>The Base85() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/bytecodevtab.html"
+>The Bytecode() And Tables_Used() Table-Valued Functions</a>
+              </li>
+              <li>
+                <a href="../guides/cksumvfs.html"
+>The Checksum VFS Shim</a>
+              </li>
+              <li>
+                <a href="../guides/completion.html"
+>The COMPLETION() Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/csv.html"
+>The CSV Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/dbstat.html"
+>The DBSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/errlog.html"
+>The Error And Warning Log</a>
+              </li>
+              <li>
+                <a href="../guides/series.html"
+>The generate_series Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/geopoly.html"
+>The Geopoly Interface To The SQLite R*Tree Module</a>
+              </li>
+              <li>
+                <a href="../guides/lemon.html"
+>The Lemon LALR(1) Parser Generator</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner-ng.html"
+>The Next-Generation Query Planner</a>
+              </li>
+              <li>
+                <a href="../guides/percentile.html"
+>The Percentile Extension</a>
+              </li>
+              <li>
+                <a href="../guides/rbu.html"
+>The RBU Extension</a>
+              </li>
+              <li>
+                <a href="../guides/schematab.html"
+>The Schema Table</a>
+              </li>
+              <li>
+                <a href="../guides/sessionintro.html"
+>The Session Extension</a>
+              </li>
+              <li>
+                <a href="../guides/spellfix1.html"
+>The Spellfix1 Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/amalgamation.html"
+>The SQLite Amalgamation</a>
+              </li>
+              <li>
+                <a href="../guides/opcode.html"
+>The SQLite Bytecode Engine</a>
+              </li>
+              <li>
+                <a href="../guides/vfs.html"
+>The SQLite OS Interface or &#34;VFS&#34;</a>
+              </li>
+              <li>
+                <a href="../guides/optoverview.html"
+>The SQLite Query Optimizer Overview</a>
+              </li>
+              <li>
+                <a href="../guides/zipfile.html"
+>The SQLite Zipfile Module</a>
+              </li>
+              <li>
+                <a href="../guides/sqlanalyze.html"
+>The sqlite3_analyzer.exe Utility Program</a>
+              </li>
+              <li>
+                <a href="../guides/dbpage.html"
+>The SQLITE_DBPAGE Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/memstat.html"
+>The SQLITE_MEMSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/stmt.html"
+>The SQLITE_STMT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/tclsqlite.html"
+>The Tcl interface to the SQLite library</a>
+              </li>
+              <li>
+                <a href="../guides/uintcseq.html"
+>The UINT Collating Sequence</a>
+              </li>
+              <li>
+                <a href="../guides/unionvtab.html"
+>The UNION Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/assert.html"
+>The Use Of assert() In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/vdbe.html"
+>The Virtual Database Engine of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/uri.html"
+>Uniform Resource Identifiers</a>
+              </li>
+              <li>
+                <a href="../guides/threadsafe.html"
+>Using SQLite In Multi-Threaded Applications</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_config_strmsize.html"
+>Values for sqlite3session_config().</a>
+              </li>
+              <li>
+                <a href="../guides/versionnumbers.html"
+>Version Numbers in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cves.html"
+>Vulnerabilities</a>
+              </li>
+              <li>
+                <a href="../guides/walformat.html"
+>WAL-mode File Format</a>
+              </li>
+              <li>
+                <a href="../guides/keyword_index.html"
+>Website Keyword Index</a>
+              </li>
+              <li>
+                <a href="../guides/famous.html"
+>Well-Known Users Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/affcase1.html"
+>What If OpenDocument Used SQLite?</a>
+              </li>
+              <li>
+                <a href="../guides/whyc.html"
+class="is-current" aria-current="page">Why Is SQLite Coded In C</a>
+              </li>
+              <li>
+                <a href="../guides/whynotgit.html"
+>Why SQLite Does Not Use Git</a>
+              </li>
+              <li>
+                <a href="../guides/whybytecode.html"
+>Why SQLite Uses Bytecode</a>
+              </li>
+              <li>
+                <a href="../guides/windowfunctions.html"
+>Window Functions</a>
+              </li>
+              <li>
+                <a href="../guides/wal.html"
+>Write-Ahead Logging</a>
+              </li>
+              <li>
+                <a href="../guides/zeroconf.html"
+>Zero-Configuration</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Why Is SQLite Coded In C</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/whyc.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#11-performance">1.1. Performance#</a></li>
+              <li class="lvl-2"><a href="#12-compatibility">1.2. Compatibility#</a></li>
+              <li class="lvl-2"><a href="#13-low-dependency">1.3. Low-Dependency#</a></li>
+              <li class="lvl-2"><a href="#14-stability">1.4. Stability#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-c-is-best">1. C Is Best<a class="headerlink" href="#1-c-is-best" title="Permanent link">#</a></h1>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Note: Sections 2.0 and 3.0 of this article were added in response to comments on <a href="https://news.ycombinator.com/item?id=16585120" rel="noopener" target="_blank">Hacker News</a> and <a href="https://www.reddit.com/r/programming/comments/84fzoc/why_is_sqlite_coded_in_c/" rel="noopener" target="_blank">Reddit</a>.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Since its inception on 2000-05-29, SQLite has been implemented in generic C. C was and continues to be the best language for implementing a software library like SQLite. There are no plans to recode SQLite in any other programming language at this time.</p>
+<p>The reasons why C is the best language to implement SQLite include:</p>
+<ul>
+<li>Performance</li>
+<li>Compatibility</li>
+<li>Low-dependency</li>
+<li>Stability</li>
+</ul>
+<h2 id="11-performance">1.1. Performance<a class="headerlink" href="#11-performance" title="Permanent link">#</a></h2>
+<p>An intensively used low-level library like SQLite needs to be fast. (And SQLite is fast, see <a href="intern-v-extern-blob.html">Internal Versus External BLOBs</a> and <a href="fasterthanfs.html">35% Faster Than The Filesystem</a> for examples.)</p>
+<p>C is a great language for writing fast code. C is sometimes described as "portable assembly language". It enables developers to code as close to the underlying hardware as possible while still remaining portable across platforms.</p>
+<p>Other programming languages sometimes claim to be "as fast as C". But no other language claims to be faster than C for general-purpose programming, because none are.</p>
+<h2 id="12-compatibility">1.2. Compatibility<a class="headerlink" href="#12-compatibility" title="Permanent link">#</a></h2>
+<p>Nearly all systems have the ability to call libraries written in C. This is not true of other implementation languages.</p>
+<p>So, for example, Android applications written in Java are able to invoke SQLite (through an adaptor). Maybe it would have been more convenient for Android if SQLite had been coded in Java as that would make the interface simpler. However, on iPhone applications are coded in Objective-C or Swift, neither of which have the ability to call libraries written in Java. Thus, SQLite would be unusable on iPhones had it been written in Java.</p>
+<h2 id="13-low-dependency">1.3. Low-Dependency<a class="headerlink" href="#13-low-dependency" title="Permanent link">#</a></h2>
+<p>Libraries written in C do not have a huge run-time dependency. In its minimum configuration, SQLite requires only the following routines from the standard C library:</p>
+<table data-border="0">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr>
+<td data-valign="top"><ul>
+<li>memcmp()</li>
+<li>memcpy()</li>
+<li>memmove()</li>
+<li>memset()</li>
+</ul></td>
+<td>   </td>
+<td data-valign="top"><ul>
+<li>strcmp()</li>
+<li>strlen()</li>
+<li>strncmp()</li>
+</ul></td>
+</tr>
+</tbody>
+</table>
+
+<p>In a more complete build, SQLite also uses library routines like malloc() and free() and operating system interfaces for opening, reading, writing, and closing files. But even then, the number of dependencies is very small. Other "modern" languages, in contrast, often require multi-megabyte runtimes loaded with thousands and thousands of interfaces.</p>
+<h2 id="14-stability">1.4. Stability<a class="headerlink" href="#14-stability" title="Permanent link">#</a></h2>
+<p>The C language is old and boring. It is a well-known and well-understood language. This is exactly what one wants when developing a module like SQLite. Writing a small, fast, and reliable database engine is hard enough as it is without the implementation language changing out from under you with each update to the implementation language specification.</p>
+<h1 id="2-why-isnt-sqlite-coded-in-an-object-oriented-language">2. Why Isn't SQLite Coded In An Object-Oriented Language?<a class="headerlink" href="#2-why-isnt-sqlite-coded-in-an-object-oriented-language" title="Permanent link">#</a></h1>
+<p>Some programmers cannot imagine developing a complex system like SQLite in a language that is not "object oriented". So why is SQLite not coded in C++ or Java?</p>
+<ol>
+<li>
+<p>Libraries written in C++ or Java can generally only be used by applications written in the same language. It is difficult to get an application written in Haskell or Java to invoke a library written in C++. On the other hand, libraries written in C are callable from any programming language.</p>
+</li>
+<li>
+<p>Object-Oriented is a design pattern, not a programming language. You can do object-oriented programming in any language you want, including assembly language. Some languages (ex: C++ or Java) make object-oriented easier. But you can still do object-oriented programming in languages like C.</p>
+</li>
+<li>
+<p>Object-oriented is not the only valid design pattern. Many programmers have been taught to think purely in terms of objects. And, to be fair, objects are often a good way to decompose a problem. But objects are not the only way, and are not always the best way to decompose a problem. Sometimes good old procedural code is easier to write, easier to maintain and understand, and faster than object-oriented code.</p>
+</li>
+<li>
+<p>When SQLite was first being developed, Java was a young and immature language. C++ was older, but was undergoing such growing pains that it was difficult to find any two C++ compilers that worked the same way. So C was definitely a better choice back when SQLite was first being developed. The situation is less stark now, but there is little to no benefit in recoding SQLite at this point.</p>
+</li>
+</ol>
+<h1 id="3-why-isnt-sqlite-coded-in-a-safe-language">3. Why Isn't SQLite Coded In A "Safe" Language?<a class="headerlink" href="#3-why-isnt-sqlite-coded-in-a-safe-language" title="Permanent link">#</a></h1>
+<p>There has lately been a lot of interest in "safe" programming languages like Rust or Go in which it is impossible, or is at least difficult, to make common programming errors like memory leaks or array overruns. So the question often arises as to why SQLite is not coded in a "safe" language.</p>
+<ol>
+<li>
+<p>None of the safe programming languages existed for the first 10 years of SQLite's existence. SQLite could be recoded in Go or Rust, but doing so would probably introduce far more bugs than would be fixed, and it may also result in slower code.</p>
+</li>
+<li>
+<p>Safe languages insert additional machine branches to do things like verify that array accesses are in-bounds. In correct code, those branches are never taken. That means that the machine code cannot be 100% branch tested, which is an important component of SQLite's quality strategy.</p>
+</li>
+<li>
+<p>Safe languages usually want to abort if they encounter an out-of-memory (OOM) situation. SQLite is designed to recover gracefully from an OOM. It is unclear how this could be accomplished in the current crop of safe languages.</p>
+</li>
+<li>
+<p>All of the existing safe languages are new. The developers of SQLite applaud the efforts of computer language researchers in trying to develop languages that are easier to program safely. We encourage these efforts to continue. But we ourselves are more interested in old and boring languages when it comes to implementing SQLite.</p>
+</li>
+</ol>
+<p>All that said, it is possible that SQLite might one day be recoded in Rust. Recoding SQLite in Go is unlikely since Go hates assert(). But Rust is a possibility. Some preconditions that must occur before SQLite is recoded in Rust include:</p>
+<ol>
+<li>Rust needs to mature a little more, stop changing so fast, and move further toward being old and boring.</li>
+<li>Rust needs to demonstrate that it can be used to create general-purpose libraries that are callable from all other programming languages.</li>
+<li>Rust needs to demonstrate that it can produce object code that works on obscure embedded devices, including devices that lack an operating system.</li>
+<li>Rust needs to pick up the necessary tooling that enables one to do 100% branch coverage testing of the compiled binaries.</li>
+<li>Rust needs a mechanism to recover gracefully from OOM errors.</li>
+<li>Rust needs to demonstrate that it can do the kinds of work that C does in SQLite without a significant speed penalty.</li>
+</ol>
+<p>If you are a "rustacean" and feel that Rust already meets the preconditions listed above, and that SQLite should be recoded in Rust, then you are welcomed and encouraged to contact the SQLite developers privately and argue your case.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/affcase1.html">
+          <span class="muted">Anterior</span>What If OpenDocument Used SQLite?
+        </a>
+        <a class="pager-next" href="../guides/whynotgit.html">
+          <span class="muted">Siguiente</span>Why SQLite Does Not Use Git
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

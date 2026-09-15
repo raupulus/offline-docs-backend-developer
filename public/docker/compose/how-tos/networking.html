@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Networking in Compose · Docker</title>
+<meta name="description" content="Networking in Compose - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/compose/how-tos/networking.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Networking in Compose">
+<meta property="og:description" content="Networking in Compose - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Networking in Compose">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Networking in Compose",
+"url": "https://docs.raupulus.dev/docker/compose/how-tos/networking.html",  "description": "Networking in Compose - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Compose
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../compose/index.html"
+>Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/index.html"
+>Overview of Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/customize.html"
+>Customize Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/usage.html"
+>Use the default Compose Bridge transformation</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/use-model-runner.html"
+>Use Docker Model Runner with Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/compose-sdk.html"
+>Using the Compose SDK</a>
+              </li>
+              <li>
+                <a href="../../compose/gettingstarted.html"
+>Docker Compose Quickstart</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/dependent-images.html"
+>Build dependent images</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/index.html"
+>Environment variables in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/best-practices.html"
+>Best practices for working with environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/envvars-precedence.html"
+>Environment variables precedence in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/envvars.html"
+>Configure pre-defined environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/set-environment-variables.html"
+>Set environment variables within your container&#39;s environment</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/variable-interpolation.html"
+>Set, use, and manage variables in a Compose file with interpolation</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/file-watch.html"
+>Use Compose Watch</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/gpu-support.html"
+>Run Docker Compose services with GPU access</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/init-containers.html"
+>Use init containers in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/lifecycle.html"
+>Using lifecycle hooks with Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/index.html"
+>Use multiple Compose files</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/extends.html"
+>Extend your Compose file</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/include.html"
+>Include</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/merge.html"
+>Merge Compose files</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/networking.html"
+class="is-current" aria-current="page">Networking in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/oci-artifact.html"
+>Package and deploy Docker Compose applications as OCI artifacts</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/production.html"
+>Use Compose in production</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/profiles.html"
+>Using profiles with Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/project-name.html"
+>Specify a project name</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/provider-services.html"
+>Use provider services</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/startup-order.html"
+>Control startup and shutdown order in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/use-secrets.html"
+>Manage secrets securely in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/install/index.html"
+>Overview of installing Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/install/linux.html"
+>Install the Docker Compose plugin</a>
+              </li>
+              <li>
+                <a href="../../compose/install/standalone.html"
+>Install the Docker Compose standalone (Legacy)</a>
+              </li>
+              <li>
+                <a href="../../compose/install/uninstall.html"
+>Uninstall Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/index.html"
+>Introduction to Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/compose-application-model.html"
+>How Compose works</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/features-uses.html"
+>Why use Compose?</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/history.html"
+>History and development of Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/release-notes.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/faq.html"
+>Frequently asked questions about Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/feedback.html"
+>Give feedback</a>
+              </li>
+              <li>
+                <a href="../../compose/trust-model.html"
+>Trust model for Compose files</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Networking in Compose</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#default-network-and-service-discovery">Default network and service discovery#</a></li>
+              <li class="lvl-3"><a href="#updating-containers-on-the-network">Updating containers on the network#</a></li>
+              <li class="lvl-2"><a href="#change-the-network-mode">Change the network mode#</a></li>
+              <li class="lvl-2"><a href="#specify-custom-networks">Specify custom networks#</a></li>
+              <li class="lvl-3"><a href="#internal-networks">Internal networks#</a></li>
+              <li class="lvl-3"><a href="#configure-the-default-network">Configure the default network#</a></li>
+              <li class="lvl-2"><a href="#use-an-existing-external-network">Use an existing external network#</a></li>
+              <li class="lvl-3"><a href="#connecting-multiple-compose-projects">Connecting multiple Compose projects#</a></li>
+              <li class="lvl-2"><a href="#hybrid-networking">Hybrid networking#</a></li>
+              <li class="lvl-2"><a href="#custom-dns-with-extra_hosts">Custom DNS with extra_hosts#</a></li>
+              <li class="lvl-2"><a href="#multi-host-networking">Multi-host networking#</a></li>
+              <li class="lvl-2"><a href="#link-containers">Link containers#</a></li>
+              <li class="lvl-2"><a href="#debugging">Debugging#</a></li>
+              <li class="lvl-3"><a href="#inspect-port-mappings">Inspect port mappings#</a></li>
+              <li class="lvl-3"><a href="#verify-network-membership">Verify network membership#</a></li>
+              <li class="lvl-3"><a href="#check-connectivity">Check connectivity#</a></li>
+              <li class="lvl-2"><a href="#further-reference-information">Further reference information#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Compose handles networking for you by default, but gives you fine-grained control when you need it. This page explains how the default network works and how containers discover each other by name. It also covers when and how to define custom networks, connect services across separate Compose projects, map custom hostnames, and debug connectivity issues.</p>
+<h2 id="default-network-and-service-discovery">Default network and service discovery<a class="headerlink" href="#default-network-and-service-discovery" title="Permanent link">#</a></h2>
+<p>By default, Compose sets up a single <a href="../../docker-hub/repos/create.html">network</a> for your app. Each container for a service joins the default network and is both reachable by other containers on that network, and discoverable by its service name. This network uses the <code>bridge</code> driver. To attach services to a different Compose network or an external one, see <a href="#specify-custom-networks">Specify custom networks</a>. To change how a service uses the host network stack (<code>network_mode: host</code>), see <a href="#change-the-network-mode">Change the network mode</a>.</p>
+<p>For most development setups, the default network is sufficient. When you run <code>docker compose up</code>, Compose creates a network named <code>&lt;project-name&gt;_default</code> and attaches all services to it. Each service registers its name with an internal DNS server, so containers can reach each other using the service name directly. No IP addresses or manual configuration is needed.</p>
+<p>For example, suppose your app is in a directory called <code>myapp</code>, and your <code>compose.yaml</code> looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">web</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8000:8000&quot;</span>
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:latest</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8001:5432&quot;</span>
+</code></pre></div>
+
+<p>Compose automatically connects all services to the default network, so you don't need to define <code>networks</code> explicitly in the Compose file.</p>
+<p>When you run <code>docker compose up</code>, the following happens:</p>
+<ol>
+<li>A network called <code>myapp_default</code> is created.</li>
+<li>A container is created using <code>web</code>'s configuration. It joins <code>myapp_default</code> under the name <code>web</code>.</li>
+<li>A container is created using <code>db</code>'s configuration. It joins <code>myapp_default</code> under the name <code>db</code>.</li>
+</ol>
+<p>Each container can now look up the service name <code>web</code> or <code>db</code> and get back the appropriate container's IP address. The <code>web</code> service can connect to the database at <code>postgres://db:5432</code>. From the host machine, the same database is accessible at <code>postgres://localhost:8001</code> if your container is running locally.</p>
+<blockquote>
+<p>[!TIP]</p>
+<p>Docker assigns container IP addresses dynamically from the network's subnet each time a container starts so they are not persisted across restarts or recreations. This means you should always reference services by name, not IP address. When containers are recreated, for example after a configuration change, they receive a new IP address. The service name stays stable.</p>
+</blockquote>
+<p>Your app's network is given a name based on the "project name", which is taken from the name of the directory it lives in. You can override the project name with either the <a href="/reference/cli/docker/compose/"><code>--project-name</code> flag</a> or the <a href="environment-variables/envvars.html#compose_project_name"><code>COMPOSE_PROJECT_NAME</code> environment variable</a>.</p>
+<p>The <code>HOST_PORT</code> and <code>CONTAINER_PORT</code> serve different purposes. In the example above, for <code>db</code>, the <code>HOST_PORT</code> is <code>8001</code> and the container port is <code>5432</code> (the Postgres default). Networked service-to-service communication uses the <code>CONTAINER_PORT</code>. The host port is only used when accessing the service from outside the network.</p>
+<h3 id="updating-containers-on-the-network">Updating containers on the network<a class="headerlink" href="#updating-containers-on-the-network" title="Permanent link">#</a></h3>
+<p>If you make a configuration change to a service and run <code>docker compose up</code> to update it, the old container is removed and the new one joins the network under a different IP address but the same name. Running containers can look up that name and connect to the new address, but the old address stops working.</p>
+<p>If any containers have connections open to the old container, they are closed. It is each container's responsibility to detect this condition, look up the name again, and reconnect.</p>
+<h2 id="change-the-network-mode">Change the network mode<a class="headerlink" href="#change-the-network-mode" title="Permanent link">#</a></h2>
+<p>By default, each service joins the project's bridge network. It is the most secure networking mode. If you don't specify <a href="../../reference/compose-file/services.html#network_mode"><code>network_mode</code></a>, this is the type of network you are creating.</p>
+<p>You can override the networking mode on a per-service basis. The <code>network_mode</code> option accepts the following values:</p>
+<ul>
+<li><code>host</code>: The container shares the host's network stack. No port mapping is needed or supported, and service name DNS resolution does not work. Use for system-level tools like network monitors that require direct access to host interfaces. A container using <code>network_mode: host</code> can access all host ports and observe all network traffic on the host. Use it only when genuinely required.</li>
+<li><code>none</code>: Turns off all container networking.</li>
+<li><code>service:{name}</code>: Gives the container access to the specified container by referring to its service name.</li>
+<li><code>container:{name}</code>: Gives the container access to the specified container by referring to its container ID.</li>
+</ul>
+<p>You can mix modes in a single project:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isolated</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;3000:3000&quot;</span>
+
+<span class="w">  </span><span class="nt">monitoring</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">netdata/netdata</span>
+<span class="w">    </span><span class="nt">network_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span><span class="w">   </span><span class="c1"># Can monitor host system and all host ports</span>
+
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">isolated</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bridge</span>
+</code></pre></div>
+
+<h2 id="specify-custom-networks">Specify custom networks<a class="headerlink" href="#specify-custom-networks" title="Permanent link">#</a></h2>
+<p>Instead of just using the default app network, you can specify your own networks with the top-level <code>networks</code> key. This lets you create more complex topologies and specify <a href="/engine/extend/plugins_network/">custom network drivers</a> and options. You can also use it to connect services to externally-created networks which aren't managed by Compose.</p>
+<p>Each service can specify what networks to connect to with the service-level <code>networks</code> key, which is a list of names referencing entries under the top-level <code>networks</code> key.</p>
+<p>The following example shows a Compose file which defines two custom networks. The <code>proxy</code> service is isolated from the <code>db</code> service, because they do not share a network in common. Only <code>app</code> can talk to both.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">proxy</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./proxy</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./app</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">backend</span>
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:latest</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">backend</span>
+
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">frontend</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bridge</span><span class="w">   </span><span class="c1"># Specify driver options</span>
+<span class="w">    </span><span class="nt">driver_opts</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">com.docker.network.bridge.host_binding_ipv4</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;127.0.0.1&quot;</span>
+<span class="w">  </span><span class="nt">backend</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-driver</span><span class="w">  </span><span class="c1"># Use a custom driver</span>
+</code></pre></div>
+
+<p>Networks can be configured with static IP addresses by setting the <a href="../../reference/compose-file/services.html#ipv4_address-ipv6_address">ipv4_address and/or ipv6_address</a> for each attached network.</p>
+<p>Networks can also be given a <a href="../../reference/compose-file/networks.html#name">custom name</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">frontend</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom_frontend</span>
+<span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-driver-1</span>
+</code></pre></div>
+
+<h3 id="internal-networks">Internal networks<a class="headerlink" href="#internal-networks" title="Permanent link">#</a></h3>
+<p>Setting <code>internal: true</code> on a network creates it without a connection to the host's network interfaces. It has no default gateway for external connectivity. This is useful for services like databases that should be completely unreachable from outside the container network:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">cache</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isolated</span>
+
+<span class="w">  </span><span class="nt">worker</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myworker</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">isolated</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">public</span>
+
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">isolated</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">internal</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">   </span><span class="c1"># No external connectivity</span>
+<span class="w">  </span><span class="nt">public</span><span class="p">:</span><span class="w">   </span><span class="c1"># Standard bridge network, created by Compose on docker compose up</span>
+</code></pre></div>
+
+<p>Note that a service connected to both an internal and a non-internal network (like <code>worker</code> above) can still reach the internet via the non-internal network <code>public</code>.</p>
+<h3 id="configure-the-default-network">Configure the default network<a class="headerlink" href="#configure-the-default-network" title="Permanent link">#</a></h3>
+<p>Instead of, or as well as, specifying your own networks, you can also change the settings of the app-wide default network by defining an entry under <code>networks</code> named <code>default</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">web</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8000:8000&quot;</span>
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:latest</span>
+
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">default</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-driver-1</span><span class="w">   </span><span class="c1"># Use a custom driver</span>
+</code></pre></div>
+
+<h2 id="use-an-existing-external-network">Use an existing external network<a class="headerlink" href="#use-an-existing-external-network" title="Permanent link">#</a></h2>
+<p>If you've manually created a bridge network using <code>docker network create</code>, you can connect your Compose services to it by marking the network as <a href="../../reference/compose-file/networks.html#external"><code>external</code></a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">network1</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-pre-existing-network</span>
+<span class="w">    </span><span class="nt">external</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+
+<p>Instead of creating <code>&lt;project-name&gt;_default</code>, Compose looks for a network called <code>my-pre-existing-network</code> and connects your containers to it.</p>
+<h3 id="connecting-multiple-compose-projects">Connecting multiple Compose projects<a class="headerlink" href="#connecting-multiple-compose-projects" title="Permanent link">#</a></h3>
+<p>External networks are particularly useful when services in separate Compose projects need to communicate. Create a shared network once, then reference it as external in each project:</p>
+<div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>inter-project
+</code></pre></div>
+
+<p>backend-compose.yaml:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">api</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapi:latest</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shared</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w">   </span><span class="c1"># Also keep the project&#39;s internal network</span>
+
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">shared</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">external</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inter-project</span>
+</code></pre></div>
+
+<p>frontend-compose.yaml:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">web</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myfrontend:latest</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">API_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://api:8080</span><span class="w">   </span><span class="c1"># Reference by service name</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shared</span>
+
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">shared</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">external</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inter-project</span>
+</code></pre></div>
+
+<p>Services on the same external network can reach each other by service name, just like services within a single project.</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>The external network must exist before you run <code>docker compose up</code>. If it doesn't, Compose fails with a <code>Network not found</code> error. Always create it first with <code>docker network create</code>.</p>
+</blockquote>
+<h2 id="hybrid-networking">Hybrid networking<a class="headerlink" href="#hybrid-networking" title="Permanent link">#</a></h2>
+<p>A service can belong to both an external shared network and its own project-internal network. This lets you expose only the services that need to be reachable from other projects, while keeping everything else, such as databases, fully isolated:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">api</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp-api</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shared</span><span class="w">     </span><span class="c1"># Reachable from other projects</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">internal</span><span class="w">   </span><span class="c1"># Can also reach the database</span>
+
+<span class="w">  </span><span class="nt">database</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:latest</span>
+<span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">internal</span><span class="w">   </span><span class="c1"># Not exposed on the shared network</span>
+
+<span class="nt">networks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">shared</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inter-project</span>
+<span class="w">    </span><span class="nt">external</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">internal</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span><span class="w">     </span><span class="c1"># Project-specific, isolated</span>
+</code></pre></div>
+
+<h2 id="custom-dns-with-extra_hosts">Custom DNS with <code>extra_hosts</code><a class="headerlink" href="#custom-dns-with-extra_hosts" title="Permanent link">#</a></h2>
+<p>You can add custom hostname-to-IP mappings to a container's <code>/etc/hosts</code> file using <a href="../../reference/compose-file/services.html#extra_hosts"><code>extra_hosts</code></a>. This is useful when a service needs to resolve a hostname that isn't registered in Docker's internal DNS. For example, a fixed-IP dependency or a staging endpoint:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp</span>
+<span class="w">    </span><span class="nt">extra_hosts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;api.staging:192.168.1.100&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;cache.internal:192.168.1.101&quot;</span>
+</code></pre></div>
+
+<p>To map a hostname dynamically to the host machine's IP, use the special <code>host-gateway</code> value:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp</span>
+<span class="w">    </span><span class="nt">extra_hosts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;host.docker.internal:host-gateway&quot;</span>
+</code></pre></div>
+
+<p>On Linux, <code>host-gateway</code> resolves to the host's IP on the default bridge network. On Mac and Windows, Docker automatically provides this, <code>host-gateway</code> resolves to the same internal IP address as <code>host.docker.internal</code>.</p>
+<p>You can also drive <code>extra_hosts</code> from environment variables, which makes it easy to point services at different targets per environment:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp</span>
+<span class="w">    </span><span class="nt">extra_hosts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;api.service:${API_HOST:-127.0.0.1}&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;auth.service:${AUTH_HOST:-127.0.0.1}&quot;</span>
+</code></pre></div>
+
+<p>Where <code>.env.development</code> might set <code>API_HOST=localhost</code> and a production env file might set <code>API_HOST=10.0.1.50</code>.</p>
+<p>To verify what has been injected, inspect the hosts file inside the container:</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>cat<span class="w"> </span>/etc/hosts
+</code></pre></div>
+
+<h2 id="multi-host-networking">Multi-host networking<a class="headerlink" href="#multi-host-networking" title="Permanent link">#</a></h2>
+<p>When deploying a Compose application on a Docker Engine with <a href="../../engine/swarm/index.html">Swarm mode enabled</a>, you can use the built-in <code>overlay</code> driver to enable multi-host communication. Overlay networks are always created as <code>attachable</code>. You can optionally set the <a href="../../reference/compose-file/networks.html#attachable"><code>attachable</code></a> property to <code>false</code>.</p>
+<p>To learn more, see the <a href="../../engine/network/drivers/overlay.html">overlay network driver documentation</a>.</p>
+<h2 id="link-containers">Link containers<a class="headerlink" href="#link-containers" title="Permanent link">#</a></h2>
+<p>Links allow you to define extra aliases by which a service is reachable from another service. They are not required for basic service-to-service communication. By default, any service can reach any other service at that service's name. In the following example, <code>db</code> is reachable from <code>web</code> at both the hostnames <code>db</code> and <code>database</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">web</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">links</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;db:database&quot;</span>
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:latest</span>
+</code></pre></div>
+
+<p>See the <a href="../../reference/compose-file/services.html#links">links reference</a> for more information.</p>
+<h2 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">#</a></h2>
+<p>When a service can't reach another, work through the following steps in order: first confirm the network configuration looks right, then confirm the containers are actually attached, then test live connectivity.</p>
+<h3 id="inspect-port-mappings">Inspect port mappings<a class="headerlink" href="#inspect-port-mappings" title="Permanent link">#</a></h3>
+<p>To find out which host port maps to a container port, use <code>docker compose port</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Which host port maps to container port 5432 on db?</span>
+$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>port<span class="w"> </span>db<span class="w"> </span><span class="m">5432</span>
+<span class="c1"># Output: 0.0.0.0:8001</span>
+</code></pre></div>
+
+<p>This is especially useful when using dynamic port mapping, where the host port changes on every <code>docker compose up</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">web</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80&quot;</span><span class="w">   </span><span class="c1"># Docker assigns the host port dynamically</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>port<span class="w"> </span>web<span class="w"> </span><span class="m">80</span>
+<span class="c1"># Output: 0.0.0.0:55432</span>
+</code></pre></div>
+
+<p>When you scale a service, each replica gets its own dynamic port. Use <code>--index</code> to query a specific replica:</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--scale<span class="w"> </span><span class="nv">web</span><span class="o">=</span><span class="m">3</span>
+
+$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>port<span class="w"> </span>--index<span class="o">=</span><span class="m">1</span><span class="w"> </span>web<span class="w"> </span><span class="m">80</span><span class="w">   </span><span class="c1"># Output: 0.0.0.0:55001</span>
+$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>port<span class="w"> </span>--index<span class="o">=</span><span class="m">2</span><span class="w"> </span>web<span class="w"> </span><span class="m">80</span><span class="w">   </span><span class="c1"># Output: 0.0.0.0:55002</span>
+$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>port<span class="w"> </span>--index<span class="o">=</span><span class="m">3</span><span class="w"> </span>web<span class="w"> </span><span class="m">80</span><span class="w">   </span><span class="c1"># Output: 0.0.0.0:55003</span>
+</code></pre></div>
+
+<p>By default, <code>docker compose port</code> looks for TCP mappings. If a service exposes both TCP and UDP on the same port, use <code>--protocol</code>:</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>port<span class="w"> </span>--protocol<span class="o">=</span>udp<span class="w"> </span>myservice<span class="w"> </span><span class="m">53</span>
+</code></pre></div>
+
+<h3 id="verify-network-membership">Verify network membership<a class="headerlink" href="#verify-network-membership" title="Permanent link">#</a></h3>
+<p>To check which containers are attached to a network (useful when troubleshooting connectivity across external or custom networks):</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span>&lt;network-name&gt;
+</code></pre></div>
+
+<h3 id="check-connectivity">Check connectivity<a class="headerlink" href="#check-connectivity" title="Permanent link">#</a></h3>
+<p>If the network membership looks correct but services still can't reach each other, test connectivity from inside a running container using <code>docker compose exec</code>.</p>
+<h2 id="further-reference-information">Further reference information<a class="headerlink" href="#further-reference-information" title="Permanent link">#</a></h2>
+<p>For full details of the network configuration options available, see the following references:</p>
+<ul>
+<li><a href="../../reference/compose-file/networks.html">Top-level <code>networks</code> element</a></li>
+<li><a href="../../reference/compose-file/services.html#networks">Service-level <code>networks</code> attribute</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../compose/how-tos/multiple-compose-files/merge.html">
+          <span class="muted">Anterior</span>Merge Compose files
+        </a>
+        <a class="pager-next" href="../../compose/how-tos/oci-artifact.html">
+          <span class="muted">Siguiente</span>Package and deploy Docker Compose applications as OCI artifacts
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimize cache usage in builds · Docker</title>
+<meta name="description" content="Optimize cache usage in builds - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/build/cache/optimize.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Optimize cache usage in builds">
+<meta property="og:description" content="Optimize cache usage in builds - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Optimize cache usage in builds">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Optimize cache usage in builds",
+"url": "https://docs.raupulus.dev/docker/build/cache/optimize.html",  "description": "Optimize cache usage in builds - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Build
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../build/builders/drivers/index.html"
+>Build drivers</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/cloud.html"
+>Cloud driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/docker-container.html"
+>Docker container driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/docker.html"
+>Docker driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/kubernetes.html"
+>Kubernetes driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/remote.html"
+>Remote driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/manage.html"
+>Manage builders</a>
+              </li>
+              <li>
+                <a href="../../build/building/index.html"
+>Building</a>
+              </li>
+              <li>
+                <a href="../../build/building/base-images.html"
+>Base images</a>
+              </li>
+              <li>
+                <a href="../../build/building/best-practices.html"
+>Building best practices</a>
+              </li>
+              <li>
+                <a href="../../build/building/cdi.html"
+>Container Device Interface (CDI)</a>
+              </li>
+              <li>
+                <a href="../../build/building/export.html"
+>Export binaries</a>
+              </li>
+              <li>
+                <a href="../../build/building/multi-platform.html"
+>Multi-platform builds</a>
+              </li>
+              <li>
+                <a href="../../build/building/multi-stage.html"
+>Multi-stage builds</a>
+              </li>
+              <li>
+                <a href="../../build/building/secrets.html"
+>Build secrets</a>
+              </li>
+              <li>
+                <a href="../../build/building/variables.html"
+>Build variables</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/index.html"
+>BuildKit</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/configure.html"
+>Configure BuildKit</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/dockerfile-release-notes.html"
+>Dockerfile release notes</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/frontend.html"
+>Custom Dockerfile syntax</a>
+              </li>
+              <li>
+                <a href="../../build/cache/index.html"
+>Docker build cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/index.html"
+>Cache storage backends</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/azblob.html"
+>Azure Blob Storage cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/gha.html"
+>GitHub Actions cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/inline.html"
+>Inline cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/local.html"
+>Local cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/registry.html"
+>Registry cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/s3.html"
+>Amazon S3 cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/garbage-collection.html"
+>Build garbage collection</a>
+              </li>
+              <li>
+                <a href="../../build/cache/invalidation.html"
+>Build cache invalidation</a>
+              </li>
+              <li>
+                <a href="../../build/cache/optimize.html"
+class="is-current" aria-current="page">Optimize cache usage in builds</a>
+              </li>
+              <li>
+                <a href="../../build/checks.html"
+>Checking your build configuration</a>
+              </li>
+              <li>
+                <a href="../../build/ci/index.html"
+>Continuous integration with Docker</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/index.html"
+>Docker Build GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/annotations.html"
+>Add image annotations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/attestations.html"
+>Add SBOM and provenance attestations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/build-summary.html"
+>GitHub Actions build summary</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/cache.html"
+>Cache management with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/checks.html"
+>Validating build configuration with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/configure-builder.html"
+>Configuring your GitHub Actions builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/copy-image-registries.html"
+>Copy image between registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/export-docker.html"
+>Export to Docker with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/index.html"
+>Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/architecture.html"
+>Docker GitHub Builder architecture</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/bake.html"
+>Bake with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/build.html"
+>Build with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/local-registry.html"
+>Local registry with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/manage-tags-labels.html"
+>Manage tags and labels with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/multi-platform.html"
+>Multi-platform image with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/named-contexts.html"
+>Named contexts with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/push-multi-registries.html"
+>Push to multiple registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/reproducible-builds.html"
+>Reproducible builds with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/secrets.html"
+>Using secrets with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/share-image-jobs.html"
+>Share built image between jobs with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/test-before-push.html"
+>Test before push with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/update-dockerhub-desc.html"
+>Update Docker Hub description with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/index.html"
+>Core concepts</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/context.html"
+>Build context</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/dockerfile.html"
+>Dockerfile overview</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/overview.html"
+>Docker Build Overview</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Optimize cache usage in builds</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#order-your-layers">Order your layers#</a></li>
+              <li class="lvl-2"><a href="#keep-the-context-small">Keep the context small#</a></li>
+              <li class="lvl-2"><a href="#use-cache-mounts">Use cache mounts#</a></li>
+              <li class="lvl-2"><a href="#use-an-external-cache">Use an external cache#</a></li>
+              <li class="lvl-2"><a href="#summary">Summary#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>When building with Docker, a layer is reused from the build cache if the
+instruction and the files it depends on hasn't changed since it was previously
+built. Reusing layers from the cache speeds up the build process because Docker
+doesn't have to rebuild the layer again.</p>
+<p>Here are a few techniques you can use to optimize build caching and speed up
+the build process:</p>
+<ul>
+<li><a href="#order-your-layers">Order your layers</a>: Putting the commands in your
+  Dockerfile into a logical order can help you avoid unnecessary cache
+  invalidation.</li>
+<li><a href="#keep-the-context-small">Keep the context small</a>: The context is the set of
+  files and directories that are sent to the builder to process a build
+  instruction. Keeping the context as small as possible reduces the amount of data that
+  needs to be sent to the builder, and reduces the likelihood of cache
+  invalidation.</li>
+<li><a href="#use-bind-mounts">Use bind mounts</a>: Bind mounts let you mount a file or
+  directory from the host machine into the build container. Using bind mounts
+  can help you avoid unnecessary layers in the image, which can slow down the
+  build process.</li>
+<li><a href="#use-cache-mounts">Use cache mounts</a>: Cache mounts let you specify a
+  persistent package cache to be used during builds. The persistent cache helps
+  speed up build steps, especially steps that involve installing packages using
+  a package manager. Having a persistent cache for packages means that even if
+  you rebuild a layer, you only download new or changed packages.</li>
+<li><a href="#use-an-external-cache">Use an external cache</a>: An external cache lets you
+  store build cache at a remote location. The external cache image can be
+  shared between multiple builds, and across different environments.</li>
+</ul>
+<h2 id="order-your-layers">Order your layers<a class="headerlink" href="#order-your-layers" title="Permanent link">#</a></h2>
+<p>Putting the commands in your Dockerfile into a logical order is a great place
+to start. Because a change causes a rebuild for steps that follow, try to make
+expensive steps appear near the beginning of the Dockerfile. Steps that change
+often should appear near the end of the Dockerfile, to avoid triggering
+rebuilds of layers that haven't changed.</p>
+<p>Consider the following example. A Dockerfile snippet that runs a JavaScript
+build from the source files in the current directory:</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">node</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.<span class="w">          </span>#<span class="w"> </span>Copy<span class="w"> </span>over<span class="w"> </span>all<span class="w"> </span>files<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>current<span class="w"> </span>directory
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>install<span class="w">   </span>#<span class="w"> </span>Install<span class="w"> </span>dependencies
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>build<span class="w">     </span>#<span class="w"> </span>Run<span class="w"> </span>build
+</code></pre></div>
+
+<p>This Dockerfile is rather inefficient. Updating any file causes a reinstall of
+all dependencies every time you build the Docker image even if the dependencies
+didn't change since last time.</p>
+<p>Instead, the <code>COPY</code> command can be split in two. First, copy over the package
+management files (in this case, <code>package.json</code> and <code>yarn.lock</code>). Then, install
+the dependencies. Finally, copy over the project source code, which is subject
+to frequent change.</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">node</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+<span class="k">COPY</span><span class="w"> </span>package.json<span class="w"> </span>yarn.lock<span class="w"> </span>.<span class="w">    </span>#<span class="w"> </span>Copy<span class="w"> </span>package<span class="w"> </span>management<span class="w"> </span>files
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>install<span class="w">                  </span>#<span class="w"> </span>Install<span class="w"> </span>dependencies
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.<span class="w">                         </span>#<span class="w"> </span>Copy<span class="w"> </span>over<span class="w"> </span>project<span class="w"> </span>files
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>build<span class="w">                    </span>#<span class="w"> </span>Run<span class="w"> </span>build
+</code></pre></div>
+
+<p>By installing dependencies in earlier layers of the Dockerfile, there is
+no need to rebuild those layers when a project file has changed.</p>
+<h2 id="keep-the-context-small">Keep the context small<a class="headerlink" href="#keep-the-context-small" title="Permanent link">#</a></h2>
+<p>The easiest way to make sure your context doesn't include unnecessary files is
+to create a <code>.dockerignore</code> file in the root of your build context. The
+<code>.dockerignore</code> file works similarly to <code>.gitignore</code> files, and lets you
+exclude files and directories from the build context.</p>
+<p>Here's an example <code>.dockerignore</code> file that excludes the <code>node_modules</code>
+directory, all files and directories that start with <code>tmp</code>:</p>
+<p>```plaintext {title=".dockerignore"}
+node_modules
+tmp*</p>
+<div class="codehilite"><pre><span></span><code>Ignore-rules specified in the `.dockerignore` file apply to the entire build
+context, including subdirectories. This means it&#39;s a rather coarse-grained
+mechanism, but it&#39;s a good way to exclude files and directories that you know
+you don&#39;t need in the build context, such as temporary files, log files, and
+build artifacts.
+
+## Use bind mounts
+
+You might be familiar with bind mounts for when you run containers with `docker
+run` or Docker Compose. Bind mounts let you mount a file or directory from the
+host machine into a container.
+
+```bash
+# bind mount using the -v flag
+docker run -v $(pwd):/path/in/container image-name
+# bind mount using the --mount flag
+docker run --mount=type=bind,src=.,dst=/path/in/container image-name
+</code></pre></div>
+
+<p>To use bind mounts in a build, you can use the <code>--mount</code> flag with the <code>RUN</code>
+instruction in your Dockerfile:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">golang:latest</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/build</span>
+<span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>bind,target<span class="o">=</span>.<span class="w"> </span>go<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>/app/hello
+</code></pre></div>
+
+<p>In this example, the current directory is mounted into the build container at
+<code>/build</code> before the <code>go build</code> command gets executed. The build output is
+written to <code>/app/hello</code>, which is outside the mount point. This distinction is
+important: the build output must be written outside the bind mount target,
+since the mount is read-only by default. The source code is available in the
+build container for the duration of that <code>RUN</code> instruction. When the
+instruction is done executing, the mounted files are not persisted in the final
+image, or in the build cache. Only the output of the <code>go build</code> command
+remains.</p>
+<p>The <code>COPY</code> and <code>ADD</code> instructions in a Dockerfile lets you copy files from the
+build context into the build container. Using bind mounts is beneficial for
+build cache optimization because you're not adding unnecessary layers to the
+cache. If you have build context that's on the larger side, and it's only used
+to generate an artifact, you're better off using bind mounts to temporarily
+mount the source code required to generate the artifact into the build. If you
+use <code>COPY</code> to add the files to the build container, BuildKit will include all
+of those files in the cache, even if the files aren't used in the final image.</p>
+<p>There are a few things to be aware of when using bind mounts in a build:</p>
+<ul>
+<li>Bind mounts are read-only by default. If you need to write to the mounted
+  directory, you need to specify the <code>rw</code> option. However, even with the <code>rw</code>
+  option, the changes are not persisted in the final image or the build cache.
+  The file writes are sustained for the duration of the <code>RUN</code> instruction, and
+  are discarded after the instruction is done.</li>
+<li>Mounted files are not persisted in the final image. Only the output of the
+  <code>RUN</code> instruction is persisted in the final image. If you need to include
+  files from the build context in the final image, you need to use the <code>COPY</code>
+  or <code>ADD</code> instructions.</li>
+<li>If the target directory is not empty, the contents of the target directory
+  are hidden by the mounted files. The original contents are restored after the
+  <code>RUN</code> instruction is done.</li>
+</ul>
+<p>{{&lt; accordion title="Example" &gt;}}</p>
+<p>For example, given a build context with only a <code>Dockerfile</code> in it:</p>
+<p><code>plaintext
+  .
+  └── Dockerfile</code></p>
+<p>And a Dockerfile that mounts the current directory into the build container:</p>
+<p><code>dockerfile
+  FROM alpine:latest
+  WORKDIR /work
+  RUN touch foo.txt
+  RUN --mount=type=bind,target=. ls
+  RUN ls</code></p>
+<p>The first <code>ls</code> command with the bind mount shows the contents of the mounted
+  directory. The second <code>ls</code> lists the contents of the original build context.</p>
+<p>```plaintext {title="Build log"}
+  #8 [stage-0 3/5] RUN touch foo.txt
+  #8 DONE 0.1s</p>
+<p>#9 [stage-0 4/5] RUN --mount=target=. ls -1
+  #9 0.040 Dockerfile
+  #9 DONE 0.0s</p>
+<p>#10 [stage-0 5/5] RUN ls -1
+  #10 0.046 foo.txt
+  #10 DONE 0.1s
+  ```</p>
+<p>{{&lt; /accordion &gt;}}</p>
+<h2 id="use-cache-mounts">Use cache mounts<a class="headerlink" href="#use-cache-mounts" title="Permanent link">#</a></h2>
+<p>Regular cache layers in Docker correspond to an exact match of the instruction
+and the files it depends on. If the instruction and the files it depends on
+have changed since the layer was built, the layer is invalidated, and the build
+process has to rebuild the layer.</p>
+<p>Cache mounts are a way to specify a persistent cache location to be used during
+builds. The cache is cumulative across builds, so you can read and write to the
+cache multiple times. This persistent caching means that even if you need to
+rebuild a layer, you only download new or changed packages. Any unchanged
+packages are reused from the cache mount.</p>
+<p>To use cache mounts in a build, you can use the <code>--mount</code> flag with the <code>RUN</code>
+instruction in your Dockerfile:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">node:latest</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+<span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/root/.npm<span class="w"> </span>npm<span class="w"> </span>install
+</code></pre></div>
+
+<p>In this example, the <code>npm install</code> command uses a cache mount for the
+<code>/root/.npm</code> directory, the default location for the npm cache. The cache mount
+is persisted across builds, so even if you end up rebuilding the layer, you
+only download new or changed packages. Any changes to the cache are persisted
+across builds, and the cache is shared between multiple builds.</p>
+<p>How you specify cache mounts depends on the build tool you're using. If you're
+unsure how to specify cache mounts, refer to the documentation for the build
+tool you're using. Here are a few examples:</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="Go" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/go/pkg/mod<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/root/.cache/go-build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>go<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>/app/hello
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Apt" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/var/cache/apt,sharing<span class="o">=</span>locked<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/var/lib/apt,sharing<span class="o">=</span>locked<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>--no-install-recommends<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>gcc
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Python" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/root/.cache/pip<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Ruby" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/root/.gem<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>bundle<span class="w"> </span>install
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Rust" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/app/target/<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/var/cache/cargo<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">CARGO_HOME</span><span class="o">=</span>/var/cache/cargo<span class="w"> </span>cargo<span class="w"> </span>build
+</code></pre></div>
+
+<p>The cache mount uses a single <code>CARGO_HOME</code> so concurrent builds coordinate
+access through Cargo's cache lock. Setting <code>CARGO_HOME</code> also changes where
+Cargo looks for global configuration and credentials. Project-level
+<code>.cargo/config.toml</code> files are unaffected.</p>
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name=".NET" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/root/.nuget/packages<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>dotnet<span class="w"> </span>restore
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="PHP" &gt;}}  </p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/tmp/cache<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>composer<span class="w"> </span>install
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>It's important that you read the documentation for the build tool you're using
+to make sure you're using the correct cache mount options. Package managers
+have different requirements for how they use the cache, and using the wrong
+options can lead to unexpected behavior. For example, Apt needs exclusive
+access to its data, so the caches use the option <code>sharing=locked</code> to ensure
+parallel builds using the same cache mount wait for each other and not access
+the same cache files at the same time.</p>
+<h2 id="use-an-external-cache">Use an external cache<a class="headerlink" href="#use-an-external-cache" title="Permanent link">#</a></h2>
+<p>The default cache storage for builds is internal to the builder (BuildKit
+instance) you're using. Each builder uses its own cache storage. When you
+switch between different builders, the cache is not shared between them. Using
+an external cache lets you define a remote location for pushing and pulling
+cache data.</p>
+<p>External caches are especially useful for CI/CD pipelines, where the builders
+are often ephemeral, and build minutes are precious. Reusing the cache between
+builds can drastically speed up the build process and reduce cost. You can even
+make use of the same cache in your local development environment.</p>
+<p>To use an external cache, you specify the <code>--cache-to</code> and <code>--cache-from</code>
+options with the <code>docker buildx build</code> command.</p>
+<ul>
+<li><code>--cache-to</code> exports the build cache to the specified location.</li>
+<li><code>--cache-from</code> specifies remote caches for the build to use.</li>
+</ul>
+<p>The following example shows how to set up a GitHub Actions workflow using
+<code>docker/build-push-action</code>, and push the build cache layers to an OCI registry
+image:</p>
+<p>```yaml {title=".github/workflows/ci.yml"}
+name: ci</p>
+<p>on:
+  push:</p>
+<p>jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@{{% param "login_action_version" %}}
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}</p>
+<div class="codehilite"><pre><span></span><code>  - name: Set up Docker Buildx
+    uses: docker/setup-buildx-action@{{% param &quot;setup_buildx_action_version&quot; %}}
+
+  - name: Build and push
+    uses: docker/build-push-action@{{% param &quot;build_push_action_version&quot; %}}
+    with:
+      push: true
+      tags: user/app:latest
+      cache-from: type=registry,ref=user/app:buildcache
+      cache-to: type=registry,ref=user/app:buildcache,mode=max
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>This setup tells BuildKit to look for cache in the `user/app:buildcache` image.
+And when the build is done, the new build cache is pushed to the same image,
+overwriting the old cache.
+
+This cache can be used locally as well. To pull the cache in a local build,
+you can use the `--cache-from` option with the `docker buildx build` command:
+
+```console
+$ docker buildx build --cache-from type=registry,ref=user/app:buildcache .
+</code></pre></div>
+
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">#</a></h2>
+<p>Optimizing cache usage in builds can significantly speed up the build process.
+Keeping the build context small, using bind mounts, cache mounts, and external
+caches are all techniques you can use to make the most of the build cache and
+speed up the build process.</p>
+<p>For more information about the concepts discussed in this guide, see:</p>
+<ul>
+<li><a href="../concepts/context.html#dockerignore-files">.dockerignore files</a></li>
+<li><a href="invalidation.html">Cache invalidation</a></li>
+<li><a href="../concepts/dockerfile.html#run---mounttypecache">Cache mounts</a></li>
+<li><a href="backends/index.html">Cache backend types</a></li>
+<li><a href="../building/best-practices.html">Building best practices</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../build/cache/invalidation.html">
+          <span class="muted">Anterior</span>Build cache invalidation
+        </a>
+        <a class="pager-next" href="../../build/checks.html">
+          <span class="muted">Siguiente</span>Checking your build configuration
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

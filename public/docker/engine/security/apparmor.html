@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AppArmor security profiles for Docker · Docker</title>
+<meta name="description" content="AppArmor security profiles for Docker - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/apparmor.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="AppArmor security profiles for Docker">
+<meta property="og:description" content="AppArmor security profiles for Docker - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AppArmor security profiles for Docker">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "AppArmor security profiles for Docker",
+"url": "https://docs.raupulus.dev/docker/engine/security/apparmor.html",  "description": "AppArmor security profiles for Docker - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/apparmor.html"
+class="is-current" aria-current="page">AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">AppArmor security profiles for Docker</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#understand-the-policies">Understand the policies#</a></li>
+              <li class="lvl-2"><a href="#customize-the-default-profile">Customize the default profile#</a></li>
+              <li class="lvl-3"><a href="#create-a-template">Create a template#</a></li>
+              <li class="lvl-3"><a href="#configure-the-daemon">Configure the daemon#</a></li>
+              <li class="lvl-2"><a href="#load-and-unload-profiles">Load and unload profiles#</a></li>
+              <li class="lvl-3"><a href="#resources-for-writing-profiles">Resources for writing profiles#</a></li>
+              <li class="lvl-2"><a href="#nginx-example-profile">Nginx example profile#</a></li>
+              <li class="lvl-2"><a href="#debug-apparmor">Debug AppArmor#</a></li>
+              <li class="lvl-3"><a href="#use-dmesg">Use dmesg#</a></li>
+              <li class="lvl-3"><a href="#use-aa-status">Use aa-status#</a></li>
+              <li class="lvl-2"><a href="#contribute-to-dockers-apparmor-code">Contribute to Docker&#39;s AppArmor code#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>AppArmor (Application Armor) is a Linux security module that protects an
+operating system and its applications from security threats. To use it, a system
+administrator associates an AppArmor security profile with each program. Docker
+expects to find an AppArmor policy loaded and enforced.</p>
+<p>Docker automatically generates and loads a default profile for containers named
+<code>docker-default</code>. The Docker binary generates this profile in <code>tmpfs</code> and then
+loads it into the kernel.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>This profile is used on containers, not on the Docker daemon.</p>
+</blockquote>
+<p>A profile for the Docker Engine daemon exists but it is not currently installed
+with the <code>deb</code> packages. If you are interested in the source for the daemon
+profile, it is located in
+<a href="https://github.com/moby/moby/tree/master/contrib/apparmor" rel="noopener" target="_blank">contrib/apparmor</a>
+in the Docker Engine source repository.</p>
+<h2 id="understand-the-policies">Understand the policies<a class="headerlink" href="#understand-the-policies" title="Permanent link">#</a></h2>
+<p>The <code>docker-default</code> profile is the default for running containers. It is
+moderately protective while providing wide application compatibility. The
+profile is generated from the following
+<a href="https://github.com/moby/profiles/blob/main/apparmor/template.go" rel="noopener" target="_blank">template</a>.</p>
+<p>When you run a container, it uses the <code>docker-default</code> policy unless you
+override it with the <code>security-opt</code> option. For example, the following
+explicitly specifies the default policy:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>--security-opt<span class="w"> </span><span class="nv">apparmor</span><span class="o">=</span>docker-default<span class="w"> </span>hello-world
+</code></pre></div>
+
+<h2 id="customize-the-default-profile">Customize the default profile<a class="headerlink" href="#customize-the-default-profile" title="Permanent link">#</a></h2>
+<p>Starting with Docker Engine 29.8, you can configure the daemon to generate the
+<code>docker-default</code> profile from a custom template.
+This changes the policy for containers that use <code>docker-default</code>.
+Privileged containers without an explicit AppArmor profile use <code>unconfined</code>,
+and containers configured with another profile continue to use that setting.</p>
+<p>The template uses Go <a href="https://pkg.go.dev/text/template" rel="noopener" target="_blank">text/template</a> syntax.
+Docker renders and loads it when the daemon starts.
+Use the built-in
+<a href="https://github.com/moby/profiles/blob/main/apparmor/template.go" rel="noopener" target="_blank"><code>baseTemplate</code></a>
+as a starting point because it includes the rules and template substitutions
+required for compatibility across supported hosts.</p>
+<blockquote>
+<p>[!CAUTION]</p>
+<p>A custom template can reduce container isolation. Review and test every
+change to the built-in policy.</p>
+</blockquote>
+<h3 id="create-a-template">Create a template<a class="headerlink" href="#create-a-template" title="Permanent link">#</a></h3>
+<p>Copy the contents between the <code>baseTemplate</code> backticks and save them as
+<code>/etc/docker/apparmor/docker-default</code>.
+The template isn't a complete AppArmor profile until Docker renders it.
+Store the file outside the AppArmor profile directory (<code>/etc/apparmor.d</code>)
+because the host AppArmor service can try to parse the template before Docker
+renders it.</p>
+<p>Modify the policy rules as needed. Docker provides the following template data:</p>
+<ul>
+<li><code>.Abi</code>: <code>abi/3.0</code> when the host provides that AppArmor ABI, or an empty string</li>
+<li><code>.Name</code>: the profile name, <code>docker-default</code></li>
+<li><code>.DaemonProfile</code>: the daemon's AppArmor profile, or <code>unconfined</code></li>
+<li><code>.Imports</code>: host-specific declarations and includes for the global scope</li>
+<li><code>.InnerImports</code>: host-specific includes for the profile scope</li>
+</ul>
+<p>Keep the <code>.Abi</code>, <code>.Name</code>, <code>.Imports</code>, and <code>.InnerImports</code> substitutions from the
+built-in template.
+Use <code>.DaemonProfile</code> in rules that permit signals from the daemon.</p>
+<h3 id="configure-the-daemon">Configure the daemon<a class="headerlink" href="#configure-the-daemon" title="Permanent link">#</a></h3>
+<p>Set <code>apparmor-profile</code> to the template path in the daemon configuration:</p>
+<p>```json {title="/etc/docker/daemon.json"}
+{
+  "apparmor-profile": "/etc/apparmor.d/containers/my-custom-docker-profile.tpl"
+}</p>
+<div class="codehilite"><pre><span></span><code>You can instead pass the path with the
+`dockerd --apparmor-profile=/etc/apparmor.d/containers/my-custom-docker-profile.tpl` flag.
+Don&#39;t configure the option both as a flag and in `daemon.json`.
+
+### Restart and verify
+
+Restart the Docker daemon:
+
+```console
+$ sudo systemctl restart docker
+</code></pre></div>
+
+<p>Check the daemon logs for errors while loading the rendered profile:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>journalctl<span class="w"> </span>-u<span class="w"> </span>docker.service<span class="w"> </span>--since<span class="w"> </span><span class="s2">&quot;5 minutes ago&quot;</span><span class="w"> </span>--no-pager
+</code></pre></div>
+
+<p>Confirm that the logs for the restart don't contain
+<code>Failed to load default apparmor profile</code>.
+If <code>apparmor_parser</code> rejects the rendered profile, the daemon continues running
+and keeps the previously loaded <code>docker-default</code> profile.</p>
+<p>Confirm that the daemon is configured to use the template path:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>info<span class="w"> </span>--format<span class="w"> </span><span class="s1">&#39;{{json .SecurityOptions}}&#39;</span>
+</code></pre></div>
+
+<p>The output includes
+<code>name=apparmor,profile=/etc/apparmor.d/containers/my-custom-docker-profile.tpl</code>.</p>
+<h2 id="load-and-unload-profiles">Load and unload profiles<a class="headerlink" href="#load-and-unload-profiles" title="Permanent link">#</a></h2>
+<p>To load a new profile into AppArmor for use with containers:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>apparmor_parser<span class="w"> </span>-r<span class="w"> </span>-W<span class="w"> </span>/path/to/your_profile
+</code></pre></div>
+
+<p>Then, run the custom profile with <code>--security-opt</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>--security-opt<span class="w"> </span><span class="nv">apparmor</span><span class="o">=</span>your_profile<span class="w"> </span>hello-world
+</code></pre></div>
+
+<p>To unload a profile from AppArmor:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp"># </span>unload<span class="w"> </span>the<span class="w"> </span>profile
+<span class="gp">$ </span>apparmor_parser<span class="w"> </span>-R<span class="w"> </span>/path/to/profile
+</code></pre></div>
+
+<h3 id="resources-for-writing-profiles">Resources for writing profiles<a class="headerlink" href="#resources-for-writing-profiles" title="Permanent link">#</a></h3>
+<p>The syntax for file globbing in AppArmor is a bit different than some other
+globbing implementations. It is highly suggested you take a look at some of the
+below resources with regard to AppArmor profile syntax.</p>
+<ul>
+<li><a href="https://gitlab.com/apparmor/apparmor/wikis/QuickProfileLanguage" rel="noopener" target="_blank">Quick Profile Language</a></li>
+<li><a href="https://gitlab.com/apparmor/apparmor/wikis/AppArmor_Core_Policy_Reference#AppArmor_globbing_syntax" rel="noopener" target="_blank">Globbing Syntax</a></li>
+</ul>
+<h2 id="nginx-example-profile">Nginx example profile<a class="headerlink" href="#nginx-example-profile" title="Permanent link">#</a></h2>
+<p>In this example, you create a custom AppArmor profile for Nginx. Below is the
+custom profile.</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;tunables/global&gt;</span>
+
+
+<span class="n">profile</span><span class="w"> </span><span class="n">docker</span><span class="o">-</span><span class="n">nginx</span><span class="w"> </span><span class="n">flags</span><span class="o">=</span><span class="p">(</span><span class="n">attach_disconnected</span><span class="p">,</span><span class="n">mediate_deleted</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;abstractions/base&gt;</span>
+
+<span class="w">  </span><span class="n">network</span><span class="w"> </span><span class="n">inet</span><span class="w"> </span><span class="n">tcp</span><span class="p">,</span>
+<span class="w">  </span><span class="n">network</span><span class="w"> </span><span class="n">inet</span><span class="w"> </span><span class="n">udp</span><span class="p">,</span>
+<span class="w">  </span><span class="n">network</span><span class="w"> </span><span class="n">inet</span><span class="w"> </span><span class="n">icmp</span><span class="p">,</span>
+
+<span class="w">  </span><span class="n">deny</span><span class="w"> </span><span class="n">network</span><span class="w"> </span><span class="n">raw</span><span class="p">,</span>
+
+<span class="w">  </span><span class="n">deny</span><span class="w"> </span><span class="n">network</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span>
+
+<span class="w">  </span><span class="n">file</span><span class="p">,</span>
+<span class="w">  </span><span class="n">umount</span><span class="p">,</span>
+
+<span class="w">  </span><span class="n">deny</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="cm">/** wl,</span>
+<span class="cm">  deny /boot/** wl,</span>
+<span class="cm">  deny /dev/** wl,</span>
+<span class="cm">  deny /etc/** wl,</span>
+<span class="cm">  deny /home/** wl,</span>
+<span class="cm">  deny /lib/** wl,</span>
+<span class="cm">  deny /lib64/** wl,</span>
+<span class="cm">  deny /media/** wl,</span>
+<span class="cm">  deny /mnt/** wl,</span>
+<span class="cm">  deny /opt/** wl,</span>
+<span class="cm">  deny /proc/** wl,</span>
+<span class="cm">  deny /root/** wl,</span>
+<span class="cm">  deny /sbin/** wl,</span>
+<span class="cm">  deny /srv/** wl,</span>
+<span class="cm">  deny /tmp/** wl,</span>
+<span class="cm">  deny /sys/** wl,</span>
+<span class="cm">  deny /usr/** wl,</span>
+
+<span class="cm">  audit /** w,</span>
+
+<span class="cm">  /var/run/nginx.pid w,</span>
+
+<span class="cm">  /usr/sbin/nginx ix,</span>
+
+<span class="cm">  deny /bin/dash mrwklx,</span>
+<span class="cm">  deny /bin/sh mrwklx,</span>
+<span class="cm">  deny /usr/bin/top mrwklx,</span>
+
+
+<span class="cm">  capability chown,</span>
+<span class="cm">  capability dac_override,</span>
+<span class="cm">  capability setuid,</span>
+<span class="cm">  capability setgid,</span>
+<span class="cm">  capability net_bind_service,</span>
+
+<span class="cm">  deny @{PROC}/* w,   # deny write for all files directly in /proc (not in a subdir)</span>
+<span class="cm">  # deny write to files not in /proc/&lt;number&gt;/** or /proc/sys/**</span>
+<span class="cm">  deny @{PROC}/{[^1-9],[^1-9][^0-9],[^1-9s][^0-9y][^0-9s],[^1-9][^0-9][^0-9][^0-9]*}/** w,</span>
+<span class="cm">  deny @{PROC}/sys/[^k]** w,  # deny /proc/sys except /proc/sys/k* (effectively /proc/sys/kernel)</span>
+<span class="cm">  deny @{PROC}/sys/kernel/{?,??,[^s][^h][^m]**} w,  # deny everything except shm* in /proc/sys/kernel/</span>
+<span class="cm">  deny @{PROC}/sysrq-trigger rwklx,</span>
+<span class="cm">  deny @{PROC}/mem rwklx,</span>
+<span class="cm">  deny @{PROC}/kmem rwklx,</span>
+<span class="cm">  deny @{PROC}/kcore rwklx,</span>
+
+<span class="cm">  deny mount,</span>
+
+<span class="cm">  deny /sys/[^f]*/</span><span class="o">**</span><span class="w"> </span><span class="n">wklx</span><span class="p">,</span>
+<span class="w">  </span><span class="n">deny</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">f</span><span class="p">[</span><span class="o">^</span><span class="n">s</span><span class="p">]</span><span class="o">*</span><span class="cm">/** wklx,</span>
+<span class="cm">  deny /sys/fs/[^c]*/</span><span class="o">**</span><span class="w"> </span><span class="n">wklx</span><span class="p">,</span>
+<span class="w">  </span><span class="n">deny</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="n">c</span><span class="p">[</span><span class="o">^</span><span class="n">g</span><span class="p">]</span><span class="o">*</span><span class="cm">/** wklx,</span>
+<span class="cm">  deny /sys/fs/cg[^r]*/</span><span class="o">**</span><span class="w"> </span><span class="n">wklx</span><span class="p">,</span>
+<span class="w">  </span><span class="n">deny</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">firmware</span><span class="cm">/** rwklx,</span>
+<span class="cm">  deny /sys/kernel/security/** rwklx,</span>
+<span class="cm">}</span>
+</code></pre></div>
+
+<ol>
+<li>Save the custom profile to disk in the
+   <code>/etc/apparmor.d/containers/docker-nginx</code> file.</li>
+</ol>
+<p>The file path in this example is not a requirement. In production, you could
+   use another.</p>
+<ol start="2">
+<li>Load the profile.</li>
+</ol>
+<p><code>console
+   $ sudo apparmor_parser -r -W /etc/apparmor.d/containers/docker-nginx</code></p>
+<ol start="3">
+<li>Run a container with the profile.</li>
+</ol>
+<p>To run nginx in detached mode:</p>
+<p><code>console
+   $ docker run --security-opt "apparmor=docker-nginx" \
+        -p 80:80 -d --name apparmor-nginx nginx</code></p>
+<ol start="4">
+<li>Exec into the running container.</li>
+</ol>
+<p><code>console
+   $ docker container exec -it apparmor-nginx bash</code></p>
+<ol start="5">
+<li>Try some operations to test the profile.</li>
+</ol>
+<p>```console
+   root@6da5a2a930b9:~# ping 8.8.8.8
+   ping: Lacking privilege for raw socket.</p>
+<p>root@6da5a2a930b9:/# top
+   bash: /usr/bin/top: Permission denied</p>
+<p>root@6da5a2a930b9:~# touch ~/thing
+   touch: cannot touch 'thing': Permission denied</p>
+<p>root@6da5a2a930b9:/# sh
+   bash: /bin/sh: Permission denied</p>
+<p>root@6da5a2a930b9:/# dash
+   bash: /bin/dash: Permission denied
+   ```</p>
+<p>You just deployed a container secured with a custom apparmor profile.</p>
+<h2 id="debug-apparmor">Debug AppArmor<a class="headerlink" href="#debug-apparmor" title="Permanent link">#</a></h2>
+<p>You can use <code>dmesg</code> to debug problems and <code>aa-status</code> check the loaded profiles.</p>
+<h3 id="use-dmesg">Use dmesg<a class="headerlink" href="#use-dmesg" title="Permanent link">#</a></h3>
+<p>Here are some helpful tips for debugging any problems you might be facing with
+regard to AppArmor.</p>
+<p>AppArmor sends quite verbose messaging to <code>dmesg</code>. Usually an AppArmor line
+looks like the following:</p>
+<div class="codehilite"><pre><span></span><code>[ 5442.864673] audit: type=1400 audit(1453830992.845:37): apparmor=&quot;ALLOWED&quot; operation=&quot;open&quot; profile=&quot;/usr/bin/docker&quot; name=&quot;/home/jessie/docker/man/man1/docker-attach.1&quot; pid=10923 comm=&quot;docker&quot; requested_mask=&quot;r&quot; denied_mask=&quot;r&quot; fsuid=1000 ouid=0
+</code></pre></div>
+
+<p>In the above example, you can see <code>profile=/usr/bin/docker</code>. This means the
+user has the <code>docker-engine</code> (Docker Engine daemon) profile loaded.</p>
+<p>Look at another log line:</p>
+<div class="codehilite"><pre><span></span><code>[ 3256.689120] type=1400 audit(1405454041.341:73): apparmor=&quot;DENIED&quot; operation=&quot;ptrace&quot; profile=&quot;docker-default&quot; pid=17651 comm=&quot;docker&quot; requested_mask=&quot;receive&quot; denied_mask=&quot;receive&quot;
+</code></pre></div>
+
+<p>This time the profile is <code>docker-default</code>, which is run on containers by
+default unless in <code>privileged</code> mode. This line shows that apparmor has denied
+<code>ptrace</code> in the container. This is exactly as expected.</p>
+<h3 id="use-aa-status">Use aa-status<a class="headerlink" href="#use-aa-status" title="Permanent link">#</a></h3>
+<p>If you need to check which profiles are loaded,  you can use <code>aa-status</code>. The
+output looks like:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>aa-status
+<span class="go">apparmor module is loaded.</span>
+<span class="go">14 profiles are loaded.</span>
+<span class="go">1 profiles are in enforce mode.</span>
+<span class="go">   docker-default</span>
+<span class="go">13 profiles are in complain mode.</span>
+<span class="go">   /usr/bin/docker</span>
+<span class="go">   /usr/bin/docker///bin/cat</span>
+<span class="go">   /usr/bin/docker///bin/ps</span>
+<span class="go">   /usr/bin/docker///sbin/apparmor_parser</span>
+<span class="go">   /usr/bin/docker///sbin/auplink</span>
+<span class="go">   /usr/bin/docker///sbin/blkid</span>
+<span class="go">   /usr/bin/docker///sbin/iptables</span>
+<span class="go">   /usr/bin/docker///sbin/mke2fs</span>
+<span class="go">   /usr/bin/docker///sbin/modprobe</span>
+<span class="go">   /usr/bin/docker///sbin/tune2fs</span>
+<span class="go">   /usr/bin/docker///sbin/xtables-multi</span>
+<span class="go">   /usr/bin/docker///sbin/zfs</span>
+<span class="go">   /usr/bin/docker///usr/bin/xz</span>
+<span class="go">38 processes have profiles defined.</span>
+<span class="go">37 processes are in enforce mode.</span>
+<span class="go">   docker-default (6044)</span>
+<span class="go">   ...</span>
+<span class="go">   docker-default (31899)</span>
+<span class="go">1 processes are in complain mode.</span>
+<span class="go">   /usr/bin/docker (29756)</span>
+<span class="go">0 processes are unconfined but have a profile defined.</span>
+</code></pre></div>
+
+<p>The above output shows that the <code>docker-default</code> profile running on various
+container PIDs is in <code>enforce</code> mode. This means AppArmor is actively blocking
+and auditing in <code>dmesg</code> anything outside the bounds of the <code>docker-default</code>
+profile.</p>
+<p>The output above also shows the <code>/usr/bin/docker</code> (Docker Engine daemon) profile
+is running in <code>complain</code> mode. This means AppArmor only logs to <code>dmesg</code>
+activity outside the bounds of the profile. (Except in the case of Ubuntu
+Trusty, where some interesting behaviors are enforced.)</p>
+<h2 id="contribute-to-dockers-apparmor-code">Contribute to Docker's AppArmor code<a class="headerlink" href="#contribute-to-dockers-apparmor-code" title="Permanent link">#</a></h2>
+<p>Advanced users and package managers can find a profile for <code>/usr/bin/docker</code>
+(Docker Engine daemon) underneath
+<a href="https://github.com/moby/moby/tree/master/contrib/apparmor" rel="noopener" target="_blank">contrib/apparmor</a>
+in the Docker Engine source repository.</p>
+<p>The <code>docker-default</code> profile for containers lives in
+<a href="https://github.com/moby/profiles/blob/main/apparmor" rel="noopener" target="_blank">profiles/apparmor</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/security/antivirus.html">
+          <span class="muted">Anterior</span>Antivirus software and Docker
+        </a>
+        <a class="pager-next" href="../../engine/security/certificates.html">
+          <span class="muted">Siguiente</span>Verify repository client with certificates
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

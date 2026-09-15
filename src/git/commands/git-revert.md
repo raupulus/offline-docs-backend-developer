@@ -1,0 +1,127 @@
+---
+title: git-revert
+description: Revert some existing commits
+source_url: https://git-scm.com/doc/git-revert
+source_repo: https://github.com/git/git.git
+source_ref: master
+source_commit: 339ab2a8f
+source_path: git-revert.adoc
+technology: git
+version: master
+license: GPL-2.0
+retrieved_at: '2026-09-15'
+section: commands
+order: 1290
+---
+
+git-revert(1) =============
+
+NAME ---- git-revert - Revert some existing commits
+
+SYNOPSIS --------
+
+> ’git revert’ \[--\[no-\]edit\] \[-n\] \[-m \<parent-number\>\] \[-s\] \[-S\[\<keyid\>\]\] \<commit\>…\
+> ’git revert’ (--continue \| --skip \| --abort \| --quit)
+
+DESCRIPTION -----------
+
+Given one or more existing commits, revert the changes that the related patches introduce, and record some new commits that record them. This requires your working tree to be clean (no modifications from the HEAD commit).
+
+Note: ’git revert’ is used to record some new commits to reverse the effect of some earlier commits (often only a faulty one). If you want to throw away all uncommitted changes in your working directory, you should see [git-reset](git-reset.md), particularly the `--hard` option. If you want to extract specific files as they were in another commit, you should see [git-restore](git-restore.md), specifically the `--source` option. Take care with these alternatives as both will discard uncommitted changes in your working directory.
+
+See "Reset, restore and revert" in [git](git.md) for the differences between the three commands.
+
+OPTIONS ------- \<commit\>…:: Commits to revert. For a more complete list of ways to spell commit names, see [gitrevisions](gitrevisions.md). Sets of commits can also be given but no traversal is done by default, see [git-rev-list](git-rev-list.md) and its `--no-walk` option.
+
+-e  
+
+--edit  
+With this option, ’git revert’ will let you edit the commit message prior to committing the revert. This is the default if you run the command from a terminal.
+
+-m parent-number  
+
+--mainline parent-number  
+Usually you cannot revert a merge because you do not know which side of the merge should be considered the mainline. This option specifies the parent number (starting from 1) of the mainline and allows revert to reverse the change relative to the specified parent.
+
+Reverting a merge commit declares that you will never want the tree changes brought in by the merge. As a result, later merges will only bring in tree changes introduced by commits that are not ancestors of the previously reverted merge. This may or may not be what you want.
+
+See the [revert-a-faulty-merge How-To](howto/revert-a-faulty-merge.html) for more details.
+
+--no-edit  
+With this option, ’git revert’ will not start the commit message editor.
+
+--cleanup=\<mode\>  
+This option determines how the commit message will be cleaned up before being passed on to the commit machinery. See [git-commit](git-commit.md) for more details. In particular, if the ’\<mode\>’ is given a value of `scissors`, scissors will be appended to `MERGE_MSG` before being passed on in the case of a conflict.
+
+-n  
+
+--no-commit  
+Usually the command automatically creates some commits with commit log messages stating which commits were reverted. This flag applies the changes necessary to revert the named commits to your working tree and the index, but does not make the commits. In addition, when this option is used, your index does not have to match the HEAD commit. The revert is done against the beginning state of your index.
+
+This is useful when reverting more than one commits’ effect to your index in a row.
+
+-S\[\<keyid\>\]  
+
+--gpg-sign\[=\<keyid\>\]  
+
+--no-gpg-sign  
+GPG-sign commits. The `keyid` argument is optional and defaults to the committer identity; if specified, it must be stuck to the option without a space. `--no-gpg-sign` is useful to countermand both `commit.gpgSign` configuration variable, and earlier `--gpg-sign`.
+
+-s  
+
+--signoff  
+Add a `Signed-off-by` trailer at the end of the commit message. See the signoff option in [git-commit](git-commit.md) for more information.
+
+--strategy=\<strategy\>  
+Use the given merge strategy. Should only be used once. See the MERGE STRATEGIES section in [git-merge](git-merge.md) for details.
+
+-X\<option\>  
+
+--strategy-option=\<option\>  
+Pass the merge strategy-specific option through to the merge strategy. See [git-merge](git-merge.md) for details.
+
+include  
+rerere-options.adoc\[\]
+
+--reference  
+Instead of starting the body of the log message with "This reverts \<full-object-name-of-the-commit-being-reverted\>.", refer to the commit using "--pretty=reference" format (cf. [git-log](git-log.md)). The `revert.reference` configuration variable can be used to enable this option by default.
+
+SEQUENCER SUBCOMMANDS --------------------- include::sequencer.adoc\[\]
+
+EXAMPLES -------- `git` `revert` `HEAD~3`::
+
+    Revert the changes specified by the fourth last commit in HEAD
+    and create a new commit with the reverted changes.
+
+`git` `revert` `-n` `master`<sub>`5..master`</sub>`2`  
+
+<!-- -->
+
+    Revert the changes done by commits from the fifth last commit
+    in master (included) to the third last commit in master
+    (included), but do not create any commit with the reverted
+    changes. The revert only modifies the working tree and the
+    index.
+
+DISCUSSION ----------
+
+While git creates a basic commit message automatically, it is *strongly* recommended to explain why the original commit is being reverted. In addition, repeatedly reverting reverts will result in increasingly unwieldy subject lines, for example ’Reapply "Reapply "\<original-subject\>""’. Please consider rewording these to be shorter and more unique.
+
+CONFIGURATION -------------
+
+<div class="included" data-path="includes/cmd-config-section-all.adoc">
+
+Everything below this line in this section is selectively included from the [git-config](git-config.md) documentation. The content is the same as what’s found there:
+
+</div>
+
+<div class="included" data-path="config/revert.adoc">
+
+revert.reference  
+Setting this variable to true makes `git` `revert` behave as if the `--reference` option is given.
+
+</div>
+
+SEE ALSO -------- [git-cherry-pick](git-cherry-pick.md)
+
+GIT --- Part of the [git](git.md) suite

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why SQLite Uses Bytecode · SQLite</title>
+<meta name="description" content="Why SQLite Uses Bytecode - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/whybytecode.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Why SQLite Uses Bytecode">
+<meta property="og:description" content="Why SQLite Uses Bytecode - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Why SQLite Uses Bytecode">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Why SQLite Uses Bytecode",
+"url": "https://docs.raupulus.dev/sqlite/guides/whybytecode.html",  "description": "Why SQLite Uses Bytecode - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/unlock_notify.html"
+>SQLite Unlock-Notify API</a>
+              </li>
+              <li>
+                <a href="../guides/version3.html"
+>SQLite Version 3 Overview</a>
+              </li>
+              <li>
+                <a href="../guides/printf.html"
+>SQLite&#39;s Built-in printf()</a>
+              </li>
+              <li>
+                <a href="../guides/staleexpridx.html"
+>Stale Expression Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add_strm.html"
+>Streaming Versions of API functions.</a>
+              </li>
+              <li>
+                <a href="../guides/stricttables.html"
+>STRICT Tables</a>
+              </li>
+              <li>
+                <a href="../guides/swarmvtab.html"
+>Swarmvtab Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/doc_target_crossref.html"
+>Target Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/tempfiles.html"
+>Temporary Files Used By SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/glossary.html"
+>Terms of Art Glossary</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_isempty.html"
+>Test if a changeset has recorded any changes.</a>
+              </li>
+              <li>
+                <a href="../guides/th3.html"
+>TH3</a>
+              </li>
+              <li>
+                <a href="../guides/flextypegood.html"
+>The Advantages Of Flexible Typing</a>
+              </li>
+              <li>
+                <a href="../guides/amalg-v-canon.html"
+>The Amalgamation Versus Canonical Sources</a>
+              </li>
+              <li>
+                <a href="../guides/base64.html"
+>The Base64() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/base85.html"
+>The Base85() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/bytecodevtab.html"
+>The Bytecode() And Tables_Used() Table-Valued Functions</a>
+              </li>
+              <li>
+                <a href="../guides/cksumvfs.html"
+>The Checksum VFS Shim</a>
+              </li>
+              <li>
+                <a href="../guides/completion.html"
+>The COMPLETION() Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/csv.html"
+>The CSV Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/dbstat.html"
+>The DBSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/errlog.html"
+>The Error And Warning Log</a>
+              </li>
+              <li>
+                <a href="../guides/series.html"
+>The generate_series Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/geopoly.html"
+>The Geopoly Interface To The SQLite R*Tree Module</a>
+              </li>
+              <li>
+                <a href="../guides/lemon.html"
+>The Lemon LALR(1) Parser Generator</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner-ng.html"
+>The Next-Generation Query Planner</a>
+              </li>
+              <li>
+                <a href="../guides/percentile.html"
+>The Percentile Extension</a>
+              </li>
+              <li>
+                <a href="../guides/rbu.html"
+>The RBU Extension</a>
+              </li>
+              <li>
+                <a href="../guides/schematab.html"
+>The Schema Table</a>
+              </li>
+              <li>
+                <a href="../guides/sessionintro.html"
+>The Session Extension</a>
+              </li>
+              <li>
+                <a href="../guides/spellfix1.html"
+>The Spellfix1 Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/amalgamation.html"
+>The SQLite Amalgamation</a>
+              </li>
+              <li>
+                <a href="../guides/opcode.html"
+>The SQLite Bytecode Engine</a>
+              </li>
+              <li>
+                <a href="../guides/vfs.html"
+>The SQLite OS Interface or &#34;VFS&#34;</a>
+              </li>
+              <li>
+                <a href="../guides/optoverview.html"
+>The SQLite Query Optimizer Overview</a>
+              </li>
+              <li>
+                <a href="../guides/zipfile.html"
+>The SQLite Zipfile Module</a>
+              </li>
+              <li>
+                <a href="../guides/sqlanalyze.html"
+>The sqlite3_analyzer.exe Utility Program</a>
+              </li>
+              <li>
+                <a href="../guides/dbpage.html"
+>The SQLITE_DBPAGE Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/memstat.html"
+>The SQLITE_MEMSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/stmt.html"
+>The SQLITE_STMT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/tclsqlite.html"
+>The Tcl interface to the SQLite library</a>
+              </li>
+              <li>
+                <a href="../guides/uintcseq.html"
+>The UINT Collating Sequence</a>
+              </li>
+              <li>
+                <a href="../guides/unionvtab.html"
+>The UNION Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/assert.html"
+>The Use Of assert() In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/vdbe.html"
+>The Virtual Database Engine of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/uri.html"
+>Uniform Resource Identifiers</a>
+              </li>
+              <li>
+                <a href="../guides/threadsafe.html"
+>Using SQLite In Multi-Threaded Applications</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_config_strmsize.html"
+>Values for sqlite3session_config().</a>
+              </li>
+              <li>
+                <a href="../guides/versionnumbers.html"
+>Version Numbers in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cves.html"
+>Vulnerabilities</a>
+              </li>
+              <li>
+                <a href="../guides/walformat.html"
+>WAL-mode File Format</a>
+              </li>
+              <li>
+                <a href="../guides/keyword_index.html"
+>Website Keyword Index</a>
+              </li>
+              <li>
+                <a href="../guides/famous.html"
+>Well-Known Users Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/affcase1.html"
+>What If OpenDocument Used SQLite?</a>
+              </li>
+              <li>
+                <a href="../guides/whyc.html"
+>Why Is SQLite Coded In C</a>
+              </li>
+              <li>
+                <a href="../guides/whynotgit.html"
+>Why SQLite Does Not Use Git</a>
+              </li>
+              <li>
+                <a href="../guides/whybytecode.html"
+class="is-current" aria-current="page">Why SQLite Uses Bytecode</a>
+              </li>
+              <li>
+                <a href="../guides/windowfunctions.html"
+>Window Functions</a>
+              </li>
+              <li>
+                <a href="../guides/wal.html"
+>Write-Ahead Logging</a>
+              </li>
+              <li>
+                <a href="../guides/zeroconf.html"
+>Zero-Configuration</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Why SQLite Uses Bytecode</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/whybytecode.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#11-how-to-provide-feedback">1.1. How To Provide Feedback#</a></li>
+              <li class="lvl-2"><a href="#12-definition-of-bytecode">1.2. Definition Of &#34;Bytecode&#34;#</a></li>
+              <li class="lvl-2"><a href="#13-definition-of-abstract-syntax-tree-or-ast">1.3. Definition Of &#34;Abstract Syntax Tree&#34; or &#34;AST&#34;#</a></li>
+              <li class="lvl-2"><a href="#14-dataflow-programming">1.4. Dataflow Programming#</a></li>
+              <li class="lvl-2"><a href="#21-bytecode-is-easier-to-understand">2.1. Bytecode Is Easier To Understand#</a></li>
+              <li class="lvl-2"><a href="#22-bytecode-is-easier-to-debug">2.2. Bytecode Is Easier To Debug#</a></li>
+              <li class="lvl-2"><a href="#23-bytecode-can-be-run-incrementally">2.3. Bytecode Can Be Run Incrementally#</a></li>
+              <li class="lvl-2"><a href="#24-bytecode-is-smaller">2.4. Bytecode Is Smaller#</a></li>
+              <li class="lvl-2"><a href="#25-bytecode-is-faster">2.5. Bytecode Is Faster#</a></li>
+              <li class="lvl-2"><a href="#31-query-planning-decisions-can-be-deferred-until-runtime">3.1. Query Planning Decisions Can Be Deferred Until Runtime#</a></li>
+              <li class="lvl-2"><a href="#32-dataflow-programs-are-easy-to-parallelize">3.2. Dataflow Programs Are Easy To Parallelize#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-introduction">1. Introduction<a class="headerlink" href="#1-introduction" title="Permanent link">#</a></h1>
+<p>Every SQL database engine works in roughly the same way: It first translates the input SQL text into a "prepared statement". Then it "executes" the prepared statement to generate a result.</p>
+<p>A prepared statement is an object that represents the steps needed to accomplish the input SQL. Or, to think of it in another way, the prepared statement is the SQL statement translated into a form that is more easily understood by the computer.</p>
+<p>In SQLite, a prepared statement is an instance of the <a href="c3ref/stmt.html">sqlite3_stmt object</a>. In other systems, the prepared statement is usually an internal data structure that is not directly visible to the application programmer. Developers of other SQL database engines do not necessarily call these objects "prepared statements". But such objects exist, whatever they might be called. This paper will use the term "prepared statement".</p>
+<p>There are countless ways of implementing a prepared statement. This paper will look at the two most common methods:</p>
+<ol>
+<li>
+<p><strong>Bytecode</strong> → The input SQL is translated into a virtual machine language that is then run by a virtual machine interpreter. This is the technique used by SQLite.</p>
+</li>
+<li>
+<p><strong>Tree-Of-Objects</strong> → The input SQL is translated into a tree of objects that represent the processing to be done. The SQL is executed by walking this tree. This is the technique used by MySQL and PostgreSQL.</p>
+</li>
+</ol>
+<p>There are advantages and disadvantages to each of these representations of a prepared statement. The purpose of this paper is to articulate some of those advantages and disadvantages.</p>
+<h2 id="11-how-to-provide-feedback">1.1. How To Provide Feedback<a class="headerlink" href="#11-how-to-provide-feedback" title="Permanent link">#</a></h2>
+<p>This document is written from the perspective of the original author of SQLite. If you disagree with any of the opinions offered in this document, you are welcomed to offer corrections and/or contrary views on the <a href="https://sqlite.org/forum" rel="noopener" target="_blank">SQLite Forum</a>. Or you can email the author directly.</p>
+<h2 id="12-definition-of-bytecode">1.2. Definition Of "Bytecode"<a class="headerlink" href="#12-definition-of-bytecode" title="Permanent link">#</a></h2>
+<p>The <a href="opcode.html">bytecode generated by SQLite</a> might be a little different from what many readers think of as bytecode. The bytecode used (for example) by the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine" rel="noopener" target="_blank">Java virtual machine</a> or by <a href="https://en.wikipedia.org/wiki/WebAssembly" rel="noopener" target="_blank">WebAssembly</a> consists almost entirely of low-level operations, similar to what physical CPUs implement: basic math operators, comparisons, conditional jumps, and instructions to move content between different memory locations. SQLite bytecode has these kinds of low-level instructions, too. But SQLite bytecode also contains some high-level operations that are specific to the needs of a database engine. Here are just a few examples:</p>
+<ul>
+<li>
+<p><strong>OP_Column</strong> → Extract the value from the N-th column of the database row that a particular cursor is currently pointing at.</p>
+</li>
+<li>
+<p><strong>OP_CreateBtree</strong> → Allocate space for a new B-Tree in the database file.</p>
+</li>
+<li>
+<p><strong>OP_ParseSchema</strong> → Reread and reparse all or part of the <a href="schematab.html">sqlite_schema table</a> and refresh internal symbol tables accordingly.</p>
+</li>
+<li>
+<p><strong>OP_SeekGE</strong> → Move a cursor on a particular B-Tree to the first entry that is greater than or equal to a given key.</p>
+</li>
+<li>
+<p><strong>OP_Next</strong> → Advance a cursor on a particular B-Tree to the next entry in the B-Tree and jump, or fall through if there are no more entries in that B-Tree.</p>
+</li>
+</ul>
+<p>In other words, the "bytecode" used by SQLite is not so much a set of CPU instructions as it is a list of database primitives that are to be run in a particular order.</p>
+<h2 id="13-definition-of-abstract-syntax-tree-or-ast">1.3. Definition Of "Abstract Syntax Tree" or "AST"<a class="headerlink" href="#13-definition-of-abstract-syntax-tree-or-ast" title="Permanent link">#</a></h2>
+<p>An "<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" rel="noopener" target="_blank">Abstract Syntax Tree</a>" or AST is a data structure that describes a program or statement in some kind of formal language. In our context, the formal language is SQL. An AST is typically implemented as a tree of objects where each object represents one small part of the overall SQL statement. ASTs emerge naturally from parsers for formal languages. The usual technique is to use an <a href="https://en.wikipedia.org/wiki/LALR_parser" rel="noopener" target="_blank">LALR(1) parser</a>. With such a parser, each terminal symbol holds metadata that will become a leaf of the AST, and each non-terminal symbol holds metadata that will become a sub-branch of the overall AST. As rules of the grammar are "reduced" by the parser, new nodes of the AST are allocated and connected to subnodes. After the parse completes, the start-symbol of the grammar is left holding the root of the AST.</p>
+<p>An AST is a tree of objects. But an AST is not a suitable form for a prepared statement. After being generated, an AST first needs to be transformed in various ways before it can be executed. Symbols need to be resolved. Semantic rules need to be checked. Optimizations need to be applied that transform input SQL statements into different forms that execute more quickly. Finally, the AST needs to be translated into an alternative representation that is more amenable to execution.</p>
+<p>Some people refer to the tree of objects that is used as the executable form for MySQL and PostgreSQL as an AST. This is probably a misuse of the term "AST", because by the time the tree of objects is ready to be executed, it has been changed so much that it has little resemblance to the original SQL text. The confusion arises in part because both the final prepared statement object and the original AST are both trees of objects. The usual technique is for the original AST that comes directly out of the parser to be transformed little by little, in multiple passes, until at the end it is fully converted into an tree of objects that is no longer strictly an AST but that can be evaluated to generate a result. There is not necessarily a clear point during this process when the tree-of-objects ceases to be an AST and becomes a prepared statement instead. And because there is no clear boundary between an AST and a prepared statement, people often refer to a prepared statement that is represented as a tree of objects as an "AST", even though that description is not precise.</p>
+<h2 id="14-dataflow-programming">1.4. Dataflow Programming<a class="headerlink" href="#14-dataflow-programming" title="Permanent link">#</a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Dataflow_programming" rel="noopener" target="_blank">Dataflow programming</a> is a style of programming in which individual nodes specialize in doing one small part of the overall computation. Each node receives inputs from other nodes and sends its output to other nodes. Thus the nodes form a directed graph that carry inputs into outputs.</p>
+<p>A "dataflow program" is perhaps a better description than "AST" for the tree of objects that an SQL database engine uses as a prepared statement.</p>
+<h1 id="2-advantages-to-compiling-into-bytecode">2. Advantages To Compiling Into Bytecode<a class="headerlink" href="#2-advantages-to-compiling-into-bytecode" title="Permanent link">#</a></h1>
+<p>SQLite compiles to bytecode, and the SQLite developers are very happy with this approach. Here is why:</p>
+<h2 id="21-bytecode-is-easier-to-understand">2.1. Bytecode Is Easier To Understand<a class="headerlink" href="#21-bytecode-is-easier-to-understand" title="Permanent link">#</a></h2>
+<p>A flat list of opcodes can be easily printed to see exactly how an SQL statement is being implemented. This is what happens in SQLite when you preface an SQL statement with the "EXPLAIN" keyword: Instead of actually running the SQL, the result is a listing of the bytecode that would have been used to implement that SQL.</p>
+<p>Bytecode lends itself to this because a bytecode program is easily represented as a table. In SQLite bytecode, each instruction has one opcode and five operands. Thus a prepared statement can be rendered as if it were a query against a six-column table.</p>
+<p>A tree-of-objects representation is more difficult to publish in a human-readable form. The objects that comprise the tree tend to all be very different, and thus it is tricky to come up with a consistent and simple table representation with which to display the objects. Any such table representation that you do come up with would almost certainly have more than six columns, probably many more. The problem of rendering a tree-of-objects as a table is sufficiently difficult that nobody does it, as far as I know. Hence, no tree-of-objects database engine provides the level of detail in their "EXPLAIN" output that SQLite provides.</p>
+<h2 id="22-bytecode-is-easier-to-debug">2.2. Bytecode Is Easier To Debug<a class="headerlink" href="#22-bytecode-is-easier-to-debug" title="Permanent link">#</a></h2>
+<p>Bytecode provides a clear separation between front-end parsing and analysis and back-end evaluation of an SQL statement. When problems arise (incorrect answers and/or poor performance), the developers can examine the bytecode to quickly determine if the source of the trouble is either the front-end analysis or the back-end data storage section of the product.</p>
+<p>In debugging builds of SQLite, the <a href="pragma.html#pragma_vdbe_trace">PRAGMA vdbe_trace=ON;</a> command will cause a trace of the bytecode execution to appear on the console.</p>
+<h2 id="23-bytecode-can-be-run-incrementally">2.3. Bytecode Can Be Run Incrementally<a class="headerlink" href="#23-bytecode-can-be-run-incrementally" title="Permanent link">#</a></h2>
+<p>SQL statements written in bytecode can be evaluated incrementally. For example, a statement can be run until it generates just its first row of output. The statement then pauses until it is stepped again. It is not necessary to run the statement to completion before examining the first row of output.</p>
+<p>This is more difficult to achieve in a tree-of-objects design. When the prepared statement is a tree-of-objects, execution is normally accomplished by walking the tree. To pause the statement in the middle of a computation means unwinding the stack back up to the caller, all the while saving enough state to resume evaluation where it last left off. This is not impossible to do, but is sufficiently difficult that I have never seen it actually done.</p>
+<p>Most SQL database engines do not really need to do incremental execution of prepared statements because most SQL database engines are client/server. In client/server engines, a single SQL statement is sent to the server, then the complete reply comes back over the wire all at once. Thus each statement runs to completion in a single go. But SQLite is not client/server. SQLite is a library that runs in the same address space and using the same stack as the application. Being able to easily and reliably perform incremental execution of an SQL statement is important to SQLite.</p>
+<h2 id="24-bytecode-is-smaller">2.4. Bytecode Is Smaller<a class="headerlink" href="#24-bytecode-is-smaller" title="Permanent link">#</a></h2>
+<p>The bytecode generated by SQLite is usually smaller than the corresponding AST coming out of the parser. During initial processing of SQL text (during the call to <a href="c3ref/prepare.html">sqlite3_prepare()</a> and similar) both the AST and the bytecode exist in memory at the same time, so more memory is used then. But that is a transient state. The AST is quickly discarded and its memory recycled, even before the call to <a href="c3ref/prepare.html">sqlite3_prepare()</a> returns, so the resulting <a href="c3ref/stmt.html">prepared statement</a> ends up consuming less memory in its bytecode representation than it did as an AST. This is important because calls to <a href="c3ref/prepare.html">sqlite3_prepare()</a> are transient, but prepared statements are often cached for possible reuse and persist in memory for a long time.</p>
+<h2 id="25-bytecode-is-faster">2.5. Bytecode Is Faster<a class="headerlink" href="#25-bytecode-is-faster" title="Permanent link">#</a></h2>
+<p>I <em>believe</em> that a bytecode representation of a prepared statement runs faster, because fewer decisions need to be made for each step of the computation. Emphasis on "believe" in the previous sentence → it is difficult to verify this claim experimentally since nobody has ever put in the multiple years of effort necessary to generate equivalent bytecode and tree-of-object representations of a prepared statement to see which one actually runs faster. We do know that <a href="fasterthanfs.html">SQLite is very fast</a>, but we do not have good side-by-side comparisons with other SQL databases since the other databases spend a lot of time doing client/server message processing, and it is difficult to untangle the message round-trip overhead from the actual processing time.</p>
+<h1 id="3-advantages-of-compiling-into-a-tree-of-objects">3. Advantages Of Compiling Into A Tree Of Objects<a class="headerlink" href="#3-advantages-of-compiling-into-a-tree-of-objects" title="Permanent link">#</a></h1>
+<p>The SQLite developers think that the bytecode approach is best, at least for the use cases the SQLite tries to fill, but the tree-of-objects approach to processing SQL does have some advantages over bytecode. There are always tradeoffs.</p>
+<h2 id="31-query-planning-decisions-can-be-deferred-until-runtime">3.1. Query Planning Decisions Can Be Deferred Until Runtime<a class="headerlink" href="#31-query-planning-decisions-can-be-deferred-until-runtime" title="Permanent link">#</a></h2>
+<p>When a prepared statement is bytecode, once the bytecode has been generated, the algorithm is fixed and cannot be subsequently changed without completely rewriting the bytecode. This is not the case with a tree-of-objects prepared statement. A tree-of-objects is easier to modify on-the-fly. The query plan is mutable and can be tweaked as it is running, based on the progress of the query. Thus a query can be dynamically self-tuning.</p>
+<h2 id="32-dataflow-programs-are-easy-to-parallelize">3.2. Dataflow Programs Are Easy To Parallelize<a class="headerlink" href="#32-dataflow-programs-are-easy-to-parallelize" title="Permanent link">#</a></h2>
+<p>In a dataflow program, each processing node can be assigned to a different thread. There needs to be some kind of threadsafe queuing mechanism for transferring intermediate results from one node to the next. But no synchronization primitives are typically needed within each node of the program. Node schedule is trivial: A node becomes eligible to run when it has data available and there is space in its output queue.</p>
+<p>This is an important consideration for database engines that are designed to run large analytic queries (<a href="https://en.wikipedia.org/wiki/Online_analytical_processing" rel="noopener" target="_blank">OLAP</a>) on large multi-core servers. The primary focus of SQLite is transaction processing (<a href="https://en.wikipedia.org/wiki/Online_transaction_processing" rel="noopener" target="_blank">OLTP</a>) on the internet-of-things, so there is less need to represent prepared statements as dataflow programs in SQLite.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/whynotgit.html">
+          <span class="muted">Anterior</span>Why SQLite Does Not Use Git
+        </a>
+        <a class="pager-next" href="../guides/windowfunctions.html">
+          <span class="muted">Siguiente</span>Window Functions
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

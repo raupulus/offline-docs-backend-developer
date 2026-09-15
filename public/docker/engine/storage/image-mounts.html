@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image mounts · Docker</title>
+<meta name="description" content="Image mounts - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/storage/image-mounts.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Image mounts">
+<meta property="og:description" content="Image mounts - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Image mounts">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Image mounts",
+"url": "https://docs.raupulus.dev/docker/engine/storage/image-mounts.html",  "description": "Image mounts - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+class="is-current" aria-current="page">Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/stack-deploy.html"
+>Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/add-nodes.html"
+>Add nodes to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/create-swarm.html"
+>Create a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/delete-service.html"
+>Delete the service running on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/deploy-service.html"
+>Deploy a service to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/drain-node.html"
+>Drain a node on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/inspect-service.html"
+>Inspect a service on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/rolling-update.html"
+>Apply rolling updates to a service</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/scale-service.html"
+>Scale the service in the swarm</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Image mounts</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#when-to-use-image-mounts">When to use image mounts#</a></li>
+              <li class="lvl-2"><a href="#mounting-over-existing-data">Mounting over existing data#</a></li>
+              <li class="lvl-2"><a href="#considerations-and-constraints">Considerations and constraints#</a></li>
+              <li class="lvl-2"><a href="#syntax">Syntax#</a></li>
+              <li class="lvl-3"><a href="#options-for-mount">Options for --mount#</a></li>
+              <li class="lvl-2"><a href="#mount-a-subpath-of-an-image">Mount a subpath of an image#</a></li>
+              <li class="lvl-2"><a href="#use-an-image-mount-with-docker-compose">Use an image mount with Docker Compose#</a></li>
+              <li class="lvl-2"><a href="#next-steps">Next steps#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p><a href="volumes.html">Volumes</a>, <a href="bind-mounts.html">bind mounts</a>, and <a href="tmpfs.html">tmpfs mounts</a>
+all give a container a place to read and write data. An image mount is
+different: instead of mounting a directory or a memory-backed filesystem, it
+mounts the contents of another image into the container.</p>
+<p>When you use an image mount, the filesystem of a second image is mounted into
+the container at a path you choose. The container can read the files from that
+image alongside its own filesystem, without those files being part of the
+container's own image. This is useful when you want to bring the tools or assets
+from one image into a container that's running a different image.</p>
+<p>Image mounts are read-only. The mounted image is never modified, and the
+container can't write to the mount.</p>
+<blockquote>
+<p>[!NOTE]
+Image mounts require the <a href="containerd.html">containerd image store</a>.</p>
+</blockquote>
+<h2 id="when-to-use-image-mounts">When to use image mounts<a class="headerlink" href="#when-to-use-image-mounts" title="Permanent link">#</a></h2>
+<p>Image mounts are appropriate for the following types of use case:</p>
+<ul>
+<li>
+<p>Debugging a minimal or hardened image that doesn't include a shell or common
+  utilities. You can mount a tool-rich image, such as <code>busybox</code>, into the
+  running container's namespace and run those tools without changing the
+  original image. For a worked example, see
+  <a href="../../dhi/how-to/troubleshoot.html">Debug with Docker Hardened Images</a>.</p>
+</li>
+<li>
+<p>Sharing read-only assets, such as datasets, models, or static content, that
+  are distributed as an image and consumed by containers running a different
+  image.</p>
+</li>
+<li>
+<p>Keeping application images small by packaging optional tooling in a separate
+  image and mounting it only when needed.</p>
+</li>
+</ul>
+<h2 id="mounting-over-existing-data">Mounting over existing data<a class="headerlink" href="#mounting-over-existing-data" title="Permanent link">#</a></h2>
+<p>If you mount an image into a directory in the container in which files or
+directories exist, the pre-existing files are obscured by the mount. This is
+similar to if you were to save files into <code>/mnt</code> on a Linux host, and then
+mounted a USB drive into <code>/mnt</code>. The contents of <code>/mnt</code> would be obscured by the
+contents of the USB drive until the USB drive was unmounted.</p>
+<p>With containers, there's no straightforward way of removing a mount to reveal
+the obscured files again. Your best option is to recreate the container without
+the mount.</p>
+<h2 id="considerations-and-constraints">Considerations and constraints<a class="headerlink" href="#considerations-and-constraints" title="Permanent link">#</a></h2>
+<ul>
+<li>
+<p>Image mounts are always read-only. The container can't modify the mounted
+  image, and changes aren't persisted anywhere.</p>
+</li>
+<li>
+<p>The source image must already exist in the daemon's image store. Docker
+  doesn't pull the source image automatically when you create the mount. If the
+  image isn't present, the command fails:</p>
+</li>
+</ul>
+<p><code>console
+  $ docker run --mount type=image,source=busybox:musl,destination=/dbg alpine
+  docker: Error response from daemon: No such image: busybox:musl</code></p>
+<p>Pull the image first with <code>docker pull</code>, then create the mount.</p>
+<ul>
+<li>
+<p>Image mounts require the <a href="containerd.html">containerd image store</a>. They aren't
+  available when the daemon uses the classic storage drivers.</p>
+</li>
+<li>
+<p>You can only create an image mount with the <code>--mount</code> flag. There is no
+  <code>--volume</code> (<code>-v</code>) equivalent.</p>
+</li>
+<li>
+<p>Running an executable from a mounted image requires a compatible runtime in
+  the container. A dynamically linked binary only runs if the container provides
+  a matching dynamic linker and shared libraries. For example, a glibc-based
+  binary fails in a musl-based image such as Alpine. Statically linked binaries,
+  or mounting only data from an image, avoid this constraint.</p>
+</li>
+</ul>
+<h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">#</a></h2>
+<p>To mount an image with the <code>docker run</code> command, use the <code>--mount</code> flag with
+<code>type=image</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>image,src<span class="o">=</span>&lt;image-reference&gt;,dst<span class="o">=</span>&lt;container-path&gt;
+</code></pre></div>
+
+<p>The <code>--mount</code> flag consists of multiple key-value pairs, separated by commas and
+each consisting of a <code>&lt;key&gt;=&lt;value&gt;</code> tuple. The order of the keys isn't
+significant.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>image,src<span class="o">=</span>&lt;image-reference&gt;,dst<span class="o">=</span>&lt;container-path&gt;<span class="o">[</span>,&lt;key&gt;<span class="o">=</span>&lt;value&gt;...<span class="o">]</span>
+</code></pre></div>
+
+<h3 id="options-for-mount">Options for --mount<a class="headerlink" href="#options-for-mount" title="Permanent link">#</a></h3>
+<p>Valid options for <code>--mount type=image</code> include:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code>, <code>src</code></td>
+<td>The reference of the image to mount, for example <code>busybox</code> or <code>busybox:musl</code>. The image must exist locally.</td>
+</tr>
+<tr>
+<td><code>destination</code>, <code>dst</code>, <code>target</code></td>
+<td>The path where the image is mounted in the container. Must be an absolute path.</td>
+</tr>
+<tr>
+<td><code>image-subpath</code></td>
+<td>Path inside the source image to mount instead of the image root. See <a href="#mount-a-subpath-of-an-image">Mount a subpath of an image</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>```console {title="Example"}
+$ docker run --mount type=image,src=busybox,dst=/dbg,image-subpath=bin</p>
+<div class="codehilite"><pre><span></span><code>## Use an image mount in a container
+
+The following example runs an Alpine container and mounts the `busybox:musl`
+image at `/dbg`. Pull the source image first, since Docker doesn&#39;t pull it for
+you when creating the mount. This example uses the musl-based BusyBox image so
+its binaries are compatible with the musl-based Alpine container.
+
+```console
+$ docker pull busybox:musl
+$ docker run -d \
+  -it \
+  --name imgtest \
+  --mount type=image,source=busybox:musl,destination=/dbg \
+  alpine:latest
+</code></pre></div>
+
+<p>The container can now read the BusyBox tools from <code>/dbg</code> while running the Alpine
+image:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>imgtest<span class="w"> </span>/dbg/bin/echo<span class="w"> </span><span class="s2">&quot;hello from busybox&quot;</span>
+<span class="go">hello from busybox</span>
+</code></pre></div>
+
+<p>Verify that the mount is an <code>image</code> mount by looking in the <code>Mounts</code> section of
+the <code>docker inspect</code> output:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>inspect<span class="w"> </span>imgtest<span class="w"> </span>--format<span class="w"> </span><span class="s1">&#39;{{ json .Mounts }}&#39;</span>
+<span class="go">[{&quot;Type&quot;:&quot;image&quot;,&quot;Name&quot;:&quot;busybox:musl&quot;,&quot;Source&quot;:&quot;/var/lib/docker/rootfs/overlayfs/...&quot;,&quot;Destination&quot;:&quot;/dbg&quot;,&quot;Mode&quot;:&quot;&quot;,&quot;RW&quot;:false,&quot;Propagation&quot;:&quot;rprivate&quot;}]</span>
+</code></pre></div>
+
+<p>This shows that the mount is an <code>image</code> mount, that its source is the
+<code>busybox:musl</code> image, and that it's read-only (<code>"RW":false</code>).</p>
+<p>Stop and remove the container:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>rm<span class="w"> </span>-fv<span class="w"> </span>imgtest
+</code></pre></div>
+
+<h2 id="mount-a-subpath-of-an-image">Mount a subpath of an image<a class="headerlink" href="#mount-a-subpath-of-an-image" title="Permanent link">#</a></h2>
+<p>Use the <code>image-subpath</code> option to mount a specific directory from the source
+image instead of its root. For example, to mount only the <code>bin</code> directory of the
+<code>busybox</code> image at <code>/tools</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>imgtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>image,source<span class="o">=</span>busybox,destination<span class="o">=</span>/tools,image-subpath<span class="o">=</span>bin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>alpine:latest
+</code></pre></div>
+
+<p>The container sees the contents of the image's <code>bin</code> directory at <code>/tools</code>.</p>
+<h2 id="use-an-image-mount-with-docker-compose">Use an image mount with Docker Compose<a class="headerlink" href="#use-an-image-mount-with-docker-compose" title="Permanent link">#</a></h2>
+<p>A single Docker Compose service with an image mount looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alpine:latest</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">image</span>
+<span class="w">        </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">busybox</span>
+<span class="w">        </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dbg</span>
+</code></pre></div>
+
+<p>To mount a subpath of the image, use the <code>subpath</code> option under <code>image</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alpine:latest</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">image</span>
+<span class="w">        </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">busybox</span>
+<span class="w">        </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tools</span>
+<span class="w">        </span><span class="nt">image</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">subpath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bin</span>
+</code></pre></div>
+
+<p>The <code>image.subpath</code> option is available in Docker Compose version 2.35.0 and
+later. For more information about using mounts of the <code>image</code> type with Compose,
+see the
+<a href="../../reference/compose-file/services.html#volumes">Compose reference on the volume attribute</a>.</p>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<ul>
+<li>Learn about <a href="volumes.html">volumes</a>.</li>
+<li>Learn about <a href="bind-mounts.html">bind mounts</a>.</li>
+<li>Learn about <a href="tmpfs.html">tmpfs mounts</a>.</li>
+<li>Learn about <a href="/engine/storage/drivers/">storage drivers</a>.</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/storage/drivers/zfs-driver.html">
+          <span class="muted">Anterior</span>ZFS storage driver
+        </a>
+        <a class="pager-next" href="../../engine/storage/tmpfs.html">
+          <span class="muted">Siguiente</span>tmpfs mounts
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

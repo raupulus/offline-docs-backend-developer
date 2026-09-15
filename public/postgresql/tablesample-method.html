@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing a Table Sampling Method · PostgreSQL</title>
+<meta name="description" content="Writing a Table Sampling Method - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/tablesample-method.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Writing a Table Sampling Method">
+<meta property="og:description" content="Writing a Table Sampling Method - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Writing a Table Sampling Method">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Writing a Table Sampling Method",
+"url": "https://docs.raupulus.dev/postgresql/tablesample-method.html",  "description": "Writing a Table Sampling Method - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+              <li>
+                <a href="./rangetypes.html"
+>Range Types</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-recovery-config.html"
+>recovery.conf file merged into postgresql.conf</a>
+              </li>
+              <li>
+                <a href="./reference.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="./regress.html"
+>Regression Tests</a>
+              </li>
+              <li>
+                <a href="./release-17.html"
+>Release 17.11</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release Notes</a>
+              </li>
+              <li>
+                <a href="./wal.html"
+>Reliability and the Write-Ahead Log</a>
+              </li>
+              <li>
+                <a href="./replication-origins.html"
+>Replication Progress Tracking</a>
+              </li>
+              <li>
+                <a href="./maintenance.html"
+>Routine Database Maintenance Tasks</a>
+              </li>
+              <li>
+                <a href="./seg.html"
+>seg — a datatype for line segments or floating point intervals</a>
+              </li>
+              <li>
+                <a href="./sepgsql.html"
+>sepgsql — SELinux-, label-based mandatory access control (MAC) security module</a>
+              </li>
+              <li>
+                <a href="./config.html"
+>Server Configuration</a>
+              </li>
+              <li>
+                <a href="./runtime.html"
+>Server Setup and Operation</a>
+              </li>
+              <li>
+                <a href="./spgist.html"
+>SP-GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./contrib-spi.html"
+>spi — Server Programming Interface features/examples</a>
+              </li>
+              <li>
+                <a href="./spi.html"
+>SPI_connect</a>
+              </li>
+              <li>
+                <a href="./features.html"
+>SQL Conformance</a>
+              </li>
+              <li>
+                <a href="./keywords.html"
+>SQL Key Words</a>
+              </li>
+              <li>
+                <a href="./syntax.html"
+>SQL Syntax</a>
+              </li>
+              <li>
+                <a href="./sslinfo.html"
+>sslinfo — obtain client SSL information</a>
+              </li>
+              <li>
+                <a href="./bki.html"
+>System Catalog Declarations and Initial Contents</a>
+              </li>
+              <li>
+                <a href="./catalogs.html"
+>System Catalogs</a>
+              </li>
+              <li>
+                <a href="./system-views.html"
+>System Views</a>
+              </li>
+              <li>
+                <a href="./tableam.html"
+>Table Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./tablefunc.html"
+>tablefunc — functions that return tables (crosstab and others)</a>
+              </li>
+              <li>
+                <a href="./tcn.html"
+>tcn — a trigger function to notify listeners of changes to table content</a>
+              </li>
+              <li>
+                <a href="./test-decoding.html"
+>test_decoding — SQL-based test/example module for WAL logical decoding</a>
+              </li>
+              <li>
+                <a href="./information_schema.html"
+>The Information Schema</a>
+              </li>
+              <li>
+                <a href="./rules.html"
+>The Rule System</a>
+              </li>
+              <li>
+                <a href="./sourcerepo.html"
+>The Source Code Repository</a>
+              </li>
+              <li>
+                <a href="./query.html"
+>The SQL Language</a>
+              </li>
+              <li>
+                <a href="./xact.html"
+>Transaction Processing</a>
+              </li>
+              <li>
+                <a href="./trigger.html"
+>Triggers</a>
+              </li>
+              <li>
+                <a href="./tsm-system-rows.html"
+>tsm_system_rows — the SYSTEM_ROWS sampling method for TABLESAMPLE</a>
+              </li>
+              <li>
+                <a href="./tsm-system-time.html"
+>tsm_system_time — the SYSTEM_TIME sampling method for TABLESAMPLE</a>
+              </li>
+              <li>
+                <a href="./typeconv.html"
+>Type Conversion</a>
+              </li>
+              <li>
+                <a href="./unaccent.html"
+>unaccent — a text search dictionary which removes diacritics</a>
+              </li>
+              <li>
+                <a href="./xaggr.html"
+>User-Defined Aggregates</a>
+              </li>
+              <li>
+                <a href="./xfunc.html"
+>User-Defined Functions</a>
+              </li>
+              <li>
+                <a href="./xoper.html"
+>User-Defined Operators</a>
+              </li>
+              <li>
+                <a href="./xtypes.html"
+>User-Defined Types</a>
+              </li>
+              <li>
+                <a href="./uuid-ossp.html"
+>uuid-ossp — a UUID generator</a>
+              </li>
+              <li>
+                <a href="./vacuumlo.html"
+>vacuumlo</a>
+              </li>
+              <li>
+                <a href="./wal-for-extensions.html"
+>Write Ahead Logging for Extensions</a>
+              </li>
+              <li>
+                <a href="./custom-scan.html"
+>Writing a Custom Scan Provider</a>
+              </li>
+              <li>
+                <a href="./fdwhandler.html"
+>Writing a Foreign Data Wrapper</a>
+              </li>
+              <li>
+                <a href="./plhandler.html"
+>Writing a Procedural Language Handler</a>
+              </li>
+              <li>
+                <a href="./tablesample-method.html"
+class="is-current" aria-current="page">Writing a Table Sampling Method</a>
+              </li>
+              <li>
+                <a href="./xml2.html"
+>xml2 — XPath querying and XSLT functionality</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Writing a Table Sampling Method</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/tablesample-method.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#writing-a-table-sampling-method">Writing a Table Sampling Method#</a></li>
+              <li class="lvl-2"><a href="#sampling-method-support-functions">Sampling Method Support Functions#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="writing-a-table-sampling-method">Writing a Table Sampling Method<a class="headerlink" href="#writing-a-table-sampling-method" title="Permanent link">#</a></h2>
+<p>table sampling method</p>
+<p>TABLESAMPLE</p>
+<p>method</p>
+<p>PostgreSQL's implementation of the <code>TABLESAMPLE</code> clause supports custom table sampling methods, in addition to the <code>BERNOULLI</code> and <code>SYSTEM</code> methods that are required by the SQL standard. The sampling method determines which rows of the table will be selected when the <code>TABLESAMPLE</code> clause is used.</p>
+<p>At the SQL level, a table sampling method is represented by a single SQL function, typically implemented in C, having the signature</p>
+<div class="codehilite"><pre><span></span><code>method_name(internal) RETURNS tsm_handler
+</code></pre></div>
+
+<p>The name of the function is the same method name appearing in the <code>TABLESAMPLE</code> clause. The <code>internal</code> argument is a dummy (always having value zero) that simply serves to prevent this function from being called directly from an SQL command. The result of the function must be a palloc'd struct of type <code>TsmRoutine</code>, which contains pointers to support functions for the sampling method. These support functions are plain C functions and are not visible or callable at the SQL level. The support functions are described in <a href="#tablesample-support-functions">Sampling Method Support Functions</a>.</p>
+<p>In addition to function pointers, the <code>TsmRoutine</code> struct must provide these additional fields:</p>
+<p><code>List *parameterTypes</code><br>
+This is an OID list containing the data type OIDs of the parameter(s) that will be accepted by the <code>TABLESAMPLE</code> clause when this sampling method is used. For example, for the built-in methods, this list contains a single item with value <code>FLOAT4OID</code>, which represents the sampling percentage. Custom sampling methods can have more or different parameters.</p>
+<p><code>bool repeatable_across_queries</code><br>
+If <code>true</code>, the sampling method can deliver identical samples across successive queries, if the same parameters and <code>REPEATABLE</code> seed value are supplied each time and the table contents have not changed. When this is <code>false</code>, the <code>REPEATABLE</code> clause is not accepted for use with the sampling method.</p>
+<p><code>bool repeatable_across_scans</code><br>
+If <code>true</code>, the sampling method can deliver identical samples across successive scans in the same query (assuming unchanging parameters, seed value, and snapshot). When this is <code>false</code>, the planner will not select plans that would require scanning the sampled table more than once, since that might result in inconsistent query output.</p>
+<p>The <code>TsmRoutine</code> struct type is declared in <code>src/include/access/tsmapi.h</code>, which see for additional details.</p>
+<p>The table sampling methods included in the standard distribution are good references when trying to write your own. Look into the <code>src/backend/access/tablesample</code> subdirectory of the source tree for the built-in sampling methods, and into the <code>contrib</code> subdirectory for add-on methods.</p>
+<h2 id="sampling-method-support-functions">Sampling Method Support Functions<a class="headerlink" href="#sampling-method-support-functions" title="Permanent link">#</a></h2>
+<p>The TSM handler function returns a palloc'd <code>TsmRoutine</code> struct containing pointers to the support functions described below. Most of the functions are required, but some are optional, and those pointers can be NULL.</p>
+<div class="codehilite"><pre><span></span><code>void
+SampleScanGetSampleSize (PlannerInfo *root,
+                         RelOptInfo *baserel,
+                         List *paramexprs,
+                         BlockNumber *pages,
+                         double *tuples);
+</code></pre></div>
+
+<p>This function is called during planning. It must estimate the number of relation pages that will be read during a sample scan, and the number of tuples that will be selected by the scan. (For example, these might be determined by estimating the sampling fraction, and then multiplying the <code>baserel-&gt;pages</code> and <code>baserel-&gt;tuples</code> numbers by that, being sure to round the results to integral values.) The <code>paramexprs</code> list holds the expression(s) that are parameters to the <code>TABLESAMPLE</code> clause. It is recommended to use <code>estimate_expression_value()</code> to try to reduce these expressions to constants, if their values are needed for estimation purposes; but the function must provide size estimates even if they cannot be reduced, and it should not fail even if the values appear invalid (remember that they're only estimates of what the run-time values will be). The <code>pages</code> and <code>tuples</code> parameters are outputs.</p>
+<div class="codehilite"><pre><span></span><code>void
+InitSampleScan (SampleScanState *node,
+                int eflags);
+</code></pre></div>
+
+<p>Initialize for execution of a SampleScan plan node. This is called during executor startup. It should perform any initialization needed before processing can start. The SampleScanState node has already been created, but its tsm_state field is NULL. The <code>InitSampleScan</code> function can palloc whatever internal state data is needed by the sampling method, and store a pointer to it in <code>node-&gt;tsm_state</code>. Information about the table to scan is accessible through other fields of the SampleScanState node (but note that the <code>node-&gt;ss.ss_currentScanDesc</code> scan descriptor is not set up yet). <code>eflags</code> contains flag bits describing the executor's operating mode for this plan node.</p>
+<p>When <code>(eflags &amp; EXEC_FLAG_EXPLAIN_ONLY)</code> is true, the scan will not actually be performed, so this function should only do the minimum required to make the node state valid for <code>EXPLAIN</code> and <code>EndSampleScan</code>.</p>
+<p>This function can be omitted (set the pointer to NULL), in which case <code>BeginSampleScan</code> must perform all initialization needed by the sampling method.</p>
+<div class="codehilite"><pre><span></span><code>void
+BeginSampleScan (SampleScanState *node,
+                 Datum *params,
+                 int nparams,
+                 uint32 seed);
+</code></pre></div>
+
+<p>Begin execution of a sampling scan. This is called just before the first attempt to fetch a tuple, and may be called again if the scan needs to be restarted. Information about the table to scan is accessible through fields of the SampleScanState node (but note that the <code>node-&gt;ss.ss_currentScanDesc</code> scan descriptor is not set up yet). The <code>params</code> array, of length <code>nparams</code>, contains the values of the parameters supplied in the <code>TABLESAMPLE</code> clause. These will have the number and types specified in the sampling method's <code>parameterTypes</code> list, and have been checked to not be null. <code>seed</code> contains a seed to use for any random numbers generated within the sampling method; it is either a hash derived from the <code>REPEATABLE</code> value if one was given, or the result of <code>random()</code> if not.</p>
+<p>This function may adjust the fields <code>node-&gt;use_bulkread</code> and <code>node-&gt;use_pagemode</code>. If <code>node-&gt;use_bulkread</code> is <code>true</code>, which it is by default, the scan will use a buffer access strategy that encourages recycling buffers after use. It might be reasonable to set this to <code>false</code> if the scan will visit only a small fraction of the table's pages. If <code>node-&gt;use_pagemode</code> is <code>true</code>, which it is by default, the scan will perform visibility checking in a single pass for all tuples on each visited page. It might be reasonable to set this to <code>false</code> if the scan will select only a small fraction of the tuples on each visited page. That will result in fewer tuple visibility checks being performed, though each one will be more expensive because it will require more locking.</p>
+<p>If the sampling method is marked <code>repeatable_across_scans</code>, it must be able to select the same set of tuples during a rescan as it did originally, that is a fresh call of <code>BeginSampleScan</code> must lead to selecting the same tuples as before (if the <code>TABLESAMPLE</code> parameters and seed don't change).</p>
+<div class="codehilite"><pre><span></span><code>BlockNumber
+NextSampleBlock (SampleScanState *node, BlockNumber nblocks);
+</code></pre></div>
+
+<p>Returns the block number of the next page to be scanned, or <code>InvalidBlockNumber</code> if no pages remain to be scanned.</p>
+<p>This function can be omitted (set the pointer to NULL), in which case the core code will perform a sequential scan of the entire relation. Such a scan can use synchronized scanning, so that the sampling method cannot assume that the relation pages are visited in the same order on each scan.</p>
+<div class="codehilite"><pre><span></span><code>OffsetNumber
+NextSampleTuple (SampleScanState *node,
+                 BlockNumber blockno,
+                 OffsetNumber maxoffset);
+</code></pre></div>
+
+<p>Returns the offset number of the next tuple to be sampled on the specified page, or <code>InvalidOffsetNumber</code> if no tuples remain to be sampled. <code>maxoffset</code> is the largest offset number in use on the page.</p>
+<blockquote>
+<p>[!NOTE]
+<code>NextSampleTuple</code> is not explicitly told which of the offset numbers in the range <code>1 .. maxoffset</code> actually contain valid tuples. This is not normally a problem since the core code ignores requests to sample missing or invisible tuples; that should not result in any bias in the sample. However, if necessary, the function can use <code>node-&gt;donetuples</code> to examine how many of the tuples it returned were valid and visible.</p>
+<p>[!NOTE]
+<code>NextSampleTuple</code> must <em>not</em> assume that <code>blockno</code> is the same page number returned by the most recent <code>NextSampleBlock</code> call. It was returned by some previous <code>NextSampleBlock</code> call, but the core code is allowed to call <code>NextSampleBlock</code> in advance of actually scanning pages, so as to support prefetching. It is OK to assume that once sampling of a given page begins, successive <code>NextSampleTuple</code> calls all refer to the same page until <code>InvalidOffsetNumber</code> is returned.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code>void
+EndSampleScan (SampleScanState *node);
+</code></pre></div>
+
+<p>End the scan and release resources. It is normally not important to release palloc'd memory, but any externally-visible resources should be cleaned up. This function can be omitted (set the pointer to NULL) in the common case where no such resources exist.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./plhandler.html">
+          <span class="muted">Anterior</span>Writing a Procedural Language Handler
+        </a>
+        <a class="pager-next" href="./xml2.html">
+          <span class="muted">Siguiente</span>xml2 — XPath querying and XSLT functionality
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

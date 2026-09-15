@@ -1,0 +1,50 @@
+---
+title: Deploy a service to the swarm
+description: Deploy a service to the swarm
+source_repo: docker/docs
+source_ref: main
+source_commit: 083f66104
+source_path: manuals/engine/swarm/swarm-tutorial/deploy-service.md
+technology: docker
+version: main
+license: Apache-2.0
+retrieved_at: '2026-09-15'
+section: engine
+order: 6100
+---
+
+After you [create a swarm](create-swarm.md), you can deploy a service to the
+swarm. For this tutorial, you also [added worker nodes](add-nodes.md), but that
+is not a requirement to deploy a service.
+
+1.  Open a terminal and ssh into the machine where you run your manager node.
+    For example, the tutorial uses a machine named `manager1`.
+
+2.  Run the following command:
+
+    ```console
+    $ docker service create --replicas 1 --name helloworld alpine ping docker.com
+
+    9uk4639qpg7npwf3fn2aasksr
+    ```
+
+    * The `docker service create` command creates the service.
+    * The `--name` flag names the service `helloworld`.
+    * The `--replicas` flag specifies the desired state of 1 running instance.
+    * The arguments `alpine ping docker.com` define the service as an Alpine
+    Linux container that executes the command `ping docker.com`.
+
+3.  Run `docker service ls` to see the list of running services:
+
+    ```console
+    $ docker service ls
+
+    ID            NAME        SCALE  IMAGE   COMMAND
+    9uk4639qpg7n  helloworld  1/1    alpine  ping docker.com
+    ```
+
+## Next steps
+
+Now you're ready to inspect the service.
+
+{{< button text="Inspect the service" url="inspect-service.md" >}}

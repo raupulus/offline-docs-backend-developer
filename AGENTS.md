@@ -297,7 +297,7 @@ make update WORK_DIR=/tmp/docs-work
 | 4b · Python y Bash | Hecha | `normalize_text.py`, `adapters/archive.py` |
 | 5 · Acabado | Hecha | `bundle.py` (bundles IA, RSS 2.0, PWA vanilla, SEO) |
 
-Verificado: 13.820 documentos en 12 tecnologías (Bash, Composer, Filament, JavaScript, Laravel, Node.js, npm, Nuxt, PHP, pnpm, Python, Vue 3).
+Verificado: 16.577 documentos en 20 tecnologías (Bash, Composer, Debian Reference, Docker, Filament, Git, JavaScript, Laravel, llama.cpp, MicroPython (Pico), Node.js, npm, Nuxt, PHP, pnpm, PostgreSQL, Python, SQLite, Tailwind CSS, Vue 3).
 
 `make test` ejecuta 16 comprobaciones del normalizador sin red ni descargas. Ejecútalo siempre antes de dar por buena una modificación de `normalize.py`.
 
@@ -311,6 +311,10 @@ Verificado: 13.820 documentos en 12 tecnologías (Bash, Composer, Filament, Java
 | Prefijos numéricos en directorios | Carpetas `02-columns/` en Filament | `target_path` los quita también de los segmentos de directorio |
 | Enlaces resueltos por slug | Enlaces rotos en pnpm (Docusaurus) | Respaldo por nombre de fichero, solo si es inequívoco |
 | Colisión de ruta Apache en Debian (`/javascript`) | Error 404/403 o redirección a `/usr/share/javascript` por el paquete `javascript-common` | La tecnología se nombra canónicamente `js-javascript` en `sources.yaml`, `src/` y `public/` |
+| Bloqueo infinito de Pandoc con AsciiDoc (Git) | Pandoc entra en backtracking infinito en `git-config.adoc` con líneas `#` dentro de bloques abiertos `--` | `_sanitize_source` en `normalize_asciidoc.py` sustituye `\n#` por comentarios `\n //` y colapsa `--` antes de invocar pandoc |
+| Colisión de notas de versión en Docker (`17.03.md`, `2.x-mac.md`) | Prefijos numéricos con punto se recortaban como ordenación eliminando la versión | `RE_NUMERIC_PREFIX` solo casa con `[-_]`, nunca con `.`; y se gestiona colisión de `_index.md` en segmentos descartados |
+| Entidades XML no estándar en PostgreSQL SGML | Pandoc falla con `UnresolvedEntityException` por `&zwsp;` o ficheros obsoletos | Sanitización de entidades no-XML en `docbook.py` antes del parseo |
+| Tablas `<ApiTable>` en MDX de Tailwind v4 | La documentación de utilidades quedaba sin tablas de CSS / valores | Parser `convert_api_tables` en `normalize.py` convierte estructuras JS a tablas Markdown estándar |
 
 Al tocar la fase 4, ten en cuenta que `_toc.json` ya trae el árbol de navegación con secciones, títulos y orden resueltos. No hay que deducirlo del sistema de ficheros.
 

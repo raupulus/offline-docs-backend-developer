@@ -1,0 +1,2022 @@
+---
+title: System Views
+source_url: https://www.postgresql.org/docs/17/views.html
+source_repo: https://github.com/postgres/postgres.git
+source_ref: REL_17_STABLE
+source_commit: 23088673d
+source_path: system-views.sgml
+technology: postgresql
+version: REL_17_STABLE
+license: PostgreSQL
+retrieved_at: '2026-09-15'
+order: 3600
+---
+
+## System Views
+
+In addition to the system catalogs, PostgreSQL provides a number of built-in views. Some system views provide convenient access to some commonly used queries on the system catalogs. Other views provide access to internal server state.
+
+The information schema ([???](#information-schema)) provides an alternative set of views which overlap the functionality of the system views. Since the information schema is SQL-standard whereas the views described here are PostgreSQL-specific, it's usually better to use the information schema if it provides all the information you need.
+
+[System Views](#view-table) lists the system views described here. More detailed documentation of each view follows below. There are some additional views that provide access to accumulated statistics; they are described in [???](#monitoring-stats-views-table).
+
+## Overview
+
+[System Views](#view-table) lists the system views. More detailed documentation of each catalog follows below. Except where noted, all the views described here are read-only.
+
+| View Name | Purpose |
+|----|----|
+| [pg_available_extensions](#view-pg-available-extensions) | available extensions |
+| [pg_available_extension_versions](#view-pg-available-extension-versions) | available versions of extensions |
+| [pg_backend_memory_contexts](#view-pg-backend-memory-contexts) | backend memory contexts |
+| [pg_config](#view-pg-config) | compile-time configuration parameters |
+| [pg_cursors](#view-pg-cursors) | open cursors |
+| [pg_file_settings](#view-pg-file-settings) | summary of configuration file contents |
+| [pg_group](#view-pg-group) | groups of database users |
+| [pg_hba_file_rules](#view-pg-hba-file-rules) | summary of client authentication configuration file contents |
+| [pg_ident_file_mappings](#view-pg-ident-file-mappings) | summary of client user name mapping configuration file contents |
+| [pg_indexes](#view-pg-indexes) | indexes |
+| [pg_locks](#view-pg-locks) | locks currently held or awaited |
+| [pg_matviews](#view-pg-matviews) | materialized views |
+| [pg_policies](#view-pg-policies) | policies |
+| [pg_prepared_statements](#view-pg-prepared-statements) | prepared statements |
+| [pg_prepared_xacts](#view-pg-prepared-xacts) | prepared transactions |
+| [pg_publication_tables](#view-pg-publication-tables) | publications and information of their associated tables |
+| [pg_replication_origin_status](#view-pg-replication-origin-status) | information about replication origins, including replication progress |
+| [pg_replication_slots](#view-pg-replication-slots) | replication slot information |
+| [pg_roles](#view-pg-roles) | database roles |
+| [pg_rules](#view-pg-rules) | rules |
+| [pg_seclabels](#view-pg-seclabels) | security labels |
+| [pg_sequences](#view-pg-sequences) | sequences |
+| [pg_settings](#view-pg-settings) | parameter settings |
+| [pg_shadow](#view-pg-shadow) | database users |
+| [pg_shmem_allocations](#view-pg-shmem-allocations) | shared memory allocations |
+| [pg_stats](#view-pg-stats) | planner statistics |
+| [pg_stats_ext](#view-pg-stats-ext) | extended planner statistics |
+| [pg_stats_ext_exprs](#view-pg-stats-ext-exprs) | extended planner statistics for expressions |
+| [pg_tables](#view-pg-tables) | tables |
+| [pg_timezone_abbrevs](#view-pg-timezone-abbrevs) | time zone abbreviations |
+| [pg_timezone_names](#view-pg-timezone-names) | time zone names |
+| [pg_user](#view-pg-user) | database users |
+| [pg_user_mappings](#view-pg-user-mappings) | user mappings |
+| [pg_views](#view-pg-views) | views |
+| [pg_wait_events](#view-pg-wait-events) | wait events |
+
+System Views {#view-table}
+
+## pg_available_extensions
+
+pg_available_extensions
+
+The pg_available_extensions view lists the extensions that are available for installation. See also the [pg_extension](#catalog-pg-extension) catalog, which shows the extensions currently installed.
+
+<table>
+<caption>pg_available_extensions Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>name</code></p>
+<p>Extension name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">default_version <code>text</code></p>
+<p>Name of default version, or <code>NULL</code> if none is specified</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">installed_version <code>text</code></p>
+<p>Currently installed version of the extension, or <code>NULL</code> if not installed</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">comment <code>text</code></p>
+<p>Comment string from the extension's control file</p></td>
+</tr>
+</tbody>
+</table>
+
+The pg_available_extensions view is read-only.
+
+## pg_available_extension_versions
+
+pg_available_extension_versions
+
+The pg_available_extension_versions view lists the specific extension versions that are available for installation. See also the [pg_extension](#catalog-pg-extension) catalog, which shows the extensions currently installed.
+
+<table>
+<caption>pg_available_extension_versions Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>name</code></p>
+<p>Extension name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">version <code>text</code></p>
+<p>Version name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">installed <code>bool</code></p>
+<p>True if this version of this extension is currently installed</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">superuser <code>bool</code></p>
+<p>True if only superusers are allowed to install this extension (but see trusted)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">trusted <code>bool</code></p>
+<p>True if the extension can be installed by non-superusers with appropriate privileges</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">relocatable <code>bool</code></p>
+<p>True if extension can be relocated to another schema</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">schema <code>name</code></p>
+<p>Name of the schema that the extension must be installed into, or <code>NULL</code> if partially or fully relocatable</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">requires <code>name[]</code></p>
+<p>Names of prerequisite extensions, or <code>NULL</code> if none</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">comment <code>text</code></p>
+<p>Comment string from the extension's control file</p></td>
+</tr>
+</tbody>
+</table>
+
+The pg_available_extension_versions view is read-only.
+
+## pg_backend_memory_contexts
+
+pg_backend_memory_contexts
+
+The view pg_backend_memory_contexts displays all the memory contexts of the server process attached to the current session.
+
+pg_backend_memory_contexts contains one row for each memory context.
+
+<table>
+<caption>pg_backend_memory_contexts Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>Name of the memory context</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">ident <code>text</code></p>
+<p>Identification information of the memory context. This field is truncated at 1024 bytes</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">parent <code>text</code></p>
+<p>Name of the parent of this memory context</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">level <code>int4</code></p>
+<p>Distance from TopMemoryContext in context tree</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">total_bytes <code>int8</code></p>
+<p>Total bytes allocated for this memory context</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">total_nblocks <code>int8</code></p>
+<p>Total number of blocks allocated for this memory context</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">free_bytes <code>int8</code></p>
+<p>Free space in bytes</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">free_chunks <code>int8</code></p>
+<p>Total number of free chunks</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">used_bytes <code>int8</code></p>
+<p>Used space in bytes</p></td>
+</tr>
+</tbody>
+</table>
+
+By default, the pg_backend_memory_contexts view can be read only by superusers or roles with the privileges of the `pg_read_all_stats` role.
+
+## pg_config
+
+pg_config
+
+The view pg_config describes the compile-time configuration parameters of the currently installed version of PostgreSQL. It is intended, for example, to be used by software packages that want to interface to PostgreSQL to facilitate finding the required header files and libraries. It provides the same basic information as the [???](#app-pgconfig) PostgreSQL client application.
+
+By default, the pg_config view can be read only by superusers.
+
+<table>
+<caption>pg_config Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>The parameter name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">setting <code>text</code></p>
+<p>The parameter value</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_cursors
+
+pg_cursors
+
+The pg_cursors view lists the cursors that are currently available. Cursors can be defined in several ways:
+
+- via the [`DECLARE`](#sql-declare) statement in SQL
+
+- via the Bind message in the frontend/backend protocol, as described in [???](#protocol-flow-ext-query)
+
+- via the Server Programming Interface (SPI), as described in [???](#spi-interface)
+
+The pg_cursors view displays cursors created by any of these means. Cursors only exist for the duration of the transaction that defines them, unless they have been declared `WITH HOLD`. Therefore non-holdable cursors are only present in the view until the end of their creating transaction.
+
+> [!NOTE]
+> Cursors are used internally to implement some of the components of PostgreSQL, such as procedural languages. Therefore, the pg_cursors view might include cursors that have not been explicitly created by the user.
+
+<table>
+<caption>pg_cursors Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>The name of the cursor</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statement <code>text</code></p>
+<p>The verbatim query string submitted to declare this cursor</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">is_holdable <code>bool</code></p>
+<p><code>true</code> if the cursor is holdable (that is, it can be accessed after the transaction that declared the cursor has committed); <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">is_binary <code>bool</code></p>
+<p><code>true</code> if the cursor was declared <code>BINARY</code>; <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">is_scrollable <code>bool</code></p>
+<p><code>true</code> if the cursor is scrollable (that is, it allows rows to be retrieved in a nonsequential manner); <code>false</code> otherwise</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">creation_time <code>timestamptz</code></p>
+<p>The time at which the cursor was declared</p></td>
+</tr>
+</tbody>
+</table>
+
+The pg_cursors view is read-only.
+
+## pg_file_settings
+
+pg_file_settings
+
+The view pg_file_settings provides a summary of the contents of the server's configuration file(s). A row appears in this view for each “name = value” entry appearing in the files, with annotations indicating whether the value could be applied successfully. Additional row(s) may appear for problems not linked to a “name = value” entry, such as syntax errors in the files.
+
+This view is helpful for checking whether planned changes in the configuration files will work, or for diagnosing a previous failure. Note that this view reports on the *current* contents of the files, not on what was last applied by the server. (The [pg_settings](#view-pg-settings) view is usually sufficient to determine that.)
+
+By default, the pg_file_settings view can be read only by superusers.
+
+<table>
+<caption>pg_file_settings Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">sourcefile <code>text</code></p>
+<p>Full path name of the configuration file</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">sourceline <code>int4</code></p>
+<p>Line number within the configuration file where the entry appears</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">seqno <code>int4</code></p>
+<p>Order in which the entries are processed (1..&lt;n&gt;)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>Configuration parameter name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">setting <code>text</code></p>
+<p>Value to be assigned to the parameter</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">applied <code>bool</code></p>
+<p>True if the value can be applied successfully</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">error <code>text</code></p>
+<p>If not null, an error message indicating why this entry could not be applied</p></td>
+</tr>
+</tbody>
+</table>
+
+If the configuration file contains syntax errors or invalid parameter names, the server will not attempt to apply any settings from it, and therefore all the applied fields will read as false. In such a case there will be one or more rows with non-null error fields indicating the problem(s). Otherwise, individual settings will be applied if possible. If an individual setting cannot be applied (e.g., invalid value, or the setting cannot be changed after server start) it will have an appropriate message in the error field. Another way that an entry might have applied = false is that it is overridden by a later entry for the same parameter name; this case is not considered an error so nothing appears in the error field.
+
+See [???](#config-setting) for more information about the various ways to change run-time parameters.
+
+## pg_group
+
+pg_group
+
+The view pg_group exists for backwards compatibility: it emulates a catalog that existed in PostgreSQL before version 8.1. It shows the names and members of all roles that are marked as not rolcanlogin, which is an approximation to the set of roles that are being used as groups.
+
+<table>
+<caption>pg_group Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">groname <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Name of the group</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">grosysid <code>oid</code> (references <a href="#catalog-pg-authid">pg_authid</a>.oid)</p>
+<p>ID of this group</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">grolist <code>oid[]</code> (references <a href="#catalog-pg-authid">pg_authid</a>.oid)</p>
+<p>An array containing the IDs of the roles in this group</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_hba_file_rules
+
+pg_hba_file_rules
+
+The view pg_hba_file_rules provides a summary of the contents of the client authentication configuration file, [`pg_hba.conf`](#auth-pg-hba-conf). A row appears in this view for each non-empty, non-comment line in the file, with annotations indicating whether the rule could be applied successfully.
+
+This view can be helpful for checking whether planned changes in the authentication configuration file will work, or for diagnosing a previous failure. Note that this view reports on the *current* contents of the file, not on what was last loaded by the server.
+
+By default, the pg_hba_file_rules view can be read only by superusers.
+
+<table>
+<caption>pg_hba_file_rules Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">rule_number <code>int4</code></p>
+<p>Number of this rule, if valid, otherwise <code>NULL</code>. This indicates the order in which each rule is considered until a match is found during authentication.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">file_name <code>text</code></p>
+<p>Name of the file containing this rule</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">line_number <code>int4</code></p>
+<p>Line number of this rule in <code>file_name</code></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">type <code>text</code></p>
+<p>Type of connection</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">database <code>text[]</code></p>
+<p>List of database name(s) to which this rule applies</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">user_name <code>text[]</code></p>
+<p>List of user and group name(s) to which this rule applies</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">address <code>text</code></p>
+<p>Host name or IP address, or one of <code>all</code>, <code>samehost</code>, or <code>samenet</code>, or null for local connections</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">netmask <code>text</code></p>
+<p>IP address mask, or null if not applicable</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">auth_method <code>text</code></p>
+<p>Authentication method</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">options <code>text[]</code></p>
+<p>Options specified for authentication method, if any</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">error <code>text</code></p>
+<p>If not null, an error message indicating why this line could not be processed</p></td>
+</tr>
+</tbody>
+</table>
+
+Usually, a row reflecting an incorrect entry will have values for only the line_number and error fields.
+
+See [???](#client-authentication) for more information about client authentication configuration.
+
+## pg_ident_file_mappings
+
+pg_ident_file_mappings
+
+The view pg_ident_file_mappings provides a summary of the contents of the client user name mapping configuration file, [`pg_ident.conf`](#auth-username-maps). A row appears in this view for each non-empty, non-comment line in the file, with annotations indicating whether the map could be applied successfully.
+
+This view can be helpful for checking whether planned changes in the authentication configuration file will work, or for diagnosing a previous failure. Note that this view reports on the *current* contents of the file, not on what was last loaded by the server.
+
+By default, the pg_ident_file_mappings view can be read only by superusers.
+
+<table>
+<caption>pg_ident_file_mappings Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">map_number <code>int4</code></p>
+<p>Number of this map, in priority order, if valid, otherwise <code>NULL</code></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">file_name <code>text</code></p>
+<p>Name of the file containing this map</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">line_number <code>int4</code></p>
+<p>Line number of this map in <code>file_name</code></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">map_name <code>text</code></p>
+<p>Name of the map</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">sys_name <code>text</code></p>
+<p>Detected user name of the client</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">pg_username <code>text</code></p>
+<p>Requested PostgreSQL user name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">error <code>text</code></p>
+<p>If not <code>NULL</code>, an error message indicating why this line could not be processed</p></td>
+</tr>
+</tbody>
+</table>
+
+Usually, a row reflecting an incorrect entry will have values for only the line_number and error fields.
+
+See [???](#client-authentication) for more information about client authentication configuration.
+
+## pg_indexes
+
+pg_indexes
+
+The view pg_indexes provides access to useful information about each index in the database.
+
+<table>
+<caption>pg_indexes Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table and index</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table the index is for</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">indexname <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of index</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablespace <code>name</code> (references <a href="#catalog-pg-tablespace">pg_tablespace</a>.spcname)</p>
+<p>Name of tablespace containing index (null if default for database)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">indexdef <code>text</code></p>
+<p>Index definition (a reconstructed <a href="#sql-createindex">???</a> command)</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_locks
+
+pg_locks
+
+The view pg_locks provides access to information about the locks held by active processes within the database server. See [???](#mvcc) for more discussion of locking.
+
+pg_locks contains one row per active lockable object, requested lock mode, and relevant process. Thus, the same lockable object might appear many times, if multiple processes are holding or waiting for locks on it. However, an object that currently has no locks on it will not appear at all.
+
+There are several distinct types of lockable objects: whole relations (e.g., tables), individual pages of relations, individual tuples of relations, transaction IDs (both virtual and permanent IDs), and general database objects (identified by class OID and object OID, in the same way as in [pg_description](#catalog-pg-description) or [pg_depend](#catalog-pg-depend)). Also, the right to extend a relation is represented as a separate lockable object, as is the right to update pg_database.datfrozenxid. Also, “advisory” locks can be taken on numbers that have user-defined meanings.
+
+<table>
+<caption>pg_locks Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">locktype <code>text</code></p>
+<p>Type of the lockable object: <code>relation</code>, <code>extend</code>, <code>frozenid</code>, <code>page</code>, <code>tuple</code>, <code>transactionid</code>, <code>virtualxid</code>, <code>spectoken</code>, <code>object</code>, <code>userlock</code>, <code>advisory</code>, or <code>applytransaction</code>. (See also <a href="#wait-event-lock-table">???</a>.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">database <code>oid</code> (references <a href="#catalog-pg-database">pg_database</a>.oid)</p>
+<p>OID of the database in which the lock target exists, or zero if the target is a shared object, or null if the target is a transaction ID</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">relation <code>oid</code> (references <a href="#catalog-pg-class">pg_class</a>.oid)</p>
+<p>OID of the relation targeted by the lock, or null if the target is not a relation or part of a relation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">page <code>int4</code></p>
+<p>Page number targeted by the lock within the relation, or null if the target is not a relation page or tuple</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tuple <code>int2</code></p>
+<p>Tuple number targeted by the lock within the page, or null if the target is not a tuple</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">virtualxid <code>text</code></p>
+<p>Virtual ID of the transaction targeted by the lock, or null if the target is not a virtual transaction ID; see <a href="#transactions">???</a></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">transactionid <code>xid</code></p>
+<p>ID of the transaction targeted by the lock, or null if the target is not a transaction ID; <a href="#transactions">???</a></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">classid <code>oid</code> (references <a href="#catalog-pg-class">pg_class</a>.oid)</p>
+<p>OID of the system catalog containing the lock target, or null if the target is not a general database object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">objid <code>oid</code> (references any OID column)</p>
+<p>OID of the lock target within its system catalog, or null if the target is not a general database object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">objsubid <code>int2</code></p>
+<p>Column number targeted by the lock (the classid and objid refer to the table itself), or zero if the target is some other general database object, or null if the target is not a general database object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">virtualtransaction <code>text</code></p>
+<p>Virtual ID of the transaction that is holding or awaiting this lock</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">pid <code>int4</code></p>
+<p>Process ID of the server process holding or awaiting this lock, or null if the lock is held by a prepared transaction</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">mode <code>text</code></p>
+<p>Name of the lock mode held or desired by this process (see <a href="#locking-tables">???</a> and <a href="#xact-serializable">???</a>)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">granted <code>bool</code></p>
+<p>True if lock is held, false if lock is awaited</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">fastpath <code>bool</code></p>
+<p>True if lock was taken via fast path, false if taken via main lock table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">waitstart <code>timestamptz</code></p>
+<p>Time when the server process started waiting for this lock, or null if the lock is held. Note that this can be null for a very short period of time after the wait started even though granted is <code>false</code>.</p></td>
+</tr>
+</tbody>
+</table>
+
+granted is true in a row representing a lock held by the indicated process. False indicates that this process is currently waiting to acquire this lock, which implies that at least one other process is holding or waiting for a conflicting lock mode on the same lockable object. The waiting process will sleep until the other lock is released (or a deadlock situation is detected). A single process can be waiting to acquire at most one lock at a time.
+
+Throughout running a transaction, a server process holds an exclusive lock on the transaction's virtual transaction ID. If a permanent ID is assigned to the transaction (which normally happens only if the transaction changes the state of the database), it also holds an exclusive lock on the transaction's permanent transaction ID until it ends. When a process finds it necessary to wait specifically for another transaction to end, it does so by attempting to acquire share lock on the other transaction's ID (either virtual or permanent ID depending on the situation). That will succeed only when the other transaction terminates and releases its locks.
+
+Although tuples are a lockable type of object, information about row-level locks is stored on disk, not in memory, and therefore row-level locks normally do not appear in this view. If a process is waiting for a row-level lock, it will usually appear in the view as waiting for the permanent transaction ID of the current holder of that row lock.
+
+A speculative insertion lock consists of a transaction ID and a speculative insertion token. The speculative insertion token is displayed in the objid column.
+
+Advisory locks can be acquired on keys consisting of either a single `bigint` value or two integer values. A `bigint` key is displayed with its high-order half in the classid column, its low-order half in the objid column, and objsubid equal to 1. The original `bigint` value can be reassembled with the expression `(classid::bigint << 32) | objid::bigint`. Integer keys are displayed with the first key in the classid column, the second key in the objid column, and objsubid equal to 2. The actual meaning of the keys is up to the user. Advisory locks are local to each database, so the database column is meaningful for an advisory lock.
+
+Apply transaction locks are used in parallel mode to apply the transaction in logical replication. The remote transaction ID is displayed in the transactionid column. The objsubid displays the lock subtype which is 0 for the lock used to synchronize the set of changes, and 1 for the lock used to wait for the transaction to finish to ensure commit order.
+
+pg_locks provides a global view of all locks in the database cluster, not only those relevant to the current database. Although its relation column can be joined against [pg_class](#catalog-pg-class).oid to identify locked relations, this will only work correctly for relations in the current database (those for which the database column is either the current database's OID or zero).
+
+The pid column can be joined to the pid column of the [ pg_stat_activity](#monitoring-pg-stat-activity-view) view to get more information on the session holding or awaiting each lock, for example
+
+    SELECT * FROM pg_locks pl LEFT JOIN pg_stat_activity psa
+        ON pl.pid = psa.pid;
+
+Also, if you are using prepared transactions, the virtualtransaction column can be joined to the transaction column of the [pg_prepared_xacts](#view-pg-prepared-xacts) view to get more information on prepared transactions that hold locks. (A prepared transaction can never be waiting for a lock, but it continues to hold the locks it acquired while running.) For example:
+
+    SELECT * FROM pg_locks pl LEFT JOIN pg_prepared_xacts ppx
+        ON pl.virtualtransaction = '-1/' || ppx.transaction;
+
+While it is possible to obtain information about which processes block which other processes by joining pg_locks against itself, this is very difficult to get right in detail. Such a query would have to encode knowledge about which lock modes conflict with which others. Worse, the pg_locks view does not expose information about which processes are ahead of which others in lock wait queues, nor information about which processes are parallel workers running on behalf of which other client sessions. It is better to use the `pg_blocking_pids()` function (see [???](#functions-info-session-table)) to identify which process(es) a waiting process is blocked behind.
+
+The pg_locks view displays data from both the regular lock manager and the predicate lock manager, which are separate systems; in addition, the regular lock manager subdivides its locks into regular and fast-path locks. This data is not guaranteed to be entirely consistent. When the view is queried, data on fast-path locks (with fastpath = `true`) is gathered from each backend one at a time, without freezing the state of the entire lock manager, so it is possible for locks to be taken or released while information is gathered. Note, however, that these locks are known not to conflict with any other lock currently in place. After all backends have been queried for fast-path locks, the remainder of the regular lock manager is locked as a unit, and a consistent snapshot of all remaining locks is collected as an atomic action. After unlocking the regular lock manager, the predicate lock manager is similarly locked and all predicate locks are collected as an atomic action. Thus, with the exception of fast-path locks, each lock manager will deliver a consistent set of results, but as we do not lock both lock managers simultaneously, it is possible for locks to be taken or released after we interrogate the regular lock manager and before we interrogate the predicate lock manager.
+
+Locking the regular and/or predicate lock manager could have some impact on database performance if this view is very frequently accessed. The locks are held only for the minimum amount of time necessary to obtain data from the lock managers, but this does not completely eliminate the possibility of a performance impact.
+
+## pg_matviews
+
+pg_matviews
+
+materialized views
+
+The view pg_matviews provides access to useful information about each materialized view in the database.
+
+<table>
+<caption>pg_matviews Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing materialized view</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">matviewname <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of materialized view</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">matviewowner <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Name of materialized view's owner</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablespace <code>name</code> (references <a href="#catalog-pg-tablespace">pg_tablespace</a>.spcname)</p>
+<p>Name of tablespace containing materialized view (null if default for database)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">hasindexes <code>bool</code></p>
+<p>True if materialized view has (or recently had) any indexes</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">ispopulated <code>bool</code></p>
+<p>True if materialized view is currently populated</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">definition <code>text</code></p>
+<p>Materialized view definition (a reconstructed <a href="#sql-select">???</a> query)</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_policies
+
+pg_policies
+
+The view pg_policies provides access to useful information about each row-level security policy in the database.
+
+<table>
+<caption>pg_policies Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table policy is on</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table policy is on</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">policyname <code>name</code> (references <a href="#catalog-pg-policy">pg_policy</a>.polname)</p>
+<p>Name of policy</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">permissive <code>text</code></p>
+<p>Is the policy permissive or restrictive?</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">roles <code>name[]</code></p>
+<p>The roles to which this policy applies</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">cmd <code>text</code></p>
+<p>The command type to which the policy is applied</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">qual <code>text</code></p>
+<p>The expression added to the security barrier qualifications for queries that this policy applies to</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">with_check <code>text</code></p>
+<p>The expression added to the WITH CHECK qualifications for queries that attempt to add rows to this table</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_prepared_statements
+
+pg_prepared_statements
+
+The pg_prepared_statements view displays all the prepared statements that are available in the current session. See [???](#sql-prepare) for more information about prepared statements.
+
+pg_prepared_statements contains one row for each prepared statement. Rows are added to the view when a new prepared statement is created and removed when a prepared statement is released (for example, via the [`DEALLOCATE`](#sql-deallocate) command).
+
+<table>
+<caption>pg_prepared_statements Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>The identifier of the prepared statement</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statement <code>text</code></p>
+<p>The query string submitted by the client to create this prepared statement. For prepared statements created via SQL, this is the <code>PREPARE</code> statement submitted by the client. For prepared statements created via the frontend/backend protocol, this is the text of the prepared statement itself.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">prepare_time <code>timestamptz</code></p>
+<p>The time at which the prepared statement was created</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">parameter_types <code>regtype[]</code></p>
+<p>The expected parameter types for the prepared statement in the form of an array of <code>regtype</code>. The OID corresponding to an element of this array can be obtained by casting the <code>regtype</code> value to <code>oid</code>.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">result_types <code>regtype[]</code></p>
+<p>The types of the columns returned by the prepared statement in the form of an array of <code>regtype</code>. The OID corresponding to an element of this array can be obtained by casting the <code>regtype</code> value to <code>oid</code>. If the prepared statement does not provide a result (e.g., a DML statement), then this field will be null.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">from_sql <code>bool</code></p>
+<p><code>true</code> if the prepared statement was created via the <code>PREPARE</code> SQL command; <code>false</code> if the statement was prepared via the frontend/backend protocol</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">generic_plans <code>int8</code></p>
+<p>Number of times generic plan was chosen</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">custom_plans <code>int8</code></p>
+<p>Number of times custom plan was chosen</p></td>
+</tr>
+</tbody>
+</table>
+
+The pg_prepared_statements view is read-only.
+
+## pg_prepared_xacts
+
+pg_prepared_xacts
+
+The view pg_prepared_xacts displays information about transactions that are currently prepared for two-phase commit (see [???](#sql-prepare-transaction) for details).
+
+pg_prepared_xacts contains one row per prepared transaction. An entry is removed when the transaction is committed or rolled back.
+
+<table>
+<caption>pg_prepared_xacts Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">transaction <code>xid</code></p>
+<p>Numeric transaction identifier of the prepared transaction</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">gid <code>text</code></p>
+<p>Global transaction identifier that was assigned to the transaction</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">prepared <code>timestamptz</code></p>
+<p>Time at which the transaction was prepared for commit</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">owner <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Name of the user that executed the transaction</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">database <code>name</code> (references <a href="#catalog-pg-database">pg_database</a>.datname)</p>
+<p>Name of the database in which the transaction was executed</p></td>
+</tr>
+</tbody>
+</table>
+
+When the pg_prepared_xacts view is accessed, the internal transaction manager data structures are momentarily locked, and a copy is made for the view to display. This ensures that the view produces a consistent set of results, while not blocking normal operations longer than necessary. Nonetheless there could be some impact on database performance if this view is frequently accessed.
+
+## pg_publication_tables
+
+pg_publication_tables
+
+The view pg_publication_tables provides information about the mapping between publications and information of tables they contain. Unlike the underlying catalog [pg_publication_rel](#catalog-pg-publication-rel), this view expands publications defined as [`FOR ALL TABLES`](#sql-createpublication-params-for-all-tables) and [`FOR TABLES IN SCHEMA`](#sql-createpublication-params-for-tables-in-schema), so for such publications there will be a row for each eligible table.
+
+<table>
+<caption>pg_publication_tables Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">pubname <code>name</code> (references <a href="#catalog-pg-publication">pg_publication</a>.pubname)</p>
+<p>Name of publication</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">attnames <code>name[]</code> (references <a href="#catalog-pg-attribute">pg_attribute</a>.attname)</p>
+<p>Names of table columns included in the publication. This contains all the columns of the table when the user didn't specify the column list for the table.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rowfilter <code>text</code></p>
+<p>Expression for the table's publication qualifying condition</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_replication_origin_status
+
+pg_replication_origin_status
+
+The pg_replication_origin_status view contains information about how far replay for a certain origin has progressed. For more on replication origins see [???](#replication-origins).
+
+<table>
+<caption>pg_replication_origin_status Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">local_id <code>oid</code> (references <a href="#catalog-pg-replication-origin">pg_replication_origin</a>.roident)</p>
+<p>internal node identifier</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">external_id <code>text</code> (references <a href="#catalog-pg-replication-origin">pg_replication_origin</a>.roname)</p>
+<p>external node identifier</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">remote_lsn <code>pg_lsn</code></p>
+<p>The origin node's LSN up to which data has been replicated.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">local_lsn <code>pg_lsn</code></p>
+<p>This node's LSN at which <code>remote_lsn</code> has been replicated. Used to flush commit records before persisting data to disk when using asynchronous commits.</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_replication_slots
+
+pg_replication_slots
+
+The pg_replication_slots view provides a listing of all replication slots that currently exist on the database cluster, along with their current state.
+
+For more on replication slots, see [???](#streaming-replication-slots) and [???](#logicaldecoding).
+
+<table>
+<caption>pg_replication_slots Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">slot_name <code>name</code></p>
+<p>A unique, cluster-wide identifier for the replication slot</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">plugin <code>name</code></p>
+<p>The base name of the shared object containing the output plugin this logical slot is using, or null for physical slots.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">slot_type <code>text</code></p>
+<p>The slot type: <code>physical</code> or <code>logical</code></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">datoid <code>oid</code> (references <a href="#catalog-pg-database">pg_database</a>.oid)</p>
+<p>The OID of the database this slot is associated with, or null. Only logical slots have an associated database.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">database <code>name</code> (references <a href="#catalog-pg-database">pg_database</a>.datname)</p>
+<p>The name of the database this slot is associated with, or null. Only logical slots have an associated database.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">temporary <code>bool</code></p>
+<p>True if this is a temporary replication slot. Temporary slots are not saved to disk and are automatically dropped on error or when the session has finished.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">active <code>bool</code></p>
+<p>True if this slot is currently being streamed</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">active_pid <code>int4</code></p>
+<p>The process ID of the session streaming data for this slot. <code>NULL</code> if inactive.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">xmin <code>xid</code></p>
+<p>The oldest transaction that this slot needs the database to retain. <code>VACUUM</code> cannot remove tuples deleted by any later transaction.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">catalog_xmin <code>xid</code></p>
+<p>The oldest transaction affecting the system catalogs that this slot needs the database to retain. <code>VACUUM</code> cannot remove catalog tuples deleted by any later transaction.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">restart_lsn <code>pg_lsn</code></p>
+<p>The address (<code>LSN</code>) of oldest WAL which still might be required by the consumer of this slot and thus won't be automatically removed during checkpoints unless this LSN gets behind more than <a href="#guc-max-slot-wal-keep-size">???</a> from the current LSN. <code>NULL</code> if the <code>LSN</code> of this slot has never been reserved.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">confirmed_flush_lsn <code>pg_lsn</code></p>
+<p>The address (<code>LSN</code>) up to which the logical slot's consumer has confirmed receiving data. Data corresponding to the transactions committed before this <code>LSN</code> is not available anymore. <code>NULL</code> for physical slots.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">wal_status <code>text</code></p>
+<p>Availability of WAL files claimed by this slot. Possible values are:</p>
+<ul>
+<li><p><code>reserved</code> means that the claimed files are within <code>max_wal_size</code>.</p></li>
+<li><p><code>extended</code> means that <code>max_wal_size</code> is exceeded but the files are still retained, either by the replication slot or by <code>wal_keep_size</code>.</p></li>
+<li><p><code>unreserved</code> means that the slot no longer retains the required WAL files and some of them are to be removed at the next checkpoint. This typically occurs when <a href="#guc-max-slot-wal-keep-size">???</a> is set to a non-negative value. This state can return to <code>reserved</code> or <code>extended</code>.</p></li>
+<li><p><code>lost</code> means that this slot is no longer usable.</p></li>
+</ul></td>
+</tr>
+<tr>
+<td><p role="column_definition">safe_wal_size <code>int8</code></p>
+<p>The number of bytes that can be written to WAL such that this slot is not in danger of getting in state "lost". It is NULL for lost slots, as well as if <code>max_slot_wal_keep_size</code> is <code>-1</code>.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">two_phase <code>bool</code></p>
+<p>True if the slot is enabled for decoding prepared transactions. Always false for physical slots.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">inactive_since <code>timestamptz</code></p>
+<p>The time when the slot became inactive. <code>NULL</code> if the slot is currently being streamed. Note that for slots on the standby that are being synced from a primary server (whose synced field is <code>true</code>), the inactive_since indicates the time when slot synchronization (see <a href="#logicaldecoding-replication-slots-synchronization">???</a>) was most recently stopped. <code>NULL</code> if the slot has always been synchronized. On standby, this is useful for slots that are being synced from a primary server (whose synced field is <code>true</code>) so they know when the slot stopped being synchronized.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">conflicting <code>bool</code></p>
+<p>True if this logical slot conflicted with recovery (and so is now invalidated). When this column is true, check invalidation_reason column for the conflict reason. Always NULL for physical slots.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">invalidation_reason <code>text</code></p>
+<p>The reason for the slot's invalidation. It is set for both logical and physical slots. <code>NULL</code> if the slot is not invalidated. Possible values are:</p>
+<ul>
+<li><code>wal_removed</code> means that the required WAL has been removed.</li>
+<li><code>rows_removed</code> means that the required rows have been removed. It is set only for logical slots.</li>
+<li><code>wal_level_insufficient</code> means that the primary doesn't have a <a href="#guc-wal-level">???</a> sufficient to perform logical decoding. It is set only for logical slots.</li>
+</ul></td>
+</tr>
+<tr>
+<td><p role="column_definition">failover <code>bool</code></p>
+<p>True if this is a logical slot enabled to be synced to the standbys so that logical replication can be resumed from the new primary after failover. Always false for physical slots.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">synced <code>bool</code></p>
+<p>True if this is a logical slot that was synced from a primary server. On a hot standby, the slots with the synced column marked as true can neither be used for logical decoding nor dropped manually. The value of this column has no meaning on the primary server; the column value on the primary is default false for all slots but may (if leftover from a promoted standby) also be true.</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_roles
+
+pg_roles
+
+The view pg_roles provides access to information about database roles. This is simply a publicly readable view of [pg_authid](#catalog-pg-authid) that blanks out the password field.
+
+<table>
+<caption>pg_roles Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">rolname <code>name</code></p>
+<p>Role name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolsuper <code>bool</code></p>
+<p>Role has superuser privileges</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolinherit <code>bool</code></p>
+<p>Role automatically inherits privileges of roles it is a member of</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolcreaterole <code>bool</code></p>
+<p>Role can create more roles</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolcreatedb <code>bool</code></p>
+<p>Role can create databases</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolcanlogin <code>bool</code></p>
+<p>Role can log in. That is, this role can be given as the initial session authorization identifier</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolreplication <code>bool</code></p>
+<p>Role is a replication role. A replication role can initiate replication connections and create and drop replication slots.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolconnlimit <code>int4</code></p>
+<p>For roles that can log in, this sets maximum number of concurrent connections this role can make. -1 means no limit.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolpassword <code>text</code></p>
+<p>Not the password (always reads as <code>********</code>)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolvaliduntil <code>timestamptz</code></p>
+<p>Password expiry time (only used for password authentication); null if no expiration</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolbypassrls <code>bool</code></p>
+<p>Role bypasses every row-level security policy, see <a href="#ddl-rowsecurity">???</a> for more information.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rolconfig <code>text[]</code></p>
+<p>Role-specific defaults for run-time configuration variables</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">oid <code>oid</code> (references <a href="#catalog-pg-authid">pg_authid</a>.oid)</p>
+<p>ID of role</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_rules
+
+pg_rules
+
+The view pg_rules provides access to useful information about query rewrite rules.
+
+<table>
+<caption>pg_rules Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table the rule is for</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rulename <code>name</code> (references <a href="#catalog-pg-rewrite">pg_rewrite</a>.rulename)</p>
+<p>Name of rule</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">definition <code>text</code></p>
+<p>Rule definition (a reconstructed creation command)</p></td>
+</tr>
+</tbody>
+</table>
+
+The pg_rules view excludes the `ON SELECT` rules of views and materialized views; those can be seen in [pg_views](#view-pg-views) and [pg_matviews](#view-pg-matviews).
+
+## pg_seclabels
+
+pg_seclabels
+
+The view pg_seclabels provides information about security labels. It as an easier-to-query version of the [pg_seclabel](#catalog-pg-seclabel) catalog.
+
+<table>
+<caption>pg_seclabels Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">objoid <code>oid</code> (references any OID column)</p>
+<p>The OID of the object this security label pertains to</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">classoid <code>oid</code> (references <a href="#catalog-pg-class">pg_class</a>.oid)</p>
+<p>The OID of the system catalog this object appears in</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">objsubid <code>int4</code></p>
+<p>For a security label on a table column, this is the column number (the objoid and classoid refer to the table itself). For all other object types, this column is zero.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">objtype <code>text</code></p>
+<p>The type of object to which this label applies, as text.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">objnamespace <code>oid</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.oid)</p>
+<p>The OID of the namespace for this object, if applicable; otherwise NULL.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">objname <code>text</code></p>
+<p>The name of the object to which this label applies, as text.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">provider <code>text</code> (references <a href="#catalog-pg-seclabel">pg_seclabel</a>.provider)</p>
+<p>The label provider associated with this label.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">label <code>text</code> (references <a href="#catalog-pg-seclabel">pg_seclabel</a>.label)</p>
+<p>The security label applied to this object.</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_sequences
+
+pg_sequences
+
+The view pg_sequences provides access to useful information about each sequence in the database.
+
+<table>
+<caption>pg_sequences Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">sequencename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">sequenceowner <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Name of sequence's owner</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">data_type <code>regtype</code> (references <a href="#catalog-pg-type">pg_type</a>.oid)</p>
+<p>Data type of the sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">start_value <code>int8</code></p>
+<p>Start value of the sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">min_value <code>int8</code></p>
+<p>Minimum value of the sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">max_value <code>int8</code></p>
+<p>Maximum value of the sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">increment_by <code>int8</code></p>
+<p>Increment value of the sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">cycle <code>bool</code></p>
+<p>Whether the sequence cycles</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">cache_size <code>int8</code></p>
+<p>Cache size of the sequence</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">last_value <code>int8</code></p>
+<p>The last sequence value written to disk. If caching is used, this value can be greater than the last value handed out from the sequence.</p></td>
+</tr>
+</tbody>
+</table>
+
+The last_value column will read as null if any of the following are true:
+
+- The sequence has not been read from yet.
+
+- The current user does not have `USAGE` or `SELECT` privilege on the sequence.
+
+- The sequence is unlogged and the server is a standby.
+
+## pg_settings
+
+pg_settings
+
+The view pg_settings provides access to run-time parameters of the server. It is essentially an alternative interface to the [`SHOW`](#sql-show) and [`SET`](#sql-set) commands. It also provides access to some facts about each parameter that are not directly available from [`SHOW`](#sql-show), such as minimum and maximum values.
+
+<table>
+<caption>pg_settings Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>Run-time configuration parameter name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">setting <code>text</code></p>
+<p>Current value of the parameter</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">unit <code>text</code></p>
+<p>Implicit unit of the parameter</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">category <code>text</code></p>
+<p>Logical group of the parameter</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">short_desc <code>text</code></p>
+<p>A brief description of the parameter</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">extra_desc <code>text</code></p>
+<p>Additional, more detailed, description of the parameter</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">context <code>text</code></p>
+<p>Context required to set the parameter's value (see below)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">vartype <code>text</code></p>
+<p>Parameter type (<code>bool</code>, <code>enum</code>, <code>integer</code>, <code>real</code>, or <code>string</code>)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">source <code>text</code></p>
+<p>Source of the current parameter value</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">min_val <code>text</code></p>
+<p>Minimum allowed value of the parameter (null for non-numeric values)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">max_val <code>text</code></p>
+<p>Maximum allowed value of the parameter (null for non-numeric values)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">enumvals <code>text[]</code></p>
+<p>Allowed values of an enum parameter (null for non-enum values)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">boot_val <code>text</code></p>
+<p>Parameter value assumed at server startup if the parameter is not otherwise set</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">reset_val <code>text</code></p>
+<p>Value that <a href="#sql-reset"><code>RESET</code></a> would reset the parameter to in the current session</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">sourcefile <code>text</code></p>
+<p>Configuration file the current value was set in (null for values set from sources other than configuration files, or when examined by a user who neither is a superuser nor has privileges of <code>pg_read_all_settings</code>); helpful when using <code>include</code> directives in configuration files</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">sourceline <code>int4</code></p>
+<p>Line number within the configuration file the current value was set at (null for values set from sources other than configuration files, or when examined by a user who neither is a superuser nor has privileges of <code>pg_read_all_settings</code>).</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">pending_restart <code>bool</code></p>
+<p><code>true</code> if the value has been changed in the configuration file but needs a restart; or <code>false</code> otherwise.</p></td>
+</tr>
+</tbody>
+</table>
+
+There are several possible values of context. In order of decreasing difficulty of changing the setting, they are:
+
+`internal`  
+These settings cannot be changed directly; they reflect internally determined values. Some of them may be adjustable by rebuilding the server with different configuration options, or by changing options supplied to initdb.
+
+`postmaster`  
+These settings can only be applied when the server starts, so any change requires restarting the server. Values for these settings are typically stored in the `postgresql.conf` file, or passed on the command line when starting the server. Of course, settings with any of the lower context types can also be set at server start time.
+
+`sighup`  
+Changes to these settings can be made in `postgresql.conf` without restarting the server. Send a `SIGHUP` signal to the postmaster to cause it to re-read `postgresql.conf` and apply the changes. The postmaster will also forward the `SIGHUP` signal to its child processes so that they all pick up the new value.
+
+`superuser-backend`  
+Changes to these settings can be made in `postgresql.conf` without restarting the server. They can also be set for a particular session in the connection request packet (for example, via libpq's `PGOPTIONS` environment variable), but only if the connecting user is a superuser or has been granted the appropriate `SET` privilege. However, these settings never change in a session after it is started. If you change them in `postgresql.conf`, send a `SIGHUP` signal to the postmaster to cause it to re-read `postgresql.conf`. The new values will only affect subsequently-launched sessions.
+
+`backend`  
+Changes to these settings can be made in `postgresql.conf` without restarting the server. They can also be set for a particular session in the connection request packet (for example, via libpq's `PGOPTIONS` environment variable); any user can make such a change for their session. However, these settings never change in a session after it is started. If you change them in `postgresql.conf`, send a `SIGHUP` signal to the postmaster to cause it to re-read `postgresql.conf`. The new values will only affect subsequently-launched sessions.
+
+`superuser`  
+These settings can be set from `postgresql.conf`, or within a session via the `SET` command; but only superusers and users with the appropriate `SET` privilege can change them via `SET`. Changes in `postgresql.conf` will affect existing sessions only if no session-local value has been established with `SET`.
+
+`user`  
+These settings can be set from `postgresql.conf`, or within a session via the `SET` command. Any user is allowed to change their session-local value. Changes in `postgresql.conf` will affect existing sessions only if no session-local value has been established with `SET`.
+
+See [???](#config-setting) for more information about the various ways to change these parameters.
+
+This view cannot be inserted into or deleted from, but it can be updated. An `UPDATE` applied to a row of pg_settings is equivalent to executing the `SET` command on that named parameter. The change only affects the value used by the current session. If an `UPDATE` is issued within a transaction that is later aborted, the effects of the `UPDATE` command disappear when the transaction is rolled back. Once the surrounding transaction is committed, the effects will persist until the end of the session, unless overridden by another `UPDATE` or `SET`.
+
+This view does not display [customized options](#runtime-config-custom) unless the extension module that defines them has been loaded by the backend process executing the query (e.g., via a mention in [???](#guc-shared-preload-libraries), a call to a C function in the extension, or the [`LOAD`](#sql-load) command). For example, since [archive modules](#archive-modules) are normally loaded only by the archiver process not regular sessions, this view will not display any customized options defined by such modules unless special action is taken to load them into the backend process executing the query.
+
+## pg_shadow
+
+pg_shadow
+
+The view pg_shadow exists for backwards compatibility: it emulates a catalog that existed in PostgreSQL before version 8.1. It shows properties of all roles that are marked as rolcanlogin in [pg_authid](#catalog-pg-authid).
+
+The name stems from the fact that this table should not be readable by the public since it contains passwords. [pg_user](#view-pg-user) is a publicly readable view on pg_shadow that blanks out the password field.
+
+<table>
+<caption>pg_shadow Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">usename <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>User name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usesysid <code>oid</code> (references <a href="#catalog-pg-authid">pg_authid</a>.oid)</p>
+<p>ID of this user</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usecreatedb <code>bool</code></p>
+<p>User can create databases</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usesuper <code>bool</code></p>
+<p>User is a superuser</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">userepl <code>bool</code></p>
+<p>User can initiate streaming replication and put the system in and out of backup mode.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usebypassrls <code>bool</code></p>
+<p>User bypasses every row-level security policy, see <a href="#ddl-rowsecurity">???</a> for more information.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">passwd <code>text</code></p>
+<p>Encrypted password; null if none. See <a href="#catalog-pg-authid">pg_authid</a> for details of how encrypted passwords are stored.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">valuntil <code>timestamptz</code></p>
+<p>Password expiry time (only used for password authentication)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">useconfig <code>text[]</code></p>
+<p>Session defaults for run-time configuration variables</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_shmem_allocations
+
+pg_shmem_allocations
+
+The pg_shmem_allocations view shows allocations made from the server's main shared memory segment. This includes both memory allocated by PostgreSQL itself and memory allocated by extensions using the mechanisms detailed in [???](#xfunc-shared-addin).
+
+Note that this view does not include memory allocated using the dynamic shared memory infrastructure.
+
+<table>
+<caption>pg_shmem_allocations Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>The name of the shared memory allocation. NULL for unused memory and <code>&lt;anonymous&gt;</code> for anonymous allocations.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">off <code>int8</code></p>
+<p>The offset at which the allocation starts. NULL for anonymous allocations, since details related to them are not known.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">size <code>int8</code></p>
+<p>Size of the allocation in bytes</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">allocated_size <code>int8</code></p>
+<p>Size of the allocation in bytes including padding. For anonymous allocations, no information about padding is available, so the <code>size</code> and <code>allocated_size</code> columns will always be equal. Padding is not meaningful for free memory, so the columns will be equal in that case also.</p></td>
+</tr>
+</tbody>
+</table>
+
+Anonymous allocations are allocations that have been made with `ShmemAlloc()` directly, rather than via `ShmemInitStruct()` or `ShmemInitHash()`.
+
+By default, the pg_shmem_allocations view can be read only by superusers or roles with privileges of the `pg_read_all_stats` role.
+
+## pg_stats
+
+pg_stats
+
+The view pg_stats provides access to the information stored in the [pg_statistic](#catalog-pg-statistic) catalog. This view allows access only to rows of [pg_statistic](#catalog-pg-statistic) that correspond to tables the user has permission to read, and therefore it is safe to allow public read access to this view.
+
+pg_stats is also designed to present the information in a more readable format than the underlying catalog at the cost that its schema must be extended whenever new slot types are defined for [pg_statistic](#catalog-pg-statistic).
+
+<table>
+<caption>pg_stats Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">attname <code>name</code> (references <a href="#catalog-pg-attribute">pg_attribute</a>.attname)</p>
+<p>Name of column described by this row</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">inherited <code>bool</code></p>
+<p>If true, this row includes values from child tables, not just the values in the specified table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">null_frac <code>float4</code></p>
+<p>Fraction of column entries that are null</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">avg_width <code>int4</code></p>
+<p>Average width in bytes of column's entries</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">n_distinct <code>float4</code></p>
+<p>If greater than zero, the estimated number of distinct values in the column. If less than zero, the negative of the number of distinct values divided by the number of rows. (The negated form is used when <code>ANALYZE</code> believes that the number of distinct values is likely to increase as the table grows; the positive form is used when the column seems to have a fixed number of possible values.) For example, -1 indicates a unique column in which the number of distinct values is the same as the number of rows.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_vals <code>anyarray</code></p>
+<p>A list of the most common values in the column. (Null if no values seem to be more common than any others.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_freqs <code>float4[]</code></p>
+<p>A list of the frequencies of the most common values, i.e., number of occurrences of each divided by total number of rows. (Null when most_common_vals is.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">histogram_bounds <code>anyarray</code></p>
+<p>A list of values that divide the column's values into groups of approximately equal population. The values in most_common_vals, if present, are omitted from this histogram calculation. (This column is null if the column data type does not have a <code>&lt;</code> operator or if the most_common_vals list accounts for the entire population.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">correlation <code>float4</code></p>
+<p>Statistical correlation between physical row ordering and logical ordering of the column values. This ranges from -1 to +1. When the value is near -1 or +1, an index scan on the column will be estimated to be cheaper than when it is near zero, due to reduction of random access to the disk. (This column is null if the column data type does not have a <code>&lt;</code> operator.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_elems <code>anyarray</code></p>
+<p>A list of non-null element values most often appearing within values of the column. (Null for scalar types.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_elem_freqs <code>float4[]</code></p>
+<p>A list of the frequencies of the most common element values, i.e., the fraction of rows containing at least one instance of the given value. Two or three additional values follow the per-element frequencies; these are the minimum and maximum of the preceding per-element frequencies, and optionally the frequency of null elements. (Null when most_common_elems is.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">elem_count_histogram <code>float4[]</code></p>
+<p>A histogram of the counts of distinct non-null element values within the values of the column, followed by the average number of distinct non-null elements. (Null for scalar types.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">range_length_histogram <code>anyarray</code></p>
+<p>A histogram of the lengths of non-empty and non-null range values of a range type column. (Null for non-range types.)</p>
+<p>This histogram is calculated using the <code>subtype_diff</code> range function regardless of whether range bounds are inclusive.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">range_empty_frac <code>float4</code></p>
+<p>Fraction of column entries whose values are empty ranges. (Null for non-range types.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">range_bounds_histogram <code>anyarray</code></p>
+<p>A histogram of lower and upper bounds of non-empty and non-null range values. (Null for non-range types.)</p>
+<p>These two histograms are represented as a single array of ranges, whose lower bounds represent the histogram of lower bounds, and upper bounds represent the histogram of upper bounds.</p></td>
+</tr>
+</tbody>
+</table>
+
+The maximum number of entries in the array fields can be controlled on a column-by-column basis using the [`ALTER TABLE SET STATISTICS`](#sql-altertable) command, or globally by setting the [???](#guc-default-statistics-target) run-time parameter.
+
+## pg_stats_ext
+
+pg_stats_ext
+
+The view pg_stats_ext provides access to information about each extended statistics object in the database, combining information stored in the [pg_statistic_ext](#catalog-pg-statistic-ext) and [pg_statistic_ext_data](#catalog-pg-statistic-ext-data) catalogs. This view allows access only to rows of [pg_statistic_ext](#catalog-pg-statistic-ext) and [pg_statistic_ext_data](#catalog-pg-statistic-ext-data) that correspond to tables the user owns, and therefore it is safe to allow public read access to this view.
+
+pg_stats_ext is also designed to present the information in a more readable format than the underlying catalogs at the cost that its schema must be extended whenever new types of extended statistics are added to [pg_statistic_ext](#catalog-pg-statistic-ext).
+
+<table>
+<caption>pg_stats_ext Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statistics_schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statistics_name <code>name</code> (references <a href="#catalog-pg-statistic-ext">pg_statistic_ext</a>.stxname)</p>
+<p>Name of extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statistics_owner <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Owner of the extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">attnames <code>name[]</code> (references <a href="#catalog-pg-attribute">pg_attribute</a>.attname)</p>
+<p>Names of the columns included in the extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">exprs <code>text[]</code></p>
+<p>Expressions included in the extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">kinds <code>char[]</code></p>
+<p>Types of extended statistics object enabled for this record</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">inherited <code>bool</code> (references <a href="#catalog-pg-statistic-ext-data">pg_statistic_ext_data</a>.stxdinherit)</p>
+<p>If true, the stats include values from child tables, not just the values in the specified relation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">n_distinct <code>pg_ndistinct</code></p>
+<p>N-distinct counts for combinations of column values. If greater than zero, the estimated number of distinct values in the combination. If less than zero, the negative of the number of distinct values divided by the number of rows. (The negated form is used when <code>ANALYZE</code> believes that the number of distinct values is likely to increase as the table grows; the positive form is used when the column seems to have a fixed number of possible values.) For example, -1 indicates a unique combination of columns in which the number of distinct combinations is the same as the number of rows.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">dependencies <code>pg_dependencies</code></p>
+<p>Functional dependency statistics</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_vals <code>text[]</code></p>
+<p>A list of the most common combinations of values in the columns. (Null if no combinations seem to be more common than any others.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_val_nulls <code>bool[]</code></p>
+<p>A list of NULL flags for the most common combinations of values. (Null when most_common_vals is.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_freqs <code>float8[]</code></p>
+<p>A list of the frequencies of the most common combinations, i.e., number of occurrences of each divided by total number of rows. (Null when most_common_vals is.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_base_freqs <code>float8[]</code></p>
+<p>A list of the base frequencies of the most common combinations, i.e., product of per-value frequencies. (Null when most_common_vals is.)</p></td>
+</tr>
+</tbody>
+</table>
+
+The maximum number of entries in the array fields can be controlled on a column-by-column basis using the [`ALTER TABLE SET STATISTICS`](#sql-altertable) command, or globally by setting the [???](#guc-default-statistics-target) run-time parameter.
+
+## pg_stats_ext_exprs
+
+pg_stats_ext_exprs
+
+The view pg_stats_ext_exprs provides access to information about all expressions included in extended statistics objects, combining information stored in the [pg_statistic_ext](#catalog-pg-statistic-ext) and [pg_statistic_ext_data](#catalog-pg-statistic-ext-data) catalogs. This view allows access only to rows of [pg_statistic_ext](#catalog-pg-statistic-ext) and [pg_statistic_ext_data](#catalog-pg-statistic-ext-data) that correspond to tables the user owns, and therefore it is safe to allow public read access to this view.
+
+pg_stats_ext_exprs is also designed to present the information in a more readable format than the underlying catalogs at the cost that its schema must be extended whenever the structure of statistics in pg_statistic_ext changes.
+
+<table>
+<caption>pg_stats_ext_exprs Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table the statistics object is defined on</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statistics_schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statistics_name <code>name</code> (references <a href="#catalog-pg-statistic-ext">pg_statistic_ext</a>.stxname)</p>
+<p>Name of extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">statistics_owner <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Owner of the extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">expr <code>text</code></p>
+<p>Expression included in the extended statistics object</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">inherited <code>bool</code> (references <a href="#catalog-pg-statistic-ext-data">pg_statistic_ext_data</a>.stxdinherit)</p>
+<p>If true, the stats include values from child tables, not just the values in the specified relation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">null_frac <code>float4</code></p>
+<p>Fraction of expression entries that are null</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">avg_width <code>int4</code></p>
+<p>Average width in bytes of expression's entries</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">n_distinct <code>float4</code></p>
+<p>If greater than zero, the estimated number of distinct values in the expression. If less than zero, the negative of the number of distinct values divided by the number of rows. (The negated form is used when <code>ANALYZE</code> believes that the number of distinct values is likely to increase as the table grows; the positive form is used when the expression seems to have a fixed number of possible values.) For example, -1 indicates a unique expression in which the number of distinct values is the same as the number of rows.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_vals <code>anyarray</code></p>
+<p>A list of the most common values in the expression. (Null if no values seem to be more common than any others.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_freqs <code>float4[]</code></p>
+<p>A list of the frequencies of the most common values, i.e., number of occurrences of each divided by total number of rows. (Null when most_common_vals is.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">histogram_bounds <code>anyarray</code></p>
+<p>A list of values that divide the expression's values into groups of approximately equal population. The values in most_common_vals, if present, are omitted from this histogram calculation. (This expression is null if the expression data type does not have a <code>&lt;</code> operator or if the most_common_vals list accounts for the entire population.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">correlation <code>float4</code></p>
+<p>Statistical correlation between physical row ordering and logical ordering of the expression values. This ranges from -1 to +1. When the value is near -1 or +1, an index scan on the expression will be estimated to be cheaper than when it is near zero, due to reduction of random access to the disk. (This expression is null if the expression's data type does not have a <code>&lt;</code> operator.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_elems <code>anyarray</code></p>
+<p>A list of non-null element values most often appearing within values of the expression. (Null for scalar types.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">most_common_elem_freqs <code>float4[]</code></p>
+<p>A list of the frequencies of the most common element values, i.e., the fraction of rows containing at least one instance of the given value. Two or three additional values follow the per-element frequencies; these are the minimum and maximum of the preceding per-element frequencies, and optionally the frequency of null elements. (Null when most_common_elems is.)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">elem_count_histogram <code>float4[]</code></p>
+<p>A histogram of the counts of distinct non-null element values within the values of the expression, followed by the average number of distinct non-null elements. (Null for scalar types.)</p></td>
+</tr>
+</tbody>
+</table>
+
+The maximum number of entries in the array fields can be controlled on a column-by-column basis using the [`ALTER TABLE SET STATISTICS`](#sql-altertable) command, or globally by setting the [???](#guc-default-statistics-target) run-time parameter.
+
+## pg_tables
+
+pg_tables
+
+The view pg_tables provides access to useful information about each table in the database.
+
+<table>
+<caption>pg_tables Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablename <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of table</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tableowner <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Name of table's owner</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">tablespace <code>name</code> (references <a href="#catalog-pg-tablespace">pg_tablespace</a>.spcname)</p>
+<p>Name of tablespace containing table (null if default for database)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">hasindexes <code>bool</code> (references <a href="#catalog-pg-class">pg_class</a>.relhasindex)</p>
+<p>True if table has (or recently had) any indexes</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">hasrules <code>bool</code> (references <a href="#catalog-pg-class">pg_class</a>.relhasrules)</p>
+<p>True if table has (or once had) rules</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">hastriggers <code>bool</code> (references <a href="#catalog-pg-class">pg_class</a>.relhastriggers)</p>
+<p>True if table has (or once had) triggers</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">rowsecurity <code>bool</code> (references <a href="#catalog-pg-class">pg_class</a>.relrowsecurity)</p>
+<p>True if row security is enabled on the table</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_timezone_abbrevs
+
+pg_timezone_abbrevs
+
+The view pg_timezone_abbrevs provides a list of time zone abbreviations that are currently recognized by the datetime input routines. The contents of this view change when the [???](#guc-timezone-abbreviations) run-time parameter is modified.
+
+<table>
+<caption>pg_timezone_abbrevs Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">abbrev <code>text</code></p>
+<p>Time zone abbreviation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">utc_offset <code>interval</code></p>
+<p>Offset from UTC (positive means east of Greenwich)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">is_dst <code>bool</code></p>
+<p>True if this is a daylight-savings abbreviation</p></td>
+</tr>
+</tbody>
+</table>
+
+While most timezone abbreviations represent fixed offsets from UTC, there are some that have historically varied in value (see [???](#datetime-config-files) for more information). In such cases this view presents their current meaning.
+
+## pg_timezone_names
+
+pg_timezone_names
+
+The view pg_timezone_names provides a list of time zone names that are recognized by `SET TIMEZONE`, along with their associated abbreviations, UTC offsets, and daylight-savings status. (Technically, PostgreSQL does not use UTC because leap seconds are not handled.) Unlike the abbreviations shown in [pg_timezone_abbrevs](#view-pg-timezone-abbrevs), many of these names imply a set of daylight-savings transition date rules. Therefore, the associated information changes across local DST boundaries. The displayed information is computed based on the current value of `CURRENT_TIMESTAMP`.
+
+<table>
+<caption>pg_timezone_names Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>Time zone name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">abbrev <code>text</code></p>
+<p>Time zone abbreviation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">utc_offset <code>interval</code></p>
+<p>Offset from UTC (positive means east of Greenwich)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">is_dst <code>bool</code></p>
+<p>True if currently observing daylight savings</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_user
+
+pg_user
+
+The view pg_user provides access to information about database users. This is simply a publicly readable view of [pg_shadow](#view-pg-shadow) that blanks out the password field.
+
+<table>
+<caption>pg_user Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">usename <code>name</code></p>
+<p>User name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usesysid <code>oid</code></p>
+<p>ID of this user</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usecreatedb <code>bool</code></p>
+<p>User can create databases</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usesuper <code>bool</code></p>
+<p>User is a superuser</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">userepl <code>bool</code></p>
+<p>User can initiate streaming replication and put the system in and out of backup mode.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usebypassrls <code>bool</code></p>
+<p>User bypasses every row-level security policy, see <a href="#ddl-rowsecurity">???</a> for more information.</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">passwd <code>text</code></p>
+<p>Not the password (always reads as <code>********</code>)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">valuntil <code>timestamptz</code></p>
+<p>Password expiry time (only used for password authentication)</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">useconfig <code>text[]</code></p>
+<p>Session defaults for run-time configuration variables</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_user_mappings
+
+pg_user_mappings
+
+The view pg_user_mappings provides access to information about user mappings. This is essentially a publicly readable view of [pg_user_mapping](#catalog-pg-user-mapping) that leaves out the options field if the user has no rights to use it.
+
+<table>
+<caption>pg_user_mappings Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">umid <code>oid</code> (references <a href="#catalog-pg-user-mapping">pg_user_mapping</a>.oid)</p>
+<p>OID of the user mapping</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">srvid <code>oid</code> (references <a href="#catalog-pg-foreign-server">pg_foreign_server</a>.oid)</p>
+<p>The OID of the foreign server that contains this mapping</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">srvname <code>name</code> (references <a href="#catalog-pg-foreign-server">pg_foreign_server</a>.srvname)</p>
+<p>Name of the foreign server</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">umuser <code>oid</code> (references <a href="#catalog-pg-authid">pg_authid</a>.oid)</p>
+<p>OID of the local role being mapped, or zero if the user mapping is public</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usename <code>name</code></p>
+<p>Name of the local user to be mapped</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">umoptions <code>text[]</code></p>
+<p>User mapping specific options, as “keyword=value” strings</p></td>
+</tr>
+</tbody>
+</table>
+
+To protect password information stored as a user mapping option, the umoptions column will read as null unless one of the following applies:
+
+- current user is the user being mapped, and owns the server or holds `USAGE` privilege on it
+
+- current user is the server owner and mapping is for `PUBLIC`
+
+- current user is a superuser
+
+## pg_views
+
+pg_views
+
+The view pg_views provides access to useful information about each view in the database.
+
+<table>
+<caption>pg_views Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">schemaname <code>name</code> (references <a href="#catalog-pg-namespace">pg_namespace</a>.nspname)</p>
+<p>Name of schema containing view</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">viewname <code>name</code> (references <a href="#catalog-pg-class">pg_class</a>.relname)</p>
+<p>Name of view</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">viewowner <code>name</code> (references <a href="#catalog-pg-authid">pg_authid</a>.rolname)</p>
+<p>Name of view's owner</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">definition <code>text</code></p>
+<p>View definition (a reconstructed <a href="#sql-select">???</a> query)</p></td>
+</tr>
+</tbody>
+</table>
+
+## pg_wait_events
+
+pg_wait_events
+
+The view pg_wait_events provides description about the wait events.
+
+<table>
+<caption>pg_wait_events Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">type <code>text</code></p>
+<p>Wait event type</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">name <code>text</code></p>
+<p>Wait event name</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">description <code>text</code></p>
+<p>Wait event description</p></td>
+</tr>
+</tbody>
+</table>

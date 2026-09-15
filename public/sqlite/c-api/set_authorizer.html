@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compile-Time Authorization Callbacks · SQLite</title>
+<meta name="description" content="Compile-Time Authorization Callbacks - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/c-api/set_authorizer.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Compile-Time Authorization Callbacks">
+<meta property="og:description" content="Compile-Time Authorization Callbacks - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Compile-Time Authorization Callbacks">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Compile-Time Authorization Callbacks",
+"url": "https://docs.raupulus.dev/sqlite/c-api/set_authorizer.html",  "description": "Compile-Time Authorization Callbacks - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              C Api
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../c-api/int64.html"
+>64-Bit Integer Types</a>
+              </li>
+              <li>
+                <a href="../c-api/blob.html"
+>A Handle To An Open BLOB</a>
+              </li>
+              <li>
+                <a href="../c-api/str_append.html"
+>Add Content To A Dynamic String</a>
+              </li>
+              <li>
+                <a href="../c-api/c_txn_none.html"
+>Allowed return values from sqlite3_txn_state()</a>
+              </li>
+              <li>
+                <a href="../c-api/pcache_methods2.html"
+>Application Defined Page Cache.</a>
+              </li>
+              <li>
+                <a href="../c-api/release_memory.html"
+>Attempt To Free Heap Memory</a>
+              </li>
+              <li>
+                <a href="../c-api/c_alter_table.html"
+>Authorizer Action Codes</a>
+              </li>
+              <li>
+                <a href="../c-api/c_deny.html"
+>Authorizer Return Codes</a>
+              </li>
+              <li>
+                <a href="../c-api/auto_extension.html"
+>Automatically Load Statically Linked Extensions</a>
+              </li>
+              <li>
+                <a href="../c-api/autovacuum_pages.html"
+>Autovacuum Compaction Amount Callback</a>
+              </li>
+              <li>
+                <a href="../c-api/carray_bind.html"
+>Bind array values to the CARRAY table-valued function</a>
+              </li>
+              <li>
+                <a href="../c-api/bind_blob.html"
+>Binding Values To Prepared Statements</a>
+              </li>
+              <li>
+                <a href="../c-api/cancel_auto_extension.html"
+>Cancel Automatic Extension Loading</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_explain.html"
+>Change The EXPLAIN Setting For A Prepared Statement</a>
+              </li>
+              <li>
+                <a href="../c-api/wal_checkpoint.html"
+>Checkpoint a database</a>
+              </li>
+              <li>
+                <a href="../c-api/wal_checkpoint_v2.html"
+>Checkpoint a database</a>
+              </li>
+              <li>
+                <a href="../c-api/c_checkpoint_full.html"
+>Checkpoint Mode Values</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_close.html"
+>Close A BLOB Handle</a>
+              </li>
+              <li>
+                <a href="../c-api/close.html"
+>Closing A Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/collation_needed.html"
+>Collation Needed Callbacks</a>
+              </li>
+              <li>
+                <a href="../c-api/column_name.html"
+>Column Names In A Result Set</a>
+              </li>
+              <li>
+                <a href="../c-api/commit_hook.html"
+>Commit And Rollback Notification Callbacks</a>
+              </li>
+              <li>
+                <a href="../c-api/snapshot_cmp.html"
+>Compare the ages of two snapshot handles.</a>
+              </li>
+              <li>
+                <a href="../c-api/set_authorizer.html"
+class="is-current" aria-current="page">Compile-Time Authorization Callbacks</a>
+              </li>
+              <li>
+                <a href="../c-api/c_scm_branch.html"
+>Compile-Time Library Version Numbers</a>
+              </li>
+              <li>
+                <a href="../c-api/prepare.html"
+>Compiling An SQL Statement</a>
+              </li>
+              <li>
+                <a href="../c-api/c_config_covering_index_scan.html"
+>Configuration Options</a>
+              </li>
+              <li>
+                <a href="../c-api/wal_autocheckpoint.html"
+>Configure an auto-checkpoint</a>
+              </li>
+              <li>
+                <a href="../c-api/db_config.html"
+>Configure database connections</a>
+              </li>
+              <li>
+                <a href="../c-api/config.html"
+>Configuring The SQLite Library</a>
+              </li>
+              <li>
+                <a href="../c-api/c_fail.html"
+>Conflict resolution modes</a>
+              </li>
+              <li>
+                <a href="../c-api/c_static.html"
+>Constants Defining Special Destructor Behavior</a>
+              </li>
+              <li>
+                <a href="../c-api/vtab_rhs_value.html"
+>Constraint values in xBestIndex()</a>
+              </li>
+              <li>
+                <a href="../c-api/free_table.html"
+>Convenience Routines For Running Queries</a>
+              </li>
+              <li>
+                <a href="../c-api/value_dup.html"
+>Copy And Free SQL Values</a>
+              </li>
+              <li>
+                <a href="../c-api/changes.html"
+>Count The Number Of Rows Modified</a>
+              </li>
+              <li>
+                <a href="../c-api/str_new.html"
+>Create A New Dynamic String Object</a>
+              </li>
+              <li>
+                <a href="../c-api/create_filename.html"
+>Create and Destroy VFS Filenames</a>
+              </li>
+              <li>
+                <a href="../c-api/create_function.html"
+>Create Or Redefine SQL Functions</a>
+              </li>
+              <li>
+                <a href="../c-api/pcache.html"
+>Custom Page Cache Object</a>
+              </li>
+              <li>
+                <a href="../c-api/pcache_page.html"
+>Custom Page Cache Object</a>
+              </li>
+              <li>
+                <a href="../c-api/update_hook.html"
+>Data Change Notification Callbacks</a>
+              </li>
+              <li>
+                <a href="../c-api/get_clientdata.html"
+>Database Connection Client Data</a>
+              </li>
+              <li>
+                <a href="../c-api/c_dbconfig_defensive.html"
+>Database Connection Configuration Options</a>
+              </li>
+              <li>
+                <a href="../c-api/context_db_handle.html"
+>Database Connection For Functions</a>
+              </li>
+              <li>
+                <a href="../c-api/sqlite3.html"
+>Database Connection Handle</a>
+              </li>
+              <li>
+                <a href="../c-api/db_status.html"
+>Database Connection Status</a>
+              </li>
+              <li>
+                <a href="../c-api/database_file_object.html"
+>Database File Corresponding To A Journal</a>
+              </li>
+              <li>
+                <a href="../c-api/snapshot.html"
+>Database Snapshot</a>
+              </li>
+              <li>
+                <a href="../c-api/c_carray_blob.html"
+>Datatypes for the CARRAY table-valued function</a>
+              </li>
+              <li>
+                <a href="../c-api/declare_vtab.html"
+>Declare The Schema Of A Virtual Table</a>
+              </li>
+              <li>
+                <a href="../c-api/column_decltype.html"
+>Declared Datatype Of A Query Result</a>
+              </li>
+              <li>
+                <a href="../c-api/create_collation.html"
+>Define New Collating Sequences</a>
+              </li>
+              <li>
+                <a href="../c-api/aggregate_count.html"
+>Deprecated Functions</a>
+              </li>
+              <li>
+                <a href="../c-api/soft_heap_limit.html"
+>Deprecated Soft Heap Limit Interface</a>
+              </li>
+              <li>
+                <a href="../c-api/profile.html"
+>Deprecated Tracing And Profiling Functions</a>
+              </li>
+              <li>
+                <a href="../c-api/deserialize.html"
+>Deserialize a database</a>
+              </li>
+              <li>
+                <a href="../c-api/finalize.html"
+>Destroy A Prepared Statement Object</a>
+              </li>
+              <li>
+                <a href="../c-api/snapshot_free.html"
+>Destroy a snapshot</a>
+              </li>
+              <li>
+                <a href="../c-api/db_readonly.html"
+>Determine if a database is read-only</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../guides/fasterthanfs.html">Guides</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Compile-Time Authorization Callbacks</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/c3ref/set_authorizer.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+
+      <div class="doc-body">
+        <blockquote>
+<p>\
+int sqlite3_set_authorizer(\
+  sqlite3*,\
+  int (*xAuth)(void*,int,const char*,const char*,const char*,const char*),\
+  void *pUserData\
+);\</p>
+</blockquote>
+<p>This routine registers an authorizer callback with a particular <a href="../c3ref/sqlite3.html">database connection</a>, supplied in the first argument. The authorizer callback is invoked as SQL statements are being compiled by <a href="../c3ref/prepare.html">sqlite3_prepare()</a> or its variants <a href="../c3ref/prepare.html">sqlite3_prepare_v2()</a>, <a href="../c3ref/prepare.html">sqlite3_prepare_v3()</a>, <a href="../c3ref/prepare.html">sqlite3_prepare16()</a>, <a href="../c3ref/prepare.html">sqlite3_prepare16_v2()</a>, and <a href="../c3ref/prepare.html">sqlite3_prepare16_v3()</a>. At various points during the compilation process, as logic is being created to perform various actions, the authorizer callback is invoked to see if those actions are allowed. The authorizer callback should return <a href="../rescode.html#ok">SQLITE_OK</a> to allow the action, <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a> to disallow the specific action but allow the SQL statement to continue to be compiled, or <a href="../c3ref/c_deny.html">SQLITE_DENY</a> to cause the entire SQL statement to be rejected with an error. If the authorizer callback returns any value other than <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a>, <a href="../rescode.html#ok">SQLITE_OK</a>, or <a href="../c3ref/c_deny.html">SQLITE_DENY</a> then the <a href="../c3ref/prepare.html">sqlite3_prepare_v2()</a> or equivalent call that triggered the authorizer will fail with an error message.</p>
+<p>When the callback returns <a href="../rescode.html#ok">SQLITE_OK</a>, that means the operation requested is ok. When the callback returns <a href="../c3ref/c_deny.html">SQLITE_DENY</a>, the <a href="../c3ref/prepare.html">sqlite3_prepare_v2()</a> or equivalent call that triggered the authorizer will fail with an error message explaining that access is denied.</p>
+<p>The first parameter to the authorizer callback is a copy of the third parameter to the sqlite3_set_authorizer() interface. The second parameter to the callback is an integer <a href="../c3ref/c_alter_table.html">action code</a> that specifies the particular action to be authorized. The third through sixth parameters to the callback are either NULL pointers or zero-terminated strings that contain additional details about the action to be authorized. Applications must always be prepared to encounter a NULL pointer in any of the third through the sixth parameters of the authorization callback.</p>
+<p>If the action code is <a href="../c3ref/c_alter_table.html">SQLITE_READ</a> and the callback returns <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a> then the <a href="../c3ref/stmt.html">prepared statement</a> statement is constructed to substitute a NULL value in place of the table column that would have been read if <a href="../rescode.html#ok">SQLITE_OK</a> had been returned. The <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a> return can be used to deny an untrusted user access to individual columns of a table. When a table is referenced by a <a href="../lang_select.html">SELECT</a> but no column values are extracted from that table (for example in a query like "SELECT count(*) FROM tab") then the <a href="../c3ref/c_alter_table.html">SQLITE_READ</a> authorizer callback is invoked once for that table with a column name that is an empty string. If the action code is <a href="../c3ref/c_alter_table.html">SQLITE_DELETE</a> and the callback returns <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a> then the <a href="../lang_delete.html">DELETE</a> operation proceeds but the <a href="../lang_delete.html#truncateopt">truncate optimization</a> is disabled and all rows are deleted individually.</p>
+<p>An authorizer is used when <a href="../c3ref/prepare.html">preparing</a> SQL statements from an untrusted source, to ensure that the SQL statements do not try to access data they are not allowed to see, or that they do not try to execute malicious statements that damage the database. For example, an application may allow a user to enter arbitrary SQL queries for evaluation by a database. But the application does not want the user to be able to make arbitrary changes to the database. An authorizer could then be put in place while the user-entered SQL is being <a href="../c3ref/prepare.html">prepared</a> that disallows everything except <a href="../lang_select.html">SELECT</a> statements.</p>
+<p>Applications that need to process SQL from untrusted sources might also consider lowering resource limits using <a href="../c3ref/limit.html">sqlite3_limit()</a> and limiting database size using the <a href="../pragma.html#pragma_max_page_count">max_page_count</a> <a href="../pragma.html#syntax">PRAGMA</a> in addition to using an authorizer.</p>
+<p>Only a single authorizer can be in place on a database connection at a time. Each call to sqlite3_set_authorizer overrides the previous call. Disable the authorizer by installing a NULL callback. The authorizer is disabled by default.</p>
+<p>The authorizer callback must not do anything that will modify the database connection that invoked the authorizer callback. Note that <a href="../c3ref/prepare.html">sqlite3_prepare_v2()</a> and <a href="../c3ref/step.html">sqlite3_step()</a> both modify their database connections for the meaning of "modify" in this paragraph.</p>
+<p>When <a href="../c3ref/prepare.html">sqlite3_prepare_v2()</a> is used to prepare a statement, the statement might be re-prepared during <a href="../c3ref/step.html">sqlite3_step()</a> due to a schema change. Hence, the application should ensure that the correct authorizer callback remains in place during the <a href="../c3ref/step.html">sqlite3_step()</a>.</p>
+<p>Note that the authorizer callback is invoked only during <a href="../c3ref/prepare.html">sqlite3_prepare()</a> or its variants. Authorization is not performed during statement evaluation in <a href="../c3ref/step.html">sqlite3_step()</a>, unless as stated in the previous paragraph, sqlite3_step() invokes sqlite3_prepare_v2() to reprepare a statement after a schema change.</p>
+<p>See also lists of <a href="../c3ref/objlist.html">Objects</a>, <a href="../c3ref/constlist.html">Constants</a>, and <a href="../c3ref/funclist.html">Functions</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../c-api/snapshot_cmp.html">
+          <span class="muted">Anterior</span>Compare the ages of two snapshot handles.
+        </a>
+        <a class="pager-next" href="../c-api/c_scm_branch.html">
+          <span class="muted">Siguiente</span>Compile-Time Library Version Numbers
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

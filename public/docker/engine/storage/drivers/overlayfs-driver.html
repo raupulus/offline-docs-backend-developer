@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OverlayFS storage driver · Docker</title>
+<meta name="description" content="OverlayFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/storage/drivers/overlayfs-driver.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="OverlayFS storage driver">
+<meta property="og:description" content="OverlayFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OverlayFS storage driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "OverlayFS storage driver",
+"url": "https://docs.raupulus.dev/docker/engine/storage/drivers/overlayfs-driver.html",  "description": "OverlayFS storage driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+class="is-current" aria-current="page">OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/stack-deploy.html"
+>Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/add-nodes.html"
+>Add nodes to the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/create-swarm.html"
+>Create a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/delete-service.html"
+>Delete the service running on the swarm</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">OverlayFS storage driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#prerequisites">Prerequisites#</a></li>
+              <li class="lvl-2"><a href="#configure-docker-with-the-overlay2-storage-driver">Configure Docker with the overlay2 storage driver#</a></li>
+              <li class="lvl-2"><a href="#how-the-overlay2-driver-works">How the overlay2 driver works#</a></li>
+              <li class="lvl-3"><a href="#image-and-container-layers-on-disk">Image and container layers on-disk#</a></li>
+              <li class="lvl-3"><a href="#image-and-container-layers-on-disk-legacy-overlay-driver">Image and container layers on-disk (legacy overlay driver)#</a></li>
+              <li class="lvl-2"><a href="#how-container-reads-and-writes-work-with-overlay2">How container reads and writes work with overlay2#</a></li>
+              <li class="lvl-3"><a href="#reading-files">Reading files#</a></li>
+              <li class="lvl-3"><a href="#modifying-files-or-directories">Modifying files or directories#</a></li>
+              <li class="lvl-2"><a href="#overlayfs-and-docker-performance">OverlayFS and Docker Performance#</a></li>
+              <li class="lvl-3"><a href="#page-caching">Page caching#</a></li>
+              <li class="lvl-3"><a href="#copyup">Copyup#</a></li>
+              <li class="lvl-3"><a href="#performance-best-practices">Performance best practices#</a></li>
+              <li class="lvl-2"><a href="#limitations-on-overlayfs-compatibility">Limitations on OverlayFS compatibility#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>OverlayFS is a union filesystem.</p>
+<p>This page refers to the Linux kernel driver as <code>OverlayFS</code> and to the Docker
+storage driver as <code>overlay2</code>.</p>
+<blockquote>
+<p>[!NOTE]
+Docker Engine 29.0 and later uses the
+<a href="../containerd.html">containerd image store</a> by default.
+The <code>overlay2</code> driver is a legacy storage driver that is superseded by the
+<code>overlayfs</code> containerd snapshotter. For more information, see
+<a href="select-storage-driver.html">Select a storage driver</a>.</p>
+<p>[!NOTE]
+For <code>fuse-overlayfs</code> driver, check <a href="/manuals/engine/security/rootless.html">Rootless mode documentation</a>.</p>
+</blockquote>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<p>The <code>overlay2</code> driver is supported if you meet the following prerequisites:</p>
+<ul>
+<li>Version 4.0 or higher of the Linux kernel, or RHEL or CentOS using
+  version 3.10.0-514 of the kernel or higher.</li>
+<li>The <code>overlay2</code> driver is supported on <code>xfs</code> backing filesystems,
+  but only with <code>d_type=true</code> enabled.</li>
+</ul>
+<p>Use <code>xfs_info</code> to verify that the <code>ftype</code> option is set to <code>1</code>. To format an
+  <code>xfs</code> filesystem correctly, use the flag <code>-n ftype=1</code>.</p>
+<ul>
+<li>Changing the storage driver makes existing containers and images inaccessible
+  on the local system. Use <code>docker save</code> to save any images you have built or
+  push them to Docker Hub or a private registry before changing the storage driver,
+  so that you don't need to re-create them later.</li>
+</ul>
+<h2 id="configure-docker-with-the-overlay2-storage-driver">Configure Docker with the <code>overlay2</code> storage driver<a class="headerlink" href="#configure-docker-with-the-overlay2-storage-driver" title="Permanent link">#</a></h2>
+<p><a name="configure-docker-with-the-overlay-or-overlay2-storage-driver"></a></p>
+<p>Before following this procedure, you must first meet all the
+<a href="#prerequisites">prerequisites</a>.</p>
+<p>The following steps outline how to configure the <code>overlay2</code> storage driver.</p>
+<ol>
+<li>Stop Docker.</li>
+</ol>
+<p><code>console
+   $ sudo systemctl stop docker</code></p>
+<ol start="2">
+<li>Copy the contents of <code>/var/lib/docker</code> to a temporary location.</li>
+</ol>
+<p><code>console
+   $ cp -au /var/lib/docker /var/lib/docker.bk</code></p>
+<ol start="3">
+<li>
+<p>If you want to use a separate backing filesystem from the one used by
+   <code>/var/lib/</code>, format the filesystem and mount it into <code>/var/lib/docker</code>.
+   Make sure to add this mount to <code>/etc/fstab</code> to make it permanent.</p>
+</li>
+<li>
+<p>Edit <code>/etc/docker/daemon.json</code>. If it doesn't yet exist, create it. Assuming
+   that the file was empty, add the following contents.</p>
+</li>
+</ol>
+<p><code>json
+   {
+     "storage-driver": "overlay2"
+   }</code></p>
+<p>Docker doesn't start if the <code>daemon.json</code> file contains invalid JSON.</p>
+<ol start="5">
+<li>Start Docker.</li>
+</ol>
+<p><code>console
+   $ sudo systemctl start docker</code></p>
+<ol start="6">
+<li>Verify that the daemon is using the <code>overlay2</code> storage driver.
+   Use the <code>docker info</code> command and look for <code>Storage Driver</code> and
+   <code>Backing filesystem</code>.</li>
+</ol>
+<p>```console
+   $ docker info</p>
+<p>Containers: 0
+   Images: 0
+   Storage Driver: overlay2
+    Backing Filesystem: xfs
+    Supports d_type: true
+    Native Overlay Diff: true
+   &lt;...&gt;
+   ```</p>
+<p>Docker is now using the <code>overlay2</code> storage driver and has automatically
+created the overlay mount with the required <code>lowerdir</code>, <code>upperdir</code>, <code>merged</code>,
+and <code>workdir</code> constructs.</p>
+<p>Continue reading for details about how OverlayFS works within your Docker
+containers, as well as performance advice and information about limitations of
+its compatibility with different backing filesystems.</p>
+<h2 id="how-the-overlay2-driver-works">How the <code>overlay2</code> driver works<a class="headerlink" href="#how-the-overlay2-driver-works" title="Permanent link">#</a></h2>
+<p>OverlayFS layers two directories on a single Linux host and presents them as
+a single directory. These directories are called layers, and the unification
+process is referred to as a union mount. OverlayFS refers to the lower directory
+as <code>lowerdir</code> and the upper directory as <code>upperdir</code>. The unified view is exposed
+through its own directory called <code>merged</code>.</p>
+<p>The <code>overlay2</code> driver natively supports up to 128 lower OverlayFS layers. This
+capability provides better performance for layer-related Docker commands such
+as <code>docker build</code> and <code>docker commit</code>, and consumes fewer inodes on the backing
+filesystem.</p>
+<h3 id="image-and-container-layers-on-disk">Image and container layers on-disk<a class="headerlink" href="#image-and-container-layers-on-disk" title="Permanent link">#</a></h3>
+<p>After downloading a five-layer image using <code>docker pull ubuntu</code>, you can see
+six directories under <code>/var/lib/docker/overlay2</code>.</p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>Don't directly manipulate any files or directories within
+<code>/var/lib/docker/</code>. These files and directories are managed by Docker.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>-l<span class="w"> </span>/var/lib/docker/overlay2
+
+<span class="go">total 24</span>
+<span class="go">drwx------ 5 root root 4096 Jun 20 07:36 223c2864175491657d238e2664251df13b63adb8d050924fd1bfcdb278b866f7</span>
+<span class="go">drwx------ 3 root root 4096 Jun 20 07:36 3a36935c9df35472229c57f4a27105a136f5e4dbef0f87905b2e506e494e348b</span>
+<span class="go">drwx------ 5 root root 4096 Jun 20 07:36 4e9fa83caff3e8f4cc83693fa407a4a9fac9573deaf481506c102d484dd1e6a1</span>
+<span class="go">drwx------ 5 root root 4096 Jun 20 07:36 e8876a226237217ec61c4baf238a32992291d059fdac95ed6303bdff3f59cff5</span>
+<span class="go">drwx------ 5 root root 4096 Jun 20 07:36 eca1e4e1694283e001f200a667bb3cb40853cf2d1b12c29feda7422fed78afed</span>
+<span class="go">drwx------ 2 root root 4096 Jun 20 07:36 l</span>
+</code></pre></div>
+
+<p>The new <code>l</code> (lowercase <code>L</code>) directory contains shortened layer identifiers as
+symbolic links. These identifiers are used to avoid hitting the page size
+limitation on arguments to the <code>mount</code> command.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>-l<span class="w"> </span>/var/lib/docker/overlay2/l
+
+<span class="go">total 20</span>
+<span class="go">lrwxrwxrwx 1 root root 72 Jun 20 07:36 6Y5IM2XC7TSNIJZZFLJCS6I4I4 -&gt; ../3a36935c9df35472229c57f4a27105a136f5e4dbef0f87905b2e506e494e348b/diff</span>
+<span class="go">lrwxrwxrwx 1 root root 72 Jun 20 07:36 B3WWEFKBG3PLLV737KZFIASSW7 -&gt; ../4e9fa83caff3e8f4cc83693fa407a4a9fac9573deaf481506c102d484dd1e6a1/diff</span>
+<span class="go">lrwxrwxrwx 1 root root 72 Jun 20 07:36 JEYMODZYFCZFYSDABYXD5MF6YO -&gt; ../eca1e4e1694283e001f200a667bb3cb40853cf2d1b12c29feda7422fed78afed/diff</span>
+<span class="go">lrwxrwxrwx 1 root root 72 Jun 20 07:36 NFYKDW6APBCCUCTOUSYDH4DXAT -&gt; ../223c2864175491657d238e2664251df13b63adb8d050924fd1bfcdb278b866f7/diff</span>
+<span class="go">lrwxrwxrwx 1 root root 72 Jun 20 07:36 UL2MW33MSE3Q5VYIKBRN4ZAGQP -&gt; ../e8876a226237217ec61c4baf238a32992291d059fdac95ed6303bdff3f59cff5/diff</span>
+</code></pre></div>
+
+<p>The lowest layer contains a file called <code>link</code>, which contains the name of the
+shortened identifier, and a directory called <code>diff</code> which contains the
+layer's contents.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>/var/lib/docker/overlay2/3a36935c9df35472229c57f4a27105a136f5e4dbef0f87905b2e506e494e348b/
+
+<span class="go">diff  link</span>
+
+<span class="gp">$ </span>cat<span class="w"> </span>/var/lib/docker/overlay2/3a36935c9df35472229c57f4a27105a136f5e4dbef0f87905b2e506e494e348b/link
+
+<span class="go">6Y5IM2XC7TSNIJZZFLJCS6I4I4</span>
+
+<span class="gp">$ </span>ls<span class="w">  </span>/var/lib/docker/overlay2/3a36935c9df35472229c57f4a27105a136f5e4dbef0f87905b2e506e494e348b/diff
+
+<span class="go">bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span>
+</code></pre></div>
+
+<p>The second-lowest layer, and each higher layer, contain a file called <code>lower</code>,
+which denotes its parent, and a directory called <code>diff</code> which contains its
+contents. It also contains a <code>merged</code> directory, which contains the unified
+contents of its parent layer and itself, and a <code>work</code> directory which is used
+internally by OverlayFS.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>/var/lib/docker/overlay2/223c2864175491657d238e2664251df13b63adb8d050924fd1bfcdb278b866f7
+
+<span class="go">diff  link  lower  merged  work</span>
+
+<span class="gp">$ </span>cat<span class="w"> </span>/var/lib/docker/overlay2/223c2864175491657d238e2664251df13b63adb8d050924fd1bfcdb278b866f7/lower
+
+<span class="go">l/6Y5IM2XC7TSNIJZZFLJCS6I4I4</span>
+
+<span class="gp">$ </span>ls<span class="w"> </span>/var/lib/docker/overlay2/223c2864175491657d238e2664251df13b63adb8d050924fd1bfcdb278b866f7/diff/
+
+<span class="go">etc  sbin  usr  var</span>
+</code></pre></div>
+
+<p>To view the mounts which exist when you use the <code>overlay</code> storage driver with
+Docker, use the <code>mount</code> command. The output below is truncated for readability.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>mount<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>overlay
+
+<span class="go">overlay on /var/lib/docker/overlay2/9186877cdf386d0a3b016149cf30c208f326dca307529e646afce5b3f83f5304/merged</span>
+<span class="go">type overlay (rw,relatime,</span>
+<span class="go">lowerdir=l/DJA75GUWHWG7EWICFYX54FIOVT:l/B3WWEFKBG3PLLV737KZFIASSW7:l/JEYMODZYFCZFYSDABYXD5MF6YO:l/UL2MW33MSE3Q5VYIKBRN4ZAGQP:l/NFYKDW6APBCCUCTOUSYDH4DXAT:l/6Y5IM2XC7TSNIJZZFLJCS6I4I4,</span>
+<span class="go">upperdir=9186877cdf386d0a3b016149cf30c208f326dca307529e646afce5b3f83f5304/diff,</span>
+<span class="go">workdir=9186877cdf386d0a3b016149cf30c208f326dca307529e646afce5b3f83f5304/work)</span>
+</code></pre></div>
+
+<p>The <code>rw</code> on the second line shows that the <code>overlay</code> mount is read-write.</p>
+<p>The following diagram shows how a Docker image and a Docker container are
+layered. The image layer is the <code>lowerdir</code> and the container layer is the
+<code>upperdir</code>. If the image has multiple layers, multiple <code>lowerdir</code> directories
+are used. The unified view is exposed through a directory called <code>merged</code> which
+is effectively the containers mount point.</p>
+<p><img alt="How Docker constructs map to OverlayFS constructs" src="images/overlay_constructs.webp"></p>
+<p>Where the image layer and the container layer contain the same files, the
+container layer (<code>upperdir</code>) takes precedence and obscures the existence of the
+same files in the image layer.</p>
+<p>To create a container, the <code>overlay2</code> driver combines the directory representing
+the image's top layer plus a new directory for the container. The image's
+layers are the <code>lowerdirs</code> in the overlay and are read-only. The new directory for
+the container is the <code>upperdir</code> and is writable.</p>
+<h3 id="image-and-container-layers-on-disk-legacy-overlay-driver">Image and container layers on-disk (legacy overlay driver)<a class="headerlink" href="#image-and-container-layers-on-disk-legacy-overlay-driver" title="Permanent link">#</a></h3>
+<p>The following <code>docker pull</code> command shows a Docker host downloading a Docker
+image comprising five layers.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>pull<span class="w"> </span>ubuntu
+
+<span class="go">Using default tag: latest</span>
+<span class="go">latest: Pulling from library/ubuntu</span>
+
+<span class="go">5ba4f30e5bea: Pull complete</span>
+<span class="go">9d7d19c9dc56: Pull complete</span>
+<span class="go">ac6ad7efd0f9: Pull complete</span>
+<span class="go">e7491a747824: Pull complete</span>
+<span class="go">a3ed95caeb02: Pull complete</span>
+<span class="go">Digest: sha256:46fb5d001b88ad904c5c732b086b596b92cfb4a4840a3abd0e35dbb6870585e4</span>
+<span class="go">Status: Downloaded newer image for ubuntu:latest</span>
+</code></pre></div>
+
+<h4 id="the-image-layers">The image layers<a class="headerlink" href="#the-image-layers" title="Permanent link">#</a></h4>
+<p>Each image layer has its own directory within <code>/var/lib/docker/overlay/</code>, which
+contains its contents, as shown in the following example. The image layer IDs
+don't correspond to the directory IDs.</p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>Don't directly manipulate any files or directories within
+<code>/var/lib/docker/</code>. These files and directories are managed by Docker.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>-l<span class="w"> </span>/var/lib/docker/overlay/
+
+<span class="go">total 20</span>
+<span class="go">drwx------ 3 root root 4096 Jun 20 16:11 38f3ed2eac129654acef11c32670b534670c3a06e483fce313d72e3e0a15baa8</span>
+<span class="go">drwx------ 3 root root 4096 Jun 20 16:11 55f1e14c361b90570df46371b20ce6d480c434981cbda5fd68c6ff61aa0a5358</span>
+<span class="go">drwx------ 3 root root 4096 Jun 20 16:11 824c8a961a4f5e8fe4f4243dab57c5be798e7fd195f6d88ab06aea92ba931654</span>
+<span class="go">drwx------ 3 root root 4096 Jun 20 16:11 ad0fe55125ebf599da124da175174a4b8c1878afe6907bf7c78570341f308461</span>
+<span class="go">drwx------ 3 root root 4096 Jun 20 16:11 edab9b5e5bf73f2997524eebeac1de4cf9c8b904fa8ad3ec43b3504196aa3801</span>
+</code></pre></div>
+
+<p>The image layer directories contain the files unique to that layer as well as
+hard links to the data shared with lower layers. This allows for efficient use
+of disk space.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>-i<span class="w"> </span>/var/lib/docker/overlay2/38f3ed2eac129654acef11c32670b534670c3a06e483fce313d72e3e0a15baa8/root/bin/ls
+
+<span class="go">19793696 /var/lib/docker/overlay2/38f3ed2eac129654acef11c32670b534670c3a06e483fce313d72e3e0a15baa8/root/bin/ls</span>
+
+<span class="gp">$ </span>ls<span class="w"> </span>-i<span class="w"> </span>/var/lib/docker/overlay2/55f1e14c361b90570df46371b20ce6d480c434981cbda5fd68c6ff61aa0a5358/root/bin/ls
+
+<span class="go">19793696 /var/lib/docker/overlay2/55f1e14c361b90570df46371b20ce6d480c434981cbda5fd68c6ff61aa0a5358/root/bin/ls</span>
+</code></pre></div>
+
+<h4 id="the-container-layer">The container layer<a class="headerlink" href="#the-container-layer" title="Permanent link">#</a></h4>
+<p>Containers also exist on-disk in the Docker host's filesystem under
+<code>/var/lib/docker/overlay/</code>. If you list a running container's subdirectory
+using the <code>ls -l</code> command, three directories and one file exist:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>-l<span class="w"> </span>/var/lib/docker/overlay2/&lt;directory-of-running-container&gt;
+
+<span class="go">total 16</span>
+<span class="go">-rw-r--r-- 1 root root   64 Jun 20 16:39 lower-id</span>
+<span class="go">drwxr-xr-x 1 root root 4096 Jun 20 16:39 merged</span>
+<span class="go">drwxr-xr-x 4 root root 4096 Jun 20 16:39 upper</span>
+<span class="go">drwx------ 3 root root 4096 Jun 20 16:39 work</span>
+</code></pre></div>
+
+<p>The <code>lower-id</code> file contains the ID of the top layer of the image the container
+is based on, which is the OverlayFS <code>lowerdir</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>/var/lib/docker/overlay2/ec444863a55a9f1ca2df72223d459c5d940a721b2288ff86a3f27be28b53be6c/lower-id
+
+<span class="go">55f1e14c361b90570df46371b20ce6d480c434981cbda5fd68c6ff61aa0a5358</span>
+</code></pre></div>
+
+<p>The <code>upper</code> directory contains the contents of the container's read-write layer,
+which corresponds to the OverlayFS <code>upperdir</code>.</p>
+<p>The <code>merged</code> directory is the union mount of the <code>lowerdir</code> and <code>upperdirs</code>, which
+comprises the view of the filesystem from within the running container.</p>
+<p>The <code>work</code> directory is internal to OverlayFS.</p>
+<p>To view the mounts which exist when you use the <code>overlay2</code> storage driver with
+Docker, use the <code>mount</code> command. The following output is truncated for
+readability.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>mount<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>overlay
+
+<span class="go">overlay on /var/lib/docker/overlay2/l/ec444863a55a.../merged</span>
+<span class="go">type overlay (rw,relatime,lowerdir=/var/lib/docker/overlay2/l/55f1e14c361b.../root,</span>
+<span class="go">upperdir=/var/lib/docker/overlay2/l/ec444863a55a.../upper,</span>
+<span class="go">workdir=/var/lib/docker/overlay2/l/ec444863a55a.../work)</span>
+</code></pre></div>
+
+<p>The <code>rw</code> on the second line shows that the <code>overlay</code> mount is read-write.</p>
+<h2 id="how-container-reads-and-writes-work-with-overlay2">How container reads and writes work with <code>overlay2</code><a class="headerlink" href="#how-container-reads-and-writes-work-with-overlay2" title="Permanent link">#</a></h2>
+<p><a name="how-container-reads-and-writes-work-with-overlay-or-overlay2"></a></p>
+<h3 id="reading-files">Reading files<a class="headerlink" href="#reading-files" title="Permanent link">#</a></h3>
+<p>Consider three scenarios where a container opens a file for read access with
+overlay.</p>
+<h4 id="the-file-does-not-exist-in-the-container-layer">The file does not exist in the container layer<a class="headerlink" href="#the-file-does-not-exist-in-the-container-layer" title="Permanent link">#</a></h4>
+<p>If a container opens a file for read access and the file does not already exist
+in the container (<code>upperdir</code>) it is read from the image (<code>lowerdir</code>). This
+incurs very little performance overhead.</p>
+<h4 id="the-file-only-exists-in-the-container-layer">The file only exists in the container layer<a class="headerlink" href="#the-file-only-exists-in-the-container-layer" title="Permanent link">#</a></h4>
+<p>If a container opens a file for read access and the file exists in the
+container (<code>upperdir</code>) and not in the image (<code>lowerdir</code>), it's read directly
+from the container.</p>
+<h4 id="the-file-exists-in-both-the-container-layer-and-the-image-layer">The file exists in both the container layer and the image layer<a class="headerlink" href="#the-file-exists-in-both-the-container-layer-and-the-image-layer" title="Permanent link">#</a></h4>
+<p>If a container opens a file for read access and the file exists in the image
+layer and the container layer, the file's version in the container layer is
+read. Files in the container layer (<code>upperdir</code>) obscure files with the same
+name in the image layer (<code>lowerdir</code>).</p>
+<h3 id="modifying-files-or-directories">Modifying files or directories<a class="headerlink" href="#modifying-files-or-directories" title="Permanent link">#</a></h3>
+<p>Consider some scenarios where files in a container are modified.</p>
+<h4 id="writing-to-a-file-for-the-first-time">Writing to a file for the first time<a class="headerlink" href="#writing-to-a-file-for-the-first-time" title="Permanent link">#</a></h4>
+<p>The first time a container writes to an existing file, that file does not
+exist in the container (<code>upperdir</code>). The <code>overlay2</code> driver performs a
+<code>copy_up</code> operation to copy the file from the image (<code>lowerdir</code>) to the
+container (<code>upperdir</code>). The container then writes the changes to the new copy
+of the file in the container layer.</p>
+<p>However, OverlayFS works at the file level rather than the block level. This
+means that all OverlayFS <code>copy_up</code> operations copy the entire file, even if
+the file is large and only a small part of it's being modified. This can have
+a noticeable impact on container write performance. However, two things are
+worth noting:</p>
+<ul>
+<li>
+<p>The <code>copy_up</code> operation only occurs the first time a given file is written
+  to. Subsequent writes to the same file operate against the copy of the file
+  already copied up to the container.</p>
+</li>
+<li>
+<p>OverlayFS works with multiple layers. This means that performance can be
+  impacted when searching for files in images with many layers.</p>
+</li>
+</ul>
+<h4 id="deleting-files-and-directories">Deleting files and directories<a class="headerlink" href="#deleting-files-and-directories" title="Permanent link">#</a></h4>
+<ul>
+<li>
+<p>When a <em>file</em> is deleted within a container, a <em>whiteout</em> file is created in
+  the container (<code>upperdir</code>). The version of the file in the image layer
+  (<code>lowerdir</code>) is not deleted (because the <code>lowerdir</code> is read-only). However,
+  the whiteout file prevents it from being available to the container.</p>
+</li>
+<li>
+<p>When a <em>directory</em> is deleted within a container, an <em>opaque directory</em> is
+  created within the container (<code>upperdir</code>). This works in the same way as a
+  whiteout file and effectively prevents the directory from being accessed,
+  even though it still exists in the image (<code>lowerdir</code>).</p>
+</li>
+</ul>
+<h4 id="renaming-directories">Renaming directories<a class="headerlink" href="#renaming-directories" title="Permanent link">#</a></h4>
+<p>Calling <code>rename(2)</code> for a directory is allowed only when both the source and
+the destination path are on the top layer. Otherwise, it returns <code>EXDEV</code> error
+("cross-device link not permitted"). Your application needs to be designed to
+handle <code>EXDEV</code> and fall back to a "copy and unlink" strategy.</p>
+<h2 id="overlayfs-and-docker-performance">OverlayFS and Docker Performance<a class="headerlink" href="#overlayfs-and-docker-performance" title="Permanent link">#</a></h2>
+<p><code>overlay2</code> may perform better than <code>btrfs</code>. However, be aware of the following details:</p>
+<h3 id="page-caching">Page caching<a class="headerlink" href="#page-caching" title="Permanent link">#</a></h3>
+<p>OverlayFS supports page cache sharing. Multiple containers accessing the same
+file share a single page cache entry for that file. This makes the <code>overlay2</code>
+drivers efficient with memory and a good option for high-density use cases such
+as PaaS.</p>
+<h3 id="copyup">Copyup<a class="headerlink" href="#copyup" title="Permanent link">#</a></h3>
+<p>As with other copy-on-write filesystems, OverlayFS performs copy-up operations
+whenever a container writes to a file for the first time. This can add latency
+into the write operation, especially for large files. However, once the file
+has been copied up, all subsequent writes to that file occur in the upper
+layer, without the need for further copy-up operations.</p>
+<h3 id="performance-best-practices">Performance best practices<a class="headerlink" href="#performance-best-practices" title="Permanent link">#</a></h3>
+<p>The following generic performance best practices apply to OverlayFS.</p>
+<h4 id="use-fast-storage">Use fast storage<a class="headerlink" href="#use-fast-storage" title="Permanent link">#</a></h4>
+<p>Solid-state drives (SSDs) provide faster reads and writes than spinning disks.</p>
+<h4 id="use-volumes-for-write-heavy-workloads">Use volumes for write-heavy workloads<a class="headerlink" href="#use-volumes-for-write-heavy-workloads" title="Permanent link">#</a></h4>
+<p>Volumes provide the best and most predictable performance for write-heavy
+workloads. This is because they bypass the storage driver and don't incur any
+of the potential overheads introduced by thin provisioning and copy-on-write.
+Volumes have other benefits, such as allowing you to share data among
+containers and persisting your data even if no running container is using them.</p>
+<h2 id="limitations-on-overlayfs-compatibility">Limitations on OverlayFS compatibility<a class="headerlink" href="#limitations-on-overlayfs-compatibility" title="Permanent link">#</a></h2>
+<p>To summarize the OverlayFS's aspect which is incompatible with other
+filesystems:</p>
+<dl>
+<dt><a href="https://linux.die.net/man/2/open" rel="noopener" target="_blank"><code>open(2)</code></a></dt>
+<dd>OverlayFS only implements a subset of the POSIX standards.
+This can result in certain OverlayFS operations breaking POSIX standards. One
+such operation is the copy-up operation. Suppose that your application calls
+<code>fd1=open("foo", O_RDONLY)</code> and then <code>fd2=open("foo", O_RDWR)</code>. In this case,
+your application expects <code>fd1</code> and <code>fd2</code> to refer to the same file. However, due
+to a copy-up operation that occurs after the second calling to <code>open(2)</code>, the
+descriptors refer to different files. The <code>fd1</code> continues to reference the file
+in the image (<code>lowerdir</code>) and the <code>fd2</code> references the file in the container
+(<code>upperdir</code>). A workaround for this is to <code>touch</code> the files which causes the
+copy-up operation to happen. All subsequent <code>open(2)</code> operations regardless of
+read-only or read-write access mode reference the file in the
+container (<code>upperdir</code>).</dd>
+</dl>
+<p><code>yum</code> is known to be affected unless the <code>yum-plugin-ovl</code> package is installed.
+If the <code>yum-plugin-ovl</code> package is not available in your distribution such as
+RHEL/CentOS prior to 6.8 or 7.2, you may need to run <code>touch /var/lib/rpm/*</code>
+before running <code>yum install</code>. This package implements the <code>touch</code> workaround
+referenced above for <code>yum</code>.</p>
+<dl>
+<dt><a href="https://linux.die.net/man/2/rename" rel="noopener" target="_blank"><code>rename(2)</code></a></dt>
+<dd>OverlayFS does not fully support the <code>rename(2)</code> system call. Your
+application needs to detect its failure and fall back to a "copy and unlink"
+strategy.</dd>
+</dl>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/storage/drivers/device-mapper-driver.html">
+          <span class="muted">Anterior</span>Device Mapper storage driver (deprecated)
+        </a>
+        <a class="pager-next" href="../../../engine/storage/drivers/select-storage-driver.html">
+          <span class="muted">Siguiente</span>Select a storage driver
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

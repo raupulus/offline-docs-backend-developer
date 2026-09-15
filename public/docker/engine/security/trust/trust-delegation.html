@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delegations for content trust · Docker</title>
+<meta name="description" content="Delegations for content trust - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/trust/trust-delegation.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Delegations for content trust">
+<meta property="og:description" content="Delegations for content trust - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Delegations for content trust">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Delegations for content trust",
+"url": "https://docs.raupulus.dev/docker/engine/security/trust/trust-delegation.html",  "description": "Delegations for content trust - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+class="is-current" aria-current="page">Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Delegations for content trust</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#configuring-the-docker-client">Configuring the Docker client#</a></li>
+              <li class="lvl-2"><a href="#configuring-the-notary-client">Configuring the Notary client#</a></li>
+              <li class="lvl-2"><a href="#creating-delegation-keys">Creating delegation keys#</a></li>
+              <li class="lvl-3"><a href="#using-docker-trust-to-generate-keys">Using Docker Trust to generate keys#</a></li>
+              <li class="lvl-3"><a href="#manually-generating-keys">Manually generating keys#</a></li>
+              <li class="lvl-3"><a href="#viewing-local-delegation-keys">Viewing local delegation keys#</a></li>
+              <li class="lvl-2"><a href="#managing-delegations-in-a-notary-server">Managing delegations in a Notary Server#</a></li>
+              <li class="lvl-3"><a href="#initiating-the-repository">Initiating the repository#</a></li>
+              <li class="lvl-3"><a href="#adding-additional-signers">Adding additional signers#</a></li>
+              <li class="lvl-3"><a href="#adding-keys-to-an-existing-delegation">Adding keys to an existing delegation#</a></li>
+              <li class="lvl-3"><a href="#removing-a-delegation">Removing a delegation#</a></li>
+              <li class="lvl-3"><a href="#removing-a-contributors-key-from-a-delegation">Removing a contributor&#39;s key from a delegation#</a></li>
+              <li class="lvl-3"><a href="#removing-a-local-delegation-private-key">Removing a local delegation private key#</a></li>
+              <li class="lvl-2"><a href="#removing-all-trust-data-from-a-repository">Removing all trust data from a repository#</a></li>
+              <li class="lvl-2"><a href="#related-information">Related information#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Delegations in Docker Content Trust (DCT) allow you to control who can and cannot sign
+an image tag. A delegation will have a pair of private and public delegation keys. A delegation 
+could contain multiple pairs of keys and contributors in order to a) allow multiple users 
+to be part of a delegation, and b) to support key rotation.  </p>
+<p>The most important delegation within Docker Content Trust is <code>targets/releases</code>.
+This is seen as the canonical source of a trusted image tag, and without a 
+contributor's key being under this delegation, they will be unable to sign a tag.</p>
+<p>Fortunately when using the <code>$ docker trust</code> commands, we will automatically 
+initialize a repository, manage the repository keys, and add a collaborator's key to the 
+<code>targets/releases</code> delegation via <code>docker trust signer add</code>. </p>
+<h2 id="configuring-the-docker-client">Configuring the Docker client<a class="headerlink" href="#configuring-the-docker-client" title="Permanent link">#</a></h2>
+<p>By default, the <code>$ docker trust</code> commands expect the notary server URL to be the
+same as the registry URL specified in the image tag (following a similar logic to
+<code>$ docker push</code>). When using Docker Hub or DTR, the notary
+server URL is the same as the registry URL. However, for self-hosted
+environments or 3rd party registries, you will need to specify an alternative
+URL of the notary server. This is done with:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_CONTENT_TRUST_SERVER</span><span class="o">=</span>https://&lt;URL&gt;:&lt;PORT&gt;
+</code></pre></div>
+
+<p>If you do not export this variable in self-hosted environments, you may see 
+errors such as: </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>add<span class="w"> </span>--key<span class="w"> </span>cert.pem<span class="w"> </span>jeff<span class="w"> </span>registry.example.com/admin/demo
+<span class="go">Adding signer &quot;jeff&quot; to registry.example.com/admin/demo...</span>
+<span class="go">&lt;...&gt;</span>
+<span class="go">Error: trust data missing for remote repository registry.example.com/admin/demo or remote repository not found: timestamp key trust data unavailable.  Has a notary repository been initialized?</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>inspect<span class="w"> </span>registry.example.com/admin/demo<span class="w"> </span>--pretty
+<span class="go">WARN[0000] Error while downloading remote metadata, using cached timestamp - this might not be the latest version available remotely</span>
+<span class="go">&lt;...&gt;</span>
+</code></pre></div>
+
+<p>If you have enabled authentication for your notary server, or are using DTR, you will need to log in 
+before you can push data to the notary server. </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>login<span class="w"> </span>registry.example.com/user/repo
+<span class="go">Username: admin</span>
+<span class="go">Password:</span>
+
+<span class="go">Login Succeeded</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>add<span class="w"> </span>--key<span class="w"> </span>cert.pem<span class="w"> </span>jeff<span class="w"> </span>registry.example.com/user/repo
+<span class="go">Adding signer &quot;jeff&quot; to registry.example.com/user/repo...</span>
+<span class="go">Initializing signed repository for registry.example.com/user/repo...</span>
+<span class="go">Successfully initialized &quot;registry.example.com/user/repo&quot;</span>
+<span class="go">Successfully added signer: jeff to registry.example.com/user/repo</span>
+</code></pre></div>
+
+<p>If you do not log in, you will see:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>add<span class="w"> </span>--key<span class="w"> </span>cert.pem<span class="w"> </span>jeff<span class="w"> </span>registry.example.com/user/repo
+<span class="go">Adding signer &quot;jeff&quot; to registry.example.com/user/repo...</span>
+<span class="go">Initializing signed repository for registry.example.com/user/repo...</span>
+<span class="go">you are not authorized to perform this operation: server returned 401.</span>
+
+<span class="go">Failed to add signer to: registry.example.com/user/repo</span>
+</code></pre></div>
+
+<h2 id="configuring-the-notary-client">Configuring the Notary client<a class="headerlink" href="#configuring-the-notary-client" title="Permanent link">#</a></h2>
+<p>Some of the more advanced features of DCT require the Notary CLI. To install and 
+configure the Notary CLI:</p>
+<ol>
+<li>
+<p>Download the <a href="https://github.com/theupdateframework/notary/releases" rel="noopener" target="_blank">client</a> and ensure that it is available on your path.</p>
+</li>
+<li>
+<p>Create a configuration file at <code>~/.notary/config.json</code> with the following content:</p>
+</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;trust_dir&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;~/.docker/trust&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;remote_server&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://registry.example.com&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;root_ca&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;../.docker/ca.pem&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The newly created configuration file contains information about the location of your local Docker trust data and the notary server URL.</p>
+<p>For more detailed information about how to use notary outside of the
+Docker Content Trust use cases, refer to the <a href="https://github.com/theupdateframework/notary/blob/master/docs/command_reference.md" rel="noopener" target="_blank">Notary CLI documentation</a> </p>
+<h2 id="creating-delegation-keys">Creating delegation keys<a class="headerlink" href="#creating-delegation-keys" title="Permanent link">#</a></h2>
+<p>A prerequisite to adding your first contributor is a pair of delegation keys. 
+These keys can either be generated locally using <code>$ docker trust</code>, generated by 
+a certificate authority.</p>
+<h3 id="using-docker-trust-to-generate-keys">Using Docker Trust to generate keys<a class="headerlink" href="#using-docker-trust-to-generate-keys" title="Permanent link">#</a></h3>
+<p>Docker trust has a built-in generator for a delegation key pair, 
+<code>$ docker trust generate &lt;name&gt;</code>. Running this command will automatically load 
+the delegation private key in to the local Docker trust store. </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>key<span class="w"> </span>generate<span class="w"> </span>jeff
+
+<span class="go">Generating key for jeff...</span>
+<span class="go">Enter passphrase for new jeff key with ID 9deed25: </span>
+<span class="go">Repeat passphrase for new jeff key with ID 9deed25: </span>
+<span class="go">Successfully generated and loaded private key. Corresponding public key available: /home/ubuntu/Documents/mytrustdir/jeff.pub</span>
+</code></pre></div>
+
+<h3 id="manually-generating-keys">Manually generating keys<a class="headerlink" href="#manually-generating-keys" title="Permanent link">#</a></h3>
+<p>If you need to manually generate a private key (either RSA or ECDSA) and an X.509
+certificate containing the public key, you can use local tools like openssl or 
+cfssl along with a local or company-wide Certificate Authority. </p>
+<p>Here is an example of how to generate a 2048-bit RSA portion key (all RSA keys
+must be at least 2048 bits):</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>delegation.key<span class="w"> </span><span class="m">2048</span>
+
+<span class="go">Generating RSA private key, 2048 bit long modulus</span>
+<span class="go">....................................................+++</span>
+<span class="go">............+++</span>
+<span class="go">e is 65537 (0x10001)</span>
+</code></pre></div>
+
+<p>They should keep <code>delegation.key</code> private because it is used to sign tags.</p>
+<p>Then they need to generate an x509 certificate containing the public key, which is
+what you need from them. Here is the command to generate a CSR (certificate
+signing request):</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-sha256<span class="w"> </span>-key<span class="w"> </span>delegation.key<span class="w"> </span>-out<span class="w"> </span>delegation.csr
+</code></pre></div>
+
+<p>Then they can send it to whichever CA you trust to sign certificates, or they
+can self-sign the certificate (in this example, creating a certificate that is
+valid for 1 year):</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-sha256<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-in<span class="w"> </span>delegation.csr<span class="w"> </span>-signkey<span class="w"> </span>delegation.key<span class="w"> </span>-out<span class="w"> </span>delegation.crt
+</code></pre></div>
+
+<p>Then they need to give you <code>delegation.crt</code>, whether it is self-signed or signed
+by a CA.</p>
+<p>Finally you will need to add the private key into your local Docker trust store.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>key<span class="w"> </span>load<span class="w"> </span>delegation.key<span class="w"> </span>--name<span class="w"> </span>jeff
+
+<span class="go">Loading key from &quot;delegation.key&quot;...</span>
+<span class="go">Enter passphrase for new jeff key with ID 8ae710e: </span>
+<span class="go">Repeat passphrase for new jeff key with ID 8ae710e: </span>
+<span class="go">Successfully imported key from delegation.key</span>
+</code></pre></div>
+
+<h3 id="viewing-local-delegation-keys">Viewing local delegation keys<a class="headerlink" href="#viewing-local-delegation-keys" title="Permanent link">#</a></h3>
+<p>To list the keys that have been imported in to the local Docker trust store we 
+can use the Notary CLI.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>notary<span class="w"> </span>key<span class="w"> </span>list
+
+<span class="go">ROLE       GUN                          KEY ID                                                              LOCATION</span>
+<span class="go">----       ---                          ------                                                              --------</span>
+<span class="go">root                                    f6c6a4b00fefd8751f86194c7d87a3bede444540eb3378c4a11ce10852ab1f96    /home/ubuntu/.docker/trust/private</span>
+<span class="go">jeff                                    9deed251daa1aa6f9d5f9b752847647cf8d705da0763aa5467650d0987ed5306    /home/ubuntu/.docker/trust/private</span>
+</code></pre></div>
+
+<h2 id="managing-delegations-in-a-notary-server">Managing delegations in a Notary Server<a class="headerlink" href="#managing-delegations-in-a-notary-server" title="Permanent link">#</a></h2>
+<p>When the first delegation is added to the Notary Server using <code>$ docker trust</code>,
+we automatically initiate trust data for the repository. This includes creating 
+the notary target and snapshots keys, and rotating the snapshot key to be 
+managed by the notary server. More information on these keys can be found in
+<a href="trust-key-mng.html">Manage keys for content trust</a>.</p>
+<p>When initiating a repository, you will need the key and the passphrase of a local
+Notary Canonical Root Key. If you have not initiated a repository before, and 
+therefore don't have a Notary root key, <code>$ docker trust</code> will create one for you.</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>Be sure to protect and back up your <a href="trust-key-mng.html">Notary Canonical Root Key</a>.</p>
+</blockquote>
+<h3 id="initiating-the-repository">Initiating the repository<a class="headerlink" href="#initiating-the-repository" title="Permanent link">#</a></h3>
+<p>To upload the first key to a delegation, at the same time initiating a 
+repository, you can use the <code>$ docker trust signer add</code> command. This will add 
+the contributor's public key to the <code>targets/releases</code> delegation, and create a 
+second <code>targets/&lt;name&gt;</code> delegation. </p>
+<p>For DCT the name of the second delegation, in the below example
+<code>jeff</code>, is there to help you keep track of the owner of the keys. In more 
+advanced use cases of Notary additional delegations are used for hierarchy. </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>add<span class="w"> </span>--key<span class="w"> </span>cert.pem<span class="w"> </span>jeff<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">Adding signer &quot;jeff&quot; to registry.example.com/admin/demo...</span>
+<span class="go">Initializing signed repository for registry.example.com/admin/demo...</span>
+<span class="go">Enter passphrase for root key with ID f6c6a4b: </span>
+<span class="go">Enter passphrase for new repository key with ID b0014f8: </span>
+<span class="go">Repeat passphrase for new repository key with ID b0014f8: </span>
+<span class="go">Successfully initialized &quot;registry.example.com/admin/demo&quot;</span>
+<span class="go">Successfully added signer: jeff to registry.example.com/admin/demo</span>
+</code></pre></div>
+
+<p>You can see which keys have been pushed to the Notary server for each repository
+with the <code>$ docker trust inspect</code> command. </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>inspect<span class="w"> </span>--pretty<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">No signatures for registry.example.com/admin/demo</span>
+
+
+<span class="go">List of signers and their keys for registry.example.com/admin/demo</span>
+
+<span class="go">SIGNER              KEYS</span>
+<span class="go">jeff                1091060d7bfd</span>
+
+<span class="go">Administrative keys for registry.example.com/admin/demo</span>
+
+<span class="go">  Repository Key:   b0014f8e4863df2d028095b74efcb05d872c3591de0af06652944e310d96598d</span>
+<span class="go">  Root Key: 64d147e59e44870311dd2d80b9f7840039115ef3dfa5008127d769a5f657a5d7</span>
+</code></pre></div>
+
+<p>You could also use the Notary CLI to list delegations and keys. Here you can 
+clearly see the keys were attached to <code>targets/releases</code> and <code>targets/jeff</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>notary<span class="w"> </span>delegation<span class="w"> </span>list<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">ROLE                PATHS             KEY IDS                                                             THRESHOLD</span>
+<span class="go">----                -----             -------                                                             ---------</span>
+<span class="go">targets/jeff        &quot;&quot; &lt;all paths&gt;    1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1    1</span>
+
+<span class="go">targets/releases    &quot;&quot; &lt;all paths&gt;    1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1    1 </span>
+</code></pre></div>
+
+<h3 id="adding-additional-signers">Adding additional signers<a class="headerlink" href="#adding-additional-signers" title="Permanent link">#</a></h3>
+<p>Docker Trust allows you to configure multiple delegations per repository, 
+allowing you to manage the lifecycle of delegations. When adding additional 
+delegations with <code>$ docker trust</code> the collaborators key is once again added to 
+the <code>targets/release</code> role.</p>
+<blockquote>
+<p>Note you will need the passphrase for the repository key; this would have been
+configured when you first initiated the repository.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>add<span class="w"> </span>--key<span class="w"> </span>ben.pub<span class="w"> </span>ben<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">Adding signer &quot;ben&quot; to registry.example.com/admin/demo...</span>
+<span class="go">Enter passphrase for repository key with ID b0014f8: </span>
+<span class="go">Successfully added signer: ben to registry.example.com/admin/demo</span>
+</code></pre></div>
+
+<p>Check to prove that there are now 2 delegations (Signer).</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>inspect<span class="w"> </span>--pretty<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">No signatures for registry.example.com/admin/demo</span>
+
+<span class="go">List of signers and their keys for registry.example.com/admin/demo</span>
+
+<span class="go">SIGNER              KEYS</span>
+<span class="go">ben                 afa404703b25</span>
+<span class="go">jeff                1091060d7bfd</span>
+
+<span class="go">Administrative keys for registry.example.com/admin/demo</span>
+
+<span class="go">  Repository Key:   b0014f8e4863df2d028095b74efcb05d872c3591de0af06652944e310d96598d</span>
+<span class="go">  Root Key: 64d147e59e44870311dd2d80b9f7840039115ef3dfa5008127d769a5f657a5d7</span>
+</code></pre></div>
+
+<h3 id="adding-keys-to-an-existing-delegation">Adding keys to an existing delegation<a class="headerlink" href="#adding-keys-to-an-existing-delegation" title="Permanent link">#</a></h3>
+<p>To support things like key rotation and expiring / retiring keys you can publish
+multiple contributor keys per delegation. The only prerequisite here is to make
+sure you use the same the delegation name, in this case <code>jeff</code>. Docker trust 
+will automatically handle adding this new key to <code>targets/releases</code>. </p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>You will need the passphrase for the repository key; this would have been
+configured when you first initiated the repository.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>add<span class="w"> </span>--key<span class="w"> </span>cert2.pem<span class="w"> </span>jeff<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">Adding signer &quot;jeff&quot; to registry.example.com/admin/demo...</span>
+<span class="go">Enter passphrase for repository key with ID b0014f8: </span>
+<span class="go">Successfully added signer: jeff to registry.example.com/admin/demo</span>
+</code></pre></div>
+
+<p>Check to prove that the delegation (Signer) now contains multiple Key IDs. </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>inspect<span class="w"> </span>--pretty<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">No signatures for registry.example.com/admin/demo</span>
+
+
+<span class="go">List of signers and their keys for registry.example.com/admin/demo</span>
+
+<span class="go">SIGNER              KEYS</span>
+<span class="go">jeff                1091060d7bfd, 5570b88df073</span>
+
+<span class="go">Administrative keys for registry.example.com/admin/demo</span>
+
+<span class="go">  Repository Key:   b0014f8e4863df2d028095b74efcb05d872c3591de0af06652944e310d96598d</span>
+<span class="go">  Root Key: 64d147e59e44870311dd2d80b9f7840039115ef3dfa5008127d769a5f657a5d7</span>
+</code></pre></div>
+
+<h3 id="removing-a-delegation">Removing a delegation<a class="headerlink" href="#removing-a-delegation" title="Permanent link">#</a></h3>
+<p>If you need to remove a delegation, including the contributor keys that are 
+attached to the <code>targets/releases</code> role, you can use the 
+<code>$ docker trust signer remove</code> command.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>Tags that were signed by the removed delegation will need to be resigned 
+by an active delegation</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>remove<span class="w"> </span>ben<span class="w"> </span>registry.example.com/admin/demo
+<span class="go">Removing signer &quot;ben&quot; from registry.example.com/admin/demo...</span>
+<span class="go">Enter passphrase for repository key with ID b0014f8: </span>
+<span class="go">Successfully removed ben from registry.example.com/admin/demo</span>
+</code></pre></div>
+
+<h4 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h4>
+<p>1) If you see an error that there are no usable keys in <code>targets/releases</code>, you 
+   will need to add additional delegations using <code>docker trust signer add</code> before 
+   resigning images.</p>
+<p><code>text
+   WARN[0000] role targets/releases has fewer keys than its threshold of 1; it will not be usable until keys are added to it</code></p>
+<p>2) If you have added additional delegations already and are seeing an error 
+   message that there are no valid signatures in <code>targets/releases</code>, you will need
+   to resign the <code>targets/releases</code> delegation file with the Notary CLI.</p>
+<p><code>text
+   WARN[0000] Error getting targets/releases: valid signatures did not meet threshold for targets/releases</code></p>
+<p>Resigning the delegation file is done with the <code>$ notary witness</code> command</p>
+<p><code>console
+   $ notary witness registry.example.com/admin/demo targets/releases --publish</code></p>
+<p>For more information on the <code>notary witness</code> command, refer to the
+   <a href="https://github.com/theupdateframework/notary/blob/master/docs/advanced_usage.md#recovering-a-delegation" rel="noopener" target="_blank">Notary client advanced usage guide</a></p>
+<h3 id="removing-a-contributors-key-from-a-delegation">Removing a contributor's key from a delegation<a class="headerlink" href="#removing-a-contributors-key-from-a-delegation" title="Permanent link">#</a></h3>
+<p>As part of rotating keys for a delegation, you may want to remove an individual 
+key but retain the delegation. This can be done with the Notary CLI.</p>
+<p>Remember you will have to remove the key from both the <code>targets/releases</code> role 
+and the role specific to that signer <code>targets/&lt;name&gt;</code>.</p>
+<p>1) We will need to grab the Key ID from the Notary Server</p>
+<p>```console
+   $ notary delegation list registry.example.com/admin/demo</p>
+<p>ROLE                PATHS             KEY IDS                                                             THRESHOLD
+   ----                -----             -------                                                             ---------
+   targets/jeff        "" <all paths>    8fb597cbaf196f0781628b2f52bff6b3912e4e8075720378fda60d17232bbcf9    1
+                                         1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1  <br>
+   targets/releases    "" <all paths>    8fb597cbaf196f0781628b2f52bff6b3912e4e8075720378fda60d17232bbcf9    1
+                                         1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1  <br>
+   ```</p>
+<p>2) Remove from the <code>targets/releases</code> delegation</p>
+<p>```console
+   $ notary delegation remove registry.example.com/admin/demo targets/releases 1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1 --publish</p>
+<p>Auto-publishing changes to registry.example.com/admin/demo
+   Enter username: admin
+   Enter password: 
+   Enter passphrase for targets key with ID b0014f8: 
+   Successfully published changes for repository registry.example.com/admin/demo
+   ```</p>
+<p>3) Remove from the <code>targets/&lt;name&gt;</code> delegation</p>
+<p>```console
+   $ notary delegation remove registry.example.com/admin/demo targets/jeff 1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1 --publish</p>
+<p>Removal of delegation role targets/jeff with keys [5570b88df0736c468493247a07e235e35cf3641270c944d0e9e8899922fc6f99], to repository "registry.example.com/admin/demo" staged for next publish.</p>
+<p>Auto-publishing changes to registry.example.com/admin/demo
+   Enter username: admin  <br>
+   Enter password: 
+   Enter passphrase for targets key with ID b0014f8: 
+   Successfully published changes for repository registry.example.com/admin/demo
+   ```</p>
+<p>4) Check the remaining delegation list </p>
+<p>```console
+   $ notary delegation list registry.example.com/admin/demo</p>
+<p>ROLE                PATHS             KEY IDS                                                             THRESHOLD
+   ----                -----             -------                                                             ---------
+   targets/jeff        "" <all paths>    8fb597cbaf196f0781628b2f52bff6b3912e4e8075720378fda60d17232bbcf9    1  <br>
+   targets/releases    "" <all paths>    8fb597cbaf196f0781628b2f52bff6b3912e4e8075720378fda60d17232bbcf9    1  <br>
+   ```</p>
+<h3 id="removing-a-local-delegation-private-key">Removing a local delegation private key<a class="headerlink" href="#removing-a-local-delegation-private-key" title="Permanent link">#</a></h3>
+<p>As part of rotating delegation keys, you may need to remove a local delegation
+key from the local Docker trust store. This is done with the Notary CLI, using
+the <code>$ notary key remove</code> command.</p>
+<p>1) We will need to get the Key ID from the local Docker Trust store</p>
+<p>```console
+   $ notary key list</p>
+<p>ROLE       GUN                          KEY ID                                                              LOCATION
+   ----       ---                          ------                                                              --------
+   root                                    f6c6a4b00fefd8751f86194c7d87a3bede444540eb3378c4a11ce10852ab1f96    /home/ubuntu/.docker/trust/private
+   admin                                   8fb597cbaf196f0781628b2f52bff6b3912e4e8075720378fda60d17232bbcf9    /home/ubuntu/.docker/trust/private
+   jeff                                    1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1    /home/ubuntu/.docker/trust/private
+   targets    ...example.com/admin/demo    c819f2eda8fba2810ec6a7f95f051c90276c87fddfc3039058856fad061c009d    /home/ubuntu/.docker/trust/private
+   ```</p>
+<p>2) Remove the key from the local Docker Trust store</p>
+<p>```console
+   $ notary key remove 1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1</p>
+<p>Are you sure you want to remove 1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1 (role jeff) from /home/ubuntu/.docker/trust/private?  (yes/no)  y</p>
+<p>Deleted 1091060d7bfd938dfa5be703fa057974f9322a4faef6f580334f3d6df44c02d1 (role jeff) from /home/ubuntu/.docker/trust/private.
+   ```</p>
+<h2 id="removing-all-trust-data-from-a-repository">Removing all trust data from a repository<a class="headerlink" href="#removing-all-trust-data-from-a-repository" title="Permanent link">#</a></h2>
+<p>You can remove all trust data from a repository, including repository, target, 
+snapshot and all delegations keys using the Notary CLI.</p>
+<p>This is often required by a container registry before a particular repository
+can be deleted. </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>notary<span class="w"> </span>delete<span class="w"> </span>registry.example.com/admin/demo<span class="w"> </span>--remote
+
+<span class="go">Deleting trust data for repository registry.example.com/admin/demo</span>
+<span class="go">Enter username: admin</span>
+<span class="go">Enter password: </span>
+<span class="go">Successfully deleted local and remote trust data for repository registry.example.com/admin/demo</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>inspect<span class="w"> </span>--pretty<span class="w"> </span>registry.example.com/admin/demo
+
+<span class="go">No signatures or cannot access registry.example.com/admin/demo</span>
+</code></pre></div>
+
+<h2 id="related-information">Related information<a class="headerlink" href="#related-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../../../reference/api/ai-governance/index.html">Content trust in Docker</a></li>
+<li><a href="trust-key-mng.html">Manage keys for content trust</a></li>
+<li><a href="trust-automation.html">Automation with content trust</a></li>
+<li><a href="trust-sandbox.html">Play in a content trust sandbox</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/security/trust/trust-automation.html">
+          <span class="muted">Anterior</span>Automation with content trust
+        </a>
+        <a class="pager-next" href="../../../engine/security/trust/trust-key-mng.html">
+          <span class="muted">Siguiente</span>Manage keys for content trust
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

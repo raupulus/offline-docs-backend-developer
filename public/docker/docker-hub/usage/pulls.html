@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docker Hub pull usage and limits · Docker</title>
+<meta name="description" content="Docker Hub pull usage and limits - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/docker-hub/usage/pulls.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Docker Hub pull usage and limits">
+<meta property="og:description" content="Docker Hub pull usage and limits - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker Hub pull usage and limits">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Docker Hub pull usage and limits",
+"url": "https://docs.raupulus.dev/docker/docker-hub/usage/pulls.html",  "description": "Docker Hub pull usage and limits - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Docker Hub
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../docker-hub/index.html"
+>Docker Hub</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/image-library/index.html"
+>Content library</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/image-library/catalogs.html"
+>Generative AI content</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/image-library/mirror.html"
+>Mirror the Docker Hub library</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/image-library/search.html"
+>Docker Hub search</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/image-library/trusted-content.html"
+>Trusted content</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/mcp-server.html"
+>Docker Hub MCP server</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/quickstart.html"
+>Docker Hub quickstart</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/release-notes.html"
+>Docker Hub release notes</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/index.html"
+>Repositories</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/archive.html"
+>Archive or unarchive a repository</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/create.html"
+>Create a repository</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/delete.html"
+>Delete a repository</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/index.html"
+>Manage</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/access.html"
+>Access management</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/index.html"
+>Automated builds</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/advanced.html"
+>Advanced options for autobuild and autotest</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/automated-testing.html"
+>Automated repository tests</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/link-source.html"
+>Configure automated builds from GitHub and BitBucket</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/manage-builds.html"
+>Manage autobuilds</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/migrate.html"
+>Migrate from Autobuilds</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/setup.html"
+>Set up automated builds</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/builds/troubleshoot.html"
+>Troubleshoot your autobuilds</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/export.html"
+>Export organization repositories to CSV</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/index.html"
+>Image management</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/bulk-migrate.html"
+>Bulk migrate images</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/immutable-tags.html"
+>Immutable tags on Docker Hub</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/manage.html"
+>Image Management</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/move.html"
+>Move images between repositories</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/oci-artifacts.html"
+>Software artifacts on Docker Hub</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/push.html"
+>Push images to a repository</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/hub-images/tags.html"
+>Tags on Docker Hub</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/information.html"
+>Repository information</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/trusted-content/index.html"
+>Trusted content</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/trusted-content/dsos-program.html"
+>Docker-Sponsored Open Source Program</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/trusted-content/dvp-program.html"
+>Docker Verified Publisher Program</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/trusted-content/insights-analytics.html"
+>Insights and analytics</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/trusted-content/official-images.html"
+>Docker Official Images</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/vulnerability-scanning.html"
+>Image security insights</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/repos/manage/webhooks.html"
+>Webhooks</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/settings.html"
+>Settings</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/troubleshoot.html"
+>Troubleshoot Docker Hub</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/usage/index.html"
+>Docker Hub usage and limits</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/usage/manage.html"
+>Best practices for optimizing Docker Hub usage</a>
+              </li>
+              <li>
+                <a href="../../docker-hub/usage/pulls.html"
+class="is-current" aria-current="page">Docker Hub pull usage and limits</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Docker Hub pull usage and limits</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#pull-definition">Pull definition#</a></li>
+              <li class="lvl-2"><a href="#pull-attribution">Pull attribution#</a></li>
+              <li class="lvl-3"><a href="#authentication">Authentication#</a></li>
+              <li class="lvl-2"><a href="#view-monthly-pulls-and-included-usage">View monthly pulls and included usage#</a></li>
+              <li class="lvl-2"><a href="#view-pull-rate-and-limit">View pull rate and limit#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Unauthenticated and Docker Personal users are subject to a 6-hour pull rate limit
+on Docker Hub. In contrast, Docker Pro, Team, and Business users benefit from
+an unlimited pull rate.</p>
+<p>The following pull usage and limits apply based on your subscription, subject to
+fair use:</p>
+<table>
+<thead>
+<tr>
+<th>User type</th>
+<th>Pull rate limit per 6 hours</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Business (authenticated)</td>
+<td>Unlimited</td>
+</tr>
+<tr>
+<td>Team (authenticated)</td>
+<td>Unlimited</td>
+</tr>
+<tr>
+<td>Pro (authenticated)</td>
+<td>Unlimited</td>
+</tr>
+<tr>
+<td>Personal (authenticated)</td>
+<td>200</td>
+</tr>
+<tr>
+<td>Unauthenticated Users</td>
+<td>100 per IPv4 address or IPv6 /64 subnet</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pull-definition">Pull definition<a class="headerlink" href="#pull-definition" title="Permanent link">#</a></h2>
+<p>A pull is defined as the following:</p>
+<ul>
+<li>A Docker pull includes both a version check and any download that
+  occurs as a result of the pull. Depending on the client, a <code>docker pull</code> can
+  verify the existence of an image or tag without downloading it by performing
+  a version check.</li>
+<li>Version checks do not count towards usage pricing.</li>
+<li>A pull for a normal image makes one pull for a <a href="https://github.com/opencontainers/image-spec/blob/main/manifest.md" rel="noopener" target="_blank">single
+  manifest</a>.</li>
+<li>A pull for a multi-arch image will count as one pull for each
+  different architecture.</li>
+</ul>
+<h2 id="pull-attribution">Pull attribution<a class="headerlink" href="#pull-attribution" title="Permanent link">#</a></h2>
+<p>Pulls from authenticated users can be attributed to either a personal or an
+<a href="../../faqs/accounts.html#whats-an-organization-name-or-namespace">organization namespace</a>.</p>
+<p>Attribution is based on the following:</p>
+<ul>
+<li>Private pulls: Pulls for private repositories are attributed to the
+  repository's namespace owner.</li>
+<li>Public pulls: When pulling images from a public repository, attribution is
+  determined based on domain affiliation and organization membership.</li>
+<li>Verified domain ownership: When pulling an image from an account linked to a
+  verified domain, the attribution is set to be the owner of that
+  <a href="../../faqs/security.html">domain</a>.</li>
+<li>Single organization membership:</li>
+<li>If the owner of the verified domain is a company and the user is part of
+    only one organization within that
+    <a href="../../faqs/accounts.html">company</a>,
+    the pull is attributed to that specific organization.</li>
+<li>If the user is part of only one organization, the pull is attributed to
+    that specific organization.</li>
+<li>Multiple organization memberships: If the user is part of multiple
+  organizations under the company, the pull is attributed to the user's personal
+  namespace.</li>
+</ul>
+<h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">#</a></h3>
+<p>To ensure correct attribution of your pulls, you must authenticate with Docker
+Hub. The following sections provide information on how to sign in to Docker Hub
+to authenticate your pulls.</p>
+<h4 id="docker-desktop">Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permanent link">#</a></h4>
+<p>If you are using Docker Desktop, you can sign in to Docker Hub from the Docker
+Desktop menu.</p>
+<p>Select <strong>Sign in / Create Docker ID</strong> from the Docker Desktop menu and follow
+the on-screen instructions to complete the sign-in process.</p>
+<h4 id="docker-engine">Docker Engine<a class="headerlink" href="#docker-engine" title="Permanent link">#</a></h4>
+<p>If you're using a standalone version of Docker Engine, run the <code>docker login</code>
+command from a terminal to authenticate with Docker Hub. For information on how
+to use the command, see <a href="/reference/cli/docker/login/">docker login</a>.</p>
+<h4 id="docker-swarm">Docker Swarm<a class="headerlink" href="#docker-swarm" title="Permanent link">#</a></h4>
+<p>If you're running Docker Swarm, you must use the <code>--with-registry-auth</code> flag to
+authenticate with Docker Hub. For more information, see <a href="../../docker-hub/repos/create.html#with-registry-auth">Create a
+service</a>. If you
+are using a Docker Compose file to deploy an application stack, see <a href="../../reference/compose-file/deploy.html">docker
+stack deploy</a>.</p>
+<h4 id="github-actions">GitHub Actions<a class="headerlink" href="#github-actions" title="Permanent link">#</a></h4>
+<p>If you're using GitHub Actions to build and push Docker images to Docker Hub,
+see <a href="https://github.com/docker/login-action#dockerhub" rel="noopener" target="_blank">login action</a>. If you are
+using another Action, you must add your username and access token in a similar
+way for authentication.</p>
+<h4 id="kubernetes">Kubernetes<a class="headerlink" href="#kubernetes" title="Permanent link">#</a></h4>
+<p>If you're running Kubernetes, follow the instructions in <a href="https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/" rel="noopener" target="_blank">Pull an Image from a
+Private
+Registry</a>
+for information on authentication.</p>
+<h4 id="third-party-platforms">Third-party platforms<a class="headerlink" href="#third-party-platforms" title="Permanent link">#</a></h4>
+<p>If you're using any third-party platforms, follow your provider’s instructions on using registry authentication.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>When pulling images via a third-party platform, the platform may use the same
+IPv4 address or IPv6 /64 subnet to pull images for multiple users. Even if you
+are authenticated, pulls attributed to a single IPv4 address or IPv6 /64 subnet
+may cause <a href="index.html#abuse-rate-limit">abuse rate limiting</a>.</p>
+</blockquote>
+<ul>
+<li><a href="https://www.jfrog.com/confluence/display/JFROG/Advanced+Settings#AdvancedSettings-RemoteCredentials" rel="noopener" target="_blank">Artifactory</a></li>
+<li><a href="https://aws.amazon.com/blogs/devops/how-to-use-docker-images-from-a-private-registry-in-aws-codebuild-for-your-build-environment/" rel="noopener" target="_blank">AWS CodeBuild</a></li>
+<li><a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html" rel="noopener" target="_blank">AWS ECS/Fargate</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&amp;tabs=yaml" rel="noopener" target="_blank">Azure Pipelines</a></li>
+<li><a href="https://docs.chipperci.com/builds/docker/#rate-limit-auth" rel="noopener" target="_blank">Chipper CI</a></li>
+<li><a href="https://circleci.com/docs/guides/execution-managed/private-images/" rel="noopener" target="_blank">CircleCI</a></li>
+<li><a href="https://codefresh.io/docs/docs/docker-registries/external-docker-registries/docker-hub/" rel="noopener" target="_blank">Codefresh</a></li>
+<li><a href="https://docs.drone.io/pipeline/docker/syntax/images/#pulling-private-images" rel="noopener" target="_blank">Drone.io</a></li>
+<li><a href="https://docs.gitlab.com/ee/user/packages/container_registry/#authenticate-with-the-container-registry" rel="noopener" target="_blank">GitLab</a></li>
+<li><a href="https://layerci.com/docs/advanced-workflows#logging-in-to-docker" rel="noopener" target="_blank">LayerCI</a></li>
+<li><a href="https://www.jetbrains.com/help/teamcity/integrating-teamcity-with-docker.html#Conforming+with+Docker+download+rate+limits" rel="noopener" target="_blank">TeamCity</a></li>
+</ul>
+<h2 id="view-monthly-pulls-and-included-usage">View monthly pulls and included usage<a class="headerlink" href="#view-monthly-pulls-and-included-usage" title="Permanent link">#</a></h2>
+<p>You can view your monthly pulls on the <a href="https://hub.docker.com/usage/pulls" rel="noopener" target="_blank">Usage page</a> in Docker Hub.</p>
+<p>On that page, you can also send a report to your email that contains a comma
+separated file with the following detailed information.</p>
+<table>
+<thead>
+<tr>
+<th>CSV column</th>
+<th>Definition</th>
+<th>Usage guidance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>datehour</code></td>
+<td>The date and hour (<code>yyyy/mm/dd/hh</code>) of the pull that resulted in the data transfer.</td>
+<td>This helps in identifying peak usage times and patterns.</td>
+</tr>
+<tr>
+<td><code>user_name</code></td>
+<td>The Docker ID of the user that pulled the image</td>
+<td>This lets organization owners track data consumption per user and manage resources effectively.</td>
+</tr>
+<tr>
+<td><code>repository</code></td>
+<td>The name of the repository of the image that was pulled.</td>
+<td>This lets you identify which repositories are most frequently accessed and consume most of the data transfer.</td>
+</tr>
+<tr>
+<td><code>access_token_name</code></td>
+<td>Name of the access token that was used for authentication with Docker CLI. <code>generated</code> tokens are automatically generated by the Docker client when a user signs in.</td>
+<td>Personal access tokens are usually used to authenticate automated tools (Docker Desktop, CI/CD tools, etc.). This is useful for identifying which automated system issued the pull.</td>
+</tr>
+<tr>
+<td><code>ips</code></td>
+<td>The IP address that was used to pull the image. This field is aggregated, so more than one IP address may appear, representing all the IPs used to pull an image within the same date and hour.</td>
+<td>This helps you understand the origin of the data transfer, which is useful for diagnosing and identifying patterns in automated or manual pulls.</td>
+</tr>
+<tr>
+<td><code>repository_privacy</code></td>
+<td>The privacy state of the image repository that was pulled. This can either be <code>public</code> or <code>private</code>.</td>
+<td>This distinguishes between public and private repositories to identify which data transfer threshold the pull impacts.</td>
+</tr>
+<tr>
+<td><code>tag</code></td>
+<td>The tag for the image. The tag is only available if the pull included a tag.</td>
+<td>This helps in identifying the image. Tags are often used to identify specific versions or variants of an image.</td>
+</tr>
+<tr>
+<td><code>digest</code></td>
+<td>The unique image digest for the image.</td>
+<td>This helps in identifying the image.</td>
+</tr>
+<tr>
+<td><code>version_checks</code></td>
+<td>The number of version checks accumulated for the date and hour of each image repository. Depending on the client, a pull can do a version check to verify the existence of an image or tag without downloading it.</td>
+<td>This helps identify the frequency of version checks, which you can use to analyze usage trends and potential unexpected behaviors.</td>
+</tr>
+<tr>
+<td><code>pulls</code></td>
+<td>The number of pulls accumulated for the date and hour of each image repository.</td>
+<td>This helps identify the frequency of repository pulls, which you can use to analyze usage trends and potential unexpected behaviors.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="view-pull-rate-and-limit">View pull rate and limit<a class="headerlink" href="#view-pull-rate-and-limit" title="Permanent link">#</a></h2>
+<p>The pull rate limit is calculated on a 6-hour basis. There is no pull rate
+limit for users or automated systems with a paid subscription. Unauthenticated
+and Docker Personal users using Docker Hub will experience rate limits on image
+pulls.</p>
+<p>When you issue a pull and you are over the limit, Docker Hub returns a
+<code>429</code> response code with the following body when the manifest is requested:</p>
+<div class="codehilite"><pre><span></span><code>You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: https://www.docker.com/increase-rate-limits
+</code></pre></div>
+
+<p>This error message appears in the Docker CLI or in the Docker Engine logs.</p>
+<p>To view your current pull rate and limit:</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>To check your limits, you need <code>curl</code> and <code>jq</code> installed.</p>
+</blockquote>
+<ol>
+<li>
+<p>Get a token.
+   - To get a token anonymously, if you are pulling anonymously:</p>
+<p><code>console
+ $ TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&amp;scope=repository:ratelimitpreview/test:pull" | jq -r .token)</code></p>
+</li>
+</ol>
+<ul>
+<li>
+<p>To get a token with a user account, if you are authenticated, insert your
+     username and password in the following command:</p>
+<p><code>console
+ $ TOKEN=$(curl --user 'username:password' "https://auth.docker.io/token?service=registry.docker.io&amp;scope=repository:ratelimitpreview/test:pull" | jq -r .token)</code></p>
+</li>
+</ul>
+<ol start="2">
+<li>Get the headers that contain your limits. These headers are returned on both
+   GET and HEAD requests. Using GET emulates a real pull and counts towards the
+   limit. Using HEAD won't.</li>
+</ol>
+<p><code>console
+   $ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest</code></p>
+<ol start="3">
+<li>Examine the headers. You should see the following headers.</li>
+</ol>
+<p><code>text
+   ratelimit-limit: 100;w=21600
+   ratelimit-remaining: 20;w=21600
+   docker-ratelimit-source: 192.0.2.1</code></p>
+<p>In the previous example, the pull limit is 100 pulls per 21600 seconds (6
+   hours), and there are 20 pulls remaining.</p>
+<p>If you don't see any <code>ratelimit</code> header, it could be because the image or your IP
+   is unlimited in partnership with a publisher, provider, or an open source
+   organization. It could also mean that the user you are pulling as is part of a
+   paid Docker subscription. Pulling that image won't count toward pull rate limits if you
+   don't see these headers.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../docker-hub/usage/manage.html">
+          <span class="muted">Anterior</span>Best practices for optimizing Docker Hub usage
+        </a>
+        <a class="pager-next" href="../../engine/index.html">
+          <span class="muted">Siguiente</span>Docker Engine
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

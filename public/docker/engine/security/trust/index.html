@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Content trust in Docker · Docker</title>
+<meta name="description" content="Content trust in Docker - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/trust/index.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Content trust in Docker">
+<meta property="og:description" content="Content trust in Docker - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Content trust in Docker">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Content trust in Docker",
+"url": "https://docs.raupulus.dev/docker/engine/security/trust/index.html",  "description": "Content trust in Docker - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+class="is-current" aria-current="page">Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Content trust in Docker</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#about-docker-content-trust-dct">About Docker Content Trust (DCT)#</a></li>
+              <li class="lvl-3"><a href="#image-tags-and-dct">Image tags and DCT#</a></li>
+              <li class="lvl-3"><a href="#docker-content-trust-keys">Docker Content Trust Keys#</a></li>
+              <li class="lvl-2"><a href="#signing-images-with-docker-content-trust">Signing images with Docker Content Trust#</a></li>
+              <li class="lvl-2"><a href="#client-enforcement-with-docker-content-trust">Client enforcement with Docker Content Trust#</a></li>
+              <li class="lvl-2"><a href="#related-information">Related information#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>When transferring data among networked systems, trust is a central concern. In
+particular, when communicating over an untrusted medium such as the internet, it
+is critical to ensure the integrity and the publisher of all the data a system
+operates on. You use Docker Engine to push and pull images (data) to a
+public or private registry. Content trust gives you the ability to verify both
+the integrity and the publisher of all the data received from a registry over
+any channel.</p>
+<h2 id="about-docker-content-trust-dct">About Docker Content Trust (DCT)<a class="headerlink" href="#about-docker-content-trust-dct" title="Permanent link">#</a></h2>
+<p>Docker Content Trust (DCT) provides the ability to use digital signatures for
+data sent to and received from remote Docker registries. These signatures allow
+client-side or runtime verification of the integrity and publisher of specific
+image tags.</p>
+<p>Through DCT, image publishers can sign their images and image consumers can
+ensure that the images they pull are signed. Publishers could be individuals
+or organizations manually signing their content or automated software supply
+chains signing content as part of their release process.</p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>Docker Content Trust (DCT) is being retired. The Notary v1 service at
+<code>notary.docker.io</code> will shut down on December 8, 2026. For more information, see
+<a href="../../../retired.html#docker-content-trust-dct">Docker Content Trust (DCT)</a>.</p>
+</blockquote>
+<h3 id="image-tags-and-dct">Image tags and DCT<a class="headerlink" href="#image-tags-and-dct" title="Permanent link">#</a></h3>
+<p>An individual image record has the following identifier:</p>
+<div class="codehilite"><pre><span></span><code>[REGISTRY_HOST[:REGISTRY_PORT]/]REPOSITORY[:TAG]
+</code></pre></div>
+
+<p>A particular image <code>REPOSITORY</code> can have multiple tags. For example, <code>latest</code> and
+ <code>3.1.2</code> are both tags on the <code>mongo</code> image. An image publisher can build an image
+ and tag combination many times changing the image with each build.</p>
+<p>DCT is associated with the <code>TAG</code> portion of an image. Each image repository has
+a set of keys that image publishers use to sign an image tag. Image publishers
+have discretion on which tags they sign.</p>
+<p>An image repository can contain an image with one tag that is signed and another
+tag that is not. For example, consider <a href="https://hub.docker.com/_/mongo/tags/" rel="noopener" target="_blank">the Mongo image
+repository</a>. The <code>latest</code>
+tag could be unsigned while the <code>3.1.6</code> tag could be signed. It is the
+responsibility of the image publisher to decide if an image tag is signed or
+not. In this representation, some image tags are signed, others are not:</p>
+<p><img alt="Signed tags" src="images/tag_signing.png"></p>
+<p>Publishers can choose to sign a specific tag or not. As a result, the content of
+an unsigned tag and that of a signed tag with the same name may not match. For
+example, a publisher can push a tagged image <code>someimage:latest</code> and sign it.
+Later, the same publisher can push an unsigned <code>someimage:latest</code> image. This second
+push replaces the last unsigned tag <code>latest</code> but does not affect the signed <code>latest</code> version.
+The ability to choose which tags they can sign, allows publishers to iterate over
+the unsigned version of an image before officially signing it.</p>
+<p>Image consumers can enable DCT to ensure that images they use were signed. If a
+consumer enables DCT, they can only pull, run, or build with trusted images.
+Enabling DCT is a bit like applying a "filter" to your registry. Consumers "see"
+only signed image tags and the less desirable, unsigned image tags are
+"invisible" to them.</p>
+<p><img alt="Trust view" src="images/trust_view.png"></p>
+<p>To the consumer who has not enabled DCT, nothing about how they work with Docker
+images changes. Every image is visible regardless of whether it is signed or
+not.</p>
+<h3 id="docker-content-trust-keys">Docker Content Trust Keys<a class="headerlink" href="#docker-content-trust-keys" title="Permanent link">#</a></h3>
+<p>Trust for an image tag is managed through the use of signing keys. A key set is
+created when an operation using DCT is first invoked. A key set consists
+of the following classes of keys:</p>
+<ul>
+<li>An offline key that is the root of DCT for an image tag</li>
+<li>Repository or tagging keys that sign tags</li>
+<li>Server-managed keys such as the timestamp key, which provides freshness
+    security guarantees for your repository</li>
+</ul>
+<p>The following image depicts the various signing keys and their relationships:</p>
+<p><img alt="Content Trust components" src="images/trust_components.png"></p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>The root key once lost is not recoverable. If you lose any other key, send an email to <a href="mailto:hub-support@docker.com">Docker Hub Support</a>. This loss also requires manual intervention from every
+consumer that used a signed tag from this repository prior to the loss.</p>
+</blockquote>
+<p>You should back up the root key somewhere safe. Given that it is only required
+to create new repositories, it is a good idea to store it offline in hardware.
+For details on securing, and backing up your keys, make sure you
+read how to <a href="trust-key-mng.html">manage keys for DCT</a>.</p>
+<h2 id="signing-images-with-docker-content-trust">Signing images with Docker Content Trust<a class="headerlink" href="#signing-images-with-docker-content-trust" title="Permanent link">#</a></h2>
+<p>Within the Docker CLI we can sign and push a container image with the
+<code>$ docker trust</code> command syntax. This is built on top of the Notary feature
+set. For more information, see the <a href="https://github.com/theupdateframework/notary" rel="noopener" target="_blank">Notary GitHub repository</a>.</p>
+<p>A prerequisite for signing an image is a Docker Registry with a Notary server (such as Docker Hub) attached.
+Refer to <a href="/engine/security/trust/deploying_notary/">Deploying Notary</a> for instructions.</p>
+<p>To sign a Docker Image you will need a delegation key pair. These keys
+can be generated locally using <code>$ docker trust key generate</code> or generated
+by a certificate authority.</p>
+<p>First we will add the delegation private key to the local Docker trust
+repository. (By default this is stored in <code>~/.docker/trust/</code>). If you are
+generating delegation keys with <code>$ docker trust key generate</code>, the private key
+is automatically added to the local trust store. If you are importing a separate
+key, you will need to use the
+<code>$ docker trust key load</code> command.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>key<span class="w"> </span>generate<span class="w"> </span>jeff
+<span class="go">Generating key for jeff...</span>
+<span class="go">Enter passphrase for new jeff key with ID 9deed25:</span>
+<span class="go">Repeat passphrase for new jeff key with ID 9deed25:</span>
+<span class="go">Successfully generated and loaded private key. Corresponding public key available: /home/ubuntu/Documents/mytrustdir/jeff.pub</span>
+</code></pre></div>
+
+<p>Or if you have an existing key:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>key<span class="w"> </span>load<span class="w"> </span>key.pem<span class="w"> </span>--name<span class="w"> </span>jeff
+<span class="go">Loading key from &quot;key.pem&quot;...</span>
+<span class="go">Enter passphrase for new jeff key with ID 8ae710e:</span>
+<span class="go">Repeat passphrase for new jeff key with ID 8ae710e:</span>
+<span class="go">Successfully imported key from key.pem</span>
+</code></pre></div>
+
+<p>Next we will need to add the delegation public key to the Notary server;
+this is specific to a particular image repository in Notary known as a Global
+Unique Name (GUN). If this is the first time you are adding a delegation to that
+repository, this command will also initiate the repository, using a local Notary
+canonical root key. To understand more about initiating a repository, and the
+role of delegations, head to
+<a href="trust-delegation.html">delegations for content trust</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>signer<span class="w"> </span>add<span class="w"> </span>--key<span class="w"> </span>cert.pem<span class="w"> </span>jeff<span class="w"> </span>registry.example.com/admin/demo
+<span class="go">Adding signer &quot;jeff&quot; to registry.example.com/admin/demo...</span>
+<span class="go">Enter passphrase for new repository key with ID 10b5e94:</span>
+</code></pre></div>
+
+<p>Finally, we will use the delegation private key to sign a particular tag and
+push it up to the registry.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>sign<span class="w"> </span>registry.example.com/admin/demo:1
+<span class="go">Signing and pushing trust data for local image registry.example.com/admin/demo:1, may overwrite remote trust data</span>
+<span class="go">The push refers to repository [registry.example.com/admin/demo]</span>
+<span class="go">7bff100f35cb: Pushed</span>
+<span class="go">1: digest: sha256:3d2e482b82608d153a374df3357c0291589a61cc194ec4a9ca2381073a17f58e size: 528</span>
+<span class="go">Signing and pushing trust metadata</span>
+<span class="go">Enter passphrase for signer key with ID 8ae710e:</span>
+<span class="go">Successfully signed registry.example.com/admin/demo:1</span>
+</code></pre></div>
+
+<p>Alternatively, once the keys have been imported an image can be pushed with the
+<code>$ docker push</code> command, by exporting the DCT environmental variable.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_CONTENT_TRUST</span><span class="o">=</span><span class="m">1</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>push<span class="w"> </span>registry.example.com/admin/demo:1
+<span class="go">The push refers to repository [registry.example.com/admin/demo:1]</span>
+<span class="go">7bff100f35cb: Pushed</span>
+<span class="go">1: digest: sha256:3d2e482b82608d153a374df3357c0291589a61cc194ec4a9ca2381073a17f58e size: 528</span>
+<span class="go">Signing and pushing trust metadata</span>
+<span class="go">Enter passphrase for signer key with ID 8ae710e:</span>
+<span class="go">Successfully signed registry.example.com/admin/demo:1</span>
+</code></pre></div>
+
+<p>Remote trust data for a tag or a repository can be viewed by the
+<code>$ docker trust inspect</code> command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>inspect<span class="w"> </span>--pretty<span class="w"> </span>registry.example.com/admin/demo:1
+
+<span class="go">Signatures for registry.example.com/admin/demo:1</span>
+
+<span class="go">SIGNED TAG          DIGEST                                                             SIGNERS</span>
+<span class="go">1                   3d2e482b82608d153a374df3357c0291589a61cc194ec4a9ca2381073a17f58e   jeff</span>
+
+<span class="go">List of signers and their keys for registry.example.com/admin/demo:1</span>
+
+<span class="go">SIGNER              KEYS</span>
+<span class="go">jeff                8ae710e3ba82</span>
+
+<span class="go">Administrative keys for registry.example.com/admin/demo:1</span>
+
+<span class="go">  Repository Key:   10b5e94c916a0977471cc08fa56c1a5679819b2005ba6a257aa78ce76d3a1e27</span>
+<span class="go">  Root Key: 84ca6e4416416d78c4597e754f38517bea95ab427e5f95871f90d460573071fc</span>
+</code></pre></div>
+
+<p>Remote Trust data for a tag can be removed by the <code>$ docker trust revoke</code> command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>trust<span class="w"> </span>revoke<span class="w"> </span>registry.example.com/admin/demo:1
+<span class="go">Enter passphrase for signer key with ID 8ae710e:</span>
+<span class="go">Successfully deleted signature for registry.example.com/admin/demo:1</span>
+</code></pre></div>
+
+<h2 id="client-enforcement-with-docker-content-trust">Client enforcement with Docker Content Trust<a class="headerlink" href="#client-enforcement-with-docker-content-trust" title="Permanent link">#</a></h2>
+<p>Content trust is disabled by default in the Docker Client. To enable
+it, set the <code>DOCKER_CONTENT_TRUST</code> environment variable to <code>1</code>. This prevents
+users from working with tagged images unless they contain a signature.</p>
+<p>When DCT is enabled in the Docker client, <code>docker</code> CLI commands that operate on
+tagged images must either have content signatures or explicit content hashes.
+The commands that operate with DCT are:</p>
+<ul>
+<li><code>push</code></li>
+<li><code>build</code></li>
+<li><code>create</code></li>
+<li><code>pull</code></li>
+<li><code>run</code></li>
+</ul>
+<p>For example, with DCT enabled a <code>docker pull someimage:latest</code> only
+succeeds if <code>someimage:latest</code> is signed. However, an operation with an explicit
+content hash always succeeds as long as the hash exists:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>pull<span class="w"> </span>registry.example.com/user/image:1
+<span class="go">Error: remote trust data does not exist for registry.example.com/user/image: registry.example.com does not have trust data for registry.example.com/user/image</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>pull<span class="w"> </span>registry.example.com/user/image@sha256:d149ab53f8718e987c3a3024bb8aa0e2caadf6c0328f1d9d850b2a2a67f2819a
+<span class="go">sha256:ee7491c9c31db1ffb7673d91e9fac5d6354a89d0e97408567e09df069a1687c1: Pulling from user/image</span>
+<span class="go">ff3a5c916c92: Pull complete</span>
+<span class="go">a59a168caba3: Pull complete</span>
+<span class="go">Digest: sha256:ee7491c9c31db1ffb7673d91e9fac5d6354a89d0e97408567e09df069a1687c1</span>
+<span class="go">Status: Downloaded newer image for registry.example.com/user/image@sha256:ee7491c9c31db1ffb7673d91e9fac5d6354a89d0e97408567e09df069a1687c1</span>
+</code></pre></div>
+
+<h2 id="related-information">Related information<a class="headerlink" href="#related-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="trust-delegation.html">Delegations for content trust</a></li>
+<li><a href="trust-automation.html">Automation with content trust</a></li>
+<li><a href="trust-key-mng.html">Manage keys for content trust</a></li>
+<li><a href="trust-sandbox.html">Play in a content trust sandbox</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/security/seccomp.html">
+          <span class="muted">Anterior</span>Seccomp security profiles for Docker
+        </a>
+        <a class="pager-next" href="../../../engine/security/trust/deploying-notary.html">
+          <span class="muted">Siguiente</span>Deploy Notary Server with Compose
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

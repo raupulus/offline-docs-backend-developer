@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set environment variables within your container&#39;s environment · Docker</title>
+<meta name="description" content="Set environment variables within your container&#39;s environment - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/compose/how-tos/environment-variables/set-environment-variables.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Set environment variables within your container&#39;s environment">
+<meta property="og:description" content="Set environment variables within your container&#39;s environment - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Set environment variables within your container&#39;s environment">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Set environment variables within your container&#39;s environment",
+"url": "https://docs.raupulus.dev/docker/compose/how-tos/environment-variables/set-environment-variables.html",  "description": "Set environment variables within your container&#39;s environment - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Compose
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../compose/index.html"
+>Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/index.html"
+>Overview of Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/customize.html"
+>Customize Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/usage.html"
+>Use the default Compose Bridge transformation</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/use-model-runner.html"
+>Use Docker Model Runner with Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../../compose/compose-sdk.html"
+>Using the Compose SDK</a>
+              </li>
+              <li>
+                <a href="../../../compose/gettingstarted.html"
+>Docker Compose Quickstart</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/dependent-images.html"
+>Build dependent images</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/index.html"
+>Environment variables in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/best-practices.html"
+>Best practices for working with environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/envvars-precedence.html"
+>Environment variables precedence in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/envvars.html"
+>Configure pre-defined environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/set-environment-variables.html"
+class="is-current" aria-current="page">Set environment variables within your container&#39;s environment</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/variable-interpolation.html"
+>Set, use, and manage variables in a Compose file with interpolation</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/file-watch.html"
+>Use Compose Watch</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/gpu-support.html"
+>Run Docker Compose services with GPU access</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/init-containers.html"
+>Use init containers in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/lifecycle.html"
+>Using lifecycle hooks with Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/index.html"
+>Use multiple Compose files</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/extends.html"
+>Extend your Compose file</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/include.html"
+>Include</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/merge.html"
+>Merge Compose files</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/networking.html"
+>Networking in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/oci-artifact.html"
+>Package and deploy Docker Compose applications as OCI artifacts</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/production.html"
+>Use Compose in production</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/profiles.html"
+>Using profiles with Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/project-name.html"
+>Specify a project name</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/provider-services.html"
+>Use provider services</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/startup-order.html"
+>Control startup and shutdown order in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/use-secrets.html"
+>Manage secrets securely in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/index.html"
+>Overview of installing Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/linux.html"
+>Install the Docker Compose plugin</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/standalone.html"
+>Install the Docker Compose standalone (Legacy)</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/uninstall.html"
+>Uninstall Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/index.html"
+>Introduction to Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/compose-application-model.html"
+>How Compose works</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/features-uses.html"
+>Why use Compose?</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/history.html"
+>History and development of Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/release-notes.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../compose/support-and-feedback/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../../compose/support-and-feedback/faq.html"
+>Frequently asked questions about Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/support-and-feedback/feedback.html"
+>Give feedback</a>
+              </li>
+              <li>
+                <a href="../../../compose/trust-model.html"
+>Trust model for Compose files</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Set environment variables within your container&#39;s environment</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#use-the-environment-attribute">Use the environment attribute#</a></li>
+              <li class="lvl-3"><a href="#additional-information">Additional information#</a></li>
+              <li class="lvl-2"><a href="#use-the-env_file-attribute">Use the env_file attribute#</a></li>
+              <li class="lvl-3"><a href="#additional-information_1">Additional information#</a></li>
+              <li class="lvl-2"><a href="#set-environment-variables-with-docker-compose-run-env">Set environment variables with docker compose run --env#</a></li>
+              <li class="lvl-3"><a href="#additional-information_2">Additional information#</a></li>
+              <li class="lvl-2"><a href="#further-resources">Further resources#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>A container's environment is not set until there's an explicit entry in the service configuration to make this happen. With Compose, there are two ways you can set environment variables in your containers with your Compose file. </p>
+<blockquote>
+<p>[!TIP]</p>
+<p>Don't use environment variables to pass sensitive information, such as passwords, in to your containers. Use <a href="../use-secrets.html">secrets</a> instead.</p>
+</blockquote>
+<h2 id="use-the-environment-attribute">Use the <code>environment</code> attribute<a class="headerlink" href="#use-the-environment-attribute" title="Permanent link">#</a></h2>
+<p>You can set environment variables directly in your container's environment with the
+<a href="../../../reference/compose-file/services.html#environment"><code>environment</code> attribute</a> in your <code>compose.yaml</code>.</p>
+<p>It supports both list and mapping syntax:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">webapp</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">DEBUG</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+</code></pre></div>
+
+<p>is equivalent to </p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">webapp</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEBUG=true</span>
+</code></pre></div>
+
+<p>See <a href="../../../reference/compose-file/services.html#environment"><code>environment</code> attribute</a> for more examples on how to use it. </p>
+<h3 id="additional-information">Additional information<a class="headerlink" href="#additional-information" title="Permanent link">#</a></h3>
+<ul>
+<li>
+<p>You can choose not to set a value and pass the environment variables from your shell straight through to your containers. It works in the same way as <code>docker run -e VARIABLE ...</code>:
+  ```yaml
+  web:
+    environment:</p>
+<ul>
+<li>DEBUG
+  <code>``
+The value of the</code>DEBUG<code>variable in the container is taken from the value for the same variable in the shell in which Compose is run. Note that in this case no warning is issued if the</code>DEBUG` variable in the shell environment is not set. </li>
+</ul>
+</li>
+<li>
+<p>You can also take advantage of <a href="variable-interpolation.html#interpolation-syntax">interpolation</a>. In the following example, the result is similar to the one above but Compose gives you a warning if the <code>DEBUG</code> variable is not set in the shell environment or in an <code>.env</code> file in the project directory.</p>
+</li>
+</ul>
+<p><code>yaml
+  web:
+    environment:
+      - DEBUG=${DEBUG}</code></p>
+<h2 id="use-the-env_file-attribute">Use the <code>env_file</code> attribute<a class="headerlink" href="#use-the-env_file-attribute" title="Permanent link">#</a></h2>
+<p>A container's environment can also be set using <a href="variable-interpolation.html#env-file"><code>.env</code> files</a> along with the <a href="../../../reference/compose-file/services.html#env_file"><code>env_file</code> attribute</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">webapp</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">env_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;webapp.env&quot;</span>
+</code></pre></div>
+
+<p>Using an <code>.env</code> file lets you use the same file for use by a plain <code>docker run --env-file ...</code> command, or to share the same <code>.env</code> file within multiple services without the need to duplicate a long <code>environment</code> YAML block.</p>
+<p>It can also help you keep your environment variables separate from your main configuration file, providing a more organized and secure way to manage sensitive information, as you do not need to place your <code>.env</code> file in the root of your project's directory.</p>
+<p>The <a href="../../../reference/compose-file/services.html#env_file"><code>env_file</code> attribute</a> also lets you use multiple <code>.env</code> files in your Compose application.  </p>
+<p>The paths to your <code>.env</code> file, specified in the <code>env_file</code> attribute, are relative to the location of your <code>compose.yaml</code> file.</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>Interpolation in <code>.env</code> files is a Docker Compose CLI feature.</p>
+<p>It is not supported when running <code>docker run --env-file ...</code>.</p>
+</blockquote>
+<h3 id="additional-information_1">Additional information<a class="headerlink" href="#additional-information_1" title="Permanent link">#</a></h3>
+<ul>
+<li>If multiple files are specified, they are evaluated in order and can override values set in previous files.</li>
+<li>As of Docker Compose version 2.24.0, you can set your <code>.env</code> file, defined by the <code>env_file</code> attribute, to be optional by using the <code>required</code> field. When <code>required</code> is set to <code>false</code> and the <code>.env</code> file is missing, Compose silently ignores the entry.
+  ```yaml
+  env_file:<ul>
+<li>path: ./default.env
+  required: true # default</li>
+<li>path: ./override.env
+  required: false
+  ``` </li>
+</ul>
+</li>
+<li>As of Docker Compose version 2.30.0, you can use an alternative file format for the <code>env_file</code> with the <code>format</code> attribute. For more information, see <a href="../../../reference/compose-file/services.html#format"><code>format</code></a>.</li>
+<li>Values in your <code>.env</code> file can be overridden from the command line by using <a href="#set-environment-variables-with-docker-compose-run---env"><code>docker compose run -e</code></a>. </li>
+</ul>
+<h2 id="set-environment-variables-with-docker-compose-run-env">Set environment variables with <code>docker compose run --env</code><a class="headerlink" href="#set-environment-variables-with-docker-compose-run-env" title="Permanent link">#</a></h2>
+<p>Similar to <code>docker run --env</code>, you can set environment variables temporarily with <code>docker compose run --env</code> or its short form <code>docker compose run -e</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>-e<span class="w"> </span><span class="nv">DEBUG</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>web<span class="w"> </span>python<span class="w"> </span>console.py
+</code></pre></div>
+
+<h3 id="additional-information_2">Additional information<a class="headerlink" href="#additional-information_2" title="Permanent link">#</a></h3>
+<ul>
+<li>You can also pass a variable from the shell or your environment files by not giving it a value:</li>
+</ul>
+<p><code>console
+  $ docker compose run -e DEBUG web python console.py</code></p>
+<p>The value of the <code>DEBUG</code> variable in the container is taken from the value for the same variable in the shell in which Compose is run or from the environment files.</p>
+<h2 id="further-resources">Further resources<a class="headerlink" href="#further-resources" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="envvars-precedence.html">Understand environment variable precedence</a>.</li>
+<li><a href="envvars.html">Set or change predefined environment variables</a></li>
+<li><a href="best-practices.html">Explore best practices</a></li>
+<li><a href="variable-interpolation.html">Understand interpolation</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../compose/how-tos/environment-variables/envvars.html">
+          <span class="muted">Anterior</span>Configure pre-defined environment variables in Docker Compose
+        </a>
+        <a class="pager-next" href="../../../compose/how-tos/environment-variables/variable-interpolation.html">
+          <span class="muted">Siguiente</span>Set, use, and manage variables in a Compose file with interpolation
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

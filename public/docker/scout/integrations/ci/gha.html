@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integrate Docker Scout with GitHub Actions · Docker</title>
+<meta name="description" content="Integrate Docker Scout with GitHub Actions - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/scout/integrations/ci/gha.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Integrate Docker Scout with GitHub Actions">
+<meta property="og:description" content="Integrate Docker Scout with GitHub Actions - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Integrate Docker Scout with GitHub Actions">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Integrate Docker Scout with GitHub Actions",
+"url": "https://docs.raupulus.dev/docker/scout/integrations/ci/gha.html",  "description": "Integrate Docker Scout with GitHub Actions - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Scout
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../scout/index.html"
+>Docker Scout</a>
+              </li>
+              <li>
+                <a href="../../../scout/deep-dive/index.html"
+>Deep dive</a>
+              </li>
+              <li>
+                <a href="../../../scout/deep-dive/advisory-db-sources.html"
+>Advisory database sources and matching service</a>
+              </li>
+              <li>
+                <a href="../../../scout/deep-dive/data-handling.html"
+>Data collection and storage in Docker Scout</a>
+              </li>
+              <li>
+                <a href="../../../scout/explore/index.html"
+>Explore</a>
+              </li>
+              <li>
+                <a href="../../../scout/explore/analysis.html"
+>Docker Scout image analysis</a>
+              </li>
+              <li>
+                <a href="../../../scout/explore/dashboard.html"
+>Dashboard</a>
+              </li>
+              <li>
+                <a href="../../../scout/explore/exceptions.html"
+>Manage vulnerability exceptions</a>
+              </li>
+              <li>
+                <a href="../../../scout/explore/image-details-view.html"
+>Image details view</a>
+              </li>
+              <li>
+                <a href="../../../scout/explore/metrics-exporter.html"
+>Docker Scout metrics exporter</a>
+              </li>
+              <li>
+                <a href="../../../scout/how-tos/index.html"
+>How-tos</a>
+              </li>
+              <li>
+                <a href="../../../scout/how-tos/artifact-types.html"
+>Use Scout with different artifact types</a>
+              </li>
+              <li>
+                <a href="../../../scout/how-tos/configure-cli.html"
+>Configure Docker Scout with environment variables</a>
+              </li>
+              <li>
+                <a href="../../../scout/how-tos/create-exceptions-gui.html"
+>Create an exception using the GUI</a>
+              </li>
+              <li>
+                <a href="../../../scout/how-tos/create-exceptions-vex.html"
+>Create an exception using the VEX</a>
+              </li>
+              <li>
+                <a href="../../../scout/how-tos/view-create-sboms.html"
+>Docker Scout SBOMs</a>
+              </li>
+              <li>
+                <a href="../../../scout/install.html"
+>Install Docker Scout</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/index.html"
+>Integrating Docker Scout with other systems</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/ci/index.html"
+>Using Docker Scout in continuous integration</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/ci/azure.html"
+>Integrate Docker Scout with Microsoft Azure DevOps Pipelines</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/ci/circle-ci.html"
+>Integrate Docker Scout with Circle CI</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/ci/gha.html"
+class="is-current" aria-current="page">Integrate Docker Scout with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/ci/gitlab.html"
+>Integrate Docker Scout with GitLab CI/CD</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/ci/jenkins.html"
+>Integrate Docker Scout with Jenkins</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/environment/index.html"
+>Integrating Docker Scout with environments</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/environment/cli.html"
+>Generic environment integration with CLI</a>
+              </li>
+              <li>
+                <a href="../../../scout/integrations/registry.html"
+>Integrate Docker Scout with a container registry</a>
+              </li>
+              <li>
+                <a href="../../../scout/policy/index.html"
+>Policy Evaluation</a>
+              </li>
+              <li>
+                <a href="../../../scout/policy/local.html"
+>Evaluate policies</a>
+              </li>
+              <li>
+                <a href="../../../scout/quickstart.html"
+>Docker Scout quickstart</a>
+              </li>
+              <li>
+                <a href="../../../scout/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../scout/release-notes/cli.html"
+>Cli</a>
+              </li>
+              <li>
+                <a href="../../../scout/release-notes/platform.html"
+>Docker Scout release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Integrate Docker Scout with GitHub Actions</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#prerequisites">Prerequisites#</a></li>
+              <li class="lvl-2"><a href="#steps">Steps#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>The following example shows how to set up a Docker Scout workflow with GitHub
+Actions. Triggered by a pull request, the action builds the image and uses
+Docker Scout to compare the new version to the version of that image running in
+production.</p>
+<p>This workflow uses the
+<a href="https://github.com/docker/scout-action" rel="noopener" target="_blank">docker/scout-action</a> GitHub Action to
+run the <code>docker scout compare</code> command to visualize how images for pull request
+stack up against the image you run in production.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<ul>
+<li>This example assumes that you have an existing image repository, in Docker Hub
+  or in another registry, where you've enabled Docker Scout.</li>
+<li>This example makes use of <a href="../environment/index.html">environments</a>, to compare
+  the image built in the pull request with a different version of the same image
+  in an environment called <code>production</code>.</li>
+</ul>
+<h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">#</a></h2>
+<p>First, set up the GitHub Action workflow to build an image. This isn't specific
+to Docker Scout here, but you'll need to build an image to have
+something to compare with.</p>
+<p>Add the following to a GitHub Actions YAML file:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Docker</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;main&quot;</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;**&quot;</span><span class="p p-Indicator">]</span>
+
+<span class="nt">env</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Hostname of your registry</span>
+<span class="w">  </span><span class="nt">REGISTRY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io</span>
+<span class="w">  </span><span class="c1"># Image repository, without hostname and tag</span>
+<span class="w">  </span><span class="nt">IMAGE_NAME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.repository }}</span>
+<span class="w">  </span><span class="nt">SHA</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.pull_request.head.sha || github.event.after }}</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># Authenticate to the container registry</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Authenticate to registry ${{ env.REGISTRY }}</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/login-action@{{% param &quot;login_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">registry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ env.REGISTRY }}</span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.REGISTRY_USER }}</span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.REGISTRY_TOKEN }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Docker buildx</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@{{% param &quot;setup_buildx_action_version&quot; %}}</span>
+
+<span class="w">      </span><span class="c1"># Extract metadata (tags, labels) for Docker</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Extract Docker metadata</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meta</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/metadata-action@{{% param &quot;metadata_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">images</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}</span>
+<span class="w">          </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">org.opencontainers.image.revision=${{ env.SHA }}</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">type=edge,branch=$repo.default_branch</span>
+<span class="w">            </span><span class="no">type=semver,pattern=v{{version}}</span>
+<span class="w">            </span><span class="no">type=sha,prefix=,suffix=,format=short</span>
+
+<span class="w">      </span><span class="c1"># Build and push Docker image with Buildx</span>
+<span class="w">      </span><span class="c1"># (don&#39;t push on PR, load instead)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and push Docker image</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-and-push</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@{{% param &quot;build_push_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">sbom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name != &#39;pull_request&#39; }}</span>
+<span class="w">          </span><span class="nt">provenance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name != &#39;pull_request&#39; }}</span>
+<span class="w">          </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name != &#39;pull_request&#39; }}</span>
+<span class="w">          </span><span class="nt">load</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name == &#39;pull_request&#39; }}</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.meta.outputs.tags }}</span>
+<span class="w">          </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.meta.outputs.labels }}</span>
+<span class="w">          </span><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha</span>
+<span class="w">          </span><span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha,mode=max</span>
+</code></pre></div>
+
+<p>This creates workflow steps to:</p>
+<ol>
+<li>Set up Docker Buildx.</li>
+<li>Authenticate to the registry.</li>
+<li>Extract metadata from Git reference and GitHub events.</li>
+<li>Build and push the Docker image to the registry.</li>
+</ol>
+<blockquote>
+<p>[!NOTE]</p>
+<p>The Scout compare step only runs on pull requests
+(<code>if: github.event_name == 'pull_request'</code>). Those builds set <code>load: true</code>
+and leave <code>sbom</code> / <code>provenance</code> off so the image can land in the runner's
+local store.</p>
+<p>On push events the same job turns SBOM and provenance on and pushes to
+the registry. Don't enable those attestations (or a multi-platform build)
+on the PR path — those images can't be loaded locally, and compare would
+have nothing to inspect.</p>
+</blockquote>
+<p>With this setup out of the way, you can add the following steps to run the
+image comparison:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">      </span><span class="c1"># You can skip this step if Docker Hub is your registry</span>
+<span class="w">      </span><span class="c1"># and you already authenticated before</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Authenticate to Docker</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/login-action@{{% param &quot;login_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKER_USER }}</span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKER_PAT }}</span>
+
+<span class="w">      </span><span class="c1"># Compare the image built in the pull request with the one in production</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Docker Scout</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker-scout</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name == &#39;pull_request&#39; }}</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/scout-action@v1</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compare</span>
+<span class="w">          </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.meta.outputs.tags }}</span>
+<span class="w">          </span><span class="nt">to-env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">          </span><span class="nt">ignore-unchanged</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">only-severities</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical,high</span>
+<span class="w">          </span><span class="nt">github-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+</code></pre></div>
+
+<p>The compare command analyzes the image and evaluates policy compliance, and
+cross-references the results with the corresponding image in the <code>production</code>
+environment. This example only includes critical and high-severity
+vulnerabilities, and excludes vulnerabilities that exist in both images,
+showing only what's changed.</p>
+<p>The GitHub Action outputs the comparison results in a pull request comment by
+default.</p>
+<p><img alt="A screenshot showing the results of Docker Scout output in a GitHub Action" src="../../images/gha-output.webp"></p>
+<p>Expand the <strong>Policies</strong> section to view the difference in policy compliance
+between the two images. Note that while the new image in this example isn't
+fully compliant, the output shows that the standing for the new image has
+improved compared to the baseline.</p>
+<p><img alt="GHA policy evaluation output" src="../../images/gha-policy-eval.webp"></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../scout/integrations/ci/circle-ci.html">
+          <span class="muted">Anterior</span>Integrate Docker Scout with Circle CI
+        </a>
+        <a class="pager-next" href="../../../scout/integrations/ci/gitlab.html">
+          <span class="muted">Siguiente</span>Integrate Docker Scout with GitLab CI/CD
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

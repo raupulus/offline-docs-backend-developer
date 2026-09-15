@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VFS storage driver · Docker</title>
+<meta name="description" content="VFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/storage/drivers/vfs-driver.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="VFS storage driver">
+<meta property="og:description" content="VFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VFS storage driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "VFS storage driver",
+"url": "https://docs.raupulus.dev/docker/engine/storage/drivers/vfs-driver.html",  "description": "VFS storage driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+class="is-current" aria-current="page">VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/stack-deploy.html"
+>Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/add-nodes.html"
+>Add nodes to the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/create-swarm.html"
+>Create a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/delete-service.html"
+>Delete the service running on the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/deploy-service.html"
+>Deploy a service to the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/drain-node.html"
+>Drain a node on the swarm</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">VFS storage driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#configure-docker-with-the-vfs-storage-driver">Configure Docker with the vfs storage driver#</a></li>
+              <li class="lvl-2"><a href="#how-the-vfs-storage-driver-works">How the vfs storage driver works#</a></li>
+              <li class="lvl-3"><a href="#example-image-and-container-on-disk-constructs">Example: Image and container on-disk constructs#</a></li>
+              <li class="lvl-2"><a href="#related-information">Related information#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>The VFS storage driver isn't a union filesystem. Each layer is a
+directory on disk, and there is no copy-on-write support. To create a new
+layer, a "deep copy" is done of the previous layer. This leads to lower
+performance and more space used on disk than other storage drivers. However, it
+is robust, stable, and works in every environment. It can also be used as a
+mechanism to verify other storage back-ends against, in a testing environment.</p>
+<h2 id="configure-docker-with-the-vfs-storage-driver">Configure Docker with the <code>vfs</code> storage driver<a class="headerlink" href="#configure-docker-with-the-vfs-storage-driver" title="Permanent link">#</a></h2>
+<ol>
+<li>Stop Docker.</li>
+</ol>
+<p><code>console
+   $ sudo systemctl stop docker</code></p>
+<ol start="2">
+<li>
+<p>Edit <code>/etc/docker/daemon.json</code>. If it doesn't yet exist, create it. Assuming
+    that the file was empty, add the following contents.</p>
+<p><code>json
+{
+  "storage-driver": "vfs"
+}</code></p>
+<p>If you want to set a quota to control the maximum size the VFS storage
+driver can use, set the <code>size</code> option on the <code>storage-opts</code> key.</p>
+<p><code>json
+{
+  "storage-driver": "vfs",
+  "storage-opts": ["size=256M"]
+}</code></p>
+<p>Docker doesn't start if the <code>daemon.json</code> file contains invalid JSON.</p>
+</li>
+<li>
+<p>Start Docker.</p>
+<p><code>console
+$ sudo systemctl start docker</code></p>
+</li>
+<li>
+<p>Verify that the daemon is using the <code>vfs</code> storage driver.
+    Use the <code>docker info</code> command and look for <code>Storage Driver</code>.</p>
+<p>```console
+$ docker info</p>
+<p>Storage Driver: vfs
+...
+```</p>
+</li>
+</ol>
+<p>Docker is now using the <code>vfs</code> storage driver. Docker has automatically
+created the <code>/var/lib/docker/vfs/</code> directory, which contains all the layers
+used by running containers.</p>
+<h2 id="how-the-vfs-storage-driver-works">How the <code>vfs</code> storage driver works<a class="headerlink" href="#how-the-vfs-storage-driver-works" title="Permanent link">#</a></h2>
+<p>Each image layer and the writable container layer are represented on the Docker
+host as subdirectories within <code>/var/lib/docker/</code>. The union mount provides the
+unified view of all layers. The directory names don't directly correspond to
+the IDs of the layers themselves.</p>
+<p>VFS doesn't support copy-on-write (COW). Each time a new layer is created,
+it's a deep copy of its parent layer. These layers are all located under
+<code>/var/lib/docker/vfs/dir/</code>.</p>
+<h3 id="example-image-and-container-on-disk-constructs">Example: Image and container on-disk constructs<a class="headerlink" href="#example-image-and-container-on-disk-constructs" title="Permanent link">#</a></h3>
+<p>The following <code>docker pull</code> command shows a Docker host downloading a Docker
+image comprising five layers.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>pull<span class="w"> </span>ubuntu
+
+<span class="go">Using default tag: latest</span>
+<span class="go">latest: Pulling from library/ubuntu</span>
+<span class="go">e0a742c2abfd: Pull complete</span>
+<span class="go">486cb8339a27: Pull complete</span>
+<span class="go">dc6f0d824617: Pull complete</span>
+<span class="go">4f7a5649a30e: Pull complete</span>
+<span class="go">672363445ad2: Pull complete</span>
+<span class="go">Digest: sha256:84c334414e2bfdcae99509a6add166bbb4fa4041dc3fa6af08046a66fed3005f</span>
+<span class="go">Status: Downloaded newer image for ubuntu:latest</span>
+</code></pre></div>
+
+<p>After pulling, each of these layers is represented as a subdirectory of
+<code>/var/lib/docker/vfs/dir/</code>. The directory names do not correlate with the
+image layer IDs shown in the <code>docker pull</code> command. To see the size taken up on
+disk by each layer, you can use the <code>du -sh</code> command, which gives the size as a
+human-readable value.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls<span class="w"> </span>-l<span class="w"> </span>/var/lib/docker/vfs/dir/
+
+<span class="go">total 0</span>
+<span class="go">drwxr-xr-x.  2 root root  19 Aug  2 18:19 3262dfbe53dac3e1ab7dcc8ad5d8c4d586a11d2ac3c4234892e34bff7f6b821e</span>
+<span class="go">drwxr-xr-x. 21 root root 224 Aug  2 18:23 6af21814449345f55d88c403e66564faad965d6afa84b294ae6e740c9ded2561</span>
+<span class="go">drwxr-xr-x. 21 root root 224 Aug  2 18:23 6d3be4585ba32f9f5cbff0110e8d07aea5f5b9fbb1439677c27e7dfee263171c</span>
+<span class="go">drwxr-xr-x. 21 root root 224 Aug  2 18:23 9ecd2d88ca177413ab89f987e1507325285a7418fc76d0dcb4bc021447ba2bab</span>
+<span class="go">drwxr-xr-x. 21 root root 224 Aug  2 18:23 a292ac6341a65bf3a5da7b7c251e19de1294bd2ec32828de621d41c7ad31f895</span>
+<span class="go">drwxr-xr-x. 21 root root 224 Aug  2 18:23 e92be7a4a4e3ccbb7dd87695bca1a0ea373d4f673f455491b1342b33ed91446b</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>du<span class="w"> </span>-sh<span class="w"> </span>/var/lib/docker/vfs/dir/*
+
+<span class="go">4.0K    /var/lib/docker/vfs/dir/3262dfbe53dac3e1ab7dcc8ad5d8c4d586a11d2ac3c4234892e34bff7f6b821e</span>
+<span class="go">125M    /var/lib/docker/vfs/dir/6af21814449345f55d88c403e66564faad965d6afa84b294ae6e740c9ded2561</span>
+<span class="go">104M    /var/lib/docker/vfs/dir/6d3be4585ba32f9f5cbff0110e8d07aea5f5b9fbb1439677c27e7dfee263171c</span>
+<span class="go">125M    /var/lib/docker/vfs/dir/9ecd2d88ca177413ab89f987e1507325285a7418fc76d0dcb4bc021447ba2bab</span>
+<span class="go">104M    /var/lib/docker/vfs/dir/a292ac6341a65bf3a5da7b7c251e19de1294bd2ec32828de621d41c7ad31f895</span>
+<span class="go">104M    /var/lib/docker/vfs/dir/e92be7a4a4e3ccbb7dd87695bca1a0ea373d4f673f455491b1342b33ed91446b</span>
+</code></pre></div>
+
+<p>The above output shows that three layers each take 104M and two take 125M.
+These directories have only small differences from each other, but they all
+consume the same amount of disk space. This is one of the disadvantages of
+using the <code>vfs</code> storage driver.</p>
+<h2 id="related-information">Related information<a class="headerlink" href="#related-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../../../reference/api/ai-governance/index.html">Understand images, containers, and storage drivers</a></li>
+<li><a href="select-storage-driver.html">Select a storage driver</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/storage/drivers/select-storage-driver.html">
+          <span class="muted">Anterior</span>Select a storage driver
+        </a>
+        <a class="pager-next" href="../../../engine/storage/drivers/windowsfilter-driver.html">
+          <span class="muted">Siguiente</span>windowsfilter storage driver
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

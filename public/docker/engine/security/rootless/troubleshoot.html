@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshooting · Docker</title>
+<meta name="description" content="Troubleshooting - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/rootless/troubleshoot.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Troubleshooting">
+<meta property="og:description" content="Troubleshooting - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Troubleshooting">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Troubleshooting",
+"url": "https://docs.raupulus.dev/docker/engine/security/rootless/troubleshoot.html",  "description": "Troubleshooting - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+class="is-current" aria-current="page">Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Troubleshooting</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#distribution-specific-hint">Distribution-specific hint#</a></li>
+              <li class="lvl-2"><a href="#known-limitations">Known limitations#</a></li>
+              <li class="lvl-3"><a href="#historical-limitations">Historical limitations#</a></li>
+              <li class="lvl-2"><a href="#troubleshooting">Troubleshooting#</a></li>
+              <li class="lvl-3"><a href="#unable-to-install-with-systemd-when-systemd-is-present-on-the-system">Unable to install with systemd when systemd is present on the system#</a></li>
+              <li class="lvl-3"><a href="#errors-when-starting-the-docker-daemon">Errors when starting the Docker daemon#</a></li>
+              <li class="lvl-3"><a href="#docker-pull-errors">docker pull errors#</a></li>
+              <li class="lvl-3"><a href="#docker-run-errors">docker run errors#</a></li>
+              <li class="lvl-3"><a href="#networking-errors">Networking errors#</a></li>
+              <li class="lvl-3"><a href="#tips-for-debugging">Tips for debugging#</a></li>
+              <li class="lvl-2"><a href="#uninstall">Uninstall#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h3 id="distribution-specific-hint">Distribution-specific hint<a class="headerlink" href="#distribution-specific-hint" title="Permanent link">#</a></h3>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="Ubuntu" &gt;}}
+- Ubuntu 24.04 and later enables restricted unprivileged user namespaces by
+  default, which prevents unprivileged processes in creating user namespaces
+  unless an AppArmor profile is configured to allow programs to use
+  unprivileged user namespaces.</p>
+<p>If you install <code>docker-ce-rootless-extras</code> using the deb package (<code>apt-get
+  install docker-ce-rootless-extras</code>), then the AppArmor profile for
+  <code>rootlesskit</code> is already bundled with the <code>apparmor</code> deb package. With this
+  installation method, you don't need to add any manual the AppArmor
+  configuration. If you install the rootless extras using the <a href="https://get.docker.com/rootless" rel="noopener" target="_blank">installation
+  script</a>, however, you must add an AppArmor
+  profile for <code>rootlesskit</code> manually:</p>
+<ol>
+<li>
+<p>Create and install the currently logged-in user's AppArmor profile:</p>
+<p>```console
+ $ filename=$(echo $HOME/bin/rootlesskit | sed -e 's@^/@@' -e 's@/@.@g')
+ $ [ ! -z "${filename}" ] &amp;&amp; sudo cat &lt;<EOF > /etc/apparmor.d/${filename}
+ abi <abi/4.0>,
+ include <tunables/global></p>
+<p>"$HOME/bin/rootlesskit" flags=(unconfined) {
+   userns,</p>
+<p>include if exists <local/${filename}>
+ }
+ EOF
+ ```
+  2. Restart AppArmor.</p>
+<p><code>console
+ $ systemctl restart apparmor.service</code></p>
+</li>
+</ol>
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Arch Linux" &gt;}}
+- Add <code>kernel.unprivileged_userns_clone=1</code> to <code>/etc/sysctl.conf</code> (or
+  <code>/etc/sysctl.d</code>) and run <code>sudo sysctl --system</code>
+{{&lt; /tab &gt;}}
+{{&lt; tab name="openSUSE and SLES" &gt;}}
+- <code>sudo modprobe ip_tables iptable_mangle iptable_nat iptable_filter</code> is required.
+  This might be required on other distributions as well depending on the configuration.</p>
+<ul>
+<li>Known to work on openSUSE 15 and SLES 15.
+{{&lt; /tab &gt;}}
+{{&lt; tab name="CentOS, RHEL, and Fedora" &gt;}}</li>
+<li>
+<p>For RHEL 8 and similar distributions, installing <code>fuse-overlayfs</code> is recommended. Run <code>sudo dnf install -y fuse-overlayfs</code>.
+  This step is not required on RHEL 9 and similar distributions.</p>
+</li>
+<li>
+<p>You might need <code>sudo dnf install -y iptables</code>.
+{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+</li>
+</ul>
+<h2 id="known-limitations">Known limitations<a class="headerlink" href="#known-limitations" title="Permanent link">#</a></h2>
+<ul>
+<li>Only the following storage drivers are supported:</li>
+<li><code>overlay2</code> (only if running with kernel 5.11 or later)</li>
+<li><code>fuse-overlayfs</code> (only if running with kernel 4.18 or later, and <code>fuse-overlayfs</code> is installed)</li>
+<li><code>btrfs</code> (only if running with kernel 4.18 or later, or <code>~/.local/share/docker</code> is mounted with <code>user_subvol_rm_allowed</code> mount option)</li>
+<li><code>vfs</code></li>
+<li>cgroup is supported only when running with cgroup v2 and systemd. See <a href="tips.html#limiting-resources">Limiting resources</a>.</li>
+<li>Following features are not supported:</li>
+<li>AppArmor</li>
+<li>Checkpoint</li>
+<li>Overlay network</li>
+<li>Exposing SCTP ports</li>
+<li>To use the <code>ping</code> command, see <a href="tips.html#routing-ping-packets">Routing ping packets</a>.</li>
+<li>To expose privileged TCP/UDP ports (&lt; 1024), see <a href="tips.html#exposing-privileged-ports">Exposing privileged ports</a>.</li>
+<li><code>IPAddress</code> shown in <code>docker inspect</code> is namespaced inside RootlessKit's network namespace.
+  This means the IP address is not reachable from the host without <code>nsenter</code>-ing into the network namespace.</li>
+<li>Port forwarding with <code>docker run -p</code> does not propagate source IP addresses by default.
+  See <a href="#docker-run--p-does-not-propagate-source-ip-addresses"><code>docker run -p</code> does not propagate source IP addresses</a> to enable source IP propagation.</li>
+<li>NFS mounts as the docker "data-root" is not supported. This limitation is not specific to rootless mode.</li>
+<li>Capabilities added with <code>--cap-add</code> apply only to resources governed by the
+  container's user namespace. They don't grant privileges over host or other
+  global resources. As a result, operations that require capabilities in the
+  <a href="https://man7.org/linux/man-pages/man7/user_namespaces.7.html" rel="noopener" target="_blank">initial user namespace</a>
+  can still fail.</li>
+</ul>
+<h3 id="historical-limitations">Historical limitations<a class="headerlink" href="#historical-limitations" title="Permanent link">#</a></h3>
+<h4 id="until-docker-engine-v295">Until Docker Engine v29.5<a class="headerlink" href="#until-docker-engine-v295" title="Permanent link">#</a></h4>
+<ul>
+<li>Host network (<code>docker run --net=host</code>) was namespaced inside RootlessKit.
+  This meant that ports listened by containers with <code>--net=host</code> were not reachable from the real host network namespace.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h2>
+<h3 id="unable-to-install-with-systemd-when-systemd-is-present-on-the-system">Unable to install with systemd when systemd is present on the system<a class="headerlink" href="#unable-to-install-with-systemd-when-systemd-is-present-on-the-system" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>dockerd-rootless-setuptool.sh<span class="w"> </span>install
+<span class="go">[INFO] systemd not detected, dockerd-rootless.sh needs to be started manually:</span>
+<span class="go">...</span>
+</code></pre></div>
+
+<p><code>rootlesskit</code> cannot detect systemd properly if you switch to your user via <code>sudo su</code>. For users which cannot be logged-in, you must use the <code>machinectl</code> command which is part of the <code>systemd-container</code> package. After installing <code>systemd-container</code> switch to <code>myuser</code> with the following command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>machinectl<span class="w"> </span>shell<span class="w"> </span>myuser@
+</code></pre></div>
+
+<p>Where <code>myuser@</code> is your desired username and @ signifies this machine.</p>
+<h3 id="errors-when-starting-the-docker-daemon">Errors when starting the Docker daemon<a class="headerlink" href="#errors-when-starting-the-docker-daemon" title="Permanent link">#</a></h3>
+<p><strong>[rootlesskit:parent] error: failed to start the child: fork/exec /proc/self/exe: operation not permitted</strong></p>
+<p>This error occurs mostly when the value of <code>/proc/sys/kernel/unprivileged_userns_clone</code> is set to 0:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>/proc/sys/kernel/unprivileged_userns_clone
+<span class="go">0</span>
+</code></pre></div>
+
+<p>To fix this issue, add  <code>kernel.unprivileged_userns_clone=1</code> to
+<code>/etc/sysctl.conf</code> (or <code>/etc/sysctl.d</code>) and run <code>sudo sysctl --system</code>.</p>
+<p><strong>[rootlesskit:parent] error: failed to start the child: fork/exec /proc/self/exe: no space left on device</strong></p>
+<p>This error occurs mostly when the value of <code>/proc/sys/user/max_user_namespaces</code> is too small:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>/proc/sys/user/max_user_namespaces
+<span class="go">0</span>
+</code></pre></div>
+
+<p>To fix this issue, add  <code>user.max_user_namespaces=28633</code> to
+<code>/etc/sysctl.conf</code> (or <code>/etc/sysctl.d</code>) and run <code>sudo sysctl --system</code>.</p>
+<p><strong>[rootlesskit:parent] error: failed to setup UID/GID map: failed to compute uid/gid map: No subuid ranges found for user 1001 ("testuser")</strong></p>
+<p>This error occurs when <code>/etc/subuid</code> and <code>/etc/subgid</code> are not configured. See <a href="index.html#prerequisites">Prerequisites</a>.</p>
+<p><strong>could not get XDG_RUNTIME_DIR</strong></p>
+<p>This error occurs when <code>$XDG_RUNTIME_DIR</code> is not set.</p>
+<p>On a non-systemd host, you need to create a directory and then set the path:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">XDG_RUNTIME_DIR</span><span class="o">=</span><span class="nv">$HOME</span>/.docker/xrd
+<span class="gp">$ </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="nv">$XDG_RUNTIME_DIR</span>
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$XDG_RUNTIME_DIR</span>
+<span class="gp">$ </span>dockerd-rootless.sh
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>You must remove the directory every time you log out.</p>
+</blockquote>
+<p>On a systemd host, log into the host using <code>pam_systemd</code> (see below).
+The value is automatically set to <code>/run/user/$UID</code> and cleaned up on every logout.</p>
+<p><strong><code>systemctl --user</code> fails with "Failed to connect to bus: No such file or directory"</strong></p>
+<p>This error occurs mostly when you switch from the root user to a non-root user with <code>sudo</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp"># </span>sudo<span class="w"> </span>-iu<span class="w"> </span>testuser
+<span class="gp">$ </span>systemctl<span class="w"> </span>--user<span class="w"> </span>start<span class="w"> </span>docker
+<span class="go">Failed to connect to bus: No such file or directory</span>
+</code></pre></div>
+
+<p>Instead of <code>sudo -iu &lt;USERNAME&gt;</code>, you need to log in using <code>pam_systemd</code>. For example:</p>
+<ul>
+<li>Log in through the graphic console</li>
+<li><code>ssh &lt;USERNAME&gt;@localhost</code></li>
+<li><code>machinectl shell &lt;USERNAME&gt;@</code></li>
+</ul>
+<p><strong>The daemon does not start up automatically</strong></p>
+<p>You need <code>sudo loginctl enable-linger $(whoami)</code> to enable the daemon to start
+up automatically. See <a href="./tips.md/#advanced-usage">Advanced Usage</a>.</p>
+<h3 id="docker-pull-errors"><code>docker pull</code> errors<a class="headerlink" href="#docker-pull-errors" title="Permanent link">#</a></h3>
+<p><strong>docker: failed to register layer: Error processing tar file(exit status 1): lchown &lt;FILE&gt;: invalid argument</strong></p>
+<p>This error occurs when the number of available entries in <code>/etc/subuid</code> or
+<code>/etc/subgid</code> is not sufficient. The number of entries required vary across
+images. However, 65,536 entries are sufficient for most images. See
+<a href="index.html#prerequisites">Prerequisites</a>.</p>
+<p><strong>docker: failed to register layer: ApplyLayer exit status 1 stdout:  stderr: lchown &lt;FILE&gt;: operation not permitted</strong></p>
+<p>This error occurs mostly when <code>~/.local/share/docker</code> is located on NFS.</p>
+<p>A workaround is to specify non-NFS <code>data-root</code> directory in <code>~/.config/docker/daemon.json</code> as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;data-root&quot;</span><span class="p">:</span><span class="s2">&quot;/somewhere-out-of-nfs&quot;</span><span class="p">}</span>
+</code></pre></div>
+
+<h3 id="docker-run-errors"><code>docker run</code> errors<a class="headerlink" href="#docker-run-errors" title="Permanent link">#</a></h3>
+<p><strong>docker: Error response from daemon: OCI runtime create failed: ...: read unix @-&gt;/run/systemd/private: read: connection reset by peer: unknown.</strong></p>
+<p>This error occurs on cgroup v2 hosts mostly when the dbus daemon is not running for the user.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>systemctl<span class="w"> </span>--user<span class="w"> </span>is-active<span class="w"> </span>dbus
+<span class="go">inactive</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>hello-world
+<span class="go">docker: Error response from daemon: OCI runtime create failed: container_linux.go:380: starting container process caused: process_linux.go:385: applying cgroup configuration for process caused: error while starting unit &quot;docker</span>
+<span class="go">-931c15729b5a968ce803784d04c7421f791d87e5ca1891f34387bb9f694c488e.scope&quot; with properties [{Name:Description Value:&quot;libcontainer container 931c15729b5a968ce803784d04c7421f791d87e5ca1891f34387bb9f694c488e&quot;} {Name:Slice Value:&quot;use</span>
+<span class="go">r.slice&quot;} {Name:PIDs Value:@au [4529]} {Name:Delegate Value:true} {Name:MemoryAccounting Value:true} {Name:CPUAccounting Value:true} {Name:IOAccounting Value:true} {Name:TasksAccounting Value:true} {Name:DefaultDependencies Val</span>
+<span class="go">ue:false}]: read unix @-&gt;/run/systemd/private: read: connection reset by peer: unknown.</span>
+</code></pre></div>
+
+<p>To fix the issue, run <code>sudo apt-get install -y dbus-user-session</code> or <code>sudo dnf install -y dbus-daemon</code>, and then relogin.</p>
+<p>If the error still occurs, try running <code>systemctl --user enable --now dbus</code> (without sudo).</p>
+<p><strong><code>--cpus</code>, <code>--memory</code>, and <code>--pids-limit</code> are ignored</strong></p>
+<p>This is an expected behavior on cgroup v1 mode.
+To use these flags, the host needs to be configured for enabling cgroup v2.
+For more information, see <a href="tips.html#limiting-resources">Limiting resources</a>.</p>
+<h3 id="networking-errors">Networking errors<a class="headerlink" href="#networking-errors" title="Permanent link">#</a></h3>
+<p>This section provides troubleshooting tips for networking in rootless mode.</p>
+<p>Networking in rootless mode is supported via network and port drivers in
+RootlessKit. Network performance and characteristics depend on the combination
+of network and port driver you use. If you're experiencing unexpected behavior
+or performance related to networking, review the following table which shows
+the configurations supported by RootlessKit, and how they compare:</p>
+<table>
+<thead>
+<tr>
+<th>Network driver</th>
+<th>Port driver</th>
+<th>Net throughput</th>
+<th>Port throughput</th>
+<th>Source IP propagation</th>
+<th>No SUID</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gvisor-tap-vsock</code></td>
+<td><code>builtin</code></td>
+<td>Slow</td>
+<td>Fast ✅</td>
+<td>✅ (*)</td>
+<td>✅</td>
+<td>Default when slirp4netns is not installed</td>
+</tr>
+<tr>
+<td><code>slirp4netns</code></td>
+<td><code>builtin</code></td>
+<td>Slow</td>
+<td>Fast ✅</td>
+<td>✅ (*)</td>
+<td>✅</td>
+<td>Default when slirp4netns is installed</td>
+</tr>
+<tr>
+<td><code>vpnkit</code></td>
+<td><code>builtin</code></td>
+<td>Slow</td>
+<td>Fast ✅</td>
+<td>✅ (*)</td>
+<td>✅</td>
+<td>Legacy</td>
+</tr>
+<tr>
+<td><code>gvisor-tap-vsock</code></td>
+<td><code>gvisor-tap-vsock</code></td>
+<td>Slow</td>
+<td>Slow</td>
+<td>❌</td>
+<td>✅</td>
+<td>Not recommended. Use <code>builtin</code> port driver instead.</td>
+</tr>
+<tr>
+<td><code>slirp4netns</code></td>
+<td><code>slirp4netns</code></td>
+<td>Slow</td>
+<td>Slow</td>
+<td>✅</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td><code>pasta</code></td>
+<td><code>implicit</code></td>
+<td>Slow</td>
+<td>Fast ✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Experimental; Needs pasta version 2023_12_04 or later</td>
+</tr>
+<tr>
+<td><code>pasta</code></td>
+<td><code>pesto</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>IPv4 only; needs Docker Engine 29.8+</td>
+</tr>
+<tr>
+<td><code>lxc-user-nic</code></td>
+<td><code>builtin</code></td>
+<td>Fast ✅</td>
+<td>Fast ✅</td>
+<td>✅ (*)</td>
+<td>❌</td>
+<td>Experimental</td>
+</tr>
+<tr>
+<td><code>bypass4netns</code></td>
+<td><code>bypass4netns</code></td>
+<td>Fast ✅</td>
+<td>Fast ✅</td>
+<td>✅</td>
+<td>✅</td>
+<td><strong>Note:</strong> Not integrated to RootlessKit as it needs a custom seccomp profile</td>
+</tr>
+</tbody>
+</table>
+<p>(*) Applicable since RootlessKit v3.0. Also requires <code>userland-proxy</code> to be disabled.</p>
+<p>For information about troubleshooting specific networking issues, see:</p>
+<ul>
+<li><a href="#docker-run--p-fails-with-cannot-expose-privileged-port"><code>docker run -p</code> fails with <code>cannot expose privileged port</code></a></li>
+<li><a href="#ping-doesnt-work">Ping doesn't work</a></li>
+<li><a href="#ipaddress-shown-in-docker-inspect-is-unreachable"><code>IPAddress</code> shown in <code>docker inspect</code> is unreachable</a></li>
+<li><a href="#--nethost-doesnt-listen-ports-on-the-host-network-namespace"><code>--net=host</code> doesn't listen ports on the host network namespace</a></li>
+<li><a href="#network-is-slow">Network is slow</a></li>
+<li><a href="#docker-run--p-does-not-propagate-source-ip-addresses"><code>docker run -p</code> does not propagate source IP addresses</a></li>
+</ul>
+<h4 id="docker-run-p-fails-with-cannot-expose-privileged-port"><code>docker run -p</code> fails with <code>cannot expose privileged port</code><a class="headerlink" href="#docker-run-p-fails-with-cannot-expose-privileged-port" title="Permanent link">#</a></h4>
+<p><code>docker run -p</code> fails with this error when a privileged port (&lt; 1024) is specified as the host port.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">80</span>:80<span class="w"> </span>nginx:alpine
+<span class="go">docker: Error response from daemon: driver failed programming external connectivity on endpoint focused_swanson (9e2e139a9d8fc92b37c36edfa6214a6e986fa2028c0cc359812f685173fa6df7): Error starting userland proxy: error while calling PortManager.AddPort(): cannot expose privileged port 80, you might need to add &quot;net.ipv4.ip_unprivileged_port_start=0&quot; (currently 1024) to /etc/sysctl.conf, or set CAP_NET_BIND_SERVICE on rootlesskit binary, or choose a larger port number (&gt;= 1024): listen tcp 0.0.0.0:80: bind: permission denied.</span>
+</code></pre></div>
+
+<p>When you experience this error, consider using an unprivileged port instead. For example, 8080 instead of 80.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span>nginx:alpine
+</code></pre></div>
+
+<p>To allow exposing privileged ports, see <a href="tips.html#exposing-privileged-ports">Exposing privileged ports</a>.</p>
+<h4 id="ping-doesnt-work">Ping doesn't work<a class="headerlink" href="#ping-doesnt-work" title="Permanent link">#</a></h4>
+<p>Ping does not work when <code>/proc/sys/net/ipv4/ping_group_range</code> is set to <code>1 0</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>/proc/sys/net/ipv4/ping_group_range
+<span class="go">1       0</span>
+</code></pre></div>
+
+<p>For details, see <a href="tips.html#routing-ping-packets">Routing ping packets</a>.</p>
+<h4 id="ipaddress-shown-in-docker-inspect-is-unreachable"><code>IPAddress</code> shown in <code>docker inspect</code> is unreachable<a class="headerlink" href="#ipaddress-shown-in-docker-inspect-is-unreachable" title="Permanent link">#</a></h4>
+<p>This is an expected behavior, as the daemon is namespaced inside RootlessKit's
+network namespace. Use <code>docker run -p</code> instead.</p>
+<h4 id="-nethost-doesnt-listen-ports-on-the-host-network-namespace"><code>--net=host</code> doesn't listen ports on the host network namespace<a class="headerlink" href="#-nethost-doesnt-listen-ports-on-the-host-network-namespace" title="Permanent link">#</a></h4>
+<p>This was an expected behavior until Docker Engine v29.5, as the daemon was namespaced inside RootlessKit's
+network namespace. Use <code>docker run -p</code> instead, or upgrade to Docker Engine v29.5 or later.</p>
+<h4 id="network-is-slow">Network is slow<a class="headerlink" href="#network-is-slow" title="Permanent link">#</a></h4>
+<p>Docker with rootless mode uses a TCP/IP stack running in user mode, such as:
+- <a href="https://github.com/rootless-containers/slirp4netns" rel="noopener" target="_blank">slirp4netns</a> (default when slirp4netns is installed)
+- <a href="https://passt.top/passt/about/" rel="noopener" target="_blank">pasta</a>
+- <a href="https://github.com/moby/vpnkit" rel="noopener" target="_blank">VPNKit</a>
+- <a href="https://github.com/containers/gvisor-tap-vsock" rel="noopener" target="_blank">gvisor-tap-vsock</a> (default when none of the above is installed)</p>
+<p>The TCP/IP stack in user mode is generally slower than the one in kernel mode, and the performance may vary depending on the network driver used.</p>
+<p>See <a href="https://github.com/rootless-containers/rootlesskit/blob/v3.0.0/docs/network.md" rel="noopener" target="_blank">RootlessKit documentation</a>
+for more information.</p>
+<h5 id="workaround-1-bypass-user-mode-tcpip-stack">Workaround 1: bypass user-mode TCP/IP stack<a class="headerlink" href="#workaround-1-bypass-user-mode-tcpip-stack" title="Permanent link">#</a></h5>
+<p>Use <code>docker run --net=host</code> to bypass the user-mode TCP/IP stack.
+This is applicable since Docker Engine v29.5.
+However, this requires the container to share the host network namespace, which may not be desirable for security reasons.</p>
+<h5 id="workaround-2-disable-user-mode-tcpip-stack">Workaround 2: disable user-mode TCP/IP stack<a class="headerlink" href="#workaround-2-disable-user-mode-tcpip-stack" title="Permanent link">#</a></h5>
+<p>Alternatively, you can use the <code>lxc-user-nic</code> network driver (experimental) to disable the user-mode TCP/IP stack entirely.
+However, this requires configuring <code>/etc/lxc/lxc-usernet</code> for enabling the privileged helper.</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>lxc
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/lxc
+cat<span class="w"> </span><span class="s">&lt;&lt;EOF | sudo tee /etc/lxc/lxc-usernet</span>
+<span class="s"># USERNAME TYPE BRIDGE COUNT</span>
+<span class="s">$USER veth lxcbr0 10</span>
+<span class="s">EOF</span>
+</code></pre></div>
+
+<p>Also, make sure that the rootful daemon is not running, as its iptables rules may interfere with the <code>lxc-user-nic</code> driver.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>docker.service
+<span class="go">inactive</span>
+
+<span class="gp">$ </span>systemctl<span class="w"> </span>is-active<span class="w"> </span>docker.socket
+<span class="go">inactive</span>
+</code></pre></div>
+
+<p>The network driver can be specified by creating <code>~/.config/systemd/user/docker.service.d/override.conf</code> with the following content:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[Service]</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">&quot;DOCKERD_ROOTLESS_ROOTLESSKIT_NET=lxc-user-nic&quot;</span>
+<span class="c1"># Optional: specify MTU (may affect throughput)</span>
+<span class="c1"># Environment=&quot;DOCKERD_ROOTLESS_ROOTLESSKIT_MTU=&lt;INTEGER&gt;&quot;</span>
+</code></pre></div>
+
+<p>And then restart the daemon:</p>
+<div class="codehilite"><pre><span></span><code>systemctl<span class="w"> </span>--user<span class="w"> </span>daemon-reload
+systemctl<span class="w"> </span>--user<span class="w"> </span>restart<span class="w"> </span>docker
+</code></pre></div>
+
+<h4 id="docker-run-p-does-not-propagate-source-ip-addresses"><code>docker run -p</code> does not propagate source IP addresses<a class="headerlink" href="#docker-run-p-does-not-propagate-source-ip-addresses" title="Permanent link">#</a></h4>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="RootlessKit v3.0 or later" &gt;}}
+This is because Docker Engine's <code>userland-proxy</code> is incompatible with RootlessKit's source IP propagation.</p>
+<p>To disable userland-proxy, add the following configuration to <code>~/.config/docker/daemon.json</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;userland-proxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">}</span>
+</code></pre></div>
+
+<p>Then restart the daemon:</p>
+<div class="codehilite"><pre><span></span><code>systemctl<span class="w"> </span>--user<span class="w"> </span>restart<span class="w"> </span>docker
+</code></pre></div>
+
+<p>You may also need to load <code>br_netfilter</code> kernel module:</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/modules-load.d/docker.conf<span class="w"> </span><span class="s">&lt;&lt;EOF &gt;/dev/null</span>
+<span class="s">br_netfilter</span>
+<span class="s">EOF</span>
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>systemd-modules-load.service
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Prior versions" &gt;}}
+This is because RootlessKit's <code>builtin</code> port didn't support source IP propagation until v3.0. To enable
+source IP propagation, you can:</p>
+<ul>
+<li>Use the <code>slirp4netns</code> RootlessKit port driver</li>
+<li>Use the <code>pasta</code> RootlessKit network driver, with the <code>implicit</code> port driver</li>
+</ul>
+<p>The <code>pasta</code> network driver is experimental, but provides improved throughput
+performance compared to the <code>slirp4netns</code> port driver. The <code>pasta</code> driver
+requires Docker Engine version 25.0 or later.</p>
+<p>To change the RootlessKit networking configuration:</p>
+<ol>
+<li>Create a file at <code>~/.config/systemd/user/docker.service.d/override.conf</code>.</li>
+<li>Add the following contents, depending on which configuration you would like to use:</li>
+</ol>
+<ul>
+<li>
+<p><code>slirp4netns</code></p>
+<p><code>systemd
+  [Service]
+  Environment="DOCKERD_ROOTLESS_ROOTLESSKIT_NET=slirp4netns"
+  Environment="DOCKERD_ROOTLESS_ROOTLESSKIT_PORT_DRIVER=slirp4netns"</code></p>
+</li>
+<li>
+<p><code>pasta</code> network driver with <code>implicit</code> port driver</p>
+<p><code>systemd
+  [Service]
+  Environment="DOCKERD_ROOTLESS_ROOTLESSKIT_NET=pasta"
+  Environment="DOCKERD_ROOTLESS_ROOTLESSKIT_PORT_DRIVER=implicit"</code></p>
+</li>
+</ul>
+<ol start="3">
+<li>Restart the daemon:</li>
+</ol>
+<p><code>console
+   $ systemctl --user daemon-reload
+   $ systemctl --user restart docker</code>
+{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>For more information about networking options for RootlessKit, see:</p>
+<ul>
+<li><a href="https://github.com/rootless-containers/rootlesskit/blob/v3.0.0/docs/network.md" rel="noopener" target="_blank">Network drivers</a></li>
+<li><a href="https://github.com/rootless-containers/rootlesskit/blob/v3.0.0/docs/port.md" rel="noopener" target="_blank">Port drivers</a></li>
+</ul>
+<h3 id="tips-for-debugging">Tips for debugging<a class="headerlink" href="#tips-for-debugging" title="Permanent link">#</a></h3>
+<p><strong>Entering into <code>dockerd</code> namespaces</strong></p>
+<p>The <code>dockerd-rootless.sh</code> script executes <code>dockerd</code> in its own user, mount, and network namespaces.</p>
+<p>For debugging, you can enter the namespaces by running
+<code>nsenter -U --preserve-credentials -n -m -t $(cat $XDG_RUNTIME_DIR/docker.pid)</code>.</p>
+<h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">#</a></h2>
+<p>To remove the systemd service of the Docker daemon, run <code>dockerd-rootless-setuptool.sh uninstall</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>dockerd-rootless-setuptool.sh<span class="w"> </span>uninstall
+<span class="go">+ systemctl --user stop docker.service</span>
+<span class="go">+ systemctl --user disable docker.service</span>
+<span class="go">Removed /home/testuser/.config/systemd/user/default.target.wants/docker.service.</span>
+<span class="go">[INFO] Uninstalled docker.service</span>
+<span class="go">[INFO] This uninstallation tool does NOT remove Docker binaries and data.</span>
+<span class="go">[INFO] To remove data, run: `/usr/bin/rootlesskit rm -rf /home/testuser/.local/share/docker`</span>
+</code></pre></div>
+
+<p>Unset environment variables PATH and DOCKER_HOST if you have added them to <code>~/.bashrc</code>.</p>
+<p>To remove the data directory, run <code>rootlesskit rm -rf ~/.local/share/docker</code>.</p>
+<p>To remove the binaries, remove <code>docker-ce-rootless-extras</code> package if you installed Docker with package managers.
+If you installed Docker with https://get.docker.com/rootless (<a href="index.html#install">Install without packages</a>),
+remove the binary files under <code>~/bin</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/bin
+<span class="gp">$ </span>rm<span class="w"> </span>-f<span class="w"> </span>containerd<span class="w"> </span>containerd-shim<span class="w"> </span>containerd-shim-runc-v2<span class="w"> </span>ctr<span class="w"> </span>docker<span class="w"> </span>docker-init<span class="w"> </span>docker-proxy<span class="w"> </span>dockerd<span class="w"> </span>dockerd-rootless-setuptool.sh<span class="w"> </span>dockerd-rootless.sh<span class="w"> </span>rootlesskit<span class="w"> </span>rootlesskit-docker-proxy<span class="w"> </span>runc<span class="w"> </span>vpnkit
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/security/rootless/tips.html">
+          <span class="muted">Anterior</span>Tips
+        </a>
+        <a class="pager-next" href="../../../engine/security/rootless/uid-gid-mapping.html">
+          <span class="muted">Siguiente</span>UID/GID mapping
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

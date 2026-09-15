@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measuring and Reducing CPU Usage in SQLite · SQLite</title>
+<meta name="description" content="Measuring and Reducing CPU Usage in SQLite - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/cpu.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Measuring and Reducing CPU Usage in SQLite">
+<meta property="og:description" content="Measuring and Reducing CPU Usage in SQLite - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Measuring and Reducing CPU Usage in SQLite">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Measuring and Reducing CPU Usage in SQLite",
+"url": "https://docs.raupulus.dev/sqlite/guides/cpu.html",  "description": "Measuring and Reducing CPU Usage in SQLite - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/sqlite3session_patchset.html"
+>Generate A Patchset From A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/gencol.html"
+>Generated Columns</a>
+              </li>
+              <li>
+                <a href="../guides/hirely.html"
+>High Reliability</a>
+              </li>
+              <li>
+                <a href="../guides/debugging.html"
+>Hints for Debugging SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/chronology.html"
+>History Of SQLite Releases</a>
+              </li>
+              <li>
+                <a href="../guides/testing.html"
+>How SQLite Is Tested</a>
+              </li>
+              <li>
+                <a href="../guides/howitworks.html"
+>How SQLite Works</a>
+              </li>
+              <li>
+                <a href="../guides/howtocompile.html"
+>How To Compile SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/howtocorrupt.html"
+>How To Corrupt An SQLite Database File</a>
+              </li>
+              <li>
+                <a href="../guides/getthecode.html"
+>How To Download Canonical SQLite Source Code</a>
+              </li>
+              <li>
+                <a href="../guides/limits.html"
+>Implementation Limits For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/imposter.html"
+>Imposter Tables</a>
+              </li>
+              <li>
+                <a href="../guides/inmemorydb.html"
+>In-Memory Databases</a>
+              </li>
+              <li>
+                <a href="../guides/expridx.html"
+>Indexes On Expressions</a>
+              </li>
+              <li>
+                <a href="../guides/intern-v-extern-blob.html"
+>Internal Versus External BLOBs</a>
+              </li>
+              <li>
+                <a href="../guides/intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="../guides/invalidutf.html"
+>Invalid UTF Policy</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_invert.html"
+>Invert A Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/isolation.html"
+>Isolation In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/hp1.html"
+>Javascript Required</a>
+              </li>
+              <li>
+                <a href="../guides/doc_keyword_crossref.html"
+>Keyword Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/constlist.html"
+>List Of SQLite Constants</a>
+              </li>
+              <li>
+                <a href="../guides/funclist.html"
+>List Of SQLite Functions</a>
+              </li>
+              <li>
+                <a href="../guides/objlist.html"
+>List Of SQLite Objects</a>
+              </li>
+              <li>
+                <a href="../guides/vtablist.html"
+>List Of Virtual Tables</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_diff.html"
+>Load The Difference Between Tables Into A Session</a>
+              </li>
+              <li>
+                <a href="../guides/locrsf.html"
+>LoC Recommended Storage Format</a>
+              </li>
+              <li>
+                <a href="../guides/lts.html"
+>Long Term Support</a>
+              </li>
+              <li>
+                <a href="../guides/privatebranch.html"
+>Maintaining Private Branches Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/np1queryprob.html"
+>Many Small Queries Are Efficient In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cpu.html"
+class="is-current" aria-current="page">Measuring and Reducing CPU Usage in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/mmap.html"
+>Memory-Mapped I/O</a>
+              </li>
+              <li>
+                <a href="../guides/mostdeployed.html"
+>Most Widely Deployed SQL Database Engine</a>
+              </li>
+              <li>
+                <a href="../guides/mingw.html"
+>No Title</a>
+              </li>
+              <li>
+                <a href="../guides/nulinstr.html"
+>NUL Characters In Strings</a>
+              </li>
+              <li>
+                <a href="../guides/nulls.html"
+>NULL Handling in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_output.html"
+>Obtain A Composite Changeset From A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_conflict.html"
+>Obtain Conflicting Row Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_new.html"
+>Obtain new.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_old.html"
+>Obtain old.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_op.html"
+>Obtain The Current Operation From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_pk.html"
+>Obtain The Primary Key Definition Of A Table</a>
+              </li>
+              <li>
+                <a href="../guides/c_changegroup_config_patchset.html"
+>Options for sqlite3changegroup_config().</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_objconfig_rowid.html"
+>Options for sqlite3session_object_config</a>
+              </li>
+              <li>
+                <a href="../guides/doc_pagelink_crossref.html"
+>Pagelink Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/partialindex.html"
+>Partial Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/bindptr.html"
+>Pointer Passing Interfaces</a>
+              </li>
+              <li>
+                <a href="../guides/psow.html"
+>Powersafe Overwrite</a>
+              </li>
+              <li>
+                <a href="../guides/pressrelease-20071212.html"
+>Pressrelease 20071212</a>
+              </li>
+              <li>
+                <a href="../guides/profile.html"
+>Profiling SQL Queries</a>
+              </li>
+              <li>
+                <a href="../guides/qmplan.html"
+>Quality Management</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_memory_used.html"
+>Query for the amount of heap memory used by a session object.</a>
+              </li>
+              <li>
+                <a href="../guides/lang.html"
+>Query Language Understood by SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner.html"
+>Query Planning</a>
+              </li>
+              <li>
+                <a href="../guides/climode.html"
+>Query Result Formatting In The CLI</a>
+              </li>
+              <li>
+                <a href="../guides/quirks.html"
+>Quirks, Caveats, and Gotchas In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_rebase.html"
+>Rebase a changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rebaser.html"
+>Rebasing changesets</a>
+              </li>
+              <li>
+                <a href="../guides/news.html"
+>Recent SQLite News</a>
+              </li>
+              <li>
+                <a href="../guides/recovery.html"
+>Recovering Data From A Corrupt SQLite Database</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Measuring and Reducing CPU Usage in SQLite</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/cpu.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#21-compile-options">2.1. Compile Options#</a></li>
+              <li class="lvl-2"><a href="#22-workload">2.2. Workload#</a></li>
+              <li class="lvl-3"><a href="#221-update-as-of-2026-01-06">2.2.1. Update As Of 2026-01-06#</a></li>
+              <li class="lvl-2"><a href="#23-performance-measurement">2.3. Performance Measurement#</a></li>
+              <li class="lvl-2"><a href="#24-microoptimizations">2.4. Microoptimizations#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-overview">1. Overview<a class="headerlink" href="#1-overview" title="Permanent link">#</a></h1>
+<p>The graph below shows the number of CPU cycles used by SQLite on a standard workload, for versions of SQLite between 3.6.1 (2008-08-06) and 3.48.0 (2025-01-14), a span of about 16.4 years. Over this interval, the number of CPU cycles used dropped from about 3.376 million down to 0.965 million. So by 2025, SQLite required only about 29% as many CPU cycles as it did in 2008.</p>
+<p>This article describes how the SQLite developers measure CPU usage, what those measurements actually mean, and the techniques used by SQLite developers on their continuing quest to further reduce the CPU usage of the SQLite library.</p>
+<hr>
+<p><img alt="" src="./images/cpuusage.png"></p>
+<p>\
+Measured using cachegrind on Ubuntu 16.04 on x64 with gcc 5.4.0 and -Os.\</p>
+<hr>
+<h1 id="2-measuring-performance">2. Measuring Performance<a class="headerlink" href="#2-measuring-performance" title="Permanent link">#</a></h1>
+<p>In brief, the CPU performance of SQLite is measured as follows:</p>
+<ol>
+<li>Compile SQLite in an as-delivered configuration, without any special telemetry or debugging options.</li>
+<li>Link SQLite against a test program that runs approximately 30,000 SQL statements representing a typical workload.</li>
+<li>Count the number of CPU cycles consumed using <a href="http://valgrind.org/docs/manual/cg-manual.html" rel="noopener" target="_blank">cachegrind</a>.</li>
+</ol>
+<h2 id="21-compile-options">2.1. Compile Options<a class="headerlink" href="#21-compile-options" title="Permanent link">#</a></h2>
+<p>For performance measurement, SQLite is compiled in approximately the same way as it would be for use in production systems. The compile-time configuration is "approximate" in the sense that every production use of SQLite is different. Compile-time options used by one system are not necessarily the same as those used by others. The key point is that options that significantly impact the generated machine code are avoided. For example, the -DSQLITE_DEBUG option is omitted because that option inserts thousands of assert() statements in the middle of performance critical sections of the SQLite library. The -pg option (on GCC) is omitted because it causes the compiler to emit extra probabilistic performance measuring code which interferes with actual performance measurements.</p>
+<p>For performance measurements, the -Os option is used (optimize for size) rather than -O2 because the -O2 option creates so much code movement that it is difficult to associate specific CPU instructions to C source code lines.</p>
+<h2 id="22-workload">2.2. Workload<a class="headerlink" href="#22-workload" title="Permanent link">#</a></h2>
+<p>The "typical" workload is generated by the <a href="https://sqlite.org/src/file/test/speedtest1.c" rel="noopener" target="_blank">speedtest1.c</a> program in the canonical SQLite source tree. This program strives to exercise the SQLite library in a way that is typical of real-world applications. Of course, every application is different, and so no test program can exactly mirror the behavior of all applications.</p>
+<p>The speedtest1.c program is updated from time to time as the SQLite developers' understanding of what constitutes "typical" usage evolves.</p>
+<p>The <a href="https://sqlite.org/src/file/tool/speed-check.sh" rel="noopener" target="_blank">speed-check.sh</a> shell script, also in the canonical source tree, is used to run the speedtest1.c program. To replicate the performance measurements, collect the following files into a single directory:</p>
+<ul>
+<li>the "speed-check.sh" script,</li>
+<li>the "speedtest1.c" test program, and</li>
+<li>the <a href="amalgamation.html">SQLite amalgamation</a> source files "sqlite3.c" and "sqlite3.h"</li>
+</ul>
+<p>Then run "sh speed-check.sh trunk".</p>
+<h3 id="221-update-as-of-2026-01-06">2.2.1. Update As Of 2026-01-06<a class="headerlink" href="#221-update-as-of-2026-01-06" title="Permanent link">#</a></h3>
+<p>This article was originally written on 2016-12-08. The speed-check.sh script is no longer used. A new script named <a href="https://sqlite.org/src/file/test/speedtest.tcl" rel="noopener" target="_blank">speedtest.tcl</a> has been devised and has been used since early 2025. See the <a href="https://sqlite.org/src/file/test/speedtest.md" rel="noopener" target="_blank">speedtest.md</a> documentation file for details. This article continues to reference the older performance measurement script, as part of the historical record.</p>
+<h2 id="23-performance-measurement">2.3. Performance Measurement<a class="headerlink" href="#23-performance-measurement" title="Permanent link">#</a></h2>
+<p><a href="http://valgrind.org/docs/manual/cg-manual.html" rel="noopener" target="_blank">Cachegrind</a> is used to measure performance because it gives answers that are repeatable to 7 or more significant digits. In comparison, actual (wall-clock) run times are scarcely repeatable beyond one significant digit. <span id="microopt"></span></p>
+<h2 id="24-microoptimizations">2.4. Microoptimizations<a class="headerlink" href="#24-microoptimizations" title="Permanent link">#</a></h2>
+<p>The high repeatability of cachegrind allows the SQLite developers to implement and measure "microoptimizations". A microoptimization is a change to the code that results in a very small performance increase. Typical micro-optimizations reduce the number of CPU cycles by 0.1% or 0.05% or even less. Such improvements are impossible to measure with real-world timings. But hundreds or thousands of microoptimizations add up, resulting in measurable real-world performance gains.</p>
+<h1 id="3-performance-measurement-workflow">3. Performance Measurement Workflow<a class="headerlink" href="#3-performance-measurement-workflow" title="Permanent link">#</a></h1>
+<p>As SQLite developers edit the SQLite source code, they run the <a href="https://sqlite.org/src/file/tool/speed-check.sh" rel="noopener" target="_blank">speed-check.sh</a> shell script to track the performance impact of changes. This script compiles the speedtest1.c program, runs it under cachegrind, processes the cachegrind output using the <a href="https://sqlite.org/src/file/tool/cg_anno.tcl" rel="noopener" target="_blank">cg_anno.tcl</a> TCL script, then saves the results in a series of text files. Typical output from the speed-check.sh script looks like this:</p>
+<blockquote>
+<p>\
+==8683== \
+==8683== I   refs:      1,060,925,768\
+==8683== I1  misses:       23,731,246\
+==8683== LLi misses:            5,176\
+==8683== I1  miss rate:          2.24%\
+==8683== LLi miss rate:          0.00%\
+==8683== \
+==8683== D   refs:        557,686,925  (361,828,925 rd   + 195,858,000 wr)\
+==8683== D1  misses:        5,067,063  (  3,544,278 rd   +   1,522,785 wr)\
+==8683== LLd misses:           57,958  (     16,067 rd   +      41,891 wr)\
+==8683== D1  miss rate:           0.9% (        1.0%     +         0.8%  )\
+==8683== LLd miss rate:           0.0% (        0.0%     +         0.0%  )\
+==8683== \
+==8683== LL refs:          28,798,309  ( 27,275,524 rd   +   1,522,785 wr)\
+==8683== LL misses:            63,134  (     21,243 rd   +      41,891 wr)\
+==8683== LL miss rate:            0.0% (        0.0%     +         0.0%  )\
+   text    data     bss     dec     hex filename\
+ 523044    8240    1976  533260      8230c sqlite3.o\
+ 220507 1007870 7769352 sqlite3.c\</p>
+</blockquote>
+<p>The important parts of the output (the parts that the developers pay the most attention to) are shown in red. Basically, the developers want to know the size of the compiled SQLite library and how many CPU cycles were needed to run the performance test.</p>
+<p>The output from the <a href="https://sqlite.org/src/file/tool/cg_anno.tcl" rel="noopener" target="_blank">cg_anno.tcl</a> script shows the number of CPU cycles spent on each line of code. The report is approximately 80,000 lines long. The following is a brief snippet taken from the middle of the report to show what it looks like:</p>
+<blockquote>
+<p>\
+         .  SQLITE_PRIVATE int sqlite3BtreeNext(BtCursor *pCur, int *pRes){\
+         .    MemPage *pPage;\
+         .    assert( cursorOwnsBtShared(pCur) );\
+         .    assert( pRes!=0 );\
+         .    assert( *pRes==0 || *pRes==1 );\
+         .    assert( pCur-&gt;skipNext==0 || pCur-&gt;eState!=CURSOR_VALID );\
+   369,648    pCur-&gt;info.nSize = 0;\
+   369,648    pCur-&gt;curFlags &amp;= ~(BTCF_ValidNKey|BTCF_ValidOvfl);\
+   369,648    *pRes = 0;\
+   739,296    if( pCur-&gt;eState!=CURSOR_VALID ) return btreeNext(pCur, pRes);\
+ 1,473,580    pPage = pCur-&gt;apPage[pCur-&gt;iPage];\
+ 1,841,975    if( (++pCur-&gt;aiIdx[pCur-&gt;iPage])&gt;=pPage-&gt;nCell ){\
+     4,340      pCur-&gt;aiIdx[pCur-&gt;iPage]--;\
+     5,593      return btreeNext(pCur, pRes);\
+         .    }\
+   728,110    if( pPage-&gt;leaf ){\
+         .      return SQLITE_OK;\
+         .    }else{\
+     3,117      return moveToLeftmost(pCur);\
+         .    }\
+   721,876  }\</p>
+</blockquote>
+<p>The numbers on the left are the CPU cycle counts for that line of code, of course.</p>
+<p>The cg_anno.tcl script removes extraneous details from the default cachegrind annotation output so that before-and-after reports can be compared using a side-by-side diff to view specific details of how a micro-optimization attempt affected performance.</p>
+<h1 id="4-limitations">4. Limitations<a class="headerlink" href="#4-limitations" title="Permanent link">#</a></h1>
+<p>The use of the standardized speedtest1.c workload and cachegrind has enabled significant performance improvement. However, it is important to recognize the limitations of this approach:</p>
+<ul>
+<li>
+<p>Performance measurements are done with a single compiler (gcc 5.4.0), optimization setting (-Os), and on a single platform (Ubuntu 16.04 LTS on x64). The performance of other compilers and processors may vary.</p>
+</li>
+<li>
+<p>The speedtest1.c workload that is being measured tries to be representative of a wide range of typical uses of SQLite. But every application is different. The speedtest1.c workload might not be a good proxy for the kinds of activities performed by some applications. The SQLite developers are constantly working to improve the speedtest1.c program, to make it a better proxy for actual SQLite usage. Community feedback is welcomed.</p>
+</li>
+<li>
+<p>The cycle counts provided by cachegrind are a good proxy for actual performance, but they are not 100% accurate.</p>
+</li>
+<li>
+<p>Only CPU cycle counts are being measured here. CPU cycle counts are a good proxy for energy consumption, but do not necessary correlate well with real-world timings. Time spent doing I/O is not reflected in the CPU cycle counts, and I/O time predominates in many SQLite usage scenarios.</p>
+</li>
+</ul>
+<h1 id="5-why-does-the-graph-end-in-2025">5. Why Does The Graph End In 2025?<a class="headerlink" href="#5-why-does-the-graph-end-in-2025" title="Permanent link">#</a></h1>
+<p>The CPU cycle counts depend a lot on the particular compiler used, and also to some extent on the operating system. All of the measurements in the graph above were made using GCC 5.4.0 on Ubuntu 16.04. That machine was powered down in early 2025, and so it is no longer available to do additional measurements.</p>
+<p>We could redo all 61 measurements shown in the graph using a more recent compiler. (This update is being entered in early 2026 using Linux Mint 2.22 that hosts GCC 13.3.0.) But that would be a lot of work for no noticable gain. Most of the performance gains occurred in years 2013 through 2017, when the microoptimization techniques described above were first being applied to SQLite. You can clearly see in the graph that the performance curve leveled out in about 2018. Since then, there has been a slow increase in performance, but nothing as dramatic as in prior years. We expect this trend to continue.</p>
+<p>The developers continue measure performance regularly, certainly at every release, but also after every significant change. We continue to work toward optimizing SQLite to use as few CPU cycles as possible. However, no dramatic performance increases are expected. Note that SQLite is already <a href="fasterthanfs.html">35% Faster Than The Filesystem</a>. How much faster can it get?</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/np1queryprob.html">
+          <span class="muted">Anterior</span>Many Small Queries Are Efficient In SQLite
+        </a>
+        <a class="pager-next" href="../guides/mmap.html">
+          <span class="muted">Siguiente</span>Memory-Mapped I/O
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

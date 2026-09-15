@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run Docker Compose services with GPU access · Docker</title>
+<meta name="description" content="Run Docker Compose services with GPU access - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/compose/how-tos/gpu-support.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Run Docker Compose services with GPU access">
+<meta property="og:description" content="Run Docker Compose services with GPU access - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Run Docker Compose services with GPU access">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Run Docker Compose services with GPU access",
+"url": "https://docs.raupulus.dev/docker/compose/how-tos/gpu-support.html",  "description": "Run Docker Compose services with GPU access - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Compose
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../compose/index.html"
+>Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/index.html"
+>Overview of Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/customize.html"
+>Customize Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/usage.html"
+>Use the default Compose Bridge transformation</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/use-model-runner.html"
+>Use Docker Model Runner with Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/compose-sdk.html"
+>Using the Compose SDK</a>
+              </li>
+              <li>
+                <a href="../../compose/gettingstarted.html"
+>Docker Compose Quickstart</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/dependent-images.html"
+>Build dependent images</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/index.html"
+>Environment variables in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/best-practices.html"
+>Best practices for working with environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/envvars-precedence.html"
+>Environment variables precedence in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/envvars.html"
+>Configure pre-defined environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/set-environment-variables.html"
+>Set environment variables within your container&#39;s environment</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/variable-interpolation.html"
+>Set, use, and manage variables in a Compose file with interpolation</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/file-watch.html"
+>Use Compose Watch</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/gpu-support.html"
+class="is-current" aria-current="page">Run Docker Compose services with GPU access</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/init-containers.html"
+>Use init containers in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/lifecycle.html"
+>Using lifecycle hooks with Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/index.html"
+>Use multiple Compose files</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/extends.html"
+>Extend your Compose file</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/include.html"
+>Include</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/merge.html"
+>Merge Compose files</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/networking.html"
+>Networking in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/oci-artifact.html"
+>Package and deploy Docker Compose applications as OCI artifacts</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/production.html"
+>Use Compose in production</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/profiles.html"
+>Using profiles with Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/project-name.html"
+>Specify a project name</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/provider-services.html"
+>Use provider services</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/startup-order.html"
+>Control startup and shutdown order in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/use-secrets.html"
+>Manage secrets securely in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/install/index.html"
+>Overview of installing Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/install/linux.html"
+>Install the Docker Compose plugin</a>
+              </li>
+              <li>
+                <a href="../../compose/install/standalone.html"
+>Install the Docker Compose standalone (Legacy)</a>
+              </li>
+              <li>
+                <a href="../../compose/install/uninstall.html"
+>Uninstall Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/index.html"
+>Introduction to Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/compose-application-model.html"
+>How Compose works</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/features-uses.html"
+>Why use Compose?</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/history.html"
+>History and development of Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/release-notes.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/faq.html"
+>Frequently asked questions about Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/feedback.html"
+>Give feedback</a>
+              </li>
+              <li>
+                <a href="../../compose/trust-model.html"
+>Trust model for Compose files</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Run Docker Compose services with GPU access</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#enabling-gpu-access-to-service-containers">Enabling GPU access to service containers#</a></li>
+              <li class="lvl-3"><a href="#example-of-a-compose-file-for-running-a-service-with-access-to-1-gpu-device">Example of a Compose file for running a service with access to 1 GPU device#</a></li>
+              <li class="lvl-2"><a href="#access-specific-devices">Access specific devices#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Compose services can define GPU device reservations if the Docker host contains such devices and the Docker Daemon is set accordingly. For this, make sure you install the <a href="../../engine/containers/resource-constraints.html#gpu">prerequisites</a> if you haven't already done so.</p>
+<p>The examples in the following sections focus specifically on providing service containers access to GPU devices with Docker Compose. </p>
+<h2 id="enabling-gpu-access-to-service-containers">Enabling GPU access to service containers<a class="headerlink" href="#enabling-gpu-access-to-service-containers" title="Permanent link">#</a></h2>
+<p>GPUs are referenced in a <code>compose.yaml</code> file using the <a href="../../reference/compose-file/deploy.html#devices">device</a> attribute from the Compose Deploy specification, within your services that need them.</p>
+<p>This provides more granular control over a GPU reservation as custom values can be set for the following device properties: </p>
+<ul>
+<li><code>capabilities</code>. This value is specified as a list of strings. For example, <code>capabilities: [gpu]</code>. You must set this field in the Compose file. Otherwise, it returns an error on service deployment.</li>
+<li><code>count</code>. Specified as an integer or the value <code>all</code>, represents the number of GPU devices that should be reserved (providing the host holds that number of GPUs). If <code>count</code> is set to <code>all</code> or not specified, all GPUs available on the host are used by default.</li>
+<li><code>device_ids</code>. This value, specified as a list of strings, represents GPU device IDs from the host. You can find the device ID in the output of <code>nvidia-smi</code> on the host. If no <code>device_ids</code> are set, all GPUs available on the host are used by default.</li>
+<li><code>driver</code>. Specified as a string, for example <code>driver: 'nvidia'</code></li>
+<li><code>options</code>. Key-value pairs representing driver specific options.</li>
+</ul>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>You must set the <code>capabilities</code> field. Otherwise, it returns an error on service deployment.</p>
+<p>[!NOTE]</p>
+<p><code>count</code> and <code>device_ids</code> are mutually exclusive. You must only define one field at a time.</p>
+</blockquote>
+<p>For more information on these properties, see the <a href="../../reference/compose-file/deploy.html#devices">Compose Deploy Specification</a>.</p>
+<h3 id="example-of-a-compose-file-for-running-a-service-with-access-to-1-gpu-device">Example of a Compose file for running a service with access to 1 GPU device<a class="headerlink" href="#example-of-a-compose-file-for-running-a-service-with-access-to-1-gpu-device" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvidia/cuda:12.9.0-base-ubuntu22.04</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvidia-smi</span>
+<span class="w">    </span><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">reservations</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">devices</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvidia</span>
+<span class="w">              </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">              </span><span class="nt">capabilities</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">gpu</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+
+<p>Run with Docker Compose:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>up
+<span class="go">Creating network &quot;gpu_default&quot; with the default driver</span>
+<span class="go">Creating gpu_test_1 ... done</span>
+<span class="go">Attaching to gpu_test_1    </span>
+<span class="go">test_1  | +-----------------------------------------------------------------------------+</span>
+<span class="go">test_1  | | NVIDIA-SMI 450.80.02    Driver Version: 450.80.02    CUDA Version: 11.1     |</span>
+<span class="go">test_1  | |-------------------------------+----------------------+----------------------+</span>
+<span class="go">test_1  | | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |</span>
+<span class="go">test_1  | | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |</span>
+<span class="go">test_1  | |                               |                      |               MIG M. |</span>
+<span class="go">test_1  | |===============================+======================+======================|</span>
+<span class="go">test_1  | |   0  Tesla T4            On   | 00000000:00:1E.0 Off |                    0 |</span>
+<span class="go">test_1  | | N/A   23C    P8     9W /  70W |      0MiB / 15109MiB |      0%      Default |</span>
+<span class="go">test_1  | |                               |                      |                  N/A |</span>
+<span class="go">test_1  | +-------------------------------+----------------------+----------------------+</span>
+<span class="go">test_1  |                                                                                </span>
+<span class="go">test_1  | +-----------------------------------------------------------------------------+</span>
+<span class="go">test_1  | | Processes:                                                                  |</span>
+<span class="go">test_1  | |  GPU   GI   CI        PID   Type   Process name                  GPU Memory |</span>
+<span class="go">test_1  | |        ID   ID                                                   Usage      |</span>
+<span class="go">test_1  | |=============================================================================|</span>
+<span class="go">test_1  | |  No running processes found                                                 |</span>
+<span class="go">test_1  | +-----------------------------------------------------------------------------+</span>
+<span class="go">gpu_test_1 exited with code 0</span>
+</code></pre></div>
+
+<p>On machines hosting multiple GPUs, the <code>device_ids</code> field can be set to target specific GPU devices and <code>count</code> can be used to limit the number of GPU devices assigned to a service container. </p>
+<p>You can use <code>count</code> or <code>device_ids</code> in each of your service definitions. An error is returned if you try to combine both, specify an invalid device ID, or use a value of count that’s higher than the number of GPUs in your system.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>nvidia-smi<span class="w">   </span>
+<span class="go">+-----------------------------------------------------------------------------+</span>
+<span class="go">| NVIDIA-SMI 450.80.02    Driver Version: 450.80.02    CUDA Version: 11.0     |</span>
+<span class="go">|-------------------------------+----------------------+----------------------+</span>
+<span class="go">| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |</span>
+<span class="go">| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |</span>
+<span class="go">|                               |                      |               MIG M. |</span>
+<span class="go">|===============================+======================+======================|</span>
+<span class="go">|   0  Tesla T4            On   | 00000000:00:1B.0 Off |                    0 |</span>
+<span class="go">| N/A   72C    P8    12W /  70W |      0MiB / 15109MiB |      0%      Default |</span>
+<span class="go">|                               |                      |                  N/A |</span>
+<span class="go">+-------------------------------+----------------------+----------------------+</span>
+<span class="go">|   1  Tesla T4            On   | 00000000:00:1C.0 Off |                    0 |</span>
+<span class="go">| N/A   67C    P8    11W /  70W |      0MiB / 15109MiB |      0%      Default |</span>
+<span class="go">|                               |                      |                  N/A |</span>
+<span class="go">+-------------------------------+----------------------+----------------------+</span>
+<span class="go">|   2  Tesla T4            On   | 00000000:00:1D.0 Off |                    0 |</span>
+<span class="go">| N/A   74C    P8    12W /  70W |      0MiB / 15109MiB |      0%      Default |</span>
+<span class="go">|                               |                      |                  N/A |</span>
+<span class="go">+-------------------------------+----------------------+----------------------+</span>
+<span class="go">|   3  Tesla T4            On   | 00000000:00:1E.0 Off |                    0 |</span>
+<span class="go">| N/A   62C    P8    11W /  70W |      0MiB / 15109MiB |      0%      Default |</span>
+<span class="go">|                               |                      |                  N/A |</span>
+<span class="go">+-------------------------------+----------------------+----------------------+</span>
+</code></pre></div>
+
+<h2 id="access-specific-devices">Access specific devices<a class="headerlink" href="#access-specific-devices" title="Permanent link">#</a></h2>
+<p>To allow access only to GPU-0 and GPU-3 devices:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tensorflow/tensorflow:latest-gpu</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python -c &quot;import tensorflow as tf;tf.test.gpu_device_name()&quot;</span>
+<span class="w">    </span><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">reservations</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">devices</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvidia</span>
+<span class="w">            </span><span class="nt">device_ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;0&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;3&#39;</span><span class="p p-Indicator">]</span>
+<span class="w">            </span><span class="nt">capabilities</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">gpu</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../compose/how-tos/file-watch.html">
+          <span class="muted">Anterior</span>Use Compose Watch
+        </a>
+        <a class="pager-next" href="../../compose/how-tos/init-containers.html">
+          <span class="muted">Siguiente</span>Use init containers in Compose
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

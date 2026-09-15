@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dockerfile overview · Docker</title>
+<meta name="description" content="Dockerfile overview - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/build/concepts/dockerfile.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Dockerfile overview">
+<meta property="og:description" content="Dockerfile overview - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dockerfile overview">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Dockerfile overview",
+"url": "https://docs.raupulus.dev/docker/build/concepts/dockerfile.html",  "description": "Dockerfile overview - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Build
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../build/cache/backends/azblob.html"
+>Azure Blob Storage cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/gha.html"
+>GitHub Actions cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/inline.html"
+>Inline cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/local.html"
+>Local cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/registry.html"
+>Registry cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/s3.html"
+>Amazon S3 cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/garbage-collection.html"
+>Build garbage collection</a>
+              </li>
+              <li>
+                <a href="../../build/cache/invalidation.html"
+>Build cache invalidation</a>
+              </li>
+              <li>
+                <a href="../../build/cache/optimize.html"
+>Optimize cache usage in builds</a>
+              </li>
+              <li>
+                <a href="../../build/checks.html"
+>Checking your build configuration</a>
+              </li>
+              <li>
+                <a href="../../build/ci/index.html"
+>Continuous integration with Docker</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/index.html"
+>Docker Build GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/annotations.html"
+>Add image annotations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/attestations.html"
+>Add SBOM and provenance attestations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/build-summary.html"
+>GitHub Actions build summary</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/cache.html"
+>Cache management with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/checks.html"
+>Validating build configuration with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/configure-builder.html"
+>Configuring your GitHub Actions builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/copy-image-registries.html"
+>Copy image between registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/export-docker.html"
+>Export to Docker with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/index.html"
+>Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/architecture.html"
+>Docker GitHub Builder architecture</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/bake.html"
+>Bake with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/build.html"
+>Build with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/local-registry.html"
+>Local registry with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/manage-tags-labels.html"
+>Manage tags and labels with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/multi-platform.html"
+>Multi-platform image with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/named-contexts.html"
+>Named contexts with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/push-multi-registries.html"
+>Push to multiple registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/reproducible-builds.html"
+>Reproducible builds with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/secrets.html"
+>Using secrets with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/share-image-jobs.html"
+>Share built image between jobs with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/test-before-push.html"
+>Test before push with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/update-dockerhub-desc.html"
+>Update Docker Hub description with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/index.html"
+>Core concepts</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/context.html"
+>Build context</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/dockerfile.html"
+class="is-current" aria-current="page">Dockerfile overview</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/overview.html"
+>Docker Build Overview</a>
+              </li>
+              <li>
+                <a href="../../build/debug/index.html"
+>Debugging</a>
+              </li>
+              <li>
+                <a href="../../build/debug/opentelemetry.html"
+>OpenTelemetry support</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/index.html"
+>Exporters overview</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/image-registry.html"
+>Image and registry exporters</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/local-tar.html"
+>Local and tar exporters</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/oci-docker.html"
+>OCI and Docker exporters</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/index.html"
+>Metadata</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/annotations.html"
+>Annotations</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/attestations/index.html"
+>Build attestations</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/attestations/sbom.html"
+>SBOM attestations</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/attestations/slsa-provenance.html"
+>Provenance attestations</a>
+              </li>
+              <li>
+                <a href="../../build/policies/index.html"
+>Validating build inputs with policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/built-ins.html"
+>Built-in functions</a>
+              </li>
+              <li>
+                <a href="../../build/policies/debugging.html"
+>Debugging build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/examples.html"
+>Policy templates and examples</a>
+              </li>
+              <li>
+                <a href="../../build/policies/inputs.html"
+>Input reference</a>
+              </li>
+              <li>
+                <a href="../../build/policies/intro.html"
+>Introduction to build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/testing.html"
+>Test build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/usage.html"
+>Using build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/validate-git.html"
+>Validating Git repositories</a>
+              </li>
+              <li>
+                <a href="../../build/policies/validate-images.html"
+>Validating image inputs</a>
+              </li>
+              <li>
+                <a href="../../build/release-notes.html"
+>Release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Dockerfile overview</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#dockerfile">Dockerfile#</a></li>
+              <li class="lvl-3"><a href="#filename">Filename#</a></li>
+              <li class="lvl-2"><a href="#docker-images">Docker images#</a></li>
+              <li class="lvl-3"><a href="#example">Example#</a></li>
+              <li class="lvl-3"><a href="#dockerfile-syntax">Dockerfile syntax#</a></li>
+              <li class="lvl-3"><a href="#base-image">Base image#</a></li>
+              <li class="lvl-3"><a href="#environment-setup">Environment setup#</a></li>
+              <li class="lvl-3"><a href="#comments">Comments#</a></li>
+              <li class="lvl-3"><a href="#installing-dependencies">Installing dependencies#</a></li>
+              <li class="lvl-3"><a href="#copying-files">Copying files#</a></li>
+              <li class="lvl-3"><a href="#setting-environment-variables">Setting environment variables#</a></li>
+              <li class="lvl-3"><a href="#exposed-ports">Exposed ports#</a></li>
+              <li class="lvl-3"><a href="#starting-the-application">Starting the application#</a></li>
+              <li class="lvl-2"><a href="#building">Building#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <!-- vale Docker.We = NO -->
+
+<h2 id="dockerfile">Dockerfile<a class="headerlink" href="#dockerfile" title="Permanent link">#</a></h2>
+<p>It all starts with a Dockerfile.</p>
+<p>Docker builds images by reading the instructions from a Dockerfile. A
+Dockerfile is a text file containing instructions for building your source
+code. The Dockerfile instruction syntax is defined by the specification
+reference in the <a href="dockerfile.html">Dockerfile reference</a>.</p>
+<p>Here are the most common types of instructions:</p>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="dockerfile.html#from"><code>FROM &lt;image&gt;</code></a></td>
+<td>Defines a base for your image.</td>
+</tr>
+<tr>
+<td><a href="dockerfile.html#run"><code>RUN &lt;command&gt;</code></a></td>
+<td>Executes any commands in a new layer on top of the current image and commits the result. <code>RUN</code> also has a shell form for running commands.</td>
+</tr>
+<tr>
+<td><a href="dockerfile.html#workdir"><code>WORKDIR &lt;directory&gt;</code></a></td>
+<td>Sets the working directory for any <code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>COPY</code>, and <code>ADD</code> instructions that follow it in the Dockerfile.</td>
+</tr>
+<tr>
+<td><a href="dockerfile.html#copy"><code>COPY &lt;src&gt; &lt;dest&gt;</code></a></td>
+<td>Copies new files or directories from <code>&lt;src&gt;</code> and adds them to the filesystem of the container at the path <code>&lt;dest&gt;</code>.</td>
+</tr>
+<tr>
+<td><a href="dockerfile.html#cmd"><code>CMD &lt;command&gt;</code></a></td>
+<td>Lets you define the default program that is run once you start the container based on this image. Each Dockerfile only has one <code>CMD</code>, and only the last <code>CMD</code> instance is respected when multiple exist.</td>
+</tr>
+</tbody>
+</table>
+<p>Dockerfiles are crucial inputs for image builds and can facilitate automated,
+multi-layer image builds based on your unique configurations. Dockerfiles can
+start simple and grow with your needs to support more complex scenarios.</p>
+<h3 id="filename">Filename<a class="headerlink" href="#filename" title="Permanent link">#</a></h3>
+<p>The default filename to use for a Dockerfile is <code>Dockerfile</code>, without a file
+extension. Using the default name allows you to run the <code>docker build</code> command
+without having to specify additional command flags.</p>
+<p>Some projects may need distinct Dockerfiles for specific purposes. A common
+convention is to name these <code>&lt;something&gt;.Dockerfile</code>. You can specify the
+Dockerfile filename using the <code>--file</code> flag for the <code>docker build</code> command.
+Refer to the
+<a href="/reference/cli/docker/buildx/build/#file"><code>docker build</code> CLI reference</a>
+to learn about the <code>--file</code> flag.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>We recommend using the default (<code>Dockerfile</code>) for your project's primary
+Dockerfile.</p>
+</blockquote>
+<h2 id="docker-images">Docker images<a class="headerlink" href="#docker-images" title="Permanent link">#</a></h2>
+<p>Docker images consist of layers. Each layer is the result of a build
+instruction in the Dockerfile. Layers are stacked sequentially, and each one is
+a delta representing the changes applied to the previous layer.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h3>
+<p>Here's what a typical workflow for building applications with Docker looks like.</p>
+<p>The following example code shows a small "Hello World" application written in
+Python, using the Flask framework.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span>
+</code></pre></div>
+
+<p>In order to ship and deploy this application without Docker Build, you would
+need to make sure that:</p>
+<ul>
+<li>The required runtime dependencies are installed on the server</li>
+<li>The Python code gets uploaded to the server's filesystem</li>
+<li>The server starts your application, using the necessary parameters</li>
+</ul>
+<p>The following Dockerfile creates a container image, which has all the
+dependencies installed and that automatically starts your application.</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">ubuntu:22.04</span>
+
+<span class="c"># install app dependencies</span>
+<span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3<span class="w"> </span>python3-pip
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">flask</span><span class="o">==</span><span class="m">3</span>.0.*
+
+<span class="c"># install app</span>
+<span class="k">COPY</span><span class="w"> </span>hello.py<span class="w"> </span>/
+
+<span class="c"># final configuration</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">FLASK_APP</span><span class="o">=</span>hello
+<span class="k">EXPOSE</span><span class="w"> </span><span class="s">8000</span>
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;flask&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--host&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;8000&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Here's a breakdown of what this Dockerfile does:</p>
+<ul>
+<li><a href="#dockerfile-syntax">Dockerfile syntax</a></li>
+<li><a href="#base-image">Base image</a></li>
+<li><a href="#environment-setup">Environment setup</a></li>
+<li><a href="#comments">Comments</a></li>
+<li><a href="#installing-dependencies">Installing dependencies</a></li>
+<li><a href="#copying-files">Copying files</a></li>
+<li><a href="#setting-environment-variables">Setting environment variables</a></li>
+<li><a href="#exposed-ports">Exposed ports</a></li>
+<li><a href="#starting-the-application">Starting the application</a></li>
+</ul>
+<h3 id="dockerfile-syntax">Dockerfile syntax<a class="headerlink" href="#dockerfile-syntax" title="Permanent link">#</a></h3>
+<p>The first line to add to a Dockerfile is a <a href="dockerfile.html#syntax"><code># syntax</code> parser directive</a>.
+While optional, this directive instructs the Docker builder what syntax to use
+when parsing the Dockerfile, and allows older Docker versions with <a href="../buildkit/index.html#getting-started">BuildKit enabled</a>
+to use a specific <a href="../buildkit/frontend.html">Dockerfile frontend</a> before
+starting the build. <a href="dockerfile.html#parser-directives">Parser directives</a>
+must appear before any other comment, whitespace, or Dockerfile instruction in
+your Dockerfile, and should be the first line in Dockerfiles.</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!TIP]</p>
+<p>We recommend using <code>docker/dockerfile:1</code>, which always points to the latest
+release of the version 1 syntax. BuildKit automatically checks for updates of
+the syntax before building, making sure you are using the most current version.</p>
+</blockquote>
+<h3 id="base-image">Base image<a class="headerlink" href="#base-image" title="Permanent link">#</a></h3>
+<p>The line following the syntax directive defines what base image to use:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">ubuntu:22.04</span>
+</code></pre></div>
+
+<p>The <a href="dockerfile.html#from"><code>FROM</code> instruction</a> sets your base
+image to the 22.04 release of Ubuntu. All instructions that follow are executed
+in this base image: an Ubuntu environment. The notation <code>ubuntu:22.04</code>, follows
+the <code>name:tag</code> standard for naming Docker images. When you build images, you
+use this notation to name your images. There are many public images you can
+leverage in your projects, by importing them into your build steps using the
+Dockerfile <code>FROM</code> instruction.</p>
+<p><a href="https://hub.docker.com/search?badges=official" rel="noopener" target="_blank">Docker Hub</a>
+contains a large set of official images that you can use for this purpose.</p>
+<h3 id="environment-setup">Environment setup<a class="headerlink" href="#environment-setup" title="Permanent link">#</a></h3>
+<p>The following line executes a build command inside the base image.</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># install app dependencies</span>
+<span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3<span class="w"> </span>python3-pip
+</code></pre></div>
+
+<p>This <a href="dockerfile.html#run"><code>RUN</code> instruction</a> executes a
+shell in Ubuntu that updates the APT package index and installs Python tools in
+the container.</p>
+<h3 id="comments">Comments<a class="headerlink" href="#comments" title="Permanent link">#</a></h3>
+<p>Note the <code># install app dependencies</code> line. This is a comment. Comments in
+Dockerfiles begin with the <code>#</code> symbol. As your Dockerfile evolves, comments can
+be instrumental to document how your Dockerfile works for any future readers
+and editors of the file, including your future self.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>You might've noticed that comments are denoted using the same symbol as the
+<a href="#dockerfile-syntax">syntax directive</a> on the first line of the file.
+The symbol is only interpreted as a directive if the pattern matches a
+directive and appears at the beginning of the Dockerfile. Otherwise, it's
+treated as a comment.</p>
+</blockquote>
+<h3 id="installing-dependencies">Installing dependencies<a class="headerlink" href="#installing-dependencies" title="Permanent link">#</a></h3>
+<p>The second <code>RUN</code> instruction installs the <code>flask</code> dependency required by the
+Python application.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">flask</span><span class="o">==</span><span class="m">3</span>.0.*
+</code></pre></div>
+
+<p>A prerequisite for this instruction is that <code>pip</code> is installed into the build
+container. The first <code>RUN</code> command installs <code>pip</code>, which ensures that we can
+use the command to install the flask web framework.</p>
+<h3 id="copying-files">Copying files<a class="headerlink" href="#copying-files" title="Permanent link">#</a></h3>
+<p>The next instruction uses the
+<a href="dockerfile.html#copy"><code>COPY</code> instruction</a> to copy the
+<code>hello.py</code> file from the local build context into the root directory of our image.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">COPY</span><span class="w"> </span>hello.py<span class="w"> </span>/
+</code></pre></div>
+
+<p>A <a href="context.html">build context</a> is the set of files that you can access
+in Dockerfile instructions such as <code>COPY</code> and <code>ADD</code>.</p>
+<p>After the <code>COPY</code> instruction, the <code>hello.py</code> file is added to the filesystem
+of the build container.</p>
+<h3 id="setting-environment-variables">Setting environment variables<a class="headerlink" href="#setting-environment-variables" title="Permanent link">#</a></h3>
+<p>If your application uses environment variables, you can set environment variables
+in your Docker build using the <a href="dockerfile.html#env"><code>ENV</code> instruction</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">ENV</span><span class="w"> </span><span class="nv">FLASK_APP</span><span class="o">=</span>hello
+</code></pre></div>
+
+<p>This sets a Linux environment variable we'll need later. Flask, the framework
+used in this example, uses this variable to start the application. Without this,
+flask wouldn't know where to find our application to be able to run it.</p>
+<h3 id="exposed-ports">Exposed ports<a class="headerlink" href="#exposed-ports" title="Permanent link">#</a></h3>
+<p>The <a href="dockerfile.html#expose"><code>EXPOSE</code> instruction</a> marks that
+our final image has a service listening on port <code>8000</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">EXPOSE</span><span class="w"> </span><span class="s">8000</span>
+</code></pre></div>
+
+<p>This instruction isn't required, but it is a good practice and helps tools and
+team members understand what this application is doing.</p>
+<h3 id="starting-the-application">Starting the application<a class="headerlink" href="#starting-the-application" title="Permanent link">#</a></h3>
+<p>Finally, <a href="dockerfile.html#cmd"><code>CMD</code> instruction</a> sets the
+command that is run when the user starts a container based on this image.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;flask&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--host&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;8000&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>This command starts the flask development server listening on all addresses
+on port <code>8000</code>. The example here uses the "exec form" version of <code>CMD</code>.
+It's also possible to use the "shell form":</p>
+<div class="codehilite"><pre><span></span><code><span class="k">CMD</span><span class="w"> </span>flask<span class="w"> </span>run<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
+</code></pre></div>
+
+<p>There are subtle differences between these two versions,
+for example in how they trap signals like <code>SIGTERM</code> and <code>SIGKILL</code>.
+For more information about these differences, see
+<a href="dockerfile.html#shell-and-exec-form">Shell and exec form</a></p>
+<h2 id="building">Building<a class="headerlink" href="#building" title="Permanent link">#</a></h2>
+<p>To build a container image using the Dockerfile example from the
+<a href="#example">previous section</a>, you use the <code>docker build</code> command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>test:latest<span class="w"> </span>.
+</code></pre></div>
+
+<p>The <code>-t test:latest</code> option specifies the name and tag of the image.</p>
+<p>The single dot (<code>.</code>) at the end of the command sets the
+<a href="context.html">build context</a> to the current directory. This means that the
+build expects to find the Dockerfile and the <code>hello.py</code> file in the directory
+where the command is invoked. If those files aren't there, the build fails.</p>
+<p>After the image has been built, you can run the application as a container with
+<code>docker run</code>, specifying the image name:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">127</span>.0.0.1:8000:8000<span class="w"> </span>test:latest
+</code></pre></div>
+
+<p>This publishes the container's port 8000 to <code>http://localhost:8000</code> on the
+Docker host.</p>
+<blockquote>
+<p>[!TIP]</p>
+<p>To improve linting, code navigation, and vulnerability scanning of your Dockerfiles in Visual Studio Code
+see the <a href="https://marketplace.visualstudio.com/items?itemName=docker.docker" rel="noopener" target="_blank">Docker DX</a> extension.</p>
+</blockquote>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../build/concepts/context.html">
+          <span class="muted">Anterior</span>Build context
+        </a>
+        <a class="pager-next" href="../../build/concepts/overview.html">
+          <span class="muted">Siguiente</span>Docker Build Overview
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

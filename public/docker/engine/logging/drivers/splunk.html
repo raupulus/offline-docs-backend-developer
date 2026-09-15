@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Splunk logging driver · Docker</title>
+<meta name="description" content="Splunk logging driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/logging/drivers/splunk.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Splunk logging driver">
+<meta property="og:description" content="Splunk logging driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Splunk logging driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Splunk logging driver",
+"url": "https://docs.raupulus.dev/docker/engine/logging/drivers/splunk.html",  "description": "Splunk logging driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/daemon/alternative-runtimes.html"
+>Alternative container runtimes</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/embedded-containerd.html"
+>Run containerd in the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/ipv6.html"
+>Use IPv6 networking</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/live-restore.html"
+>Live restore</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/logs.html"
+>Read the daemon logs</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/prometheus.html"
+>Collect Docker metrics with Prometheus</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/proxy.html"
+>Daemon proxy configuration</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/remote-access.html"
+>Configure remote access for Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/start.html"
+>Start the daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/troubleshoot.html"
+>Troubleshooting the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/index.html"
+>Install Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/binaries.html"
+>Install Docker Engine from binaries</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/centos.html"
+>Install Docker Engine on CentOS</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/debian.html"
+>Install Docker Engine on Debian</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/fedora.html"
+>Install Docker Engine on Fedora</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/linux-postinstall.html"
+>Linux post-installation steps for Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/raspberry-pi-os.html"
+>Install Docker Engine on Raspberry Pi OS (32-bit / armhf)</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/rhel.html"
+>Install Docker Engine on RHEL</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/ubuntu.html"
+>Install Docker Engine on Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/index.html"
+>View container logs</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/configure.html"
+>Configure logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/index.html"
+>Logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/journald.html"
+>Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/splunk.html"
+class="is-current" aria-current="page">Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/syslog.html"
+>Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/dual-logging.html"
+>Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/pruning.html"
+>Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/macvlan.html"
+>Macvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/none.html"
+>None network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/overlay.html"
+>Overlay network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-iptables.html"
+>Docker with iptables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-nftables.html"
+>Docker with nftables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/links.html"
+>Legacy container links</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/port-publishing.html"
+>Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Splunk logging driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#usage">Usage#</a></li>
+              <li class="lvl-2"><a href="#splunk-options">Splunk options#</a></li>
+              <li class="lvl-3"><a href="#message-formats">Message formats#</a></li>
+              <li class="lvl-2"><a href="#advanced-options">Advanced options#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>The <code>splunk</code> logging driver sends container logs to
+<a href="https://dev.splunk.com/enterprise/docs/devtools/httpeventcollector/" rel="noopener" target="_blank">HTTP Event Collector</a>
+in Splunk Enterprise and Splunk Cloud.</p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h2>
+<p>You can configure Docker logging to use the <code>splunk</code> driver by default or on a
+per-container basis.</p>
+<p>To use the <code>splunk</code> driver as the default logging driver, set the keys
+<code>log-driver</code> and <code>log-opts</code> to appropriate values in the <code>daemon.json</code>
+configuration file and restart Docker. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;log-driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;splunk&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log-opts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;splunk-token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;splunk-url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>For more about configuring Docker using <code>daemon.json</code>, see
+<a href="/reference/cli/dockerd.html#daemon-configuration-file">daemon.json</a>.</p>
+<p>{{% include "daemon-cfg-desktop.md" %}}</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p><code>log-opts</code> configuration options in the <code>daemon.json</code> configuration file must
+be provided as strings. Boolean and numeric values (such as the value for
+<code>splunk-gzip</code> or <code>splunk-gzip-level</code>) must therefore be enclosed in quotes
+(<code>"</code>).</p>
+</blockquote>
+<p>To use the <code>splunk</code> driver for a specific container, use the commandline flags
+<code>--log-driver</code> and <code>log-opt</code> with <code>docker run</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--log-driver<span class="o">=</span>splunk<span class="w"> </span>--log-opt<span class="w"> </span>splunk-token<span class="o">=</span>VALUE<span class="w"> </span>--log-opt<span class="w"> </span>splunk-url<span class="o">=</span>VALUE<span class="w"> </span>...
+</code></pre></div>
+
+<h2 id="splunk-options">Splunk options<a class="headerlink" href="#splunk-options" title="Permanent link">#</a></h2>
+<p>The following properties let you configure the Splunk logging driver.</p>
+<ul>
+<li>To configure the <code>splunk</code> driver across the Docker environment, edit
+  <code>daemon.json</code> with the key, <code>"log-opts": {"NAME": "VALUE", ...}</code>.</li>
+<li>To configure the <code>splunk</code> driver for an individual container, use <code>docker run</code>
+  with the flag, <code>--log-opt NAME=VALUE ...</code>.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>splunk-token</code></td>
+<td style="text-align: left;">required</td>
+<td style="text-align: left;">Splunk HTTP Event Collector token.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-url</code></td>
+<td style="text-align: left;">required</td>
+<td style="text-align: left;">Path to your Splunk Enterprise, self-service Splunk Cloud instance, or Splunk Cloud managed cluster (including port and scheme used by HTTP Event Collector) in one of the following formats: <code>https://your_splunk_instance:8088</code>, <code>https://input-prd-p-XXXXXXX.cloud.splunk.com:8088</code>, or <code>https://http-inputs-XXXXXXXX.splunkcloud.com</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-source</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Event source.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-sourcetype</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Event source type.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-index</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Event index.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-capath</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Path to root certificate.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-caname</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Name to use for validating server certificate; by default the hostname of the <code>splunk-url</code> is used.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-insecureskipverify</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Ignore server certificate validation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-format</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Message format. Can be <code>inline</code>, <code>json</code> or <code>raw</code>. Defaults to <code>inline</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-verify-connection</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Verify on start, that Docker can connect to Splunk server. Defaults to true.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-gzip</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Enable/disable gzip compression to send events to Splunk Enterprise or Splunk Cloud instance. Defaults to false.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>splunk-gzip-level</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Set compression level for gzip. Valid values are -1 (default), 0 (no compression), 1 (best speed) ... 9 (best compression). Defaults to <a href="https://golang.org/pkg/compress/gzip/#DefaultCompression" rel="noopener" target="_blank">DefaultCompression</a>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tag</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Specify tag for message, which interpret some markup. Default value is <code>{{.ID}}</code> (12 characters of the container ID). Refer to the <a href="../log-tags.html">log tag option documentation</a> for customizing the log tag format.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Comma-separated list of keys of labels, which should be included in message, if these labels are specified for container.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>labels-regex</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Similar to and compatible with <code>labels</code>. A regular expression to match logging-related labels. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>env</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Comma-separated list of keys of environment variables, which should be included in message, if these variables are specified for container.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>env-regex</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Similar to and compatible with <code>env</code>. A regular expression to match logging-related environment variables. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>If there is collision between the <code>label</code> and <code>env</code> keys, the value of the <code>env</code>
+takes precedence. Both options add additional fields to the attributes of a
+logging message.</p>
+<p>Below is an example of the logging options specified for the Splunk Enterprise
+instance. The instance is installed locally on the same machine on which the
+Docker daemon is running.</p>
+<p>The path to the root certificate and Common Name is specified using an HTTPS
+scheme. This is used for verification. The <code>SplunkServerDefaultCert</code> is
+automatically generated by Splunk certificates.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-driver<span class="o">=</span>splunk<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span>splunk-token<span class="o">=</span>176FCEBF-4CF5-4EDF-91BC-703796522D20<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span>splunk-url<span class="o">=</span>https://splunkhost:8088<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span>splunk-capath<span class="o">=</span>/path/to/cert/cacert.pem<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span>splunk-caname<span class="o">=</span>SplunkServerDefaultCert<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span><span class="nv">tag</span><span class="o">=</span><span class="s2">&quot;{{.Name}}/{{.FullID}}&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span><span class="nv">labels</span><span class="o">=</span>location<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span><span class="nv">env</span><span class="o">=</span>TEST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--env<span class="w"> </span><span class="s2">&quot;TEST=false&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--label<span class="w"> </span><span class="nv">location</span><span class="o">=</span>west<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>your/application
+</code></pre></div>
+
+<p>The <code>splunk-url</code> for Splunk instances hosted on Splunk Cloud is in a format
+like <code>https://http-inputs-XXXXXXXX.splunkcloud.com</code> and does not include a
+port specifier.</p>
+<h3 id="message-formats">Message formats<a class="headerlink" href="#message-formats" title="Permanent link">#</a></h3>
+<p>There are three logging driver messaging formats: <code>inline</code> (default), <code>json</code>,
+and <code>raw</code>.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="Inline" &gt;}}</p>
+<p>The default format is <code>inline</code> where each log message is embedded as a string.
+For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;env1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;val1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;label1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;label1&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyImage/MyContainer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdout&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;line&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my message&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;env1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;val1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;label1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;label1&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyImage/MyContainer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdout&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;line&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;foo\&quot;: \&quot;bar\&quot;}&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="JSON" &gt;}}</p>
+<p>To format messages as <code>json</code> objects, set <code>--log-opt splunk-format=json</code>. The
+driver attempts to parse every line as a JSON object and send it as an embedded
+object. If it can't parse the message, it's sent <code>inline</code>. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;env1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;val1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;label1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;label1&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyImage/MyContainer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdout&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;line&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my message&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;env1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;val1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;label1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;label1&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyImage/MyContainer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdout&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;line&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bar&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Raw" &gt;}}</p>
+<p>To format messages as <code>raw</code>, set <code>--log-opt splunk-format=raw</code>. Attributes
+(environment variables and labels) and tags are prefixed to the message. For
+example:</p>
+<div class="codehilite"><pre><span></span><code><span class="go">MyImage/MyContainer env1=val1 label1=label1 my message</span>
+<span class="go">MyImage/MyContainer env1=val1 label1=label1 {&quot;foo&quot;: &quot;bar&quot;}</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<h2 id="advanced-options">Advanced options<a class="headerlink" href="#advanced-options" title="Permanent link">#</a></h2>
+<p>The Splunk logging driver lets you configure a few advanced options by setting
+environment variables for the Docker daemon.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Environment variable name</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>SPLUNK_LOGGING_DRIVER_POST_MESSAGES_FREQUENCY</code></td>
+<td style="text-align: left;"><code>5s</code></td>
+<td style="text-align: left;">The time to wait for more messages to batch.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>SPLUNK_LOGGING_DRIVER_POST_MESSAGES_BATCH_SIZE</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">The number of messages that should accumulate before sending them in one batch.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>SPLUNK_LOGGING_DRIVER_BUFFER_MAX</code></td>
+<td style="text-align: left;"><code>10 * 1000</code></td>
+<td style="text-align: left;">The maximum number of messages held in buffer for retries.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>SPLUNK_LOGGING_DRIVER_CHANNEL_SIZE</code></td>
+<td style="text-align: left;"><code>4 * 1000</code></td>
+<td style="text-align: left;">The maximum number of pending messages that can be in the channel used to send messages to background logger worker, which batches them.</td>
+</tr>
+</tbody>
+</table>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/logging/drivers/local.html">
+          <span class="muted">Anterior</span>Local file logging driver
+        </a>
+        <a class="pager-next" href="../../../engine/logging/drivers/syslog.html">
+          <span class="muted">Siguiente</span>Syslog logging driver
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

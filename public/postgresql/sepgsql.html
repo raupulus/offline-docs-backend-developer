@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sepgsql — SELinux-, label-based mandatory access control (MAC) security module · PostgreSQL</title>
+<meta name="description" content="sepgsql — SELinux-, label-based mandatory access control (MAC) security module - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/sepgsql.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="sepgsql — SELinux-, label-based mandatory access control (MAC) security module">
+<meta property="og:description" content="sepgsql — SELinux-, label-based mandatory access control (MAC) security module - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sepgsql — SELinux-, label-based mandatory access control (MAC) security module">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "sepgsql — SELinux-, label-based mandatory access control (MAC) security module",
+"url": "https://docs.raupulus.dev/postgresql/sepgsql.html",  "description": "sepgsql — SELinux-, label-based mandatory access control (MAC) security module - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+>pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+              <li>
+                <a href="./rangetypes.html"
+>Range Types</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-recovery-config.html"
+>recovery.conf file merged into postgresql.conf</a>
+              </li>
+              <li>
+                <a href="./reference.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="./regress.html"
+>Regression Tests</a>
+              </li>
+              <li>
+                <a href="./release-17.html"
+>Release 17.11</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release Notes</a>
+              </li>
+              <li>
+                <a href="./wal.html"
+>Reliability and the Write-Ahead Log</a>
+              </li>
+              <li>
+                <a href="./replication-origins.html"
+>Replication Progress Tracking</a>
+              </li>
+              <li>
+                <a href="./maintenance.html"
+>Routine Database Maintenance Tasks</a>
+              </li>
+              <li>
+                <a href="./seg.html"
+>seg — a datatype for line segments or floating point intervals</a>
+              </li>
+              <li>
+                <a href="./sepgsql.html"
+class="is-current" aria-current="page">sepgsql — SELinux-, label-based mandatory access control (MAC) security module</a>
+              </li>
+              <li>
+                <a href="./config.html"
+>Server Configuration</a>
+              </li>
+              <li>
+                <a href="./runtime.html"
+>Server Setup and Operation</a>
+              </li>
+              <li>
+                <a href="./spgist.html"
+>SP-GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./contrib-spi.html"
+>spi — Server Programming Interface features/examples</a>
+              </li>
+              <li>
+                <a href="./spi.html"
+>SPI_connect</a>
+              </li>
+              <li>
+                <a href="./features.html"
+>SQL Conformance</a>
+              </li>
+              <li>
+                <a href="./keywords.html"
+>SQL Key Words</a>
+              </li>
+              <li>
+                <a href="./syntax.html"
+>SQL Syntax</a>
+              </li>
+              <li>
+                <a href="./sslinfo.html"
+>sslinfo — obtain client SSL information</a>
+              </li>
+              <li>
+                <a href="./bki.html"
+>System Catalog Declarations and Initial Contents</a>
+              </li>
+              <li>
+                <a href="./catalogs.html"
+>System Catalogs</a>
+              </li>
+              <li>
+                <a href="./system-views.html"
+>System Views</a>
+              </li>
+              <li>
+                <a href="./tableam.html"
+>Table Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./tablefunc.html"
+>tablefunc — functions that return tables (crosstab and others)</a>
+              </li>
+              <li>
+                <a href="./tcn.html"
+>tcn — a trigger function to notify listeners of changes to table content</a>
+              </li>
+              <li>
+                <a href="./test-decoding.html"
+>test_decoding — SQL-based test/example module for WAL logical decoding</a>
+              </li>
+              <li>
+                <a href="./information_schema.html"
+>The Information Schema</a>
+              </li>
+              <li>
+                <a href="./rules.html"
+>The Rule System</a>
+              </li>
+              <li>
+                <a href="./sourcerepo.html"
+>The Source Code Repository</a>
+              </li>
+              <li>
+                <a href="./query.html"
+>The SQL Language</a>
+              </li>
+              <li>
+                <a href="./xact.html"
+>Transaction Processing</a>
+              </li>
+              <li>
+                <a href="./trigger.html"
+>Triggers</a>
+              </li>
+              <li>
+                <a href="./tsm-system-rows.html"
+>tsm_system_rows — the SYSTEM_ROWS sampling method for TABLESAMPLE</a>
+              </li>
+              <li>
+                <a href="./tsm-system-time.html"
+>tsm_system_time — the SYSTEM_TIME sampling method for TABLESAMPLE</a>
+              </li>
+              <li>
+                <a href="./typeconv.html"
+>Type Conversion</a>
+              </li>
+              <li>
+                <a href="./unaccent.html"
+>unaccent — a text search dictionary which removes diacritics</a>
+              </li>
+              <li>
+                <a href="./xaggr.html"
+>User-Defined Aggregates</a>
+              </li>
+              <li>
+                <a href="./xfunc.html"
+>User-Defined Functions</a>
+              </li>
+              <li>
+                <a href="./xoper.html"
+>User-Defined Operators</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">sepgsql — SELinux-, label-based mandatory access control (MAC) security module</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/sepgsql.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#sepgsql-selinux-label-based-mandatory-access-control-mac-security-module">sepgsql SELinux-, label-based mandatory access control (MAC) security module#</a></li>
+              <li class="lvl-2"><a href="#overview">Overview#</a></li>
+              <li class="lvl-2"><a href="#installation">Installation#</a></li>
+              <li class="lvl-2"><a href="#regression-tests">Regression Tests#</a></li>
+              <li class="lvl-2"><a href="#guc-parameters">GUC Parameters#</a></li>
+              <li class="lvl-2"><a href="#features">Features#</a></li>
+              <li class="lvl-3"><a href="#controlled-object-classes">Controlled Object Classes#</a></li>
+              <li class="lvl-3"><a href="#dml-permissions">DML Permissions#</a></li>
+              <li class="lvl-3"><a href="#ddl-permissions">DDL Permissions#</a></li>
+              <li class="lvl-3"><a href="#trusted-procedures">Trusted Procedures#</a></li>
+              <li class="lvl-3"><a href="#dynamic-domain-transitions">Dynamic Domain Transitions#</a></li>
+              <li class="lvl-3"><a href="#miscellaneous">Miscellaneous#</a></li>
+              <li class="lvl-2"><a href="#sepgsql-functions">Sepgsql Functions#</a></li>
+              <li class="lvl-2"><a href="#limitations">Limitations#</a></li>
+              <li class="lvl-2"><a href="#external-resources">External Resources#</a></li>
+              <li class="lvl-2"><a href="#author">Author#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="sepgsql-selinux-label-based-mandatory-access-control-mac-security-module">sepgsql SELinux-, label-based mandatory access control (MAC) security module<a class="headerlink" href="#sepgsql-selinux-label-based-mandatory-access-control-mac-security-module" title="Permanent link">#</a></h2>
+<p>sepgsql</p>
+<p><code>sepgsql</code> is a loadable module that supports label-based mandatory access control (MAC) based on SELinux security policy.</p>
+<blockquote>
+<p>[!WARNING]
+The current implementation has significant limitations, and does not enforce mandatory access control for all actions. See <a href="#sepgsql-limitations">Limitations</a>.</p>
+</blockquote>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
+<p>This module integrates with SELinux to provide an additional layer of security checking above and beyond what is normally provided by PostgreSQL. From the perspective of SELinux, this module allows PostgreSQL to function as a user-space object manager. Each table or function access initiated by a DML query will be checked against the system security policy. This check is in addition to the usual SQL permissions checking performed by PostgreSQL.</p>
+<p>SELinux access control decisions are made using security labels, which are represented by strings such as <code>system_u:object_r:sepgsql_table_t:s0</code>. Each access control decision involves two labels: the label of the subject attempting to perform the action, and the label of the object on which the operation is to be performed. Since these labels can be applied to any sort of object, access control decisions for objects stored within the database can be (and, with this module, are) subjected to the same general criteria used for objects of any other type, such as files. This design is intended to allow a centralized security policy to protect information assets independent of the particulars of how those assets are stored.</p>
+<p>The <a href="#sql-security-label"><code>SECURITY LABEL</code></a> statement allows assignment of a security label to a database object.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
+<p><code>sepgsql</code> can only be used on Linux 2.6.28 or higher with SELinux enabled. It is not available on any other platform. You will also need libselinux 2.1.10 or higher and selinux-policy 3.9.13 or higher (although some distributions may backport the necessary rules into older policy versions).</p>
+<p>The <code>sestatus</code> command allows you to check the status of SELinux. A typical display is:</p>
+<div class="codehilite"><pre><span></span><code>$ sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /selinux
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy version:                 24
+Policy from config file:        targeted
+</code></pre></div>
+
+<p>If SELinux is disabled or not installed, you must set that product up first before installing this module.</p>
+<p>To build this module specify <a href="#configure-option-with-sepgsql">???</a> (when using <a href="#install-make">make and autoconf</a> ) or <a href="#configure-with-sepgsql-meson">???</a> (when using <a href="#install-meson">meson</a>). Be sure that the <code>libselinux-devel</code> RPM is installed at build time.</p>
+<p>To use this module, you must include <code>sepgsql</code> in the <a href="#guc-shared-preload-libraries">???</a> parameter in <code>postgresql.conf</code>. The module will not function correctly if loaded in any other manner. Once the module is loaded, you should execute <code>sepgsql.sql</code> in each database. This will install functions needed for security label management, and assign initial security labels.</p>
+<p>Here is an example showing how to initialize a fresh database cluster with <code>sepgsql</code> functions and security labels installed. Adjust the paths shown as appropriate for your installation:</p>
+<div class="codehilite"><pre><span></span><code>$ export PGDATA=/path/to/data/directory
+$ initdb
+$ vi $PGDATA/postgresql.conf
+  change
+    #shared_preload_libraries = &#39;&#39;                # (change requires restart)
+  to
+    shared_preload_libraries = &#39;sepgsql&#39;          # (change requires restart)
+$ for DBNAME in template0 template1 postgres; do
+    postgres --single -F -c exit_on_error=true $DBNAME \
+      &lt;/usr/local/pgsql/share/contrib/sepgsql.sql &gt;/dev/null
+  done
+</code></pre></div>
+
+<p>Please note that you may see some or all of the following notifications depending on the particular versions you have of libselinux and selinux-policy:</p>
+<div class="codehilite"><pre><span></span><code>/etc/selinux/targeted/contexts/sepgsql_contexts:  line 33 has invalid object type db_blobs
+/etc/selinux/targeted/contexts/sepgsql_contexts:  line 36 has invalid object type db_language
+/etc/selinux/targeted/contexts/sepgsql_contexts:  line 37 has invalid object type db_language
+/etc/selinux/targeted/contexts/sepgsql_contexts:  line 38 has invalid object type db_language
+/etc/selinux/targeted/contexts/sepgsql_contexts:  line 39 has invalid object type db_language
+/etc/selinux/targeted/contexts/sepgsql_contexts:  line 40 has invalid object type db_language
+</code></pre></div>
+
+<p>These messages are harmless and should be ignored.</p>
+<p>If the installation process completes without error, you can now start the server normally.</p>
+<h2 id="regression-tests">Regression Tests<a class="headerlink" href="#regression-tests" title="Permanent link">#</a></h2>
+<p>Due to the nature of SELinux, running the regression tests for <code>sepgsql</code> requires several extra configuration steps, some of which must be done as root. The regression tests will not be run by an ordinary <code>make check</code> or <code>make installcheck</code> command; you must set up the configuration and then invoke the test script manually. The tests must be run in the <code>contrib/sepgsql</code> directory of a configured PostgreSQL build tree. Although they require a build tree, the tests are designed to be executed against an installed server, that is they are comparable to <code>make installcheck</code> not <code>make check</code>.</p>
+<p>First, set up <code>sepgsql</code> in a working database according to the instructions in <a href="#sepgsql-installation">Installation</a>. Note that the current operating system user must be able to connect to the database as superuser without password authentication.</p>
+<p>Second, build and install the policy package for the regression test. The <code>sepgsql-regtest</code> policy is a special purpose policy package which provides a set of rules to be allowed during the regression tests. It should be built from the policy source file <code>sepgsql-regtest.te</code>, which is done using <code>make</code> with a Makefile supplied by SELinux. You will need to locate the appropriate Makefile on your system; the path shown below is only an example. (This Makefile is usually supplied by the <code>selinux-policy-devel</code> or <code>selinux-policy</code> RPM.) Once built, install this policy package using the <code>semodule</code> command, which loads supplied policy packages into the kernel. If the package is correctly installed, <code>semodule -l</code> should list <code>sepgsql-regtest</code> as an available policy package:</p>
+<div class="codehilite"><pre><span></span><code>$ cd .../contrib/sepgsql
+$ make -f /usr/share/selinux/devel/Makefile
+$ sudo semodule -u sepgsql-regtest.pp
+$ sudo semodule -l | grep sepgsql
+sepgsql-regtest 1.07
+</code></pre></div>
+
+<p>Third, turn on <code>sepgsql_regression_test_mode</code>. For security reasons, the rules in <code>sepgsql-regtest</code> are not enabled by default; the <code>sepgsql_regression_test_mode</code> parameter enables the rules needed to launch the regression tests. It can be turned on using the <code>setsebool</code> command:</p>
+<div class="codehilite"><pre><span></span><code>$ sudo setsebool sepgsql_regression_test_mode on
+$ getsebool sepgsql_regression_test_mode
+sepgsql_regression_test_mode --&gt; on
+</code></pre></div>
+
+<p>Fourth, verify your shell is operating in the <code>unconfined_t</code> domain:</p>
+<div class="codehilite"><pre><span></span><code>$ id -Z
+unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+</code></pre></div>
+
+<p>See <a href="#sepgsql-resources">External Resources</a> for details on adjusting your working domain, if necessary.</p>
+<p>Finally, run the regression test script:</p>
+<div class="codehilite"><pre><span></span><code>$ ./test_sepgsql
+</code></pre></div>
+
+<p>This script will attempt to verify that you have done all the configuration steps correctly, and then it will run the regression tests for the <code>sepgsql</code> module.</p>
+<p>After completing the tests, it's recommended you disable the <code>sepgsql_regression_test_mode</code> parameter:</p>
+<div class="codehilite"><pre><span></span><code>$ sudo setsebool sepgsql_regression_test_mode off
+</code></pre></div>
+
+<p>You might prefer to remove the <code>sepgsql-regtest</code> policy entirely:</p>
+<div class="codehilite"><pre><span></span><code>$ sudo semodule -r sepgsql-regtest
+</code></pre></div>
+
+<h2 id="guc-parameters">GUC Parameters<a class="headerlink" href="#guc-parameters" title="Permanent link">#</a></h2>
+<p><code>sepgsql.permissive</code> (<code>boolean</code>) <span class="indexterm"></span><br>
+This parameter enables <code>sepgsql</code> to function in permissive mode, regardless of the system setting. The default is off. This parameter can only be set in the <code>postgresql.conf</code> file or on the server command line.</p>
+<p>When this parameter is on, <code>sepgsql</code> functions in permissive mode, even if SELinux in general is working in enforcing mode. This parameter is primarily useful for testing purposes.</p>
+<p><code>sepgsql.debug_audit</code> (<code>boolean</code>) <span class="indexterm"></span><br>
+This parameter enables the printing of audit messages regardless of the system policy settings. The default is off, which means that messages will be printed according to the system settings.</p>
+<p>The security policy of SELinux also has rules to control whether or not particular accesses are logged. By default, access violations are logged, but allowed accesses are not.</p>
+<p>This parameter forces all possible logging to be turned on, regardless of the system policy.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">#</a></h2>
+<h3 id="controlled-object-classes">Controlled Object Classes<a class="headerlink" href="#controlled-object-classes" title="Permanent link">#</a></h3>
+<p>The security model of SELinux describes all the access control rules as relationships between a subject entity (typically, a client of the database) and an object entity (such as a database object), each of which is identified by a security label. If access to an unlabeled object is attempted, the object is treated as if it were assigned the label <code>unlabeled_t</code>.</p>
+<p>Currently, <code>sepgsql</code> allows security labels to be assigned to schemas, tables, columns, sequences, views, and functions. When <code>sepgsql</code> is in use, security labels are automatically assigned to supported database objects at creation time. This label is called a default security label, and is decided according to the system security policy, which takes as input the creator's label, the label assigned to the new object's parent object and optionally name of the constructed object.</p>
+<p>A new database object basically inherits the security label of the parent object, except when the security policy has special rules known as type-transition rules, in which case a different label may be applied. For schemas, the parent object is the current database; for tables, sequences, views, and functions, it is the containing schema; for columns, it is the containing table.</p>
+<h3 id="dml-permissions">DML Permissions<a class="headerlink" href="#dml-permissions" title="Permanent link">#</a></h3>
+<p>For tables, <code>db_table:select</code>, <code>db_table:insert</code>, <code>db_table:update</code> or <code>db_table:delete</code> are checked for all the referenced target tables depending on the kind of statement; in addition, <code>db_table:select</code> is also checked for all the tables that contain columns referenced in the <code>WHERE</code> or <code>RETURNING</code> clause, as a data source for <code>UPDATE</code>, and so on.</p>
+<p>Column-level permissions will also be checked for each referenced column. <code>db_column:select</code> is checked on not only the columns being read using <code>SELECT</code>, but those being referenced in other DML statements; <code>db_column:update</code> or <code>db_column:insert</code> will also be checked for columns being modified by <code>UPDATE</code> or <code>INSERT</code>.</p>
+<p>For example, consider: UPDATE t1 SET x = 2, y = func1(y) WHERE z = 100; Here, <code>db_column:update</code> will be checked for <code>t1.x</code>, since it is being updated, <code>db_column:{select update}</code> will be checked for <code>t1.y</code>, since it is both updated and referenced, and <code>db_column:select</code> will be checked for <code>t1.z</code>, since it is only referenced. <code>db_table:{select update}</code> will also be checked at the table level.</p>
+<p>For sequences, <code>db_sequence:get_value</code> is checked when we reference a sequence object using <code>SELECT</code>; however, note that we do not currently check permissions on execution of corresponding functions such as <code>lastval()</code>.</p>
+<p>For views, <code>db_view:expand</code> will be checked, then any other required permissions will be checked on the objects being expanded from the view, individually.</p>
+<p>For functions, <code>db_procedure:{execute}</code> will be checked when user tries to execute a function as a part of query, or using fast-path invocation. If this function is a trusted procedure, it also checks <code>db_procedure:{entrypoint}</code> permission to check whether it can perform as entry point of trusted procedure.</p>
+<p>In order to access any schema object, <code>db_schema:search</code> permission is required on the containing schema. When an object is referenced without schema qualification, schemas on which this permission is not present will not be searched (just as if the user did not have <code>USAGE</code> privilege on the schema). If an explicit schema qualification is present, an error will occur if the user does not have the requisite permission on the named schema.</p>
+<p>The client must be allowed to access all referenced tables and columns, even if they originated from views which were then expanded, so that we apply consistent access control rules independent of the manner in which the table contents are referenced.</p>
+<p>The default database privilege system allows database superusers to modify system catalogs using DML commands, and reference or modify toast tables. These operations are prohibited when <code>sepgsql</code> is enabled.</p>
+<h3 id="ddl-permissions">DDL Permissions<a class="headerlink" href="#ddl-permissions" title="Permanent link">#</a></h3>
+<p>SELinux defines several permissions to control common operations for each object type; such as creation, alter, drop and relabel of security label. In addition, several object types have special permissions to control their characteristic operations; such as addition or deletion of name entries within a particular schema.</p>
+<p>Creating a new database object requires <code>create</code> permission. SELinux will grant or deny this permission based on the client's security label and the proposed security label for the new object. In some cases, additional privileges are required:</p>
+<ul>
+<li>
+<p><a href="#sql-createdatabase"><code>CREATE DATABASE</code></a> additionally requires <code>getattr</code> permission for the source or template database.</p>
+</li>
+<li>
+<p>Creating a schema object additionally requires <code>add_name</code> permission on the parent schema.</p>
+</li>
+<li>
+<p>Creating a table additionally requires permission to create each individual table column, just as if each table column were a separate top-level object.</p>
+</li>
+<li>
+<p>Creating a function marked as <code>LEAKPROOF</code> additionally requires <code>install</code> permission. (This permission is also checked when <code>LEAKPROOF</code> is set for an existing function.)</p>
+</li>
+</ul>
+<p>When <code>DROP</code> command is executed, <code>drop</code> will be checked on the object being removed. Permissions will be also checked for objects dropped indirectly via <code>CASCADE</code>. Deletion of objects contained within a particular schema (tables, views, sequences and procedures) additionally requires <code>remove_name</code> on the schema.</p>
+<p>When <code>ALTER</code> command is executed, <code>setattr</code> will be checked on the object being modified for each object types, except for subsidiary objects such as the indexes or triggers of a table, where permissions are instead checked on the parent object. In some cases, additional permissions are required:</p>
+<ul>
+<li>
+<p>Moving an object to a new schema additionally requires <code>remove_name</code> permission on the old schema and <code>add_name</code> permission on the new one.</p>
+</li>
+<li>
+<p>Setting the <code>LEAKPROOF</code> attribute on a function requires <code>install</code> permission.</p>
+</li>
+<li>
+<p>Using <a href="#sql-security-label"><code>SECURITY LABEL</code></a> on an object additionally requires <code>relabelfrom</code> permission for the object in conjunction with its old security label and <code>relabelto</code> permission for the object in conjunction with its new security label. (In cases where multiple label providers are installed and the user tries to set a security label, but it is not managed by SELinux, only <code>setattr</code> should be checked here. This is currently not done due to implementation restrictions.)</p>
+</li>
+</ul>
+<h3 id="trusted-procedures">Trusted Procedures<a class="headerlink" href="#trusted-procedures" title="Permanent link">#</a></h3>
+<p>Trusted procedures are similar to security definer functions or setuid commands. SELinux provides a feature to allow trusted code to run using a security label different from that of the client, generally for the purpose of providing highly controlled access to sensitive data (e.g., rows might be omitted, or the precision of stored values might be reduced). Whether or not a function acts as a trusted procedure is controlled by its security label and the operating system security policy. For example:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# CREATE TABLE customer (
+               cid     int primary key,
+               cname   text,
+               credit  text
+           );
+CREATE TABLE
+postgres=# SECURITY LABEL ON COLUMN customer.credit
+               IS &#39;system_u:object_r:sepgsql_secret_table_t:s0&#39;;
+SECURITY LABEL
+postgres=# CREATE FUNCTION show_credit(int) RETURNS text
+             AS &#39;SELECT regexp_replace(credit, &#39;&#39;-[0-9]+$&#39;&#39;, &#39;&#39;-xxxx&#39;&#39;, &#39;&#39;g&#39;&#39;)
+                        FROM customer WHERE cid = $1&#39;
+           LANGUAGE sql;
+CREATE FUNCTION
+postgres=# SECURITY LABEL ON FUNCTION show_credit(int)
+               IS &#39;system_u:object_r:sepgsql_trusted_proc_exec_t:s0&#39;;
+SECURITY LABEL
+</code></pre></div>
+
+<p>The above operations should be performed by an administrative user.</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT * FROM customer;
+ERROR:  SELinux: security policy violation
+postgres=# SELECT cid, cname, show_credit(cid) FROM customer;
+ cid | cname  |     show_credit
+-----+--------+---------------------
+   1 | taro   | 1111-2222-3333-xxxx
+   2 | hanako | 5555-6666-7777-xxxx
+(2 rows)
+</code></pre></div>
+
+<p>In this case, a regular user cannot reference <code>customer.credit</code> directly, but a trusted procedure <code>show_credit</code> allows the user to print the credit card numbers of customers with some of the digits masked out.</p>
+<h3 id="dynamic-domain-transitions">Dynamic Domain Transitions<a class="headerlink" href="#dynamic-domain-transitions" title="Permanent link">#</a></h3>
+<p>It is possible to use SELinux's dynamic domain transition feature to switch the security label of the client process, the client domain, to a new context, if that is allowed by the security policy. The client domain needs the <code>setcurrent</code> permission and also <code>dyntransition</code> from the old to the new domain.</p>
+<p>Dynamic domain transitions should be considered carefully, because they allow users to switch their label, and therefore their privileges, at their option, rather than (as in the case of a trusted procedure) as mandated by the system. Thus, the <code>dyntransition</code> permission is only considered safe when used to switch to a domain with a smaller set of privileges than the original one. For example:</p>
+<div class="codehilite"><pre><span></span><code>regression=# select sepgsql_getcon();
+                    sepgsql_getcon
+-------------------------------------------------------
+ unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+(1 row)
+
+regression=# SELECT sepgsql_setcon(&#39;unconfined_u:unconfined_r:unconfined_t:s0-s0:c1.c4&#39;);
+ sepgsql_setcon
+----------------
+ t
+(1 row)
+
+regression=# SELECT sepgsql_setcon(&#39;unconfined_u:unconfined_r:unconfined_t:s0-s0:c1.c1023&#39;);
+ERROR:  SELinux: security policy violation
+</code></pre></div>
+
+<p>In this example above we were allowed to switch from the larger MCS range <code>c1.c1023</code> to the smaller range <code>c1.c4</code>, but switching back was denied.</p>
+<p>A combination of dynamic domain transition and trusted procedure enables an interesting use case that fits the typical process life-cycle of connection pooling software. Even if your connection pooling software is not allowed to run most of SQL commands, you can allow it to switch the security label of the client using the <code>sepgsql_setcon()</code> function from within a trusted procedure; that should take some credential to authorize the request to switch the client label. After that, this session will have the privileges of the target user, rather than the connection pooler. The connection pooler can later revert the security label change by again using <code>sepgsql_setcon()</code> with <code>NULL</code> argument, again invoked from within a trusted procedure with appropriate permissions checks. The point here is that only the trusted procedure actually has permission to change the effective security label, and only does so when given proper credentials. Of course, for secure operation, the credential store (table, procedure definition, or whatever) must be protected from unauthorized access.</p>
+<h3 id="miscellaneous">Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permanent link">#</a></h3>
+<p>We reject the <a href="#sql-load"><code>LOAD</code></a> command across the board, because any module loaded could easily circumvent security policy enforcement.</p>
+<h2 id="sepgsql-functions">Sepgsql Functions<a class="headerlink" href="#sepgsql-functions" title="Permanent link">#</a></h2>
+<p><a href="#sepgsql-functions-table">Sepgsql Functions</a> shows the available functions.</p>
+<table id="sepgsql-functions-table">
+<caption>Sepgsql Functions</caption>
+<thead>
+<tr>
+<th><p role="func_signature">Function</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="func_signature"><code>sepgsql_getcon</code> () text</p>
+<p>Returns the client domain, the current security label of the client.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>sepgsql_setcon</code> ( <code>text</code> ) boolean</p>
+<p>Switches the client domain of the current session to the new domain, if allowed by the security policy. It also accepts <code>NULL</code> input as a request to transition to the client's original domain.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>sepgsql_mcstrans_in</code> ( <code>text</code> ) text</p>
+<p>Translates the given qualified MLS/MCS range into raw format if the mcstrans daemon is running.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>sepgsql_mcstrans_out</code> ( <code>text</code> ) text</p>
+<p>Translates the given raw MLS/MCS range into qualified format if the mcstrans daemon is running.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>sepgsql_restorecon</code> ( <code>text</code> ) boolean</p>
+<p>Sets up initial security labels for all objects within the current database. The argument may be <code>NULL</code>, or the name of a specfile to be used as alternative of the system default.</p></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">#</a></h2>
+<p>Data Definition Language (DDL) Permissions<br>
+Due to implementation restrictions, some DDL operations do not check permissions.</p>
+<p>Data Control Language (DCL) Permissions<br>
+Due to implementation restrictions, DCL operations do not check permissions.</p>
+<p>Row-level access control<br>
+PostgreSQL supports row-level access, but <code>sepgsql</code> does not.</p>
+<p>Covert channels<br>
+<code>sepgsql</code> does not try to hide the existence of a certain object, even if the user is not allowed to reference it. For example, we can infer the existence of an invisible object as a result of primary key conflicts, foreign key violations, and so on, even if we cannot obtain the contents of the object. The existence of a top secret table cannot be hidden; we only hope to conceal its contents.</p>
+<h2 id="external-resources">External Resources<a class="headerlink" href="#external-resources" title="Permanent link">#</a></h2>
+<p><a href="https://wiki.postgresql.org/wiki/SEPostgreSQL" rel="noopener" target="_blank">SE-PostgreSQL Introduction</a><br>
+This wiki page provides a brief overview, security design, architecture, administration and upcoming features.</p>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/index" rel="noopener" target="_blank">SELinux User's and Administrator's Guide</a><br>
+This document provides a wide spectrum of knowledge to administer SELinux on your systems. It focuses primarily on Red Hat operating systems, but is not limited to them.</p>
+<p><a href="https://fedoraproject.org/wiki/SELinux_FAQ" rel="noopener" target="_blank">Fedora SELinux FAQ</a><br>
+This document answers frequently asked questions about SELinux. It focuses primarily on Fedora, but is not limited to Fedora.</p>
+<h2 id="author">Author<a class="headerlink" href="#author" title="Permanent link">#</a></h2>
+<p>KaiGai Kohei <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#107;&#97;&#105;&#103;&#97;&#105;&#64;&#97;&#107;&#46;&#106;&#112;&#46;&#110;&#101;&#99;&#46;&#99;&#111;&#109;">&#107;&#97;&#105;&#103;&#97;&#105;&#64;&#97;&#107;&#46;&#106;&#112;&#46;&#110;&#101;&#99;&#46;&#99;&#111;&#109;</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./seg.html">
+          <span class="muted">Anterior</span>seg — a datatype for line segments or floating point intervals
+        </a>
+        <a class="pager-next" href="./config.html">
+          <span class="muted">Siguiente</span>Server Configuration
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

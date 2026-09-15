@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Port publishing and mapping · Docker</title>
+<meta name="description" content="Port publishing and mapping - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/network/port-publishing.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Port publishing and mapping">
+<meta property="og:description" content="Port publishing and mapping - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Port publishing and mapping">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Port publishing and mapping",
+"url": "https://docs.raupulus.dev/docker/engine/network/port-publishing.html",  "description": "Port publishing and mapping - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/journald.html"
+>Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/splunk.html"
+>Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/syslog.html"
+>Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/dual-logging.html"
+>Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/pruning.html"
+>Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/macvlan.html"
+>Macvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/none.html"
+>None network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/overlay.html"
+>Overlay network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/firewall-iptables.html"
+>Docker with iptables</a>
+              </li>
+              <li>
+                <a href="../../engine/network/firewall-nftables.html"
+>Docker with nftables</a>
+              </li>
+              <li>
+                <a href="../../engine/network/links.html"
+>Legacy container links</a>
+              </li>
+              <li>
+                <a href="../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../engine/network/port-publishing.html"
+class="is-current" aria-current="page">Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Port publishing and mapping</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#publishing-ports">Publishing ports#</a></li>
+              <li class="lvl-2"><a href="#direct-routing">Direct routing#</a></li>
+              <li class="lvl-3"><a href="#direct-routing-to-containers-in-bridge-networks">Direct routing to containers in bridge networks#</a></li>
+              <li class="lvl-2"><a href="#gateway-modes">Gateway modes#</a></li>
+              <li class="lvl-3"><a href="#example_1">Example#</a></li>
+              <li class="lvl-2"><a href="#setting-the-default-bind-address-for-containers">Setting the default bind address for containers#</a></li>
+              <li class="lvl-3"><a href="#masquerade-or-snat-for-outgoing-packets">Masquerade or SNAT for outgoing packets#</a></li>
+              <li class="lvl-3"><a href="#default-bridge">Default bridge#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>By default, for both IPv4 and IPv6, the Docker daemon blocks access to ports that
+have not been published. Published container ports are mapped to host IP addresses.
+To do this, it uses firewall rules to perform Network Address Translation (NAT),
+Port Address Translation (PAT), and masquerading.</p>
+<p>For example, <code>docker run -p 8080:80 [...]</code> creates a mapping
+between port 8080 on any address on the Docker host, and the container's
+port 80. Outgoing connections from the container will masquerade, using
+the Docker host's IP address.</p>
+<h2 id="publishing-ports">Publishing ports<a class="headerlink" href="#publishing-ports" title="Permanent link">#</a></h2>
+<p>When you create or run a container using <code>docker create</code> or <code>docker run</code>, all
+ports of containers on bridge networks are accessible from the Docker host and
+other containers connected to the same network. Ports are not accessible from
+outside the host or, with the default configuration, from containers in other
+networks.</p>
+<p>Use the <code>--publish</code> or <code>-p</code> flag to make a port available outside the host,
+and to containers in other bridge networks.</p>
+<p>This creates a firewall rule in the host,
+mapping a container port to a port on the Docker host to the outside world.
+Here are some examples:</p>
+<table>
+<thead>
+<tr>
+<th>Flag value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-p 8080:80</code></td>
+<td>Map port <code>8080</code> on the Docker host to TCP port <code>80</code> in the container.</td>
+</tr>
+<tr>
+<td><code>-p 192.168.1.100:8080:80</code></td>
+<td>Map port <code>8080</code> on the Docker host IP <code>192.168.1.100</code> to TCP port <code>80</code> in the container.</td>
+</tr>
+<tr>
+<td><code>-p 8080:80/udp</code></td>
+<td>Map port <code>8080</code> on the Docker host to UDP port <code>80</code> in the container.</td>
+</tr>
+<tr>
+<td><code>-p 8080:80/tcp -p 8080:80/udp</code></td>
+<td>Map TCP port <code>8080</code> on the Docker host to TCP port <code>80</code> in the container, and map UDP port <code>8080</code> on the Docker host to UDP port <code>80</code> in the container.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>Publishing container ports is insecure by default. Meaning, when you publish
+a container's ports it becomes available not only to the Docker host, but to
+the outside world as well.</p>
+<p>If you include the localhost IP address (<code>127.0.0.1</code>, or <code>::1</code>) with the
+publish flag, only the Docker host can access the published container port.</p>
+<p><code>console
+$ docker run -p 127.0.0.1:8080:80 -p '[::1]:8080:80' nginx</code></p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>In releases older than 28.0.0, hosts within the same L2 segment (for example,
+hosts connected to the same network switch) can reach ports published to localhost.
+For more information, see
+<a href="https://github.com/moby/moby/issues/45610" rel="noopener" target="_blank">moby/moby#45610</a></p>
+</blockquote>
+</blockquote>
+<p>Ports on the host's IPv6 addresses will map to the container's IPv4 address
+if no host IP is given in a port mapping, the bridge network is IPv4-only,
+and <code>--userland-proxy=true</code> (default).</p>
+<h2 id="direct-routing">Direct routing<a class="headerlink" href="#direct-routing" title="Permanent link">#</a></h2>
+<p>Port mapping ensures that published ports are accessible on the host's
+network addresses, which are likely to be routable for any external
+clients. No routes are normally set up in the host's network for container
+addresses that exist within a host.</p>
+<p>But, particularly with IPv6 you may prefer to avoid using NAT and instead
+arrange for external routing to container addresses ("direct routing").</p>
+<p>To access containers on a bridge network from outside the Docker host,
+you must first set up routing to the bridge network via an address on the
+Docker host. This can be achieved using static routes, Border Gateway Protocol (BGP),
+or any other means appropriate for your network. For example, within
+a local layer 2 network, remote hosts can set up static routes to a container
+network via the Docker daemon host's address on the local network.</p>
+<h3 id="direct-routing-to-containers-in-bridge-networks">Direct routing to containers in bridge networks<a class="headerlink" href="#direct-routing-to-containers-in-bridge-networks" title="Permanent link">#</a></h3>
+<p>By default, remote hosts are not allowed direct access to container IP
+addresses in Docker's Linux bridge networks. They can only access ports
+published to host IP addresses.</p>
+<p>To allow direct access to any published port, on any container, in any
+Linux bridge network, use daemon option <code>"allow-direct-routing": true</code>
+in <code>/etc/docker/daemon.json</code> or the equivalent <code>--allow-direct-routing</code>.</p>
+<p>To allow direct routing from anywhere to containers in a specific bridge
+network, see <a href="#gateway-modes">Gateway modes</a>.</p>
+<p>Or, to allow direct routing via specific host interfaces, to a specific
+bridge network, use the following option when creating the network:
+- <code>com.docker.network.bridge.trusted_host_interfaces</code></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h4>
+<p>Create a network where published ports on container IP addresses can be
+accessed directly from interfaces <code>vxlan.1</code> and <code>eth3</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>--subnet<span class="w"> </span><span class="m">192</span>.0.2.0/24<span class="w"> </span>--ip-range<span class="w"> </span><span class="m">192</span>.0.2.0/29<span class="w"> </span>-o<span class="w"> </span>com.docker.network.bridge.trusted_host_interfaces<span class="o">=</span><span class="s2">&quot;vxlan.1:eth3&quot;</span><span class="w"> </span>mynet
+</code></pre></div>
+
+<p>Run a container in that network, publishing its port 80 to port 8080 on
+the host's loopback interface:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--ip<span class="w"> </span><span class="m">192</span>.0.2.100<span class="w"> </span>-p<span class="w"> </span><span class="m">127</span>.0.0.1:8080:80<span class="w"> </span>nginx
+</code></pre></div>
+
+<p>The web server running on the container's port 80 can now be accessed
+from the Docker host at <code>http://127.0.0.1:8080</code>, or directly at
+<code>http://192.0.2.100:80</code>. If remote hosts on networks connected to
+interfaces <code>vxlan.1</code> and <code>eth3</code> have a route to the <code>192.0.2.0/24</code>
+network inside the Docker host, they can also access the web server
+via <code>http://192.0.2.100:80</code>.</p>
+<h2 id="gateway-modes">Gateway modes<a class="headerlink" href="#gateway-modes" title="Permanent link">#</a></h2>
+<p>The bridge network driver has the following options:
+- <code>com.docker.network.bridge.gateway_mode_ipv6</code>
+- <code>com.docker.network.bridge.gateway_mode_ipv4</code></p>
+<p>Each of these can be set to one of the gateway modes:
+- <code>nat</code>
+- <code>nat-unprotected</code>
+- <code>routed</code>
+- <code>isolated</code></p>
+<p>The default is <code>nat</code>, NAT and masquerading rules are set up for each
+published container port. Packets leaving the host will use a host address.</p>
+<p>With mode <code>routed</code>, no NAT or masquerading rules are set up, but firewall
+rules are still set up so that only published container ports are accessible.
+Outgoing packets from the container will use the container's address,
+not a host address.</p>
+<p>To access a published port in a <code>routed</code> network, remote hosts must have
+a route to the container network via an external address on the Docker
+host ("direct routing"). Hosts on the local layer-2 network can set up
+direct routing without needing any additional network configuration.
+Hosts outside the local network can only use direct routing to the
+container if the network's routers are configured to enable it.</p>
+<p>In a <code>nat</code> mode network, publishing a port to an address on the loopback
+interface means remote hosts cannot access it. Other published container
+ports in <code>routed</code> and <code>nat</code> networks are always accessible from remote
+hosts using direct routing, unless the Docker host's firewall has additional
+restrictions.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>When a port is published to a specific host address in <code>nat</code> mode, if
+IP forwarding is enabled on the Docker host, the published port can be
+accessed via other host interfaces using direct routing to the host
+address.</p>
+<p>For example, a Docker host with IP forwarding enabled has two NICs with
+addresses <code>192.168.100.10/24</code> and <code>10.0.0.10/24</code>.
+When a port is published to <code>192.168.100.10</code>, a host in the <code>10.0.0.0/24</code>
+subnet can access that port by routing to <code>192.168.100.10</code> via <code>10.0.0.10</code>.</p>
+</blockquote>
+<p>In <code>nat-unprotected</code> mode, unpublished container ports are also
+accessible using direct routing, no port filtering rules are set up.
+This mode is included for compatibility with legacy default behaviour.</p>
+<p>The gateway mode also affects communication between containers that
+are connected to different Docker networks on the same host.
+- In <code>nat</code> and <code>nat-unprotected</code> modes, containers in other bridge
+  networks can only access published ports via the host addresses they
+  are published to. Direct routing from other networks is not allowed.
+- In <code>routed</code> mode containers in other networks can use direct
+  routing to access ports, without going via a host address.</p>
+<p>In <code>routed</code> mode, a host port in a <code>-p</code> or <code>--publish</code> port mapping is
+not used, and the host address is only used to decide whether to apply
+the mapping to IPv4 or IPv6. So, when a mapping only applies to <code>routed</code>
+mode, only addresses <code>0.0.0.0</code> or <code>::</code> should be used, and a host port
+should not be given. If a specific address or port is given, it will
+have no effect on the published port and a warning message will be
+logged.</p>
+<p>Mode <code>isolated</code> can only be used when the network is also created with
+CLI flag <code>--internal</code>, or equivalent. An address is normally assigned to the
+bridge device in an <code>internal</code> network. So, processes on the Docker host can
+access the network, and containers in the network can access host services
+listening on that bridge address (including services listening on "any" host
+address, <code>0.0.0.0</code> or <code>::</code>). No address is assigned to the bridge when the
+network is created with gateway mode <code>isolated</code>.</p>
+<h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">#</a></h3>
+<p>Create a network suitable for direct routing for IPv6, with NAT enabled
+for IPv4:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>--ipv6<span class="w"> </span>--subnet<span class="w"> </span><span class="m">2001</span>:db8::/64<span class="w"> </span>-o<span class="w"> </span>com.docker.network.bridge.gateway_mode_ipv6<span class="o">=</span>routed<span class="w"> </span>mynet
+</code></pre></div>
+
+<p>Create a container with a published port:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--network<span class="o">=</span>mynet<span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span>myimage
+</code></pre></div>
+
+<p>Then:
+- Only container port 80 will be open, for IPv4 and IPv6.
+- For IPv6, using <code>routed</code> mode, port 80 will be open on the container's IP
+  address. Port 8080 will not be opened on the host's IP addresses, and
+  outgoing packets will use the container's IP address.
+- For IPv4, using the default <code>nat</code> mode, the container's port 80 will be
+  accessible via port 8080 on the host's IP addresses, as well as directly
+  from within the Docker host. But, container port 80 cannot be accessed
+  directly from outside the host.
+  Connections originating from the container will masquerade, using the
+  host's IP address.</p>
+<p>In <code>docker inspect</code>, this port mapping will be shown as follows. Note that
+there is no <code>HostPort</code> for IPv6, because it is using <code>routed</code> mode:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>inspect<span class="w"> </span>&lt;id&gt;<span class="w"> </span>--format<span class="w"> </span><span class="s2">&quot;{{json .NetworkSettings.Ports}}&quot;</span>
+<span class="go">{&quot;80/tcp&quot;:[{&quot;HostIp&quot;:&quot;0.0.0.0&quot;,&quot;HostPort&quot;:&quot;8080&quot;},{&quot;HostIp&quot;:&quot;::&quot;,&quot;HostPort&quot;:&quot;&quot;}]}</span>
+</code></pre></div>
+
+<p>Alternatively, to make the mapping IPv6-only, disabling IPv4 access to the
+container's port 80, use the unspecified IPv6 address <code>[::]</code> and do not
+include a host port number:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--network<span class="w"> </span>mynet<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;[::]::80&#39;</span>
+</code></pre></div>
+
+<h2 id="setting-the-default-bind-address-for-containers">Setting the default bind address for containers<a class="headerlink" href="#setting-the-default-bind-address-for-containers" title="Permanent link">#</a></h2>
+<p>By default, when a container's ports are mapped without any specific host
+address, the Docker daemon publishes ports to all host addresses
+(<code>0.0.0.0</code> and <code>[::]</code>).</p>
+<p>For example, the following command publishes port 8080 to all network
+interfaces on the host, on both IPv4 and IPv6 addresses, potentially
+making them available to the outside world.</p>
+<div class="codehilite"><pre><span></span><code><span class="go">docker run -p 8080:80 nginx</span>
+</code></pre></div>
+
+<p>You can change the default binding address for published container ports so that
+they're only accessible to the Docker host by default. To do that, you can
+configure the daemon to use the loopback address (<code>127.0.0.1</code>) instead.</p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>In releases older than 28.0.0, hosts within the same L2 segment (for example,
+hosts connected to the same network switch) can reach ports published to
+localhost. For more information, see
+<a href="https://github.com/moby/moby/issues/45610" rel="noopener" target="_blank">moby/moby#45610</a></p>
+</blockquote>
+<p>To configure this setting for user-defined bridge networks, use
+the <code>com.docker.network.bridge.host_binding_ipv4</code>
+<a href="drivers/bridge.html#default-host-binding-address">driver option</a> when you
+create the network. Despite the option name, it is possible to specify an
+IPv6 address.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>mybridge<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="s2">&quot;com.docker.network.bridge.host_binding_ipv4=127.0.0.1&quot;</span>
+</code></pre></div>
+
+<p>Or, to set the default binding address for containers in all user-defined
+bridge networks, use daemon configuration option <code>default-network-opts</code>.
+For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;default-network-opts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bridge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;com.docker.network.bridge.host_binding_ipv4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>Setting the default binding address to <code>::</code> means port bindings with no host
+address specified will work for any IPv6 address on the host. But, <code>0.0.0.0</code>
+means any IPv4 or IPv6 address.</p>
+<p>Changing the default bind address doesn't have any effect on Swarm services.
+Swarm services are always exposed on the <code>0.0.0.0</code> network interface.</p>
+</blockquote>
+<h3 id="masquerade-or-snat-for-outgoing-packets">Masquerade or SNAT for outgoing packets<a class="headerlink" href="#masquerade-or-snat-for-outgoing-packets" title="Permanent link">#</a></h3>
+<p>NAT is enabled by default for bridge networks, meaning outgoing packets
+from containers are masqueraded. The source address of packets leaving
+the Docker host is changed to an address on the host interface the packet
+is sent on.</p>
+<p>Masquerading can be disabled for a user-defined bridge network by using
+the <code>com.docker.network.bridge.enable_ip_masquerade</code> driver option when
+creating the network. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>mybridge<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>com.docker.network.bridge.enable_ip_masquerade<span class="o">=</span><span class="nb">false</span><span class="w"> </span>...
+</code></pre></div>
+
+<p>To use a specific source address for outgoing packets for a user-defined
+network, instead of letting masquerading select an address, use options
+<code>com.docker.network.host_ipv4</code> and <code>com.docker.network.host_ipv6</code> to
+specify the Source NAT (SNAT) address to use. The
+<code>com.docker.network.bridge.enable_ip_masquerade</code> option must
+be <code>true</code>, the default, for these options to have any effect.</p>
+<h3 id="default-bridge">Default bridge<a class="headerlink" href="#default-bridge" title="Permanent link">#</a></h3>
+<p>To set the default binding for the default bridge network, configure the <code>"ip"</code>
+key in the <code>daemon.json</code> configuration file:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This changes the default binding address to <code>127.0.0.1</code> for published container
+ports on the default bridge network.
+Restart the daemon for this change to take effect.
+Alternatively, you can use the <code>dockerd --ip</code> flag when starting the daemon.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/network/packet-filtering-firewalls.html">
+          <span class="muted">Anterior</span>Packet filtering and firewalls
+        </a>
+        <a class="pager-next" href="../../engine/release-notes/17.03.html">
+          <span class="muted">Siguiente</span>Docker Engine 17.03 release notes
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

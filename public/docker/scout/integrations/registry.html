@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integrate Docker Scout with a container registry · Docker</title>
+<meta name="description" content="Integrate Docker Scout with a container registry - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/scout/integrations/registry.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Integrate Docker Scout with a container registry">
+<meta property="og:description" content="Integrate Docker Scout with a container registry - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Integrate Docker Scout with a container registry">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Integrate Docker Scout with a container registry",
+"url": "https://docs.raupulus.dev/docker/scout/integrations/registry.html",  "description": "Integrate Docker Scout with a container registry - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Scout
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../scout/index.html"
+>Docker Scout</a>
+              </li>
+              <li>
+                <a href="../../scout/deep-dive/index.html"
+>Deep dive</a>
+              </li>
+              <li>
+                <a href="../../scout/deep-dive/advisory-db-sources.html"
+>Advisory database sources and matching service</a>
+              </li>
+              <li>
+                <a href="../../scout/deep-dive/data-handling.html"
+>Data collection and storage in Docker Scout</a>
+              </li>
+              <li>
+                <a href="../../scout/explore/index.html"
+>Explore</a>
+              </li>
+              <li>
+                <a href="../../scout/explore/analysis.html"
+>Docker Scout image analysis</a>
+              </li>
+              <li>
+                <a href="../../scout/explore/dashboard.html"
+>Dashboard</a>
+              </li>
+              <li>
+                <a href="../../scout/explore/exceptions.html"
+>Manage vulnerability exceptions</a>
+              </li>
+              <li>
+                <a href="../../scout/explore/image-details-view.html"
+>Image details view</a>
+              </li>
+              <li>
+                <a href="../../scout/explore/metrics-exporter.html"
+>Docker Scout metrics exporter</a>
+              </li>
+              <li>
+                <a href="../../scout/how-tos/index.html"
+>How-tos</a>
+              </li>
+              <li>
+                <a href="../../scout/how-tos/artifact-types.html"
+>Use Scout with different artifact types</a>
+              </li>
+              <li>
+                <a href="../../scout/how-tos/configure-cli.html"
+>Configure Docker Scout with environment variables</a>
+              </li>
+              <li>
+                <a href="../../scout/how-tos/create-exceptions-gui.html"
+>Create an exception using the GUI</a>
+              </li>
+              <li>
+                <a href="../../scout/how-tos/create-exceptions-vex.html"
+>Create an exception using the VEX</a>
+              </li>
+              <li>
+                <a href="../../scout/how-tos/view-create-sboms.html"
+>Docker Scout SBOMs</a>
+              </li>
+              <li>
+                <a href="../../scout/install.html"
+>Install Docker Scout</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/index.html"
+>Integrating Docker Scout with other systems</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/ci/index.html"
+>Using Docker Scout in continuous integration</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/ci/azure.html"
+>Integrate Docker Scout with Microsoft Azure DevOps Pipelines</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/ci/circle-ci.html"
+>Integrate Docker Scout with Circle CI</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/ci/gha.html"
+>Integrate Docker Scout with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/ci/gitlab.html"
+>Integrate Docker Scout with GitLab CI/CD</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/ci/jenkins.html"
+>Integrate Docker Scout with Jenkins</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/environment/index.html"
+>Integrating Docker Scout with environments</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/environment/cli.html"
+>Generic environment integration with CLI</a>
+              </li>
+              <li>
+                <a href="../../scout/integrations/registry.html"
+class="is-current" aria-current="page">Integrate Docker Scout with a container registry</a>
+              </li>
+              <li>
+                <a href="../../scout/policy/index.html"
+>Policy Evaluation</a>
+              </li>
+              <li>
+                <a href="../../scout/policy/local.html"
+>Evaluate policies</a>
+              </li>
+              <li>
+                <a href="../../scout/quickstart.html"
+>Docker Scout quickstart</a>
+              </li>
+              <li>
+                <a href="../../scout/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../scout/release-notes/cli.html"
+>Cli</a>
+              </li>
+              <li>
+                <a href="../../scout/release-notes/platform.html"
+>Docker Scout release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Integrate Docker Scout with a container registry</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#how-it-works">How it works#</a></li>
+              <li class="lvl-2"><a href="#set-up-docker-scout-watch">Set up docker scout watch#</a></li>
+              <li class="lvl-2"><a href="#registry-specific-options">Registry-specific options#</a></li>
+              <li class="lvl-3"><a href="#example-jfrog-artifactory">Example: JFrog Artifactory#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p><a href="/reference/cli/docker/scout/watch/"><code>docker scout watch</code></a> is a long-running
+CLI process that indexes images from a container registry and pushes the
+results to Docker Scout. It works with any Docker/OCI-compliant registry,
+including Amazon ECR, Azure Container Registry, JFrog Artifactory, Harbor, and
+Sonatype Nexus.</p>
+<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">#</a></h2>
+<p>You run <code>docker scout watch</code> on a host you control. The process can:</p>
+<ul>
+<li>Watch specific repositories or an entire registry</li>
+<li>Optionally ingest all existing images once, using <code>--all-images</code></li>
+<li>Periodically refresh repository lists, using <code>--refresh-registry</code></li>
+<li>Receive webhook callbacks from registries that support them, for
+  near-real-time analysis instead of polling</li>
+</ul>
+<p>After the integration, Docker Scout automatically pulls and analyzes images
+that you push to the registry. Metadata about your images are stored on the
+Docker Scout platform, but Docker Scout doesn't store the container images
+themselves. For more information about how Docker Scout handles image data,
+see <a href="../deep-dive/data-handling.html">Data handling</a>.</p>
+<h2 id="set-up-docker-scout-watch">Set up <code>docker scout watch</code><a class="headerlink" href="#set-up-docker-scout-watch" title="Permanent link">#</a></h2>
+<ol>
+<li>Pick a host on which to run <code>docker scout watch</code>.</li>
+</ol>
+<p>The host must have network access to your registry and be able to access
+   the Scout API (<code>https://api.scout.docker.com</code>) over the internet. If
+   you're using webhook callbacks, the registry must also be able to reach the
+   <code>docker scout watch</code> host on the configured port.</p>
+<ol start="2">
+<li>Ensure you are running the latest version of Scout.</li>
+</ol>
+<p><code>console
+   $ docker scout version</code></p>
+<p>If necessary, <a href="../install.html">install the latest version of Scout</a>.</p>
+<ol start="3">
+<li>Authenticate Docker to your registry.</li>
+</ol>
+<p><code>console
+   $ docker login &lt;registry-hostname&gt; --username &lt;user&gt; --password &lt;password-or-access-token&gt;</code></p>
+<p>For Amazon ECR, authenticate using the AWS CLI instead:</p>
+<p><code>console
+   $ aws ecr get-login-password --region &lt;region&gt; | \
+     docker login --username AWS --password-stdin \
+     &lt;aws_account_id&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com</code></p>
+<p>The AWS identity used must have at least <code>ecr:GetAuthorizationToken</code> and
+   <code>ecr:BatchGetImage</code> permissions on the target registry.</p>
+<p>For Azure Container Registry:</p>
+<p><code>console
+   $ docker login &lt;registry-name&gt;.azurecr.io \
+     --username &lt;username&gt; \
+     --password &lt;password-or-access-token&gt;</code></p>
+<blockquote>
+<p>[!TIP]</p>
+<p>As a best practice, use a dedicated user or token with read-only access
+to the registry.</p>
+</blockquote>
+<ol start="4">
+<li>
+<p>Set up your Scout credentials.</p>
+</li>
+<li>
+<p>Generate an organization access token. For more details, see
+      <a href="../../security/access-tokens/organization-access-tokens.html#create-an-organization-access-token">Create an organization access token</a>.</p>
+</li>
+<li>
+<p>Sign in to Docker using the organization access token.</p>
+<p><code>console
+  $ docker login --username &lt;your_organization_name&gt;</code></p>
+<p>When prompted for a password, paste the organization access token.</p>
+</li>
+<li>
+<p>Connect your local Docker environment to your organization's Docker Scout service.</p>
+<p><code>console
+  $ docker scout enroll &lt;your_organization_name&gt;</code></p>
+</li>
+<li>
+<p>Index existing images. You only need to do this once.</p>
+</li>
+</ol>
+<p><code>console
+   $ docker scout watch --registry &lt;registry-hostname&gt; --all-images</code></p>
+<ol start="6">
+<li>
+<p>Confirm the images have been indexed by viewing them on the
+   <a href="https://scout.docker.com/" rel="noopener" target="_blank">Scout Dashboard</a>.</p>
+</li>
+<li>
+<p>Continuously watch for new images.</p>
+</li>
+</ol>
+<p><code>console
+   $ docker scout watch --registry &lt;registry-hostname&gt; --refresh-registry</code></p>
+<p><code>docker scout watch</code> is a long-running process. Run it as a system
+   service, for example using <code>systemd</code> or <code>nohup</code>, to ensure it continues
+   running in the background. Use <code>--interval</code> (default 60 seconds) to
+   control polling frequency, and <code>--repository</code> and <code>--tag</code> to narrow scope.</p>
+<p>Reference: <a href="/reference/cli/docker/scout/watch/"><code>docker scout watch</code></a></p>
+<h2 id="registry-specific-options">Registry-specific options<a class="headerlink" href="#registry-specific-options" title="Permanent link">#</a></h2>
+<p>Some registries need extra configuration beyond a hostname, passed through
+the <code>--registry</code> flag as a <code>key=value</code> string, for example a REST API
+endpoint for webhook callbacks, or a non-standard repository layout. Built-in
+adapters exist for <code>type=artifactory</code>, <code>type=harbor</code>, and <code>type=nexus</code>, and a
+<code>type=oci</code> adapter covers any OCI-compliant registry that implements the
+<code>_catalog</code> endpoint. For the full option reference for each type, see
+<a href="/reference/cli/docker/scout/watch/"><code>docker scout watch</code></a>.</p>
+<p>The following example walks through the <code>type=artifactory</code> adapter in detail.
+See the CLI reference for equivalent Harbor, Nexus, and generic OCI examples.</p>
+<h3 id="example-jfrog-artifactory">Example: JFrog Artifactory<a class="headerlink" href="#example-jfrog-artifactory" title="Permanent link">#</a></h3>
+<p>These <code>type=artifactory</code> options override the generic registry handling for
+the <code>--registry</code> option:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td style="text-align: center;">Yes</td>
+<td>Must be <code>artifactory</code>.</td>
+</tr>
+<tr>
+<td><code>registry</code></td>
+<td style="text-align: center;">Yes</td>
+<td>Docker/OCI registry hostname (e.g., <code>example.jfrog.io</code>).</td>
+</tr>
+<tr>
+<td><code>api</code></td>
+<td style="text-align: center;">Yes</td>
+<td>Artifactory REST API base URL (e.g., <code>https://example.jfrog.io/artifactory</code>).</td>
+</tr>
+<tr>
+<td><code>repository</code></td>
+<td style="text-align: center;">Yes</td>
+<td>Repository to watch (replaces <code>--repository</code>).</td>
+</tr>
+<tr>
+<td><code>includes</code></td>
+<td style="text-align: center;">No</td>
+<td>Globs to include (e.g., <code>*/frontend*</code>).</td>
+</tr>
+<tr>
+<td><code>excludes</code></td>
+<td style="text-align: center;">No</td>
+<td>Globs to exclude (e.g., <code>*/legacy/*</code>).</td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td style="text-align: center;">No</td>
+<td>Local port to listen on for webhook callbacks.</td>
+</tr>
+<tr>
+<td><code>subdomain-mode</code></td>
+<td style="text-align: center;">No</td>
+<td><code>true</code> or <code>false</code>; matches Artifactory's Docker layout (subdomain versus repository-path).</td>
+</tr>
+</tbody>
+</table>
+<p>Set up credentials for the Scout client to authenticate with Artifactory, and
+a secret for Artifactory to authenticate its webhook callbacks:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_SCOUT_ARTIFACTORY_API_USER</span><span class="o">=</span>&lt;user&gt;
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_SCOUT_ARTIFACTORY_API_PASSWORD</span><span class="o">=</span>&lt;password-or-access-token&gt;
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_SCOUT_ARTIFACTORY_WEBHOOK_SECRET</span><span class="o">=</span>&lt;random-64-128-character-secret&gt;
+</code></pre></div>
+
+<blockquote>
+<p>[!TIP]</p>
+<p>As a best practice, create a dedicated user with read-only access and use an
+access token instead of a password. Generate the webhook secret as a
+high-entropy random string of 64-128 characters.</p>
+</blockquote>
+<p>Index existing images with the Artifactory-specific registry string:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>scout<span class="w"> </span>watch<span class="w"> </span>--registry<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;type=artifactory,registry=example.jfrog.io,api=https://example.jfrog.io/artifactory,include=*/frontend*,exclude=*/dta/*,repository=docker-local,port=9000,subdomain-mode=true&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--all-images
+</code></pre></div>
+
+<p>Then configure Artifactory to call the webhook: in your Artifactory UI or via
+REST API, set up a webhook for image push/update events, pointing to your
+<code>docker scout watch</code> host and port, and include the
+<code>DOCKER_SCOUT_ARTIFACTORY_WEBHOOK_SECRET</code> for authentication. For more
+information, see the <a href="https://jfrog.com/help/r/jfrog-platform-administration-documentation/webhooks" rel="noopener" target="_blank">JFrog Artifactory Webhooks
+documentation</a>
+or the <a href="https://jfrog.com/help/r/jfrog-rest-apis/webhooks" rel="noopener" target="_blank">JFrog Artifactory REST API Webhooks
+documentation</a>.</p>
+<p>Finally, run the same command with <code>--refresh-registry</code> instead of
+<code>--all-images</code> as your long-running watch process, so new images are picked up
+going forward:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>scout<span class="w"> </span>watch<span class="w"> </span>--registry<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;type=artifactory,registry=example.jfrog.io,api=https://example.jfrog.io/artifactory,include=*/frontend*,exclude=*/dta/*,repository=docker-local,port=9000,subdomain-mode=true&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--refresh-registry
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../scout/integrations/environment/cli.html">
+          <span class="muted">Anterior</span>Generic environment integration with CLI
+        </a>
+        <a class="pager-next" href="../../scout/policy/index.html">
+          <span class="muted">Siguiente</span>Policy Evaluation
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

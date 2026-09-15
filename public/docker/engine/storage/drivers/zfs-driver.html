@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZFS storage driver · Docker</title>
+<meta name="description" content="ZFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/storage/drivers/zfs-driver.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="ZFS storage driver">
+<meta property="og:description" content="ZFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ZFS storage driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "ZFS storage driver",
+"url": "https://docs.raupulus.dev/docker/engine/storage/drivers/zfs-driver.html",  "description": "ZFS storage driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+class="is-current" aria-current="page">ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/stack-deploy.html"
+>Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/add-nodes.html"
+>Add nodes to the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/create-swarm.html"
+>Create a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/delete-service.html"
+>Delete the service running on the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/deploy-service.html"
+>Deploy a service to the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/drain-node.html"
+>Drain a node on the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/inspect-service.html"
+>Inspect a service on the swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/rolling-update.html"
+>Apply rolling updates to a service</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">ZFS storage driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#prerequisites">Prerequisites#</a></li>
+              <li class="lvl-2"><a href="#configure-docker-with-the-zfs-storage-driver">Configure Docker with the zfs storage driver#</a></li>
+              <li class="lvl-2"><a href="#manage-zfs">Manage zfs#</a></li>
+              <li class="lvl-3"><a href="#increase-capacity-on-a-running-device">Increase capacity on a running device#</a></li>
+              <li class="lvl-3"><a href="#limit-a-containers-writable-storage-quota">Limit a container&#39;s writable storage quota#</a></li>
+              <li class="lvl-2"><a href="#how-the-zfs-storage-driver-works">How the zfs storage driver works#</a></li>
+              <li class="lvl-3"><a href="#image-and-container-layers-on-disk">Image and container layers on-disk#</a></li>
+              <li class="lvl-3"><a href="#image-layering-and-sharing">Image layering and sharing#</a></li>
+              <li class="lvl-2"><a href="#how-container-reads-and-writes-work-with-zfs">How container reads and writes work with zfs#</a></li>
+              <li class="lvl-3"><a href="#reading-files">Reading files#</a></li>
+              <li class="lvl-3"><a href="#writing-files">Writing files#</a></li>
+              <li class="lvl-2"><a href="#zfs-and-docker-performance">ZFS and Docker performance#</a></li>
+              <li class="lvl-3"><a href="#performance-best-practices">Performance best practices#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>ZFS is a next generation filesystem that supports many advanced storage
+technologies such as volume management, snapshots, checksumming, compression and
+deduplication, replication and more.</p>
+<p>It was created by Sun Microsystems (now Oracle Corporation) and is open sourced
+under the CDDL license. Due to licensing incompatibilities between the CDDL and
+GPL, ZFS cannot be shipped as part of the mainline Linux kernel. However, the
+ZFS On Linux (ZoL) project provides an out-of-tree kernel module and userspace
+tools which can be installed separately.</p>
+<p>The ZFS on Linux (ZoL) port is healthy and maturing. However, at this point in
+time it is not recommended to use the <code>zfs</code> Docker storage driver for production
+use unless you have substantial experience with ZFS on Linux.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>There is also a FUSE implementation of ZFS on the Linux platform. This is not recommended. The native ZFS driver (ZoL) is more tested, has better performance, and is more widely used. The remainder of this document refers to the native ZoL port.</p>
+</blockquote>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<ul>
+<li>ZFS requires one or more dedicated block devices, preferably solid-state
+  drives (SSDs).</li>
+<li>The <code>/var/lib/docker/</code> directory must be mounted on a ZFS-formatted
+  filesystem.</li>
+<li>Changing the storage driver makes any containers you have already
+  created inaccessible on the local system. Use <code>docker save</code> to save containers,
+  and push existing images to Docker Hub or a private repository, so that you
+  do not need to re-create them later.</li>
+</ul>
+<blockquote>
+<p>[!NOTE]</p>
+<p>There is no need to use <code>MountFlags=slave</code> because <code>dockerd</code> and <code>containerd</code> are in different mount namespaces.</p>
+</blockquote>
+<h2 id="configure-docker-with-the-zfs-storage-driver">Configure Docker with the <code>zfs</code> storage driver<a class="headerlink" href="#configure-docker-with-the-zfs-storage-driver" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Stop Docker.</p>
+</li>
+<li>
+<p>Copy the contents of <code>/var/lib/docker/</code> to <code>/var/lib/docker.bk</code> and remove
+    the contents of <code>/var/lib/docker/</code>.</p>
+<p>```console
+$ sudo cp -au /var/lib/docker /var/lib/docker.bk</p>
+<p>$ sudo rm -rf /var/lib/docker/*
+```</p>
+</li>
+<li>
+<p>Create a new <code>zpool</code> on your dedicated block device or devices, and mount it
+    into <code>/var/lib/docker/</code>. Be sure you
+    have specified the correct devices, because this is a destructive operation.
+    This example adds two devices to the pool.</p>
+<p><code>console
+$ sudo zpool create -f zpool-docker -m /var/lib/docker /dev/xvdf /dev/xvdg</code></p>
+<p>The command creates the <code>zpool</code> and names it <code>zpool-docker</code>. The name is for
+display purposes only, and you can use a different name. Check that the pool
+was created and mounted correctly using <code>zfs list</code>.</p>
+<p>```console
+$ sudo zfs list</p>
+<p>NAME           USED  AVAIL  REFER  MOUNTPOINT
+zpool-docker    55K  96.4G    19K  /var/lib/docker
+```</p>
+</li>
+<li>
+<p>Configure Docker to use <code>zfs</code>. Edit <code>/etc/docker/daemon.json</code> and set the
+    <code>storage-driver</code> to <code>zfs</code>. If the file was empty before, it should now look
+    like this:</p>
+<p><code>json
+{
+  "storage-driver": "zfs"
+}</code></p>
+<p>Save and close the file.</p>
+</li>
+<li>
+<p>Start Docker. Use <code>docker info</code> to verify that the storage driver is <code>zfs</code>.</p>
+<p><code>console
+$ sudo docker info
+  Containers: 0
+   Running: 0
+   Paused: 0
+   Stopped: 0
+  Images: 0
+  Server Version: 17.03.1-ce
+  Storage Driver: zfs
+   Zpool: zpool-docker
+   Zpool Health: ONLINE
+   Parent Dataset: zpool-docker
+   Space Used By Parent: 249856
+   Space Available: 103498395648
+   Parent Quota: no
+   Compression: off
+&lt;...&gt;</code></p>
+</li>
+</ol>
+<h2 id="manage-zfs">Manage <code>zfs</code><a class="headerlink" href="#manage-zfs" title="Permanent link">#</a></h2>
+<h3 id="increase-capacity-on-a-running-device">Increase capacity on a running device<a class="headerlink" href="#increase-capacity-on-a-running-device" title="Permanent link">#</a></h3>
+<p>To increase the size of the <code>zpool</code>, you need to add a dedicated block device to
+the Docker host, and then add it to the <code>zpool</code> using the <code>zpool add</code> command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>zpool<span class="w"> </span>add<span class="w"> </span>zpool-docker<span class="w"> </span>/dev/xvdh
+</code></pre></div>
+
+<h3 id="limit-a-containers-writable-storage-quota">Limit a container's writable storage quota<a class="headerlink" href="#limit-a-containers-writable-storage-quota" title="Permanent link">#</a></h3>
+<p>If you want to implement a quota on a per-image/dataset basis, you can set the
+<code>size</code> storage option to limit the amount of space a single container can use
+for its writable layer.</p>
+<p>Edit <code>/etc/docker/daemon.json</code> and add the following:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;storage-driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zfs&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;storage-opts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;size=256M&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>See all storage options for each storage driver in the
+<a href="/reference/cli/dockerd/#daemon-storage-driver">daemon reference documentation</a></p>
+<p>Save and close the file, and restart Docker.</p>
+<h2 id="how-the-zfs-storage-driver-works">How the <code>zfs</code> storage driver works<a class="headerlink" href="#how-the-zfs-storage-driver-works" title="Permanent link">#</a></h2>
+<p>ZFS uses the following objects:</p>
+<ul>
+<li><strong>filesystems</strong>: thinly provisioned, with space allocated from the <code>zpool</code> on
+  demand.</li>
+<li><strong>snapshots</strong>: read-only space-efficient point-in-time copies of filesystems.</li>
+<li><strong>clones</strong>: Read-write copies of snapshots. Used for storing the differences
+  from the previous layer.</li>
+</ul>
+<p>The process of creating a clone:</p>
+<p><img alt="ZFS snapshots and clones" src="images/zfs_clones.webp?w=450"></p>
+<ol>
+<li>A read-only snapshot is created from the filesystem.</li>
+<li>A writable clone is created from the snapshot. This contains any differences
+    from the parent layer.</li>
+</ol>
+<p>Filesystems, snapshots, and clones all allocate space from the underlying
+<code>zpool</code>.</p>
+<h3 id="image-and-container-layers-on-disk">Image and container layers on-disk<a class="headerlink" href="#image-and-container-layers-on-disk" title="Permanent link">#</a></h3>
+<p>Each running container's unified filesystem is mounted on a mount point in
+<code>/var/lib/docker/zfs/graph/</code>. Continue reading for an explanation of how the
+unified filesystem is composed.</p>
+<h3 id="image-layering-and-sharing">Image layering and sharing<a class="headerlink" href="#image-layering-and-sharing" title="Permanent link">#</a></h3>
+<p>The base layer of an image is a ZFS filesystem. Each child layer is a ZFS clone
+based on a ZFS snapshot of the layer below it. A container is a ZFS clone based
+on a ZFS Snapshot of the top layer of the image it's created from.</p>
+<p>The diagram below shows how this is put together with a running container based
+on a two-layer image.</p>
+<p><img alt="ZFS pool for Docker container" src="images/zfs_zpool.webp?w=600"></p>
+<p>When you start a container, the following steps happen in order:</p>
+<ol>
+<li>
+<p>The base layer of the image exists on the Docker host as a ZFS filesystem.</p>
+</li>
+<li>
+<p>Additional image layers are clones of the dataset hosting the image layer
+    directly below it.</p>
+<p>In the diagram, "Layer 1" is added by taking a ZFS snapshot of the base
+layer and then creating a clone from that snapshot. The clone is writable and
+consumes space on-demand from the zpool. The snapshot is read-only,
+maintaining the base layer as an immutable object.</p>
+</li>
+<li>
+<p>When the container is launched, a writable layer is added above the image.</p>
+<p>In the diagram, the container's read-write layer is created by making
+a snapshot of the top layer of the image (Layer 1) and creating a clone from
+that snapshot.</p>
+</li>
+<li>
+<p>As the container modifies the contents of its writable layer, space is
+    allocated for the blocks that are changed. By default, these blocks are
+    128k.</p>
+</li>
+</ol>
+<h2 id="how-container-reads-and-writes-work-with-zfs">How container reads and writes work with <code>zfs</code><a class="headerlink" href="#how-container-reads-and-writes-work-with-zfs" title="Permanent link">#</a></h2>
+<h3 id="reading-files">Reading files<a class="headerlink" href="#reading-files" title="Permanent link">#</a></h3>
+<p>Each container's writable layer is a ZFS clone which shares all its data with
+the dataset it was created from (the snapshots of its parent layers). Read
+operations are fast, even if the data being read is from a deep layer.
+This diagram illustrates how block sharing works:</p>
+<p><img alt="ZFS block sharing" src="images/zpool_blocks.webp?w=450"></p>
+<h3 id="writing-files">Writing files<a class="headerlink" href="#writing-files" title="Permanent link">#</a></h3>
+<p><strong>Writing a new file</strong>: space is allocated on demand from the underlying <code>zpool</code>
+and the blocks are written directly into the container's writable layer.</p>
+<p><strong>Modifying an existing file</strong>: space is allocated only for the changed blocks,
+and those blocks are written into the container's writable layer using a
+copy-on-write (CoW) strategy. This minimizes the size of the layer and increases
+write performance.</p>
+<p><strong>Deleting a file or directory</strong>:
+  - When you delete a file or directory that exists in a lower layer, the ZFS
+    driver masks the existence of the file or directory in the container's
+    writable layer, even though the file or directory still exists in the lower
+    read-only layers.
+  - If you create and then delete a file or directory within the container's
+    writable layer, the blocks are reclaimed by the <code>zpool</code>.</p>
+<h2 id="zfs-and-docker-performance">ZFS and Docker performance<a class="headerlink" href="#zfs-and-docker-performance" title="Permanent link">#</a></h2>
+<p>There are several factors that influence the performance of Docker using the
+<code>zfs</code> storage driver.</p>
+<ul>
+<li>
+<p><strong>Memory</strong>: Memory has a major impact on ZFS performance. ZFS was originally
+  designed for large enterprise-grade servers with a large amount of memory.</p>
+</li>
+<li>
+<p><strong>ZFS Features</strong>: ZFS includes a de-duplication feature. Using this feature
+  may save disk space, but uses a large amount of memory. It is recommended that
+  you disable this feature for the <code>zpool</code> you are using with Docker, unless you
+  are using SAN, NAS, or other hardware RAID technologies.</p>
+</li>
+<li>
+<p><strong>ZFS Caching</strong>: ZFS caches disk blocks in a memory structure called the
+  adaptive replacement cache (ARC). The <em>Single Copy ARC</em> feature of ZFS allows
+  a single cached copy of a block to be shared by multiple clones of a
+  With this feature, multiple running containers can share a single copy of a
+  cached block. This feature makes ZFS a good option for PaaS and other
+  high-density use cases.</p>
+</li>
+<li>
+<p><strong>Fragmentation</strong>: Fragmentation is a natural byproduct of copy-on-write
+  filesystems like ZFS. ZFS mitigates this by using a small block size of 128k.
+  The ZFS intent log (ZIL) and the coalescing of writes (delayed writes) also
+  help to reduce fragmentation. You can monitor fragmentation using
+  <code>zpool status</code>. However, there is no way to defragment ZFS without reformatting
+  and restoring the filesystem.</p>
+</li>
+<li>
+<p><strong>Use the native ZFS driver for Linux</strong>: The ZFS FUSE implementation is not
+  recommended, due to poor performance.</p>
+</li>
+</ul>
+<h3 id="performance-best-practices">Performance best practices<a class="headerlink" href="#performance-best-practices" title="Permanent link">#</a></h3>
+<ul>
+<li>
+<p><strong>Use fast storage</strong>:  Solid-state drives (SSDs) provide faster reads and
+  writes than spinning disks.</p>
+</li>
+<li>
+<p><strong>Use volumes for write-heavy workloads</strong>: Volumes provide the best and most
+  predictable performance for write-heavy workloads. This is because they bypass
+  the storage driver and do not incur any of the potential overheads introduced
+  by thin provisioning and copy-on-write. Volumes have other benefits, such as
+  allowing you to share data among containers and persisting even when no
+  running container is using them.</p>
+</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/storage/drivers/windowsfilter-driver.html">
+          <span class="muted">Anterior</span>windowsfilter storage driver
+        </a>
+        <a class="pager-next" href="../../../engine/storage/image-mounts.html">
+          <span class="muted">Siguiente</span>Image mounts
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

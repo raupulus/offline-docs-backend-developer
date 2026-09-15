@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage swarm service networks · Docker</title>
+<meta name="description" content="Manage swarm service networks - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/swarm/networking.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Manage swarm service networks">
+<meta property="og:description" content="Manage swarm service networks - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Manage swarm service networks">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Manage swarm service networks",
+"url": "https://docs.raupulus.dev/docker/engine/swarm/networking.html",  "description": "Manage swarm service networks - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/networking.html"
+class="is-current" aria-current="page">Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/stack-deploy.html"
+>Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/add-nodes.html"
+>Add nodes to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/create-swarm.html"
+>Create a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/delete-service.html"
+>Delete the service running on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/deploy-service.html"
+>Deploy a service to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/drain-node.html"
+>Drain a node on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/inspect-service.html"
+>Inspect a service on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/rolling-update.html"
+>Apply rolling updates to a service</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/scale-service.html"
+>Scale the service in the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-manager-locking.html"
+>Lock your swarm to protect its encryption key</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Manage swarm service networks</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#swarm-and-types-of-traffic">Swarm and types of traffic#</a></li>
+              <li class="lvl-2"><a href="#key-network-concepts">Key network concepts#</a></li>
+              <li class="lvl-2"><a href="#firewall-considerations">Firewall considerations#</a></li>
+              <li class="lvl-2"><a href="#overlay-networking">Overlay networking#</a></li>
+              <li class="lvl-3"><a href="#create-an-overlay-network">Create an overlay network#</a></li>
+              <li class="lvl-3"><a href="#customize-an-overlay-network">Customize an overlay network#</a></li>
+              <li class="lvl-2"><a href="#attach-a-service-to-an-overlay-network">Attach a service to an overlay network#</a></li>
+              <li class="lvl-3"><a href="#configure-service-discovery">Configure service discovery#</a></li>
+              <li class="lvl-3"><a href="#container-discovery">Container discovery#</a></li>
+              <li class="lvl-2"><a href="#customize-ingress">Customize the ingress network#</a></li>
+              <li class="lvl-2"><a href="#customize-the-docker_gwbridge">Customize the docker_gwbridge#</a></li>
+              <li class="lvl-2"><a href="#use-a-separate-interface-for-control-and-data-traffic">Use a separate interface for control and data traffic#</a></li>
+              <li class="lvl-2"><a href="#publish-ports-on-an-overlay-network">Publish ports on an overlay network#</a></li>
+              <li class="lvl-2"><a href="#learn-more">Learn more#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>This page describes networking for swarm services.</p>
+<h2 id="swarm-and-types-of-traffic">Swarm and types of traffic<a class="headerlink" href="#swarm-and-types-of-traffic" title="Permanent link">#</a></h2>
+<p>A Docker swarm generates two different kinds of traffic:</p>
+<ul>
+<li>
+<p>Control and management plane traffic: This includes swarm management
+  messages, such as requests to join or leave the swarm. This traffic is
+  always encrypted.</p>
+</li>
+<li>
+<p>Application data plane traffic: This includes container traffic and
+  traffic to and from external clients.</p>
+</li>
+</ul>
+<h2 id="key-network-concepts">Key network concepts<a class="headerlink" href="#key-network-concepts" title="Permanent link">#</a></h2>
+<p>The following three network concepts are important to swarm services:</p>
+<ul>
+<li>
+<p>Overlay networks manage communications among the Docker daemons
+  participating in the swarm. You can create overlay networks, in the same way
+  as user-defined networks for standalone containers. You can attach a service
+  to one or more existing overlay networks as well, to enable service-to-service
+  communication. Overlay networks are Docker networks that use the <code>overlay</code>
+  network driver.</p>
+</li>
+<li>
+<p>The ingress network is a special overlay network that facilitates
+  load balancing among a service's nodes. When any swarm node receives a
+  request on a published port, it hands that request off to a module called
+  <code>IPVS</code>. <code>IPVS</code> keeps track of all the IP addresses participating in that
+  service, selects one of them, and routes the request to it, over the
+  <code>ingress</code> network.</p>
+</li>
+</ul>
+<p>The <code>ingress</code> network is created automatically when you initialize or join a
+  swarm. Most users do not need to customize its configuration, but Docker allows
+  you to do so.</p>
+<ul>
+<li>The docker_gwbridge is a bridge network that connects the overlay
+  networks (including the <code>ingress</code> network) to an individual Docker daemon's
+  physical network. By default, each container a service is running is connected
+  to its local Docker daemon host's <code>docker_gwbridge</code> network.</li>
+</ul>
+<p>The <code>docker_gwbridge</code> network is created automatically when you initialize or
+  join a swarm. Most users do not need to customize its configuration, but
+  Docker allows you to do so.</p>
+<blockquote>
+<p>[!TIP]</p>
+<p>See also <a href="../network/index.html">Networking overview</a> for more details about Swarm networking in general.</p>
+</blockquote>
+<h2 id="firewall-considerations">Firewall considerations<a class="headerlink" href="#firewall-considerations" title="Permanent link">#</a></h2>
+<p>Docker daemons participating in a swarm need the ability to communicate with
+each other over the following ports:</p>
+<ul>
+<li>Port <code>7946</code> TCP/UDP for container network discovery.</li>
+<li>Port <code>4789</code> UDP (configurable) for the overlay network (including ingress) data path.</li>
+</ul>
+<p>When setting up networking in a Swarm, special care should be taken. Consult
+the <a href="swarm-tutorial/index.html#open-protocols-and-ports-between-the-hosts">tutorial</a>
+for an overview.</p>
+<h2 id="overlay-networking">Overlay networking<a class="headerlink" href="#overlay-networking" title="Permanent link">#</a></h2>
+<p>When you initialize a swarm or join a Docker host to an existing swarm, two
+new networks are created on that Docker host:</p>
+<ul>
+<li>An overlay network called <code>ingress</code>, which handles the control and data traffic
+  related to swarm services. When you create a swarm service and do not
+  connect it to a user-defined overlay network, it connects to the <code>ingress</code>
+  network by default.</li>
+<li>A bridge network called <code>docker_gwbridge</code>, which connects the individual
+  Docker daemon to the other daemons participating in the swarm.</li>
+</ul>
+<h3 id="create-an-overlay-network">Create an overlay network<a class="headerlink" href="#create-an-overlay-network" title="Permanent link">#</a></h3>
+<p>To create an overlay network, specify the <code>overlay</code> driver when using the
+<code>docker network create</code> command:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--driver<span class="w"> </span>overlay<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>my-network
+</code></pre></div>
+
+<p>The above command doesn't specify any custom options, so Docker assigns a
+subnet and uses default options. You can see information about the network using
+<code>docker network inspect</code>.</p>
+<p>When no containers are connected to the overlay network, its configuration is
+not very exciting:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span>my-network
+<span class="go">[</span>
+<span class="go">    {</span>
+<span class="go">        &quot;Name&quot;: &quot;my-network&quot;,</span>
+<span class="go">        &quot;Id&quot;: &quot;fsf1dmx3i9q75an49z36jycxd&quot;,</span>
+<span class="go">        &quot;Created&quot;: &quot;0001-01-01T00:00:00Z&quot;,</span>
+<span class="go">        &quot;Scope&quot;: &quot;swarm&quot;,</span>
+<span class="go">        &quot;Driver&quot;: &quot;overlay&quot;,</span>
+<span class="go">        &quot;EnableIPv6&quot;: false,</span>
+<span class="go">        &quot;IPAM&quot;: {</span>
+<span class="go">            &quot;Driver&quot;: &quot;default&quot;,</span>
+<span class="go">            &quot;Options&quot;: null,</span>
+<span class="go">            &quot;Config&quot;: []</span>
+<span class="go">        },</span>
+<span class="go">        &quot;Internal&quot;: false,</span>
+<span class="go">        &quot;Attachable&quot;: false,</span>
+<span class="go">        &quot;Ingress&quot;: false,</span>
+<span class="go">        &quot;Containers&quot;: null,</span>
+<span class="go">        &quot;Options&quot;: {</span>
+<span class="go">            &quot;com.docker.network.driver.overlay.vxlanid_list&quot;: &quot;4097&quot;</span>
+<span class="go">        },</span>
+<span class="go">        &quot;Labels&quot;: null</span>
+<span class="go">    }</span>
+<span class="go">]</span>
+</code></pre></div>
+
+<p>In the above output, notice that the driver is <code>overlay</code> and that the scope is
+<code>swarm</code>, rather than <code>local</code>, <code>host</code>, or <code>global</code> scopes you might see in
+other types of Docker networks. This scope indicates that only hosts which are
+participating in the swarm can access this network.</p>
+<p>The network's subnet and gateway are dynamically configured when a service
+connects to the network for the first time. The following example shows
+the same network as above, but with three containers of a <code>redis</code> service
+connected to it.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span>my-network
+<span class="go">[</span>
+<span class="go">    {</span>
+<span class="go">        &quot;Name&quot;: &quot;my-network&quot;,</span>
+<span class="go">        &quot;Id&quot;: &quot;fsf1dmx3i9q75an49z36jycxd&quot;,</span>
+<span class="go">        &quot;Created&quot;: &quot;2017-05-31T18:35:58.877628262Z&quot;,</span>
+<span class="go">        &quot;Scope&quot;: &quot;swarm&quot;,</span>
+<span class="go">        &quot;Driver&quot;: &quot;overlay&quot;,</span>
+<span class="go">        &quot;EnableIPv6&quot;: false,</span>
+<span class="go">        &quot;IPAM&quot;: {</span>
+<span class="go">            &quot;Driver&quot;: &quot;default&quot;,</span>
+<span class="go">            &quot;Options&quot;: null,</span>
+<span class="go">            &quot;Config&quot;: [</span>
+<span class="go">                {</span>
+<span class="go">                    &quot;Subnet&quot;: &quot;10.0.0.0/24&quot;,</span>
+<span class="go">                    &quot;Gateway&quot;: &quot;10.0.0.1&quot;</span>
+<span class="go">                }</span>
+<span class="go">            ]</span>
+<span class="go">        },</span>
+<span class="go">        &quot;Internal&quot;: false,</span>
+<span class="go">        &quot;Attachable&quot;: false,</span>
+<span class="go">        &quot;Ingress&quot;: false,</span>
+<span class="go">        &quot;Containers&quot;: {</span>
+<span class="go">            &quot;0e08442918814c2275c31321f877a47569ba3447498db10e25d234e47773756d&quot;: {</span>
+<span class="go">                &quot;Name&quot;: &quot;my-redis.1.ka6oo5cfmxbe6mq8qat2djgyj&quot;,</span>
+<span class="go">                &quot;EndpointID&quot;: &quot;950ce63a3ace13fe7ef40724afbdb297a50642b6d47f83a5ca8636d44039e1dd&quot;,</span>
+<span class="go">                &quot;MacAddress&quot;: &quot;02:42:0a:00:00:03&quot;,</span>
+<span class="go">                &quot;IPv4Address&quot;: &quot;10.0.0.3/24&quot;,</span>
+<span class="go">                &quot;IPv6Address&quot;: &quot;&quot;</span>
+<span class="go">            },</span>
+<span class="go">            &quot;88d55505c2a02632c1e0e42930bcde7e2fa6e3cce074507908dc4b827016b833&quot;: {</span>
+<span class="go">                &quot;Name&quot;: &quot;my-redis.2.s7vlybipal9xlmjfqnt6qwz5e&quot;,</span>
+<span class="go">                &quot;EndpointID&quot;: &quot;dd822cb68bcd4ae172e29c321ced70b731b9994eee5a4ad1d807d9ae80ecc365&quot;,</span>
+<span class="go">                &quot;MacAddress&quot;: &quot;02:42:0a:00:00:05&quot;,</span>
+<span class="go">                &quot;IPv4Address&quot;: &quot;10.0.0.5/24&quot;,</span>
+<span class="go">                &quot;IPv6Address&quot;: &quot;&quot;</span>
+<span class="go">            },</span>
+<span class="go">            &quot;9ed165407384f1276e5cfb0e065e7914adbf2658794fd861cfb9b991eddca754&quot;: {</span>
+<span class="go">                &quot;Name&quot;: &quot;my-redis.3.hbz3uk3hi5gb61xhxol27hl7d&quot;,</span>
+<span class="go">                &quot;EndpointID&quot;: &quot;f62c686a34c9f4d70a47b869576c37dffe5200732e1dd6609b488581634cf5d2&quot;,</span>
+<span class="go">                &quot;MacAddress&quot;: &quot;02:42:0a:00:00:04&quot;,</span>
+<span class="go">                &quot;IPv4Address&quot;: &quot;10.0.0.4/24&quot;,</span>
+<span class="go">                &quot;IPv6Address&quot;: &quot;&quot;</span>
+<span class="go">            }</span>
+<span class="go">        },</span>
+<span class="go">        &quot;Options&quot;: {</span>
+<span class="go">            &quot;com.docker.network.driver.overlay.vxlanid_list&quot;: &quot;4097&quot;</span>
+<span class="go">        },</span>
+<span class="go">        &quot;Labels&quot;: {},</span>
+<span class="go">        &quot;Peers&quot;: [</span>
+<span class="go">            {</span>
+<span class="go">                &quot;Name&quot;: &quot;moby-e57c567e25e2&quot;,</span>
+<span class="go">                &quot;IP&quot;: &quot;192.168.65.2&quot;</span>
+<span class="go">            }</span>
+<span class="go">        ]</span>
+<span class="go">    }</span>
+<span class="go">]</span>
+</code></pre></div>
+
+<h3 id="customize-an-overlay-network">Customize an overlay network<a class="headerlink" href="#customize-an-overlay-network" title="Permanent link">#</a></h3>
+<p>There may be situations where you don't want to use the default configuration
+for an overlay network. For a full list of configurable options, run the
+command <code>docker network create --help</code>. The following are some of the most
+common options to change.</p>
+<h4 id="configure-the-subnet-and-gateway">Configure the subnet and gateway<a class="headerlink" href="#configure-the-subnet-and-gateway" title="Permanent link">#</a></h4>
+<p>By default, the network's subnet and gateway are configured automatically when
+the first service is connected to the network. You can configure these when
+creating a network using the <code>--subnet</code> and <code>--gateway</code> flags. The following
+example extends the previous one by configuring the subnet and gateway.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--driver<span class="w"> </span>overlay<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--subnet<span class="w"> </span><span class="m">10</span>.0.9.0/24<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--gateway<span class="w"> </span><span class="m">10</span>.0.9.99<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>my-network
+</code></pre></div>
+
+<h5 id="using-custom-default-address-pools">Using custom default address pools<a class="headerlink" href="#using-custom-default-address-pools" title="Permanent link">#</a></h5>
+<p>To customize subnet allocation for your Swarm networks, you can <a href="swarm-mode.html">optionally configure them</a> during <code>swarm init</code>.</p>
+<p>For example, the following command is used when initializing Swarm:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>swarm<span class="w"> </span>init<span class="w"> </span>--default-addr-pool<span class="w"> </span><span class="m">10</span>.20.0.0/16<span class="w"> </span>--default-addr-pool-mask-length<span class="w"> </span><span class="m">26</span>
+</code></pre></div>
+
+<p>Whenever a user creates a network, but does not use the <code>--subnet</code> command line option, the subnet for this network will be allocated sequentially from the next available subnet from the pool. If the specified network is already allocated, that network will not be used for Swarm. </p>
+<p>Multiple pools can be configured if discontiguous address space is required. However, allocation from specific pools is not supported. Network subnets will be allocated sequentially from the IP pool space and subnets will be reused as they are deallocated from networks that are deleted.</p>
+<p>The default mask length can be configured and is the same for all networks. It is set to <code>/24</code> by default. To change the default subnet mask length, use the <code>--default-addr-pool-mask-length</code> command line option.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>Default address pools can only be configured on <code>swarm init</code> and cannot be altered after cluster creation.</p>
+</blockquote>
+<h5 id="overlay-network-size-limitations">Overlay network size limitations<a class="headerlink" href="#overlay-network-size-limitations" title="Permanent link">#</a></h5>
+<p>Docker recommends creating overlay networks with <code>/24</code> blocks. The <code>/24</code> overlay network blocks limit the network to 256 IP addresses. </p>
+<p>This recommendation addresses <a href="https://github.com/moby/moby/issues/30820" rel="noopener" target="_blank">limitations with swarm mode</a>. 
+If you need more than 256 IP addresses, do not increase the IP block size. You can either use <code>dnsrr</code> 
+endpoint mode with an external load balancer, or use multiple smaller overlay networks. See 
+<a href="#configure-service-discovery">Configure service discovery</a> for more information about different endpoint modes.</p>
+<h4 id="use-direct-server-return">Use direct server return<a class="headerlink" href="#use-direct-server-return" title="Permanent link">#</a></h4>
+<p>Direct server return (DSR) changes east-west overlay load balancing so that
+IPVS routes packets by changing the destination MAC address. The source IP and
+destination virtual IP (VIP) remain unchanged.</p>
+<p>Create an overlay network that uses DSR:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--driver<span class="w"> </span>overlay<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--opt<span class="w"> </span>dsr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>dsr-net
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>DSR is supported only for traffic between services on Linux nodes. The
+ingress routing mesh does not use DSR.</p>
+</blockquote>
+<h4 id="encryption">Configure encryption of application data<a class="headerlink" href="#encryption" title="Permanent link">#</a></h4>
+<p>Management and control plane data related to a swarm is always encrypted.
+For more details about the encryption mechanisms, see the
+<a href="../network/drivers/overlay.html">Docker swarm mode overlay network security model</a>.</p>
+<p>Application data among swarm nodes is not encrypted by default. To encrypt this
+traffic on a given overlay network, use the <code>--opt encrypted</code> flag on <code>docker
+network create</code>. This enables IPSEC encryption at the level of the vxlan. This
+encryption imposes a non-negligible performance penalty, so you should test this
+option before using it in production.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>You must <a href="#customize-ingress">customize the automatically created ingress</a>
+to enable encryption. By default, all ingress traffic is unencrypted, as encryption
+is a network-level option.</p>
+</blockquote>
+<h2 id="attach-a-service-to-an-overlay-network">Attach a service to an overlay network<a class="headerlink" href="#attach-a-service-to-an-overlay-network" title="Permanent link">#</a></h2>
+<p>To attach a service to an existing overlay network, pass the <code>--network</code> flag to
+<code>docker service create</code>, or the <code>--network-add</code> flag to <code>docker service update</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>service<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--replicas<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>my-web<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--network<span class="w"> </span>my-network<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx
+</code></pre></div>
+
+<p>Service containers connected to an overlay network can communicate with
+each other across it.</p>
+<p>To see which networks a service is connected to, use <code>docker service ls</code> to find
+the name of the service, then <code>docker service ps &lt;service-name&gt;</code> to list the
+networks. Alternately, to see which services' containers are connected to a
+network, use <code>docker network inspect &lt;network-name&gt;</code>. You can run these commands
+from any swarm node which is joined to the swarm and is in a <code>running</code> state.</p>
+<h3 id="configure-service-discovery">Configure service discovery<a class="headerlink" href="#configure-service-discovery" title="Permanent link">#</a></h3>
+<p>Service discovery is the mechanism Docker uses to route a request from your
+service's external clients to an individual swarm node, without the client
+needing to know how many nodes are participating in the service or their
+IP addresses or ports. You don't need to publish ports which are used between
+services on the same network. For instance, if you have a
+WordPress service that stores its data in a MySQL service, and they are connected to the same overlay network, you do not need to publish
+the MySQL port to the client, only the WordPress HTTP port.</p>
+<p>Service discovery can work in two different ways: internal connection-based
+load-balancing at Layers 3 and 4 using the embedded DNS and a virtual IP (VIP),
+or external and customized request-based load-balancing at Layer 7 using DNS
+round robin (DNSRR). You can configure this per service.</p>
+<ul>
+<li>
+<p>By default, when you attach a service to a network and that service publishes
+  one or more ports, Docker assigns the service a virtual IP (VIP), which is the
+  "front end" for clients to reach the service. Docker keeps a list of all
+  worker nodes in the service, and routes requests between the client and one of
+  the nodes. Each request from the client might be routed to a different node.</p>
+</li>
+<li>
+<p>If you configure a service to use DNS round-robin (DNSRR) service discovery,
+  there is not a single virtual IP. Instead, Docker sets up DNS entries for the
+  service such that a DNS query for the service name returns a list of IP
+  addresses, and the client connects directly to one of these.</p>
+</li>
+</ul>
+<p>DNS round-robin is useful in cases where you want to use your own load
+  balancer, such as HAProxy. To configure a service to use DNSRR, use the flag
+  <code>--endpoint-mode dnsrr</code> when creating a new service or updating an existing
+  one.</p>
+<h3 id="container-discovery">Container discovery<a class="headerlink" href="#container-discovery" title="Permanent link">#</a></h3>
+<p>For most situations, connect to the service name. Docker load-balances
+requests across all running tasks ("containers") backing the service. To
+resolve the IP addresses of all individual tasks backing a service directly,
+perform a DNS lookup for <code>tasks.&lt;service-name&gt;</code>. Docker returns a list of
+all task IP addresses for that service, one per running replica.</p>
+<h2 id="customize-ingress">Customize the ingress network<a class="headerlink" href="#customize-ingress" title="Permanent link">#</a></h2>
+<p>Most users never need to configure the <code>ingress</code> network, but Docker allows you
+to do so. This can be useful if the automatically-chosen subnet
+conflicts with one that already exists on your network, or you need to customize
+other low-level network settings such as the MTU, or if you want to
+<a href="#encryption">enable encryption</a>.</p>
+<p>Customizing the <code>ingress</code> network involves removing and recreating it. This is
+usually done before you create any services in the swarm. If you have existing
+services which publish ports, those services need to be removed before you can
+remove the <code>ingress</code> network.</p>
+<p>During the time that no <code>ingress</code> network exists, existing services which do not
+publish ports continue to function but are not load-balanced. This affects
+services which publish ports, such as a WordPress service which publishes port
+80.</p>
+<ol>
+<li>
+<p>Inspect the <code>ingress</code> network using <code>docker network inspect ingress</code>, and
+    remove any services whose containers are connected to it. These are services
+    that publish ports, such as a WordPress service which publishes port 80. If
+    all such services are not stopped, the next step fails.</p>
+</li>
+<li>
+<p>Remove the existing <code>ingress</code> network:</p>
+<p>```console
+$ docker network rm ingress</p>
+<p>WARNING! Before removing the routing-mesh network, make sure all the nodes
+in your swarm run the same docker engine version. Otherwise, removal may not
+be effective and functionality of newly created ingress networks will be
+impaired.
+Are you sure you want to continue? [y/N]
+```</p>
+</li>
+<li>
+<p>Create a new overlay network using the <code>--ingress</code> flag, along  with the
+    custom options you want to set. This example sets the MTU to 1200, sets
+    the subnet to <code>10.11.0.0/16</code>, and sets the gateway to <code>10.11.0.2</code>.</p>
+<p><code>console
+$ docker network create \
+  --driver overlay \
+  --ingress \
+  --subnet=10.11.0.0/16 \
+  --gateway=10.11.0.2 \
+  --opt com.docker.network.driver.mtu=1200 \
+  my-ingress</code></p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>You can name your <code>ingress</code> network something other than
+<code>ingress</code>, but you can only have one. An attempt to create a second one
+fails.</p>
+</blockquote>
+</li>
+<li>
+<p>Restart the services that you stopped in the first step.</p>
+</li>
+</ol>
+<h2 id="customize-the-docker_gwbridge">Customize the docker_gwbridge<a class="headerlink" href="#customize-the-docker_gwbridge" title="Permanent link">#</a></h2>
+<p>The <code>docker_gwbridge</code> is a virtual bridge that connects the overlay networks
+(including the <code>ingress</code> network) to an individual Docker daemon's physical
+network. Docker creates it automatically when you initialize a swarm or join a
+Docker host to a swarm, but it is not a Docker device. It exists in the kernel
+of the Docker host. If you need to customize its settings, you must do so before
+joining the Docker host to the swarm, or after temporarily removing the host
+from the swarm.</p>
+<p>You need to have the <code>brctl</code> application installed on your operating system in
+order to delete an existing bridge. The package name is <code>bridge-utils</code>.</p>
+<ol>
+<li>
+<p>Stop Docker.</p>
+</li>
+<li>
+<p>Use the <code>brctl show docker_gwbridge</code> command to check whether a bridge
+    device exists called <code>docker_gwbridge</code>. If so, remove it using
+    <code>brctl delbr docker_gwbridge</code>.</p>
+</li>
+<li>
+<p>Start Docker. Do not join or initialize the swarm.</p>
+</li>
+<li>
+<p>Create or re-create the <code>docker_gwbridge</code> bridge with your custom settings.
+    This example uses the subnet <code>10.11.0.0/16</code>. For a full list of customizable
+    options, see <a href="../../docker-hub/repos/create.html#bridge-driver-options">Bridge driver options</a>.</p>
+<p><code>console
+$ docker network create \
+--subnet 10.11.0.0/16 \
+--opt com.docker.network.bridge.name=docker_gwbridge \
+--opt com.docker.network.bridge.enable_icc=false \
+--opt com.docker.network.bridge.enable_ip_masquerade=true \
+docker_gwbridge</code></p>
+</li>
+<li>
+<p>Initialize or join the swarm.</p>
+</li>
+</ol>
+<h2 id="use-a-separate-interface-for-control-and-data-traffic">Use a separate interface for control and data traffic<a class="headerlink" href="#use-a-separate-interface-for-control-and-data-traffic" title="Permanent link">#</a></h2>
+<p>By default, all swarm traffic is sent over the same interface, including control
+and management traffic for maintaining the swarm itself and data traffic to and
+from the service containers.</p>
+<p>You can separate this traffic by passing
+the <code>--data-path-addr</code> flag when initializing or joining the swarm. If there are
+multiple interfaces, <code>--advertise-addr</code> must be specified explicitly, and
+<code>--data-path-addr</code> defaults to <code>--advertise-addr</code> if not specified. Traffic about
+joining, leaving, and managing the swarm is sent over the
+<code>--advertise-addr</code> interface, and traffic among a service's containers is sent 
+over the <code>--data-path-addr</code> interface. These flags can take an IP address or
+a network device name, such as <code>eth0</code>.</p>
+<p>This example initializes a swarm with a separate <code>--data-path-addr</code>. It assumes
+that your Docker host has two different network interfaces: 10.0.0.1 should be
+used for control and management traffic and 192.168.0.1 should be used for
+traffic relating to services.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>swarm<span class="w"> </span>init<span class="w"> </span>--advertise-addr<span class="w"> </span><span class="m">10</span>.0.0.1<span class="w"> </span>--data-path-addr<span class="w"> </span><span class="m">192</span>.168.0.1
+</code></pre></div>
+
+<p>This example joins the swarm managed by host <code>192.168.99.100:2377</code> and sets the
+<code>--advertise-addr</code> flag to <code>eth0</code> and the <code>--data-path-addr</code> flag to <code>eth1</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>swarm<span class="w"> </span>join<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--token<span class="w"> </span>SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2d7c<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--advertise-addr<span class="w"> </span>eth0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-path-addr<span class="w"> </span>eth1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="m">192</span>.168.99.100:2377
+</code></pre></div>
+
+<h2 id="publish-ports-on-an-overlay-network">Publish ports on an overlay network<a class="headerlink" href="#publish-ports-on-an-overlay-network" title="Permanent link">#</a></h2>
+<p>Swarm services connected to the same overlay network effectively expose all
+ports to each other. For a port to be accessible outside of the service, that
+port must be <em>published</em> using the <code>-p</code> or <code>--publish</code> flag on <code>docker service
+create</code> or <code>docker service update</code>. Both the legacy colon-separated syntax and
+the newer comma-separated value syntax are supported. The longer syntax is
+preferred because it is somewhat self-documenting.</p>
+<table>
+<thead>
+<tr>
+<th>Flag value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tr>
+<td><tt>-p 8080:80</tt> or<br /><tt>-p published=8080,target=80</tt></td>
+<td>Map TCP port 80 on the service to port 8080 on the routing mesh.</td>
+</tr>
+<tr>
+<td><tt>-p 8080:80/udp</tt> or<br /><tt>-p published=8080,target=80,protocol=udp</tt></td>
+<td>Map UDP port 80 on the service to port 8080 on the routing mesh.</td>
+</tr>
+<tr>
+<td><tt>-p 8080:80/tcp -p 8080:80/udp</tt> or <br /><tt>-p published=8080,target=80,protocol=tcp -p published=8080,target=80,protocol=udp</tt></td>
+<td>Map TCP port 80 on the service to TCP port 8080 on the routing mesh, and map UDP port 80 on the service to UDP port 8080 on the routing mesh.</td>
+</tr>
+</table>
+
+<h2 id="learn-more">Learn more<a class="headerlink" href="#learn-more" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="services.html">Deploy services to a swarm</a></li>
+<li><a href="admin-guide.html">Swarm administration guide</a></li>
+<li><a href="swarm-tutorial/index.html">Swarm mode tutorial</a></li>
+<li><a href="../network/index.html">Networking overview</a></li>
+<li><a href="/reference/cli/docker/">Docker CLI reference</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/swarm/manage-nodes.html">
+          <span class="muted">Anterior</span>Manage nodes in a swarm
+        </a>
+        <a class="pager-next" href="../../engine/swarm/raft.html">
+          <span class="muted">Siguiente</span>Raft consensus in swarm mode
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

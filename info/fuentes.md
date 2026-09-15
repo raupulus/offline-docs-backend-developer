@@ -6,15 +6,26 @@ Todas se declaran en `sources.yaml`. Añadir una es añadir una entrada, no escr
 
 | Tecnología | Origen | Formato | Adaptador | Requiere |
 |---|---|---|---|---|
-| Laravel | `laravel/docs` | Markdown | `git_markdown` | git |
-| Filament | `filamentphp/filament` | Markdown | `git_markdown` | git |
+| Bash | ftp.gnu.org | Texinfo | `texinfo` | pandoc, texi2any |
 | Composer | `composer/composer` | Markdown | `git_markdown` | git |
+| Debian Reference | `salsa.debian.org` (debian-reference) | DocBook XML | `docbook_xml` | git, pandoc |
+| Docker | `docker/docs` | Markdown | `git_markdown` | git |
+| Filament | `filamentphp/filament` | Markdown | `git_markdown` | git |
+| Git | `git/git` | AsciiDoc | `asciidoc` | git, pandoc |
+| JavaScript | `mdn/content` | Markdown | `git_markdown` | git |
+| Laravel | `laravel/docs` | Markdown | `git_markdown` | git |
+| llama.cpp | `ggml-org/llama.cpp` | Markdown | `git_markdown` | git |
+| MicroPython (Pico) | `micropython/micropython` | Sphinx RST | `rst` | git, pandoc |
 | Node.js | `nodejs/node` | Markdown | `git_markdown` | git |
 | npm | `npm/cli` | Markdown | `git_markdown` | git |
-| pnpm | `pnpm/pnpm.io` | Markdown | `git_markdown` | git |
+| Nuxt | `nuxt/nuxt` | Markdown | `git_markdown` | git |
 | PHP | `php/doc-es` + `php/doc-base` | DocBook XML | `docbook_xml` | git, pandoc |
+| pnpm | `pnpm/pnpm.io` | Markdown | `git_markdown` | git |
+| PostgreSQL | `postgres/postgres` | DocBook XML / SGML | `docbook_xml` | git, pandoc |
 | Python | docs.python.org | Texto plano | `plaintext` | — |
-| Bash | ftp.gnu.org | Texinfo | `texinfo` | pandoc, texi2any |
+| SQLite | `sqlite.org` | HTML estático | `html_tarball` | pandoc |
+| Tailwind CSS | `tailwindlabs/tailwindcss.com` | MDX | `git_markdown` | git |
+| Vue 3 | `vuejs/docs` | Markdown | `git_markdown` | git |
 
 ## Idioma
 

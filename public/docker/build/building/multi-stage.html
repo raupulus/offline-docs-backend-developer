@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-stage builds · Docker</title>
+<meta name="description" content="Multi-stage builds - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/build/building/multi-stage.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Multi-stage builds">
+<meta property="og:description" content="Multi-stage builds - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Multi-stage builds">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Multi-stage builds",
+"url": "https://docs.raupulus.dev/docker/build/building/multi-stage.html",  "description": "Multi-stage builds - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Build
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../build/index.html"
+>Docker Build</a>
+              </li>
+              <li>
+                <a href="../../build/bake/index.html"
+>Bake</a>
+              </li>
+              <li>
+                <a href="../../build/bake/compose-file.html"
+>Building with Bake from a Compose file</a>
+              </li>
+              <li>
+                <a href="../../build/bake/contexts.html"
+>Using Bake with additional contexts</a>
+              </li>
+              <li>
+                <a href="../../build/bake/expressions.html"
+>Expression evaluation in Bake</a>
+              </li>
+              <li>
+                <a href="../../build/bake/funcs.html"
+>Functions</a>
+              </li>
+              <li>
+                <a href="../../build/bake/inheritance.html"
+>Inheritance in Bake</a>
+              </li>
+              <li>
+                <a href="../../build/bake/introduction.html"
+>Introduction to Bake</a>
+              </li>
+              <li>
+                <a href="../../build/bake/matrices.html"
+>Matrix targets</a>
+              </li>
+              <li>
+                <a href="../../build/bake/overrides.html"
+>Overriding configurations</a>
+              </li>
+              <li>
+                <a href="../../build/bake/remote-definition.html"
+>Remote Bake file definition</a>
+              </li>
+              <li>
+                <a href="../../build/bake/targets.html"
+>Bake targets</a>
+              </li>
+              <li>
+                <a href="../../build/bake/variables.html"
+>Variables in Bake</a>
+              </li>
+              <li>
+                <a href="../../build/builders/index.html"
+>Builders</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/index.html"
+>Build drivers</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/cloud.html"
+>Cloud driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/docker-container.html"
+>Docker container driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/docker.html"
+>Docker driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/kubernetes.html"
+>Kubernetes driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/drivers/remote.html"
+>Remote driver</a>
+              </li>
+              <li>
+                <a href="../../build/builders/manage.html"
+>Manage builders</a>
+              </li>
+              <li>
+                <a href="../../build/building/index.html"
+>Building</a>
+              </li>
+              <li>
+                <a href="../../build/building/base-images.html"
+>Base images</a>
+              </li>
+              <li>
+                <a href="../../build/building/best-practices.html"
+>Building best practices</a>
+              </li>
+              <li>
+                <a href="../../build/building/cdi.html"
+>Container Device Interface (CDI)</a>
+              </li>
+              <li>
+                <a href="../../build/building/export.html"
+>Export binaries</a>
+              </li>
+              <li>
+                <a href="../../build/building/multi-platform.html"
+>Multi-platform builds</a>
+              </li>
+              <li>
+                <a href="../../build/building/multi-stage.html"
+class="is-current" aria-current="page">Multi-stage builds</a>
+              </li>
+              <li>
+                <a href="../../build/building/secrets.html"
+>Build secrets</a>
+              </li>
+              <li>
+                <a href="../../build/building/variables.html"
+>Build variables</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/index.html"
+>BuildKit</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/configure.html"
+>Configure BuildKit</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/dockerfile-release-notes.html"
+>Dockerfile release notes</a>
+              </li>
+              <li>
+                <a href="../../build/buildkit/frontend.html"
+>Custom Dockerfile syntax</a>
+              </li>
+              <li>
+                <a href="../../build/cache/index.html"
+>Docker build cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/index.html"
+>Cache storage backends</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/azblob.html"
+>Azure Blob Storage cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/gha.html"
+>GitHub Actions cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/inline.html"
+>Inline cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/local.html"
+>Local cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/registry.html"
+>Registry cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/s3.html"
+>Amazon S3 cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/garbage-collection.html"
+>Build garbage collection</a>
+              </li>
+              <li>
+                <a href="../../build/cache/invalidation.html"
+>Build cache invalidation</a>
+              </li>
+              <li>
+                <a href="../../build/cache/optimize.html"
+>Optimize cache usage in builds</a>
+              </li>
+              <li>
+                <a href="../../build/checks.html"
+>Checking your build configuration</a>
+              </li>
+              <li>
+                <a href="../../build/ci/index.html"
+>Continuous integration with Docker</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/index.html"
+>Docker Build GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/annotations.html"
+>Add image annotations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/attestations.html"
+>Add SBOM and provenance attestations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/build-summary.html"
+>GitHub Actions build summary</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/cache.html"
+>Cache management with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/checks.html"
+>Validating build configuration with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/configure-builder.html"
+>Configuring your GitHub Actions builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/copy-image-registries.html"
+>Copy image between registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/export-docker.html"
+>Export to Docker with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/index.html"
+>Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/architecture.html"
+>Docker GitHub Builder architecture</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/bake.html"
+>Bake with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/build.html"
+>Build with Docker GitHub Builder</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Multi-stage builds</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#use-multi-stage-builds">Use multi-stage builds#</a></li>
+              <li class="lvl-2"><a href="#name-your-build-stages">Name your build stages#</a></li>
+              <li class="lvl-2"><a href="#stop-at-a-specific-build-stage">Stop at a specific build stage#</a></li>
+              <li class="lvl-2"><a href="#use-an-external-image-as-a-stage">Use an external image as a stage#</a></li>
+              <li class="lvl-2"><a href="#use-a-previous-stage-as-a-new-stage">Use a previous stage as a new stage#</a></li>
+              <li class="lvl-2"><a href="#differences-between-legacy-builder-and-buildkit">Differences between legacy builder and BuildKit#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Multi-stage builds are useful to anyone who has struggled to optimize
+Dockerfiles while keeping them easy to read and maintain.</p>
+<h2 id="use-multi-stage-builds">Use multi-stage builds<a class="headerlink" href="#use-multi-stage-builds" title="Permanent link">#</a></h2>
+<p>With multi-stage builds, you use multiple <code>FROM</code> statements in your Dockerfile.
+Each <code>FROM</code> instruction can use a different base, and each of them begins a new
+stage of the build. You can selectively copy artifacts from one stage to
+another, leaving behind everything you don't want in the final image.</p>
+<p>The following Dockerfile has two separate stages: one for building a binary,
+and another where the binary gets copied from the first stage into the next stage.</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">golang:{{%</span><span class="w"> </span>param<span class="w"> </span><span class="s2">&quot;example_go_version&quot;</span><span class="w"> </span>%<span class="o">}}</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/src</span>
+<span class="k">COPY</span><span class="w"> </span>&lt;&lt;EOF<span class="w"> </span>./main.go
+package<span class="w"> </span>main
+
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
+
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>fmt.Println<span class="o">(</span><span class="s2">&quot;hello, world&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+EOF
+<span class="k">RUN</span><span class="w"> </span>go<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>/bin/hello<span class="w"> </span>./main.go
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">scratch</span>
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span><span class="m">0</span><span class="w"> </span>/bin/hello<span class="w"> </span>/bin/hello
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/bin/hello&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>You only need the single Dockerfile. No need for a separate build script. Just
+run <code>docker build</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>hello<span class="w"> </span>.
+</code></pre></div>
+
+<p>The end result is a tiny production image with nothing but the binary inside.
+None of the build tools required to build the application are included in the
+resulting image.</p>
+<p>How does it work? The second <code>FROM</code> instruction starts a new build stage with
+the <code>scratch</code> image as its base. The <code>COPY --from=0</code> line copies just the
+built artifact from the previous stage into this new stage. The Go SDK and any
+intermediate artifacts are left behind, and not saved in the final image.</p>
+<h2 id="name-your-build-stages">Name your build stages<a class="headerlink" href="#name-your-build-stages" title="Permanent link">#</a></h2>
+<p>By default, the stages aren't named, and you refer to them by their integer
+number, starting with 0 for the first <code>FROM</code> instruction. However, you can
+name your stages, by adding an <code>AS &lt;NAME&gt;</code> to the <code>FROM</code> instruction. This
+example improves the previous one by naming the stages and using the name in
+the <code>COPY</code> instruction. This means that even if the instructions in your
+Dockerfile are re-ordered later, the <code>COPY</code> doesn't break.</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">golang:{{%</span><span class="w"> </span>param<span class="w"> </span><span class="s2">&quot;example_go_version&quot;</span><span class="w"> </span>%<span class="o">}}</span><span class="w"> </span>AS<span class="w"> </span>build
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/src</span>
+<span class="k">COPY</span><span class="w"> </span>&lt;&lt;EOF<span class="w"> </span>/src/main.go
+package<span class="w"> </span>main
+
+import<span class="w"> </span><span class="s2">&quot;fmt&quot;</span>
+
+func<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>fmt.Println<span class="o">(</span><span class="s2">&quot;hello, world&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+EOF
+<span class="k">RUN</span><span class="w"> </span>go<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>/bin/hello<span class="w"> </span>./main.go
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">scratch</span>
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>build<span class="w"> </span>/bin/hello<span class="w"> </span>/bin/hello
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/bin/hello&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<h2 id="stop-at-a-specific-build-stage">Stop at a specific build stage<a class="headerlink" href="#stop-at-a-specific-build-stage" title="Permanent link">#</a></h2>
+<p>When you build your image, you don't necessarily need to build the entire
+Dockerfile including every stage. You can specify a target build stage. The
+following command assumes you are using the previous <code>Dockerfile</code> but stops at
+the stage named <code>build</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>--target<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>hello<span class="w"> </span>.
+</code></pre></div>
+
+<p>A few scenarios where this might be useful are:</p>
+<ul>
+<li>Debugging a specific build stage</li>
+<li>Using a <code>debug</code> stage with all debugging symbols or tools enabled, and a
+  lean <code>production</code> stage</li>
+<li>Using a <code>testing</code> stage in which your app gets populated with test data, but
+  building for production using a different stage which uses real data</li>
+</ul>
+<h2 id="use-an-external-image-as-a-stage">Use an external image as a stage<a class="headerlink" href="#use-an-external-image-as-a-stage" title="Permanent link">#</a></h2>
+<p>When using multi-stage builds, you aren't limited to copying from stages you
+created earlier in your Dockerfile. You can use the <code>COPY --from</code> instruction to
+copy from a separate image, either using the local image name, a tag available
+locally or on a Docker registry, or a tag ID. The Docker client pulls the image
+if necessary and copies the artifact from there. The syntax is:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>nginx:latest<span class="w"> </span>/etc/nginx/nginx.conf<span class="w"> </span>/nginx.conf
+</code></pre></div>
+
+<h2 id="use-a-previous-stage-as-a-new-stage">Use a previous stage as a new stage<a class="headerlink" href="#use-a-previous-stage-as-a-new-stage" title="Permanent link">#</a></h2>
+<p>You can pick up where a previous stage left off by referring to it when using
+the <code>FROM</code> directive. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">alpine:latest</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
+<span class="k">RUN</span><span class="w"> </span>apk<span class="w"> </span>--no-cache<span class="w"> </span>add<span class="w"> </span>build-base
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">builder</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build1</span>
+<span class="k">COPY</span><span class="w"> </span>source1.cpp<span class="w"> </span>source.cpp
+<span class="k">RUN</span><span class="w"> </span>g++<span class="w"> </span>-o<span class="w"> </span>/binary<span class="w"> </span>source.cpp
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">builder</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build2</span>
+<span class="k">COPY</span><span class="w"> </span>source2.cpp<span class="w"> </span>source.cpp
+<span class="k">RUN</span><span class="w"> </span>g++<span class="w"> </span>-o<span class="w"> </span>/binary<span class="w"> </span>source.cpp
+</code></pre></div>
+
+<h2 id="differences-between-legacy-builder-and-buildkit">Differences between legacy builder and BuildKit<a class="headerlink" href="#differences-between-legacy-builder-and-buildkit" title="Permanent link">#</a></h2>
+<p>The legacy Docker Engine builder processes all stages of a Dockerfile leading
+up to the selected <code>--target</code>. It will build a stage even if the selected
+target doesn't depend on that stage.</p>
+<p><a href="../buildkit/index.html">BuildKit</a> only builds the stages that the target stage
+depends on.</p>
+<p>For example, given the following Dockerfile:</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">ubuntu</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">base</span>
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;base&quot;</span>
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">base</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">stage1</span>
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;stage1&quot;</span>
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">base</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">stage2</span>
+<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;stage2&quot;</span>
+</code></pre></div>
+
+<p>With <a href="../buildkit/index.html#getting-started">BuildKit enabled</a>, building the
+<code>stage2</code> target in this Dockerfile means only <code>base</code> and <code>stage2</code> are processed.
+There is no dependency on <code>stage1</code>, so it's skipped.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>--target<span class="w"> </span>stage2<span class="w"> </span>.
+<span class="go">[+] Building 0.4s (7/7) FINISHED                                                                    </span>
+<span class="go"> =&gt; [internal] load build definition from Dockerfile                                            0.0s</span>
+<span class="go"> =&gt; =&gt; transferring dockerfile: 36B                                                             0.0s</span>
+<span class="go"> =&gt; [internal] load .dockerignore                                                               0.0s</span>
+<span class="go"> =&gt; =&gt; transferring context: 2B                                                                 0.0s</span>
+<span class="go"> =&gt; [internal] load metadata for docker.io/library/ubuntu:latest                                0.0s</span>
+<span class="go"> =&gt; CACHED [base 1/2] FROM docker.io/library/ubuntu                                             0.0s</span>
+<span class="go"> =&gt; [base 2/2] RUN echo &quot;base&quot;                                                                  0.1s</span>
+<span class="go"> =&gt; [stage2 1/1] RUN echo &quot;stage2&quot;                                                              0.2s</span>
+<span class="go"> =&gt; exporting to image                                                                          0.0s</span>
+<span class="go"> =&gt; =&gt; exporting layers                                                                         0.0s</span>
+<span class="go"> =&gt; =&gt; writing image sha256:f55003b607cef37614f607f0728e6fd4d113a4bf7ef12210da338c716f2cfd15    0.0s</span>
+</code></pre></div>
+
+<p>On the other hand, building the same target without BuildKit results in all
+stages being processed:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>--target<span class="w"> </span>stage2<span class="w"> </span>.
+<span class="go">Sending build context to Docker daemon  219.1kB</span>
+<span class="go">Step 1/6 : FROM ubuntu AS base</span>
+<span class="go"> ---&gt; a7870fd478f4</span>
+<span class="go">Step 2/6 : RUN echo &quot;base&quot;</span>
+<span class="go"> ---&gt; Running in e850d0e42eca</span>
+<span class="go">base</span>
+<span class="go">Removing intermediate container e850d0e42eca</span>
+<span class="go"> ---&gt; d9f69f23cac8</span>
+<span class="go">Step 3/6 : FROM base AS stage1</span>
+<span class="go"> ---&gt; d9f69f23cac8</span>
+<span class="go">Step 4/6 : RUN echo &quot;stage1&quot;</span>
+<span class="go"> ---&gt; Running in 758ba6c1a9a3</span>
+<span class="go">stage1</span>
+<span class="go">Removing intermediate container 758ba6c1a9a3</span>
+<span class="go"> ---&gt; 396baa55b8c3</span>
+<span class="go">Step 5/6 : FROM base AS stage2</span>
+<span class="go"> ---&gt; d9f69f23cac8</span>
+<span class="go">Step 6/6 : RUN echo &quot;stage2&quot;</span>
+<span class="go"> ---&gt; Running in bbc025b93175</span>
+<span class="go">stage2</span>
+<span class="go">Removing intermediate container bbc025b93175</span>
+<span class="go"> ---&gt; 09fc3770a9c4</span>
+<span class="go">Successfully built 09fc3770a9c4</span>
+</code></pre></div>
+
+<p>The legacy builder processes <code>stage1</code>, even if <code>stage2</code> doesn't depend on it.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../build/building/multi-platform.html">
+          <span class="muted">Anterior</span>Multi-platform builds
+        </a>
+        <a class="pager-next" href="../../build/building/secrets.html">
+          <span class="muted">Siguiente</span>Build secrets
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

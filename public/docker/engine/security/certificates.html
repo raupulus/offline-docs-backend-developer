@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify repository client with certificates · Docker</title>
+<meta name="description" content="Verify repository client with certificates - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/certificates.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Verify repository client with certificates">
+<meta property="og:description" content="Verify repository client with certificates - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Verify repository client with certificates">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Verify repository client with certificates",
+"url": "https://docs.raupulus.dev/docker/engine/security/certificates.html",  "description": "Verify repository client with certificates - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+class="is-current" aria-current="page">Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Verify repository client with certificates</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#understand-the-configuration">Understand the configuration#</a></li>
+              <li class="lvl-2"><a href="#create-the-client-certificates">Create the client certificates#</a></li>
+              <li class="lvl-2"><a href="#troubleshooting-tips">Troubleshooting tips#</a></li>
+              <li class="lvl-2"><a href="#related-information">Related information#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>In <a href="protect-access.html">Running Docker with HTTPS</a>, you learned that, by default,
+Docker runs via a non-networked Unix socket and TLS must be enabled in order
+to have the Docker client and the daemon communicate securely over HTTPS.  TLS ensures authenticity of the registry endpoint and that traffic to/from registry is encrypted.</p>
+<p>This article demonstrates how to ensure the traffic between the Docker registry
+server and the Docker daemon (a client of the registry server) is encrypted and
+properly authenticated using certificate-based client-server authentication.</p>
+<p>We show you how to install a Certificate Authority (CA) root certificate
+for the registry and how to set the client TLS certificate for verification.</p>
+<h2 id="understand-the-configuration">Understand the configuration<a class="headerlink" href="#understand-the-configuration" title="Permanent link">#</a></h2>
+<p>A custom certificate is configured by creating a directory under the daemon's
+certificate root using the same name as the registry's hostname, such as
+<code>localhost</code>. All <code>*.crt</code> files are added to this directory as CA roots.</p>
+<p>Where that certificate root lives depends on the platform:</p>
+<ul>
+<li>Native Linux Engine: <code>/etc/docker/certs.d/</code></li>
+<li>Rootless Linux: <code>$XDG_CONFIG_HOME/docker/certs.d</code> (defaults to
+  <code>~/.config/docker/certs.d</code>), not <code>/etc/docker/certs.d</code></li>
+<li>Native Windows Engine (Windows containers):
+  <code>%PROGRAMDATA%\docker\certs.d</code> (normally <code>C:\ProgramData\docker\certs.d</code>).
+  If the registry address includes a port, strip the colon from the directory
+  name because Windows filenames cannot contain <code>:</code>. For example,
+  <code>registry.example.com:5000</code> becomes <code>registry.example.com5000</code>.</li>
+<li>Docker Desktop with Linux containers: put client certificates in
+  <code>~/.docker/certs.d</code> on the host. Docker Desktop copies them into the VM;
+  don't configure <code>/etc/docker/certs.d</code> inside the VM yourself. Trusted CAs
+  can also come from the host certificate store (on Windows, the Windows
+  certificate store).</li>
+</ul>
+<blockquote>
+<p>[!NOTE]</p>
+<p>On Linux any root certificates authorities are merged with the system defaults,
+including the host's root CA set. If you are running Docker on Windows Server,
+or Docker Desktop for Windows with Windows containers, the system default
+certificates are only used when no custom root certificates are configured.</p>
+</blockquote>
+<p>The presence of one or more <code>&lt;filename&gt;.key/cert</code> pairs indicates to Docker
+that there are custom certificates required for access to the desired
+repository.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>If multiple certificates exist, each is tried in alphabetical
+order. If there is a 4xx-level or 5xx-level authentication error, Docker
+continues to try with the next certificate.</p>
+</blockquote>
+<p>The following illustrates a configuration with custom certificates:</p>
+<div class="codehilite"><pre><span></span><code>    /etc/docker/certs.d/        &lt;-- Certificate directory
+    └── localhost:5000          &lt;-- Hostname:port
+       ├── client.cert          &lt;-- Client certificate
+       ├── client.key           &lt;-- Client key
+       └── ca.crt               &lt;-- Root CA that signed
+                                    the registry certificate, in PEM
+</code></pre></div>
+
+<p>The preceding example is operating-system specific and is for illustrative
+purposes only. You should consult your operating system documentation for
+creating an os-provided bundled certificate chain.</p>
+<h2 id="create-the-client-certificates">Create the client certificates<a class="headerlink" href="#create-the-client-certificates" title="Permanent link">#</a></h2>
+<p>Use OpenSSL's <code>genrsa</code> and <code>req</code> commands to first generate an RSA
+key and then use the key to create the certificate.   </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>client.key<span class="w"> </span><span class="m">4096</span>
+<span class="gp">$ </span>openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-x509<span class="w"> </span>-text<span class="w"> </span>-key<span class="w"> </span>client.key<span class="w"> </span>-out<span class="w"> </span>client.cert
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>These TLS commands only generate a working set of certificates on Linux.
+The version of OpenSSL in macOS is incompatible with the type of
+certificate Docker requires.</p>
+</blockquote>
+<h2 id="troubleshooting-tips">Troubleshooting tips<a class="headerlink" href="#troubleshooting-tips" title="Permanent link">#</a></h2>
+<p>The Docker daemon interprets <code>.crt</code> files as CA certificates and <code>.cert</code> files
+as client certificates. If a CA certificate is accidentally given the extension
+<code>.cert</code> instead of the correct <code>.crt</code> extension, the Docker daemon logs the
+following error message:</p>
+<div class="codehilite"><pre><span></span><code>Missing key KEY_NAME for client certificate CERT_NAME. CA certificates should use the extension .crt.
+</code></pre></div>
+
+<p>If the Docker registry is accessed without a port number, do not add the port to the directory name.  The following shows the configuration for a registry on default port 443 which is accessed with <code>docker login my-https.registry.example.com</code>:</p>
+<div class="codehilite"><pre><span></span><code>    /etc/docker/certs.d/
+    └── my-https.registry.example.com          &lt;-- Hostname without port
+       ├── client.cert
+       ├── client.key
+       └── ca.crt
+</code></pre></div>
+
+<h2 id="related-information">Related information<a class="headerlink" href="#related-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="trust/index.html">Use trusted images</a></li>
+<li><a href="protect-access.html">Protect the Docker daemon socket</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/security/apparmor.html">
+          <span class="muted">Anterior</span>AppArmor security profiles for Docker
+        </a>
+        <a class="pager-next" href="../../engine/security/https/readme.html">
+          <span class="muted">Siguiente</span>Readme
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

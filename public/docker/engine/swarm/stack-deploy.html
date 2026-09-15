@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deploy a stack to a swarm · Docker</title>
+<meta name="description" content="Deploy a stack to a swarm - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/swarm/stack-deploy.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Deploy a stack to a swarm">
+<meta property="og:description" content="Deploy a stack to a swarm - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Deploy a stack to a swarm">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Deploy a stack to a swarm",
+"url": "https://docs.raupulus.dev/docker/engine/swarm/stack-deploy.html",  "description": "Deploy a stack to a swarm - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/stack-deploy.html"
+class="is-current" aria-current="page">Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/add-nodes.html"
+>Add nodes to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/create-swarm.html"
+>Create a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/delete-service.html"
+>Delete the service running on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/deploy-service.html"
+>Deploy a service to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/drain-node.html"
+>Drain a node on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/inspect-service.html"
+>Inspect a service on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/rolling-update.html"
+>Apply rolling updates to a service</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/scale-service.html"
+>Scale the service in the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-manager-locking.html"
+>Lock your swarm to protect its encryption key</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Deploy a stack to a swarm</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#set-up-a-docker-registry">Set up a Docker registry#</a></li>
+              <li class="lvl-2"><a href="#create-the-example-application">Create the example application#</a></li>
+              <li class="lvl-2"><a href="#test-the-app-with-compose">Test the app with Compose#</a></li>
+              <li class="lvl-2"><a href="#push-the-generated-image-to-the-registry">Push the generated image to the registry#</a></li>
+              <li class="lvl-2"><a href="#deploy-the-stack-to-the-swarm">Deploy the stack to the swarm#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>When running Docker Engine in swarm mode, you can use <code>docker stack deploy</code> to
+deploy a complete application stack to the swarm. The <code>deploy</code> command accepts
+a stack description in the form of a <a href="../../reference/compose-file/legacy-versions.html">Compose file</a>.</p>
+<p>{{% include "swarm-compose-compat.md" %}}</p>
+<p>To run through this tutorial, you need:</p>
+<ol>
+<li>
+<p>A Docker Engine running in <a href="swarm-mode.html">Swarm mode</a>.
+    If you're not familiar with Swarm mode, you might want to read
+    <a href="key-concepts.html">Swarm mode key concepts</a>
+    and <a href="how-swarm-mode-works/services.html">How services work</a>.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>If you're trying things out on a local development environment,
+you can put your engine into Swarm mode with <code>docker swarm init</code>.</p>
+<p>If you've already got a multi-node swarm running, keep in mind that all
+<code>docker stack</code> and <code>docker service</code> commands must be run from a manager
+node.</p>
+</blockquote>
+</li>
+<li>
+<p>A current version of <a href="../../compose/install/index.html">Docker Compose</a>.</p>
+</li>
+</ol>
+<h2 id="set-up-a-docker-registry">Set up a Docker registry<a class="headerlink" href="#set-up-a-docker-registry" title="Permanent link">#</a></h2>
+<p>Because a swarm consists of multiple Docker Engines, a registry is required to
+distribute images to all of them. You can use the
+<a href="https://hub.docker.com" rel="noopener" target="_blank">Docker Hub</a> or maintain your own. Here's how to create
+a throwaway registry, which you can discard afterward.</p>
+<ol>
+<li>
+<p>Start the registry as a service on your swarm:</p>
+<p><code>console
+$ docker service create --name registry --publish published=5000,target=5000 registry:2</code></p>
+</li>
+<li>
+<p>Check its status with <code>docker service ls</code>:</p>
+<p>```console
+$ docker service ls</p>
+<p>ID            NAME      REPLICAS  IMAGE                                                                               COMMAND
+l7791tpuwkco  registry  1/1       registry:2@sha256:1152291c7f93a4ea2ddc95e46d142c31e743b6dd70e194af9e6ebe530f782c17
+```</p>
+<p>Once it reads <code>1/1</code> under <code>REPLICAS</code>, it's running. If it reads <code>0/1</code>, it's
+probably still pulling the image.</p>
+</li>
+<li>
+<p>Check that it's working with <code>curl</code>:</p>
+<p>```console
+$ curl http://127.0.0.1:5000/v2/</p>
+<p>{}
+```</p>
+</li>
+</ol>
+<h2 id="create-the-example-application">Create the example application<a class="headerlink" href="#create-the-example-application" title="Permanent link">#</a></h2>
+<p>The app used in this guide is based on the hit counter app in the
+<a href="../../compose/gettingstarted.html">Get started with Docker Compose</a> guide. It consists
+of a Python app which maintains a counter in a Redis instance and increments the
+counter whenever you visit it.</p>
+<ol>
+<li>
+<p>Create a directory for the project:</p>
+<p><code>console
+$ mkdir stackdemo
+$ cd stackdemo</code></p>
+</li>
+<li>
+<p>Create a file called <code>app.py</code> in the project directory and paste this in:</p>
+<p>```python
+from flask import Flask
+from redis import Redis</p>
+<p>app = Flask(<strong>name</strong>)
+redis = Redis(host='redis', port=6379)</p>
+<p>@app.route('/')
+def hello():
+    count = redis.incr('hits')
+    return 'Hello World! I have been seen {} times.\n'.format(count)</p>
+<p>if <strong>name</strong> == "<strong>main</strong>":
+    app.run(host="0.0.0.0", port=8000, debug=True)
+```</p>
+</li>
+<li>
+<p>Create a file called <code>requirements.txt</code> and paste these two lines in:</p>
+<p><code>text
+flask
+redis</code></p>
+</li>
+<li>
+<p>Create a file called <code>Dockerfile</code> and paste this in:</p>
+<p>```dockerfile</p>
+<h1 id="syntaxdockerdockerfile1">syntax=docker/dockerfile:1<a class="headerlink" href="#syntaxdockerdockerfile1" title="Permanent link">#</a></h1>
+<p>FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+```</p>
+</li>
+<li>
+<p>Create a file called <code>compose.yaml</code> and paste this in:</p>
+<p><code>yaml
+  services:
+    web:
+      image: 127.0.0.1:5000/stackdemo
+      build: .
+      ports:
+        - "8000:8000"
+    redis:
+      image: redis:alpine</code></p>
+<p>The image for the web app is built using the Dockerfile defined
+above. It's also tagged with <code>127.0.0.1:5000</code> - the address of the registry
+created earlier. This is important when distributing the app to the
+swarm.</p>
+</li>
+</ol>
+<h2 id="test-the-app-with-compose">Test the app with Compose<a class="headerlink" href="#test-the-app-with-compose" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Start the app with <code>docker compose up</code>. This builds the web app image,
+    pulls the Redis image if you don't already have it, and creates two
+    containers.</p>
+<p>You see a warning about the Engine being in swarm mode. This is because
+Compose doesn't take advantage of swarm mode, and deploys everything to a
+single node. You can safely ignore this.</p>
+<p>```console
+$ docker compose up -d</p>
+<p>WARNING: The Docker Engine you're using is running in swarm mode.</p>
+<p>Compose does not use swarm mode to deploy services to multiple nodes in
+a swarm. All containers are scheduled on the current node.</p>
+<p>To deploy your application across the swarm, use <code>docker stack deploy</code>.</p>
+<p>Creating network "stackdemo_default" with the default driver
+Building web
+...(build output)...
+Creating stackdemo_redis_1
+Creating stackdemo_web_1
+```</p>
+</li>
+<li>
+<p>Check that the app is running with <code>docker compose ps</code>:</p>
+<p>```console
+$ docker compose ps</p>
+<div class="codehilite"><pre><span></span><code>  Name                     Command               State           Ports
+</code></pre></div>
+
+<hr>
+<p>stackdemo_redis_1   docker-entrypoint.sh redis ...   Up      6379/tcp
+stackdemo_web_1     python app.py                    Up      0.0.0.0:8000-&gt;8000/tcp
+```</p>
+<p>You can test the app with <code>curl</code>:</p>
+<p>```console
+$ curl http://localhost:8000
+Hello World! I have been seen 1 times.</p>
+<p>$ curl http://localhost:8000
+Hello World! I have been seen 2 times.</p>
+<p>$ curl http://localhost:8000
+Hello World! I have been seen 3 times.
+```</p>
+</li>
+<li>
+<p>Bring the app down:</p>
+<p>```console
+$ docker compose down --volumes</p>
+<p>Stopping stackdemo_web_1 ... done
+Stopping stackdemo_redis_1 ... done
+Removing stackdemo_web_1 ... done
+Removing stackdemo_redis_1 ... done
+Removing network stackdemo_default
+```</p>
+</li>
+</ol>
+<h2 id="push-the-generated-image-to-the-registry">Push the generated image to the registry<a class="headerlink" href="#push-the-generated-image-to-the-registry" title="Permanent link">#</a></h2>
+<p>To distribute the web app's image across the swarm, it needs to be pushed to the
+registry you set up earlier. With Compose, this is very simple:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>push
+
+<span class="go">Pushing web (127.0.0.1:5000/stackdemo:latest)...</span>
+<span class="go">The push refers to a repository [127.0.0.1:5000/stackdemo]</span>
+<span class="go">5b5a49501a76: Pushed</span>
+<span class="go">be44185ce609: Pushed</span>
+<span class="go">bd7330a79bcf: Pushed</span>
+<span class="go">c9fc143a069a: Pushed</span>
+<span class="go">011b303988d2: Pushed</span>
+<span class="go">latest: digest: sha256:a81840ebf5ac24b42c1c676cbda3b2cb144580ee347c07e1bc80e35e5ca76507 size: 1372</span>
+</code></pre></div>
+
+<p>The stack is now ready to be deployed.</p>
+<h2 id="deploy-the-stack-to-the-swarm">Deploy the stack to the swarm<a class="headerlink" href="#deploy-the-stack-to-the-swarm" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Create the stack with <code>docker stack deploy</code>:</p>
+<p>```console
+$ docker stack deploy --compose-file compose.yaml stackdemo</p>
+<p>Ignoring unsupported options: build</p>
+<p>Creating network stackdemo_default
+Creating service stackdemo_web
+Creating service stackdemo_redis
+```</p>
+<p>The last argument is a name for the stack. Each network, volume and service
+name is prefixed with the stack name.</p>
+</li>
+<li>
+<p>Check that it's running with <code>docker stack services stackdemo</code>:</p>
+<p>```console
+$ docker stack services stackdemo</p>
+<p>ID            NAME             MODE        REPLICAS  IMAGE
+orvjk2263y1p  stackdemo_redis  replicated  1/1       redis:3.2-alpine@sha256:f1ed3708f538b537eb9c2a7dd50dc90a706f7debd7e1196c9264edeea521a86d
+s1nf0xy8t1un  stackdemo_web    replicated  1/1       127.0.0.1:5000/stackdemo@sha256:adb070e0805d04ba2f92c724298370b7a4eb19860222120d43e0f6351ddbc26f
+```</p>
+<p>Once it's running, you should see <code>1/1</code> under <code>REPLICAS</code> for both services.
+This might take some time if you have a multi-node swarm, as images need to
+be pulled.</p>
+<p>As before, you can test the app with <code>curl</code>:</p>
+<p>```console
+$ curl http://localhost:8000
+Hello World! I have been seen 1 times.</p>
+<p>$ curl http://localhost:8000
+Hello World! I have been seen 2 times.</p>
+<p>$ curl http://localhost:8000
+Hello World! I have been seen 3 times.
+```</p>
+<p>With Docker's built-in routing mesh, you can access any node in the
+swarm on port <code>8000</code> and get routed to the app:</p>
+<p><code>console
+$ curl http://address-of-other-node:8000
+Hello World! I have been seen 4 times.</code></p>
+</li>
+<li>
+<p>Bring the stack down with <code>docker stack rm</code>:</p>
+<p>```console
+$ docker stack rm stackdemo</p>
+<p>Removing service stackdemo_web
+Removing service stackdemo_redis
+Removing network stackdemo_default
+```</p>
+</li>
+<li>
+<p>Bring the registry down with <code>docker service rm</code>:</p>
+<p><code>console
+$ docker service rm registry</code></p>
+</li>
+<li>
+<p>If you're just testing things out on a local machine and want to bring your
+    Docker Engine out of Swarm mode, use <code>docker swarm leave</code>:</p>
+<p>```console
+$ docker swarm leave --force</p>
+<p>Node left the swarm.
+```</p>
+</li>
+</ol>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/swarm/services.html">
+          <span class="muted">Anterior</span>Deploy services to a swarm
+        </a>
+        <a class="pager-next" href="../../engine/swarm/swarm-mode.html">
+          <span class="muted">Siguiente</span>Run Docker Engine in swarm mode
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

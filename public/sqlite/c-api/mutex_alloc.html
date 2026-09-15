@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mutexes · SQLite</title>
+<meta name="description" content="Mutexes - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/c-api/mutex_alloc.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Mutexes">
+<meta property="og:description" content="Mutexes - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mutexes">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Mutexes",
+"url": "https://docs.raupulus.dev/sqlite/c-api/mutex_alloc.html",  "description": "Mutexes - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              C Api
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../c-api/c_shm_exclusive.html"
+>Flags for the xShmLock VFS method</a>
+              </li>
+              <li>
+                <a href="../c-api/db_cacheflush.html"
+>Flush caches to disk mid-transaction</a>
+              </li>
+              <li>
+                <a href="../c-api/mprintf.html"
+>Formatted String Printing Functions</a>
+              </li>
+              <li>
+                <a href="../c-api/db_release_memory.html"
+>Free Memory Used By A Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/get_auxdata.html"
+>Function Auxiliary Data</a>
+              </li>
+              <li>
+                <a href="../c-api/c_deterministic.html"
+>Function Flags</a>
+              </li>
+              <li>
+                <a href="../c-api/c_blob.html"
+>Fundamental Datatypes</a>
+              </li>
+              <li>
+                <a href="../c-api/vtab_in.html"
+>Identify and handle IN constraints in xBestIndex</a>
+              </li>
+              <li>
+                <a href="../c-api/hard_heap_limit64.html"
+>Impose A Limit On Heap Size</a>
+              </li>
+              <li>
+                <a href="../c-api/bind_parameter_index.html"
+>Index Of A Parameter With A Given Name</a>
+              </li>
+              <li>
+                <a href="../c-api/initialize.html"
+>Initialize The SQLite Library</a>
+              </li>
+              <li>
+                <a href="../c-api/interrupt.html"
+>Interrupt A Long-Running Query</a>
+              </li>
+              <li>
+                <a href="../c-api/intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="../c-api/last_insert_rowid.html"
+>Last Insert Rowid</a>
+              </li>
+              <li>
+                <a href="../c-api/constlist.html"
+>List Of SQLite Constants</a>
+              </li>
+              <li>
+                <a href="../c-api/funclist.html"
+>List Of SQLite Functions</a>
+              </li>
+              <li>
+                <a href="../c-api/objlist.html"
+>List Of SQLite Objects</a>
+              </li>
+              <li>
+                <a href="../c-api/load_extension.html"
+>Load An Extension</a>
+              </li>
+              <li>
+                <a href="../c-api/api_routines.html"
+>Loadable Extension Thunk</a>
+              </li>
+              <li>
+                <a href="../c-api/file_control.html"
+>Low-Level Control Of Database Files</a>
+              </li>
+              <li>
+                <a href="../c-api/system_errno.html"
+>Low-level system error code</a>
+              </li>
+              <li>
+                <a href="../c-api/c_shm_nlock.html"
+>Maximum xShmLock index</a>
+              </li>
+              <li>
+                <a href="../c-api/mem_methods.html"
+>Memory Allocation Routines</a>
+              </li>
+              <li>
+                <a href="../c-api/free.html"
+>Memory Allocation Subsystem</a>
+              </li>
+              <li>
+                <a href="../c-api/memory_highwater.html"
+>Memory Allocator Statistics</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_reopen.html"
+>Move a BLOB Handle to a New Row</a>
+              </li>
+              <li>
+                <a href="../c-api/mutex.html"
+>Mutex Handle</a>
+              </li>
+              <li>
+                <a href="../c-api/mutex_methods.html"
+>Mutex Methods Object</a>
+              </li>
+              <li>
+                <a href="../c-api/c_mutex_fast.html"
+>Mutex Types</a>
+              </li>
+              <li>
+                <a href="../c-api/mutex_held.html"
+>Mutex Verification Routines</a>
+              </li>
+              <li>
+                <a href="../c-api/mutex_alloc.html"
+class="is-current" aria-current="page">Mutexes</a>
+              </li>
+              <li>
+                <a href="../c-api/bind_parameter_name.html"
+>Name Of A Host Parameter</a>
+              </li>
+              <li>
+                <a href="../c-api/data_directory.html"
+>Name Of The Folder Holding Database Files</a>
+              </li>
+              <li>
+                <a href="../c-api/temp_directory.html"
+>Name Of The Folder Holding Temporary Files</a>
+              </li>
+              <li>
+                <a href="../c-api/column_count.html"
+>Number Of Columns In A Result Set</a>
+              </li>
+              <li>
+                <a href="../c-api/data_count.html"
+>Number of columns in a result set</a>
+              </li>
+              <li>
+                <a href="../c-api/bind_parameter_count.html"
+>Number Of SQL Parameters</a>
+              </li>
+              <li>
+                <a href="../c-api/aggregate_context.html"
+>Obtain Aggregate Function Context</a>
+              </li>
+              <li>
+                <a href="../c-api/uri_boolean.html"
+>Obtain Values For URI Parameters</a>
+              </li>
+              <li>
+                <a href="../c-api/value_blob.html"
+>Obtaining SQL Values</a>
+              </li>
+              <li>
+                <a href="../c-api/exec.html"
+>One-Step Query Execution Interface</a>
+              </li>
+              <li>
+                <a href="../c-api/backup_finish.html"
+>Online Backup API.</a>
+              </li>
+              <li>
+                <a href="../c-api/backup.html"
+>Online Backup Object</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_open.html"
+>Open A BLOB For Incremental I/O</a>
+              </li>
+              <li>
+                <a href="../c-api/open.html"
+>Opening A New Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/io_methods.html"
+>OS Interface File Virtual Methods Object</a>
+              </li>
+              <li>
+                <a href="../c-api/vfs.html"
+>OS Interface Object</a>
+              </li>
+              <li>
+                <a href="../c-api/file.html"
+>OS Interface Open File Handle</a>
+              </li>
+              <li>
+                <a href="../c-api/overload_function.html"
+>Overload A Function For A Virtual Table</a>
+              </li>
+              <li>
+                <a href="../c-api/c_prepare_dont_log.html"
+>Prepare Flags</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt.html"
+>Prepared Statement Object</a>
+              </li>
+              <li>
+                <a href="../c-api/c_scanstat_complex.html"
+>Prepared Statement Scan Status</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_scanstatus.html"
+>Prepared Statement Scan Status</a>
+              </li>
+              <li>
+                <a href="../c-api/c_scanstat_est.html"
+>Prepared Statement Scan Status Opcodes</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_status.html"
+>Prepared Statement Status</a>
+              </li>
+              <li>
+                <a href="../c-api/randomness.html"
+>Pseudo-Random Number Generator</a>
+              </li>
+              <li>
+                <a href="../c-api/progress_handler.html"
+>Query Progress Callbacks</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_isexplain.html"
+>Query The EXPLAIN Setting For A Prepared Statement</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_read.html"
+>Read Data From A BLOB Incrementally</a>
+              </li>
+              <li>
+                <a href="../c-api/snapshot_get.html"
+>Record A Database Snapshot</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../guides/fasterthanfs.html">Guides</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Mutexes</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/c3ref/mutex_alloc.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+
+      <div class="doc-body">
+        <blockquote>
+<p>\
+sqlite3_mutex *sqlite3_mutex_alloc(int);\
+void sqlite3_mutex_free(sqlite3_mutex*);\
+void sqlite3_mutex_enter(sqlite3_mutex*);\
+int sqlite3_mutex_try(sqlite3_mutex*);\
+void sqlite3_mutex_leave(sqlite3_mutex*);\</p>
+</blockquote>
+<p>The SQLite core uses these routines for thread synchronization. Though they are intended for internal use by SQLite, code that links against SQLite is permitted to use any of these routines.</p>
+<p>The SQLite source code contains multiple implementations of these mutex routines. An appropriate implementation is selected automatically at compile-time. The following implementations are available in the SQLite core:</p>
+<ul>
+<li>SQLITE_MUTEX_PTHREADS</li>
+<li>SQLITE_MUTEX_W32</li>
+<li>SQLITE_MUTEX_NOOP</li>
+</ul>
+<p>The SQLITE_MUTEX_NOOP implementation is a set of routines that does no real locking and is appropriate for use in a single-threaded application. The SQLITE_MUTEX_PTHREADS and SQLITE_MUTEX_W32 implementations are appropriate for use on Unix and Windows.</p>
+<p>The sqlite3_mutex_alloc() routine allocates a new mutex and returns a pointer to it. The sqlite3_mutex_alloc() routine returns NULL if it is unable to allocate the requested mutex. The argument to sqlite3_mutex_alloc() must be one of these integer constants:</p>
+<ul>
+<li>SQLITE_MUTEX_FAST</li>
+<li>SQLITE_MUTEX_RECURSIVE</li>
+<li>SQLITE_MUTEX_STATIC_MAIN</li>
+<li>SQLITE_MUTEX_STATIC_MEM</li>
+<li>SQLITE_MUTEX_STATIC_OPEN</li>
+<li>SQLITE_MUTEX_STATIC_PRNG</li>
+<li>SQLITE_MUTEX_STATIC_LRU</li>
+<li>SQLITE_MUTEX_STATIC_PMEM</li>
+<li>SQLITE_MUTEX_STATIC_APP1</li>
+<li>SQLITE_MUTEX_STATIC_APP2</li>
+<li>SQLITE_MUTEX_STATIC_APP3</li>
+<li>SQLITE_MUTEX_STATIC_VFS1</li>
+<li>SQLITE_MUTEX_STATIC_VFS2</li>
+<li>SQLITE_MUTEX_STATIC_VFS3</li>
+</ul>
+<p>The first two constants (SQLITE_MUTEX_FAST and SQLITE_MUTEX_RECURSIVE) cause sqlite3_mutex_alloc() to create a new mutex. The new mutex is recursive when SQLITE_MUTEX_RECURSIVE is used but not necessarily so when SQLITE_MUTEX_FAST is used. The mutex implementation does not need to make a distinction between SQLITE_MUTEX_RECURSIVE and SQLITE_MUTEX_FAST if it does not want to. SQLite will only request a recursive mutex in cases where it really needs one. If a faster non-recursive mutex implementation is available on the host platform, the mutex subsystem might return such a mutex in response to SQLITE_MUTEX_FAST.</p>
+<p>The other allowed parameters to sqlite3_mutex_alloc() (anything other than SQLITE_MUTEX_FAST and SQLITE_MUTEX_RECURSIVE) each return a pointer to a static preexisting mutex. Nine static mutexes are used by the current version of SQLite. Future versions of SQLite may add additional static mutexes. Static mutexes are for internal use by SQLite only. Applications that use SQLite mutexes should use only the dynamic mutexes returned by SQLITE_MUTEX_FAST or SQLITE_MUTEX_RECURSIVE.</p>
+<p>Note that if one of the dynamic mutex parameters (SQLITE_MUTEX_FAST or SQLITE_MUTEX_RECURSIVE) is used then sqlite3_mutex_alloc() returns a different mutex on every call. For the static mutex types, the same mutex is returned on every call that has the same type number.</p>
+<p>The sqlite3_mutex_free() routine deallocates a previously allocated dynamic mutex. Attempting to deallocate a static mutex results in undefined behavior.</p>
+<p>The sqlite3_mutex_enter() and sqlite3_mutex_try() routines attempt to enter a mutex. If another thread is already within the mutex, sqlite3_mutex_enter() will block and sqlite3_mutex_try() will return SQLITE_BUSY. The sqlite3_mutex_try() interface returns <a href="../rescode.html#ok">SQLITE_OK</a> upon successful entry. Mutexes created using SQLITE_MUTEX_RECURSIVE can be entered multiple times by the same thread. In such cases, the mutex must be exited an equal number of times before another thread can enter. If the same thread tries to enter any mutex other than an SQLITE_MUTEX_RECURSIVE more than once, the behavior is undefined.</p>
+<p>Some systems (for example, Windows 95) do not support the operation implemented by sqlite3_mutex_try(). On those systems, sqlite3_mutex_try() will always return SQLITE_BUSY. In most cases the SQLite core only uses sqlite3_mutex_try() as an optimization, so this is acceptable behavior. The exceptions are unix builds that set the SQLITE_ENABLE_SETLK_TIMEOUT build option. In that case a working sqlite3_mutex_try() is required.</p>
+<p>The sqlite3_mutex_leave() routine exits a mutex that was previously entered by the same thread. The behavior is undefined if the mutex is not currently entered by the calling thread or is not currently allocated.</p>
+<p>If the argument to sqlite3_mutex_enter(), sqlite3_mutex_try(), sqlite3_mutex_leave(), or sqlite3_mutex_free() is a NULL pointer, then any of the four routines behaves as a no-op.</p>
+<p>See also: <a href="../c3ref/mutex_held.html">sqlite3_mutex_held()</a> and <a href="../c3ref/mutex_held.html">sqlite3_mutex_notheld()</a>.</p>
+<p>See also lists of <a href="../c3ref/objlist.html">Objects</a>, <a href="../c3ref/constlist.html">Constants</a>, and <a href="../c3ref/funclist.html">Functions</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../c-api/mutex_held.html">
+          <span class="muted">Anterior</span>Mutex Verification Routines
+        </a>
+        <a class="pager-next" href="../c-api/bind_parameter_name.html">
+          <span class="muted">Siguiente</span>Name Of A Host Parameter
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

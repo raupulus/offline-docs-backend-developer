@@ -1,0 +1,2128 @@
+---
+title: Target Crossreference
+source_url: https://www.sqlite.org/doc_target_crossref.html
+source_path: doc_target_crossref.html
+technology: sqlite
+version: 3.53.4
+license: Blessing
+retrieved_at: '2026-09-15'
+section: guides
+order: 2740
+---
+
+- [34to35.html](34to35.md) → 34to35
+- [35to36.html](35to36.md) → 35to36
+- [aff_short.html](aff_short.md) → affshort {file-format benefits}
+- [affcase1.html](affcase1.md) → {OpenOffice case study} {What If OpenOffice Used SQLite}
+- [affcase1.html#smaller](affcase1.md#smaller) → {SQLite Archive smaller than ZIP}
+- [amalg-v-canon.html#canon](amalg-v-canon.md#canon) → {canonical source code} {canonical sources}
+- [amalgamation.html](amalgamation.md) → {SQLite amalgamation source file} amalgamation {the amalgamation}
+- [amalgamation.html#amal32k](amalgamation.md#amal32k) → {split amalgamation}
+- [amalgamation.html#amalgtarball](amalgamation.md#amalgtarball) → {precompiled amalgamation tarball} {precompiled amalgamation tarballs}
+- [appfileformat.html](appfileformat.md) → {Application File Format} appformat {application file format} {application file-format}
+- [appfunc.html](appfunc.md) → ADF {application-defined SQL function} {application-defined SQL functions} {custom SQL function} {custom SQL functions}
+- [appfunc.html#sec](appfunc.md#sec) → {application-defined function attacks}
+- [assert.html](assert.md) → {The Use Of assert In SQLite}
+- [atomiccommit.html](atomiccommit.md) → {Atomic Commit} {atomic commit}
+- [atomiccommit.html#sect_9_0](atomiccommit.md#sect_9_0) → {Things That Can Go Wrong}
+- [autoinc.html](autoinc.md) → AUTOINCREMENT
+- [backup.html](backup.md) → {Using the SQLite Online Backup API} {backup API}
+- [base64.html](base64.md) → base64 {base64 function}
+- [base85.html](base85.md) → base85 {base85 function}
+- [bindptr.html](bindptr.md) → {pointer passing interface} {pointer passing interfaces} {pointer value}
+- [bindptr.html#ptrleak](bindptr.md#ptrleak) → {pointer leak} {pointer leaks}
+- [bindptr.html#ptrtyp](bindptr.md#ptrtyp) → {pointer types}
+- [books.html](books.md) → {books about SQLite}
+- [bytecodevtab.html](bytecodevtab.md) → bcvtab {bytecode and tables_used virtual tables} {bytecode virtual table} {tables_used virtual table}
+- [bytecodevtab.html#nexec](bytecodevtab.md#nexec) → bytecode.ncycle bytecode.nexec {nexec and ncycle}
+- [c3ref/aggregate_context.html](c3ref/aggregate_context.md) → sqlite3_aggregate_context
+- [c3ref/aggregate_count.html](c3ref/aggregate_count.md) → sqlite3_aggregate_count sqlite3_expired sqlite3_global_recover sqlite3_memory_alarm sqlite3_thread_cleanup sqlite3_transfer_bindings
+- [c3ref/api_routines.html](c3ref/api_routines.md) → sqlite3_api_routines
+- [c3ref/auto_extension.html](c3ref/auto_extension.md) → sqlite3_auto_extension
+- [c3ref/autovacuum_pages.html](c3ref/autovacuum_pages.md) → sqlite3_autovacuum_pages
+- [c3ref/backup.html](c3ref/backup.md) → sqlite3_backup
+- [c3ref/backup_finish.html#sqlite3backupfinish](c3ref/backup_finish.md#sqlite3backupfinish) → sqlite3_backup_finish
+- [c3ref/backup_finish.html#sqlite3backupinit](c3ref/backup_finish.md#sqlite3backupinit) → sqlite3_backup_init
+- [c3ref/backup_finish.html#sqlite3backuppagecount](c3ref/backup_finish.md#sqlite3backuppagecount) → sqlite3_backup_pagecount
+- [c3ref/backup_finish.html#sqlite3backupremaining](c3ref/backup_finish.md#sqlite3backupremaining) → sqlite3_backup_remaining
+- [c3ref/backup_finish.html#sqlite3backupstep](c3ref/backup_finish.md#sqlite3backupstep) → sqlite3_backup_step
+- [c3ref/bind_blob.html](c3ref/bind_blob.md) → {SQL parameter} {SQL parameters} {host parameter} {host parameter name} {host parameters} {parameter binding} sqlite3_bind_blob sqlite3_bind_blob64 sqlite3_bind_double sqlite3_bind_int sqlite3_bind_int64 sqlite3_bind_null sqlite3_bind_pointer sqlite3_bind_text sqlite3_bind_text16 sqlite3_bind_text64 sqlite3_bind_value sqlite3_bind_zeroblob sqlite3_bind_zeroblob64
+- [c3ref/bind_blob.html#byteorderdeterminationrules](c3ref/bind_blob.md#byteorderdeterminationrules) → {byte-order determination rules}
+- [c3ref/bind_parameter_count.html](c3ref/bind_parameter_count.md) → sqlite3_bind_parameter_count
+- [c3ref/bind_parameter_index.html](c3ref/bind_parameter_index.md) → sqlite3_bind_parameter_index
+- [c3ref/bind_parameter_name.html](c3ref/bind_parameter_name.md) → sqlite3_bind_parameter_name
+- [c3ref/blob.html](c3ref/blob.md) → {BLOB handle} {BLOB handles} sqlite3_blob
+- [c3ref/blob_bytes.html](c3ref/blob_bytes.md) → sqlite3_blob_bytes
+- [c3ref/blob_close.html](c3ref/blob_close.md) → sqlite3_blob_close
+- [c3ref/blob_open.html](c3ref/blob_open.md) → sqlite3_blob_open
+- [c3ref/blob_read.html](c3ref/blob_read.md) → sqlite3_blob_read
+- [c3ref/blob_reopen.html](c3ref/blob_reopen.md) → sqlite3_blob_reopen
+- [c3ref/blob_write.html](c3ref/blob_write.md) → sqlite3_blob_write
+- [c3ref/busy_handler.html](c3ref/busy_handler.md) → {busy handler} {busy-handler callback} sqlite3_busy_handler
+- [c3ref/busy_timeout.html](c3ref/busy_timeout.md) → sqlite3_busy_timeout
+- [c3ref/c_abort.html](c3ref/c_abort.md) → {result code definitions}
+- [c3ref/c_abort_rollback.html](c3ref/c_abort_rollback.md) → SQLITE_ERROR_KEY SQLITE_ERROR_RESERVESIZE SQLITE_ERROR_UNABLE SQLITE_IOERR_BADKEY SQLITE_IOERR_CODEC SQLITE_IOERR_IN_PAGE SQLITE_NOTICE_RBU SQLITE_OK_SYMLINK {extended result code definitions}
+- [c3ref/c_access_exists.html](c3ref/c_access_exists.md) → SQLITE_ACCESS_EXISTS SQLITE_ACCESS_READ SQLITE_ACCESS_READWRITE
+- [c3ref/c_alter_table.html](c3ref/c_alter_table.md) → SQLITE_ALTER_TABLE SQLITE_ANALYZE SQLITE_ATTACH SQLITE_COPY SQLITE_CREATE_INDEX SQLITE_CREATE_TABLE SQLITE_CREATE_TEMP_INDEX SQLITE_CREATE_TEMP_TABLE SQLITE_CREATE_TEMP_TRIGGER SQLITE_CREATE_TEMP_VIEW SQLITE_CREATE_TRIGGER SQLITE_CREATE_VIEW SQLITE_CREATE_VTABLE SQLITE_DELETE SQLITE_DETACH SQLITE_DROP_INDEX SQLITE_DROP_TABLE SQLITE_DROP_TEMP_INDEX SQLITE_DROP_TEMP_TABLE SQLITE_DROP_TEMP_TRIGGER SQLITE_DROP_TEMP_VIEW SQLITE_DROP_TRIGGER SQLITE_DROP_VIEW SQLITE_DROP_VTABLE SQLITE_FUNCTION SQLITE_INSERT SQLITE_PRAGMA SQLITE_READ SQLITE_RECURSIVE SQLITE_REINDEX SQLITE_SAVEPOINT SQLITE_SELECT SQLITE_TRANSACTION SQLITE_UPDATE
+- [c3ref/c_any.html#sqliteany](c3ref/c_any.md#sqliteany) → SQLITE_ANY
+- [c3ref/c_any.html#sqliteutf16](c3ref/c_any.md#sqliteutf16) → SQLITE_UTF16
+- [c3ref/c_any.html#sqliteutf16aligned](c3ref/c_any.md#sqliteutf16aligned) → SQLITE_UTF16_ALIGNED
+- [c3ref/c_any.html#sqliteutf16be](c3ref/c_any.md#sqliteutf16be) → SQLITE_UTF16BE
+- [c3ref/c_any.html#sqliteutf16le](c3ref/c_any.md#sqliteutf16le) → SQLITE_UTF16LE
+- [c3ref/c_any.html#sqliteutf8](c3ref/c_any.md#sqliteutf8) → SQLITE_UTF8
+- [c3ref/c_any.html#sqliteutf8zt](c3ref/c_any.md#sqliteutf8zt) → SQLITE_UTF8_ZT
+- [c3ref/c_blob.html](c3ref/c_blob.md) → SQLITE_BLOB SQLITE_FLOAT SQLITE_INTEGER SQLITE_NULL SQLITE_TEXT
+- [c3ref/c_carray_blob.html](c3ref/c_carray_blob.md) → SQLITE_CARRAY_BLOB SQLITE_CARRAY_DOUBLE SQLITE_CARRAY_INT32 SQLITE_CARRAY_INT64 SQLITE_CARRAY_TEXT
+- [c3ref/c_checkpoint_full.html](c3ref/c_checkpoint_full.md) → SQLITE_CHECKPOINT_FULL SQLITE_CHECKPOINT_NOOP SQLITE_CHECKPOINT_PASSIVE SQLITE_CHECKPOINT_RESTART SQLITE_CHECKPOINT_TRUNCATE {checkpoint mode}
+- [c3ref/c_config_covering_index_scan.html](c3ref/c_config_covering_index_scan.md) → {configuration option}
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigcoveringindexscan](c3ref/c_config_covering_index_scan.md#sqliteconfigcoveringindexscan) → SQLITE_CONFIG_COVERING_INDEX_SCAN
+- [c3ref/c_config_covering_index_scan.html#sqliteconfiggetmalloc](c3ref/c_config_covering_index_scan.md#sqliteconfiggetmalloc) → SQLITE_CONFIG_GETMALLOC
+- [c3ref/c_config_covering_index_scan.html#sqliteconfiggetmutex](c3ref/c_config_covering_index_scan.md#sqliteconfiggetmutex) → SQLITE_CONFIG_GETMUTEX
+- [c3ref/c_config_covering_index_scan.html#sqliteconfiggetpcache](c3ref/c_config_covering_index_scan.md#sqliteconfiggetpcache) → SQLITE_CONFIG_GETPCACHE
+- [c3ref/c_config_covering_index_scan.html#sqliteconfiggetpcache2](c3ref/c_config_covering_index_scan.md#sqliteconfiggetpcache2) → SQLITE_CONFIG_GETPCACHE2
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigheap](c3ref/c_config_covering_index_scan.md#sqliteconfigheap) → SQLITE_CONFIG_HEAP
+- [c3ref/c_config_covering_index_scan.html#sqliteconfiglog](c3ref/c_config_covering_index_scan.md#sqliteconfiglog) → SQLITE_CONFIG_LOG
+- [c3ref/c_config_covering_index_scan.html#sqliteconfiglookaside](c3ref/c_config_covering_index_scan.md#sqliteconfiglookaside) → SQLITE_CONFIG_LOOKASIDE
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigmalloc](c3ref/c_config_covering_index_scan.md#sqliteconfigmalloc) → SQLITE_CONFIG_MALLOC
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigmemdbmaxsize](c3ref/c_config_covering_index_scan.md#sqliteconfigmemdbmaxsize) → SQLITE_CONFIG_MEMDB_MAXSIZE
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigmemstatus](c3ref/c_config_covering_index_scan.md#sqliteconfigmemstatus) → SQLITE_CONFIG_MEMSTATUS
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigmmapsize](c3ref/c_config_covering_index_scan.md#sqliteconfigmmapsize) → SQLITE_CONFIG_MMAP_SIZE
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigmultithread](c3ref/c_config_covering_index_scan.md#sqliteconfigmultithread) → SQLITE_CONFIG_MULTITHREAD
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigmutex](c3ref/c_config_covering_index_scan.md#sqliteconfigmutex) → SQLITE_CONFIG_MUTEX
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigpagecache](c3ref/c_config_covering_index_scan.md#sqliteconfigpagecache) → SQLITE_CONFIG_PAGECACHE
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigpcache](c3ref/c_config_covering_index_scan.md#sqliteconfigpcache) → SQLITE_CONFIG_PCACHE
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigpcache2](c3ref/c_config_covering_index_scan.md#sqliteconfigpcache2) → SQLITE_CONFIG_PCACHE2
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigpcachehdrsz](c3ref/c_config_covering_index_scan.md#sqliteconfigpcachehdrsz) → SQLITE_CONFIG_PCACHE_HDRSZ
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigpmasz](c3ref/c_config_covering_index_scan.md#sqliteconfigpmasz) → SQLITE_CONFIG_PMASZ
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigrowidinview](c3ref/c_config_covering_index_scan.md#sqliteconfigrowidinview) → SQLITE_CONFIG_ROWID_IN_VIEW
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigscratch](c3ref/c_config_covering_index_scan.md#sqliteconfigscratch) → SQLITE_CONFIG_SCRATCH
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigserialized](c3ref/c_config_covering_index_scan.md#sqliteconfigserialized) → SQLITE_CONFIG_SERIALIZED
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigsinglethread](c3ref/c_config_covering_index_scan.md#sqliteconfigsinglethread) → SQLITE_CONFIG_SINGLETHREAD
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigsmallmalloc](c3ref/c_config_covering_index_scan.md#sqliteconfigsmallmalloc) → SQLITE_CONFIG_SMALL_MALLOC
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigsorterrefsize](c3ref/c_config_covering_index_scan.md#sqliteconfigsorterrefsize) → SQLITE_CONFIG_SORTERREF_SIZE
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigsqllog](c3ref/c_config_covering_index_scan.md#sqliteconfigsqllog) → SQLITE_CONFIG_SQLLOG
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigstmtjrnlspill](c3ref/c_config_covering_index_scan.md#sqliteconfigstmtjrnlspill) → SQLITE_CONFIG_STMTJRNL_SPILL
+- [c3ref/c_config_covering_index_scan.html#sqliteconfiguri](c3ref/c_config_covering_index_scan.md#sqliteconfiguri) → SQLITE_CONFIG_URI
+- [c3ref/c_config_covering_index_scan.html#sqliteconfigwin32heapsize](c3ref/c_config_covering_index_scan.md#sqliteconfigwin32heapsize) → SQLITE_CONFIG_WIN32_HEAPSIZE
+- [c3ref/c_dbconfig_defensive.html](c3ref/c_dbconfig_defensive.md) → SQLITE_DBCONFIG_MAX
+- [c3ref/c_dbconfig_defensive.html#dbconfigarguments](c3ref/c_dbconfig_defensive.md#dbconfigarguments) → {DBCONFIG arguments}
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigdefensive](c3ref/c_dbconfig_defensive.md#sqlitedbconfigdefensive) → SQLITE_DBCONFIG_DEFENSIVE
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigdqsddl](c3ref/c_dbconfig_defensive.md#sqlitedbconfigdqsddl) → SQLITE_DBCONFIG_DQS_DDL
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigdqsdml](c3ref/c_dbconfig_defensive.md#sqlitedbconfigdqsdml) → SQLITE_DBCONFIG_DQS_DML
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenableattachcreate](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenableattachcreate) → SQLITE_DBCONFIG_ENABLE_ATTACH_CREATE
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenableattachwrite](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenableattachwrite) → SQLITE_DBCONFIG_ENABLE_ATTACH_WRITE
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenablecomments](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenablecomments) → SQLITE_DBCONFIG_ENABLE_COMMENTS
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenablefkey](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenablefkey) → SQLITE_DBCONFIG_ENABLE_FKEY
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenablefts3tokenizer](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenablefts3tokenizer) → SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenableloadextension](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenableloadextension) → SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenableqpsg](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenableqpsg) → SQLITE_DBCONFIG_ENABLE_QPSG
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenabletrigger](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenabletrigger) → SQLITE_DBCONFIG_ENABLE_TRIGGER
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigenableview](c3ref/c_dbconfig_defensive.md#sqlitedbconfigenableview) → SQLITE_DBCONFIG_ENABLE_VIEW
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigfpdigits](c3ref/c_dbconfig_defensive.md#sqlitedbconfigfpdigits) → SQLITE_DBCONFIG_FP_DIGITS
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfiglegacyaltertable](c3ref/c_dbconfig_defensive.md#sqlitedbconfiglegacyaltertable) → SQLITE_DBCONFIG_LEGACY_ALTER_TABLE
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfiglegacyfileformat](c3ref/c_dbconfig_defensive.md#sqlitedbconfiglegacyfileformat) → SQLITE_DBCONFIG_LEGACY_FILE_FORMAT
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfiglookaside](c3ref/c_dbconfig_defensive.md#sqlitedbconfiglookaside) → SQLITE_DBCONFIG_LOOKASIDE
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigmaindbname](c3ref/c_dbconfig_defensive.md#sqlitedbconfigmaindbname) → SQLITE_DBCONFIG_MAINDBNAME
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfignockptonclose](c3ref/c_dbconfig_defensive.md#sqlitedbconfignockptonclose) → SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigresetdatabase](c3ref/c_dbconfig_defensive.md#sqlitedbconfigresetdatabase) → SQLITE_DBCONFIG_RESET_DATABASE
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigreversescanorder](c3ref/c_dbconfig_defensive.md#sqlitedbconfigreversescanorder) → SQLITE_DBCONFIG_REVERSE_SCANORDER
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigstmtscanstatus](c3ref/c_dbconfig_defensive.md#sqlitedbconfigstmtscanstatus) → SQLITE_DBCONFIG_STMT_SCANSTATUS
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigtriggereqp](c3ref/c_dbconfig_defensive.md#sqlitedbconfigtriggereqp) → SQLITE_DBCONFIG_TRIGGER_EQP
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigtrustedschema](c3ref/c_dbconfig_defensive.md#sqlitedbconfigtrustedschema) → SQLITE_DBCONFIG_TRUSTED_SCHEMA
+- [c3ref/c_dbconfig_defensive.html#sqlitedbconfigwritableschema](c3ref/c_dbconfig_defensive.md#sqlitedbconfigwritableschema) → SQLITE_DBCONFIG_WRITABLE_SCHEMA
+- [c3ref/c_dbstatus_options.html](c3ref/c_dbstatus_options.md) → {SQLITE_DBSTATUS options} SQLITE_DBSTATUS_MAX SQLITE_DBSTATUS_TEMPBUF_SPILL
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuscachehit](c3ref/c_dbstatus_options.md#sqlitedbstatuscachehit) → SQLITE_DBSTATUS_CACHE_HIT
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuscachemiss](c3ref/c_dbstatus_options.md#sqlitedbstatuscachemiss) → SQLITE_DBSTATUS_CACHE_MISS
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuscachespill](c3ref/c_dbstatus_options.md#sqlitedbstatuscachespill) → SQLITE_DBSTATUS_CACHE_SPILL
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuscacheused](c3ref/c_dbstatus_options.md#sqlitedbstatuscacheused) → SQLITE_DBSTATUS_CACHE_USED
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuscacheusedshared](c3ref/c_dbstatus_options.md#sqlitedbstatuscacheusedshared) → SQLITE_DBSTATUS_CACHE_USED_SHARED
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuscachewrite](c3ref/c_dbstatus_options.md#sqlitedbstatuscachewrite) → SQLITE_DBSTATUS_CACHE_WRITE
+- [c3ref/c_dbstatus_options.html#sqlitedbstatusdeferredfks](c3ref/c_dbstatus_options.md#sqlitedbstatusdeferredfks) → SQLITE_DBSTATUS_DEFERRED_FKS
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuslookasidehit](c3ref/c_dbstatus_options.md#sqlitedbstatuslookasidehit) → SQLITE_DBSTATUS_LOOKASIDE_HIT
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuslookasidemissfull](c3ref/c_dbstatus_options.md#sqlitedbstatuslookasidemissfull) → SQLITE_DBSTATUS_LOOKASIDE_MISS_FULL
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuslookasidemisssize](c3ref/c_dbstatus_options.md#sqlitedbstatuslookasidemisssize) → SQLITE_DBSTATUS_LOOKASIDE_MISS_SIZE
+- [c3ref/c_dbstatus_options.html#sqlitedbstatuslookasideused](c3ref/c_dbstatus_options.md#sqlitedbstatuslookasideused) → SQLITE_DBSTATUS_LOOKASIDE_USED
+- [c3ref/c_dbstatus_options.html#sqlitedbstatusschemaused](c3ref/c_dbstatus_options.md#sqlitedbstatusschemaused) → SQLITE_DBSTATUS_SCHEMA_USED
+- [c3ref/c_dbstatus_options.html#sqlitedbstatusstmtused](c3ref/c_dbstatus_options.md#sqlitedbstatusstmtused) → SQLITE_DBSTATUS_STMT_USED
+- [c3ref/c_deny.html](c3ref/c_deny.md) → SQLITE_DENY SQLITE_IGNORE
+- [c3ref/c_deserialize_freeonclose.html](c3ref/c_deserialize_freeonclose.md) → SQLITE_DESERIALIZE_FREEONCLOSE SQLITE_DESERIALIZE_READONLY SQLITE_DESERIALIZE_RESIZEABLE
+- [c3ref/c_deterministic.html#sqlitedeterministic](c3ref/c_deterministic.md#sqlitedeterministic) → SQLITE_DETERMINISTIC
+- [c3ref/c_deterministic.html#sqlitedirectonly](c3ref/c_deterministic.md#sqlitedirectonly) → SQLITE_DIRECTONLY
+- [c3ref/c_deterministic.html#sqliteinnocuous](c3ref/c_deterministic.md#sqliteinnocuous) → SQLITE_INNOCUOUS
+- [c3ref/c_deterministic.html#sqliteresultsubtype](c3ref/c_deterministic.md#sqliteresultsubtype) → SQLITE_RESULT_SUBTYPE
+- [c3ref/c_deterministic.html#sqliteselforder1](c3ref/c_deterministic.md#sqliteselforder1) → SQLITE_SELFORDER1
+- [c3ref/c_deterministic.html#sqlitesubtype](c3ref/c_deterministic.md#sqlitesubtype) → SQLITE_SUBTYPE
+- [c3ref/c_fail.html](c3ref/c_fail.md) → SQLITE_FAIL SQLITE_REPLACE SQLITE_ROLLBACK {conflict resolution mode}
+- [c3ref/c_fcntl_begin_atomic_write.html](c3ref/c_fcntl_begin_atomic_write.md) → SQLITE_FCNTL_GET_LOCKPROXYFILE SQLITE_FCNTL_LAST_ERRNO SQLITE_FCNTL_PDB SQLITE_FCNTL_RESERVE_BYTES SQLITE_FCNTL_SET_LOCKPROXYFILE {file control opcode} {file control opcodes}
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlbeginatomicwrite](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlbeginatomicwrite) → SQLITE_FCNTL_BEGIN_ATOMIC_WRITE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlblockonconnect](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlblockonconnect) → SQLITE_FCNTL_BLOCK_ON_CONNECT
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlbusyhandler](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlbusyhandler) → SQLITE_FCNTL_BUSYHANDLER
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlchunksize](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlchunksize) → SQLITE_FCNTL_CHUNK_SIZE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlckptdone](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlckptdone) → SQLITE_FCNTL_CKPT_DONE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlckptstart](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlckptstart) → SQLITE_FCNTL_CKPT_START
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlcksmfile](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlcksmfile) → SQLITE_FCNTL_CKSM_FILE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlcommitatomicwrite](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlcommitatomicwrite) → SQLITE_FCNTL_COMMIT_ATOMIC_WRITE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlcommitphasetwo](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlcommitphasetwo) → SQLITE_FCNTL_COMMIT_PHASETWO
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntldataversion](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntldataversion) → SQLITE_FCNTL_DATA_VERSION
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlexternalreader](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlexternalreader) → SQLITE_FCNTL_EXTERNAL_READER
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlfilepointer](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlfilepointer) → SQLITE_FCNTL_FILE_POINTER
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlfilestat](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlfilestat) → SQLITE_FCNTL_FILESTAT
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlhasmoved](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlhasmoved) → SQLITE_FCNTL_HAS_MOVED
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntljournalpointer](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntljournalpointer) → SQLITE_FCNTL_JOURNAL_POINTER
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntllockstate](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntllockstate) → SQLITE_FCNTL_LOCKSTATE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntllocktimeout](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntllocktimeout) → SQLITE_FCNTL_LOCK_TIMEOUT
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlmmapsize](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlmmapsize) → SQLITE_FCNTL_MMAP_SIZE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlnullio](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlnullio) → SQLITE_FCNTL_NULL_IO
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntloverwrite](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntloverwrite) → SQLITE_FCNTL_OVERWRITE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlpersistwal](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlpersistwal) → SQLITE_FCNTL_PERSIST_WAL
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlpowersafeoverwrite](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlpowersafeoverwrite) → SQLITE_FCNTL_POWERSAFE_OVERWRITE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlpragma](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlpragma) → SQLITE_FCNTL_PRAGMA
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlrbu](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlrbu) → SQLITE_FCNTL_RBU
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlresetcache](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlresetcache) → SQLITE_FCNTL_RESET_CACHE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlrollbackatomicwrite](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlrollbackatomicwrite) → SQLITE_FCNTL_ROLLBACK_ATOMIC_WRITE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlsizehint](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlsizehint) → SQLITE_FCNTL_SIZE_HINT
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlsizelimit](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlsizelimit) → SQLITE_FCNTL_SIZE_LIMIT
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlsync](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlsync) → SQLITE_FCNTL_SYNC
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlsyncomitted](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlsyncomitted) → SQLITE_FCNTL_SYNC_OMITTED
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntltempfilename](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntltempfilename) → SQLITE_FCNTL_TEMPFILENAME
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntltrace](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntltrace) → SQLITE_FCNTL_TRACE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlvfsname](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlvfsname) → SQLITE_FCNTL_VFSNAME
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlvfspointer](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlvfspointer) → SQLITE_FCNTL_VFS_POINTER
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlwalblock](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlwalblock) → SQLITE_FCNTL_WAL_BLOCK
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlwin32avretry](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlwin32avretry) → SQLITE_FCNTL_WIN32_AV_RETRY
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlwin32gethandle](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlwin32gethandle) → SQLITE_FCNTL_WIN32_GET_HANDLE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlwin32sethandle](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlwin32sethandle) → SQLITE_FCNTL_WIN32_SET_HANDLE
+- [c3ref/c_fcntl_begin_atomic_write.html#sqlitefcntlzipvfs](c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlzipvfs) → SQLITE_FCNTL_ZIPVFS
+- [c3ref/c_index_constraint_eq.html](c3ref/c_index_constraint_eq.md) → SQLITE_INDEX_CONSTRAINT_EQ SQLITE_INDEX_CONSTRAINT_FUNCTION SQLITE_INDEX_CONSTRAINT_GE SQLITE_INDEX_CONSTRAINT_GLOB SQLITE_INDEX_CONSTRAINT_GT SQLITE_INDEX_CONSTRAINT_IS SQLITE_INDEX_CONSTRAINT_ISNOT SQLITE_INDEX_CONSTRAINT_ISNOTNULL SQLITE_INDEX_CONSTRAINT_ISNULL SQLITE_INDEX_CONSTRAINT_LE SQLITE_INDEX_CONSTRAINT_LIKE SQLITE_INDEX_CONSTRAINT_LIMIT SQLITE_INDEX_CONSTRAINT_LT SQLITE_INDEX_CONSTRAINT_MATCH SQLITE_INDEX_CONSTRAINT_NE SQLITE_INDEX_CONSTRAINT_OFFSET SQLITE_INDEX_CONSTRAINT_REGEXP
+- [c3ref/c_index_scan_hex.html](c3ref/c_index_scan_hex.md) → SQLITE_INDEX_SCAN_HEX SQLITE_INDEX_SCAN_UNIQUE
+- [c3ref/c_iocap_atomic.html](c3ref/c_iocap_atomic.md) → SQLITE_IOCAP_ATOMIC SQLITE_IOCAP_ATOMIC16K SQLITE_IOCAP_ATOMIC1K SQLITE_IOCAP_ATOMIC2K SQLITE_IOCAP_ATOMIC32K SQLITE_IOCAP_ATOMIC4K SQLITE_IOCAP_ATOMIC512 SQLITE_IOCAP_ATOMIC64K SQLITE_IOCAP_ATOMIC8K SQLITE_IOCAP_BATCH_ATOMIC SQLITE_IOCAP_IMMUTABLE SQLITE_IOCAP_POWERSAFE_OVERWRITE SQLITE_IOCAP_SAFE_APPEND SQLITE_IOCAP_SEQUENTIAL SQLITE_IOCAP_SUBPAGE_READ SQLITE_IOCAP_UNDELETABLE_WHEN_OPEN
+- [c3ref/c_limit_attached.html](c3ref/c_limit_attached.md) → {limit categories} {limit category}
+- [c3ref/c_limit_attached.html#sqlitelimitattached](c3ref/c_limit_attached.md#sqlitelimitattached) → SQLITE_LIMIT_ATTACHED
+- [c3ref/c_limit_attached.html#sqlitelimitcolumn](c3ref/c_limit_attached.md#sqlitelimitcolumn) → SQLITE_LIMIT_COLUMN
+- [c3ref/c_limit_attached.html#sqlitelimitcompoundselect](c3ref/c_limit_attached.md#sqlitelimitcompoundselect) → SQLITE_LIMIT_COMPOUND_SELECT
+- [c3ref/c_limit_attached.html#sqlitelimitexprdepth](c3ref/c_limit_attached.md#sqlitelimitexprdepth) → SQLITE_LIMIT_EXPR_DEPTH
+- [c3ref/c_limit_attached.html#sqlitelimitfunctionarg](c3ref/c_limit_attached.md#sqlitelimitfunctionarg) → SQLITE_LIMIT_FUNCTION_ARG
+- [c3ref/c_limit_attached.html#sqlitelimitlength](c3ref/c_limit_attached.md#sqlitelimitlength) → SQLITE_LIMIT_LENGTH
+- [c3ref/c_limit_attached.html#sqlitelimitlikepatternlength](c3ref/c_limit_attached.md#sqlitelimitlikepatternlength) → SQLITE_LIMIT_LIKE_PATTERN_LENGTH
+- [c3ref/c_limit_attached.html#sqlitelimitparserdepth](c3ref/c_limit_attached.md#sqlitelimitparserdepth) → SQLITE_LIMIT_PARSER_DEPTH
+- [c3ref/c_limit_attached.html#sqlitelimitsqllength](c3ref/c_limit_attached.md#sqlitelimitsqllength) → SQLITE_LIMIT_SQL_LENGTH
+- [c3ref/c_limit_attached.html#sqlitelimittriggerdepth](c3ref/c_limit_attached.md#sqlitelimittriggerdepth) → SQLITE_LIMIT_TRIGGER_DEPTH
+- [c3ref/c_limit_attached.html#sqlitelimitvariablenumber](c3ref/c_limit_attached.md#sqlitelimitvariablenumber) → SQLITE_LIMIT_VARIABLE_NUMBER
+- [c3ref/c_limit_attached.html#sqlitelimitvdbeop](c3ref/c_limit_attached.md#sqlitelimitvdbeop) → SQLITE_LIMIT_VDBE_OP
+- [c3ref/c_limit_attached.html#sqlitelimitworkerthreads](c3ref/c_limit_attached.md#sqlitelimitworkerthreads) → SQLITE_LIMIT_WORKER_THREADS
+- [c3ref/c_lock_exclusive.html](c3ref/c_lock_exclusive.md) → SQLITE_LOCK_EXCLUSIVE SQLITE_LOCK_NONE SQLITE_LOCK_PENDING SQLITE_LOCK_RESERVED SQLITE_LOCK_SHARED
+- [c3ref/c_mutex_fast.html](c3ref/c_mutex_fast.md) → SQLITE_MUTEX_FAST SQLITE_MUTEX_RECURSIVE SQLITE_MUTEX_STATIC_APP1 SQLITE_MUTEX_STATIC_APP2 SQLITE_MUTEX_STATIC_APP3 SQLITE_MUTEX_STATIC_LRU SQLITE_MUTEX_STATIC_LRU2 SQLITE_MUTEX_STATIC_MAIN SQLITE_MUTEX_STATIC_MEM SQLITE_MUTEX_STATIC_MEM2 SQLITE_MUTEX_STATIC_OPEN SQLITE_MUTEX_STATIC_PMEM SQLITE_MUTEX_STATIC_PRNG SQLITE_MUTEX_STATIC_VFS1 SQLITE_MUTEX_STATIC_VFS2 SQLITE_MUTEX_STATIC_VFS3
+- [c3ref/c_open_autoproxy.html](c3ref/c_open_autoproxy.md) → SQLITE_OPEN_AUTOPROXY SQLITE_OPEN_CREATE SQLITE_OPEN_DELETEONCLOSE SQLITE_OPEN_EXCLUSIVE SQLITE_OPEN_EXRESCODE SQLITE_OPEN_FULLMUTEX SQLITE_OPEN_MAIN_DB SQLITE_OPEN_MAIN_JOURNAL SQLITE_OPEN_MEMORY SQLITE_OPEN_NOFOLLOW SQLITE_OPEN_NOMUTEX SQLITE_OPEN_PRIVATECACHE SQLITE_OPEN_READONLY SQLITE_OPEN_READWRITE SQLITE_OPEN_SHAREDCACHE SQLITE_OPEN_SUBJOURNAL SQLITE_OPEN_SUPER_JOURNAL SQLITE_OPEN_TEMP_DB SQLITE_OPEN_TEMP_JOURNAL SQLITE_OPEN_TRANSIENT_DB SQLITE_OPEN_URI SQLITE_OPEN_WAL
+- [c3ref/c_prepare_dont_log.html#sqlitepreparedontlog](c3ref/c_prepare_dont_log.md#sqlitepreparedontlog) → SQLITE_PREPARE_DONT_LOG
+- [c3ref/c_prepare_dont_log.html#sqlitepreparefromddl](c3ref/c_prepare_dont_log.md#sqlitepreparefromddl) → SQLITE_PREPARE_FROM_DDL
+- [c3ref/c_prepare_dont_log.html#sqlitepreparenormalize](c3ref/c_prepare_dont_log.md#sqlitepreparenormalize) → SQLITE_PREPARE_NORMALIZE
+- [c3ref/c_prepare_dont_log.html#sqlitepreparenovtab](c3ref/c_prepare_dont_log.md#sqlitepreparenovtab) → SQLITE_PREPARE_NO_VTAB
+- [c3ref/c_prepare_dont_log.html#sqlitepreparepersistent](c3ref/c_prepare_dont_log.md#sqlitepreparepersistent) → SQLITE_PREPARE_PERSISTENT
+- [c3ref/c_scanstat_complex.html](c3ref/c_scanstat_complex.md) → SQLITE_SCANSTAT_COMPLEX {scan status flags}
+- [c3ref/c_scanstat_est.html](c3ref/c_scanstat_est.md) → {scanstatus options}
+- [c3ref/c_scanstat_est.html#sqlitescanstatest](c3ref/c_scanstat_est.md#sqlitescanstatest) → SQLITE_SCANSTAT_EST
+- [c3ref/c_scanstat_est.html#sqlitescanstatexplain](c3ref/c_scanstat_est.md#sqlitescanstatexplain) → SQLITE_SCANSTAT_EXPLAIN
+- [c3ref/c_scanstat_est.html#sqlitescanstatname](c3ref/c_scanstat_est.md#sqlitescanstatname) → SQLITE_SCANSTAT_NAME
+- [c3ref/c_scanstat_est.html#sqlitescanstatncycle](c3ref/c_scanstat_est.md#sqlitescanstatncycle) → SQLITE_SCANSTAT_NCYCLE
+- [c3ref/c_scanstat_est.html#sqlitescanstatnloop](c3ref/c_scanstat_est.md#sqlitescanstatnloop) → SQLITE_SCANSTAT_NLOOP
+- [c3ref/c_scanstat_est.html#sqlitescanstatnvisit](c3ref/c_scanstat_est.md#sqlitescanstatnvisit) → SQLITE_SCANSTAT_NVISIT
+- [c3ref/c_scanstat_est.html#sqlitescanstatparentid](c3ref/c_scanstat_est.md#sqlitescanstatparentid) → SQLITE_SCANSTAT_PARENTID
+- [c3ref/c_scanstat_est.html#sqlitescanstatselectid](c3ref/c_scanstat_est.md#sqlitescanstatselectid) → SQLITE_SCANSTAT_SELECTID
+- [c3ref/c_scm_branch.html](c3ref/c_scm_branch.md) → SQLITE_SCM_BRANCH SQLITE_SCM_DATETIME SQLITE_SCM_TAGS SQLITE_SOURCE_ID SQLITE_VERSION SQLITE_VERSION_NUMBER
+- [c3ref/c_serialize_nocopy.html](c3ref/c_serialize_nocopy.md) → SQLITE_SERIALIZE_NOCOPY
+- [c3ref/c_setlk_block_on_connect.html](c3ref/c_setlk_block_on_connect.md) → SQLITE_SETLK_BLOCK_ON_CONNECT
+- [c3ref/c_shm_exclusive.html](c3ref/c_shm_exclusive.md) → SQLITE_SHM_EXCLUSIVE SQLITE_SHM_LOCK SQLITE_SHM_SHARED SQLITE_SHM_UNLOCK
+- [c3ref/c_shm_nlock.html](c3ref/c_shm_nlock.md) → SQLITE_SHM_NLOCK
+- [c3ref/c_static.html](c3ref/c_static.md) → SQLITE_STATIC SQLITE_TRANSIENT
+- [c3ref/c_status_malloc_count.html](c3ref/c_status_malloc_count.md) → {status parameters}
+- [c3ref/c_status_malloc_count.html#sqlitestatusmalloccount](c3ref/c_status_malloc_count.md#sqlitestatusmalloccount) → SQLITE_STATUS_MALLOC_COUNT
+- [c3ref/c_status_malloc_count.html#sqlitestatusmallocsize](c3ref/c_status_malloc_count.md#sqlitestatusmallocsize) → SQLITE_STATUS_MALLOC_SIZE
+- [c3ref/c_status_malloc_count.html#sqlitestatusmemoryused](c3ref/c_status_malloc_count.md#sqlitestatusmemoryused) → SQLITE_STATUS_MEMORY_USED
+- [c3ref/c_status_malloc_count.html#sqlitestatuspagecacheoverflow](c3ref/c_status_malloc_count.md#sqlitestatuspagecacheoverflow) → SQLITE_STATUS_PAGECACHE_OVERFLOW
+- [c3ref/c_status_malloc_count.html#sqlitestatuspagecachesize](c3ref/c_status_malloc_count.md#sqlitestatuspagecachesize) → SQLITE_STATUS_PAGECACHE_SIZE
+- [c3ref/c_status_malloc_count.html#sqlitestatuspagecacheused](c3ref/c_status_malloc_count.md#sqlitestatuspagecacheused) → SQLITE_STATUS_PAGECACHE_USED
+- [c3ref/c_status_malloc_count.html#sqlitestatusparserstack](c3ref/c_status_malloc_count.md#sqlitestatusparserstack) → SQLITE_STATUS_PARSER_STACK
+- [c3ref/c_status_malloc_count.html#sqlitestatusscratchoverflow](c3ref/c_status_malloc_count.md#sqlitestatusscratchoverflow) → SQLITE_STATUS_SCRATCH_OVERFLOW
+- [c3ref/c_status_malloc_count.html#sqlitestatusscratchsize](c3ref/c_status_malloc_count.md#sqlitestatusscratchsize) → SQLITE_STATUS_SCRATCH_SIZE
+- [c3ref/c_status_malloc_count.html#sqlitestatusscratchused](c3ref/c_status_malloc_count.md#sqlitestatusscratchused) → SQLITE_STATUS_SCRATCH_USED
+- [c3ref/c_stmtstatus_counter.html](c3ref/c_stmtstatus_counter.md) → {SQLITE_STMTSTATUS counter} {SQLITE_STMTSTATUS counters} SQLITE_STMTSTATUS_FILTER_HIT
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusautoindex](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusautoindex) → SQLITE_STMTSTATUS_AUTOINDEX
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusfilterhit](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusfilterhit) → {SQLITE_STMTSTATUS_FILTER HIT}
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusfiltermiss](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusfiltermiss) → SQLITE_STMTSTATUS_FILTER_MISS
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusfullscanstep](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusfullscanstep) → SQLITE_STMTSTATUS_FULLSCAN_STEP
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusmemused](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusmemused) → SQLITE_STMTSTATUS_MEMUSED
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusreprepare](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusreprepare) → SQLITE_STMTSTATUS_REPREPARE
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusrun](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusrun) → SQLITE_STMTSTATUS_RUN
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatussort](c3ref/c_stmtstatus_counter.md#sqlitestmtstatussort) → SQLITE_STMTSTATUS_SORT
+- [c3ref/c_stmtstatus_counter.html#sqlitestmtstatusvmstep](c3ref/c_stmtstatus_counter.md#sqlitestmtstatusvmstep) → SQLITE_STMTSTATUS_VM_STEP
+- [c3ref/c_sync_dataonly.html](c3ref/c_sync_dataonly.md) → SQLITE_SYNC_DATAONLY SQLITE_SYNC_FULL SQLITE_SYNC_NORMAL
+- [c3ref/c_testctrl_always.html](c3ref/c_testctrl_always.md) → SQLITE_TESTCTRL_ALWAYS SQLITE_TESTCTRL_ASSERT SQLITE_TESTCTRL_ATOF SQLITE_TESTCTRL_BENIGN_MALLOC_HOOKS SQLITE_TESTCTRL_BITVEC_TEST SQLITE_TESTCTRL_BYTEORDER SQLITE_TESTCTRL_EXPLAIN_STMT SQLITE_TESTCTRL_EXTRA_SCHEMA_CHECKS SQLITE_TESTCTRL_FAULT_INSTALL SQLITE_TESTCTRL_FIRST SQLITE_TESTCTRL_FK_NO_ACTION SQLITE_TESTCTRL_GETOPT SQLITE_TESTCTRL_IMPOSTER SQLITE_TESTCTRL_INTERNAL_FUNCTIONS SQLITE_TESTCTRL_ISINIT SQLITE_TESTCTRL_ISKEYWORD SQLITE_TESTCTRL_JSON_SELFCHECK SQLITE_TESTCTRL_LAST SQLITE_TESTCTRL_LOCALTIME_FAULT SQLITE_TESTCTRL_LOGEST SQLITE_TESTCTRL_NEVER_CORRUPT SQLITE_TESTCTRL_ONCE_RESET_THRESHOLD SQLITE_TESTCTRL_OPTIMIZATIONS SQLITE_TESTCTRL_PARSER_COVERAGE SQLITE_TESTCTRL_PENDING_BYTE SQLITE_TESTCTRL_PRNG_RESET SQLITE_TESTCTRL_PRNG_RESTORE SQLITE_TESTCTRL_PRNG_SAVE SQLITE_TESTCTRL_PRNG_SEED SQLITE_TESTCTRL_RESERVE SQLITE_TESTCTRL_RESULT_INTREAL SQLITE_TESTCTRL_SCRATCHMALLOC SQLITE_TESTCTRL_SEEK_COUNT SQLITE_TESTCTRL_SORTER_MMAP SQLITE_TESTCTRL_TRACEFLAGS SQLITE_TESTCTRL_TUNE SQLITE_TESTCTRL_USELONGDOUBLE SQLITE_TESTCTRL_VDBE_COVERAGE
+- [c3ref/c_trace.html](c3ref/c_trace.md) → SQLITE_TRACE
+- [c3ref/c_trace.html#sqlitetraceclose](c3ref/c_trace.md#sqlitetraceclose) → SQLITE_TRACE_CLOSE
+- [c3ref/c_trace.html#sqlitetraceprofile](c3ref/c_trace.md#sqlitetraceprofile) → SQLITE_TRACE_PROFILE
+- [c3ref/c_trace.html#sqlitetracerow](c3ref/c_trace.md#sqlitetracerow) → SQLITE_TRACE_ROW
+- [c3ref/c_trace.html#sqlitetracestmt](c3ref/c_trace.md#sqlitetracestmt) → SQLITE_TRACE_STMT
+- [c3ref/c_txn_none.html](c3ref/c_txn_none.md) → {transaction state}
+- [c3ref/c_txn_none.html#sqlitetxnnone](c3ref/c_txn_none.md#sqlitetxnnone) → SQLITE_TXN_NONE
+- [c3ref/c_txn_none.html#sqlitetxnread](c3ref/c_txn_none.md#sqlitetxnread) → SQLITE_TXN_READ
+- [c3ref/c_txn_none.html#sqlitetxnwrite](c3ref/c_txn_none.md#sqlitetxnwrite) → SQLITE_TXN_WRITE
+- [c3ref/c_vtab_constraint_support.html](c3ref/c_vtab_constraint_support.md) → {virtual table configuration option} {virtual table configuration options}
+- [c3ref/c_vtab_constraint_support.html#sqlitevtabconstraintsupport](c3ref/c_vtab_constraint_support.md#sqlitevtabconstraintsupport) → SQLITE_VTAB_CONSTRAINT_SUPPORT
+- [c3ref/c_vtab_constraint_support.html#sqlitevtabdirectonly](c3ref/c_vtab_constraint_support.md#sqlitevtabdirectonly) → SQLITE_VTAB_DIRECTONLY
+- [c3ref/c_vtab_constraint_support.html#sqlitevtabinnocuous](c3ref/c_vtab_constraint_support.md#sqlitevtabinnocuous) → SQLITE_VTAB_INNOCUOUS
+- [c3ref/c_vtab_constraint_support.html#sqlitevtabusesallschemas](c3ref/c_vtab_constraint_support.md#sqlitevtabusesallschemas) → SQLITE_VTAB_USES_ALL_SCHEMAS
+- [c3ref/c_win32_data_directory_type.html](c3ref/c_win32_data_directory_type.md) → SQLITE_WIN32_DATA_DIRECTORY_TYPE SQLITE_WIN32_TEMP_DIRECTORY_TYPE
+- [c3ref/cancel_auto_extension.html](c3ref/cancel_auto_extension.md) → sqlite3_cancel_auto_extension
+- [c3ref/carray_bind.html](c3ref/carray_bind.md) → sqlite3_carray_bind sqlite3_carray_bind_v2
+- [c3ref/changes.html](c3ref/changes.md) → sqlite3_changes sqlite3_changes64
+- [c3ref/clear_bindings.html](c3ref/clear_bindings.md) → sqlite3_clear_bindings
+- [c3ref/close.html](c3ref/close.md) → sqlite3_close sqlite3_close_v2
+- [c3ref/collation_needed.html](c3ref/collation_needed.md) → sqlite3_collation_needed sqlite3_collation_needed16
+- [c3ref/column_blob.html](c3ref/column_blob.md) → {column access functions} sqlite3_column_blob sqlite3_column_bytes sqlite3_column_bytes16 sqlite3_column_double sqlite3_column_int sqlite3_column_int64 sqlite3_column_text sqlite3_column_text16 sqlite3_column_type sqlite3_column_value
+- [c3ref/column_count.html](c3ref/column_count.md) → sqlite3_column_count
+- [c3ref/column_database_name.html](c3ref/column_database_name.md) → sqlite3_column_database_name sqlite3_column_database_name16 sqlite3_column_origin_name sqlite3_column_origin_name16 sqlite3_column_table_name sqlite3_column_table_name16
+- [c3ref/column_decltype.html](c3ref/column_decltype.md) → sqlite3_column_decltype sqlite3_column_decltype16
+- [c3ref/column_name.html](c3ref/column_name.md) → sqlite3_column_name sqlite3_column_name16
+- [c3ref/commit_hook.html](c3ref/commit_hook.md) → sqlite3_commit_hook sqlite3_rollback_hook
+- [c3ref/compileoption_get.html](c3ref/compileoption_get.md) → sqlite3_compileoption_get sqlite3_compileoption_used
+- [c3ref/complete.html](c3ref/complete.md) → sqlite3_complete sqlite3_complete16
+- [c3ref/config.html](c3ref/config.md) → sqlite3_config
+- [c3ref/context.html](c3ref/context.md) → sqlite3_context
+- [c3ref/context_db_handle.html](c3ref/context_db_handle.md) → sqlite3_context_db_handle
+- [c3ref/create_collation.html](c3ref/create_collation.md) → sqlite3_create_collation sqlite3_create_collation16 sqlite3_create_collation_v2
+- [c3ref/create_filename.html](c3ref/create_filename.md) → sqlite3_create_filename sqlite3_free_filename
+- [c3ref/create_function.html](c3ref/create_function.md) → {function creation routines} sqlite3_create_function sqlite3_create_function16 sqlite3_create_function_v2 sqlite3_create_window_function
+- [c3ref/create_module.html](c3ref/create_module.md) → sqlite3_create_module sqlite3_create_module_v2
+- [c3ref/data_count.html](c3ref/data_count.md) → sqlite3_data_count
+- [c3ref/data_directory.html](c3ref/data_directory.md) → sqlite3_data_directory
+- [c3ref/database_file_object.html](c3ref/database_file_object.md) → sqlite3_database_file_object
+- [c3ref/db_cacheflush.html](c3ref/db_cacheflush.md) → sqlite3_db_cacheflush
+- [c3ref/db_config.html](c3ref/db_config.md) → sqlite3_db_config
+- [c3ref/db_filename.html](c3ref/db_filename.md) → sqlite3_db_filename
+- [c3ref/db_handle.html](c3ref/db_handle.md) → sqlite3_db_handle
+- [c3ref/db_mutex.html](c3ref/db_mutex.md) → sqlite3_db_mutex
+- [c3ref/db_name.html](c3ref/db_name.md) → sqlite3_db_name
+- [c3ref/db_readonly.html](c3ref/db_readonly.md) → sqlite3_db_readonly
+- [c3ref/db_release_memory.html](c3ref/db_release_memory.md) → sqlite3_db_release_memory
+- [c3ref/db_status.html](c3ref/db_status.md) → sqlite3_db_status sqlite3_db_status64
+- [c3ref/declare_vtab.html](c3ref/declare_vtab.md) → sqlite3_declare_vtab
+- [c3ref/deserialize.html](c3ref/deserialize.md) → sqlite3_deserialize
+- [c3ref/drop_modules.html](c3ref/drop_modules.md) → sqlite3_drop_modules
+- [c3ref/enable_load_extension.html](c3ref/enable_load_extension.md) → sqlite3_enable_load_extension
+- [c3ref/enable_shared_cache.html](c3ref/enable_shared_cache.md) → sqlite3_enable_shared_cache
+- [c3ref/errcode.html](c3ref/errcode.md) → sqlite3_errcode sqlite3_errmsg sqlite3_errmsg16 sqlite3_error_offset sqlite3_errstr sqlite3_extended_errcode
+- [c3ref/exec.html](c3ref/exec.md) → sqlite3_exec
+- [c3ref/expanded_sql.html](c3ref/expanded_sql.md) → sqlite3_expanded_sql sqlite3_normalized_sql sqlite3_sql
+- [c3ref/experimental.html](c3ref/experimental.md) → deprecated experimental
+- [c3ref/extended_result_codes.html](c3ref/extended_result_codes.md) → sqlite3_extended_result_codes
+- [c3ref/file.html](c3ref/file.md) → sqlite3_file
+- [c3ref/file_control.html](c3ref/file_control.md) → {file control} sqlite3_file_control
+- [c3ref/filename.html](c3ref/filename.md) → sqlite3_filename
+- [c3ref/filename_database.html](c3ref/filename_database.md) → sqlite3_filename_database sqlite3_filename_journal sqlite3_filename_wal
+- [c3ref/finalize.html](c3ref/finalize.md) → sqlite3_finalize
+- [c3ref/free.html](c3ref/free.md) → sqlite3_free sqlite3_malloc sqlite3_malloc64 sqlite3_msize sqlite3_realloc sqlite3_realloc64
+- [c3ref/free_table.html](c3ref/free_table.md) → sqlite3_free_table sqlite3_get_table
+- [c3ref/funclist.html](c3ref/funclist.md) → {C-API function list} capi3ref_funclist
+- [c3ref/get_autocommit.html](c3ref/get_autocommit.md) → {autocommit mode} sqlite3_get_autocommit
+- [c3ref/get_auxdata.html](c3ref/get_auxdata.md) → sqlite3_get_auxdata sqlite3_set_auxdata
+- [c3ref/get_clientdata.html](c3ref/get_clientdata.md) → sqlite3_get_clientdata sqlite3_set_clientdata
+- [c3ref/hard_heap_limit64.html](c3ref/hard_heap_limit64.md) → sqlite3_hard_heap_limit64 sqlite3_soft_heap_limit64
+- [c3ref/index_info.html](c3ref/index_info.md) → sqlite3_index_info
+- [c3ref/initialize.html](c3ref/initialize.md) → sqlite3_initialize sqlite3_os_end sqlite3_os_init sqlite3_shutdown
+- [c3ref/int64.html](c3ref/int64.md) → sqlite3_int64 sqlite3_uint64 sqlite_int64 sqlite_uint64
+- [c3ref/interrupt.html](c3ref/interrupt.md) → sqlite3_interrupt sqlite3_is_interrupted
+- [c3ref/intro.html](c3ref/intro.md) → {C-language Interface} capi3ref
+- [c3ref/io_methods.html](c3ref/io_methods.md) → sqlite3_io_methods
+- [c3ref/keyword_check.html](c3ref/keyword_check.md) → sqlite3_keyword_check sqlite3_keyword_count sqlite3_keyword_name
+- [c3ref/last_insert_rowid.html](c3ref/last_insert_rowid.md) → sqlite3_last_insert_rowid
+- [c3ref/libversion.html](c3ref/libversion.md) → sqlite3_libversion sqlite3_libversion_number sqlite3_sourceid sqlite3_version
+- [c3ref/limit.html](c3ref/limit.md) → sqlite3_limit
+- [c3ref/load_extension.html](c3ref/load_extension.md) → sqlite3_load_extension
+- [c3ref/log.html](c3ref/log.md) → sqlite3_log
+- [c3ref/mem_methods.html](c3ref/mem_methods.md) → sqlite3_mem_methods
+- [c3ref/memory_highwater.html](c3ref/memory_highwater.md) → sqlite3_memory_highwater sqlite3_memory_used
+- [c3ref/module.html](c3ref/module.md) → sqlite3_module {virtual table module}
+- [c3ref/mprintf.html](c3ref/mprintf.md) → sqlite3_mprintf sqlite3_snprintf sqlite3_vmprintf sqlite3_vsnprintf
+- [c3ref/mutex.html](c3ref/mutex.md) → sqlite3_mutex
+- [c3ref/mutex_alloc.html](c3ref/mutex_alloc.md) → sqlite3_mutex_alloc sqlite3_mutex_enter sqlite3_mutex_free sqlite3_mutex_leave sqlite3_mutex_try
+- [c3ref/mutex_held.html](c3ref/mutex_held.md) → sqlite3_mutex_held sqlite3_mutex_notheld
+- [c3ref/mutex_methods.html](c3ref/mutex_methods.md) → sqlite3_mutex_methods
+- [c3ref/next_stmt.html](c3ref/next_stmt.md) → sqlite3_next_stmt
+- [c3ref/open.html](c3ref/open.md) → sqlite3_open sqlite3_open16 sqlite3_open_v2
+- [c3ref/open.html#coreuriqueryparameters](c3ref/open.md#coreuriqueryparameters) → {core URI query parameters}
+- [c3ref/open.html#openexrescode](c3ref/open.md#openexrescode) → OPEN_EXRESCODE
+- [c3ref/open.html#opennofollow](c3ref/open.md#opennofollow) → OPEN_NOFOLLOW
+- [c3ref/open.html#urifilenameexamples](c3ref/open.md#urifilenameexamples) → {URI filename examples}
+- [c3ref/open.html#urifilenamesinsqlite3open](c3ref/open.md#urifilenamesinsqlite3open) → {URI filenames in sqlite3_open}
+- [c3ref/overload_function.html](c3ref/overload_function.md) → sqlite3_overload_function
+- [c3ref/pcache.html](c3ref/pcache.md) → sqlite3_pcache
+- [c3ref/pcache_methods2.html](c3ref/pcache_methods2.md) → {page cache} sqlite3_pcache_methods2
+- [c3ref/pcache_methods2.html#thexcachesizepagecachemethod](c3ref/pcache_methods2.md#thexcachesizepagecachemethod) → {the xCachesize page cache method}
+- [c3ref/pcache_methods2.html#thexcreatepagecachemethods](c3ref/pcache_methods2.md#thexcreatepagecachemethods) → {the xCreate page cache methods}
+- [c3ref/pcache_methods2.html#thexdestroypagecachemethod](c3ref/pcache_methods2.md#thexdestroypagecachemethod) → {the xDestroy page cache method}
+- [c3ref/pcache_methods2.html#thexfetchpagecachemethods](c3ref/pcache_methods2.md#thexfetchpagecachemethods) → {the xFetch page cache methods}
+- [c3ref/pcache_methods2.html#thexinitpagecachemethod](c3ref/pcache_methods2.md#thexinitpagecachemethod) → {the xInit page cache method}
+- [c3ref/pcache_methods2.html#thexpagecountpagecachemethods](c3ref/pcache_methods2.md#thexpagecountpagecachemethods) → {the xPagecount page cache methods}
+- [c3ref/pcache_methods2.html#thexrekeypagecachemethods](c3ref/pcache_methods2.md#thexrekeypagecachemethods) → {the xRekey page cache methods}
+- [c3ref/pcache_methods2.html#thexshrinkpagecachemethod](c3ref/pcache_methods2.md#thexshrinkpagecachemethod) → {the xShrink page cache method}
+- [c3ref/pcache_methods2.html#thexshutdownpagecachemethod](c3ref/pcache_methods2.md#thexshutdownpagecachemethod) → {the xShutdown page cache method}
+- [c3ref/pcache_methods2.html#thexunpinpagecachemethod](c3ref/pcache_methods2.md#thexunpinpagecachemethod) → {the xUnpin page cache method}
+- [c3ref/pcache_page.html](c3ref/pcache_page.md) → sqlite3_pcache_page
+- [c3ref/prepare.html](c3ref/prepare.md) → {SQL statement compiler} sqlite3_prepare sqlite3_prepare16 sqlite3_prepare16_v2 sqlite3_prepare16_v3 sqlite3_prepare_v2 sqlite3_prepare_v3
+- [c3ref/preupdate_blobwrite.html](c3ref/preupdate_blobwrite.md) → sqlite3_preupdate_blobwrite sqlite3_preupdate_count sqlite3_preupdate_depth sqlite3_preupdate_hook sqlite3_preupdate_new sqlite3_preupdate_old
+- [c3ref/profile.html](c3ref/profile.md) → sqlite3_profile sqlite3_trace
+- [c3ref/progress_handler.html](c3ref/progress_handler.md) → sqlite3_progress_handler
+- [c3ref/randomness.html](c3ref/randomness.md) → sqlite3_randomness
+- [c3ref/release_memory.html](c3ref/release_memory.md) → sqlite3_release_memory
+- [c3ref/reset.html](c3ref/reset.md) → sqlite3_reset
+- [c3ref/reset_auto_extension.html](c3ref/reset_auto_extension.md) → sqlite3_reset_auto_extension
+- [c3ref/result_blob.html](c3ref/result_blob.md) → sqlite3_result_blob sqlite3_result_blob64 sqlite3_result_double sqlite3_result_error sqlite3_result_error16 sqlite3_result_error_code sqlite3_result_error_nomem sqlite3_result_error_toobig sqlite3_result_int sqlite3_result_int64 sqlite3_result_null sqlite3_result_pointer sqlite3_result_text sqlite3_result_text16 sqlite3_result_text16be sqlite3_result_text16le sqlite3_result_text64 sqlite3_result_value sqlite3_result_zeroblob sqlite3_result_zeroblob64
+- [c3ref/result_subtype.html](c3ref/result_subtype.md) → sqlite3_result_subtype
+- [c3ref/serialize.html](c3ref/serialize.md) → sqlite3_serialize
+- [c3ref/set_authorizer.html](c3ref/set_authorizer.md) → {authorizer callback} sqlite3_set_authorizer
+- [c3ref/set_errmsg.html](c3ref/set_errmsg.md) → sqlite3_set_errmsg
+- [c3ref/set_last_insert_rowid.html](c3ref/set_last_insert_rowid.md) → sqlite3_set_last_insert_rowid
+- [c3ref/setlk_timeout.html](c3ref/setlk_timeout.md) → sqlite3_setlk_timeout
+- [c3ref/sleep.html](c3ref/sleep.md) → sqlite3_sleep
+- [c3ref/snapshot.html](c3ref/snapshot.md) → snapshot sqlite3_snapshot
+- [c3ref/snapshot_cmp.html](c3ref/snapshot_cmp.md) → sqlite3_snapshot_cmp
+- [c3ref/snapshot_free.html](c3ref/snapshot_free.md) → sqlite3_snapshot_free
+- [c3ref/snapshot_get.html](c3ref/snapshot_get.md) → sqlite3_snapshot_get
+- [c3ref/snapshot_open.html](c3ref/snapshot_open.md) → sqlite3_snapshot_open
+- [c3ref/snapshot_recover.html](c3ref/snapshot_recover.md) → sqlite3_snapshot_recover
+- [c3ref/soft_heap_limit.html](c3ref/soft_heap_limit.md) → sqlite3_soft_heap_limit
+- [c3ref/sqlite3.html](c3ref/sqlite3.md) → {database connection} {database connections} sqlite3
+- [c3ref/status.html](c3ref/status.md) → sqlite3_status sqlite3_status64
+- [c3ref/step.html](c3ref/step.md) → sqlite3_step
+- [c3ref/stmt.html](c3ref/stmt.md) → {prepared statement} {prepared statements} sqlite3_stmt
+- [c3ref/stmt_busy.html](c3ref/stmt_busy.md) → sqlite3_stmt_busy
+- [c3ref/stmt_explain.html](c3ref/stmt_explain.md) → sqlite3_stmt_explain
+- [c3ref/stmt_isexplain.html](c3ref/stmt_isexplain.md) → sqlite3_stmt_isexplain
+- [c3ref/stmt_readonly.html](c3ref/stmt_readonly.md) → sqlite3_stmt_readonly
+- [c3ref/stmt_scanstatus.html](c3ref/stmt_scanstatus.md) → sqlite3_stmt_scanstatus sqlite3_stmt_scanstatus_v2
+- [c3ref/stmt_scanstatus_reset.html](c3ref/stmt_scanstatus_reset.md) → sqlite3_stmt_scanstatus_reset
+- [c3ref/stmt_status.html](c3ref/stmt_status.md) → sqlite3_stmt_status
+- [c3ref/str.html](c3ref/str.md) → {dynamic string} sqlite3_str
+- [c3ref/str_append.html](c3ref/str_append.md) → sqlite3_str_append sqlite3_str_appendall sqlite3_str_appendchar sqlite3_str_appendf sqlite3_str_reset sqlite3_str_truncate sqlite3_str_vappendf
+- [c3ref/str_errcode.html](c3ref/str_errcode.md) → sqlite3_str_errcode sqlite3_str_length sqlite3_str_value
+- [c3ref/str_finish.html](c3ref/str_finish.md) → sqlite3_str_finish sqlite3_str_free
+- [c3ref/str_new.html](c3ref/str_new.md) → sqlite3_str_new
+- [c3ref/strglob.html](c3ref/strglob.md) → sqlite3_strglob
+- [c3ref/stricmp.html](c3ref/stricmp.md) → sqlite3_stricmp sqlite3_strnicmp
+- [c3ref/strlike.html](c3ref/strlike.md) → sqlite3_strlike
+- [c3ref/system_errno.html](c3ref/system_errno.md) → sqlite3_system_errno
+- [c3ref/table_column_metadata.html](c3ref/table_column_metadata.md) → sqlite3_table_column_metadata
+- [c3ref/temp_directory.html](c3ref/temp_directory.md) → sqlite3_temp_directory
+- [c3ref/test_control.html](c3ref/test_control.md) → sqlite3_test_control
+- [c3ref/threadsafe.html](c3ref/threadsafe.md) → sqlite3_threadsafe
+- [c3ref/total_changes.html](c3ref/total_changes.md) → sqlite3_total_changes sqlite3_total_changes64
+- [c3ref/trace_v2.html](c3ref/trace_v2.md) → sqlite3_trace_v2
+- [c3ref/txn_state.html](c3ref/txn_state.md) → sqlite3_txn_state
+- [c3ref/unlock_notify.html](c3ref/unlock_notify.md) → sqlite3_unlock_notify
+- [c3ref/update_hook.html](c3ref/update_hook.md) → sqlite3_update_hook
+- [c3ref/uri_boolean.html](c3ref/uri_boolean.md) → sqlite3_uri_boolean sqlite3_uri_int64 sqlite3_uri_key sqlite3_uri_parameter
+- [c3ref/user_data.html](c3ref/user_data.md) → sqlite3_user_data
+- [c3ref/value.html](c3ref/value.md) → {protected sqlite3_value} sqlite3_value {unprotected sqlite3_value}
+- [c3ref/value_blob.html](c3ref/value_blob.md) → sqlite3_value_blob sqlite3_value_bytes sqlite3_value_bytes16 sqlite3_value_double sqlite3_value_frombind sqlite3_value_int sqlite3_value_int64 sqlite3_value_nochange sqlite3_value_numeric_type sqlite3_value_pointer sqlite3_value_text sqlite3_value_text16 sqlite3_value_text16be sqlite3_value_text16le sqlite3_value_type
+- [c3ref/value_dup.html](c3ref/value_dup.md) → sqlite3_value_dup sqlite3_value_free
+- [c3ref/value_encoding.html](c3ref/value_encoding.md) → sqlite3_value_encoding
+- [c3ref/value_subtype.html](c3ref/value_subtype.md) → sqlite3_value_subtype
+- [c3ref/vfs.html](c3ref/vfs.md) → sqlite3_vfs
+- [c3ref/vfs.html#sqlite3vfsxaccess](c3ref/vfs.md#sqlite3vfsxaccess) → sqlite3_vfs.xAccess
+- [c3ref/vfs.html#sqlite3vfsxopen](c3ref/vfs.md#sqlite3vfsxopen) → sqlite3_vfs.xOpen
+- [c3ref/vfs_find.html](c3ref/vfs_find.md) → sqlite3_vfs_find sqlite3_vfs_register sqlite3_vfs_unregister
+- [c3ref/vtab.html](c3ref/vtab.md) → sqlite3_vtab
+- [c3ref/vtab_collation.html](c3ref/vtab_collation.md) → sqlite3_vtab_collation
+- [c3ref/vtab_config.html](c3ref/vtab_config.md) → sqlite3_vtab_config
+- [c3ref/vtab_cursor.html](c3ref/vtab_cursor.md) → sqlite3_vtab_cursor {virtual table cursor}
+- [c3ref/vtab_distinct.html](c3ref/vtab_distinct.md) → sqlite3_vtab_distinct
+- [c3ref/vtab_in.html](c3ref/vtab_in.md) → sqlite3_vtab_in
+- [c3ref/vtab_in_first.html](c3ref/vtab_in_first.md) → sqlite3_vtab_in_first sqlite3_vtab_in_next
+- [c3ref/vtab_nochange.html](c3ref/vtab_nochange.md) → sqlite3_vtab_nochange
+- [c3ref/vtab_on_conflict.html](c3ref/vtab_on_conflict.md) → sqlite3_vtab_on_conflict
+- [c3ref/vtab_rhs_value.html](c3ref/vtab_rhs_value.md) → sqlite3_vtab_rhs_value
+- [c3ref/wal_autocheckpoint.html](c3ref/wal_autocheckpoint.md) → sqlite3_wal_autocheckpoint
+- [c3ref/wal_checkpoint.html](c3ref/wal_checkpoint.md) → sqlite3_wal_checkpoint
+- [c3ref/wal_checkpoint_v2.html](c3ref/wal_checkpoint_v2.md) → sqlite3_wal_checkpoint_v2
+- [c3ref/wal_hook.html](c3ref/wal_hook.md) → sqlite3_wal_hook
+- [c3ref/win32_set_directory.html](c3ref/win32_set_directory.md) → sqlite3_win32_set_directory sqlite3_win32_set_directory16 sqlite3_win32_set_directory8
+- [carray.html](carray.md) → carray {carray extension} {carray table-valued function}
+- [carray.html#onearg](carray.md#onearg) → {single-argument carray}
+- [carray.html#twoarg](carray.md#twoarg) → {multi-argument carray}
+- [changes.html](changes.md) → {complete list of SQLite releases} {release history}
+- [chronology.html](chronology.md) → chronology {prior releases}
+- [cintro.html](cintro.md) → cintro
+- [cksumvfs.html](cksumvfs.md) → {checksum VFS} {checksum VFS shim} cksumvfs
+- [cli.html](cli.md) → CLI {Command Line Interface} {command-line interface} {command-line shell} sqlite3.exe {sqlite3.exe command-line shell}
+- [cli.html#arinsup](cli.md#arinsup) → {--insert option} {--update option}
+- [cli.html#clopts](cli.md#clopts) → {command-line options}
+- [cli.html#csv](cli.md#csv) → .import {.import command} {CSV import}
+- [cli.html#csvout](cli.md#csvout) → {CSV export} {CSV output}
+- [cli.html#dotcmd](cli.md#dotcmd) → dot-command dot-commands
+- [cli.html#dotconn](cli.md#dotconn) → .connection
+- [cli.html#dotdatabases](cli.md#dotdatabases) → .databases {.databases command}
+- [cli.html#dotexcel](cli.md#dotexcel) → .excel
+- [cli.html#dotload](cli.md#dotload) → {.load command}
+- [cli.html#dotopen](cli.md#dotopen) → .open {.open command}
+- [cli.html#dotoutput](cli.md#dotoutput) → .once .output
+- [cli.html#dotread](cli.md#dotread) → .read
+- [cli.html#dotwww](cli.md#dotwww) → .www {.www dot-command}
+- [cli.html#dschema](cli.md#dschema) → .schema
+- [cli.html#dtables](cli.md#dtables) → .tables
+- [cli.html#dump](cli.md#dump) → .dump {.dump command}
+- [cli.html#editfunc](cli.md#editfunc) → {edit SQL function}
+- [cli.html#exexcel\*](cli.md#exexcel*) → {export to excel}
+- [cli.html#expert](cli.md#expert) → {.expert command}
+- [cli.html#extsv\*](cli.md#extsv*) → {export to TSV}
+- [cli.html#fileio](cli.md#fileio) → {file I/O functions}
+- [cli.html#fullschema](cli.md#fullschema) → .fullschema {the .fullschema dot-command}
+- [cli.html#guis](cli.md#guis) → {graphical user interface}
+- [cli.html#param](cli.md#param) → {.parameter command}
+- [cli.html#recover](cli.md#recover) → {.recover dot-command}
+- [cli.html#safemode](cli.md#safemode) → {--safe command-line option} {safe command-line option}
+- [cli.html#selftest](cli.md#selftest) → {.selftest dot-command}
+- [cli.html#sha3sum](cli.md#sha3sum) → {.sha3sum dot-command}
+- [cli.html#sqlar](cli.md#sqlar) → {.archive command}
+- [cli.html#testing_mode](cli.md#testing_mode) → {--unsafe-testing command-line option} {unsafe-testing command-line option}
+- [cli.html#zipdb](cli.md#zipdb) → {ZIP file as database}
+- [climode.html](climode.md) → .mode {.mode command} {output mode}
+- [climode.html#clmnr](climode.md#clmnr) → {Columnar output modes} {Tabular output modes} {columnar output modes} {tabular modes} {tabular output modes}
+- [climode.html#crlf](climode.md#crlf) → {.crlf dot-command} {.crlf off} {.crlf on}
+- [climode.html#ctrlchr](climode.md#ctrlchr) → {control characters} {control characters in output}
+- [climode.html#dotmodequote](climode.md#dotmodequote) → {.mode quote}
+- [climode.html#linemode](climode.md#linemode) → {line mode}
+- [climode.html#mbatch](climode.md#mbatch) → {batch mode} {tty mode}
+- [climode.html#opt-align](climode.md#opt-align) → {--align option}
+- [climode.html#opt-blob](climode.md#opt-blob) → {--blob option} {--blob-quote option}
+- [climode.html#opt-border](climode.md#opt-border) → {--border option} {--border setting}
+- [climode.html#opt-charlimit](climode.md#opt-charlimit) → {--charlimit option}
+- [climode.html#opt-colsep](climode.md#opt-colsep) → {--colsep option}
+- [climode.html#opt-escape](climode.md#opt-escape) → {--escape option}
+- [climode.html#opt-limits](climode.md#opt-limits) → {--limits option}
+- [climode.html#opt-linelimit](climode.md#opt-linelimit) → {--linelimit option}
+- [climode.html#opt-list](climode.md#opt-list) → {--list option}
+- [climode.html#opt-multiinsert](climode.md#opt-multiinsert) → {--multiinsert setting}
+- [climode.html#opt-null](climode.md#opt-null) → {--null option}
+- [climode.html#opt-once](climode.md#opt-once) → {--once option}
+- [climode.html#opt-quote](climode.md#opt-quote) → {--quote option} {--quote setting}
+- [climode.html#opt-reset](climode.md#opt-reset) → {--reset option}
+- [climode.html#opt-rowsep](climode.md#opt-rowsep) → {--rowsep option}
+- [climode.html#opt-sw](climode.md#opt-sw) → {--screenwidth option} {--sw option}
+- [climode.html#opt-tabname](climode.md#opt-tabname) → {--tablename option}
+- [climode.html#opt-tag](climode.md#opt-tag) → {--tag option}
+- [climode.html#opt-textjsonb](climode.md#opt-textjsonb) → {--textjsonb option}
+- [climode.html#opt-title](climode.md#opt-title) → {--title option}
+- [climode.html#opt-tlim](climode.md#opt-tlim) → {--titlelimit option}
+- [climode.html#opt-v](climode.md#opt-v) → {--verbose option} {-v options}
+- [climode.html#opt-width](climode.md#opt-width) → {--width option} {--widths option}
+- [climode.html#opt-wrap](climode.md#opt-wrap) → {--wrap option}
+- [climode.html#opt-ww](climode.md#opt-ww) → {--ww option}
+- [climode.html#opt-wwrap](climode.md#opt-wwrap) → {--wordwrap option}
+- [climode.html#qbox](climode.md#qbox) → qbox {qbox output mode}
+- [climode.html#split](climode.md#split) → {.mode split}
+- [climode.html#usermode](climode.md#usermode) → {user defined output modes}
+- [climode.html#wrap1](climode.md#wrap1) → {wrapping text}
+- [codeofconduct.html](codeofconduct.md) → {Code of Conduct}
+- [codeofethics.html](codeofethics.md) → {Code of Ethics} {Code of Ethics of the Project Founder}
+- [compile.html](compile.md) → {compile-time options}
+- [compile.html#4_byte_aligned_malloc](compile.md#4_byte_aligned_malloc) → -DSQLITE_4_BYTE_ALIGNED_MALLOC SQLITE_4_BYTE_ALIGNED_MALLOC
+- [compile.html#allow_covering_index_scan](compile.md#allow_covering_index_scan) → -DSQLITE_ALLOW_COVERING_INDEX_SCAN SQLITE_ALLOW_COVERING_INDEX_SCAN
+- [compile.html#allow_uri_authority](compile.md#allow_uri_authority) → -DSQLITE_ALLOW_URI_AUTHORITY SQLITE_ALLOW_URI_AUTHORITY
+- [compile.html#api](compile.md#api) → -DSQLITE_API SQLITE_API
+- [compile.html#apicall](compile.md#apicall) → -DSQLITE_APICALL SQLITE_APICALL
+- [compile.html#byteorder](compile.md#byteorder) → -DSQLITE_BYTEORDER SQLITE_BYTEORDER
+- [compile.html#callback](compile.md#callback) → -DSQLITE_CALLBACK SQLITE_CALLBACK
+- [compile.html#case_sensitive_like](compile.md#case_sensitive_like) → -DSQLITE_CASE_SENSITIVE_LIKE SQLITE_CASE_SENSITIVE_LIKE
+- [compile.html#cdecl](compile.md#cdecl) → -DSQLITE_CDECL SQLITE_CDECL
+- [compile.html#debug](compile.md#debug) → -DSQLITE_DEBUG SQLITE_DEBUG
+- [compile.html#default_automatic_index](compile.md#default_automatic_index) → -DSQLITE_DEFAULT_AUTOMATIC_INDEX SQLITE_DEFAULT_AUTOMATIC_INDEX
+- [compile.html#default_autovacuum](compile.md#default_autovacuum) → -DSQLITE_DEFAULT_AUTOVACUUM SQLITE_DEFAULT_AUTOVACUUM
+- [compile.html#default_cache_size](compile.md#default_cache_size) → -DSQLITE_DEFAULT_CACHE_SIZE SQLITE_DEFAULT_CACHE_SIZE
+- [compile.html#default_file_format](compile.md#default_file_format) → -DSQLITE_DEFAULT_FILE_FORMAT SQLITE_DEFAULT_FILE_FORMAT
+- [compile.html#default_file_permissions](compile.md#default_file_permissions) → -DSQLITE_DEFAULT_FILE_PERMISSIONS SQLITE_DEFAULT_FILE_PERMISSIONS
+- [compile.html#default_foreign_keys](compile.md#default_foreign_keys) → -DSQLITE_DEFAULT_FOREIGN_KEYS SQLITE_DEFAULT_FOREIGN_KEYS
+- [compile.html#default_journal_size_limit](compile.md#default_journal_size_limit) → -DSQLITE_DEFAULT_JOURNAL_SIZE_LIMIT SQLITE_DEFAULT_JOURNAL_SIZE_LIMIT
+- [compile.html#default_locking_mode](compile.md#default_locking_mode) → -DSQLITE_DEFAULT_LOCKING_MODE SQLITE_DEFAULT_LOCKING_MODE
+- [compile.html#default_lookaside](compile.md#default_lookaside) → -DSQLITE_DEFAULT_LOOKASIDE SQLITE_DEFAULT_LOOKASIDE
+- [compile.html#default_memstatus](compile.md#default_memstatus) → -DSQLITE_DEFAULT_MEMSTATUS SQLITE_DEFAULT_MEMSTATUS
+- [compile.html#default_mmap_size](compile.md#default_mmap_size) → -DSQLITE_DEFAULT_MMAP_SIZE SQLITE_DEFAULT_MMAP_SIZE
+- [compile.html#default_page_size](compile.md#default_page_size) → -DSQLITE_DEFAULT_PAGE_SIZE SQLITE_DEFAULT_PAGE_SIZE
+- [compile.html#default_pcache_initsz](compile.md#default_pcache_initsz) → -DSQLITE_DEFAULT_PCACHE_INITSZ SQLITE_DEFAULT_PCACHE_INITSZ
+- [compile.html#default_synchronous](compile.md#default_synchronous) → -DSQLITE_DEFAULT_SYNCHRONOUS SQLITE_DEFAULT_SYNCHRONOUS
+- [compile.html#default_wal_autocheckpoint](compile.md#default_wal_autocheckpoint) → -DSQLITE_DEFAULT_WAL_AUTOCHECKPOINT SQLITE_DEFAULT_WAL_AUTOCHECKPOINT
+- [compile.html#default_wal_synchronous](compile.md#default_wal_synchronous) → -DSQLITE_DEFAULT_WAL_SYNCHRONOUS SQLITE_DEFAULT_WAL_SYNCHRONOUS
+- [compile.html#default_worker_threads](compile.md#default_worker_threads) → -DSQLITE_DEFAULT_WORKER_THREADS SQLITE_DEFAULT_WORKER_THREADS
+- [compile.html#direct_overflow_read](compile.md#direct_overflow_read) → -DSQLITE_DIRECT_OVERFLOW_READ SQLITE_DIRECT_OVERFLOW_READ
+- [compile.html#disable_dirsync](compile.md#disable_dirsync) → -DSQLITE_DISABLE_DIRSYNC SQLITE_DISABLE_DIRSYNC
+- [compile.html#disable_fts3_unicode](compile.md#disable_fts3_unicode) → -DSQLITE_DISABLE_FTS3_UNICODE SQLITE_DISABLE_FTS3_UNICODE
+- [compile.html#disable_fts4_deferred](compile.md#disable_fts4_deferred) → -DSQLITE_DISABLE_FTS4_DEFERRED SQLITE_DISABLE_FTS4_DEFERRED
+- [compile.html#disable_intrinsic](compile.md#disable_intrinsic) → -DSQLITE_DISABLE_INTRINSIC SQLITE_DISABLE_INTRINSIC
+- [compile.html#disable_lfs](compile.md#disable_lfs) → -DSQLITE_DISABLE_LFS SQLITE_DISABLE_LFS
+- [compile.html#disable_pagecache_overflow_stats](compile.md#disable_pagecache_overflow_stats) → -DSQLITE_DISABLE_PAGECACHE_OVERFLOW_STATS SQLITE_DISABLE_PAGECACHE_OVERFLOW_STATS
+- [compile.html#dqs](compile.md#dqs) → -DSQLITE_DQS SQLITE_DQS
+- [compile.html#enable_8_3_names](compile.md#enable_8_3_names) → -DSQLITE_ENABLE_8_3_NAMES SQLITE_ENABLE_8_3_NAMES
+- [compile.html#enable_api_armor](compile.md#enable_api_armor) → -DSQLITE_ENABLE_API_ARMOR SQLITE_ENABLE_API_ARMOR
+- [compile.html#enable_atomic_write](compile.md#enable_atomic_write) → -DSQLITE_ENABLE_ATOMIC_WRITE SQLITE_ENABLE_ATOMIC_WRITE
+- [compile.html#enable_batch_atomic_write](compile.md#enable_batch_atomic_write) → -DSQLITE_ENABLE_BATCH_ATOMIC_WRITE SQLITE_ENABLE_BATCH_ATOMIC_WRITE
+- [compile.html#enable_bytecode_vtab](compile.md#enable_bytecode_vtab) → -DSQLITE_ENABLE_BYTECODE_VTAB SQLITE_ENABLE_BYTECODE_VTAB
+- [compile.html#enable_carray](compile.md#enable_carray) → -DSQLITE_ENABLE_CARRAY SQLITE_ENABLE_CARRAY
+- [compile.html#enable_column_metadata](compile.md#enable_column_metadata) → -DSQLITE_ENABLE_COLUMN_METADATA SQLITE_ENABLE_COLUMN_METADATA
+- [compile.html#enable_dbpage_vtab](compile.md#enable_dbpage_vtab) → -DSQLITE_ENABLE_DBPAGE_VTAB SQLITE_ENABLE_DBPAGE_VTAB
+- [compile.html#enable_dbstat_vtab](compile.md#enable_dbstat_vtab) → -DSQLITE_ENABLE_DBSTAT_VTAB SQLITE_ENABLE_DBSTAT_VTAB
+- [compile.html#enable_deserialize](compile.md#enable_deserialize) → -DSQLITE_ENABLE_DESERIALIZE SQLITE_ENABLE_DESERIALIZE
+- [compile.html#enable_explain_comments](compile.md#enable_explain_comments) → -DSQLITE_ENABLE_EXPLAIN_COMMENTS SQLITE_ENABLE_EXPLAIN_COMMENTS
+- [compile.html#enable_fts3](compile.md#enable_fts3) → -DSQLITE_ENABLE_FTS3 SQLITE_ENABLE_FTS3
+- [compile.html#enable_fts3_parenthesis](compile.md#enable_fts3_parenthesis) → -DSQLITE_ENABLE_FTS3_PARENTHESIS SQLITE_ENABLE_FTS3_PARENTHESIS
+- [compile.html#enable_fts3_tokenizer](compile.md#enable_fts3_tokenizer) → -DSQLITE_ENABLE_FTS3_TOKENIZER SQLITE_ENABLE_FTS3_TOKENIZER
+- [compile.html#enable_fts4](compile.md#enable_fts4) → -DSQLITE_ENABLE_FTS4 SQLITE_ENABLE_FTS4
+- [compile.html#enable_fts5](compile.md#enable_fts5) → -DSQLITE_ENABLE_FTS5 SQLITE_ENABLE_FTS5
+- [compile.html#enable_geopoly](compile.md#enable_geopoly) → -DSQLITE_ENABLE_GEOPOLY SQLITE_ENABLE_GEOPOLY
+- [compile.html#enable_hidden_columns](compile.md#enable_hidden_columns) → -DSQLITE_ENABLE_HIDDEN_COLUMNS SQLITE_ENABLE_HIDDEN_COLUMNS
+- [compile.html#enable_icu](compile.md#enable_icu) → -DSQLITE_ENABLE_ICU SQLITE_ENABLE_ICU
+- [compile.html#enable_iotrace](compile.md#enable_iotrace) → -DSQLITE_ENABLE_IOTRACE SQLITE_ENABLE_IOTRACE
+- [compile.html#enable_json1](compile.md#enable_json1) → -DSQLITE_ENABLE_JSON1 SQLITE_ENABLE_JSON1
+- [compile.html#enable_locking_style](compile.md#enable_locking_style) → -DSQLITE_ENABLE_LOCKING_STYLE SQLITE_ENABLE_LOCKING_STYLE
+- [compile.html#enable_math_functions](compile.md#enable_math_functions) → -DSQLITE_ENABLE_MATH_FUNCTIONS SQLITE_ENABLE_MATH_FUNCTIONS
+- [compile.html#enable_memory_management](compile.md#enable_memory_management) → -DSQLITE_ENABLE_MEMORY_MANAGEMENT SQLITE_ENABLE_MEMORY_MANAGEMENT
+- [compile.html#enable_memsys3](compile.md#enable_memsys3) → -DSQLITE_ENABLE_MEMSYS3 SQLITE_ENABLE_MEMSYS3
+- [compile.html#enable_memsys5](compile.md#enable_memsys5) → -DSQLITE_ENABLE_MEMSYS5 SQLITE_ENABLE_MEMSYS5
+- [compile.html#enable_normalize](compile.md#enable_normalize) → -DSQLITE_ENABLE_NORMALIZE SQLITE_ENABLE_NORMALIZE
+- [compile.html#enable_null_trim](compile.md#enable_null_trim) → -DSQLITE_ENABLE_NULL_TRIM SQLITE_ENABLE_NULL_TRIM
+- [compile.html#enable_offset_sql_func](compile.md#enable_offset_sql_func) → -DSQLITE_ENABLE_OFFSET_SQL_FUNC SQLITE_ENABLE_OFFSET_SQL_FUNC
+- [compile.html#enable_ordered_set_aggregates](compile.md#enable_ordered_set_aggregates) → -DSQLITE_ENABLE_ORDERED_SET_AGGREGATES SQLITE_ENABLE_ORDERED_SET_AGGREGATES
+- [compile.html#enable_percentile](compile.md#enable_percentile) → -DSQLITE_ENABLE_PERCENTILE SQLITE_ENABLE_PERCENTILE
+- [compile.html#enable_preupdate_hook](compile.md#enable_preupdate_hook) → -DSQLITE_ENABLE_PREUPDATE_HOOK SQLITE_ENABLE_PREUPDATE_HOOK
+- [compile.html#enable_qpsg](compile.md#enable_qpsg) → -DSQLITE_ENABLE_QPSG SQLITE_ENABLE_QPSG
+- [compile.html#enable_rbu](compile.md#enable_rbu) → -DSQLITE_ENABLE_RBU SQLITE_ENABLE_RBU
+- [compile.html#enable_rtree](compile.md#enable_rtree) → -DSQLITE_ENABLE_RTREE SQLITE_ENABLE_RTREE
+- [compile.html#enable_session](compile.md#enable_session) → -DSQLITE_ENABLE_SESSION SQLITE_ENABLE_SESSION
+- [compile.html#enable_snapshot](compile.md#enable_snapshot) → -DSQLITE_ENABLE_SNAPSHOT SQLITE_ENABLE_SNAPSHOT
+- [compile.html#enable_sorter_references](compile.md#enable_sorter_references) → -DSQLITE_ENABLE_SORTER_REFERENCES SQLITE_ENABLE_SORTER_REFERENCES
+- [compile.html#enable_sqllog](compile.md#enable_sqllog) → -DSQLITE_ENABLE_SQLLOG SQLITE_ENABLE_SQLLOG
+- [compile.html#enable_stat2](compile.md#enable_stat2) → -DSQLITE_ENABLE_STAT2 SQLITE_ENABLE_STAT2
+- [compile.html#enable_stat3](compile.md#enable_stat3) → -DSQLITE_ENABLE_STAT3 SQLITE_ENABLE_STAT3
+- [compile.html#enable_stat4](compile.md#enable_stat4) → -DSQLITE_ENABLE_STAT4 SQLITE_ENABLE_STAT4
+- [compile.html#enable_stmt_scanstatus](compile.md#enable_stmt_scanstatus) → -DSQLITE_ENABLE_STMT_SCANSTATUS SQLITE_ENABLE_STMT_SCANSTATUS
+- [compile.html#enable_stmtvtab](compile.md#enable_stmtvtab) → -DSQLITE_ENABLE_STMTVTAB SQLITE_ENABLE_STMTVTAB
+- [compile.html#enable_tree_explain](compile.md#enable_tree_explain) → -DSQLITE_ENABLE_TREE_EXPLAIN SQLITE_ENABLE_TREE_EXPLAIN
+- [compile.html#enable_unknown_sql_function](compile.md#enable_unknown_sql_function) → -DSQLITE_ENABLE_UNKNOWN_SQL_FUNCTION SQLITE_ENABLE_UNKNOWN_SQL_FUNCTION
+- [compile.html#enable_unlock_notify](compile.md#enable_unlock_notify) → -DSQLITE_ENABLE_UNLOCK_NOTIFY SQLITE_ENABLE_UNLOCK_NOTIFY
+- [compile.html#enable_update_delete_limit](compile.md#enable_update_delete_limit) → -DSQLITE_ENABLE_UPDATE_DELETE_LIMIT SQLITE_ENABLE_UPDATE_DELETE_LIMIT
+- [compile.html#extern](compile.md#extern) → -DSQLITE_EXTERN SQLITE_EXTERN
+- [compile.html#extra_durable](compile.md#extra_durable) → -DSQLITE_EXTRA_DURABLE SQLITE_EXTRA_DURABLE
+- [compile.html#fdatasync](compile.md#fdatasync) → -DHAVE_FDATASYNC HAVE_FDATASYNC
+- [compile.html#fts3_max_expr_depth](compile.md#fts3_max_expr_depth) → -DSQLITE_FTS3_MAX_EXPR_DEPTH SQLITE_FTS3_MAX_EXPR_DEPTH
+- [compile.html#gmtime_r](compile.md#gmtime_r) → -DHAVE_GMTIME_R HAVE_GMTIME_R
+- [compile.html#have_isnan](compile.md#have_isnan) → -DSQLITE_HAVE_ISNAN SQLITE_HAVE_ISNAN
+- [compile.html#have_zlib](compile.md#have_zlib) → -DSQLITE_HAVE_ZLIB SQLITE_HAVE_ZLIB
+- [compile.html#introspection_pragmas](compile.md#introspection_pragmas) → -DSQLITE_INTROSPECTION_PRAGMAS SQLITE_INTROSPECTION_PRAGMAS
+- [compile.html#isnan](compile.md#isnan) → -DHAVE_ISNAN HAVE_ISNAN
+- [compile.html#json_max_depth](compile.md#json_max_depth) → -DSQLITE_JSON_MAX_DEPTH SQLITE_JSON_MAX_DEPTH
+- [compile.html#like_doesnt_match_blobs](compile.md#like_doesnt_match_blobs) → -DSQLITE_LIKE_DOESNT_MATCH_BLOBS SQLITE_LIKE_DOESNT_MATCH_BLOBS
+- [compile.html#localtime_r](compile.md#localtime_r) → -DHAVE_LOCALTIME_R HAVE_LOCALTIME_R
+- [compile.html#localtime_s](compile.md#localtime_s) → -DHAVE_LOCALTIME_S HAVE_LOCALTIME_S
+- [compile.html#malloc_usable_size](compile.md#malloc_usable_size) → -DHAVE_MALLOC_USABLE_SIZE HAVE_MALLOC_USABLE_SIZE
+- [compile.html#max_allocation_size](compile.md#max_allocation_size) → -DSQLITE_MAX_ALLOCATION_SIZE SQLITE_MAX_ALLOCATION_SIZE
+- [compile.html#max_memory](compile.md#max_memory) → -DSQLITE_MAX_MEMORY SQLITE_MAX_MEMORY
+- [compile.html#max_mmap_size](compile.md#max_mmap_size) → -DSQLITE_MAX_MMAP_SIZE SQLITE_MAX_MMAP_SIZE
+- [compile.html#max_schema_retry](compile.md#max_schema_retry) → -DSQLITE_MAX_SCHEMA_RETRY SQLITE_MAX_SCHEMA_RETRY
+- [compile.html#max_worker_threads](compile.md#max_worker_threads) → -DSQLITE_MAX_WORKER_THREADS SQLITE_MAX_WORKER_THREADS
+- [compile.html#memdb_default_maxsize](compile.md#memdb_default_maxsize) → -DSQLITE_MEMDB_DEFAULT_MAXSIZE SQLITE_MEMDB_DEFAULT_MAXSIZE
+- [compile.html#memdebug](compile.md#memdebug) → -DSQLITE_MEMDEBUG SQLITE_MEMDEBUG
+- [compile.html#minimum_file_descriptor](compile.md#minimum_file_descriptor) → -DSQLITE_MINIMUM_FILE_DESCRIPTOR SQLITE_MINIMUM_FILE_DESCRIPTOR
+- [compile.html#omit_altertable](compile.md#omit_altertable) → -DSQLITE_OMIT_ALTERTABLE SQLITE_OMIT_ALTERTABLE
+- [compile.html#omit_analyze](compile.md#omit_analyze) → -DSQLITE_OMIT_ANALYZE SQLITE_OMIT_ANALYZE
+- [compile.html#omit_attach](compile.md#omit_attach) → -DSQLITE_OMIT_ATTACH SQLITE_OMIT_ATTACH
+- [compile.html#omit_authorization](compile.md#omit_authorization) → -DSQLITE_OMIT_AUTHORIZATION SQLITE_OMIT_AUTHORIZATION
+- [compile.html#omit_autoincrement](compile.md#omit_autoincrement) → -DSQLITE_OMIT_AUTOINCREMENT SQLITE_OMIT_AUTOINCREMENT
+- [compile.html#omit_autoinit](compile.md#omit_autoinit) → -DSQLITE_OMIT_AUTOINIT SQLITE_OMIT_AUTOINIT
+- [compile.html#omit_automatic_index](compile.md#omit_automatic_index) → -DSQLITE_OMIT_AUTOMATIC_INDEX SQLITE_OMIT_AUTOMATIC_INDEX
+- [compile.html#omit_autoreset](compile.md#omit_autoreset) → -DSQLITE_OMIT_AUTORESET SQLITE_OMIT_AUTORESET
+- [compile.html#omit_autovacuum](compile.md#omit_autovacuum) → -DSQLITE_OMIT_AUTOVACUUM SQLITE_OMIT_AUTOVACUUM
+- [compile.html#omit_between_optimization](compile.md#omit_between_optimization) → -DSQLITE_OMIT_BETWEEN_OPTIMIZATION SQLITE_OMIT_BETWEEN_OPTIMIZATION
+- [compile.html#omit_blob_literal](compile.md#omit_blob_literal) → -DSQLITE_OMIT_BLOB_LITERAL SQLITE_OMIT_BLOB_LITERAL
+- [compile.html#omit_btreecount](compile.md#omit_btreecount) → -DSQLITE_OMIT_BTREECOUNT SQLITE_OMIT_BTREECOUNT
+- [compile.html#omit_builtin_test](compile.md#omit_builtin_test) → -DSQLITE_OMIT_BUILTIN_TEST SQLITE_OMIT_BUILTIN_TEST
+- [compile.html#omit_case_sensitive_like_pragma](compile.md#omit_case_sensitive_like_pragma) → -DSQLITE_OMIT_CASE_SENSITIVE_LIKE_PRAGMA SQLITE_OMIT_CASE_SENSITIVE_LIKE_PRAGMA
+- [compile.html#omit_cast](compile.md#omit_cast) → -DSQLITE_OMIT_CAST SQLITE_OMIT_CAST
+- [compile.html#omit_check](compile.md#omit_check) → -DSQLITE_OMIT_CHECK SQLITE_OMIT_CHECK
+- [compile.html#omit_compileoption_diags](compile.md#omit_compileoption_diags) → -DSQLITE_OMIT_COMPILEOPTION_DIAGS SQLITE_OMIT_COMPILEOPTION_DIAGS
+- [compile.html#omit_complete](compile.md#omit_complete) → -DSQLITE_OMIT_COMPLETE SQLITE_OMIT_COMPLETE
+- [compile.html#omit_compound_select](compile.md#omit_compound_select) → -DSQLITE_OMIT_COMPOUND_SELECT SQLITE_OMIT_COMPOUND_SELECT
+- [compile.html#omit_cte](compile.md#omit_cte) → -DSQLITE_OMIT_CTE SQLITE_OMIT_CTE
+- [compile.html#omit_datetime_funcs](compile.md#omit_datetime_funcs) → -DSQLITE_OMIT_DATETIME_FUNCS SQLITE_OMIT_DATETIME_FUNCS
+- [compile.html#omit_decltype](compile.md#omit_decltype) → -DSQLITE_OMIT_DECLTYPE SQLITE_OMIT_DECLTYPE
+- [compile.html#omit_deprecated](compile.md#omit_deprecated) → -DSQLITE_OMIT_DEPRECATED SQLITE_OMIT_DEPRECATED
+- [compile.html#omit_deserialize](compile.md#omit_deserialize) → -DSQLITE_OMIT_DESERIALIZE SQLITE_OMIT_DESERIALIZE
+- [compile.html#omit_diskio](compile.md#omit_diskio) → -DSQLITE_OMIT_DISKIO SQLITE_OMIT_DISKIO
+- [compile.html#omit_explain](compile.md#omit_explain) → -DSQLITE_OMIT_EXPLAIN SQLITE_OMIT_EXPLAIN
+- [compile.html#omit_flag_pragmas](compile.md#omit_flag_pragmas) → -DSQLITE_OMIT_FLAG_PRAGMAS SQLITE_OMIT_FLAG_PRAGMAS
+- [compile.html#omit_floating_point](compile.md#omit_floating_point) → -DSQLITE_OMIT_FLOATING_POINT SQLITE_OMIT_FLOATING_POINT
+- [compile.html#omit_foreign_key](compile.md#omit_foreign_key) → -DSQLITE_OMIT_FOREIGN_KEY SQLITE_OMIT_FOREIGN_KEY
+- [compile.html#omit_generated_columns](compile.md#omit_generated_columns) → -DSQLITE_OMIT_GENERATED_COLUMNS SQLITE_OMIT_GENERATED_COLUMNS
+- [compile.html#omit_get_table](compile.md#omit_get_table) → -DSQLITE_OMIT_GET_TABLE SQLITE_OMIT_GET_TABLE
+- [compile.html#omit_hex_integer](compile.md#omit_hex_integer) → -DSQLITE_OMIT_HEX_INTEGER SQLITE_OMIT_HEX_INTEGER
+- [compile.html#omit_incrblob](compile.md#omit_incrblob) → -DSQLITE_OMIT_INCRBLOB SQLITE_OMIT_INCRBLOB
+- [compile.html#omit_integrity_check](compile.md#omit_integrity_check) → -DSQLITE_OMIT_INTEGRITY_CHECK SQLITE_OMIT_INTEGRITY_CHECK
+- [compile.html#omit_introspection_pragmas](compile.md#omit_introspection_pragmas) → -DSQLITE_OMIT_INTROSPECTION_PRAGMAS SQLITE_OMIT_INTROSPECTION_PRAGMAS
+- [compile.html#omit_json](compile.md#omit_json) → -DSQLITE_OMIT_JSON SQLITE_OMIT_JSON
+- [compile.html#omit_like_optimization](compile.md#omit_like_optimization) → -DSQLITE_OMIT_LIKE_OPTIMIZATION SQLITE_OMIT_LIKE_OPTIMIZATION
+- [compile.html#omit_load_extension](compile.md#omit_load_extension) → -DSQLITE_OMIT_LOAD_EXTENSION SQLITE_OMIT_LOAD_EXTENSION
+- [compile.html#omit_localtime](compile.md#omit_localtime) → -DSQLITE_OMIT_LOCALTIME SQLITE_OMIT_LOCALTIME
+- [compile.html#omit_lookaside](compile.md#omit_lookaside) → -DSQLITE_OMIT_LOOKASIDE SQLITE_OMIT_LOOKASIDE
+- [compile.html#omit_memorydb](compile.md#omit_memorydb) → -DSQLITE_OMIT_MEMORYDB SQLITE_OMIT_MEMORYDB
+- [compile.html#omit_or_optimization](compile.md#omit_or_optimization) → -DSQLITE_OMIT_OR_OPTIMIZATION SQLITE_OMIT_OR_OPTIMIZATION
+- [compile.html#omit_pager_pragmas](compile.md#omit_pager_pragmas) → -DSQLITE_OMIT_PAGER_PRAGMAS SQLITE_OMIT_PAGER_PRAGMAS
+- [compile.html#omit_pragma](compile.md#omit_pragma) → -DSQLITE_OMIT_PRAGMA SQLITE_OMIT_PRAGMA
+- [compile.html#omit_progress_callback](compile.md#omit_progress_callback) → -DSQLITE_OMIT_PROGRESS_CALLBACK SQLITE_OMIT_PROGRESS_CALLBACK
+- [compile.html#omit_quickbalance](compile.md#omit_quickbalance) → -DSQLITE_OMIT_QUICKBALANCE SQLITE_OMIT_QUICKBALANCE
+- [compile.html#omit_reindex](compile.md#omit_reindex) → -DSQLITE_OMIT_REINDEX SQLITE_OMIT_REINDEX
+- [compile.html#omit_schema_pragmas](compile.md#omit_schema_pragmas) → -DSQLITE_OMIT_SCHEMA_PRAGMAS SQLITE_OMIT_SCHEMA_PRAGMAS
+- [compile.html#omit_schema_version_pragmas](compile.md#omit_schema_version_pragmas) → -DSQLITE_OMIT_SCHEMA_VERSION_PRAGMAS SQLITE_OMIT_SCHEMA_VERSION_PRAGMAS
+- [compile.html#omit_seh](compile.md#omit_seh) → -DSQLITE_OMIT_SEH SQLITE_OMIT_SEH
+- [compile.html#omit_shared_cache](compile.md#omit_shared_cache) → -DSQLITE_OMIT_SHARED_CACHE SQLITE_OMIT_SHARED_CACHE
+- [compile.html#omit_subquery](compile.md#omit_subquery) → -DSQLITE_OMIT_SUBQUERY SQLITE_OMIT_SUBQUERY
+- [compile.html#omit_tcl_variable](compile.md#omit_tcl_variable) → -DSQLITE_OMIT_TCL_VARIABLE SQLITE_OMIT_TCL_VARIABLE
+- [compile.html#omit_tempdb](compile.md#omit_tempdb) → -DSQLITE_OMIT_TEMPDB SQLITE_OMIT_TEMPDB
+- [compile.html#omit_trace](compile.md#omit_trace) → -DSQLITE_OMIT_TRACE SQLITE_OMIT_TRACE
+- [compile.html#omit_trigger](compile.md#omit_trigger) → -DSQLITE_OMIT_TRIGGER SQLITE_OMIT_TRIGGER
+- [compile.html#omit_truncate_optimization](compile.md#omit_truncate_optimization) → -DSQLITE_OMIT_TRUNCATE_OPTIMIZATION SQLITE_OMIT_TRUNCATE_OPTIMIZATION
+- [compile.html#omit_utf16](compile.md#omit_utf16) → -DSQLITE_OMIT_UTF16 SQLITE_OMIT_UTF16
+- [compile.html#omit_vacuum](compile.md#omit_vacuum) → -DSQLITE_OMIT_VACUUM SQLITE_OMIT_VACUUM
+- [compile.html#omit_view](compile.md#omit_view) → -DSQLITE_OMIT_VIEW SQLITE_OMIT_VIEW
+- [compile.html#omit_virtualtable](compile.md#omit_virtualtable) → -DSQLITE_OMIT_VIRTUALTABLE SQLITE_OMIT_VIRTUALTABLE
+- [compile.html#omit_wal](compile.md#omit_wal) → -DSQLITE_OMIT_WAL SQLITE_OMIT_WAL
+- [compile.html#omit_windowfunc](compile.md#omit_windowfunc) → -DSQLITE_OMIT_WINDOWFUNC SQLITE_OMIT_WINDOWFUNC
+- [compile.html#omit_wsd](compile.md#omit_wsd) → -DSQLITE_OMIT_WSD SQLITE_OMIT_WSD
+- [compile.html#omit_xfer_opt](compile.md#omit_xfer_opt) → -DSQLITE_OMIT_XFER_OPT SQLITE_OMIT_XFER_OPT
+- [compile.html#omitfeatures](compile.md#omitfeatures) → omitfeatures
+- [compile.html#os_other](compile.md#os_other) → -DSQLITE_OS_OTHER SQLITE_OS_OTHER
+- [compile.html#powersafe_overwrite](compile.md#powersafe_overwrite) → -DSQLITE_POWERSAFE_OVERWRITE SQLITE_POWERSAFE_OVERWRITE
+- [compile.html#printf_precision_limit](compile.md#printf_precision_limit) → -DSQLITE_PRINTF_PRECISION_LIMIT SQLITE_PRINTF_PRECISION_LIMIT
+- [compile.html#query_planner_limit](compile.md#query_planner_limit) → -DSQLITE_QUERY_PLANNER_LIMIT SQLITE_QUERY_PLANNER_LIMIT
+- [compile.html#query_planner_limit_incr](compile.md#query_planner_limit_incr) → -DSQLITE_QUERY_PLANNER_LIMIT_INCR SQLITE_QUERY_PLANNER_LIMIT_INCR
+- [compile.html#rcmd](compile.md#rcmd) → {recommended compile-time option} {recommended compile-time options}
+- [compile.html#reverse_unordered_selects](compile.md#reverse_unordered_selects) → -DSQLITE_REVERSE_UNORDERED_SELECTS SQLITE_REVERSE_UNORDERED_SELECTS
+- [compile.html#rtree_int_only](compile.md#rtree_int_only) → -DSQLITE_RTREE_INT_ONLY SQLITE_RTREE_INT_ONLY
+- [compile.html#secure_delete](compile.md#secure_delete) → -DSQLITE_SECURE_DELETE SQLITE_SECURE_DELETE
+- [compile.html#sorter_pmasz](compile.md#sorter_pmasz) → -DSQLITE_SORTER_PMASZ SQLITE_SORTER_PMASZ
+- [compile.html#soundex](compile.md#soundex) → -DSQLITE_SOUNDEX SQLITE_SOUNDEX
+- [compile.html#sqlite_config_h](compile.md#sqlite_config_h) → -DHAVE_SQLITE_CONFIG_H HAVE_SQLITE_CONFIG_H
+- [compile.html#stdcall](compile.md#stdcall) → -DSQLITE_STDCALL SQLITE_STDCALL
+- [compile.html#stmtjrnl_spill](compile.md#stmtjrnl_spill) → -DSQLITE_STMTJRNL_SPILL SQLITE_STMTJRNL_SPILL
+- [compile.html#strchrnul](compile.md#strchrnul) → -DHAVE_STRCHRNUL HAVE_STRCHRNUL
+- [compile.html#strict_subtype](compile.md#strict_subtype) → -DSQLITE_STRICT_SUBTYPE SQLITE_STRICT_SUBTYPE
+- [compile.html#sysapi](compile.md#sysapi) → -DSQLITE_SYSAPI SQLITE_SYSAPI
+- [compile.html#tclapi](compile.md#tclapi) → -DSQLITE_TCLAPI SQLITE_TCLAPI
+- [compile.html#temp_store](compile.md#temp_store) → -DSQLITE_TEMP_STORE SQLITE_TEMP_STORE
+- [compile.html#threadsafe](compile.md#threadsafe) → -DSQLITE_THREADSAFE SQLITE_THREADSAFE
+- [compile.html#trace_size_limit](compile.md#trace_size_limit) → -DSQLITE_TRACE_SIZE_LIMIT SQLITE_TRACE_SIZE_LIMIT
+- [compile.html#trusted_schema](compile.md#trusted_schema) → -DSQLITE_TRUSTED_SCHEMA SQLITE_TRUSTED_SCHEMA
+- [compile.html#untestable](compile.md#untestable) → -DSQLITE_UNTESTABLE SQLITE_UNTESTABLE
+- [compile.html#use_alloca](compile.md#use_alloca) → -DSQLITE_USE_ALLOCA SQLITE_USE_ALLOCA
+- [compile.html#use_fcntl_trace](compile.md#use_fcntl_trace) → -DSQLITE_USE_FCNTL_TRACE SQLITE_USE_FCNTL_TRACE
+- [compile.html#use_seh](compile.md#use_seh) → -DSQLITE_USE_SEH SQLITE_USE_SEH
+- [compile.html#use_uri](compile.md#use_uri) → -DSQLITE_USE_URI SQLITE_USE_URI
+- [compile.html#utime](compile.md#utime) → -DHAVE_UTIME HAVE_UTIME
+- [compile.html#win32_heap_create](compile.md#win32_heap_create) → -DSQLITE_WIN32_HEAP_CREATE SQLITE_WIN32_HEAP_CREATE
+- [compile.html#win32_malloc](compile.md#win32_malloc) → -DSQLITE_WIN32_MALLOC SQLITE_WIN32_MALLOC
+- [compile.html#win32_malloc_validate](compile.md#win32_malloc_validate) → -DSQLITE_WIN32_MALLOC_VALIDATE SQLITE_WIN32_MALLOC_VALIDATE
+- [compile.html#yystackdepth](compile.md#yystackdepth) → YYSTACKDEPTH
+- [compile.html#yytrackmaxstackdepth](compile.md#yytrackmaxstackdepth) → YYTRACKMAXSTACKDEPTH
+- [compile.html#zero_malloc](compile.md#zero_malloc) → -DSQLITE_ZERO_MALLOC SQLITE_ZERO_MALLOC
+- [completion.html](completion.md) → COMPLETION {COMPLETION extension} {COMPLETION table-valued function}
+- [consortium.html](consortium.md) → {SQLite Consortium}
+- [copyright.html](copyright.md) → copyright license public-domain
+- [copyright.html#notopencontrib](copyright.md#notopencontrib) → {not open-contributin}
+- [copyright.html#warrantyoftitle](copyright.md#warrantyoftitle) → {Warranty of Title}
+- [cpu.html](cpu.md) → {CPU cycles used} {CPU performance measurement}
+- [cpu.html#microopt](cpu.md#microopt) → microoptimizations
+- [crew.html](crew.md) → Hipp Kennedy crew
+- [csv.html](csv.md) → {CSV virtual table} csv
+- [custombuild.html](custombuild.md) → {custom builds} {porting SQLite}
+- [cves.html](cves.md) → CVEs {reported vulnerabilities} vulnerabilities
+- [cves.html#cvetab](cves.md#cvetab) → {recent CVEs}
+- [datatype3.html](datatype3.md) → datatype {dynamic typing} {flexible type system}
+- [datatype3.html#affcompoundview](datatype3.md#affcompoundview) → {affinity in compound VIEWs}
+- [datatype3.html#affinity](datatype3.md#affinity) → affinities affinity {column affinity} {type affinity}
+- [datatype3.html#affname](datatype3.md#affname) → {rules for determining column affinity}
+- [datatype3.html#affview](datatype3.md#affview) → {rules for determining column affinity in VIEWs}
+- [datatype3.html#boolean](datatype3.md#boolean) → {boolean datatype}
+- [datatype3.html#collation](datatype3.md#collation) → BINARY {BINARY collating function} NOCASE {NOCASE collating function} RTRIM {RTRIM collating function} {collating function} {collating sequence} {collating sequences} collation
+- [datatype3.html#colrules](datatype3.md#colrules) → {how collation is determined}
+- [datatype3.html#compaff](datatype3.md#compaff) → {comparison affinity rules}
+- [datatype3.html#comparisons](datatype3.md#comparisons) → {comparison expressions}
+- [datatype3.html#datetime](datatype3.md#datetime) → {date and time datatype}
+- [datatype3.html#expraff](datatype3.md#expraff) → {Affinity Of Expressions} {expression affinity}
+- [datatype3.html#sortorder](datatype3.md#sortorder) → {sort order}
+- [datatype3.html#storageclasses](datatype3.md#storageclasses) → {storage class}
+- [dbhash.html](dbhash.md) → dbhash dbhash.exe
+- [dbpage.html](dbpage.md) → {SQLITE_DBPAGE virtual table} sqlite_dbpage {the SQLITE_DBPAGE extension}
+- [dbstat.html](dbstat.md) → {DBSTAT virtual table} dbstat {dbstat virtual table}
+- [dbstat.html#dbstatagg](dbstat.md#dbstatagg) → {DBSTAT aggregated mode}
+- [debugging.html](debugging.md) → dbghints {debugging hints}
+- [deterministic.html](deterministic.md) → {deterministic SQL functions} {deterministic function} {deterministic functions} {non-deterministic functions}
+- [deterministic.html#dtexception](deterministic.md#dtexception) → {date/time special case}
+- [doclist.html](doclist.md) → {alphabetical listing of documents} doclist
+- [docs.html](docs.md) → {categorical listing of SQLite documents} {documents by category}
+- [download.html](download.md) → {amalgamation tarball} {download page}
+- [download.html#encoding](download.md#encoding) → {build product names}
+- [download.html#srctree](download.md#srctree) → {SQLite source code repositories} {code repositories}
+- [eqp.html](eqp.md) → {EXPLAIN QUERY PLAN} {explain query plan}
+- [eqp.html#or-opt](eqp.md#or-opt) → eqp-or-opt
+- [errlog.html](errlog.md) → errlog {error log}
+- [expridx.html](expridx.md) → {Indexes On Expressions} {expression index} {expression indexes} {indexed expression} {indexed expressions} {indexes on expressions}
+- [fasterthanfs.html](fasterthanfs.md) → {35 Faster Than The Filesystem} {faster than the filesystem}
+- [fileformat2.html](fileformat2.md) → {SQLite database file format} {file format} {on-disk format} {second edition file format document}
+- [fileformat2.html##sqltab](fileformat2.md##sqltab) → {table data format}
+- [fileformat2.html#appid](fileformat2.md#appid) → {Application ID}
+- [fileformat2.html#btree](fileformat2.md#btree) → B-Trees B-tree
+- [fileformat2.html#btypes](fileformat2.md#btypes) → {index b-tree} {table b-tree}
+- [fileformat2.html#cell_payload](fileformat2.md#cell_payload) → {cell payload}
+- [fileformat2.html#cellformat](fileformat2.md#cellformat) → {cell format summary}
+- [fileformat2.html#chngctr](fileformat2.md#chngctr) → {change counter}
+- [fileformat2.html#database_header](fileformat2.md#database_header) → {database header}
+- [fileformat2.html#enc](fileformat2.md#enc) → {text encoding}
+- [fileformat2.html#ffschema](fileformat2.md#ffschema) → {schema storage}
+- [fileformat2.html#filesize](fileformat2.md#filesize) → {in-header database size}
+- [fileformat2.html#freelist](fileformat2.md#freelist) → {free-page list} freelist
+- [fileformat2.html#hotjrnl](fileformat2.md#hotjrnl) → {hot journal} {hot journal files}
+- [fileformat2.html#intschema](fileformat2.md#intschema) → {internal index} {internal indexes} {internal schema object} {internal schema objects} {internal table} {internal tables}
+- [fileformat2.html#lockbyte](fileformat2.md#lockbyte) → {lock-byte page}
+- [fileformat2.html#ovflpgs](fileformat2.md#ovflpgs) → {overflow page} {overflow pages}
+- [fileformat2.html#record_format](fileformat2.md#record_format) → {record format}
+- [fileformat2.html#resbyte](fileformat2.md#resbyte) → {reserve bytes}
+- [fileformat2.html#rollbackjournal](fileformat2.md#rollbackjournal) → {rollback journal format}
+- [fileformat2.html#schemaformat](fileformat2.md#schemaformat) → {schema format} {schema format number}
+- [fileformat2.html#seqtab](fileformat2.md#seqtab) → sqlite_sequence
+- [fileformat2.html#serialtype](fileformat2.md#serialtype) → {serial type} {serial types}
+- [fileformat2.html#stat1tab](fileformat2.md#stat1tab) → SQLITE_STAT1 sqlite_stat1
+- [fileformat2.html#stat2tab](fileformat2.md#stat2tab) → sqlite_stat2
+- [fileformat2.html#stat3tab](fileformat2.md#stat3tab) → SQLITE_STAT3 sqlite_stat3
+- [fileformat2.html#stat4tab](fileformat2.md#stat4tab) → SQLITE_STAT4 sqlite_stat4
+- [fileformat2.html#usable_size](fileformat2.md#usable_size) → {usable size}
+- [fileformat2.html#validfor](fileformat2.md#validfor) → {version-valid-for number}
+- [fileformat2.html#varint](fileformat2.md#varint) → {variable-length integer} varint
+- [fileformat2.html#vnums](fileformat2.md#vnums) → {file format version numbers}
+- [fileformat2.html#walcksm](fileformat2.md#walcksm) → {WAL checksum algorithm}
+- [fileformat2.html#walformat](fileformat2.md#walformat) → {WAL file format} {WAL format}
+- [fileformat2.html#walread](fileformat2.md#walread) → {WAL read algorithm}
+- [fileformat2.html#walreset](fileformat2.md#walreset) → {WAL reset} {reset the WAL}
+- [flextypegood.html](flextypegood.md) → {Flexible typing is a feature} {appreciate the freedom}
+- [floatingpoint.html](floatingpoint.md) → floating-point {floating-point values}
+- [floatingpoint.html#\*deccseq](floatingpoint.md#*deccseq) → {the decimal collating sequence}
+- [floatingpoint.html#\*decmth](floatingpoint.md#*decmth) → decimal_add decimal_mul decimal_sub
+- [floatingpoint.html#\*fpdigits](floatingpoint.md#*fpdigits) → fp-digits
+- [floatingpoint.html#\*rounding](floatingpoint.md#*rounding) → rounding
+- [floatingpoint.html#decext](floatingpoint.md#decext) → {decimal extension}
+- [floatingpoint.html#decimal](floatingpoint.md#decimal) → decimal_exp
+- [floatingpoint.html#fpapprox](floatingpoint.md#fpapprox) → {IEEE 754 floating point values are approximations} {floating point values are approximations}
+- [floatingpoint.html#ieee754](floatingpoint.md#ieee754) → {ieee754 function}
+- [floatingpoint.html#ieee754b](floatingpoint.md#ieee754b) → {ieee754_from_blob function} {ieee754_to_blob function}
+- [floatingpoint.html#ieee754ext](floatingpoint.md#ieee754ext) → {ieee754 extension}
+- [floatingpoint.html#ieee754m](floatingpoint.md#ieee754m) → {ieee754_exponent function} {ieee754_mantissa function}
+- [footprint.html](footprint.md) → footprint {library size} relfootprint
+- [foreignkeys.html](foreignkeys.md) → {FOREIGN KEY constraints} {foreign key constraint} {foreign key constraints}
+- [foreignkeys.html#fk_actions](foreignkeys.md#fk_actions) → {foreign key actions}
+- [foreignkeys.html#fk_enable](foreignkeys.md#fk_enable) → {foreign key constraints are enabled}
+- [foreignkeys.html#parentchild](foreignkeys.md#parentchild) → {child key} {child table} {parent key} {parent table}
+- [fts3.html](fts3.md) → FTS3 fts3 {full-text search}
+- [fts3.html#\*cmds](fts3.md#*cmds) → {FTS4 commands}
+- [fts3.html#\*fts4automergecmd](fts3.md#*fts4automergecmd) → {FTS4 automerge command} {automerge command}
+- [fts3.html#\*fts4compression](fts3.md#*fts4compression) → {compressed FTS4 content}
+- [fts3.html#\*fts4content](fts3.md#*fts4content) → {FTS4 content option}
+- [fts3.html#\*fts4ickcmd](fts3.md#*fts4ickcmd) → {FTS4 integrity-check command}
+- [fts3.html#\*fts4languageid](fts3.md#*fts4languageid) → {FTS4 languageid option} languageid
+- [fts3.html#\*fts4mergecmd](fts3.md#*fts4mergecmd) → {FTS4 merge command} {merge command}
+- [fts3.html#\*fts4optcmd](fts3.md#*fts4optcmd) → {FTS4 optimize command} {optimize command}
+- [fts3.html#\*fts4rebuidcmd](fts3.md#*fts4rebuidcmd) → {FTS4 rebuild command} {rebuild command}
+- [fts3.html#\*shadowtab](fts3.md#*shadowtab) → {FTS shadow tables}
+- [fts3.html#\_contentless_fts4_tables\_](fts3.md#_contentless_fts4_tables_) → {contentless fts4 tables}
+- [fts3.html#\_external_content_fts4_tables\_](fts3.md#_external_content_fts4_tables_) → {external content fts4 tables}
+- [fts3.html#\_set_operations_using_the_enhanced_query_syntax](fts3.md#_set_operations_using_the_enhanced_query_syntax) → {enhanced query syntax}
+- [fts3.html#appendix_a](fts3.md#appendix_a) → {search application tips}
+- [fts3.html#commands](fts3.md#commands) → commands
+- [fts3.html#compiling_and_enabling_fts3_and_fts4](fts3.md#compiling_and_enabling_fts3_and_fts4) → {compile fts}
+- [fts3.html#data_structures](fts3.md#data_structures) → {segment btree}
+- [fts3.html#f3tknzr](fts3.md#f3tknzr) → fts3_tokenizer
+- [fts3.html#f4alid](fts3.md#f4alid) → {fts4aux languageid column}
+- [fts3.html#fts3tok](fts3.md#fts3tok) → fts3tokenize {fts3tokenize virtual table}
+- [fts3.html#fts4](fts3.md#fts4) → FTS4
+- [fts3.html#fts4_options](fts3.md#fts4_options) → {FTS4 options}
+- [fts3.html#fts4aux](fts3.md#fts4aux) → fts4aux
+- [fts3.html#fts4matchinfo](fts3.md#fts4matchinfo) → {FTS4 matchinfo option}
+- [fts3.html#fts4notindexed](fts3.md#fts4notindexed) → {FTS4 notindexed option}
+- [fts3.html#fts4order](fts3.md#fts4order) → {FTS4 order option}
+- [fts3.html#fts4prefix](fts3.md#fts4prefix) → {FTS4 prefix option}
+- [fts3.html#full_text_index_queries](fts3.md#full_text_index_queries) → {FTS MATCH}
+- [fts3.html#hiddencol](fts3.md#hiddencol) → {FTS hidden column}
+- [fts3.html#limitations](fts3.md#limitations) → bugs
+- [fts3.html#matchinfo](fts3.md#matchinfo) → matchinfo
+- [fts3.html#matchinfo-b](fts3.md#matchinfo-b) → {matchinfo b flag}
+- [fts3.html#matchinfo-x](fts3.md#matchinfo-x) → {matchinfo x flag}
+- [fts3.html#matchinfo-y](fts3.md#matchinfo-y) → {matchinfo y flag}
+- [fts3.html#near](fts3.md#near) → {NEAR queries}
+- [fts3.html#offsets](fts3.md#offsets) → offsets
+- [fts3.html#phrase](fts3.md#phrase) → {phrase queries}
+- [fts3.html#shadow_tables](fts3.md#shadow_tables) → shadowtabs
+- [fts3.html#simple_fts_queries](fts3.md#simple_fts_queries) → {simple fts queries}
+- [fts3.html#snippet](fts3.md#snippet) → {FTS auxiliary functions} snippet
+- [fts3.html#termprefix](fts3.md#termprefix) → {prefix queries} {prefix query}
+- [fts3.html#the_compress_and_uncompress_options](fts3.md#the_compress_and_uncompress_options) → {fts4 compress option}
+- [fts3.html#the_content_option\_](fts3.md#the_content_option_) → {fts4 content option}
+- [fts3.html#the_languageid_option](fts3.md#the_languageid_option) → {fts4 languageid option}
+- [fts3.html#the_matchinfo_option](fts3.md#the_matchinfo_option) → {fts4 matchinfo option}
+- [fts3.html#the_notindexed_option](fts3.md#the_notindexed_option) → {fts4 notindexed option}
+- [fts3.html#the_prefix_option](fts3.md#the_prefix_option) → {fts4 prefix option}
+- [fts3.html#tokenizer](fts3.md#tokenizer) → tokenizer
+- [fts3.html#unicode61](fts3.md#unicode61) → unicode61
+- [fts5.html](fts5.md) → FTS5 fts5
+- [fts5.html#\_auxiliary_functions\_](fts5.md#_auxiliary_functions_) → {FTS5 auxiliary functions}
+- [fts5.html#\_summary_of_technical_differences\_](fts5.md#_summary_of_technical_differences_) → {fts5 technical differences}
+- [fts5.html#appendix_a](fts5.md#appendix_a) → {comparison with fts4}
+- [fts5.html#carrotq](fts5.md#carrotq) → {FTS5 initial token}
+- [fts5.html#clssdeltab](fts5.md#clssdeltab) → contentless-delete
+- [fts5.html#compiling_and_using_fts5](fts5.md#compiling_and_using_fts5) → {FTS5 building}
+- [fts5.html#contentless_delete_tables](fts5.md#contentless_delete_tables) → {FTS5 contentless-delete tables}
+- [fts5.html#contentless_tables](fts5.md#contentless_tables) → {FTS5 contentless tables}
+- [fts5.html#custom_auxiliary_functions](fts5.md#custom_auxiliary_functions) → {FTS5 custom auxiliary functions}
+- [fts5.html#custom_auxiliary_functions_api_overview](fts5.md#custom_auxiliary_functions_api_overview) → {custom auxiliary overview}
+- [fts5.html#custom_auxiliary_functions_api_reference](fts5.md#custom_auxiliary_functions_api_reference) → {custom auxiliary functions}
+- [fts5.html#custom_tokenizers](fts5.md#custom_tokenizers) → {custom tokenizers}
+- [fts5.html#extending_fts5](fts5.md#extending_fts5) → {Extending FTS5}
+- [fts5.html#external_content_and_contentless_tables](fts5.md#external_content_and_contentless_tables) → {FTS5 content option}
+- [fts5.html#external_content_table_pitfalls](fts5.md#external_content_table_pitfalls) → {FTS5 external content pitfalls}
+- [fts5.html#external_content_tables](fts5.md#external_content_tables) → {FTS5 external content tables}
+- [fts5.html#fts5_boolean_operators](fts5.md#fts5_boolean_operators) → {FTS5 boolean operators}
+- [fts5.html#fts5_column_filters](fts5.md#fts5_column_filters) → {FTS5 column filters}
+- [fts5.html#fts5_initial_token_queries](fts5.md#fts5_initial_token_queries) → {FTS5 initial token queries}
+- [fts5.html#fts5_near_queries](fts5.md#fts5_near_queries) → {FTS5 NEAR queries}
+- [fts5.html#fts5_phrases](fts5.md#fts5_phrases) → {FTS5 Phrases}
+- [fts5.html#fts5_prefix_queries](fts5.md#fts5_prefix_queries) → {FTS5 prefix queries}
+- [fts5.html#fts5_strings](fts5.md#fts5_strings) → {FTS5 Strings}
+- [fts5.html#fts5_table_creation_and_initialization](fts5.md#fts5_table_creation_and_initialization) → {FTS5 CREATE TABLE Options}
+- [fts5.html#fts5shadowtables](fts5.md#fts5shadowtables) → {fts5 shadow tables}
+- [fts5.html#full_text_query_syntax](fts5.md#full_text_query_syntax) → {FTS5 query syntax}
+- [fts5.html#prefix_indexes](fts5.md#prefix_indexes) → {FTS5 prefix indexes}
+- [fts5.html#sorting_by_auxiliary_function_results](fts5.md#sorting_by_auxiliary_function_results) → {auxiliary function mapping}
+- [fts5.html#the_automerge_configuration_option](fts5.md#the_automerge_configuration_option) → {FTS5 automerge option}
+- [fts5.html#the_bm25_function](fts5.md#the_bm25_function) → {FTS5 bm25}
+- [fts5.html#the_columnsize_option](fts5.md#the_columnsize_option) → {FTS5 columnsize option}
+- [fts5.html#the_contentless_unindexed_option](fts5.md#the_contentless_unindexed_option) → {FTS5 contentless_unindexed option}
+- [fts5.html#the_delete_all_command](fts5.md#the_delete_all_command) → {FTS5 delete-all command}
+- [fts5.html#the_delete_command](fts5.md#the_delete_command) → {FTS5 delete command}
+- [fts5.html#the_deletemerge_configuration_option](fts5.md#the_deletemerge_configuration_option) → deletemerge
+- [fts5.html#the_detail_option](fts5.md#the_detail_option) → {FTS5 detail option}
+- [fts5.html#the_fts5_get_locale_function](fts5.md#the_fts5_get_locale_function) → {FTS5 get_locale}
+- [fts5.html#the_fts5_insttoken_function](fts5.md#the_fts5_insttoken_function) → fts5_insttoken
+- [fts5.html#the_fts5vocab_virtual_table_module](fts5.md#the_fts5vocab_virtual_table_module) → fts5vocab
+- [fts5.html#the_highlight_function](fts5.md#the_highlight_function) → {FTS5 highlight}
+- [fts5.html#the_insttoken_configuration_option](fts5.md#the_insttoken_configuration_option) → {FTS5 insttoken}
+- [fts5.html#the_locale_option](fts5.md#the_locale_option) → {FTS5 locale option}
+- [fts5.html#the_merge_command](fts5.md#the_merge_command) → {FTS5 merge command}
+- [fts5.html#the_optimize_command](fts5.md#the_optimize_command) → {FTS5 optimize command}
+- [fts5.html#the_pgsz_configuration_option](fts5.md#the_pgsz_configuration_option) → {FTS5 pgsz option}
+- [fts5.html#the_rank_configuration_option](fts5.md#the_rank_configuration_option) → {FTS5 rank configuration option}
+- [fts5.html#the_rebuild_command](fts5.md#the_rebuild_command) → {FTS5 rebuild command}
+- [fts5.html#the_secure_delete_configuration_option](fts5.md#the_secure_delete_configuration_option) → {FTS5 secure-delete command}
+- [fts5.html#the_snippet_function](fts5.md#the_snippet_function) → {FTS5 snippet}
+- [fts5.html#the_tokendata_option](fts5.md#the_tokendata_option) → {FTS5 tokendata option}
+- [fts5.html#the_unindexed_column_option](fts5.md#the_unindexed_column_option) → unindexed
+- [fts5.html#the_usermerge_configuration_option](fts5.md#the_usermerge_configuration_option) → {FTS5 usermerge option}
+- [fts5.html#tokenizers](fts5.md#tokenizers) → {FTS5 tokenizers}
+- [fts5.html#trigramidx](fts5.md#trigramidx) → {trigram indexes} {trigram tokenizer}
+- [fullsql.html](fullsql.md) → {Full-featured SQL} {full-featured SQL}
+- [gencol.html](gencol.md) → {Generated columns} {computed columns} {generated column} {generated columns}
+- [gencol.html#vgc\*](gencol.md#vgc*) → {STORED generated columns} {VIRTUAL generated column}
+- [geopoly.html](geopoly.md) → GEOPOLY {Geopoly extension} {Geopoly module} geopoly
+- [geopoly.html#ccw](geopoly.md#ccw) → geopoly_ccw
+- [geopoly.html#garea](geopoly.md#garea) → geopoly_area
+- [geopoly.html#gbbox](geopoly.md#gbbox) → geopoly_bbox geopoly_group_bbox
+- [geopoly.html#gblob](geopoly.md#gblob) → geopoly_blob
+- [geopoly.html#gjson](geopoly.md#gjson) → geopoly_json
+- [geopoly.html#goverlap](geopoly.md#goverlap) → geopoly_overlap
+- [geopoly.html#gpoint](geopoly.md#gpoint) → geopoly_contains_point
+- [geopoly.html#gsvg](geopoly.md#gsvg) → geopoly_svg
+- [geopoly.html#gwithin](geopoly.md#gwithin) → geopoly_within
+- [geopoly.html#regpoly](geopoly.md#regpoly) → geopoly_regular
+- [geopoly.html#xform](geopoly.md#xform) → geopoly_xform
+- [getthecode.html](getthecode.md) → {get the canonical source code}
+- [getthecode.html#clone](getthecode.md#clone) → {clone the entire repository}
+- [hirely.html](hirely.md) → high-reliability
+- [howitworks.html](howitworks.md) → {How SQL Works} {How SQLite Works}
+- [howtocompile.html](howtocompile.md) → {How To Compile SQLite} {how to compile}
+- [howtocompile.html#amal](howtocompile.md#amal) → {building the amalgamation}
+- [howtocompile.html#cli](howtocompile.md#cli) → {compiling the CLI}
+- [howtocompile.html#dll](howtocompile.md#dll) → {building a DLL}
+- [howtocompile.html#tcl](howtocompile.md#tcl) → {compiling the TCL interface}
+- [howtocorrupt.html](howtocorrupt.md) → {how to corrupt}
+- [howtocorrupt.html#alias](howtocorrupt.md#alias) → {database filename aliasing}
+- [howtocorrupt.html#cfgerr](howtocorrupt.md#cfgerr) → cfgerrors
+- [howtocorrupt.html#delhotjrnl](howtocorrupt.md#delhotjrnl) → {deleting a hot journal}
+- [howtocorrupt.html#fscorruption](howtocorrupt.md#fscorruption) → {filesystem corruption}
+- [howtocorrupt.html#posix_close_bug](howtocorrupt.md#posix_close_bug) → posix-close-bug
+- [howtocorrupt.html#roguejrnl](howtocorrupt.md#roguejrnl) → {separating a database from its journal}
+- [howtocorrupt.html#stalefd](howtocorrupt.md#stalefd) → {stale file descriptor}
+- [howtocorrupt.html#svptbug](howtocorrupt.md#svptbug) → {SAVEPOINT bug}
+- [howtocorrupt.html#unlink](howtocorrupt.md#unlink) → {unlink corruption} {unlinked database files}
+- [imposter.html](imposter.md) → {imposter tables}
+- [imposter.html#dotimposter](imposter.md#dotimposter) → {.imposter dot-command}
+- [inmemorydb.html](inmemorydb.md) → {in-memory database} {in-memory databases} memory
+- [inmemorydb.html#sharedmemdb](inmemorydb.md#sharedmemdb) → {in-memory shared cache database}
+- [inmemorydb.html#temp_db](inmemorydb.md#temp_db) → {temporary databases} {temporary tables}
+- [intern-v-extern-blob.html](intern-v-extern-blob.md) → {BLOB I/O performance} {Internal Versus External BLOBs}
+- [invalidutf.html](invalidutf.md) → {invalid UTF}
+- [isolation.html](isolation.md) → isolation
+- [json1.html](json1.md) → {JSON SQL functions} json1 {the json extension} {the json1 extension}
+- [json1.html#jarray](json1.md#jarray) → json_array {json_array SQL function}
+- [json1.html#jarrayb](json1.md#jarrayb) → jsonb_array {jsonb_array SQL function}
+- [json1.html#jarrayins](json1.md#jarrayins) → json_array_insert {json_array_insert SQL function} jsonb_array_insert
+- [json1.html#jarraylen](json1.md#jarraylen) → json_array_length {json_array_length SQL function}
+- [json1.html#jbeach](json1.md#jbeach) → jsonb_each {jsonb_each table-valued function}
+- [json1.html#jblobbug](json1.md#jblobbug) → {JSON BLOB input bug}
+- [json1.html#jbtree](json1.md#jbtree) → jsonb_tree {jsonb_tree table-valued function}
+- [json1.html#jeach](json1.md#jeach) → json_each {json_each table-valued function}
+- [json1.html#jerr](json1.md#jerr) → json_error_position {json_error_position SQL function}
+- [json1.html#jex](json1.md#jex) → json_extract {json_extract SQL function}
+- [json1.html#jexb](json1.md#jexb) → jsonb_extract {jsonb_extract SQL function}
+- [json1.html#jgrouparray](json1.md#jgrouparray) → json_group_array {json_group_array SQL function}
+- [json1.html#jgrouparrayb](json1.md#jgrouparrayb) → jsonb_group_array {jsonb_group_array SQL function}
+- [json1.html#jgroupobject](json1.md#jgroupobject) → json_group_object {json_group_object SQL function}
+- [json1.html#jgroupobjectb](json1.md#jgroupobjectb) → {aggregate JSON SQL functions} jsonb_group_object {jsonb_group_object SQL function}
+- [json1.html#jins](json1.md#jins) → json_insert {json_insert SQL function}
+- [json1.html#jinsb](json1.md#jinsb) → jsonb_insert {jsonb_insert SQL function}
+- [json1.html#jmini](json1.md#jmini) → json {json SQL function}
+- [json1.html#jminib](json1.md#jminib) → jsonb {jsonb SQL function}
+- [json1.html#jobj](json1.md#jobj) → json_object {json_object SQL function}
+- [json1.html#jobjb](json1.md#jobjb) → jsonb_object {jsonb_object SQL function}
+- [json1.html#jpatch](json1.md#jpatch) → json_patch {json_patch SQL function}
+- [json1.html#jpatchb](json1.md#jpatchb) → jsonb_patch {jsonb_patch SQL function}
+- [json1.html#jpretty](json1.md#jpretty) → json_pretty {json_pretty SQL function}
+- [json1.html#jptr](json1.md#jptr) → {the - and - operators} {the - operator}
+- [json1.html#jquirk](json1.md#jquirk) → {JSON quirks}
+- [json1.html#jquote](json1.md#jquote) → json_quote {json_quote SQL function}
+- [json1.html#jrepl](json1.md#jrepl) → json_replace {json_replace SQL function}
+- [json1.html#jreplb](json1.md#jreplb) → jsonb_replace {jsonb_replace SQL function}
+- [json1.html#jrm](json1.md#jrm) → json_remove {json_remove SQL function}
+- [json1.html#jrmb](json1.md#jrmb) → jsonb_remove {jsonb_remove SQL function}
+- [json1.html#jset](json1.md#jset) → json_set {json_set SQL function}
+- [json1.html#jsetb](json1.md#jsetb) → jsonb_set {jsonb_set SQL function}
+- [json1.html#json5](json1.md#json5) → JSON5 {JSON5 extensions}
+- [json1.html#jsonbx](json1.md#jsonbx) → JSONB
+- [json1.html#jsonpath](json1.md#jsonpath) → {JSON function path arguments} {JSON paths}
+- [json1.html#jtree](json1.md#jtree) → json_tree {json_tree table-valued function}
+- [json1.html#jtype](json1.md#jtype) → json_type {json_type SQL function}
+- [json1.html#jvalid](json1.md#jvalid) → json_valid {json_valid SQL function}
+- [json1.html#varg](json1.md#varg) → {value argument}
+- [keyword_index.html](keyword_index.md) → {keyword index}
+- [lang_aggfunc.html](lang_aggfunc.md) → {Aggregate Functions} {Aggregate functions} aggfunc {aggregate SQL functions} {aggregate functions}
+- [lang_aggfunc.html#aggfilter](lang_aggfunc.md#aggfilter) → {FILTER clause on aggregate functions}
+- [lang_aggfunc.html#aggorderby](lang_aggfunc.md#aggorderby) → {ORDER BY clause in aggregate functions}
+- [lang_aggfunc.html#avg](lang_aggfunc.md#avg) → avg {avg aggregate function}
+- [lang_aggfunc.html#count](lang_aggfunc.md#count) → count {count aggregate function}
+- [lang_aggfunc.html#group_concat](lang_aggfunc.md#group_concat) → group_concat {group_concat aggregate function} string_agg {string_agg aggregate function}
+- [lang_aggfunc.html#max_agg](lang_aggfunc.md#max_agg) → {max aggregate function} max_agg
+- [lang_aggfunc.html#median](lang_aggfunc.md#median) → median {median aggregate function}
+- [lang_aggfunc.html#min_agg](lang_aggfunc.md#min_agg) → {min aggregate function} min_agg
+- [lang_aggfunc.html#percentile](lang_aggfunc.md#percentile) → percentile {percentile aggregate function}
+- [lang_aggfunc.html#percentile_cont](lang_aggfunc.md#percentile_cont) → percentile_cont {percentile_cont aggregate function}
+- [lang_aggfunc.html#percentile_disc](lang_aggfunc.md#percentile_disc) → percentile_disc {percentile_disc aggregate function}
+- [lang_aggfunc.html#sumunc](lang_aggfunc.md#sumunc) → sum {sum aggregate function} sumFunc total {total aggregate function}
+- [lang_altertable.html](lang_altertable.md) → ALTER {ALTER TABLE} altertable
+- [lang_altertable.html#altertabaddcol](lang_altertable.md#altertabaddcol) → {ALTER TABLE ADD COLUMN} {add column}
+- [lang_altertable.html#altertabdropcol](lang_altertable.md#altertabdropcol) → {ALTER TABLE DROP COLUMN} {drop column}
+- [lang_altertable.html#altertableishard](lang_altertable.md#altertableishard) → {why ALTER TABLE is so difficult}
+- [lang_altertable.html#altertabmvcol](lang_altertable.md#altertabmvcol) → {ALTER TABLE RENAME COLUMN} {rename column}
+- [lang_altertable.html#altertabrename](lang_altertable.md#altertabrename) → {ALTER TABLE RENAME} {ALTER TABLE RENAME documentation} {rename table}
+- [lang_altertable.html#otheralter](lang_altertable.md#otheralter) → {generalized ALTER TABLE procedure}
+- [lang_analyze.html](lang_analyze.md) → ANALYZE analyze
+- [lang_analyze.html#approx](lang_analyze.md#approx) → {Approximate ANALYZE For Large Databases} {approximate ANALYZE}
+- [lang_analyze.html#autoanalyze](lang_analyze.md#autoanalyze) → {Automatically Running ANALYZE} {automatically running ANALYZE}
+- [lang_analyze.html#pragopt](lang_analyze.md#pragopt) → {running ANALYZE via PRAGMA optimize}
+- [lang_analyze.html#req](lang_analyze.md#req) → {Recommended usage patterns for ANALYZE}
+- [lang_analyze.html#statanal](lang_analyze.md#statanal) → {static ANALYZE results}
+- [lang_attach.html](lang_attach.md) → ATTACH {ATTACH DATABASE} attach attached
+- [lang_comment.html](lang_comment.md) → comment comments
+- [lang_conflict.html](lang_conflict.md) → {ON CONFLICT} {ON CONFLICT clause} {ON CONFLICT clauses} conflict {conflict clause} {conflict resolution algorithm}
+- [lang_corefunc.html](lang_corefunc.md) → {Core Functions} {Scalar Functions} corefunc {scalar functions}
+- [lang_corefunc.html#abs](lang_corefunc.md#abs) → abs {abs SQL function}
+- [lang_corefunc.html#changes](lang_corefunc.md#changes) → changes {changes SQL function}
+- [lang_corefunc.html#char](lang_corefunc.md#char) → char {char SQL function}
+- [lang_corefunc.html#coalesce](lang_corefunc.md#coalesce) → coalesce {coalesce SQL function}
+- [lang_corefunc.html#concat](lang_corefunc.md#concat) → concat {concat SQL function}
+- [lang_corefunc.html#concat_ws](lang_corefunc.md#concat_ws) → concat_ws {concat_ws SQL function}
+- [lang_corefunc.html#format](lang_corefunc.md#format) → format {format SQL function}
+- [lang_corefunc.html#glob](lang_corefunc.md#glob) → glob {glob SQL function}
+- [lang_corefunc.html#hex](lang_corefunc.md#hex) → hex {hex SQL function}
+- [lang_corefunc.html#ifnull](lang_corefunc.md#ifnull) → ifnull {ifnull SQL function}
+- [lang_corefunc.html#iif](lang_corefunc.md#iif) → if {if SQL function} iif {iif SQL function}
+- [lang_corefunc.html#instr](lang_corefunc.md#instr) → instr {instr SQL function}
+- [lang_corefunc.html#last_insert_rowid](lang_corefunc.md#last_insert_rowid) → last_insert_rowid {last_insert_rowid SQL function}
+- [lang_corefunc.html#length](lang_corefunc.md#length) → length {length SQL function}
+- [lang_corefunc.html#like](lang_corefunc.md#like) → like {like SQL function}
+- [lang_corefunc.html#likelihood](lang_corefunc.md#likelihood) → likelihood {likelihood SQL function}
+- [lang_corefunc.html#likely](lang_corefunc.md#likely) → likely {likely SQL function}
+- [lang_corefunc.html#load_extension](lang_corefunc.md#load_extension) → load_extension {load_extension SQL function}
+- [lang_corefunc.html#lower](lang_corefunc.md#lower) → lower {lower SQL function}
+- [lang_corefunc.html#ltrim](lang_corefunc.md#ltrim) → ltrim {ltrim SQL function}
+- [lang_corefunc.html#max_scalar](lang_corefunc.md#max_scalar) → max {max SQL function} max_scalar
+- [lang_corefunc.html#min_scalar](lang_corefunc.md#min_scalar) → min {min SQL function} min_scalar
+- [lang_corefunc.html#nullif](lang_corefunc.md#nullif) → nullif {nullif SQL function}
+- [lang_corefunc.html#octet_length](lang_corefunc.md#octet_length) → octet_length {octet_length SQL function}
+- [lang_corefunc.html#printf](lang_corefunc.md#printf) → printf {printf SQL function}
+- [lang_corefunc.html#quote](lang_corefunc.md#quote) → quote {quote SQL function}
+- [lang_corefunc.html#random](lang_corefunc.md#random) → random {random SQL function}
+- [lang_corefunc.html#randomblob](lang_corefunc.md#randomblob) → randomblob {randomblob SQL function}
+- [lang_corefunc.html#replace](lang_corefunc.md#replace) → replace {replace SQL function}
+- [lang_corefunc.html#round](lang_corefunc.md#round) → round {round SQL function}
+- [lang_corefunc.html#rtrim](lang_corefunc.md#rtrim) → rtrim {rtrim SQL function}
+- [lang_corefunc.html#sign](lang_corefunc.md#sign) → sign {sign SQL function}
+- [lang_corefunc.html#soundex](lang_corefunc.md#soundex) → soundex {soundex SQL function}
+- [lang_corefunc.html#sqlite_compileoption_get](lang_corefunc.md#sqlite_compileoption_get) → sqlite_compileoption_get {sqlite_compileoption_get SQL function}
+- [lang_corefunc.html#sqlite_compileoption_used](lang_corefunc.md#sqlite_compileoption_used) → sqlite_compileoption_used {sqlite_compileoption_used SQL function}
+- [lang_corefunc.html#sqlite_offset](lang_corefunc.md#sqlite_offset) → sqlite_offset {sqlite_offset SQL function}
+- [lang_corefunc.html#sqlite_source_id](lang_corefunc.md#sqlite_source_id) → sqlite_source_id {sqlite_source_id SQL function}
+- [lang_corefunc.html#sqlite_version](lang_corefunc.md#sqlite_version) → sqlite_version {sqlite_version SQL function}
+- [lang_corefunc.html#substr](lang_corefunc.md#substr) → substr {substr SQL function}
+- [lang_corefunc.html#total_changes](lang_corefunc.md#total_changes) → total_changes {total_changes SQL function}
+- [lang_corefunc.html#trim](lang_corefunc.md#trim) → trim {trim SQL function}
+- [lang_corefunc.html#typeof](lang_corefunc.md#typeof) → typeof {typeof SQL function}
+- [lang_corefunc.html#unhex](lang_corefunc.md#unhex) → unhex {unhex SQL function}
+- [lang_corefunc.html#unicode](lang_corefunc.md#unicode) → unicode {unicode SQL function}
+- [lang_corefunc.html#unistr](lang_corefunc.md#unistr) → unistr {unistr SQL function}
+- [lang_corefunc.html#unistr_quote](lang_corefunc.md#unistr_quote) → unistr_quote {unistr_quote SQL function}
+- [lang_corefunc.html#unlikely](lang_corefunc.md#unlikely) → unlikely {unlikely SQL function}
+- [lang_corefunc.html#upper](lang_corefunc.md#upper) → upper {upper SQL function}
+- [lang_corefunc.html#zeroblob](lang_corefunc.md#zeroblob) → zeroblob {zeroblob SQL function}
+- [lang_createindex.html](lang_createindex.md) → {CREATE INDEX} Indexes createindex
+- [lang_createindex.html#collidx](lang_createindex.md#collidx) → COLLATE
+- [lang_createindex.html#descidx](lang_createindex.md#descidx) → DESC {descending index} {descending indexes} {descending indices}
+- [lang_createindex.html#uniqueidx](lang_createindex.md#uniqueidx) → {unique index}
+- [lang_createtable.html](lang_createtable.md) → {CREATE TABLE} createtable
+- [lang_createtable.html#ckconst](lang_createtable.md#ckconst) → CHECK {CHECK constraint} {CHECK constraints}
+- [lang_createtable.html#collateclause](lang_createtable.md#collateclause) → {COLLATE clause} {COLLATE clauses} {COLLATE constraint}
+- [lang_createtable.html#createtabas](lang_createtable.md#createtabas) → {CREATE TABLE AS}
+- [lang_createtable.html#dfltval](lang_createtable.md#dfltval) → {DEFAULT clauses} {default column value} {default value}
+- [lang_createtable.html#notnullconst](lang_createtable.md#notnullconst) → {NOT NULL} {NOT NULL constraint} {NOT NULL constraints}
+- [lang_createtable.html#primkeyconst](lang_createtable.md#primkeyconst) → {PRIMARY KEY} {PRIMARY KEY constraint}
+- [lang_createtable.html#rowid](lang_createtable.md#rowid) → {INTEGER PRIMARY KEY} ROWID rowid
+- [lang_createtable.html#tablecoldef](lang_createtable.md#tablecoldef) → {column definition} {column definitions}
+- [lang_createtable.html#uniqueconst](lang_createtable.md#uniqueconst) → UNIQUE {UNIQUE constraint} {UNIQUE constraints} {unique constraint}
+- [lang_createtrigger.html](lang_createtrigger.md) → {CREATE TRIGGER} {UPDATE trigger} createtrigger trigger triggers
+- [lang_createtrigger.html#instead_of_trigger](lang_createtrigger.md#instead_of_trigger) → {INSTEAD OF} {INSTEAD OF trigger}
+- [lang_createtrigger.html#raise](lang_createtrigger.md#raise) → {RAISE function}
+- [lang_createtrigger.html#temptrig](lang_createtrigger.md#temptrig) → {TEMP triggers} {TEMP triggers on non-TEMP tables}
+- [lang_createtrigger.html#undef_before](lang_createtrigger.md#undef_before) → {undefined BEFORE trigger behavior}
+- [lang_createview.html](lang_createview.md) → {CREATE VIEW} VIEW createview view views
+- [lang_createvtab.html](lang_createvtab.md) → {CREATE VIRTUAL TABLE} createvtab
+- [lang_datefunc.html](lang_datefunc.md) → {Date And Time Functions} {date and time functions} datefunc
+- [lang_datefunc.html#automod](lang_datefunc.md#automod) → {auto modifier}
+- [lang_datefunc.html#dtambg](lang_datefunc.md#dtambg) → {ambiguous dates}
+- [lang_datefunc.html#dtmods](lang_datefunc.md#dtmods) → {date/time modifiers} modifiers
+- [lang_datefunc.html#dttm](lang_datefunc.md#dttm) → date {date SQL function} datetime {datetime SQL function} time {time SQL function}
+- [lang_datefunc.html#jdmod](lang_datefunc.md#jdmod) → {julianday modifier} {unixepoch modifier}
+- [lang_datefunc.html#jlndy](lang_datefunc.md#jlndy) → julianday {julianday SQL function}
+- [lang_datefunc.html#localtime](lang_datefunc.md#localtime) → {localtime modifier} {utc and localtime modifiers} {utc modifier}
+- [lang_datefunc.html#strftm](lang_datefunc.md#strftm) → strftime {strftime SQL function}
+- [lang_datefunc.html#subsec](lang_datefunc.md#subsec) → {subsec modifier} {subsecond modifier}
+- [lang_datefunc.html#tmdif](lang_datefunc.md#tmdif) → timediff {timediff SQL function}
+- [lang_datefunc.html#tmshf](lang_datefunc.md#tmshf) → {time shift modifiers}
+- [lang_datefunc.html#tmval](lang_datefunc.md#tmval) → {time value} {time values} time-value time-values
+- [lang_datefunc.html#uepch](lang_datefunc.md#uepch) → unixepoch {unixepoch SQL function} {unixepoch function}
+- [lang_delete.html](lang_delete.md) → DELETE DELETEs delete
+- [lang_delete.html#truncateopt](lang_delete.md#truncateopt) → {truncate optimization}
+- [lang_detach.html](lang_detach.md) → DETACH {DETACH DATABASE} detach
+- [lang_dropindex.html](lang_dropindex.md) → {DROP INDEX} dropindex
+- [lang_droptable.html](lang_droptable.md) → {DROP TABLE} droptable
+- [lang_droptrigger.html](lang_droptrigger.md) → {DROP TRIGGER} droptrigger
+- [lang_dropview.html](lang_dropview.md) → {DROP VIEW} dropview
+- [lang_explain.html](lang_explain.md) → EXPLAIN explain
+- [lang_expr.html](lang_expr.md) → expression {expression syntax} langexpr
+- [lang_expr.html#\*funcinexpr](lang_expr.md#*funcinexpr) → {functions within expressions}
+- [lang_expr.html#between](lang_expr.md#between) → BETWEEN
+- [lang_expr.html#binaryops](lang_expr.md#binaryops) → {binary operators}
+- [lang_expr.html#booleanexpr](lang_expr.md#booleanexpr) → {boolean expression}
+- [lang_expr.html#case](lang_expr.md#case) → {CASE expression}
+- [lang_expr.html#castexpr](lang_expr.md#castexpr) → CAST {CAST expression} {CAST operator} cast
+- [lang_expr.html#collateop](lang_expr.md#collateop) → {COLLATE operator}
+- [lang_expr.html#cosub](lang_expr.md#cosub) → {correlated subqueries}
+- [lang_expr.html#exists_op](lang_expr.md#exists_op) → {EXISTS operator} {NOT EXISTS operator}
+- [lang_expr.html#extract](lang_expr.md#extract) → extract
+- [lang_expr.html#glob](lang_expr.md#glob) → GLOB
+- [lang_expr.html#hexint](lang_expr.md#hexint) → {hexadecimal integer literals} {hexadecimal integers}
+- [lang_expr.html#in_op](lang_expr.md#in_op) → {IN operator} {NOT IN operator}
+- [lang_expr.html#isdf](lang_expr.md#isdf) → {IS DISTINCT FROM} {IS NOT DISTINCT FROM}
+- [lang_expr.html#isisnot](lang_expr.md#isisnot) → {IS NOT operator} {IS operator}
+- [lang_expr.html#like](lang_expr.md#like) → ESCAPE LIKE
+- [lang_expr.html#litvalue](lang_expr.md#litvalue) → {literal value} {numeric literals}
+- [lang_expr.html#match](lang_expr.md#match) → MATCH
+- [lang_expr.html#regexp](lang_expr.md#regexp) → REGEXP
+- [lang_expr.html#subq](lang_expr.md#subq) → Subqueries
+- [lang_expr.html#varparam](lang_expr.md#varparam) → {bound parameter} {bound parameters} parameter parameters
+- [lang_indexedby.html](lang_indexedby.md) → {INDEXED BY} {NOT INDEXED} langindexedby
+- [lang_insert.html](lang_insert.md) → INSERT INSERTs insert
+- [lang_keywords.html](lang_keywords.md) → {SQL keyword} {SQL keywords} {SQLite Keywords} keywords langkeywords
+- [lang_mathfunc.html](lang_mathfunc.md) → {Math Functions} {built-in SQL math functions} {math functions} mathfunc
+- [lang_mathfunc.html#acos](lang_mathfunc.md#acos) → acos {acos SQL function}
+- [lang_mathfunc.html#acosh](lang_mathfunc.md#acosh) → acosh {acosh SQL function}
+- [lang_mathfunc.html#asin](lang_mathfunc.md#asin) → asin {asin SQL function}
+- [lang_mathfunc.html#asinh](lang_mathfunc.md#asinh) → asinh {asinh SQL function}
+- [lang_mathfunc.html#atan](lang_mathfunc.md#atan) → atan {atan SQL function}
+- [lang_mathfunc.html#atan2](lang_mathfunc.md#atan2) → atan2 {atan2 SQL function}
+- [lang_mathfunc.html#atanh](lang_mathfunc.md#atanh) → atanh {atanh SQL function}
+- [lang_mathfunc.html#ceil](lang_mathfunc.md#ceil) → ceil ceiling
+- [lang_mathfunc.html#cos](lang_mathfunc.md#cos) → cos {cos SQL function}
+- [lang_mathfunc.html#cosh](lang_mathfunc.md#cosh) → cosh {cosh SQL function}
+- [lang_mathfunc.html#degrees](lang_mathfunc.md#degrees) → degrees {degrees SQL function}
+- [lang_mathfunc.html#exp](lang_mathfunc.md#exp) → exp {exp SQL function}
+- [lang_mathfunc.html#floor](lang_mathfunc.md#floor) → floor {floor SQL function}
+- [lang_mathfunc.html#ln](lang_mathfunc.md#ln) → ln {ln SQL function}
+- [lang_mathfunc.html#log](lang_mathfunc.md#log) → log log10
+- [lang_mathfunc.html#log2](lang_mathfunc.md#log2) → log2 {log2 SQL function}
+- [lang_mathfunc.html#mod](lang_mathfunc.md#mod) → mod {mod SQL function}
+- [lang_mathfunc.html#pi](lang_mathfunc.md#pi) → pi {pi SQL function}
+- [lang_mathfunc.html#pow](lang_mathfunc.md#pow) → pow {pow SQL function}
+- [lang_mathfunc.html#radians](lang_mathfunc.md#radians) → radians {radians SQL function}
+- [lang_mathfunc.html#sin](lang_mathfunc.md#sin) → sin {sin SQL function}
+- [lang_mathfunc.html#sinh](lang_mathfunc.md#sinh) → sinh {sinh SQL function}
+- [lang_mathfunc.html#sqrt](lang_mathfunc.md#sqrt) → sqrt {sqrt SQL function}
+- [lang_mathfunc.html#tan](lang_mathfunc.md#tan) → tan {tan SQL function}
+- [lang_mathfunc.html#tanh](lang_mathfunc.md#tanh) → tanh {tanh SQL function}
+- [lang_mathfunc.html#trunc](lang_mathfunc.md#trunc) → trunc {trunc SQL function}
+- [lang_naming.html](lang_naming.md) → naming {object resolution}
+- [lang_reindex.html](lang_reindex.md) → REINDEX reindex
+- [lang_replace.html](lang_replace.md) → REPLACE langreplace
+- [lang_returning.html](lang_returning.md) → RETURNING {RETURNING clause} returning
+- [lang_savepoint.html](lang_savepoint.md) → RELEASE SAVEPOINT savepoint
+- [lang_select.html](lang_select.md) → SELECT {SELECT query} {SELECT statement} select
+- [lang_select.html#bareagg](lang_select.md#bareagg) → {bare aggregate terms}
+- [lang_select.html#compound](lang_select.md#compound) → {compound SELECT} {compound SELECTs} {compound query} {compound select}
+- [lang_select.html#crossjoin](lang_select.md#crossjoin) → {treats the CROSS JOIN operator specially}
+- [lang_select.html#distinct](lang_select.md#distinct) → DISTINCT
+- [lang_select.html#fromclause](lang_select.md#fromclause) → {FROM clause}
+- [lang_select.html#fulljoin](lang_select.md#fulljoin) → {FULL JOIN} {FULL OUTER JOIN}
+- [lang_select.html#limitoffset](lang_select.md#limitoffset) → LIMIT OFFSET
+- [lang_select.html#nonstd](lang_select.md#nonstd) → {non-standard SELECT syntax}
+- [lang_select.html#nullslast](lang_select.md#nullslast) → {NULLS FIRST} {NULLS LAST}
+- [lang_select.html#orderby](lang_select.md#orderby) → {ORDER BY} {order by}
+- [lang_select.html#resultset](lang_select.md#resultset) → {GROUP BY} {GROUP BY clause} HAVING {HAVING clause} {result-set expressions}
+- [lang_select.html#rjoin](lang_select.md#rjoin) → {RIGHT JOIN} {RIGHT and FULL OUTER JOIN}
+- [lang_select.html#simpleselect](lang_select.md#simpleselect) → {simple SELECT}
+- [lang_select.html#tabfunc1](lang_select.md#tabfunc1) → {table-valued functions in the FROM clause}
+- [lang_select.html#values](lang_select.md#values) → VALUES {VALUES clause}
+- [lang_select.html#whereclause](lang_select.md#whereclause) → {WHERE clause}
+- [lang_transaction.html](lang_transaction.md) → BEGIN COMMIT ROLLBACK transaction
+- [lang_transaction.html#immediate](lang_transaction.md#immediate) → {BEGIN EXCLUSIVE} {BEGIN IMMEDIATE}
+- [lang_update.html](lang_update.md) → UPDATE UPDATEs langupdate
+- [lang_update.html#upfrom](lang_update.md#upfrom) → {UPDATE FROM}
+- [lang_upsert.html](lang_upsert.md) → UPSERT upsert {upsert clause}
+- [lang_upsert.html#parseambig](lang_upsert.md#parseambig) → {UPSERT parsing ambiguity}
+- [lang_vacuum.html](lang_vacuum.md) → VACUUM langvacuum vacuum
+- [lang_vacuum.html#howvacuumworks](lang_vacuum.md#howvacuumworks) → {how vacuum works}
+- [lang_vacuum.html#vacuuminto](lang_vacuum.md#vacuuminto) → {VACUUM INTO}
+- [lang_with.html](lang_with.md) → WITH {WITH clause} {common table expressions} with
+- [lang_with.html#mandelbrot](lang_with.md#mandelbrot) → {compute the Mandelbrot set}
+- [lang_with.html#mathint](lang_with.md#mathint) → MATERIALIZED {NOT MATERIALIZED} {materialization hints}
+- [lang_with.html#ordinarycte](lang_with.md#ordinarycte) → {ordinary common table expressions}
+- [lang_with.html#rcex3](lang_with.md#rcex3) → {queries against graphs}
+- [lang_with.html#recursivecte](lang_with.md#recursivecte) → {recursive common table expression} {recursive common table expressions} {recursive query}
+- [lang_with.html#sudoku](lang_with.md#sudoku) → {solve Sudoku puzzles}
+- [lemon.html](lemon.md) → Lemon {Lemon LALR parser generator} {Lemon parser generator}
+- [limits.html](limits.md) → limits
+- [limits.html#max_attached](limits.md#max_attached) → SQLITE_MAX_ATTACHED
+- [limits.html#max_column](limits.md#max_column) → SQLITE_MAX_COLUMN
+- [limits.html#max_compound_select](limits.md#max_compound_select) → SQLITE_MAX_COMPOUND_SELECT
+- [limits.html#max_expr_depth](limits.md#max_expr_depth) → SQLITE_MAX_EXPR_DEPTH
+- [limits.html#max_function_arg](limits.md#max_function_arg) → SQLITE_MAX_FUNCTION_ARG
+- [limits.html#max_length](limits.md#max_length) → SQLITE_MAX_LENGTH
+- [limits.html#max_like_pattern_length](limits.md#max_like_pattern_length) → SQLITE_MAX_LIKE_PATTERN_LENGTH
+- [limits.html#max_page_count](limits.md#max_page_count) → SQLITE_MAX_PAGE_COUNT
+- [limits.html#max_sql_length](limits.md#max_sql_length) → SQLITE_MAX_SQL_LENGTH
+- [limits.html#max_trigger_depth](limits.md#max_trigger_depth) → SQLITE_MAX_TRIGGER_DEPTH
+- [limits.html#max_variable_number](limits.md#max_variable_number) → SQLITE_MAX_VARIABLE_NUMBER
+- [loadext.html](loadext.md) → {Run-Time Loadable Extensions} {SQLite extension} {SQLite extensions} {extension loading} {loadable extension} {loadable extensions} loadext
+- [loadext.html#build](loadext.md#build) → {Compiling Loadable Extensions} {compile loadable extensions}
+- [loadext.html#persist](loadext.md#persist) → {persistent loadable extensions}
+- [loadext.html#statext](loadext.md#statext) → {statically linked extensions}
+- [loadext.html#write](loadext.md#write) → {Programming Loadable Extensions}
+- [lockingv3.html](lockingv3.md) → {file locking and concurrency control}
+- [lockingv3.html#excl_lock](lockingv3.md#excl_lock) → EXCLUSIVE {EXCLUSIVE lock} {exclusive lock}
+- [lockingv3.html#ext3-barrier-problem](lockingv3.md#ext3-barrier-problem) → {the ext3 barrier problem}
+- [lockingv3.html#how_to_corrupt](lockingv3.md#how_to_corrupt) → {How To Corrupt Your Database Files}
+- [lockingv3.html#locking](lockingv3.md#locking) → {file locking states}
+- [lockingv3.html#pending_lock](lockingv3.md#pending_lock) → PENDING {PENDING lock} {pending lock}
+- [lockingv3.html#reserved_lock](lockingv3.md#reserved_lock) → RESERVED {RESERVED lock} {reserved lock}
+- [lockingv3.html#rollback](lockingv3.md#rollback) → {rollback journal}
+- [lockingv3.html#shared_lock](lockingv3.md#shared_lock) → SHARED {SHARED lock} {shared lock}
+- [lockingv3.html#writer_starvation](lockingv3.md#writer_starvation) → {writer starvation}
+- [locrsf.html](locrsf.md) → {recommended by the US Library of Congress} {recommended storage format}
+- [lts.html](lts.md) → {long term support}
+- [malloc.html](malloc.md) → {memory allocation}
+- [malloc.html#altalloc](malloc.md#altalloc) → {built-in memory allocators}
+- [malloc.html#defaultalloc](malloc.md#defaultalloc) → {default memory allocator}
+- [malloc.html#lookaside](malloc.md#lookaside) → lookaside {lookaside buffer} {lookaside memory} {lookaside memory allocator}
+- [malloc.html#memdebug](malloc.md#memdebug) → {debugging memory allocator} memsys2
+- [malloc.html#memstatus](malloc.md#memstatus) → {memory statistics}
+- [malloc.html#memsys5](malloc.md#memsys5) → memsys5 {zero-malloc memory allocator}
+- [malloc.html#memsysx](malloc.md#memsysx) → {experimental memory allocators}
+- [malloc.html#nofrag](malloc.md#nofrag) → {Robson proof}
+- [malloc.html#pagecache](malloc.md#pagecache) → {pagecache memory allocator}
+- [malloc.html#win32heap](malloc.md#win32heap) → {Win32 native memory allocator}
+- [memstat.html](memstat.md) → {SQLITE_MEMSTAT virtual table} sqlite_memstat {the SQLITE_MEMSTAT extension}
+- [mmap.html](mmap.md) → {memory-mapped I/O} mmap
+- [mostdeployed.html](mostdeployed.md) → {most used} {most widely deployed} {most widely used}
+- [np1queryprob.html](np1queryprob.md) → {about 200 SQL statements per webpage}
+- [nulinstr.html](nulinstr.md) → {NUL characters in strings}
+- [opcode.html](opcode.md) → VDBE bytecode {bytecode engine} bytecodes opcodes {virtual machine} {virtual machine instructions}
+- [opcode.html#codes](opcode.md#codes) → {list of current bytecodes} {opcode definitions}
+- [opcode.html#subprog](opcode.md#subprog) → subprograms
+- [optoverview.html](optoverview.md) → {SQLite query planner} optimizer {query planner}
+- [optoverview.html#autoindex](optoverview.md#autoindex) → {Automatic indexing} {Query-time indexes} {Query-time indexing} {automatic indexes} {automatic indexing} {query-time index} {query-time indexing}
+- [optoverview.html#constprop](optoverview.md#constprop) → {constant-propagation optimization}
+- [optoverview.html#coroutines](optoverview.md#coroutines) → co-routines {subquery co-routines}
+- [optoverview.html#crossjoin](optoverview.md#crossjoin) → {CROSS JOIN} {Manual Control Of Query Plans Using CROSS JOIN}
+- [optoverview.html#flattening](optoverview.md#flattening) → flattened {flattening optimization} {query flattener}
+- [optoverview.html#hashjoin](optoverview.md#hashjoin) → {hash join}
+- [optoverview.html#joins](optoverview.md#joins) → {join order}
+- [optoverview.html#leftjoinreduction](optoverview.md#leftjoinreduction) → {LEFT JOIN strength reduction optimization} {OUTER JOIN strength reduction} {OUTER JOIN strength reduction optimization}
+- [optoverview.html#like_opt](optoverview.md#like_opt) → {LIKE optimization}
+- [optoverview.html#manctrl](optoverview.md#manctrl) → {Manual Control Of Query Plans Using SQLITE_STAT Tables}
+- [optoverview.html#minmax](optoverview.md#minmax) → {min/max optimization}
+- [optoverview.html#omitnoopjoin](optoverview.md#omitnoopjoin) → {omit-left-join optimization} {omit-outer-join optimization}
+- [optoverview.html#or_opt](optoverview.md#or_opt) → {OR optimization} {or optimization}
+- [optoverview.html#partsort](optoverview.md#partsort) → {sorting subsets of the result}
+- [optoverview.html#pushdown](optoverview.md#pushdown) → {WHERE-clause push-down optimization} {predicate push-down} {push-down optimization}
+- [optoverview.html#rangequery](optoverview.md#rangequery) → {range query optimization}
+- [optoverview.html#skipscan](optoverview.md#skipscan) → skip-scan {skip-scan optimization}
+- [optoverview.html#uplus](optoverview.md#uplus) → upluscontrol
+- [partialindex.html](partialindex.md) → {partial index} {partial indexes} {partial indices}
+- [percentile.html](percentile.md) → {percentile extension}
+- [percentile.html#\*medianfunc](percentile.md#*medianfunc) → {median SQL function}
+- [percentile.html#\*percentilecontfunc](percentile.md#*percentilecontfunc) → {percentile_cont SQL function}
+- [percentile.html#\*percentilediscfunc](percentile.md#*percentilediscfunc) → {percentile_disc SQL function}
+- [percentile.html#\*percentilefunc](percentile.md#*percentilefunc) → {percentile SQL function}
+- [pgszchng2016.html](pgszchng2016.md) → {increase in the default page size} {version 3.12.0 page size change}
+- [pragma.html#pragfunc](pragma.md#pragfunc) → {PRAGMA function} {PRAGMA functions}
+- [pragma.html#pragma_analysis_limit](pragma.md#pragma_analysis_limit) → {PRAGMA analysis_limit} analysis_limit {analysis_limit pragma}
+- [pragma.html#pragma_application_id](pragma.md#pragma_application_id) → {PRAGMA application_id} application_id {application_id pragma}
+- [pragma.html#pragma_auto_vacuum](pragma.md#pragma_auto_vacuum) → {PRAGMA auto_vacuum} auto_vacuum {auto_vacuum pragma}
+- [pragma.html#pragma_automatic_index](pragma.md#pragma_automatic_index) → {PRAGMA automatic_index} automatic_index {automatic_index pragma}
+- [pragma.html#pragma_busy_timeout](pragma.md#pragma_busy_timeout) → {PRAGMA busy_timeout} busy_timeout {busy_timeout pragma}
+- [pragma.html#pragma_cache_size](pragma.md#pragma_cache_size) → {PRAGMA cache_size} cache_size {cache_size pragma}
+- [pragma.html#pragma_cache_spill](pragma.md#pragma_cache_spill) → {PRAGMA cache_spill} cache_spill {cache_spill pragma}
+- [pragma.html#pragma_case_sensitive_like](pragma.md#pragma_case_sensitive_like) → {PRAGMA case_sensitive_like} case_sensitive_like {case_sensitive_like pragma}
+- [pragma.html#pragma_cell_size_check](pragma.md#pragma_cell_size_check) → {PRAGMA cell_size_check} cell_size_check {cell_size_check pragma}
+- [pragma.html#pragma_checkpoint_fullfsync](pragma.md#pragma_checkpoint_fullfsync) → {PRAGMA checkpoint_fullfsync} checkpoint_fullfsync {checkpoint_fullfsync pragma}
+- [pragma.html#pragma_collation_list](pragma.md#pragma_collation_list) → {PRAGMA collation_list} collation_list {collation_list pragma}
+- [pragma.html#pragma_compile_options](pragma.md#pragma_compile_options) → {PRAGMA compile_options} compile_options {compile_options pragma}
+- [pragma.html#pragma_count_changes](pragma.md#pragma_count_changes) → {PRAGMA count_changes} count_changes {count_changes pragma}
+- [pragma.html#pragma_data_store_directory](pragma.md#pragma_data_store_directory) → {PRAGMA data_store_directory} data_store_directory {data_store_directory pragma}
+- [pragma.html#pragma_data_version](pragma.md#pragma_data_version) → {PRAGMA data_version} data_version {data_version pragma}
+- [pragma.html#pragma_database_list](pragma.md#pragma_database_list) → {PRAGMA database_list} database_list {database_list pragma}
+- [pragma.html#pragma_default_cache_size](pragma.md#pragma_default_cache_size) → {PRAGMA default_cache_size} default_cache_size {default_cache_size pragma}
+- [pragma.html#pragma_defer_foreign_keys](pragma.md#pragma_defer_foreign_keys) → {PRAGMA defer_foreign_keys} defer_foreign_keys {defer_foreign_keys pragma}
+- [pragma.html#pragma_empty_result_callbacks](pragma.md#pragma_empty_result_callbacks) → {PRAGMA empty_result_callbacks} empty_result_callbacks {empty_result_callbacks pragma}
+- [pragma.html#pragma_encoding](pragma.md#pragma_encoding) → {PRAGMA encoding} encoding {encoding pragma}
+- [pragma.html#pragma_foreign_key_check](pragma.md#pragma_foreign_key_check) → {PRAGMA foreign_key_check} foreign_key_check {foreign_key_check pragma}
+- [pragma.html#pragma_foreign_key_list](pragma.md#pragma_foreign_key_list) → {PRAGMA foreign_key_list} foreign_key_list {foreign_key_list pragma}
+- [pragma.html#pragma_foreign_keys](pragma.md#pragma_foreign_keys) → {PRAGMA foreign_keys} foreign_keys {foreign_keys pragma}
+- [pragma.html#pragma_freelist_count](pragma.md#pragma_freelist_count) → {PRAGMA freelist_count} freelist_count {freelist_count pragma}
+- [pragma.html#pragma_full_column_names](pragma.md#pragma_full_column_names) → {PRAGMA full_column_names} full_column_names {full_column_names pragma}
+- [pragma.html#pragma_fullfsync](pragma.md#pragma_fullfsync) → {PRAGMA fullfsync} fullfsync {fullfsync pragma}
+- [pragma.html#pragma_function_list](pragma.md#pragma_function_list) → {PRAGMA function_list} function_list {function_list pragma}
+- [pragma.html#pragma_hard_heap_limit](pragma.md#pragma_hard_heap_limit) → {PRAGMA hard_heap_limit} hard_heap_limit {hard_heap_limit pragma}
+- [pragma.html#pragma_ignore_check_constraints](pragma.md#pragma_ignore_check_constraints) → {PRAGMA ignore_check_constraints} ignore_check_constraints {ignore_check_constraints pragma}
+- [pragma.html#pragma_incremental_vacuum](pragma.md#pragma_incremental_vacuum) → {PRAGMA incremental_vacuum} incremental_vacuum {incremental_vacuum pragma}
+- [pragma.html#pragma_index_info](pragma.md#pragma_index_info) → {PRAGMA index_info} index_info {index_info pragma}
+- [pragma.html#pragma_index_list](pragma.md#pragma_index_list) → {PRAGMA index_list} index_list {index_list pragma}
+- [pragma.html#pragma_index_xinfo](pragma.md#pragma_index_xinfo) → {PRAGMA index_xinfo} index_xinfo {index_xinfo pragma}
+- [pragma.html#pragma_integrity_check](pragma.md#pragma_integrity_check) → {PRAGMA integrity_check} integrity_check {integrity_check pragma}
+- [pragma.html#pragma_journal_mode](pragma.md#pragma_journal_mode) → {PRAGMA journal_mode} journal_mode {journal_mode pragma} {persistent journal mode}
+- [pragma.html#pragma_journal_size_limit](pragma.md#pragma_journal_size_limit) → {PRAGMA journal_size_limit} journal_size_limit {journal_size_limit pragma}
+- [pragma.html#pragma_legacy_alter_table](pragma.md#pragma_legacy_alter_table) → {PRAGMA legacy_alter_table} legacy_alter_table {legacy_alter_table pragma}
+- [pragma.html#pragma_legacy_file_format](pragma.md#pragma_legacy_file_format) → {PRAGMA legacy_file_format} legacy_file_format {legacy_file_format pragma}
+- [pragma.html#pragma_locking_mode](pragma.md#pragma_locking_mode) → {EXCLUSIVE locking mode} {PRAGMA locking_mode} {exclusive locking mode} locking_mode {locking_mode pragma}
+- [pragma.html#pragma_max_page_count](pragma.md#pragma_max_page_count) → {PRAGMA max_page_count} max_page_count {max_page_count pragma}
+- [pragma.html#pragma_mmap_size](pragma.md#pragma_mmap_size) → {PRAGMA mmap_size} mmap_size {mmap_size pragma}
+- [pragma.html#pragma_module_list](pragma.md#pragma_module_list) → {PRAGMA module_list} module_list {module_list pragma}
+- [pragma.html#pragma_optimize](pragma.md#pragma_optimize) → {PRAGMA optimize} optimize {optimize pragma}
+- [pragma.html#pragma_page_count](pragma.md#pragma_page_count) → {PRAGMA page_count} page_count {page_count pragma}
+- [pragma.html#pragma_page_size](pragma.md#pragma_page_size) → {PRAGMA page_size} page_size {page_size pragma}
+- [pragma.html#pragma_parser_trace](pragma.md#pragma_parser_trace) → {PRAGMA parser_trace} parser_trace {parser_trace pragma}
+- [pragma.html#pragma_pragma_list](pragma.md#pragma_pragma_list) → {PRAGMA pragma_list} pragma_list {pragma_list pragma}
+- [pragma.html#pragma_query_only](pragma.md#pragma_query_only) → {PRAGMA query_only} query_only {query_only pragma}
+- [pragma.html#pragma_quick_check](pragma.md#pragma_quick_check) → {PRAGMA quick_check} quick_check {quick_check pragma}
+- [pragma.html#pragma_read_uncommitted](pragma.md#pragma_read_uncommitted) → {PRAGMA read_uncommitted} read_uncommitted {read_uncommitted pragma}
+- [pragma.html#pragma_recursive_triggers](pragma.md#pragma_recursive_triggers) → {PRAGMA recursive_triggers} recursive_triggers {recursive_triggers pragma}
+- [pragma.html#pragma_reverse_unordered_selects](pragma.md#pragma_reverse_unordered_selects) → {PRAGMA reverse_unordered_selects} reverse_unordered_selects {reverse_unordered_selects pragma}
+- [pragma.html#pragma_schema_version](pragma.md#pragma_schema_version) → {PRAGMA schema_version} schema_version {schema_version pragma}
+- [pragma.html#pragma_secure_delete](pragma.md#pragma_secure_delete) → {PRAGMA secure_delete} secure_delete {secure_delete pragma}
+- [pragma.html#pragma_short_column_names](pragma.md#pragma_short_column_names) → {PRAGMA short_column_names} short_column_names {short_column_names pragma}
+- [pragma.html#pragma_shrink_memory](pragma.md#pragma_shrink_memory) → {PRAGMA shrink_memory} shrink_memory {shrink_memory pragma}
+- [pragma.html#pragma_soft_heap_limit](pragma.md#pragma_soft_heap_limit) → {PRAGMA soft_heap_limit} soft_heap_limit {soft_heap_limit pragma}
+- [pragma.html#pragma_stats](pragma.md#pragma_stats) → {PRAGMA stats} stats {stats pragma}
+- [pragma.html#pragma_synchronous](pragma.md#pragma_synchronous) → {PRAGMA synchronous} synchronous {synchronous pragma}
+- [pragma.html#pragma_table_info](pragma.md#pragma_table_info) → {PRAGMA table_info} table_info {table_info pragma}
+- [pragma.html#pragma_table_list](pragma.md#pragma_table_list) → {PRAGMA table_list} table_list {table_list pragma}
+- [pragma.html#pragma_table_xinfo](pragma.md#pragma_table_xinfo) → {PRAGMA table_xinfo} table_xinfo {table_xinfo pragma}
+- [pragma.html#pragma_temp_store](pragma.md#pragma_temp_store) → {PRAGMA temp_store} temp_store {temp_store pragma}
+- [pragma.html#pragma_temp_store_directory](pragma.md#pragma_temp_store_directory) → {PRAGMA temp_store_directory} temp_store_directory {temp_store_directory pragma}
+- [pragma.html#pragma_threads](pragma.md#pragma_threads) → {PRAGMA threads} threads {threads pragma}
+- [pragma.html#pragma_trusted_schema](pragma.md#pragma_trusted_schema) → {PRAGMA trusted_schema} trusted_schema {trusted_schema pragma}
+- [pragma.html#pragma_user_version](pragma.md#pragma_user_version) → {PRAGMA user_version} user_version {user_version pragma}
+- [pragma.html#pragma_vdbe_addoptrace](pragma.md#pragma_vdbe_addoptrace) → {PRAGMA vdbe_addoptrace} vdbe_addoptrace {vdbe_addoptrace pragma}
+- [pragma.html#pragma_vdbe_debug](pragma.md#pragma_vdbe_debug) → {PRAGMA vdbe_debug} vdbe_debug {vdbe_debug pragma}
+- [pragma.html#pragma_vdbe_listing](pragma.md#pragma_vdbe_listing) → {PRAGMA vdbe_listing} vdbe_listing {vdbe_listing pragma}
+- [pragma.html#pragma_vdbe_trace](pragma.md#pragma_vdbe_trace) → {PRAGMA vdbe_trace} vdbe_trace {vdbe_trace pragma}
+- [pragma.html#pragma_wal_autocheckpoint](pragma.md#pragma_wal_autocheckpoint) → {PRAGMA wal_autocheckpoint} wal_autocheckpoint {wal_autocheckpoint pragma}
+- [pragma.html#pragma_wal_checkpoint](pragma.md#pragma_wal_checkpoint) → {PRAGMA wal_checkpoint} wal_checkpoint {wal_checkpoint pragma}
+- [pragma.html#pragma_writable_schema](pragma.md#pragma_writable_schema) → {PRAGMA writable_schema} writable_schema {writable_schema pragma}
+- [pragma.html#syntax](pragma.md#syntax) → PRAGMA
+- [pragma.html#toc](pragma.md#toc) → {pragma list}
+- [printf.html](printf.md) → {built-in printf}
+- [printf.html#alt1](printf.md#alt1) → {#-flag} {alternate-form-1 flag}
+- [printf.html#comma](printf.md#comma) → {comma option}
+- [printf.html#percentq](printf.md#percentq) → Q {Q and q conversions} q
+- [printf.html#percentw](printf.md#percentw) → w
+- [printf.html#percentz](printf.md#percentz) → z
+- [privatebranch.html](privatebranch.md) → {private branches}
+- [prosupport.html](prosupport.md) → {professional support}
+- [psow.html](psow.md) → PSOW {powersafe overwrite}
+- [psow.html#tornpage](psow.md#tornpage) → {torn page}
+- [queryplanner-ng.html](queryplanner-ng.md) → NGQP {Next Generation Query Planner} {next generation query planner}
+- [queryplanner-ng.html#fossilcasestudy](queryplanner-ng.md#fossilcasestudy) → {The Fossil NGQP Upgrade Case Study}
+- [queryplanner-ng.html#hazards](queryplanner-ng.md#hazards) → {hazards of upgrading to the NGQP}
+- [queryplanner-ng.html#howtofix](queryplanner-ng.md#howtofix) → {query planner checklist}
+- [queryplanner-ng.html#n3](queryplanner-ng.md#n3) → {N3 algorithm} {N3 heuristic} {N3 query planning algorithm}
+- [queryplanner-ng.html#qpstab](queryplanner-ng.md#qpstab) → QPSG {query planner stability guarantee}
+- [queryplanner-ng.html#starq](queryplanner-ng.md#starq) → star-query {star-query heuristic}
+- [queryplanner.html](queryplanner.md) → indexing {indexing tutorial}
+- [queryplanner.html#covidx](queryplanner.md#covidx) → {covering index} {covering indexes} {covering indices}
+- [queryplanner.html#or_in_where](queryplanner.md#or_in_where) → or-connected-terms
+- [queryplanner.html#partialsort](queryplanner.md#partialsort) → {block sorting} {partial sorting by index}
+- [queryplanner.html#searching](queryplanner.md#searching) → strategies
+- [queryplanner.html#sorting](queryplanner.md#sorting) → sorting
+- [quickstart.html](quickstart.md) → {Quick Start Guide} quickstart
+- [quirks.html](quirks.md) → Quirks
+- [quirks.html#dblquote](quirks.md#dblquote) → {double-quoted string literal} {double-quoted string literals} {double-quoted string misfeature}
+- [rbu.html](rbu.md) → RBU {RBU extension}
+- [rbu.html#database_contents](rbu.md#database_contents) → {RBU Database Contents}
+- [rbu.html#database_tables](rbu.md#database_tables) → {RBU Database Tables}
+- [rbu.html#fts4_tables](rbu.md#fts4_tables) → {RBU FTS3/4 Tables}
+- [rbu.html#rbu_updates](rbu.md#rbu_updates) → {RBU Update}
+- [rbu.html#rbu_vacuum](rbu.md#rbu_vacuum) → {RBU Vacuum}
+- [rbu.html#sqldiff](rbu.md#sqldiff) → {sqldiff --rbu}
+- [recovery.html](recovery.md) → {recovery extension}
+- [releaselog/3_0_0.html](releaselog/3_0_0.md) → {Version 3.0.0} {version 3.0.0}
+- [releaselog/3_0_1.html](releaselog/3_0_1.md) → {Version 3.0.1} {version 3.0.1}
+- [releaselog/3_0_2.html](releaselog/3_0_2.md) → {Version 3.0.2} {version 3.0.2}
+- [releaselog/3_0_3.html](releaselog/3_0_3.md) → {Version 3.0.3} {version 3.0.3}
+- [releaselog/3_0_4.html](releaselog/3_0_4.md) → {Version 3.0.4} {version 3.0.4}
+- [releaselog/3_0_5.html](releaselog/3_0_5.md) → {Version 3.0.5} {version 3.0.5}
+- [releaselog/3_0_6.html](releaselog/3_0_6.md) → {Version 3.0.6} {version 3.0.6}
+- [releaselog/3_0_7.html](releaselog/3_0_7.md) → {Version 3.0.7} {version 3.0.7}
+- [releaselog/3_0_8.html](releaselog/3_0_8.md) → {Version 3.0.8} {version 3.0.8}
+- [releaselog/3_10_0.html](releaselog/3_10_0.md) → {Version 3.10.0} {version 3.10.0}
+- [releaselog/3_10_1.html](releaselog/3_10_1.md) → {Version 3.10.1} {version 3.10.1}
+- [releaselog/3_10_2.html](releaselog/3_10_2.md) → {Version 3.10.2} {version 3.10.2}
+- [releaselog/3_11_0.html](releaselog/3_11_0.md) → {Version 3.11.0} {version 3.11.0}
+- [releaselog/3_11_1.html](releaselog/3_11_1.md) → {Version 3.11.1} {version 3.11.1}
+- [releaselog/3_12_0.html](releaselog/3_12_0.md) → {Version 3.12.0} {version 3.12.0}
+- [releaselog/3_12_1.html](releaselog/3_12_1.md) → {Version 3.12.1} {version 3.12.1}
+- [releaselog/3_12_2.html](releaselog/3_12_2.md) → {Version 3.12.2} {version 3.12.2}
+- [releaselog/3_13_0.html](releaselog/3_13_0.md) → {Version 3.13.0} {Version 3.13.0.0} {version 3.13.0} {version 3.13.0.0}
+- [releaselog/3_14.html](releaselog/3_14.md) → {Version 3.14} {Version 3.14.0} {version 3.14} {version 3.14.0}
+- [releaselog/3_14_1.html](releaselog/3_14_1.md) → {Version 3.14.1} {version 3.14.1}
+- [releaselog/3_14_2.html](releaselog/3_14_2.md) → {Version 3.14.2} {version 3.14.2}
+- [releaselog/3_15_0.html](releaselog/3_15_0.md) → {Version 3.15.0} {version 3.15.0}
+- [releaselog/3_15_1.html](releaselog/3_15_1.md) → {Version 3.15.1} {version 3.15.1}
+- [releaselog/3_15_2.html](releaselog/3_15_2.md) → {Version 3.15.2} {version 3.15.2}
+- [releaselog/3_16_0.html](releaselog/3_16_0.md) → {Version 3.16.0} {version 3.16.0}
+- [releaselog/3_16_1.html](releaselog/3_16_1.md) → {Version 3.16.1} {version 3.16.1}
+- [releaselog/3_16_2.html](releaselog/3_16_2.md) → {Version 3.16.2} {version 3.16.2}
+- [releaselog/3_17_0.html](releaselog/3_17_0.md) → {Version 3.17.0} {version 3.17.0}
+- [releaselog/3_18_0.html](releaselog/3_18_0.md) → {Version 3.18.0} {version 3.18.0}
+- [releaselog/3_18_1.html](releaselog/3_18_1.md) → {Version 3.18.1} {version 3.18.1}
+- [releaselog/3_18_2.html](releaselog/3_18_2.md) → {Version 3.18.2} {version 3.18.2}
+- [releaselog/3_19_0.html](releaselog/3_19_0.md) → {Version 3.19.0} {version 3.19.0}
+- [releaselog/3_19_1.html](releaselog/3_19_1.md) → {Version 3.19.1} {version 3.19.1}
+- [releaselog/3_19_2.html](releaselog/3_19_2.md) → {Version 3.19.2} {version 3.19.2}
+- [releaselog/3_19_3.html](releaselog/3_19_3.md) → {Version 3.19.3} {version 3.19.3}
+- [releaselog/3_1_0.html](releaselog/3_1_0.md) → {Version 3.1.0} {version 3.1.0}
+- [releaselog/3_1_1.html](releaselog/3_1_1.md) → {Version 3.1.1} {version 3.1.1}
+- [releaselog/3_1_2.html](releaselog/3_1_2.md) → {Version 3.1.2} {version 3.1.2}
+- [releaselog/3_1_3.html](releaselog/3_1_3.md) → {Version 3.1.3} {version 3.1.3}
+- [releaselog/3_1_4.html](releaselog/3_1_4.md) → {Version 3.1.4} {version 3.1.4}
+- [releaselog/3_1_5.html](releaselog/3_1_5.md) → {Version 3.1.5} {version 3.1.5}
+- [releaselog/3_1_6.html](releaselog/3_1_6.md) → {Version 3.1.6} {version 3.1.6}
+- [releaselog/3_20_0.html](releaselog/3_20_0.md) → {Version 3.20.0} {version 3.20.0}
+- [releaselog/3_20_1.html](releaselog/3_20_1.md) → {Version 3.20.1} {version 3.20.1}
+- [releaselog/3_21_0.html](releaselog/3_21_0.md) → {Version 3.21.0} {version 3.21.0}
+- [releaselog/3_22_0.html](releaselog/3_22_0.md) → {Version 3.22.0} {version 3.22.0}
+- [releaselog/3_23_0.html](releaselog/3_23_0.md) → {Version 3.23.0} {Version 3.23.0.0} {version 3.23.0} {version 3.23.0.0}
+- [releaselog/3_23_1.html](releaselog/3_23_1.md) → {Version 3.23.1} {Version 3.23.1.0} {version 3.23.1} {version 3.23.1.0}
+- [releaselog/3_24_0.html](releaselog/3_24_0.md) → {Version 3.24.0} {version 3.24.0}
+- [releaselog/3_25_0.html](releaselog/3_25_0.md) → {Version 3.25.0} {version 3.25.0}
+- [releaselog/3_25_1.html](releaselog/3_25_1.md) → {Version 3.25.1} {version 3.25.1}
+- [releaselog/3_25_2.html](releaselog/3_25_2.md) → {Version 3.25.2} {version 3.25.2}
+- [releaselog/3_25_3.html](releaselog/3_25_3.md) → {Version 3.25.3} {version 3.25.3}
+- [releaselog/3_26_0.html](releaselog/3_26_0.md) → {Version 3.26.0} {version 3.26.0}
+- [releaselog/3_27_0.html](releaselog/3_27_0.md) → {Version 3.27.0} {version 3.27.0}
+- [releaselog/3_27_1.html](releaselog/3_27_1.md) → {Version 3.27.1} {version 3.27.1}
+- [releaselog/3_27_2.html](releaselog/3_27_2.md) → {Version 3.27.2} {version 3.27.2}
+- [releaselog/3_28_0.html](releaselog/3_28_0.md) → {Version 3.28.0} {version 3.28.0}
+- [releaselog/3_29_0.html](releaselog/3_29_0.md) → {Version 3.29.0} {version 3.29.0}
+- [releaselog/3_2_0.html](releaselog/3_2_0.md) → {Version 3.2.0} {version 3.2.0}
+- [releaselog/3_2_1.html](releaselog/3_2_1.md) → {Version 3.2.1} {version 3.2.1}
+- [releaselog/3_2_2.html](releaselog/3_2_2.md) → {Version 3.2.2} {version 3.2.2}
+- [releaselog/3_2_3.html](releaselog/3_2_3.md) → {Version 3.2.3} {version 3.2.3}
+- [releaselog/3_2_4.html](releaselog/3_2_4.md) → {Version 3.2.4} {version 3.2.4}
+- [releaselog/3_2_5.html](releaselog/3_2_5.md) → {Version 3.2.5} {version 3.2.5}
+- [releaselog/3_2_6.html](releaselog/3_2_6.md) → {Version 3.2.6} {version 3.2.6}
+- [releaselog/3_2_7.html](releaselog/3_2_7.md) → {Version 3.2.7} {version 3.2.7}
+- [releaselog/3_2_8.html](releaselog/3_2_8.md) → {Version 3.2.8} {version 3.2.8}
+- [releaselog/3_30_0.html](releaselog/3_30_0.md) → {Version 3.30.0} {version 3.30.0}
+- [releaselog/3_30_1.html](releaselog/3_30_1.md) → {Version 3.30.1} {version 3.30.1}
+- [releaselog/3_31_0.html](releaselog/3_31_0.md) → {Version 3.31.0} {version 3.31.0}
+- [releaselog/3_31_1.html](releaselog/3_31_1.md) → {Version 3.31.1} {version 3.31.1}
+- [releaselog/3_32_0.html](releaselog/3_32_0.md) → {Version 3.32.0} {version 3.32.0}
+- [releaselog/3_32_1.html](releaselog/3_32_1.md) → {Version 3.32.1} {version 3.32.1}
+- [releaselog/3_32_2.html](releaselog/3_32_2.md) → {Version 3.32.2} {version 3.32.2}
+- [releaselog/3_32_3.html](releaselog/3_32_3.md) → {Version 3.32.3} {version 3.32.3}
+- [releaselog/3_33_0.html](releaselog/3_33_0.md) → {Version 3.33.0} {Version 3.33.0.0} {version 3.33.0} {version 3.33.0.0}
+- [releaselog/3_34_0.html](releaselog/3_34_0.md) → {Version 3.34.0} {version 3.34.0}
+- [releaselog/3_34_1.html](releaselog/3_34_1.md) → {Version 3.34.1} {version 3.34.1}
+- [releaselog/3_35_0.html](releaselog/3_35_0.md) → {Version 3.35.0} {version 3.35.0}
+- [releaselog/3_35_1.html](releaselog/3_35_1.md) → {Version 3.35.1} {version 3.35.1}
+- [releaselog/3_35_2.html](releaselog/3_35_2.md) → {Version 3.35.2} {version 3.35.2}
+- [releaselog/3_35_3.html](releaselog/3_35_3.md) → {Version 3.35.3} {version 3.35.3}
+- [releaselog/3_35_4.html](releaselog/3_35_4.md) → {Version 3.35.4} {version 3.35.4}
+- [releaselog/3_35_5.html](releaselog/3_35_5.md) → {Version 3.35.5} {version 3.35.5}
+- [releaselog/3_36_0.html](releaselog/3_36_0.md) → {Version 3.36.0} {version 3.36.0}
+- [releaselog/3_37_0.html](releaselog/3_37_0.md) → {Version 3.37.0} {version 3.37.0}
+- [releaselog/3_37_1.html](releaselog/3_37_1.md) → {Version 3.37.1} {version 3.37.1}
+- [releaselog/3_37_2.html](releaselog/3_37_2.md) → {Version 3.37.2} {version 3.37.2}
+- [releaselog/3_38_0.html](releaselog/3_38_0.md) → {Version 3.38.0} {version 3.38.0}
+- [releaselog/3_38_1.html](releaselog/3_38_1.md) → {Version 3.38.1} {version 3.38.1}
+- [releaselog/3_38_2.html](releaselog/3_38_2.md) → {Version 3.38.2} {version 3.38.2}
+- [releaselog/3_38_3.html](releaselog/3_38_3.md) → {Version 3.38.3} {version 3.38.3}
+- [releaselog/3_38_4.html](releaselog/3_38_4.md) → {Version 3.38.4} {version 3.38.4}
+- [releaselog/3_38_5.html](releaselog/3_38_5.md) → {Version 3.38.5} {version 3.38.5}
+- [releaselog/3_39_0.html](releaselog/3_39_0.md) → {Version 3.39.0} {version 3.39.0}
+- [releaselog/3_39_1.html](releaselog/3_39_1.md) → {Version 3.39.1} {version 3.39.1}
+- [releaselog/3_39_2.html](releaselog/3_39_2.md) → {Version 3.39.2} {version 3.39.2}
+- [releaselog/3_39_3.html](releaselog/3_39_3.md) → {Version 3.39.3} {version 3.39.3}
+- [releaselog/3_39_4.html](releaselog/3_39_4.md) → {Version 3.39.4} {version 3.39.4}
+- [releaselog/3_3_0.html](releaselog/3_3_0.md) → {Version 3.3.0} {Version 3.3.0.0} {version 3.3.0} {version 3.3.0.0}
+- [releaselog/3_3_1.html](releaselog/3_3_1.md) → {Version 3.3.1} {Version 3.3.1.0} {version 3.3.1} {version 3.3.1.0}
+- [releaselog/3_3_10.html](releaselog/3_3_10.md) → {Version 3.3.10} {Version 3.3.10.0} {version 3.3.10} {version 3.3.10.0}
+- [releaselog/3_3_11.html](releaselog/3_3_11.md) → {Version 3.3.11} {Version 3.3.11.0} {version 3.3.11} {version 3.3.11.0}
+- [releaselog/3_3_12.html](releaselog/3_3_12.md) → {Version 3.3.12} {Version 3.3.12.0} {version 3.3.12} {version 3.3.12.0}
+- [releaselog/3_3_13.html](releaselog/3_3_13.md) → {Version 3.3.13} {Version 3.3.13.0} {version 3.3.13} {version 3.3.13.0}
+- [releaselog/3_3_14.html](releaselog/3_3_14.md) → {Version 3.3.14} {Version 3.3.14.0} {version 3.3.14} {version 3.3.14.0}
+- [releaselog/3_3_15.html](releaselog/3_3_15.md) → {Version 3.3.15} {Version 3.3.15.0} {version 3.3.15} {version 3.3.15.0}
+- [releaselog/3_3_16.html](releaselog/3_3_16.md) → {Version 3.3.16} {Version 3.3.16.0} {version 3.3.16} {version 3.3.16.0}
+- [releaselog/3_3_17.html](releaselog/3_3_17.md) → {Version 3.3.17} {Version 3.3.17.0} {version 3.3.17} {version 3.3.17.0}
+- [releaselog/3_3_2.html](releaselog/3_3_2.md) → {Version 3.3.2} {Version 3.3.2.0} {version 3.3.2} {version 3.3.2.0}
+- [releaselog/3_3_3.html](releaselog/3_3_3.md) → {Version 3.3.3} {Version 3.3.3.0} {version 3.3.3} {version 3.3.3.0}
+- [releaselog/3_3_4.html](releaselog/3_3_4.md) → {Version 3.3.4} {Version 3.3.4.0} {version 3.3.4} {version 3.3.4.0}
+- [releaselog/3_3_5.html](releaselog/3_3_5.md) → {Version 3.3.5} {Version 3.3.5.0} {version 3.3.5} {version 3.3.5.0}
+- [releaselog/3_3_6.html](releaselog/3_3_6.md) → {Version 3.3.6} {Version 3.3.6.0} {version 3.3.6} {version 3.3.6.0}
+- [releaselog/3_3_7.html](releaselog/3_3_7.md) → {Version 3.3.7} {Version 3.3.7.0} {version 3.3.7} {version 3.3.7.0}
+- [releaselog/3_3_8.html](releaselog/3_3_8.md) → {Version 3.3.8} {Version 3.3.8.0} {version 3.3.8} {version 3.3.8.0}
+- [releaselog/3_3_9.html](releaselog/3_3_9.md) → {Version 3.3.9} {Version 3.3.9.0} {version 3.3.9} {version 3.3.9.0}
+- [releaselog/3_40_0.html](releaselog/3_40_0.md) → {Version 3.40.0} {version 3.40.0}
+- [releaselog/3_40_1.html](releaselog/3_40_1.md) → {Version 3.40.1} {version 3.40.1}
+- [releaselog/3_41_0.html](releaselog/3_41_0.md) → {Version 3.41.0} {version 3.41.0}
+- [releaselog/3_41_1.html](releaselog/3_41_1.md) → {Version 3.41.1} {version 3.41.1}
+- [releaselog/3_41_2.html](releaselog/3_41_2.md) → {Version 3.41.2} {version 3.41.2}
+- [releaselog/3_42_0.html](releaselog/3_42_0.md) → {Version 3.42.0} {version 3.42.0}
+- [releaselog/3_43_0.html](releaselog/3_43_0.md) → {Version 3.43.0} {Version 3.43.0.0} {version 3.43.0} {version 3.43.0.0}
+- [releaselog/3_43_1.html](releaselog/3_43_1.md) → {Version 3.43.1} {Version 3.43.1.0} {version 3.43.1} {version 3.43.1.0}
+- [releaselog/3_43_2.html](releaselog/3_43_2.md) → {Version 3.43.2} {Version 3.43.2.0} {version 3.43.2} {version 3.43.2.0}
+- [releaselog/3_44_0.html](releaselog/3_44_0.md) → {Version 3.44.0} {version 3.44.0}
+- [releaselog/3_44_1.html](releaselog/3_44_1.md) → {Version 3.44.1} {version 3.44.1}
+- [releaselog/3_44_2.html](releaselog/3_44_2.md) → {Version 3.44.2} {version 3.44.2}
+- [releaselog/3_45_0.html](releaselog/3_45_0.md) → {Version 3.45.0} {version 3.45.0}
+- [releaselog/3_45_1.html](releaselog/3_45_1.md) → {Version 3.45.1} {version 3.45.1}
+- [releaselog/3_45_2.html](releaselog/3_45_2.md) → {Version 3.45.2} {version 3.45.2}
+- [releaselog/3_45_3.html](releaselog/3_45_3.md) → {Version 3.45.3} {version 3.45.3}
+- [releaselog/3_46_0.html](releaselog/3_46_0.md) → {Version 3.46.0} {version 3.46.0}
+- [releaselog/3_46_1.html](releaselog/3_46_1.md) → {Version 3.46.1} {version 3.46.1}
+- [releaselog/3_47_0.html](releaselog/3_47_0.md) → {Version 3.47.0} {version 3.47.0}
+- [releaselog/3_47_1.html](releaselog/3_47_1.md) → {Version 3.47.1} {version 3.47.1}
+- [releaselog/3_47_2.html](releaselog/3_47_2.md) → {Version 3.47.2} {version 3.47.2}
+- [releaselog/3_48_0.html](releaselog/3_48_0.md) → {Version 3.48.0} {version 3.48.0}
+- [releaselog/3_49_0.html](releaselog/3_49_0.md) → {Version 3.49.0} {version 3.49.0}
+- [releaselog/3_49_1.html](releaselog/3_49_1.md) → {Version 3.49.1} {version 3.49.1}
+- [releaselog/3_49_2.html](releaselog/3_49_2.md) → {Version 3.49.2} {version 3.49.2}
+- [releaselog/3_4_0.html](releaselog/3_4_0.md) → {Version 3.4.0} {version 3.4.0}
+- [releaselog/3_4_1.html](releaselog/3_4_1.md) → {Version 3.4.1} {version 3.4.1}
+- [releaselog/3_4_2.html](releaselog/3_4_2.md) → {Version 3.4.2} {version 3.4.2}
+- [releaselog/3_50_0.html](releaselog/3_50_0.md) → {Version 3.50.0} {version 3.50.0}
+- [releaselog/3_50_1.html](releaselog/3_50_1.md) → {Version 3.50.1} {version 3.50.1}
+- [releaselog/3_50_2.html](releaselog/3_50_2.md) → {Version 3.50.2} {version 3.50.2}
+- [releaselog/3_50_3.html](releaselog/3_50_3.md) → {Version 3.50.3} {version 3.50.3}
+- [releaselog/3_50_4.html](releaselog/3_50_4.md) → {Version 3.50.4} {version 3.50.4}
+- [releaselog/3_51_0.html](releaselog/3_51_0.md) → {Version 3.51.0} {version 3.51.0}
+- [releaselog/3_51_1.html](releaselog/3_51_1.md) → {Version 3.51.1} {version 3.51.1}
+- [releaselog/3_51_2.html](releaselog/3_51_2.md) → {Version 3.51.2} {version 3.51.2}
+- [releaselog/3_51_3.html](releaselog/3_51_3.md) → {Version 3.51.3} {version 3.51.3}
+- [releaselog/3_52_0.html](releaselog/3_52_0.md) → {Version 3.52.0} {version 3.52.0}
+- [releaselog/3_53_0.html](releaselog/3_53_0.md) → {Version 3.53.0} {Version 3.53.0.0} {version 3.53.0} {version 3.53.0.0}
+- [releaselog/3_53_1.html](releaselog/3_53_1.md) → {Version 3.53.1} {Version 3.53.1.0} {version 3.53.1} {version 3.53.1.0}
+- [releaselog/3_53_2.html](releaselog/3_53_2.md) → {Version 3.53.2} {Version 3.53.2.0} {version 3.53.2} {version 3.53.2.0}
+- [releaselog/3_53_3.html](releaselog/3_53_3.md) → {Version 3.53.3} {Version 3.53.3.0} {version 3.53.3} {version 3.53.3.0}
+- [releaselog/3_53_4.html](releaselog/3_53_4.md) → {Version 3.53.4} {Version 3.53.4.0} {version 3.53.4} {version 3.53.4.0}
+- [releaselog/3_5_0.html](releaselog/3_5_0.md) → {Version 3.5.0} {version 3.5.0}
+- [releaselog/3_5_1.html](releaselog/3_5_1.md) → {Version 3.5.1} {version 3.5.1}
+- [releaselog/3_5_2.html](releaselog/3_5_2.md) → {Version 3.5.2} {version 3.5.2}
+- [releaselog/3_5_3.html](releaselog/3_5_3.md) → {Version 3.5.3} {version 3.5.3}
+- [releaselog/3_5_4.html](releaselog/3_5_4.md) → {Version 3.5.4} {version 3.5.4}
+- [releaselog/3_5_5.html](releaselog/3_5_5.md) → {Version 3.5.5} {version 3.5.5}
+- [releaselog/3_5_6.html](releaselog/3_5_6.md) → {Version 3.5.6} {version 3.5.6}
+- [releaselog/3_5_7.html](releaselog/3_5_7.md) → {Version 3.5.7} {version 3.5.7}
+- [releaselog/3_5_8.html](releaselog/3_5_8.md) → {Version 3.5.8} {version 3.5.8}
+- [releaselog/3_5_9.html](releaselog/3_5_9.md) → {Version 3.5.9} {version 3.5.9}
+- [releaselog/3_6_0.html](releaselog/3_6_0.md) → {Version 3.6.0} {version 3.6.0}
+- [releaselog/3_6_1.html](releaselog/3_6_1.md) → {Version 3.6.1} {version 3.6.1}
+- [releaselog/3_6_10.html](releaselog/3_6_10.md) → {Version 3.6.10} {version 3.6.10}
+- [releaselog/3_6_11.html](releaselog/3_6_11.md) → {Version 3.6.11} {version 3.6.11}
+- [releaselog/3_6_12.html](releaselog/3_6_12.md) → {Version 3.6.12} {version 3.6.12}
+- [releaselog/3_6_13.html](releaselog/3_6_13.md) → {Version 3.6.13} {version 3.6.13}
+- [releaselog/3_6_14.html](releaselog/3_6_14.md) → {Version 3.6.14} {version 3.6.14}
+- [releaselog/3_6_14_1.html](releaselog/3_6_14_1.md) → {Version 3.6.14.1} {version 3.6.14.1}
+- [releaselog/3_6_14_2.html](releaselog/3_6_14_2.md) → {Version 3.6.14.2} {version 3.6.14.2}
+- [releaselog/3_6_15.html](releaselog/3_6_15.md) → {Version 3.6.15} {version 3.6.15}
+- [releaselog/3_6_16.html](releaselog/3_6_16.md) → {Version 3.6.16} {version 3.6.16}
+- [releaselog/3_6_16_1.html](releaselog/3_6_16_1.md) → {Version 3.6.16.1} {version 3.6.16.1}
+- [releaselog/3_6_17.html](releaselog/3_6_17.md) → {Version 3.6.17} {version 3.6.17}
+- [releaselog/3_6_18.html](releaselog/3_6_18.md) → {Version 3.6.18} {version 3.6.18}
+- [releaselog/3_6_19.html](releaselog/3_6_19.md) → {Version 3.6.19} {version 3.6.19}
+- [releaselog/3_6_2.html](releaselog/3_6_2.md) → {Version 3.6.2} {version 3.6.2}
+- [releaselog/3_6_20.html](releaselog/3_6_20.md) → {Version 3.6.20} {version 3.6.20}
+- [releaselog/3_6_21.html](releaselog/3_6_21.md) → {Version 3.6.21} {version 3.6.21}
+- [releaselog/3_6_22.html](releaselog/3_6_22.md) → {Version 3.6.22} {version 3.6.22}
+- [releaselog/3_6_23.html](releaselog/3_6_23.md) → {Version 3.6.23} {version 3.6.23}
+- [releaselog/3_6_23_1.html](releaselog/3_6_23_1.md) → {Version 3.6.23.1} {Version 3.6.23.1.0} {version 3.6.23.1} {version 3.6.23.1.0}
+- [releaselog/3_6_3.html](releaselog/3_6_3.md) → {Version 3.6.3} {version 3.6.3}
+- [releaselog/3_6_4.html](releaselog/3_6_4.md) → {Version 3.6.4} {version 3.6.4}
+- [releaselog/3_6_5.html](releaselog/3_6_5.md) → {Version 3.6.5} {version 3.6.5}
+- [releaselog/3_6_6.html](releaselog/3_6_6.md) → {Version 3.6.6} {version 3.6.6}
+- [releaselog/3_6_6_1.html](releaselog/3_6_6_1.md) → {Version 3.6.6.1} {version 3.6.6.1}
+- [releaselog/3_6_6_2.html](releaselog/3_6_6_2.md) → {Version 3.6.6.2} {version 3.6.6.2}
+- [releaselog/3_6_7.html](releaselog/3_6_7.md) → {Version 3.6.7} {version 3.6.7}
+- [releaselog/3_6_8.html](releaselog/3_6_8.md) → {Version 3.6.8} {version 3.6.8}
+- [releaselog/3_6_9.html](releaselog/3_6_9.md) → {Version 3.6.9} {version 3.6.9}
+- [releaselog/3_7_0.html](releaselog/3_7_0.md) → {Version 3.7.0} {version 3.7.0}
+- [releaselog/3_7_0_1.html](releaselog/3_7_0_1.md) → {Version 3.7.0.1} {version 3.7.0.1}
+- [releaselog/3_7_1.html](releaselog/3_7_1.md) → {Version 3.7.1} {version 3.7.1}
+- [releaselog/3_7_10.html](releaselog/3_7_10.md) → {Version 3.7.10} {version 3.7.10}
+- [releaselog/3_7_11.html](releaselog/3_7_11.md) → {Version 3.7.11} {version 3.7.11}
+- [releaselog/3_7_12.html](releaselog/3_7_12.md) → {Version 3.7.12} {version 3.7.12}
+- [releaselog/3_7_12_1.html](releaselog/3_7_12_1.md) → {Version 3.7.12.1} {version 3.7.12.1}
+- [releaselog/3_7_13.html](releaselog/3_7_13.md) → {Version 3.7.13} {version 3.7.13}
+- [releaselog/3_7_14.html](releaselog/3_7_14.md) → {Version 3.7.14} {version 3.7.14}
+- [releaselog/3_7_14_1.html](releaselog/3_7_14_1.md) → {Version 3.7.14.1} {version 3.7.14.1}
+- [releaselog/3_7_15.html](releaselog/3_7_15.md) → {Version 3.7.15} {version 3.7.15}
+- [releaselog/3_7_15_1.html](releaselog/3_7_15_1.md) → {Version 3.7.15.1} {version 3.7.15.1}
+- [releaselog/3_7_15_2.html](releaselog/3_7_15_2.md) → {Version 3.7.15.2} {version 3.7.15.2}
+- [releaselog/3_7_16.html](releaselog/3_7_16.md) → {Version 3.7.16} {version 3.7.16}
+- [releaselog/3_7_16_1.html](releaselog/3_7_16_1.md) → {Version 3.7.16.1} {version 3.7.16.1}
+- [releaselog/3_7_16_2.html](releaselog/3_7_16_2.md) → {Version 3.7.16.2} {version 3.7.16.2}
+- [releaselog/3_7_17.html](releaselog/3_7_17.md) → {Version 3.7.17} {version 3.7.17}
+- [releaselog/3_7_2.html](releaselog/3_7_2.md) → {Version 3.7.2} {version 3.7.2}
+- [releaselog/3_7_3.html](releaselog/3_7_3.md) → {Version 3.7.3} {version 3.7.3}
+- [releaselog/3_7_4.html](releaselog/3_7_4.md) → {Version 3.7.4} {version 3.7.4}
+- [releaselog/3_7_5.html](releaselog/3_7_5.md) → {Version 3.7.5} {version 3.7.5}
+- [releaselog/3_7_6.html](releaselog/3_7_6.md) → {Version 3.7.6} {version 3.7.6}
+- [releaselog/3_7_6_1.html](releaselog/3_7_6_1.md) → {Version 3.7.6.1} {version 3.7.6.1}
+- [releaselog/3_7_6_2.html](releaselog/3_7_6_2.md) → {Version 3.7.6.2} {version 3.7.6.2}
+- [releaselog/3_7_6_3.html](releaselog/3_7_6_3.md) → {Version 3.7.6.3} {version 3.7.6.3}
+- [releaselog/3_7_7.html](releaselog/3_7_7.md) → {Version 3.7.7} {version 3.7.7}
+- [releaselog/3_7_7_1.html](releaselog/3_7_7_1.md) → {Version 3.7.7.1} {version 3.7.7.1}
+- [releaselog/3_7_8.html](releaselog/3_7_8.md) → {Version 3.7.8} {version 3.7.8}
+- [releaselog/3_7_9.html](releaselog/3_7_9.md) → {Version 3.7.9} {version 3.7.9}
+- [releaselog/3_8_0.html](releaselog/3_8_0.md) → {Version 3.8.0} {version 3.8.0}
+- [releaselog/3_8_0_1.html](releaselog/3_8_0_1.md) → {Version 3.8.0.1} {version 3.8.0.1}
+- [releaselog/3_8_0_2.html](releaselog/3_8_0_2.md) → {Version 3.8.0.2} {version 3.8.0.2}
+- [releaselog/3_8_1.html](releaselog/3_8_1.md) → {Version 3.8.1} {version 3.8.1}
+- [releaselog/3_8_10.html](releaselog/3_8_10.md) → {Version 3.8.10} {version 3.8.10}
+- [releaselog/3_8_10_1.html](releaselog/3_8_10_1.md) → {Version 3.8.10.1} {version 3.8.10.1}
+- [releaselog/3_8_10_2.html](releaselog/3_8_10_2.md) → {Version 3.8.10.2} {version 3.8.10.2}
+- [releaselog/3_8_11.html](releaselog/3_8_11.md) → {Version 3.8.11} {version 3.8.11}
+- [releaselog/3_8_11_1.html](releaselog/3_8_11_1.md) → {Version 3.8.11.1} {version 3.8.11.1}
+- [releaselog/3_8_2.html](releaselog/3_8_2.md) → {Version 3.8.2} {version 3.8.2}
+- [releaselog/3_8_3.html](releaselog/3_8_3.md) → {Version 3.8.3} {version 3.8.3}
+- [releaselog/3_8_3_1.html](releaselog/3_8_3_1.md) → {Version 3.8.3.1} {Version 3.8.3.1.0} {version 3.8.3.1} {version 3.8.3.1.0}
+- [releaselog/3_8_4.html](releaselog/3_8_4.md) → {Version 3.8.4} {version 3.8.4}
+- [releaselog/3_8_4_1.html](releaselog/3_8_4_1.md) → {Version 3.8.4.1} {version 3.8.4.1}
+- [releaselog/3_8_4_2.html](releaselog/3_8_4_2.md) → {Version 3.8.4.2} {version 3.8.4.2}
+- [releaselog/3_8_4_3.html](releaselog/3_8_4_3.md) → {Version 3.8.4.3} {version 3.8.4.3}
+- [releaselog/3_8_5.html](releaselog/3_8_5.md) → {Version 3.8.5} {version 3.8.5}
+- [releaselog/3_8_6.html](releaselog/3_8_6.md) → {Version 3.8.6} {version 3.8.6}
+- [releaselog/3_8_7.html](releaselog/3_8_7.md) → {Version 3.8.7} {version 3.8.7}
+- [releaselog/3_8_7_1.html](releaselog/3_8_7_1.md) → {Version 3.8.7.1} {version 3.8.7.1}
+- [releaselog/3_8_7_2.html](releaselog/3_8_7_2.md) → {Version 3.8.7.2} {version 3.8.7.2}
+- [releaselog/3_8_7_3.html](releaselog/3_8_7_3.md) → {Version 3.8.7.3} {version 3.8.7.3}
+- [releaselog/3_8_7_4.html](releaselog/3_8_7_4.md) → {Version 3.8.7.4} {version 3.8.7.4}
+- [releaselog/3_8_8.html](releaselog/3_8_8.md) → {Version 3.8.8} {version 3.8.8}
+- [releaselog/3_8_8_1.html](releaselog/3_8_8_1.md) → {Version 3.8.8.1} {version 3.8.8.1}
+- [releaselog/3_8_8_2.html](releaselog/3_8_8_2.md) → {Version 3.8.8.2} {version 3.8.8.2}
+- [releaselog/3_8_8_3.html](releaselog/3_8_8_3.md) → {Version 3.8.8.3} {version 3.8.8.3}
+- [releaselog/3_8_9.html](releaselog/3_8_9.md) → {Version 3.8.9} {version 3.8.9}
+- [releaselog/3_9_0.html](releaselog/3_9_0.md) → {Version 3.9.0} {version 3.9.0}
+- [releaselog/3_9_1.html](releaselog/3_9_1.md) → {Version 3.9.1} {version 3.9.1}
+- [releaselog/3_9_2.html](releaselog/3_9_2.md) → {Version 3.9.2} {version 3.9.2}
+- [releaselog/3_9_3.html](releaselog/3_9_3.md) → {Version 3.9.3} {version 3.9.3}
+- [requirements.html](requirements.md) → requirements
+- [rescode.html](rescode.md) → {error code} {error codes} {result code} {result codes}
+- [rescode.html#abort](rescode.md#abort) → SQLITE_ABORT
+- [rescode.html#abort_rollback](rescode.md#abort_rollback) → SQLITE_ABORT_ROLLBACK
+- [rescode.html#auth](rescode.md#auth) → SQLITE_AUTH
+- [rescode.html#auth_user](rescode.md#auth_user) → SQLITE_AUTH_USER
+- [rescode.html#busy](rescode.md#busy) → SQLITE_BUSY
+- [rescode.html#busy_recovery](rescode.md#busy_recovery) → SQLITE_BUSY_RECOVERY
+- [rescode.html#busy_snapshot](rescode.md#busy_snapshot) → SQLITE_BUSY_SNAPSHOT
+- [rescode.html#busy_timeout](rescode.md#busy_timeout) → SQLITE_BUSY_TIMEOUT
+- [rescode.html#cantopen](rescode.md#cantopen) → SQLITE_CANTOPEN
+- [rescode.html#cantopen_convpath](rescode.md#cantopen_convpath) → SQLITE_CANTOPEN_CONVPATH
+- [rescode.html#cantopen_dirtywal](rescode.md#cantopen_dirtywal) → SQLITE_CANTOPEN_DIRTYWAL
+- [rescode.html#cantopen_fullpath](rescode.md#cantopen_fullpath) → SQLITE_CANTOPEN_FULLPATH
+- [rescode.html#cantopen_isdir](rescode.md#cantopen_isdir) → SQLITE_CANTOPEN_ISDIR
+- [rescode.html#cantopen_notempdir](rescode.md#cantopen_notempdir) → SQLITE_CANTOPEN_NOTEMPDIR
+- [rescode.html#cantopen_symlink](rescode.md#cantopen_symlink) → SQLITE_CANTOPEN_SYMLINK
+- [rescode.html#constraint](rescode.md#constraint) → SQLITE_CONSTRAINT
+- [rescode.html#constraint_check](rescode.md#constraint_check) → SQLITE_CONSTRAINT_CHECK
+- [rescode.html#constraint_commithook](rescode.md#constraint_commithook) → SQLITE_CONSTRAINT_COMMITHOOK
+- [rescode.html#constraint_datatype](rescode.md#constraint_datatype) → SQLITE_CONSTRAINT_DATATYPE
+- [rescode.html#constraint_foreignkey](rescode.md#constraint_foreignkey) → SQLITE_CONSTRAINT_FOREIGNKEY
+- [rescode.html#constraint_function](rescode.md#constraint_function) → SQLITE_CONSTRAINT_FUNCTION
+- [rescode.html#constraint_notnull](rescode.md#constraint_notnull) → SQLITE_CONSTRAINT_NOTNULL
+- [rescode.html#constraint_pinned](rescode.md#constraint_pinned) → SQLITE_CONSTRAINT_PINNED
+- [rescode.html#constraint_primarykey](rescode.md#constraint_primarykey) → SQLITE_CONSTRAINT_PRIMARYKEY
+- [rescode.html#constraint_rowid](rescode.md#constraint_rowid) → SQLITE_CONSTRAINT_ROWID
+- [rescode.html#constraint_trigger](rescode.md#constraint_trigger) → SQLITE_CONSTRAINT_TRIGGER
+- [rescode.html#constraint_unique](rescode.md#constraint_unique) → SQLITE_CONSTRAINT_UNIQUE
+- [rescode.html#constraint_vtab](rescode.md#constraint_vtab) → SQLITE_CONSTRAINT_VTAB
+- [rescode.html#corrupt](rescode.md#corrupt) → SQLITE_CORRUPT
+- [rescode.html#corrupt_index](rescode.md#corrupt_index) → SQLITE_CORRUPT_INDEX
+- [rescode.html#corrupt_sequence](rescode.md#corrupt_sequence) → SQLITE_CORRUPT_SEQUENCE
+- [rescode.html#corrupt_vtab](rescode.md#corrupt_vtab) → SQLITE_CORRUPT_VTAB
+- [rescode.html#done](rescode.md#done) → SQLITE_DONE
+- [rescode.html#empty](rescode.md#empty) → SQLITE_EMPTY
+- [rescode.html#error](rescode.md#error) → SQLITE_ERROR
+- [rescode.html#error_missing_collseq](rescode.md#error_missing_collseq) → SQLITE_ERROR_MISSING_COLLSEQ
+- [rescode.html#error_retry](rescode.md#error_retry) → SQLITE_ERROR_RETRY
+- [rescode.html#error_snapshot](rescode.md#error_snapshot) → SQLITE_ERROR_SNAPSHOT
+- [rescode.html#extrc](rescode.md#extrc) → {extended error code} {extended error codes} {extended result code} {extended result codes}
+- [rescode.html#format](rescode.md#format) → SQLITE_FORMAT
+- [rescode.html#full](rescode.md#full) → SQLITE_FULL
+- [rescode.html#internal](rescode.md#internal) → SQLITE_INTERNAL
+- [rescode.html#interrupt](rescode.md#interrupt) → SQLITE_INTERRUPT
+- [rescode.html#ioerr](rescode.md#ioerr) → SQLITE_IOERR
+- [rescode.html#ioerr_access](rescode.md#ioerr_access) → SQLITE_IOERR_ACCESS
+- [rescode.html#ioerr_auth](rescode.md#ioerr_auth) → SQLITE_IOERR_AUTH
+- [rescode.html#ioerr_begin_atomic](rescode.md#ioerr_begin_atomic) → SQLITE_IOERR_BEGIN_ATOMIC
+- [rescode.html#ioerr_blocked](rescode.md#ioerr_blocked) → SQLITE_IOERR_BLOCKED
+- [rescode.html#ioerr_checkreservedlock](rescode.md#ioerr_checkreservedlock) → SQLITE_IOERR_CHECKRESERVEDLOCK
+- [rescode.html#ioerr_close](rescode.md#ioerr_close) → SQLITE_IOERR_CLOSE
+- [rescode.html#ioerr_commit_atomic](rescode.md#ioerr_commit_atomic) → SQLITE_IOERR_COMMIT_ATOMIC
+- [rescode.html#ioerr_convpath](rescode.md#ioerr_convpath) → SQLITE_IOERR_CONVPATH
+- [rescode.html#ioerr_corruptfs](rescode.md#ioerr_corruptfs) → SQLITE_IOERR_CORRUPTFS
+- [rescode.html#ioerr_data](rescode.md#ioerr_data) → SQLITE_IOERR_DATA
+- [rescode.html#ioerr_delete](rescode.md#ioerr_delete) → SQLITE_IOERR_DELETE
+- [rescode.html#ioerr_delete_noent](rescode.md#ioerr_delete_noent) → SQLITE_IOERR_DELETE_NOENT
+- [rescode.html#ioerr_dir_close](rescode.md#ioerr_dir_close) → SQLITE_IOERR_DIR_CLOSE
+- [rescode.html#ioerr_dir_fsync](rescode.md#ioerr_dir_fsync) → SQLITE_IOERR_DIR_FSYNC
+- [rescode.html#ioerr_fstat](rescode.md#ioerr_fstat) → SQLITE_IOERR_FSTAT
+- [rescode.html#ioerr_fsync](rescode.md#ioerr_fsync) → SQLITE_IOERR_FSYNC
+- [rescode.html#ioerr_gettemppath](rescode.md#ioerr_gettemppath) → SQLITE_IOERR_GETTEMPPATH
+- [rescode.html#ioerr_lock](rescode.md#ioerr_lock) → SQLITE_IOERR_LOCK
+- [rescode.html#ioerr_mmap](rescode.md#ioerr_mmap) → SQLITE_IOERR_MMAP
+- [rescode.html#ioerr_nomem](rescode.md#ioerr_nomem) → SQLITE_IOERR_NOMEM
+- [rescode.html#ioerr_rdlock](rescode.md#ioerr_rdlock) → SQLITE_IOERR_RDLOCK
+- [rescode.html#ioerr_read](rescode.md#ioerr_read) → SQLITE_IOERR_READ
+- [rescode.html#ioerr_rollback_atomic](rescode.md#ioerr_rollback_atomic) → SQLITE_IOERR_ROLLBACK_ATOMIC
+- [rescode.html#ioerr_seek](rescode.md#ioerr_seek) → SQLITE_IOERR_SEEK
+- [rescode.html#ioerr_shmlock](rescode.md#ioerr_shmlock) → SQLITE_IOERR_SHMLOCK
+- [rescode.html#ioerr_shmmap](rescode.md#ioerr_shmmap) → SQLITE_IOERR_SHMMAP
+- [rescode.html#ioerr_shmopen](rescode.md#ioerr_shmopen) → SQLITE_IOERR_SHMOPEN
+- [rescode.html#ioerr_shmsize](rescode.md#ioerr_shmsize) → SQLITE_IOERR_SHMSIZE
+- [rescode.html#ioerr_short_read](rescode.md#ioerr_short_read) → SQLITE_IOERR_SHORT_READ
+- [rescode.html#ioerr_truncate](rescode.md#ioerr_truncate) → SQLITE_IOERR_TRUNCATE
+- [rescode.html#ioerr_unlock](rescode.md#ioerr_unlock) → SQLITE_IOERR_UNLOCK
+- [rescode.html#ioerr_vnode](rescode.md#ioerr_vnode) → SQLITE_IOERR_VNODE
+- [rescode.html#ioerr_write](rescode.md#ioerr_write) → SQLITE_IOERR_WRITE
+- [rescode.html#locked](rescode.md#locked) → SQLITE_LOCKED
+- [rescode.html#locked_sharedcache](rescode.md#locked_sharedcache) → SQLITE_LOCKED_SHAREDCACHE
+- [rescode.html#locked_vtab](rescode.md#locked_vtab) → SQLITE_LOCKED_VTAB
+- [rescode.html#mismatch](rescode.md#mismatch) → SQLITE_MISMATCH
+- [rescode.html#misuse](rescode.md#misuse) → SQLITE_MISUSE
+- [rescode.html#nolfs](rescode.md#nolfs) → SQLITE_NOLFS
+- [rescode.html#nomem](rescode.md#nomem) → SQLITE_NOMEM
+- [rescode.html#notadb](rescode.md#notadb) → SQLITE_NOTADB
+- [rescode.html#notfound](rescode.md#notfound) → SQLITE_NOTFOUND
+- [rescode.html#notice](rescode.md#notice) → SQLITE_NOTICE
+- [rescode.html#notice_recover_rollback](rescode.md#notice_recover_rollback) → SQLITE_NOTICE_RECOVER_ROLLBACK
+- [rescode.html#notice_recover_wal](rescode.md#notice_recover_wal) → SQLITE_NOTICE_RECOVER_WAL
+- [rescode.html#ok](rescode.md#ok) → SQLITE_OK
+- [rescode.html#ok_load_permanently](rescode.md#ok_load_permanently) → SQLITE_OK_LOAD_PERMANENTLY
+- [rescode.html#perm](rescode.md#perm) → SQLITE_PERM
+- [rescode.html#protocol](rescode.md#protocol) → SQLITE_PROTOCOL
+- [rescode.html#pve](rescode.md#pve) → ext-v-prim {primary versus extended result codes}
+- [rescode.html#range](rescode.md#range) → SQLITE_RANGE
+- [rescode.html#readonly](rescode.md#readonly) → SQLITE_READONLY
+- [rescode.html#readonly_cantinit](rescode.md#readonly_cantinit) → SQLITE_READONLY_CANTINIT
+- [rescode.html#readonly_cantlock](rescode.md#readonly_cantlock) → SQLITE_READONLY_CANTLOCK
+- [rescode.html#readonly_dbmoved](rescode.md#readonly_dbmoved) → SQLITE_READONLY_DBMOVED
+- [rescode.html#readonly_directory](rescode.md#readonly_directory) → SQLITE_READONLY_DIRECTORY
+- [rescode.html#readonly_recovery](rescode.md#readonly_recovery) → SQLITE_READONLY_RECOVERY
+- [rescode.html#readonly_rollback](rescode.md#readonly_rollback) → SQLITE_READONLY_ROLLBACK
+- [rescode.html#row](rescode.md#row) → SQLITE_ROW
+- [rescode.html#schema](rescode.md#schema) → SQLITE_SCHEMA
+- [rescode.html#toobig](rescode.md#toobig) → SQLITE_TOOBIG
+- [rescode.html#warning](rescode.md#warning) → SQLITE_WARNING
+- [rescode.html#warning_autoindex](rescode.md#warning_autoindex) → SQLITE_WARNING_AUTOINDEX
+- [rowidtable.html](rowidtable.md) → {rowid table} {rowid tables}
+- [rowvalue.html](rowvalue.md) → {row value} {row values} rowvalue vectors
+- [rowvalue.html#rvinop](rowvalue.md#rvinop) → {row value IN operator}
+- [rsync.html](rsync.md) → sqlite3_rsync sqlite3_rsync.exe
+- [rtree.html](rtree.md) → {R-Tree extension} R-Trees RTREE rtree
+- [rtree.html#auxcol](rtree.md#auxcol) → {auxiliary columns} {auxiliary columns in r-tree tables}
+- [rtree.html#customquery](rtree.md#customquery) → {custom r-tree queries}
+- [rtree.html#intrtree](rtree.md#intrtree) → {integer-valued r-trees}
+- [rtree.html#readwrite](rtree.md#readwrite) → {reading and writing an rtree at the same time}
+- [rtree.html#rtreecheck](rtree.md#rtreecheck) → rtreecheck
+- [rtree.html#xquery](rtree.md#xquery) → sqlite3_rtree_query_callback {xQueryFunc RTree callback}
+- [rtree.html#xshadow](rtree.md#xshadow) → {rtree shadow tables}
+- [schematab.html](schematab.md) → {sqlite_master table} sqlite_schema {sqlite_schema table} sqlite_temp_schema
+- [security.html](security.md) → {attack resistance} {defense against dark arts} {defense against the dark arts} {recommended application security practices} security
+- [security.html#baddb](security.md#baddb) → {untrusted database files}
+- [selfcontained.html](selfcontained.md) → low-dependency self-contained
+- [series.html](series.md) → generate_series series
+- [serverless.html](serverless.md) → embedded serverless
+- [session/c_changegroup_config_patchset.html](session/c_changegroup_config_patchset.md) → SQLITE_CHANGEGROUP_CONFIG_PATCHSET
+- [session/c_changeset_abort.html](session/c_changeset_abort.md) → SQLITE_CHANGESET_ABORT SQLITE_CHANGESET_OMIT SQLITE_CHANGESET_REPLACE
+- [session/c_changeset_conflict.html](session/c_changeset_conflict.md) → SQLITE_CHANGESET_CONFLICT SQLITE_CHANGESET_CONSTRAINT SQLITE_CHANGESET_DATA SQLITE_CHANGESET_FOREIGN_KEY SQLITE_CHANGESET_NOTFOUND
+- [session/c_changesetapply_fknoaction.html](session/c_changesetapply_fknoaction.md) → SQLITE_CHANGESETAPPLY_FKNOACTION SQLITE_CHANGESETAPPLY_IGNORENOOP SQLITE_CHANGESETAPPLY_INVERT SQLITE_CHANGESETAPPLY_NOSAVEPOINT SQLITE_CHANGESETAPPLY_NOUPDATELOOP
+- [session/c_changesetstart_invert.html](session/c_changesetstart_invert.md) → SQLITE_CHANGESETSTART_INVERT
+- [session/c_session_config_strmsize.html](session/c_session_config_strmsize.md) → SQLITE_SESSION_CONFIG_STRMSIZE
+- [session/c_session_objconfig_rowid.html](session/c_session_objconfig_rowid.md) → SQLITE_SESSION_OBJCONFIG_ROWID SQLITE_SESSION_OBJCONFIG_SIZE
+- [session/changegroup.html](session/changegroup.md) → sqlite3_changegroup
+- [session/changeset_iter.html](session/changeset_iter.md) → sqlite3_changeset_iter
+- [session/funclist.html](session/funclist.md) → {Session Module C-API function list} session_funclist
+- [session/intro.html](session/intro.md) → {Session Extension C-language Interface} session-capi
+- [session/rebaser.html](session/rebaser.md) → sqlite3_rebaser
+- [session/session.html](session/session.md) → sqlite3_session
+- [session/sqlite3changegroup_add.html](session/sqlite3changegroup_add.md) → sqlite3changegroup_add
+- [session/sqlite3changegroup_add_change.html](session/sqlite3changegroup_add_change.md) → sqlite3changegroup_add_change
+- [session/sqlite3changegroup_add_strm.html](session/sqlite3changegroup_add_strm.md) → sqlite3changegroup_add_strm sqlite3changegroup_output_strm sqlite3changeset_apply_strm sqlite3changeset_apply_v2_strm sqlite3changeset_apply_v3_strm sqlite3changeset_concat_strm sqlite3changeset_invert_strm sqlite3changeset_start_strm sqlite3changeset_start_v2_strm sqlite3rebaser_rebase_strm sqlite3session_changeset_strm sqlite3session_patchset_strm
+- [session/sqlite3changegroup_change_begin.html](session/sqlite3changegroup_change_begin.md) → sqlite3changegroup_change_begin
+- [session/sqlite3changegroup_change_blob.html](session/sqlite3changegroup_change_blob.md) → sqlite3changegroup_change_blob
+- [session/sqlite3changegroup_change_double.html](session/sqlite3changegroup_change_double.md) → sqlite3changegroup_change_double
+- [session/sqlite3changegroup_change_finish.html](session/sqlite3changegroup_change_finish.md) → sqlite3changegroup_change_finish
+- [session/sqlite3changegroup_change_int64.html](session/sqlite3changegroup_change_int64.md) → sqlite3changegroup_change_int64
+- [session/sqlite3changegroup_change_null.html](session/sqlite3changegroup_change_null.md) → sqlite3changegroup_change_null
+- [session/sqlite3changegroup_change_text.html](session/sqlite3changegroup_change_text.md) → sqlite3changegroup_change_text
+- [session/sqlite3changegroup_config.html](session/sqlite3changegroup_config.md) → sqlite3changegroup_config
+- [session/sqlite3changegroup_delete.html](session/sqlite3changegroup_delete.md) → sqlite3changegroup_delete
+- [session/sqlite3changegroup_new.html](session/sqlite3changegroup_new.md) → sqlite3changegroup_new
+- [session/sqlite3changegroup_output.html](session/sqlite3changegroup_output.md) → sqlite3changegroup_output
+- [session/sqlite3changegroup_schema.html](session/sqlite3changegroup_schema.md) → sqlite3changegroup_schema
+- [session/sqlite3changeset_apply.html](session/sqlite3changeset_apply.md) → sqlite3changeset_apply sqlite3changeset_apply_v2 sqlite3changeset_apply_v3
+- [session/sqlite3changeset_concat.html](session/sqlite3changeset_concat.md) → sqlite3changeset_concat
+- [session/sqlite3changeset_conflict.html](session/sqlite3changeset_conflict.md) → sqlite3changeset_conflict
+- [session/sqlite3changeset_finalize.html](session/sqlite3changeset_finalize.md) → sqlite3changeset_finalize
+- [session/sqlite3changeset_fk_conflicts.html](session/sqlite3changeset_fk_conflicts.md) → sqlite3changeset_fk_conflicts
+- [session/sqlite3changeset_invert.html](session/sqlite3changeset_invert.md) → sqlite3changeset_invert
+- [session/sqlite3changeset_new.html](session/sqlite3changeset_new.md) → sqlite3changeset_new
+- [session/sqlite3changeset_next.html](session/sqlite3changeset_next.md) → sqlite3changeset_next
+- [session/sqlite3changeset_old.html](session/sqlite3changeset_old.md) → sqlite3changeset_old
+- [session/sqlite3changeset_op.html](session/sqlite3changeset_op.md) → sqlite3changeset_op
+- [session/sqlite3changeset_pk.html](session/sqlite3changeset_pk.md) → sqlite3changeset_pk
+- [session/sqlite3changeset_start.html](session/sqlite3changeset_start.md) → sqlite3changeset_start sqlite3changeset_start_v2
+- [session/sqlite3rebaser_configure.html](session/sqlite3rebaser_configure.md) → sqlite3rebaser_configure
+- [session/sqlite3rebaser_create.html](session/sqlite3rebaser_create.md) → sqlite3rebaser_create
+- [session/sqlite3rebaser_delete.html](session/sqlite3rebaser_delete.md) → sqlite3rebaser_delete
+- [session/sqlite3rebaser_rebase.html](session/sqlite3rebaser_rebase.md) → sqlite3rebaser_rebase
+- [session/sqlite3session_attach.html](session/sqlite3session_attach.md) → sqlite3session_attach
+- [session/sqlite3session_changeset.html](session/sqlite3session_changeset.md) → sqlite3session_changeset
+- [session/sqlite3session_changeset_size.html](session/sqlite3session_changeset_size.md) → sqlite3session_changeset_size
+- [session/sqlite3session_config.html](session/sqlite3session_config.md) → sqlite3session_config
+- [session/sqlite3session_create.html](session/sqlite3session_create.md) → sqlite3session_create
+- [session/sqlite3session_delete.html](session/sqlite3session_delete.md) → sqlite3session_delete
+- [session/sqlite3session_diff.html](session/sqlite3session_diff.md) → sqlite3session_diff
+- [session/sqlite3session_enable.html](session/sqlite3session_enable.md) → sqlite3session_enable
+- [session/sqlite3session_indirect.html](session/sqlite3session_indirect.md) → sqlite3session_indirect
+- [session/sqlite3session_isempty.html](session/sqlite3session_isempty.md) → sqlite3session_isempty
+- [session/sqlite3session_memory_used.html](session/sqlite3session_memory_used.md) → sqlite3session_memory_used
+- [session/sqlite3session_object_config.html](session/sqlite3session_object_config.md) → sqlite3session_object_config
+- [session/sqlite3session_patchset.html](session/sqlite3session_patchset.md) → sqlite3session_patchset
+- [session/sqlite3session_table_filter.html](session/sqlite3session_table_filter.md) → sqlite3session_table_filter
+- [sessionintro.html](sessionintro.md) → session {session extension}
+- [sessionintro.html#changeset](sessionintro.md#changeset) → changeset changesets patchset patchsets
+- [sharedcache.html](sharedcache.md) → {SQLite Shared-Cache Mode} {shared cache} {shared cache mode}
+- [sharedcache.html#dontuse](sharedcache.md#dontuse) → {use of shared cache mode is discouraged}
+- [sharedcache.html#inmemsharedcache](sharedcache.md#inmemsharedcache) → {in-memory shared-cache}
+- [shortnames.html](shortnames.md) → {short filenames}
+- [shortnames.html#db83corrupt](shortnames.md#db83corrupt) → {database corruption caused by inconsistent use of 83 filenames}
+- [sitemap.html](sitemap.md) → {permuted index}
+- [spellfix1.html](spellfix1.md) → spellfix1
+- [spellfix1.html#configeditdist](spellfix1.md#configeditdist) → {configurable edit distances}
+- [spellfix1.html#editdist3](spellfix1.md#editdist3) → editdist3
+- [sqlanalyze.html](sqlanalyze.md) → sqlite3_analyzer sqlite3_analyzer.exe
+- [sqlar.html](sqlar.md) → {SQL Archive} SQLAR {SQLite Archive} {SQLite Archive files} {SQLite Archive format}
+- [sqlar.html#cltools](sqlar.md#cltools) → {managing SQLite Archives from the command-line}
+- [sqlar.html#dbasobj](sqlar.md#dbasobj) → {database as container object} {database as object}
+- [sqldiff.html](sqldiff.md) → sqldiff sqldiff.exe
+- [staleexpridx.html](staleexpridx.md) → {stale expression index} {stale expression indexes}
+- [staleexpridx.html#selfheal](staleexpridx.md#selfheal) → {self-healing index}
+- [stmt.html](stmt.md) → {SQLITE_STMT virtual table} sqlite_stmt {the SQLITE_STMT extension}
+- [stricttables.html](stricttables.md) → STRICT {STRICT table} {STRICT tables} {strict type checking}
+- [support.html#fx](support.md#fx) → forum
+- [support.html#mailinglists](support.md#mailinglists) → {mailing lists}
+- [swarmvtab.html#advanced_usage](swarmvtab.md#advanced_usage) → advanced
+- [swarmvtab.html#compiling_and_using_swarmvtab](swarmvtab.md#compiling_and_using_swarmvtab) → compilation
+- [swarmvtab.html#component_table_context_values](swarmvtab.md#component_table_context_values) → {swarmvtab context}
+- [swarmvtab.html#overview](swarmvtab.md#overview) → swarmvtab
+- [swarmvtab.html#sql_parameters](swarmvtab.md#sql_parameters) → {sql parameters}
+- [swarmvtab.html#the_maxopen_parameter](swarmvtab.md#the_maxopen_parameter) → {maxopen parameter}
+- [swarmvtab.html#the_missing_callback](swarmvtab.md#the_missing_callback) → {missing callback}
+- [swarmvtab.html#the_openclose_callback](swarmvtab.md#the_openclose_callback) → {openclose callback}
+- [syntax/aggregate-function-invocation.html](syntax/aggregate-function-invocation.md) → aggregate-function-invocation {aggregate-function-invocation syntax diagram}
+- [syntax/alter-table-stmt.html](syntax/alter-table-stmt.md) → alter-table-stmt {alter-table-stmt syntax diagram}
+- [syntax/analyze-stmt.html](syntax/analyze-stmt.md) → analyze-stmt {analyze-stmt syntax diagram}
+- [syntax/attach-stmt.html](syntax/attach-stmt.md) → attach-stmt {attach-stmt syntax diagram}
+- [syntax/begin-stmt.html](syntax/begin-stmt.md) → begin-stmt {begin-stmt syntax diagram}
+- [syntax/column-constraint.html](syntax/column-constraint.md) → column-constraint {column-constraint syntax diagram}
+- [syntax/column-def.html](syntax/column-def.md) → column-def {column-def syntax diagram}
+- [syntax/column-name-list.html](syntax/column-name-list.md) → column-name-list {column-name-list syntax diagram}
+- [syntax/comment-syntax.html](syntax/comment-syntax.md) → comment-syntax {comment-syntax syntax diagram}
+- [syntax/commit-stmt.html](syntax/commit-stmt.md) → commit-stmt {commit-stmt syntax diagram}
+- [syntax/common-table-expression.html](syntax/common-table-expression.md) → common-table-expression {common-table-expression syntax diagram}
+- [syntax/compound-operator.html](syntax/compound-operator.md) → compound-operator {compound-operator syntax diagram}
+- [syntax/compound-select-stmt.html](syntax/compound-select-stmt.md) → compound-select-stmt {compound-select-stmt syntax diagram}
+- [syntax/conflict-clause.html](syntax/conflict-clause.md) → conflict-clause {conflict-clause syntax diagram}
+- [syntax/create-index-stmt.html](syntax/create-index-stmt.md) → create-index-stmt {create-index-stmt syntax diagram}
+- [syntax/create-table-stmt.html](syntax/create-table-stmt.md) → create-table-stmt {create-table-stmt syntax diagram}
+- [syntax/create-trigger-stmt.html](syntax/create-trigger-stmt.md) → create-trigger-stmt {create-trigger-stmt syntax diagram}
+- [syntax/create-view-stmt.html](syntax/create-view-stmt.md) → create-view-stmt {create-view-stmt syntax diagram}
+- [syntax/create-virtual-table-stmt.html](syntax/create-virtual-table-stmt.md) → create-virtual-table-stmt {create-virtual-table-stmt syntax diagram}
+- [syntax/cte-table-name.html](syntax/cte-table-name.md) → cte-table-name {cte-table-name syntax diagram}
+- [syntax/delete-stmt-limited.html](syntax/delete-stmt-limited.md) → delete-stmt-limited {delete-stmt-limited syntax diagram}
+- [syntax/delete-stmt.html](syntax/delete-stmt.md) → delete-stmt {delete-stmt syntax diagram}
+- [syntax/detach-stmt.html](syntax/detach-stmt.md) → detach-stmt {detach-stmt syntax diagram}
+- [syntax/drop-index-stmt.html](syntax/drop-index-stmt.md) → drop-index-stmt {drop-index-stmt syntax diagram}
+- [syntax/drop-table-stmt.html](syntax/drop-table-stmt.md) → drop-table-stmt {drop-table-stmt syntax diagram}
+- [syntax/drop-trigger-stmt.html](syntax/drop-trigger-stmt.md) → drop-trigger-stmt {drop-trigger-stmt syntax diagram}
+- [syntax/drop-view-stmt.html](syntax/drop-view-stmt.md) → drop-view-stmt {drop-view-stmt syntax diagram}
+- [syntax/expr.html](syntax/expr.md) → expr {expr syntax diagram}
+- [syntax/factored-select-stmt.html](syntax/factored-select-stmt.md) → factored-select-stmt {factored-select-stmt syntax diagram}
+- [syntax/filter-clause.html](syntax/filter-clause.md) → filter-clause {filter-clause syntax diagram}
+- [syntax/foreign-key-clause.html](syntax/foreign-key-clause.md) → foreign-key-clause {foreign-key-clause syntax diagram}
+- [syntax/frame-spec.html](syntax/frame-spec.md) → frame-spec {frame-spec syntax diagram}
+- [syntax/function-arguments.html](syntax/function-arguments.md) → function-arguments {function-arguments syntax diagram}
+- [syntax/indexed-column.html](syntax/indexed-column.md) → indexed-column {indexed-column syntax diagram}
+- [syntax/insert-stmt.html](syntax/insert-stmt.md) → insert-stmt {insert-stmt syntax diagram}
+- [syntax/join-clause.html](syntax/join-clause.md) → join-clause {join-clause syntax diagram}
+- [syntax/join-constraint.html](syntax/join-constraint.md) → join-constraint {join-constraint syntax diagram}
+- [syntax/join-operator.html](syntax/join-operator.md) → join-operator {join-operator syntax diagram}
+- [syntax/literal-value.html](syntax/literal-value.md) → literal-value {literal-value syntax diagram}
+- [syntax/numeric-literal.html](syntax/numeric-literal.md) → numeric-literal {numeric-literal syntax diagram}
+- [syntax/ordering-term.html](syntax/ordering-term.md) → ordering-term {ordering-term syntax diagram}
+- [syntax/over-clause.html](syntax/over-clause.md) → over-clause {over-clause syntax diagram}
+- [syntax/pragma-stmt.html](syntax/pragma-stmt.md) → pragma-stmt {pragma-stmt syntax diagram}
+- [syntax/pragma-value.html](syntax/pragma-value.md) → pragma-value {pragma-value syntax diagram}
+- [syntax/qualified-table-name.html](syntax/qualified-table-name.md) → qualified-table-name {qualified-table-name syntax diagram}
+- [syntax/raise-function.html](syntax/raise-function.md) → raise-function {raise-function syntax diagram}
+- [syntax/recursive-cte.html](syntax/recursive-cte.md) → recursive-cte {recursive-cte syntax diagram}
+- [syntax/reindex-stmt.html](syntax/reindex-stmt.md) → reindex-stmt {reindex-stmt syntax diagram}
+- [syntax/release-stmt.html](syntax/release-stmt.md) → release-stmt {release-stmt syntax diagram}
+- [syntax/result-column.html](syntax/result-column.md) → result-column {result-column syntax diagram}
+- [syntax/returning-clause.html](syntax/returning-clause.md) → returning-clause {returning-clause syntax diagram}
+- [syntax/rollback-stmt.html](syntax/rollback-stmt.md) → rollback-stmt {rollback-stmt syntax diagram}
+- [syntax/savepoint-stmt.html](syntax/savepoint-stmt.md) → savepoint-stmt {savepoint-stmt syntax diagram}
+- [syntax/select-core.html](syntax/select-core.md) → select-core {select-core syntax diagram}
+- [syntax/select-stmt.html](syntax/select-stmt.md) → select-stmt {select-stmt syntax diagram}
+- [syntax/signed-number.html](syntax/signed-number.md) → signed-number {signed-number syntax diagram}
+- [syntax/simple-function-invocation.html](syntax/simple-function-invocation.md) → simple-function-invocation {simple-function-invocation syntax diagram}
+- [syntax/simple-select-stmt.html](syntax/simple-select-stmt.md) → simple-select-stmt {simple-select-stmt syntax diagram}
+- [syntax/sql-stmt-list.html](syntax/sql-stmt-list.md) → sql-stmt-list {sql-stmt-list syntax diagram}
+- [syntax/sql-stmt.html](syntax/sql-stmt.md) → sql-stmt {sql-stmt syntax diagram}
+- [syntax/table-constraint.html](syntax/table-constraint.md) → table-constraint {table-constraint syntax diagram}
+- [syntax/table-options.html](syntax/table-options.md) → table-options {table-options syntax diagram}
+- [syntax/table-or-subquery.html](syntax/table-or-subquery.md) → table-or-subquery {table-or-subquery syntax diagram}
+- [syntax/type-name.html](syntax/type-name.md) → type-name {type-name syntax diagram}
+- [syntax/update-stmt-limited.html](syntax/update-stmt-limited.md) → update-stmt-limited {update-stmt-limited syntax diagram}
+- [syntax/update-stmt.html](syntax/update-stmt.md) → update-stmt {update-stmt syntax diagram}
+- [syntax/upsert-clause.html](syntax/upsert-clause.md) → upsert-clause {upsert-clause syntax diagram}
+- [syntax/vacuum-stmt.html](syntax/vacuum-stmt.md) → vacuum-stmt {vacuum-stmt syntax diagram}
+- [syntax/window-defn.html](syntax/window-defn.md) → window-defn {window-defn syntax diagram}
+- [syntax/window-function-invocation.html](syntax/window-function-invocation.md) → window-function-invocation {window-function-invocation syntax diagram}
+- [syntax/with-clause.html](syntax/with-clause.md) → with-clause {with-clause syntax diagram}
+- [syntaxdiagrams.html](syntaxdiagrams.md) → {syntax diagrams}
+- [tcljson.html](tcljson.md) → {Tcl extension JSON}
+- [tclsqlite.html](tclsqlite.md) → {TCL Interface} {Tcl extension}
+- [tclsqlite.html#authorizer](tclsqlite.md#authorizer) → {TCL interface authorizer method} {authorizer method}
+- [tclsqlite.html#backup](tclsqlite.md#backup) → {TCL interface backup method} {backup method}
+- [tclsqlite.html#bind_fallback](tclsqlite.md#bind_fallback) → {TCL interface bind_fallback method} {bind_fallback method}
+- [tclsqlite.html#busy](tclsqlite.md#busy) → {TCL interface busy method} {busy method}
+- [tclsqlite.html#cache](tclsqlite.md#cache) → {TCL interface cache method} {cache method}
+- [tclsqlite.html#changes](tclsqlite.md#changes) → {TCL interface changes method} {changes method}
+- [tclsqlite.html#close](tclsqlite.md#close) → {TCL interface close method} {close method}
+- [tclsqlite.html#collate](tclsqlite.md#collate) → {TCL interface collate method} {collate method}
+- [tclsqlite.html#collation_needed](tclsqlite.md#collation_needed) → {TCL interface collation_needed method} {collation_needed method}
+- [tclsqlite.html#commit_hook](tclsqlite.md#commit_hook) → {TCL interface commit_hook method} {commit_hook method}
+- [tclsqlite.html#complete](tclsqlite.md#complete) → {TCL interface complete method} {complete method}
+- [tclsqlite.html#config](tclsqlite.md#config) → {TCL interface config method} {config method}
+- [tclsqlite.html#copy](tclsqlite.md#copy) → {TCL interface copy method} {copy method}
+- [tclsqlite.html#deserialize](tclsqlite.md#deserialize) → {TCL interface deserialize method} {deserialize method}
+- [tclsqlite.html#enable_load_extension](tclsqlite.md#enable_load_extension) → {TCL interface enable_load_extension method} {enable_load_extension method}
+- [tclsqlite.html#errorcode](tclsqlite.md#errorcode) → {TCL interface errorcode method} {errorcode method}
+- [tclsqlite.html#eval](tclsqlite.md#eval) → {TCL interface eval method} {eval method}
+- [tclsqlite.html#exists](tclsqlite.md#exists) → {TCL interface exists method} {exists method}
+- [tclsqlite.html#format](tclsqlite.md#format) → {TCL interface format method} {format method}
+- [tclsqlite.html#function](tclsqlite.md#function) → {TCL interface function method} {function method}
+- [tclsqlite.html#incrblob](tclsqlite.md#incrblob) → {TCL interface incrblob method} {incrblob method}
+- [tclsqlite.html#interrupt](tclsqlite.md#interrupt) → {TCL interface interrupt method} {interrupt method}
+- [tclsqlite.html#last_insert_rowid](tclsqlite.md#last_insert_rowid) → {TCL interface last_insert_rowid method} {last_insert_rowid method}
+- [tclsqlite.html#nullvalue](tclsqlite.md#nullvalue) → {TCL interface nullvalue method} {nullvalue method}
+- [tclsqlite.html#onecolumn](tclsqlite.md#onecolumn) → {TCL interface onecolumn method} {onecolumn method}
+- [tclsqlite.html#preupdate](tclsqlite.md#preupdate) → {TCL interface preupdate method} {preupdate method}
+- [tclsqlite.html#profile](tclsqlite.md#profile) → {TCL interface profile method} {profile method}
+- [tclsqlite.html#progress](tclsqlite.md#progress) → {TCL interface progress method} {progress method}
+- [tclsqlite.html#restore](tclsqlite.md#restore) → {TCL interface restore method} {restore method}
+- [tclsqlite.html#rollback_hook](tclsqlite.md#rollback_hook) → {TCL interface rollback_hook method} {rollback_hook method}
+- [tclsqlite.html#serialize](tclsqlite.md#serialize) → {TCL interface serialize method} {serialize method}
+- [tclsqlite.html#status](tclsqlite.md#status) → {TCL interface status method} {status method}
+- [tclsqlite.html#timeout](tclsqlite.md#timeout) → {TCL interface timeout method} {timeout method}
+- [tclsqlite.html#total_changes](tclsqlite.md#total_changes) → {TCL interface total_changes method} {total_changes method}
+- [tclsqlite.html#trace](tclsqlite.md#trace) → {TCL interface trace method} {trace method}
+- [tclsqlite.html#trace_v2](tclsqlite.md#trace_v2) → {TCL interface trace_v2 method} {trace_v2 method}
+- [tclsqlite.html#transaction](tclsqlite.md#transaction) → {TCL interface transaction method} {transaction method}
+- [tclsqlite.html#unlock_notify](tclsqlite.md#unlock_notify) → {TCL interface unlock_notify method} {unlock_notify method}
+- [tclsqlite.html#update_hook](tclsqlite.md#update_hook) → {TCL interface update_hook method} {update_hook method}
+- [tclsqlite.html#varsubst](tclsqlite.md#varsubst) → {TCL variable substitution}
+- [tclsqlite.html#version](tclsqlite.md#version) → {TCL interface version method} {version method}
+- [tclsqlite.html#wal_hook](tclsqlite.md#wal_hook) → {TCL interface wal_hook method} {wal_hook method}
+- [tempfiles.html](tempfiles.md) → {temporary disk files}
+- [tempfiles.html#stmtjrnl](tempfiles.md#stmtjrnl) → {Statement journals} {statement journal} {statement journals}
+- [tempfiles.html#superjrnl](tempfiles.md#superjrnl) → {master journal} super-journal
+- [tempfiles.html#tempdir](tempfiles.md#tempdir) → {temporary directory search algorithm}
+- [tempfiles.html#tempstore](tempfiles.md#tempstore) → tempstore
+- [testing.html](testing.md) → {test suite} tested testing
+- [testing.html#3pfuzz](testing.md#3pfuzz) → {3rd-party fuzzers}
+- [testing.html#aflfuzz](testing.md#aflfuzz) → AFL {American Fuzzy Lop fuzzer}
+- [testing.html#cklist](testing.md#cklist) → checklist {release testing checklists}
+- [testing.html#coverage](testing.md#coverage) → {test coverage}
+- [testing.html#dbsqlfuzz](testing.md#dbsqlfuzz) → dbsqlfuzz jfuzz
+- [testing.html#defcode](testing.md#defcode) → {defensive code}
+- [testing.html#fuzzcheck](testing.md#fuzzcheck) → fuzzcheck
+- [testing.html#fuzztesting](testing.md#fuzztesting) → {SQL fuzzing} {fuzz testing}
+- [testing.html#harnesses](testing.md#harnesses) → {test harness} {test harnesses}
+- [testing.html#mcdc](testing.md#mcdc) → MC/DC {MC/DC testing}
+- [testing.html#mutationtests](testing.md#mutationtests) → {mutation testing}
+- [testing.html#ossfuzz](testing.md#ossfuzz) → {OSS Fuzz}
+- [testing.html#slt](testing.md#slt) → SLT {SQL Logic Tests}
+- [testing.html#tcl](testing.md#tcl) → {TCL test suite}
+- [testing.html#tension](testing.md#tension) → {coverage testing vs. fuzz testing}
+- [testing.html#testcase](testing.md#testcase) → {testcase macros}
+- [th3.html](th3.md) → TH3
+- [th3.html#muttest](th3.md#muttest) → {mutation test script}
+- [threadsafe.html](threadsafe.md) → {threading mode}
+- [transactional.html](transactional.md) → ACID power-safe {power-safe transactions} transactional
+- [uintcseq.html](uintcseq.md) → UINT {UINT collating sequence}
+- [undoredo.html](undoredo.md) → {automated undo/redo stack} undo/redo undoredo
+- [unionvtab.html](unionvtab.md) → {UNION virtual table} union-vtab unionvtab
+- [unlock_notify.html](unlock_notify.md) → {Using the SQLite Unlock Notification Feature}
+- [uri.html](uri.md) → URI {URI filename} {URI filenames} {Uniform Resource Identifier}
+- [uri.html#coreqp](uri.md#coreqp) → {URI query parameters} coreqp {query parameters with special meaning to SQLite} {standard query parameters}
+- [uri.html#uricache](uri.md#uricache) → {cache query parameter}
+- [uri.html#uriimmutable](uri.md#uriimmutable) → {immutable query parameter}
+- [uri.html#urimode](uri.md#urimode) → {mode query parameter}
+- [uri.html#urimodeof](uri.md#urimodeof) → modeof {modeof query parameter}
+- [uri.html#urinolock](uri.md#urinolock) → {nolock query parameter}
+- [uri.html#uripsow](uri.md#uripsow) → {psow query parameter}
+- [uri.html#urivfs](uri.md#urivfs) → {vfs query parameter}
+- [useovernet.html](useovernet.md) → {how to corrupt a database} {network filesystem use}
+- [versionnumbers.html](versionnumbers.md) → {version numbering conventions}
+- [vfs.html](vfs.md) → {OS backend} VFS VFSes
+- [vfs.html#shim](vfs.md#shim) → {VFS shim} {VFS shims} shims
+- [vtab.html](vtab.md) → {virtual table} {virtual tables}
+- [vtab.html#colUsed](vtab.md#colUsed) → {colUsed field}
+- [vtab.html#customvtab](vtab.md#customvtab) → {custom virtual tables}
+- [vtab.html#epoonlyvtab](vtab.md#epoonlyvtab) → {eponymous-only virtual table} {eponymous-only virtual tables}
+- [vtab.html#epovtab](vtab.md#epovtab) → {eponymous virtual table} {eponymous virtual tables}
+- [vtab.html#hiddencol](vtab.md#hiddencol) → {hidden column} {hidden columns}
+- [vtab.html#obc](vtab.md#obc) → orderByConsumed
+- [vtab.html#sqlite3_module.xDestroy](vtab.md#sqlite3_module.xDestroy) → xDestroy
+- [vtab.html#tabfunc2](vtab.md#tabfunc2) → {table-valued function} {table-valued functions}
+- [vtab.html#worid](vtab.md#worid) → {WITHOUT ROWID virtual table} {WITHOUT ROWID virtual tables}
+- [vtab.html#xBegin](vtab.md#xBegin) → sqlite3_module.xBegin xBegin
+- [vtab.html#xbestindex](vtab.md#xbestindex) → sqlite3_module.xBestIndex xBestIndex
+- [vtab.html#xclose](vtab.md#xclose) → sqlite3_module.xClose
+- [vtab.html#xcolumn](vtab.md#xcolumn) → sqlite3_module.xColumn xColumn
+- [vtab.html#xcommit](vtab.md#xcommit) → sqlite3_module.xCommit xCommit
+- [vtab.html#xconnect](vtab.md#xconnect) → sqlite3_module.xConnect xConnect
+- [vtab.html#xcreate](vtab.md#xcreate) → sqlite3_module.xCreate xCreate
+- [vtab.html#xdisconnect](vtab.md#xdisconnect) → sqlite3_module.xDisconnect xDisconnect
+- [vtab.html#xeof](vtab.md#xeof) → sqlite3_module.xEof xEof
+- [vtab.html#xfilter](vtab.md#xfilter) → sqlite3_module.xFilter xFilter
+- [vtab.html#xfindfunction](vtab.md#xfindfunction) → sqlite3_module.xFindFunction xFindFunction
+- [vtab.html#xintegrity](vtab.md#xintegrity) → sqlite3_module.xIntegrity xIntegrity {xIntegrity method}
+- [vtab.html#xnext](vtab.md#xnext) → sqlite3_module.xNext xNext
+- [vtab.html#xopen](vtab.md#xopen) → sqlite3_module.xOpen
+- [vtab.html#xrename](vtab.md#xrename) → sqlite3_module.xRename xRename
+- [vtab.html#xrollback](vtab.md#xrollback) → sqlite3_module.xRollback xRollback
+- [vtab.html#xrowid](vtab.md#xrowid) → sqlite3_module.xRowid xRowid
+- [vtab.html#xsavepoint](vtab.md#xsavepoint) → sqlite3_module.xSavepoint xRelease xRollbackTo xSavepoint
+- [vtab.html#xshadowname](vtab.md#xshadowname) → {shadow table} {shadow tables} sqlite3_module.xShadowName xShadowName
+- [vtab.html#xsync](vtab.md#xsync) → sqlite3_module.xSync
+- [vtab.html#xupdate](vtab.md#xupdate) → sqlite3_module.xUpdate xUpdate
+- [vtablist.html](vtablist.md) → {list of virtual tables} {virtual table list}
+- [wal.html](wal.md) → WAL {WAL mode} {write-ahead log}
+- [wal.html#advantages](wal.md#advantages) → {advantages of WAL-mode}
+- [wal.html#bigwal](wal.md#bigwal) → {avoiding large WAL files} {large WAL files}
+- [wal.html#bkwrds](wal.md#bkwrds) → {WAL backwards compatibility}
+- [wal.html#busy](wal.md#busy) → {WAL-mode read blocking}
+- [wal.html#ckpt](wal.md#ckpt) → checkpoint checkpointed checkpointing
+- [wal.html#concurrency](wal.md#concurrency) → {WAL concurrency}
+- [wal.html#noshm](wal.md#noshm) → {WAL without shared memory}
+- [wal.html#readonly](wal.md#readonly) → {read-only WAL databases}
+- [wal.html#walfile](wal.md#walfile) → {WAL file}
+- [wal.html#walresetbug](wal.md#walresetbug) → {WAL-reset bug} {WAL-reset database corruption bug}
+- [walformat.html](walformat.md) → {WAL-mode File Format}
+- [walformat.html#locks](walformat.md#locks) → {WAL-mode locks}
+- [walformat.html#mxframe](walformat.md#mxframe) → mxFrame
+- [walformat.html#nbackfill](walformat.md#nbackfill) → nBackfill
+- [walformat.html#recovery](walformat.md#recovery) → {WAL-mode crash recovery} recovery
+- [walformat.html#shm](walformat.md#shm) → {shm file} wal-index
+- [walformat.html#walidxfmt](walformat.md#walidxfmt) → {WAL-index File Format} {WAL-index format}
+- [whentouse.html](whentouse.md) → {Appropriate Uses For SQLite}
+- [whentouse.html#container](whentouse.md#container) → {data container}
+- [whentouse.html#dbcklst](whentouse.md#dbcklst) → {decision checklist}
+- [whentouse.html#serversidedb](whentouse.md#serversidedb) → {server-side database}
+- [whentouse.html#website](whentouse.md#website) → {using SQLite for websites}
+- [whentouse.html#wireproto](whentouse.md#wireproto) → {data transfer format}
+- [whybytecode.html](whybytecode.md) → {Why SQLite Uses Bytecode}
+- [windowfunctions.html](windowfunctions.md) → {Window functions} {window function} {window functions} winfunc
+- [windowfunctions.html#aggwinfunc](windowfunctions.md#aggwinfunc) → {aggregate window functions}
+- [windowfunctions.html#biwinfunc](windowfunctions.md#biwinfunc) → {builtin window functions}
+- [windowfunctions.html#builtins](windowfunctions.md#builtins) → {built-in window functions} built-ins
+- [windowfunctions.html#exprrange](windowfunctions.md#exprrange) → {RANGE n FOLLOWING} {RANGE n PRECEDING}
+- [windowfunctions.html#frameboundary](windowfunctions.md#frameboundary) → {frame boundary}
+- [windowfunctions.html#framespec](windowfunctions.md#framespec) → {frame specification} frames
+- [windowfunctions.html#frametype](windowfunctions.md#frametype) → {frame type}
+- [windowfunctions.html#grouptype](windowfunctions.md#grouptype) → {GROUPS frames}
+- [windowfunctions.html#ptxn](windowfunctions.md#ptxn) → partition
+- [windowfunctions.html#rangetype](windowfunctions.md#rangetype) → {RANGE frames}
+- [windowfunctions.html#udfwinfunc](windowfunctions.md#udfwinfunc) → {application-defined window functions} {user-defined window functions}
+- [windowfunctions.html#wchaining](windowfunctions.md#wchaining) → {window chaining}
+- [windowfunctions.html#wexcls](windowfunctions.md#wexcls) → {EXCLUDE clause} {exclude clause}
+- [withoutrowid.html](withoutrowid.md) → {Clustered indexes} {WITHOUT ROWID} {WITHOUT rowid}
+- [withoutrowid.html#bene](withoutrowid.md#bene) → {benefits of using WITHOUT ROWID}
+- [withoutrowid.html#wtu](withoutrowid.md#wtu) → {when to use WITHOUT ROWID}
+- [zeroconf.html](zeroconf.md) → zero-configuration
+- [zipfile.html](zipfile.md) → {Zipfile virtual table} zipfile
+- [zipfile.html#adding_entries_to_a_zip_archive](zipfile.md#adding_entries_to_a_zip_archive) → {Adding to Zip}

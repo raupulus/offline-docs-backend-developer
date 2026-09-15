@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pg_walinspect — low-level WAL inspection · PostgreSQL</title>
+<meta name="description" content="pg_walinspect — low-level WAL inspection - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/pgwalinspect.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="pg_walinspect — low-level WAL inspection">
+<meta property="og:description" content="pg_walinspect — low-level WAL inspection - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pg_walinspect — low-level WAL inspection">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "pg_walinspect — low-level WAL inspection",
+"url": "https://docs.raupulus.dev/postgresql/pgwalinspect.html",  "description": "pg_walinspect — low-level WAL inspection - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+class="is-current" aria-current="page">pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+>pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+              <li>
+                <a href="./rangetypes.html"
+>Range Types</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-recovery-config.html"
+>recovery.conf file merged into postgresql.conf</a>
+              </li>
+              <li>
+                <a href="./reference.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="./regress.html"
+>Regression Tests</a>
+              </li>
+              <li>
+                <a href="./release-17.html"
+>Release 17.11</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release Notes</a>
+              </li>
+              <li>
+                <a href="./wal.html"
+>Reliability and the Write-Ahead Log</a>
+              </li>
+              <li>
+                <a href="./replication-origins.html"
+>Replication Progress Tracking</a>
+              </li>
+              <li>
+                <a href="./maintenance.html"
+>Routine Database Maintenance Tasks</a>
+              </li>
+              <li>
+                <a href="./seg.html"
+>seg — a datatype for line segments or floating point intervals</a>
+              </li>
+              <li>
+                <a href="./sepgsql.html"
+>sepgsql — SELinux-, label-based mandatory access control (MAC) security module</a>
+              </li>
+              <li>
+                <a href="./config.html"
+>Server Configuration</a>
+              </li>
+              <li>
+                <a href="./runtime.html"
+>Server Setup and Operation</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">pg_walinspect — low-level WAL inspection</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/pgwalinspect.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#pg_walinspect-low-level-wal-inspection">pg_walinspect low-level WAL inspection#</a></li>
+              <li class="lvl-2"><a href="#general-functions">General Functions#</a></li>
+              <li class="lvl-2"><a href="#author">Author#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="pg_walinspect-low-level-wal-inspection">pg_walinspect low-level WAL inspection<a class="headerlink" href="#pg_walinspect-low-level-wal-inspection" title="Permanent link">#</a></h2>
+<p>pg_walinspect</p>
+<p>The <code>pg_walinspect</code> module provides SQL functions that allow you to inspect the contents of write-ahead log of a running PostgreSQL database cluster at a low level, which is useful for debugging, analytical, reporting or educational purposes. It is similar to <a href="#pgwaldump">???</a>, but accessible through SQL rather than a separate utility.</p>
+<p>All the functions of this module will provide the WAL information using the server's current timeline ID.</p>
+<blockquote>
+<p>[!NOTE]
+The <code>pg_walinspect</code> functions are often called using an LSN argument that specifies the location at which a known WAL record of interest <em>begins</em>. However, some functions, such as <code>pg_logical_emit_message</code>, return the LSN <em>after</em> the record that was just inserted.</p>
+<p>[!TIP]
+All of the <code>pg_walinspect</code> functions that show information about records that fall within a certain LSN range are permissive about accepting \&lt;end_lsn&gt; arguments that are after the server's current LSN. Using an \&lt;end_lsn&gt; “from the future” will not raise an error.</p>
+<p>It may be convenient to provide the value <code>FFFFFFFF/FFFFFFFF</code> (the maximum valid <code>pg_lsn</code> value) as an \&lt;end_lsn&gt; argument. This is equivalent to providing an \&lt;end_lsn&gt; argument matching the server's current LSN.</p>
+</blockquote>
+<p>By default, use of these functions is restricted to superusers and members of the <code>pg_read_server_files</code> role. Access may be granted by superusers to others using <code>GRANT</code>.</p>
+<h2 id="general-functions">General Functions<a class="headerlink" href="#general-functions" title="Permanent link">#</a></h2>
+<p><code>pg_get_wal_record_info(in_lsn pg_lsn) returns record</code><br>
+Gets WAL record information about a record that is located at or after the \&lt;in_lsn&gt; argument. For example:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT * FROM pg_get_wal_record_info(&#39;0/E419E28&#39;);
+-[ RECORD 1 ]----+-------------------------------------------------
+start_lsn        | 0/E419E28
+end_lsn          | 0/E419E68
+prev_lsn         | 0/E419D78
+xid              | 0
+resource_manager | Heap2
+record_type      | VACUUM
+record_length    | 58
+main_data_length | 2
+fpi_length       | 0
+description      | nunused: 5, unused: [1, 2, 3, 4, 5]
+block_ref        | blkref #0: rel 1663/16385/1249 fork main blk 364
+</code></pre></div>
+
+<p>If \&lt;in_lsn&gt; isn't at the start of a WAL record, information about the next valid WAL record is shown instead. If there is no next valid WAL record, the function raises an error.</p>
+<p><code>pg_get_wal_records_info(start_lsn pg_lsn, end_lsn pg_lsn) returns setof record</code><br>
+Gets information of all the valid WAL records between \&lt;start_lsn&gt; and \&lt;end_lsn&gt;. Returns one row per WAL record. For example:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT * FROM pg_get_wal_records_info(&#39;0/1E913618&#39;, &#39;0/1E913740&#39;) LIMIT 1;
+-[ RECORD 1 ]----+--------------------------------------------------------------
+start_lsn        | 0/1E913618
+end_lsn          | 0/1E913650
+prev_lsn         | 0/1E9135A0
+xid              | 0
+resource_manager | Standby
+record_type      | RUNNING_XACTS
+record_length    | 50
+main_data_length | 24
+fpi_length       | 0
+description      | nextXid 33775 latestCompletedXid 33774 oldestRunningXid 33775
+block_ref        |
+</code></pre></div>
+
+<p>The function raises an error if \&lt;start_lsn&gt; is not available.</p>
+<p><code>pg_get_wal_block_info(start_lsn pg_lsn, end_lsn pg_lsn, show_data boolean DEFAULT true) returns setof record</code><br>
+Gets information about each block reference from all the valid WAL records between \&lt;start_lsn&gt; and \&lt;end_lsn&gt; with one or more block references. Returns one row per block reference per WAL record. For example:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT * FROM pg_get_wal_block_info(&#39;0/1230278&#39;, &#39;0/12302B8&#39;);
+-[ RECORD 1 ]-----+-----------------------------------
+start_lsn         | 0/1230278
+end_lsn           | 0/12302B8
+prev_lsn          | 0/122FD40
+block_id          | 0
+reltablespace     | 1663
+reldatabase       | 1
+relfilenode       | 2658
+relforknumber     | 0
+relblocknumber    | 11
+xid               | 341
+resource_manager  | Btree
+record_type       | INSERT_LEAF
+record_length     | 64
+main_data_length  | 2
+block_data_length | 16
+block_fpi_length  | 0
+block_fpi_info    |
+description       | off: 46
+block_data        | \x00002a00070010402630000070696400
+block_fpi_data    |
+</code></pre></div>
+
+<p>This example involves a WAL record that only contains one block reference, but many WAL records contain several block references. Rows output by <code>pg_get_wal_block_info</code> are guaranteed to have a unique combination of \&lt;start_lsn&gt; and \&lt;block_id&gt; values.</p>
+<p>Much of the information shown here matches the output that <code>pg_get_wal_records_info</code> would show, given the same arguments. However, <code>pg_get_wal_block_info</code> unnests the information from each WAL record into an expanded form by outputting one row per block reference, so certain details are tracked at the block reference level rather than at the whole-record level. This structure is useful with queries that track how individual blocks changed over time. Note that records with no block references (e.g., <code>COMMIT</code> WAL records) will have no rows returned, so <code>pg_get_wal_block_info</code> may actually return <em>fewer</em> rows than <code>pg_get_wal_records_info</code>.</p>
+<p>The reltablespace, reldatabase, and relfilenode parameters reference <a href="#catalog-pg-tablespace">pg_tablespace</a>.oid, <a href="#catalog-pg-database">pg_database</a>.oid, and <a href="#catalog-pg-class">pg_class</a>.relfilenode respectively. The relforknumber field is the fork number within the relation for the block reference; see <code>common/relpath.h</code> for details.</p>
+<blockquote>
+<p>[!TIP]
+The <code>pg_filenode_relation</code> function (see <a href="#functions-admin-dblocation">???</a>) can help you to determine which relation was modified during original execution.</p>
+</blockquote>
+<p>It is possible for clients to avoid the overhead of materializing block data. This may make function execution significantly faster. When \&lt;show_data&gt; is set to <code>false</code>, block_data and block_fpi_data values are omitted (that is, the block_data and block_fpi_data <code>OUT</code> arguments are <code>NULL</code> for all rows returned). Obviously, this optimization is only feasible with queries where block data isn't truly required.</p>
+<p>The function raises an error if \&lt;start_lsn&gt; is not available.</p>
+<p><code>pg_get_wal_stats(start_lsn pg_lsn, end_lsn pg_lsn, per_record boolean DEFAULT false) returns setof record</code><br>
+Gets statistics of all the valid WAL records between \&lt;start_lsn&gt; and \&lt;end_lsn&gt;. By default, it returns one row per \&lt;resource_manager&gt; type. When \&lt;per_record&gt; is set to <code>true</code>, it returns one row per \&lt;record_type&gt;. For example:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT * FROM pg_get_wal_stats(&#39;0/1E847D00&#39;, &#39;0/1E84F500&#39;)
+           WHERE count &gt; 0 AND
+                 &quot;resource_manager/record_type&quot; = &#39;Transaction&#39;
+           LIMIT 1;
+-[ RECORD 1 ]----------------+-------------------
+resource_manager/record_type | Transaction
+count                        | 2
+count_percentage             | 8
+record_size                  | 875
+record_size_percentage       | 41.23468426013195
+fpi_size                     | 0
+fpi_size_percentage          | 0
+combined_size                | 875
+combined_size_percentage     | 2.8634072910530795
+</code></pre></div>
+
+<p>The function raises an error if \&lt;start_lsn&gt; is not available.</p>
+<h2 id="author">Author<a class="headerlink" href="#author" title="Permanent link">#</a></h2>
+<p>Bharath Rupireddy <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#98;&#104;&#97;&#114;&#97;&#116;&#104;&#46;&#114;&#117;&#112;&#105;&#114;&#101;&#100;&#100;&#121;&#102;&#111;&#114;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#98;&#104;&#97;&#114;&#97;&#116;&#104;&#46;&#114;&#117;&#112;&#105;&#114;&#101;&#100;&#100;&#121;&#102;&#111;&#114;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./pgvisibility.html">
+          <span class="muted">Anterior</span>pg_visibility — visibility map information and utilities
+        </a>
+        <a class="pager-next" href="./appendix-obsolete-pgxlogdump.html">
+          <span class="muted">Siguiente</span>pg_xlogdump renamed to pg_waldump
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

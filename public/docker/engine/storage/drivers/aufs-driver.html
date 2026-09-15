@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AUFS storage driver · Docker</title>
+<meta name="description" content="AUFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/storage/drivers/aufs-driver.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="AUFS storage driver">
+<meta property="og:description" content="AUFS storage driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AUFS storage driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "AUFS storage driver",
+"url": "https://docs.raupulus.dev/docker/engine/storage/drivers/aufs-driver.html",  "description": "AUFS storage driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+class="is-current" aria-current="page">AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/stack-deploy.html"
+>Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">AUFS storage driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#prerequisites">Prerequisites#</a></li>
+              <li class="lvl-2"><a href="#configure-docker-with-the-aufs-storage-driver">Configure Docker with the aufs storage driver#</a></li>
+              <li class="lvl-2"><a href="#how-the-aufs-storage-driver-works">How the aufs storage driver works#</a></li>
+              <li class="lvl-3"><a href="#example-image-and-container-on-disk-constructs">Example: Image and container on-disk constructs#</a></li>
+              <li class="lvl-2"><a href="#how-container-reads-and-writes-work-with-aufs">How container reads and writes work with aufs#</a></li>
+              <li class="lvl-3"><a href="#reading-files">Reading files#</a></li>
+              <li class="lvl-3"><a href="#modifying-files-or-directories">Modifying files or directories#</a></li>
+              <li class="lvl-2"><a href="#aufs-and-docker-performance">AUFS and Docker performance#</a></li>
+              <li class="lvl-3"><a href="#performance-best-practices">Performance best practices#</a></li>
+              <li class="lvl-2"><a href="#related-information">Related information#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <blockquote>
+<p><strong>Deprecated</strong></p>
+<p>The AuFS storage driver has been deprecated, and is removed in Docker Engine
+v24.0. If you are using AufS, you must migrate to a supported storage driver
+before upgrading to Docker Engine v24.0. Read the <a href="select-storage-driver.html">Docker storage drivers</a>
+page for supported storage drivers.</p>
+</blockquote>
+<p>AUFS is a <em>union filesystem</em>. The <code>aufs</code> storage driver was previously the default
+storage driver used for managing images and layers on Docker for Ubuntu, and for
+Debian versions prior to Stretch. If your Linux kernel is version 4.0 or higher,
+and you use Docker Engine - Community, consider using the newer
+<a href="overlayfs-driver.html">overlay2</a>, which has
+potential performance advantages over the <code>aufs</code> storage driver.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<ul>
+<li>For Docker Engine - Community, AUFS is supported on Ubuntu, and on Debian versions prior to
+  Stretch.</li>
+<li>If you use Ubuntu, you need to add the AUFS module to the kernel. If you do
+  not install these packages, you need to use  <code>overlay2</code>.</li>
+<li>AUFS cannot use the following backing filesystems: <code>aufs</code>, <code>btrfs</code>, or
+  <code>ecryptfs</code>. This means that the filesystem which contains
+  <code>/var/lib/docker/aufs</code> cannot be one of these filesystem types.</li>
+</ul>
+<h2 id="configure-docker-with-the-aufs-storage-driver">Configure Docker with the <code>aufs</code> storage driver<a class="headerlink" href="#configure-docker-with-the-aufs-storage-driver" title="Permanent link">#</a></h2>
+<p>If the AUFS driver is loaded into the kernel when you start Docker, and no other
+storage driver is configured, Docker uses it by default.</p>
+<ol>
+<li>
+<p>Use the following command to verify that your kernel supports AUFS.</p>
+<p>```console
+$ grep aufs /proc/filesystems</p>
+<p>nodev   aufs
+```</p>
+</li>
+<li>
+<p>Check which storage driver Docker is using.</p>
+<p>```console
+$ docker info</p>
+<p><truncated output>
+Storage Driver: aufs
+ Root Dir: /var/lib/docker/aufs
+ Backing Filesystem: extfs
+ Dirs: 0
+ Dirperm1 Supported: true
+<truncated output>
+```</p>
+</li>
+<li>
+<p>If you are using a different storage driver, either AUFS is not included in
+    the kernel (in which case a different default driver is used) or that
+    Docker has been explicitly configured to use a different driver. Check
+    <code>/etc/docker/daemon.json</code> or the output of <code>ps auxw | grep dockerd</code> to see
+    if Docker has been started with the <code>--storage-driver</code> flag.</p>
+</li>
+</ol>
+<h2 id="how-the-aufs-storage-driver-works">How the <code>aufs</code> storage driver works<a class="headerlink" href="#how-the-aufs-storage-driver-works" title="Permanent link">#</a></h2>
+<p>AUFS is a <em>union filesystem</em>, which means that it layers multiple directories on
+a single Linux host and presents them as a single directory. These directories
+are called <em>branches</em> in AUFS terminology, and <em>layers</em> in Docker terminology.</p>
+<p>The unification process is referred to as a <em>union mount</em>.</p>
+<p>The diagram below shows a Docker container based on the <code>ubuntu:latest</code> image.</p>
+<p><img alt="Layers of an Ubuntu container" src="images/aufs_layers.webp"> </p>
+<p>Each image layer, and the container layer, are represented on the Docker host as
+subdirectories within <code>/var/lib/docker/</code>. The union mount provides the unified
+view of all layers. The directory names do not directly correspond to the IDs
+of the layers themselves.</p>
+<p>AUFS uses the Copy-on-Write (CoW) strategy to maximize storage efficiency and
+minimize overhead.</p>
+<h3 id="example-image-and-container-on-disk-constructs">Example: Image and container on-disk constructs<a class="headerlink" href="#example-image-and-container-on-disk-constructs" title="Permanent link">#</a></h3>
+<p>The following <code>docker pull</code> command shows a Docker host downloading a Docker
+image comprising five layers.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>pull<span class="w"> </span>ubuntu
+
+<span class="go">Using default tag: latest</span>
+<span class="go">latest: Pulling from library/ubuntu</span>
+<span class="go">b6f892c0043b: Pull complete</span>
+<span class="go">55010f332b04: Pull complete</span>
+<span class="go">2955fb827c94: Pull complete</span>
+<span class="go">3deef3fcbd30: Pull complete</span>
+<span class="go">cf9722e506aa: Pull complete</span>
+<span class="go">Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8</span>
+<span class="go">Status: Downloaded newer image for ubuntu:latest</span>
+</code></pre></div>
+
+<h4 id="the-image-layers">The image layers<a class="headerlink" href="#the-image-layers" title="Permanent link">#</a></h4>
+<blockquote>
+<p>[!WARNING]: Do not directly manipulate any files or directories within
+<code>/var/lib/docker/</code>. These files and directories are managed by Docker.</p>
+</blockquote>
+<p>All of the information about the image and container layers is stored in
+subdirectories of <code>/var/lib/docker/aufs/</code>.</p>
+<ul>
+<li><code>diff/</code>: the <strong>contents</strong> of each layer, each stored in a separate
+  subdirectory</li>
+<li><code>layers/</code>: metadata about how image layers are stacked. This directory
+  contains one file for each image or container layer on the Docker host. Each
+  file contains the IDs of all the layers below it in the stack (its parents).</li>
+<li><code>mnt/</code>: Mount points, one per image or container layer, which are used to
+  assemble and mount the unified filesystem for a container. For images, which
+  are read-only, these directories are always empty.</li>
+</ul>
+<h4 id="the-container-layer">The container layer<a class="headerlink" href="#the-container-layer" title="Permanent link">#</a></h4>
+<p>If a container is running, the contents of <code>/var/lib/docker/aufs/</code> change in the
+following ways:</p>
+<ul>
+<li><code>diff/</code>: Differences introduced in the writable container layer, such as new
+   or modified files.</li>
+<li><code>layers/</code>: Metadata about the writable container layer's parent layers.</li>
+<li><code>mnt/</code>: A mount point for each running container's unified filesystem, exactly
+  as it appears from within the container.</li>
+</ul>
+<h2 id="how-container-reads-and-writes-work-with-aufs">How container reads and writes work with <code>aufs</code><a class="headerlink" href="#how-container-reads-and-writes-work-with-aufs" title="Permanent link">#</a></h2>
+<h3 id="reading-files">Reading files<a class="headerlink" href="#reading-files" title="Permanent link">#</a></h3>
+<p>Consider three scenarios where a container opens a file for read access with
+aufs.</p>
+<ul>
+<li>
+<p><strong>The file does not exist in the container layer</strong>: If a container opens a
+  file for read access and the file does not already exist in the container
+  layer, the storage driver searches for the file in the image layers,
+  starting with the layer just below the container layer. It is read from the
+  layer where it is found.</p>
+</li>
+<li>
+<p><strong>The file only exists in the container layer</strong>: If a container opens a file
+  for read access and the file exists in the container layer, it is read from
+  there.</p>
+</li>
+<li>
+<p><strong>The file exists in both the container layer and the image layer</strong>: If a
+  container opens a file for read access and the file exists in the container
+  layer and one or more image layers, the file is read from the container layer.
+  Files in the container layer obscure files with the same name in the image
+  layers.</p>
+</li>
+</ul>
+<h3 id="modifying-files-or-directories">Modifying files or directories<a class="headerlink" href="#modifying-files-or-directories" title="Permanent link">#</a></h3>
+<p>Consider some scenarios where files in a container are modified.</p>
+<ul>
+<li><strong>Writing to a file for the first time</strong>: The first time a container writes
+  to an existing file, that file does not exist in the container (<code>upperdir</code>).
+  The <code>aufs</code> driver performs a <em>copy_up</em> operation to copy the file from the
+  image layer where it exists to the writable container layer. The container
+  then writes the changes to the new copy of the file in the container layer.</li>
+</ul>
+<p>However, AUFS works at the file level rather than the block level. This
+  means that all copy_up operations copy the entire file, even if the file is
+  very large and only a small part of it is being modified. This can have a
+  noticeable impact on container write performance. AUFS can suffer
+  noticeable latencies when searching for files in images with many layers.
+  However, it is worth noting that the copy_up operation only occurs the first
+  time a given file is written to. Subsequent writes to the same file operate
+  against the copy of the file already copied up to the container.</p>
+<ul>
+<li>
+<p><strong>Deleting files and directories</strong>:</p>
+</li>
+<li>
+<p>When a <em>file</em> is deleted within a container, a <em>whiteout</em> file is created
+    in the container layer. The version of the file in the image layer is not
+    deleted (because the image layers are read-only). However, the whiteout
+    file prevents it from being available to the container.</p>
+</li>
+<li>
+<p>When a <em>directory</em> is deleted within a container, an <em>opaque file</em> is
+    created in the container layer. This works in the same way as a
+    whiteout file and effectively prevents the directory from being accessed,
+    even though it still exists in the image layer.</p>
+</li>
+<li>
+<p><strong>Renaming directories</strong>: Calling <code>rename(2)</code> for a directory is not fully
+  supported on AUFS. It returns <code>EXDEV</code> ("cross-device link not permitted"),
+  even when both of the source and the destination path are on a same AUFS
+  layer, unless the directory has no children. Your application needs to be
+  designed to handle <code>EXDEV</code> and fall back to a "copy and unlink" strategy.</p>
+</li>
+</ul>
+<h2 id="aufs-and-docker-performance">AUFS and Docker performance<a class="headerlink" href="#aufs-and-docker-performance" title="Permanent link">#</a></h2>
+<p>To summarize some of the performance related aspects already mentioned:</p>
+<ul>
+<li>
+<p>The AUFS storage driver is less performant than the <code>overlay2</code> driver, but is
+  a good choice for PaaS and other similar use-cases where container density is
+  important. This is because AUFS efficiently shares images between multiple
+  running containers, enabling fast container start times and minimal use of
+  disk space.</p>
+</li>
+<li>
+<p>The underlying mechanics of how AUFS shares files between image layers and
+  containers uses the page cache very efficiently.</p>
+</li>
+<li>
+<p>The AUFS storage driver can introduce significant latencies into container
+  write performance. This is because the first time a container writes to any
+  file, the file needs to be located and copied into the containers top writable
+  layer. These latencies increase and are compounded when these files exist below
+  many image layers and the files themselves are large.</p>
+</li>
+</ul>
+<h3 id="performance-best-practices">Performance best practices<a class="headerlink" href="#performance-best-practices" title="Permanent link">#</a></h3>
+<p>The following generic performance best practices also apply to AUFS.</p>
+<ul>
+<li>
+<p><strong>Solid State Devices (SSD)</strong> provide faster reads and writes than spinning
+  disks.</p>
+</li>
+<li>
+<p><strong>Use volumes for write-heavy workloads</strong>: Volumes provide the best and most
+  predictable performance for write-heavy workloads. This is because they bypass
+  the storage driver and do not incur any of the potential overheads introduced
+  by thin provisioning and copy-on-write. Volumes have other benefits, such as
+  allowing you to share data among containers and persisting even when no
+  running container is using them.</p>
+</li>
+</ul>
+<h2 id="related-information">Related information<a class="headerlink" href="#related-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../volumes.html">Volumes</a></li>
+<li><a href="../../../reference/api/ai-governance/index.html">Understand images, containers, and storage drivers</a></li>
+<li><a href="select-storage-driver.html">Select a storage driver</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/storage/drivers/index.html">
+          <span class="muted">Anterior</span>Storage drivers
+        </a>
+        <a class="pager-next" href="../../../engine/storage/drivers/btrfs-driver.html">
+          <span class="muted">Siguiente</span>BTRFS storage driver
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

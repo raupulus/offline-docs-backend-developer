@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Using multiple GPUs with llama.cpp · llama.cpp</title>
+<meta name="description" content="Using multiple GPUs with llama.cpp - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/llama-cpp/multi-gpu.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Using multiple GPUs with llama.cpp">
+<meta property="og:description" content="Using multiple GPUs with llama.cpp - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Using multiple GPUs with llama.cpp">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Using multiple GPUs with llama.cpp",
+"url": "https://docs.raupulus.dev/llama-cpp/multi-gpu.html",  "description": "Using multiple GPUs with llama.cpp - Documentación técnica de llama.cpp en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">llama.cpp</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="llama-cpp" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en llama.cpp…"
+         aria-label="Buscar en llama.cpp" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de llama.cpp
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de llama.cpp">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./backend/blis.html">Backend</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./development/howto-add-model.html">Development</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./multimodal/mobilevlm.html">Multimodal</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Llama.Cpp
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./android.html"
+>Android</a>
+              </li>
+              <li>
+                <a href="./autoparser.html"
+>Auto-Parser Architecture</a>
+              </li>
+              <li>
+                <a href="./build-profiling.html"
+>Build profiling</a>
+              </li>
+              <li>
+                <a href="./build-riscv64-spacemit.html"
+>Build riscv64 spacemit</a>
+              </li>
+              <li>
+                <a href="./build-s390x.html"
+>Build llama.cpp locally (for s390x)</a>
+              </li>
+              <li>
+                <a href="./build.html"
+>Build llama.cpp locally</a>
+              </li>
+              <li>
+                <a href="./completions.html"
+>Completions</a>
+              </li>
+              <li>
+                <a href="./docker.html"
+>Docker</a>
+              </li>
+              <li>
+                <a href="./function-calling.html"
+>Function Calling</a>
+              </li>
+              <li>
+                <a href="./install.html"
+>Install pre-built version of llama.cpp</a>
+              </li>
+              <li>
+                <a href="./llguidance.html"
+>LLGuidance Support in llama.cpp</a>
+              </li>
+              <li>
+                <a href="./models.html"
+>Obtaining and quantizing models</a>
+              </li>
+              <li>
+                <a href="./multi-gpu.html"
+class="is-current" aria-current="page">Using multiple GPUs with llama.cpp</a>
+              </li>
+              <li>
+                <a href="./multimodal.html"
+>Multimodal</a>
+              </li>
+              <li>
+                <a href="./ops.html"
+>GGML Operations</a>
+              </li>
+              <li>
+                <a href="./preset.html"
+>llama.cpp INI Presets</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release process</a>
+              </li>
+              <li>
+                <a href="./speculative.html"
+>Speculative Decoding</a>
+              </li>
+              <li>
+                <a href="./xcframework.html"
+>XCFramework</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Using multiple GPUs with llama.cpp</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/llama-cpp.md" download="llama-cpp.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de llama.cpp en un solo archivo Markdown">Bundle .md (482 KB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#when-you-need-multi-gpu">When you need multi-GPU#</a></li>
+              <li class="lvl-2"><a href="#the-split-modes">The split modes#</a></li>
+              <li class="lvl-2"><a href="#command-line-arguments-reference">Command-line arguments reference#</a></li>
+              <li class="lvl-2"><a href="#recipes">Recipes#</a></li>
+              <li class="lvl-3"><a href="#1-default-pipeline-parallel-across-all-visible-gpus">1. Default - pipeline parallel across all visible GPUs#</a></li>
+              <li class="lvl-3"><a href="#2-pipeline-parallel-with-a-custom-split-ratio">2. Pipeline parallel with a custom split ratio#</a></li>
+              <li class="lvl-3"><a href="#3-single-gpu-mode-picking-a-specific-gpu">3. Single-GPU mode, picking a specific GPU#</a></li>
+              <li class="lvl-3"><a href="#4-tensor-parallelism-experimental">4. Tensor parallelism (experimental)#</a></li>
+              <li class="lvl-3"><a href="#5-with-nccl">5. With NCCL#</a></li>
+              <li class="lvl-3"><a href="#6-with-cuda-peer-to-peer-access-ggml_cuda_p2p">6. With CUDA peer-to-peer access (GGML_CUDA_P2P)#</a></li>
+              <li class="lvl-2"><a href="#troubleshooting">Troubleshooting#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="using-multiple-gpus-with-llamacpp">Using multiple GPUs with llama.cpp<a class="headerlink" href="#using-multiple-gpus-with-llamacpp" title="Permanent link">#</a></h1>
+<p>This guide explains how to run <a href="https://github.com/ggml-org/llama.cpp" rel="noopener" target="_blank">llama.cpp</a> across more than one GPU. It covers the split modes, the command-line flags that control them, the limitations you need to know about, and ready-to-use recipes for <code>llama-cli</code> and <code>llama-server</code>.</p>
+<p>The CLI arguments listed here are the same for both tools - or most llama.cpp binaries for that matter.</p>
+<hr>
+<h2 id="when-you-need-multi-gpu">When you need multi-GPU<a class="headerlink" href="#when-you-need-multi-gpu" title="Permanent link">#</a></h2>
+<p>Reach for multi-GPU when one of these is true:</p>
+<ul>
+<li><strong>The model doesn't fit in a single GPU's VRAM.</strong> By spreading the weights across two or more GPUs the whole model can stay on accelerators. Otherwise part of the model will need to be run off of the comparatively slower system RAM.</li>
+<li><strong>You want more throughput.</strong> By distributing the computation across multiple GPUs, each individual GPU has to do less work. This can result in better prefill and/or token generation performance, depending on the split mode and interconnect speed vs. the speed of an individual GPU.</li>
+</ul>
+<hr>
+<h2 id="the-split-modes">The split modes<a class="headerlink" href="#the-split-modes" title="Permanent link">#</a></h2>
+<p>Set with <code>--split-mode</code> / <code>-sm</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it does</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>Use a single GPU only. Pick which one with <code>--main-gpu</code>.</td>
+<td>You explicitly want to confine the model to one GPU even though more are visible.</td>
+</tr>
+<tr>
+<td><code>layer</code> (<strong>default</strong>)</td>
+<td>Pipeline parallelism. Each GPU holds a contiguous slice of layers. The KV cache for layer <em>l</em> lives on the GPU that owns layer <em>l</em>.</td>
+<td>Default and most compatible multi-GPU choice. You want more memory than a single GPU provides and your priority is a fast prefill. Can tolerate slow interconnect speeds between GPUs.</td>
+</tr>
+<tr>
+<td><code>row</code></td>
+<td><strong>Deprecated.</strong> Older row-split tensor-parallel path with comparatively poor performance. Splits only dense weights across GPUs. Superseded by <code>tensor</code> which should be universally superior if it can be used.</td>
+<td>Avoid in new deployments.</td>
+</tr>
+<tr>
+<td><code>tensor</code></td>
+<td><strong>EXPERIMENTAL.</strong> Tensor parallelism that splits both weights <em>and</em> KV across the participating GPUs via a "meta device" abstraction.</td>
+<td>You want more memory than a single GPU provides and your priority is fast token generation. Prefill speeds approach pipeline parallel speeds for large, dense models and fast GPU interconnect speeds. Treat as experimental as the code is less mature than pipeline parallelism. Performance should be good for multiple NVIDIA GPUs using the CUDA backend, no guarantees otherwise.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Pipeline parallel (<code>layer</code>) vs. tensor parallel (<code>tensor</code>): pipeline-parallel runs different layers on different GPUs and processes tokens sequentially through the pipeline. This minimizes data transfers between GPUs but requires many tokens to scale well. Tensor-parallel splits each layer across GPUs and does multiple cross-GPU reductions per layer. This enables parallelizing any workload but is much more bottlenecked by the GPU interconnect speed. Pipeline-parallel maximizes batch throughput; tensor-parallel minimizes latency.</p>
+</blockquote>
+<hr>
+<h2 id="command-line-arguments-reference">Command-line arguments reference<a class="headerlink" href="#command-line-arguments-reference" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Short</th>
+<th>Long</th>
+<th>Value</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-sm</code></td>
+<td><code>--split-mode</code></td>
+<td><code>none</code> | <code>layer</code> | <code>tensor</code></td>
+<td><code>layer</code></td>
+<td>See modes above.</td>
+</tr>
+<tr>
+<td><code>-ts</code></td>
+<td><code>--tensor-split</code></td>
+<td>comma-separated proportions, e.g. <code>3,1</code></td>
+<td>mode-dependent</td>
+<td>How much of the model goes to each GPU. If omitted, <code>layer</code>/<code>row</code> use automatic splitting proportional to memory, while <code>tensor</code> splits tensor segments evenly. With <code>3,1</code> on two GPUs, GPU 0 gets 75 %, GPU 1 gets 25 %. The values follow the order in <code>--device</code>.</td>
+</tr>
+<tr>
+<td><code>-mg</code></td>
+<td><code>--main-gpu</code></td>
+<td>integer device index</td>
+<td><code>0</code></td>
+<td>The single GPU used in <code>--split-mode none</code>.</td>
+</tr>
+<tr>
+<td><code>-ngl</code></td>
+<td><code>--n-gpu-layers</code> / <code>--gpu-layers</code></td>
+<td>integer | <code>auto</code> | <code>all</code></td>
+<td><code>auto</code></td>
+<td>Maximum number of layers to keep in VRAM. Use <code>999</code> or <code>all</code> to push everything possible to the GPUs.</td>
+</tr>
+<tr>
+<td><code>-dev</code></td>
+<td><code>--device</code></td>
+<td>comma-separated device names, or <code>none</code></td>
+<td>auto</td>
+<td>Restrict which devices llama.cpp may use. See <code>--list-devices</code> for names.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>--list-devices</code></td>
+<td>-</td>
+<td>-</td>
+<td>Print the available devices and their memory. Run this first to learn the names you'd pass to <code>--device</code>.</td>
+</tr>
+<tr>
+<td><code>-fa</code></td>
+<td><code>--flash-attn</code></td>
+<td><code>on</code> | <code>off</code> | <code>auto</code></td>
+<td><code>auto</code></td>
+<td>Required when using <code>--split-mode tensor</code> and/or quantized V cache. Supported (and therefore enabled by default) for most combinations of models and backends.</td>
+</tr>
+<tr>
+<td><code>-ctk</code></td>
+<td><code>--cache-type-k</code></td>
+<td><code>f32</code> | <code>f16</code> | <code>bf16</code> | <code>q8_0</code> | <code>q4_0</code> | ...</td>
+<td><code>f16</code></td>
+<td>KV cache type for K.</td>
+</tr>
+<tr>
+<td><code>-ctv</code></td>
+<td><code>--cache-type-v</code></td>
+<td>same as <code>-ctk</code></td>
+<td><code>f16</code></td>
+<td>KV cache type for V.</td>
+</tr>
+<tr>
+<td><code>-fit</code></td>
+<td><code>--fit</code></td>
+<td><code>on</code> | <code>off</code></td>
+<td><code>on</code></td>
+<td>Auto-fit unset args to device memory. <strong>Not supported with <code>tensor</code>. You may need to manually set the <code>--ctx-size</code> to make the model fit.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>As for any CUDA program, the environment variable <code>CUDA_VISIBLE_DEVICES</code> can be used to control which GPUs to use for the CUDA backend: if you set it, llama.cpp only sees the specified GPUs. Use <code>--device</code> for selecting GPUs from among those visible to llama.cpp, this works for any backend.</p>
+<hr>
+<h2 id="recipes">Recipes<a class="headerlink" href="#recipes" title="Permanent link">#</a></h2>
+<h3 id="1-default-pipeline-parallel-across-all-visible-gpus">1. Default - pipeline parallel across all visible GPUs<a class="headerlink" href="#1-default-pipeline-parallel-across-all-visible-gpus" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>llama-cli<span class="w"> </span>-m<span class="w"> </span>model.gguf
+llama-server<span class="w"> </span>-m<span class="w"> </span>model.gguf
+</code></pre></div>
+
+<p>Easiest configuration. KV cache spreads across the GPUs along with the layers. <code>--fit</code> (on by default) sizes things automatically.</p>
+<h3 id="2-pipeline-parallel-with-a-custom-split-ratio">2. Pipeline parallel with a custom split ratio<a class="headerlink" href="#2-pipeline-parallel-with-a-custom-split-ratio" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>llama-cli<span class="w"> </span>-m<span class="w"> </span>model.gguf<span class="w"> </span>-ts<span class="w"> </span><span class="m">3</span>,1
+</code></pre></div>
+
+<p>Useful when GPUs have different memory: GPU 0 (3 parts) and GPU 1 (1 part). Proportions are normalized so <code>-ts 3,1</code> is the same as e.g. <code>-ts 75,25</code>.</p>
+<h3 id="3-single-gpu-mode-picking-a-specific-gpu">3. Single-GPU mode, picking a specific GPU<a class="headerlink" href="#3-single-gpu-mode-picking-a-specific-gpu" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>llama-cli<span class="w"> </span>--list-devices
+llama-cli<span class="w"> </span>-m<span class="w"> </span>model.gguf<span class="w"> </span>-dev<span class="w"> </span>CUDA1
+</code></pre></div>
+
+<p>Use only the device listed as <code>CUDA1</code> when calling with <code>--list-devices</code>.</p>
+<h3 id="4-tensor-parallelism-experimental">4. Tensor parallelism (experimental)<a class="headerlink" href="#4-tensor-parallelism-experimental" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>llama-cli<span class="w"> </span>-m<span class="w"> </span>model.gguf<span class="w"> </span>-sm<span class="w"> </span>tensor<span class="w"> </span>-ctk<span class="w"> </span>f16<span class="w"> </span>-ctv<span class="w"> </span>f16
+</code></pre></div>
+
+<ul>
+<li><code>--flash-attn off</code> or (<code>--flash-attn auto</code> resolving to <code>off</code> when it isn't supported) is a hard error.</li>
+<li>KV cache types must be non-quantized: <code>f32</code>, <code>f16</code>, or <code>bf16</code>. Support for quantized KV cache is not implemented and trying to use it will result in an error.</li>
+<li>Mark this configuration as experimental in your tooling: validate output quality before deploying.</li>
+<li>
+<p><code>--split-mode tensor</code>is not implemented for all architectures. The following will fail with <em>"LLAMA_SPLIT_MODE_TENSOR not implemented for architecture '...'"</em>:</p>
+</li>
+<li>
+<p><strong>MoE / hybrid:</strong> Grok, MPT, OLMoE, DeepSeek2, GLM-DSA, Nemotron-H, Nemotron-H-MoE, Granite-Hybrid, LFM2-MoE, Minimax-M2, Mistral4, Kimi-Linear, Jamba, Falcon-H1</p>
+</li>
+<li><strong>State-space / RWKV-style:</strong> Mamba, Mamba2 (and the hybrid Mamba-attention models above)</li>
+<li><strong>Other:</strong> PLAMO2, MiniCPM3, Gemma-3n, OLMo2, BitNet, T5</li>
+</ul>
+<h3 id="5-with-nccl">5. With NCCL<a class="headerlink" href="#5-with-nccl" title="Permanent link">#</a></h3>
+<p>There's no runtime flag for NCCL - it's selected at build time (<code>-DGGML_CUDA_NCCL=ON</code>, this is the default). Note that NCCL is <strong>not</strong> automatically distributed with CUDA and you may need to install it manually - when in doubt check the CMake log to see whether or not it can find the package. When llama.cpp is compiled with NCCL support it uses it automatically for cross-GPU reductions in <code>tensor</code> mode. When NCCL is missing on a multi-GPU build, you'll see this one-time warning and performance will be lower:</p>
+<div class="codehilite"><pre><span></span><code>NVIDIA Collective Communications Library (NCCL) is unavailable, multi GPU performance will be suboptimal
+</code></pre></div>
+
+<p>When using the "ROCm" backend (which is the ggml CUDA code translated for AMD via HIP), the AMD equivalent RCCL can be used by compiling with <code>-DGGML_HIP_RCCL=ON</code>. Note that RCCL is by default <em>disabled</em> because (unlike NCCL) it was not universally beneficial during testing.</p>
+<h3 id="6-with-cuda-peer-to-peer-access-ggml_cuda_p2p">6. With CUDA peer-to-peer access (<code>GGML_CUDA_P2P</code>)<a class="headerlink" href="#6-with-cuda-peer-to-peer-access-ggml_cuda_p2p" title="Permanent link">#</a></h3>
+<p>CUDA peer-to-peer (P2P) lets GPUs transfer data directly between each other instead of going through system memory, which generally improves multi-GPU performance. It is <strong>opt-in</strong> at runtime - set the environment variable <code>GGML_CUDA_P2P</code> to any value to enable it:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">GGML_CUDA_P2P</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>llama-cli<span class="w"> </span>-m<span class="w"> </span>model.gguf<span class="w"> </span>-sm<span class="w"> </span>tensor
+</code></pre></div>
+
+<p>P2P requires driver support (usually restricted to workstation/datacenter GPUs) and <strong>may cause crashes or corrupted outputs on some motherboards or BIOS configurations</strong> (e.g. when IOMMU is enabled). If you see instability after enabling it, unset the variable.</p>
+<hr>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>How to fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Startup error <em>"SPLIT_MODE_TENSOR requires flash_attn to be enabled"</em></td>
+<td>Add <code>-fa on</code> or remove <code>-fa off</code>.</td>
+</tr>
+<tr>
+<td>Startup error <em>"simultaneous use of SPLIT_MODE_TENSOR and KV cache quantization not implemented"</em></td>
+<td>Use <code>-ctk f16 -ctv f16</code> (or <code>bf16</code>/<code>f32</code>) with <code>--split-mode tensor</code>.</td>
+</tr>
+<tr>
+<td>Startup error <em>"LLAMA_SPLIT_MODE_TENSOR not implemented for architecture 'X'"</em></td>
+<td>Architecture not on the TENSOR allow-list. Use <code>--split-mode layer</code>.</td>
+</tr>
+<tr>
+<td>Warning <em>"NCCL is unavailable, multi GPU performance will be suboptimal"</em></td>
+<td>llama.cpp wasn't built with NCCL. Either accept the lower performance or install NCCL and rebuild.</td>
+</tr>
+<tr>
+<td>CUDA OOM at startup or during prefill in <code>--split-mode tensor</code></td>
+<td>Auto-fit is disabled in this mode, so reduce memory pressure yourself. In order from least to most disruptive: lower <code>--ctx-size</code> (<code>-c</code>) (KV cache is roughly proportional to <code>n_ctx</code>); for <code>llama-server</code>, lower <code>--parallel</code> (<code>-np</code>) (a slot KV cache is allocated per concurrent sequence); as a last resort, reduce <code>--n-gpu-layers</code> (<code>-ngl</code>) (the remaining layers run on CPU and inference will be much slower).</td>
+</tr>
+<tr>
+<td>Performance is worse with multi-GPU than single-GPU</td>
+<td>The performance is bottlenecked by GPU interconnect speed. For <code>--split-mode tensor</code>, verify that NCCL is being used. Try <code>--split-mode layer</code> (less communication than <code>tensor</code>). Increase GPU interconnect speed via more PCIe lanes or e.g. NVLink (if available).</td>
+</tr>
+<tr>
+<td>GPU not used at all</td>
+<td><code>--n-gpu-layers</code> is <code>0</code> or too low - try explicitly setting <code>-ngl all</code>. Or you are accidentally hiding the GPUs via an environment variable like <code>CUDA_VISIBLE_DEVICES=-1</code>. Or your build doesn't include support for the relevant backend.</td>
+</tr>
+<tr>
+<td>Crashes or corrupted outputs after setting <code>GGML_CUDA_P2P=1</code></td>
+<td>Some motherboards and BIOS settings (e.g. with IOMMU enabled) don't support CUDA peer-to-peer reliably. Unset <code>GGML_CUDA_P2P</code>.</td>
+</tr>
+</tbody>
+</table>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./models.html">
+          <span class="muted">Anterior</span>Obtaining and quantizing models
+        </a>
+        <a class="pager-next" href="./multimodal.html">
+          <span class="muted">Siguiente</span>Multimodal
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

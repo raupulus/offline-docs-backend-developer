@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prune unused Docker objects · Docker</title>
+<meta name="description" content="Prune unused Docker objects - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/manage-resources/pruning.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Prune unused Docker objects">
+<meta property="og:description" content="Prune unused Docker objects - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Prune unused Docker objects">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Prune unused Docker objects",
+"url": "https://docs.raupulus.dev/docker/engine/manage-resources/pruning.html",  "description": "Prune unused Docker objects - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/daemon/start.html"
+>Start the daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/troubleshoot.html"
+>Troubleshooting the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/install/index.html"
+>Install Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/install/binaries.html"
+>Install Docker Engine from binaries</a>
+              </li>
+              <li>
+                <a href="../../engine/install/centos.html"
+>Install Docker Engine on CentOS</a>
+              </li>
+              <li>
+                <a href="../../engine/install/debian.html"
+>Install Docker Engine on Debian</a>
+              </li>
+              <li>
+                <a href="../../engine/install/fedora.html"
+>Install Docker Engine on Fedora</a>
+              </li>
+              <li>
+                <a href="../../engine/install/linux-postinstall.html"
+>Linux post-installation steps for Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/install/raspberry-pi-os.html"
+>Install Docker Engine on Raspberry Pi OS (32-bit / armhf)</a>
+              </li>
+              <li>
+                <a href="../../engine/install/rhel.html"
+>Install Docker Engine on RHEL</a>
+              </li>
+              <li>
+                <a href="../../engine/install/ubuntu.html"
+>Install Docker Engine on Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/index.html"
+>View container logs</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/configure.html"
+>Configure logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/index.html"
+>Logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/journald.html"
+>Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/splunk.html"
+>Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/syslog.html"
+>Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/dual-logging.html"
+>Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/pruning.html"
+class="is-current" aria-current="page">Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/macvlan.html"
+>Macvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/none.html"
+>None network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/overlay.html"
+>Overlay network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/firewall-iptables.html"
+>Docker with iptables</a>
+              </li>
+              <li>
+                <a href="../../engine/network/firewall-nftables.html"
+>Docker with nftables</a>
+              </li>
+              <li>
+                <a href="../../engine/network/links.html"
+>Legacy container links</a>
+              </li>
+              <li>
+                <a href="../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../engine/network/port-publishing.html"
+>Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Prune unused Docker objects</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#prune-images">Prune images#</a></li>
+              <li class="lvl-2"><a href="#prune-containers">Prune containers#</a></li>
+              <li class="lvl-2"><a href="#prune-volumes">Prune volumes#</a></li>
+              <li class="lvl-2"><a href="#prune-networks">Prune networks#</a></li>
+              <li class="lvl-2"><a href="#prune-build-cache">Prune build cache#</a></li>
+              <li class="lvl-2"><a href="#prune-everything">Prune everything#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Docker takes a conservative approach to cleaning up unused objects (often
+referred to as "garbage collection"), such as images, containers, volumes,
+networks, and build cache. These objects are generally not removed unless you
+explicitly ask Docker to do so. This can cause Docker to use extra disk space.
+For each type of object, Docker provides a <code>prune</code> command. In addition, you can
+use <code>docker system prune</code> to clean up multiple types of objects at once
+(including unused build cache). This topic shows how to use these <code>prune</code>
+commands.</p>
+<h2 id="prune-images">Prune images<a class="headerlink" href="#prune-images" title="Permanent link">#</a></h2>
+<p>The <code>docker image prune</code> command allows you to clean up unused images. By
+default, <code>docker image prune</code> only cleans up <em>dangling</em> images. A dangling image
+is one that isn't tagged, and isn't referenced by any container. To remove
+dangling images:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>image<span class="w"> </span>prune
+
+<span class="go">WARNING! This will remove all dangling images.</span>
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>To remove all images which aren't used by existing containers, use the <code>-a</code>
+flag:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>image<span class="w"> </span>prune<span class="w"> </span>-a
+
+<span class="go">WARNING! This will remove all images without at least one container associated to them.</span>
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>By default, you are prompted to continue. To bypass the prompt, use the <code>-f</code> or
+<code>--force</code> flag.</p>
+<p>You can limit which images are pruned using filtering expressions with the
+<code>--filter</code> flag. For example, to only consider images created more than 24
+hours ago:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>image<span class="w"> </span>prune<span class="w"> </span>-a<span class="w"> </span>--filter<span class="w"> </span><span class="s2">&quot;until=24h&quot;</span>
+</code></pre></div>
+
+<p>Other filtering expressions are available. See the
+<a href="/reference/cli/docker/image/prune/"><code>docker image prune</code> reference</a>
+for more examples.</p>
+<h2 id="prune-containers">Prune containers<a class="headerlink" href="#prune-containers" title="Permanent link">#</a></h2>
+<p>When you stop a container, it isn't automatically removed unless you started it
+with the <code>--rm</code> flag. To see all containers on the Docker host, including
+stopped containers, use <code>docker ps -a</code>. You may be surprised how many containers
+exist, especially on a development system! A stopped container's writable layers
+still take up disk space. To clean this up, you can use the <code>docker container
+prune</code> command.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>prune
+
+<span class="go">WARNING! This will remove all stopped containers.</span>
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>By default, you're prompted to continue. To bypass the prompt, use the <code>-f</code> or
+<code>--force</code> flag.</p>
+<p>By default, all stopped containers are removed. You can limit the scope using
+the <code>--filter</code> flag. For instance, the following command only removes
+stopped containers older than 24 hours:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>prune<span class="w"> </span>--filter<span class="w"> </span><span class="s2">&quot;until=24h&quot;</span>
+</code></pre></div>
+
+<p>Other filtering expressions are available. See the
+<a href="/reference/cli/docker/container/prune/"><code>docker container prune</code> reference</a>
+for more examples.</p>
+<h2 id="prune-volumes">Prune volumes<a class="headerlink" href="#prune-volumes" title="Permanent link">#</a></h2>
+<p>Volumes can be used by one or more containers, and take up space on the Docker
+host. Volumes are never removed automatically, because to do so could destroy
+data.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>prune
+
+<span class="go">WARNING! This will remove anonymous local volumes not used by at least one container.</span>
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>By default, you are prompted to continue. To bypass the prompt, use the <code>-f</code> or
+<code>--force</code> flag.</p>
+<p>By default, only <strong>anonymous</strong> unused volumes are removed. Named volumes that
+aren't attached to a container are left alone unless you pass <code>--all</code> / <code>-a</code>.
+You can also limit the scope with the <code>--filter</code> flag. For instance, the
+following command only removes volumes which aren't labelled with the <code>keep</code>
+label:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>prune<span class="w"> </span>--filter<span class="w"> </span><span class="s2">&quot;label!=keep&quot;</span>
+</code></pre></div>
+
+<p>Other filtering expressions are available. See the
+<a href="/reference/cli/docker/volume/prune/"><code>docker volume prune</code> reference</a>
+for more examples.</p>
+<h2 id="prune-networks">Prune networks<a class="headerlink" href="#prune-networks" title="Permanent link">#</a></h2>
+<p>Docker networks don't take up much disk space, but they do create <code>iptables</code>
+rules, bridge network devices, and routing table entries. To clean these things
+up, you can use <code>docker network prune</code> to clean up networks which aren't used
+by any containers.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>prune
+
+<span class="go">WARNING! This will remove all networks not used by at least one container.</span>
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>By default, you're prompted to continue. To bypass the prompt, use the <code>-f</code> or
+<code>--force</code> flag.</p>
+<p>By default, all unused networks are removed. You can limit the scope using
+the <code>--filter</code> flag. For instance, the following command only removes
+networks older than 24 hours:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>prune<span class="w"> </span>--filter<span class="w"> </span><span class="s2">&quot;until=24h&quot;</span>
+</code></pre></div>
+
+<p>Other filtering expressions are available. See the
+<a href="/reference/cli/docker/network/prune/"><code>docker network prune</code> reference</a>
+for more examples.</p>
+<h2 id="prune-build-cache">Prune build cache<a class="headerlink" href="#prune-build-cache" title="Permanent link">#</a></h2>
+<p><code>docker buildx prune</code> removes the build cache for the currently selected
+builder. If you use multiple builders, each builder maintains its own cache —
+use the <code>--builder</code> flag to target a specific builder instance.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>buildx<span class="w"> </span>prune
+
+<span class="go">WARNING! This will remove all dangling build cache.</span>
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>By default, you're prompted to continue. To bypass the prompt, use the <code>-f</code> or
+<code>--force</code> flag.</p>
+<p>See the <a href="/reference/cli/docker/buildx/prune/"><code>docker buildx prune</code> reference</a>
+for all options, including <code>--all</code> to also remove internal and frontend images.</p>
+<h2 id="prune-everything">Prune everything<a class="headerlink" href="#prune-everything" title="Permanent link">#</a></h2>
+<p>The <code>docker system prune</code> command is a shortcut that prunes images, containers,
+networks, and unused build cache (including BuildKit cache mounts). Volumes
+aren't pruned by default. Add <code>--volumes</code> to also remove unused <strong>anonymous</strong>
+volumes. Named unused volumes are left alone; use <code>docker volume prune --all</code>
+if you intend to delete those too.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>system<span class="w"> </span>prune
+
+<span class="go">WARNING! This will remove:</span>
+<span class="go">        - all stopped containers</span>
+<span class="go">        - all networks not used by at least one container</span>
+<span class="go">        - all dangling images</span>
+<span class="go">        - unused build cache</span>
+
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>To also prune unused anonymous volumes, add the <code>--volumes</code> flag:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>--volumes
+
+<span class="go">WARNING! This will remove:</span>
+<span class="go">        - all stopped containers</span>
+<span class="go">        - all networks not used by at least one container</span>
+<span class="go">        - all anonymous volumes not used by at least one container</span>
+<span class="go">        - all dangling images</span>
+<span class="go">        - unused build cache</span>
+
+<span class="go">Are you sure you want to continue? [y/N] y</span>
+</code></pre></div>
+
+<p>By default, you're prompted to continue. To bypass the prompt, use the <code>-f</code> or
+<code>--force</code> flag.</p>
+<p>By default, unused containers and networks are removed, along with dangling
+images. Unused tagged images are kept unless you also pass <code>-a</code> / <code>--all</code>.
+You can further limit the scope with the <code>--filter</code> flag. For instance, the
+following command removes items older than 24 hours:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>--filter<span class="w"> </span><span class="s2">&quot;until=24h&quot;</span>
+</code></pre></div>
+
+<p>Other filtering expressions are available. See the
+<a href="/reference/cli/docker/system/prune/"><code>docker system prune</code> reference</a>
+for more examples.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/manage-resources/labels.html">
+          <span class="muted">Anterior</span>Docker object labels
+        </a>
+        <a class="pager-next" href="../../engine/network/index.html">
+          <span class="muted">Siguiente</span>Networking overview
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

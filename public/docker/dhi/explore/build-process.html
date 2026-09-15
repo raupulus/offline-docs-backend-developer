@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Docker Hardened Images are built · Docker</title>
+<meta name="description" content="How Docker Hardened Images are built - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/dhi/explore/build-process.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="How Docker Hardened Images are built">
+<meta property="og:description" content="How Docker Hardened Images are built - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How Docker Hardened Images are built">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "How Docker Hardened Images are built",
+"url": "https://docs.raupulus.dev/docker/dhi/explore/build-process.html",  "description": "How Docker Hardened Images are built - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Dhi
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../dhi/index.html"
+>Docker Hardened Images</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/index.html"
+>Explore Docker Hardened Images</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/available.html"
+>Available types of Docker Hardened Images</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/build-process.html"
+class="is-current" aria-current="page">How Docker Hardened Images are built</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/malware-scanning.html"
+>Malware scanning</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/responsibility.html"
+>Understanding roles and responsibilities for Docker Hardened Images</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/scanner-integrations.html"
+>Scanner integrations</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/index.html"
+>Security concepts</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/attestations.html"
+>Attestations</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/cis.html"
+>CIS Benchmark</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/cves.html"
+>Common Vulnerabilities and Exposures (CVEs)</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/digests.html"
+>Image digests</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/distroless.html"
+>Minimal or distroless images</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/fips.html"
+>FIPS</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/glibc-musl.html"
+>glibc and musl support in Docker Hardened Images</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/hardening.html"
+>Base image hardening</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/immutability.html"
+>Immutable infrastructure</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/provenance.html"
+>Image provenance</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/sbom.html"
+>Software Bill of Materials (SBOMs)</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/signatures.html"
+>Code signing</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/slsa.html"
+>Supply-chain Levels for Software Artifacts (SLSA)</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/sscs.html"
+>Software Supply Chain Security</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/ssdlc.html"
+>Secure Software Development Lifecycle</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/stig.html"
+>STIG</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/security-concepts/vex.html"
+>Vulnerability Exploitability eXchange (VEX)</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/test.html"
+>How Docker Hardened Images are tested</a>
+              </li>
+              <li>
+                <a href="../../dhi/explore/what.html"
+>What are hardened images and why use them?</a>
+              </li>
+              <li>
+                <a href="../../dhi/get-started.html"
+>Docker Hardened Images quickstart</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/index.html"
+>How-tos</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/build.html"
+>Create and build a Docker Hardened Image</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/customize.html"
+>Customize a Docker Hardened Image or chart</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/hardened-packages.html"
+>Use Hardened System Packages</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/helm.html"
+>Use a Docker Hardened Image chart</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/mirror.html"
+>Mirror a Docker Hardened Image repository</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/policies.html"
+>Apply Docker Hardened Image policies to your images</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/scan.html"
+>Scan Docker Hardened Images</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/search-evaluate.html"
+>Search and evaluate Docker Hardened Images</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/select-enterprise.html"
+>Get started with DHI Select and Enterprise</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/troubleshoot.html"
+>Troubleshoot</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/use.html"
+>Use a Docker Hardened Image</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/verify.html"
+>Verify a Docker Hardened Image or chart</a>
+              </li>
+              <li>
+                <a href="../../dhi/how-to/vex-api.html"
+>Query VEX for a Docker Hardened Image</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/index.html"
+>Migration</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/checklist.html"
+>Migration checklist</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/examples/index.html"
+>Migration examples</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/examples/dotnet.html"
+>.NET</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/examples/go.html"
+>Go</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/examples/java.html"
+>Java</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/examples/node.html"
+>Node.js</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/examples/python.html"
+>Python</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/migrate-from-doi.html"
+>Migrate from Alpine or Debian</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/migrate-from-ubuntu.html"
+>Migrate from Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/migrate-from-wolfi.html"
+>Migrate from Wolfi</a>
+              </li>
+              <li>
+                <a href="../../dhi/migration/migrate-with-ai.html"
+>Migrate using Gordon</a>
+              </li>
+              <li>
+                <a href="../../dhi/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../dhi/release-notes/cli.html"
+>DHI CLI release notes</a>
+              </li>
+              <li>
+                <a href="../../dhi/release-notes/platform.html"
+>Docker Hardened Images release notes</a>
+              </li>
+              <li>
+                <a href="../../dhi/resources.html"
+>Resources and feedback</a>
+              </li>
+              <li>
+                <a href="../../dhi/tools/index.html"
+>Tools</a>
+              </li>
+              <li>
+                <a href="../../dhi/tools/api.html"
+>Use the DHI API</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">How Docker Hardened Images are built</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#build-transparency">Build transparency#</a></li>
+              <li class="lvl-3"><a href="#image-definitions">Image definitions#</a></li>
+              <li class="lvl-3"><a href="#slsa-attestations">SLSA attestations#</a></li>
+              <li class="lvl-2"><a href="#build-triggers">Build triggers#</a></li>
+              <li class="lvl-3"><a href="#upstream-updates">Upstream updates#</a></li>
+              <li class="lvl-3"><a href="#customization-changes">Customization changes#</a></li>
+              <li class="lvl-2"><a href="#build-pipeline">Build pipeline#</a></li>
+              <li class="lvl-3"><a href="#base-image-pipeline">Base image pipeline#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Docker Hardened Images are built through an automated pipeline that monitors
+upstream sources, applies security updates, and publishes signed artifacts.
+This page explains the build process for both base DHI images and customized
+images available with DHI Select and DHI Enterprise subscriptions.</p>
+<p>With DHI Select or DHI Enterprise subscriptions, the automated security update pipeline for
+both base and customized images is backed by <a href="https://docs.docker.com/go/dhi-sla/" rel="noopener" target="_blank">SLA commitments</a>, including a 7-day
+SLA for critical and high severity vulnerabilities. DHI Community offers a secure baseline
+but no guaranteed remediation timelines.</p>
+<h2 id="build-transparency">Build transparency<a class="headerlink" href="#build-transparency" title="Permanent link">#</a></h2>
+<p>Docker Hardened Images provide transparency into how images are built through
+publicly available definitions and verifiable attestations.</p>
+<h3 id="image-definitions">Image definitions<a class="headerlink" href="#image-definitions" title="Permanent link">#</a></h3>
+<p>All image definitions are publicly available in the <a href="https://github.com/docker-hardened-images/catalog" rel="noopener" target="_blank">catalog
+repository</a>.</p>
+<p>Each image definition is a declarative YAML specification that includes metadata,
+contents, build pipeline steps, security configurations, and runtime settings.</p>
+<h3 id="slsa-attestations">SLSA attestations<a class="headerlink" href="#slsa-attestations" title="Permanent link">#</a></h3>
+<p>Every Docker Hardened Image includes a SLSA Build Level 3 attestation that
+provides verifiable build provenance. For details on SLSA attestations and how to
+verify them, see <a href="security-concepts/slsa.html">SLSA</a>.</p>
+<h2 id="build-triggers">Build triggers<a class="headerlink" href="#build-triggers" title="Permanent link">#</a></h2>
+<p>Builds start automatically. You don't trigger them manually. The system monitors
+for changes and starts builds in two scenarios:</p>
+<ul>
+<li><a href="#upstream-updates">Upstream updates</a></li>
+<li><a href="#customization-changes">Customization changes</a></li>
+</ul>
+<h3 id="upstream-updates">Upstream updates<a class="headerlink" href="#upstream-updates" title="Permanent link">#</a></h3>
+<p>New releases, package updates, or CVE fixes from upstream projects trigger base
+image rebuilds. These builds go through quality checks to ensure security and
+reliability.</p>
+<h4 id="monitoring-for-updates">Monitoring for updates<a class="headerlink" href="#monitoring-for-updates" title="Permanent link">#</a></h4>
+<p>Docker continuously monitors upstream projects for new releases, package
+updates, and security advisories. When changes are detected, the system
+automatically queues affected images for rebuild using a SLSA Build Level
+3-compliant build system.</p>
+<p>Docker uses three strategies to track updates:</p>
+<ul>
+<li>GitHub releases: Monitors specific GitHub repositories for new releases and
+  automatically updates the image definition when a new version is published.</li>
+<li>GitHub tags: Tracks tags in GitHub repositories to detect new versions.</li>
+<li>Package repositories: Monitors Alpine Linux, Debian, and Ubuntu package
+  repositories through Docker Scout's package database to detect updated
+  packages.</li>
+</ul>
+<p>In addition to explicit upstream tracking, Docker also monitors transitive
+dependencies. When a package update is detected (for example, a security patch
+for a library), Docker automatically identifies and rebuilds all images within
+the support window that use that package.</p>
+<h3 id="customization-changes">Customization changes<a class="headerlink" href="#customization-changes" title="Permanent link">#</a></h3>
+<p>{{&lt; summary-bar feature_name="Docker Hardened Images" &gt;}}</p>
+<p>Updates to your OCI artifact customizations trigger rebuilds of your customized
+images.</p>
+<p>When you customize a DHI image with DHI Select or DHI Enterprise, your changes are packaged as
+OCI artifacts that layer on top of the base image. Docker monitors your artifact
+repositories and automatically rebuilds your customized images whenever you push
+updates.</p>
+<p>The rebuild process fetches the current base image, applies your OCI artifacts,
+signs the result, and publishes it automatically. You don't need to manage
+builds or maintain CI pipelines for your customized images.</p>
+<p>Customized images are also rebuilt automatically when the base DHI image they
+depend on receives updates, ensuring your images always include the latest
+security patches.</p>
+<h2 id="build-pipeline">Build pipeline<a class="headerlink" href="#build-pipeline" title="Permanent link">#</a></h2>
+<p>The following sections describe the build pipeline architecture and workflow for
+Docker Hardened Images based on:</p>
+<ul>
+<li><a href="#base-image-pipeline">Base image pipeline</a></li>
+<li><a href="#customized-image-pipeline">Customized image pipeline</a></li>
+</ul>
+<h3 id="base-image-pipeline">Base image pipeline<a class="headerlink" href="#base-image-pipeline" title="Permanent link">#</a></h3>
+<p>Each Docker Hardened Image is built through an automated pipeline:</p>
+<ol>
+<li>Monitoring: Docker monitors upstream sources for updates (new releases,
+   package updates, security advisories).</li>
+<li>Rebuild trigger: When changes are detected, an automated rebuild starts.</li>
+<li>AI guardrail: An AI system fetches upstream diffs and scans them with
+   language-aware checks. The guardrail focuses on high-leverage issues that can
+   cause significant problems, such as inverted error checks, ignored failures,
+   resource mishandling, or suspicious contributor activity. When it spots
+   potential risks, it blocks the PR from auto-merging.</li>
+<li>Human review: If the AI identifies risks with high confidence,
+   Docker engineers review the flagged code, reproduce the issue, and decide on
+   the appropriate action. Engineers often contribute fixes back to upstream
+   projects, improving the code for the entire community. When fixes are accepted
+   upstream, the DHI build pipeline applies the patch immediately to protect
+   customers while the fix moves through the upstream release process.</li>
+<li>Testing and scanning: Images undergo comprehensive
+   <a href="test.html">testing</a> for compatibility and functionality, and are
+   <a href="malware-scanning.html">scanned for malware</a>, secrets, and
+   vulnerabilities.</li>
+<li>Signing and attestations: Docker signs each image and generates
+   attestations (SBOMs, VEX documents, build provenance).</li>
+<li>Publishing: The signed image is published to the DHI registry and the
+   attestations are published to the Docker Scout registry.</li>
+<li>Cascade rebuilds: If any customized images use this base, their rebuilds
+   are automatically triggered.</li>
+</ol>
+<p>Docker responds quickly to critical vulnerabilities. By building essential
+components from source rather than waiting for packaged updates, Docker can
+patch critical and high severity CVEs within days of upstream fixes and publish
+updated images with new attestations. For DHI Enterprise subscriptions, this
+rapid response is backed by a <a href="https://docs.docker.com/go/dhi-sla/" rel="noopener" target="_blank">7-day SLA for critical and high severity
+vulnerabilities</a>.</p>
+<p>The following diagram shows the base image build flow:</p>
+<p>```goat {class="text-sm"}
+.-------------------.      .-------------------.      .-------------------.      .-------------------.
+| Docker monitors   |-----&gt;| Trigger rebuild   |-----&gt;| AI guardrail      |-----&gt;| Human review      |
+| upstream sources  |      |                   |      | scans changes     |      |                   |
+'-------------------'      '-------------------'      '-------------------'      '-------------------'
+                                                                                           |
+                                                                                           v
+.-------------------.      .-------------------.      .-------------------.      .-------------------.
+| Cascade rebuilds  |&lt;-----| Publish to        |&lt;-----| Sign &amp; generate   |&lt;-----| Testing &amp;         |
+| (if needed)       |      | DHI registry      |      | attestations      |      | scanning          |
+'-------------------'      '-------------------'      '-------------------'      '-------------------'</p>
+<div class="codehilite"><pre><span></span><code>### Customized image pipeline
+
+{{&lt; summary-bar feature_name=&quot;Docker Hardened Images&quot; &gt;}}
+
+When you customize a DHI image with DHI Select or DHI Enterprise, the build process is simplified:
+
+1. Monitoring: Docker monitors your OCI artifact repositories for changes.
+2. Rebuild trigger: When you push updates to your OCI artifacts, or when the base
+   DHI image is updated, an automated rebuild starts.
+3. Fetch base image: The latest base DHI image is fetched.
+4. Apply customizations: Your OCI artifacts are applied to the base image.
+5. Scanning: The customized image is [scanned for
+   malware](malware-scanning.md), secrets, and vulnerabilities.
+6. Signing and attestations: Docker signs the customized image and generates
+   attestations (SBOMs, VEX documents, build provenance).
+7. Publishing: The signed customized image is published to Docker Hub and the
+   attestations are published to the Docker Scout registry.
+
+Docker handles the entire process automatically, so you don&#39;t need to manage
+builds for your customized images. However, you&#39;re responsible for testing your
+customized images and managing any CVEs introduced by your OCI artifacts.
+
+The following diagram shows the customized image build flow:
+
+```goat {class=&quot;text-sm&quot;}
+.-------------------.      .-------------------.      .-------------------.      .-------------------.
+| Docker monitors   |-----&gt;| Trigger rebuild   |-----&gt;| Fetch base        |-----&gt;| Apply             |
+| OCI artifacts     |      |                   |      | DHI image         |      | customizations    |
+&#39;-------------------&#39;      &#39;-------------------&#39;      &#39;-------------------&#39;      &#39;-------------------&#39;
+                                                                                           |
+                                                                                           v
+                           .-------------------.      .-------------------.      .-------------------.
+                           | Publish to        |&lt;-----| Sign &amp; generate   |&lt;-----| Scanning          |
+                           | Docker Hub        |      | attestations      |      |                   |
+                           &#39;-------------------&#39;      &#39;-------------------&#39;      &#39;-------------------&#39;
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../dhi/explore/available.html">
+          <span class="muted">Anterior</span>Available types of Docker Hardened Images
+        </a>
+        <a class="pager-next" href="../../dhi/explore/malware-scanning.html">
+          <span class="muted">Siguiente</span>Malware scanning
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

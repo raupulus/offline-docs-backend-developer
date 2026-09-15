@@ -23,21 +23,23 @@ from .common import Log, Source, render_front_matter, slugify, write_json
 from .docbook import convert, load_entities
 
 # Ficheros de armazón: solo ensamblan el manual con entidades de
-# include, no tienen contenido propio.
-SKELETON_NAMES = {"book.xml", "reference.xml", "versions.xml", "manual.xml"}
+SKELETON_NAMES = {
+    "book.xml",
+    "reference.xml",
+    "versions.xml",
+    "manual.xml",
+    "filelist.sgml",
+    "allfiles.sgml",
+}
 
 
 def section_of(rel: Path) -> str:
-    """Sección del menú a partir de la ruta dentro de doc-es.
-
-    reference/strings/functions/strlen.xml → strings
-    language/types.xml                     → language
-    """
+    """Sección del menú a partir de la ruta."""
     parts = rel.parts
     if not parts:
         return ""
-    if parts[0] == "reference" and len(parts) > 1:
-        return parts[1]
+    if parts[0] in ("reference", "ref") and len(parts) > 1:
+        return parts[1] if len(parts) > 2 else parts[0]
     return parts[0] if len(parts) > 1 else ""
 
 
@@ -57,14 +59,20 @@ def _convert_one(args: tuple[str, str, dict, str]) -> dict | None:
 
 def _collect(root: Path, source: Source) -> list[Path]:
     exclude = set(source.get("exclude") or [])
+    patterns = source.get("include") or ["*.xml"]
     files = []
-    for path in sorted(root.rglob("*.xml")):
-        rel = path.relative_to(root)
-        if rel.name in SKELETON_NAMES or rel.name in exclude:
-            continue
-        if rel.parts and rel.parts[0] in exclude:
-            continue
-        files.append(path)
+    seen = set()
+    for pattern in patterns:
+        for path in sorted(root.rglob(pattern)):
+            if path in seen:
+                continue
+            seen.add(path)
+            rel = path.relative_to(root)
+            if rel.name in SKELETON_NAMES or rel.name in exclude:
+                continue
+            if rel.parts and rel.parts[0] in exclude:
+                continue
+            files.append(path)
     return files
 
 
@@ -80,17 +88,25 @@ def normalize_docbook_source(
         Log.warn(f"{source.name}: sin descargar, ejecuta antes 'make fetch'")
         return None
 
-    entity_paths = list(root.glob("*.ent"))
+    prefix = source.get("strip_prefix")
+    if prefix:
+        candidate = root / prefix
+        if candidate.is_dir():
+            root = candidate
+        else:
+            Log.warn(f"strip_prefix '{prefix}' no existe; se usa la raíz")
+
+    entity_paths = list(root.glob("*.ent")) + list(root.glob("*.def"))
+    for extra_ent in ("version.sgml", "postgres.sgml"):
+        if (root / extra_ent).is_file():
+            entity_paths.append(root / extra_ent)
     entity_root = work_dir / f"{source.id}.entities"
     if entity_root.is_dir():
         entity_paths += list(entity_root.rglob("*.ent"))
 
     entities = load_entities(entity_paths)
     if not entities:
-        Log.warn(
-            f"{source.name}: sin ficheros .ent; el texto saldrá con "
-            "entidades sin resolver"
-        )
+        Log.info(f"{source.name}: sin entidades externas necesarias")
     else:
         Log.info(f"{len(entities)} entidades cargadas")
 
@@ -169,7 +185,12 @@ def normalize_docbook_source(
         # Solo se enlaza a php.net cuando el XML trae su identificador
         # real. Una URL construida a ojo acabaría en 404.
         if homepage and extra.get("doc_id"):
-            front["source_url"] = f"{homepage}/{extra['doc_id']}.php"
+            if "php.net" in homepage:
+                front["source_url"] = f"{homepage}/{extra['doc_id']}.php"
+            elif "postgresql.org" in homepage:
+                front["source_url"] = f"{homepage}/{extra['doc_id']}.html"
+            else:
+                front["source_url"] = f"{homepage}/{extra['doc_id']}"
         front["source_repo"] = source.get("repo", "")
         if source.get("ref"):
             front["source_ref"] = str(source.get("ref"))

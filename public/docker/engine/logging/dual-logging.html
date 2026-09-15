@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use docker logs with remote logging drivers · Docker</title>
+<meta name="description" content="Use docker logs with remote logging drivers - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/logging/dual-logging.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Use docker logs with remote logging drivers">
+<meta property="og:description" content="Use docker logs with remote logging drivers - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Use docker logs with remote logging drivers">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Use docker logs with remote logging drivers",
+"url": "https://docs.raupulus.dev/docker/engine/logging/dual-logging.html",  "description": "Use docker logs with remote logging drivers - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/daemon/ipv6.html"
+>Use IPv6 networking</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/live-restore.html"
+>Live restore</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/logs.html"
+>Read the daemon logs</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/prometheus.html"
+>Collect Docker metrics with Prometheus</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/proxy.html"
+>Daemon proxy configuration</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/remote-access.html"
+>Configure remote access for Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/start.html"
+>Start the daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/troubleshoot.html"
+>Troubleshooting the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/install/index.html"
+>Install Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/install/binaries.html"
+>Install Docker Engine from binaries</a>
+              </li>
+              <li>
+                <a href="../../engine/install/centos.html"
+>Install Docker Engine on CentOS</a>
+              </li>
+              <li>
+                <a href="../../engine/install/debian.html"
+>Install Docker Engine on Debian</a>
+              </li>
+              <li>
+                <a href="../../engine/install/fedora.html"
+>Install Docker Engine on Fedora</a>
+              </li>
+              <li>
+                <a href="../../engine/install/linux-postinstall.html"
+>Linux post-installation steps for Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/install/raspberry-pi-os.html"
+>Install Docker Engine on Raspberry Pi OS (32-bit / armhf)</a>
+              </li>
+              <li>
+                <a href="../../engine/install/rhel.html"
+>Install Docker Engine on RHEL</a>
+              </li>
+              <li>
+                <a href="../../engine/install/ubuntu.html"
+>Install Docker Engine on Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/index.html"
+>View container logs</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/configure.html"
+>Configure logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/index.html"
+>Logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/journald.html"
+>Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/splunk.html"
+>Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/syslog.html"
+>Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/dual-logging.html"
+class="is-current" aria-current="page">Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/pruning.html"
+>Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/macvlan.html"
+>Macvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/none.html"
+>None network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/overlay.html"
+>Overlay network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/firewall-iptables.html"
+>Docker with iptables</a>
+              </li>
+              <li>
+                <a href="../../engine/network/firewall-nftables.html"
+>Docker with nftables</a>
+              </li>
+              <li>
+                <a href="../../engine/network/links.html"
+>Legacy container links</a>
+              </li>
+              <li>
+                <a href="../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../engine/network/port-publishing.html"
+>Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Use docker logs with remote logging drivers</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#overview">Overview#</a></li>
+              <li class="lvl-2"><a href="#prerequisites">Prerequisites#</a></li>
+              <li class="lvl-3"><a href="#without-dual-logging-capability">Without dual logging capability#</a></li>
+              <li class="lvl-3"><a href="#with-dual-logging-capability">With dual logging capability#</a></li>
+              <li class="lvl-3"><a href="#configuration-options">Configuration options#</a></li>
+              <li class="lvl-2"><a href="#disable-the-dual-logging-cache">Disable the dual logging cache#</a></li>
+              <li class="lvl-2"><a href="#limitations">Limitations#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
+<p>You can use the <code>docker logs</code> command to read container logs regardless of the
+configured logging driver or plugin. Docker Engine uses the <a href="drivers/local.html"><code>local</code></a>
+logging driver to act as cache for reading the latest logs of your containers.
+This is called dual logging. By default, the cache has log-file rotation
+enabled, and is limited to a maximum of 5 files of 20 MB each (before
+compression) per container.</p>
+<p>Refer to the <a href="#configuration-options">configuration options</a> section to customize
+these defaults, or to the <a href="#disable-the-dual-logging-cache">disable dual logging</a>
+section to disable this feature.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<p>Docker Engine automatically enables dual logging if the configured logging
+driver doesn't support reading logs.</p>
+<p>The following examples show the result of running a <code>docker logs</code> command with
+and without dual logging availability:</p>
+<h3 id="without-dual-logging-capability">Without dual logging capability<a class="headerlink" href="#without-dual-logging-capability" title="Permanent link">#</a></h3>
+<p>When a container is configured with a remote logging driver such as <code>splunk</code>, and
+dual logging is disabled, an error is displayed when attempting to read container
+logs locally:</p>
+<ul>
+<li>Step 1: Configure Docker daemon</li>
+</ul>
+<p><code>console
+  $ cat /etc/docker/daemon.json
+  {
+    "log-driver": "splunk",
+    "log-opts": {
+      "cache-disabled": "true",
+      ... (options for "splunk" logging driver)
+    }
+  }</code></p>
+<ul>
+<li>Step 2: Start the container</li>
+</ul>
+<p><code>console
+  $ docker run -d busybox --name testlog top</code></p>
+<ul>
+<li>Step 3: Read the container logs</li>
+</ul>
+<p><code>console
+  $ docker logs 7d6ac83a89a0
+  Error response from daemon: configured logging driver does not support reading</code></p>
+<h3 id="with-dual-logging-capability">With dual logging capability<a class="headerlink" href="#with-dual-logging-capability" title="Permanent link">#</a></h3>
+<p>With the dual logging cache enabled, the <code>docker logs</code> command can be used to
+read logs, even if the logging driver doesn't support reading logs. The following
+example shows a daemon configuration that uses the <code>splunk</code> remote logging driver
+as a default, with dual logging caching enabled:</p>
+<ul>
+<li>Step 1: Configure Docker daemon</li>
+</ul>
+<p><code>console
+  $ cat /etc/docker/daemon.json
+  {
+    "log-driver": "splunk",
+    "log-opts": {
+      ... (options for "splunk" logging driver)
+    }
+  }</code></p>
+<ul>
+<li>Step 2: Start the container</li>
+</ul>
+<p><code>console
+  $ docker run -d busybox --name testlog top</code></p>
+<ul>
+<li>Step 3: Read the container logs</li>
+</ul>
+<p><code>console
+  $ docker logs 7d6ac83a89a0
+  2019-02-04T19:48:15.423Z [INFO]  core: marked as sealed
+  2019-02-04T19:48:15.423Z [INFO]  core: pre-seal teardown starting
+  2019-02-04T19:48:15.423Z [INFO]  core: stopping cluster listeners
+  2019-02-04T19:48:15.423Z [INFO]  core: shutting down forwarding rpc listeners
+  2019-02-04T19:48:15.423Z [INFO]  core: forwarding rpc listeners stopped
+  2019-02-04T19:48:15.599Z [INFO]  core: rpc listeners successfully shut down
+  2019-02-04T19:48:15.599Z [INFO]  core: cluster listeners successfully shut down</code></p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>For logging drivers that support reading logs, such as the <code>local</code>, <code>json-file</code>
+and <code>journald</code> drivers, there is no difference in functionality before or after
+the dual logging capability became available. For these drivers, Logs can be
+read using <code>docker logs</code> in both scenarios.</p>
+</blockquote>
+<h3 id="configuration-options">Configuration options<a class="headerlink" href="#configuration-options" title="Permanent link">#</a></h3>
+<p>The dual logging cache accepts the same configuration options as the
+<a href="drivers/local.html"><code>local</code> logging driver</a>, but with a <code>cache-</code> prefix. These options
+can be specified per container, and defaults for new containers can be set using
+the <a href="/reference/cli/dockerd/#daemon-configuration-file">daemon configuration file</a>.</p>
+<p>By default, the cache has log-file rotation enabled, and is limited to a maximum
+of 5 files of 20MB each (before compression) per container. Use the configuration
+options described below to customize these defaults.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>cache-disabled</code></td>
+<td style="text-align: left;"><code>"false"</code></td>
+<td style="text-align: left;">Disable local caching. Boolean value passed as a string (<code>true</code>, <code>1</code>, <code>0</code>, or <code>false</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>cache-max-size</code></td>
+<td style="text-align: left;"><code>"20m"</code></td>
+<td style="text-align: left;">The maximum size of the cache before it is rotated. A positive integer plus a unit modifier (<code>k</code>, <code>m</code>, or <code>g</code>; case-insensitive).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>cache-max-file</code></td>
+<td style="text-align: left;"><code>"5"</code></td>
+<td style="text-align: left;">The maximum number of cache files that can be present. If rotating the logs creates excess files, the oldest file is removed. A positive integer.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>cache-compress</code></td>
+<td style="text-align: left;"><code>"true"</code></td>
+<td style="text-align: left;">Enable or disable compression of rotated log files. Boolean value passed as a string (<code>true</code>, <code>1</code>, <code>0</code>, or <code>false</code>).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="disable-the-dual-logging-cache">Disable the dual logging cache<a class="headerlink" href="#disable-the-dual-logging-cache" title="Permanent link">#</a></h2>
+<p>Use the <code>cache-disabled</code> option to disable the dual logging cache. Disabling the
+cache can be useful to save storage space in situations where logs are only read
+through a remote logging system, and if there is no need to read logs through
+<code>docker logs</code> for debugging purposes.</p>
+<p>Caching can be disabled for individual containers or by default for new containers,
+when using the <a href="/reference/cli/dockerd/#daemon-configuration-file">daemon configuration file</a>.</p>
+<p>The following example uses the daemon configuration file to use the <a href="drivers/splunk.html"><code>splunk</code></a>
+logging driver as a default, with caching disabled:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>/etc/docker/daemon.json
+<span class="go">{</span>
+<span class="go">  &quot;log-driver&quot;: &quot;splunk&quot;,</span>
+<span class="go">  &quot;log-opts&quot;: {</span>
+<span class="go">    &quot;cache-disabled&quot;: &quot;true&quot;,</span>
+<span class="go">    ... (options for &quot;splunk&quot; logging driver)</span>
+<span class="go">  }</span>
+<span class="go">}</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>For logging drivers that support reading logs, such as the <code>local</code>, <code>json-file</code>
+and <code>journald</code> drivers, dual logging isn't used, and disabling the option has
+no effect.</p>
+</blockquote>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">#</a></h2>
+<ul>
+<li>If a container using a logging driver or plugin that sends logs remotely
+  has a network issue, no <code>write</code> to the local cache occurs.</li>
+<li>If a write to <code>logdriver</code> fails for any reason (file system full, write
+  permissions removed), the cache write fails and is logged in the daemon log.
+  The log entry to the cache isn't retried.</li>
+<li>Some logs might be lost from the cache in the default configuration because a
+  ring buffer is used to prevent blocking the stdio of the container in case of
+  slow file writes. An admin must repair these while the daemon is shut down.</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/logging/drivers/syslog.html">
+          <span class="muted">Anterior</span>Syslog logging driver
+        </a>
+        <a class="pager-next" href="../../engine/logging/log-tags.html">
+          <span class="muted">Siguiente</span>Customize log driver output
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

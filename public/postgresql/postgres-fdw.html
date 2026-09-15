@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>postgres_fdw — access data stored in external PostgreSQL servers · PostgreSQL</title>
+<meta name="description" content="postgres_fdw — access data stored in external PostgreSQL servers - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/postgres-fdw.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="postgres_fdw — access data stored in external PostgreSQL servers">
+<meta property="og:description" content="postgres_fdw — access data stored in external PostgreSQL servers - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="postgres_fdw — access data stored in external PostgreSQL servers">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "postgres_fdw — access data stored in external PostgreSQL servers",
+"url": "https://docs.raupulus.dev/postgresql/postgres-fdw.html",  "description": "postgres_fdw — access data stored in external PostgreSQL servers - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+>pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+class="is-current" aria-current="page">postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+              <li>
+                <a href="./rangetypes.html"
+>Range Types</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-recovery-config.html"
+>recovery.conf file merged into postgresql.conf</a>
+              </li>
+              <li>
+                <a href="./reference.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="./regress.html"
+>Regression Tests</a>
+              </li>
+              <li>
+                <a href="./release-17.html"
+>Release 17.11</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release Notes</a>
+              </li>
+              <li>
+                <a href="./wal.html"
+>Reliability and the Write-Ahead Log</a>
+              </li>
+              <li>
+                <a href="./replication-origins.html"
+>Replication Progress Tracking</a>
+              </li>
+              <li>
+                <a href="./maintenance.html"
+>Routine Database Maintenance Tasks</a>
+              </li>
+              <li>
+                <a href="./seg.html"
+>seg — a datatype for line segments or floating point intervals</a>
+              </li>
+              <li>
+                <a href="./sepgsql.html"
+>sepgsql — SELinux-, label-based mandatory access control (MAC) security module</a>
+              </li>
+              <li>
+                <a href="./config.html"
+>Server Configuration</a>
+              </li>
+              <li>
+                <a href="./runtime.html"
+>Server Setup and Operation</a>
+              </li>
+              <li>
+                <a href="./spgist.html"
+>SP-GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./contrib-spi.html"
+>spi — Server Programming Interface features/examples</a>
+              </li>
+              <li>
+                <a href="./spi.html"
+>SPI_connect</a>
+              </li>
+              <li>
+                <a href="./features.html"
+>SQL Conformance</a>
+              </li>
+              <li>
+                <a href="./keywords.html"
+>SQL Key Words</a>
+              </li>
+              <li>
+                <a href="./syntax.html"
+>SQL Syntax</a>
+              </li>
+              <li>
+                <a href="./sslinfo.html"
+>sslinfo — obtain client SSL information</a>
+              </li>
+              <li>
+                <a href="./bki.html"
+>System Catalog Declarations and Initial Contents</a>
+              </li>
+              <li>
+                <a href="./catalogs.html"
+>System Catalogs</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">postgres_fdw — access data stored in external PostgreSQL servers</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/postgres-fdw.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#postgres_fdw-access-data-stored-in-external-postgresql-servers">postgres_fdw access data stored in external PostgreSQL servers#</a></li>
+              <li class="lvl-2"><a href="#fdw-options-of-postgres_fdw">FDW Options of postgres_fdw#</a></li>
+              <li class="lvl-3"><a href="#connection-options">Connection Options#</a></li>
+              <li class="lvl-3"><a href="#object-name-options">Object Name Options#</a></li>
+              <li class="lvl-3"><a href="#cost-estimation-options">Cost Estimation Options#</a></li>
+              <li class="lvl-3"><a href="#remote-execution-options">Remote Execution Options#</a></li>
+              <li class="lvl-3"><a href="#asynchronous-execution-options">Asynchronous Execution Options#</a></li>
+              <li class="lvl-3"><a href="#transaction-management-options">Transaction Management Options#</a></li>
+              <li class="lvl-3"><a href="#updatability-options">Updatability Options#</a></li>
+              <li class="lvl-3"><a href="#truncatability-options">Truncatability Options#</a></li>
+              <li class="lvl-3"><a href="#importing-options">Importing Options#</a></li>
+              <li class="lvl-3"><a href="#connection-management-options">Connection Management Options#</a></li>
+              <li class="lvl-2"><a href="#functions">Functions#</a></li>
+              <li class="lvl-2"><a href="#connection-management">Connection Management#</a></li>
+              <li class="lvl-2"><a href="#transaction-management">Transaction Management#</a></li>
+              <li class="lvl-2"><a href="#remote-query-optimization">Remote Query Optimization#</a></li>
+              <li class="lvl-2"><a href="#remote-query-execution-environment">Remote Query Execution Environment#</a></li>
+              <li class="lvl-2"><a href="#cross-version-compatibility">Cross-Version Compatibility#</a></li>
+              <li class="lvl-2"><a href="#wait-events">Wait Events#</a></li>
+              <li class="lvl-2"><a href="#configuration-parameters">Configuration Parameters#</a></li>
+              <li class="lvl-2"><a href="#examples">Examples#</a></li>
+              <li class="lvl-2"><a href="#author">Author#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="postgres_fdw-access-data-stored-in-external-postgresql-servers">postgres_fdw access data stored in external PostgreSQL servers<a class="headerlink" href="#postgres_fdw-access-data-stored-in-external-postgresql-servers" title="Permanent link">#</a></h2>
+<p>postgres_fdw</p>
+<p>The <code>postgres_fdw</code> module provides the foreign-data wrapper <code>postgres_fdw</code>, which can be used to access data stored in external PostgreSQL servers.</p>
+<p>The functionality provided by this module overlaps substantially with the functionality of the older <a href="#dblink">???</a> module. But <code>postgres_fdw</code> provides more transparent and standards-compliant syntax for accessing remote tables, and can give better performance in many cases.</p>
+<p>To prepare for remote access using <code>postgres_fdw</code>:</p>
+<ol>
+<li>Install the <code>postgres_fdw</code> extension using <a href="#sql-createextension">???</a>.</li>
+<li>Create a foreign server object, using <a href="#sql-createserver">???</a>, to represent each remote database you want to connect to. Specify connection information, except <code>user</code> and <code>password</code>, as options of the server object.</li>
+<li>Create a user mapping, using <a href="#sql-createusermapping">???</a>, for each database user you want to allow to access each foreign server. Specify the remote user name and password to use as <code>user</code> and <code>password</code> options of the user mapping.</li>
+<li>Create a foreign table, using <a href="#sql-createforeigntable">???</a> or <a href="#sql-importforeignschema">???</a>, for each remote table you want to access. The columns of the foreign table must match the referenced remote table. You can, however, use table and/or column names different from the remote table's, if you specify the correct remote names as options of the foreign table object.</li>
+</ol>
+<p>Now you need only <code>SELECT</code> from a foreign table to access the data stored in its underlying remote table. You can also modify the remote table using <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>COPY</code>, or <code>TRUNCATE</code>. (Of course, the remote user you have specified in your user mapping must have privileges to do these things.)</p>
+<p>Note that the <code>ONLY</code> option specified in <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code> or <code>TRUNCATE</code> has no effect when accessing or modifying the remote table.</p>
+<p>Note that <code>postgres_fdw</code> currently lacks support for <code>INSERT</code> statements with an <code>ON CONFLICT DO UPDATE</code> clause. However, the <code>ON CONFLICT DO NOTHING</code> clause is supported, provided a unique index inference specification is omitted. Note also that <code>postgres_fdw</code> supports row movement invoked by <code>UPDATE</code> statements executed on partitioned tables, but it currently does not handle the case where a remote partition chosen to insert a moved row into is also an <code>UPDATE</code> target partition that will be updated elsewhere in the same command.</p>
+<p>It is generally recommended that the columns of a foreign table be declared with exactly the same data types, and collations if applicable, as the referenced columns of the remote table. Although <code>postgres_fdw</code> is currently rather forgiving about performing data type conversions at need, surprising semantic anomalies may arise when types or collations do not match, due to the remote server interpreting query conditions differently from the local server.</p>
+<p>Note that a foreign table can be declared with fewer columns, or with a different column order, than its underlying remote table has. Matching of columns to the remote table is by name, not position.</p>
+<h2 id="fdw-options-of-postgres_fdw">FDW Options of postgres_fdw<a class="headerlink" href="#fdw-options-of-postgres_fdw" title="Permanent link">#</a></h2>
+<h3 id="connection-options">Connection Options<a class="headerlink" href="#connection-options" title="Permanent link">#</a></h3>
+<p>A foreign server using the <code>postgres_fdw</code> foreign data wrapper can have the same options that libpq accepts in connection strings, as described in <a href="#libpq-paramkeywords">???</a>, except that these options are not allowed or have special handling:</p>
+<ul>
+<li><code>user</code>, <code>password</code> and <code>sslpassword</code> (specify these in a user mapping instead, or use a service file)</li>
+<li><code>client_encoding</code> (this is automatically set from the local server encoding)</li>
+<li><code>application_name</code> - this may appear in <em>either or both</em> a connection and <a href="#guc-pgfdw-application-name">postgres_fdw.application_name</a>. If both are present, <code>postgres_fdw.application_name</code> overrides the connection setting. Unlike libpq, <code>postgres_fdw</code> allows <code>application_name</code> to include “escape sequences”. See <a href="#guc-pgfdw-application-name">postgres_fdw.application_name</a> for details.</li>
+<li><code>fallback_application_name</code> (always set to <code>postgres_fdw</code>)</li>
+<li><code>sslkey</code> and <code>sslcert</code> - these may appear in <em>either or both</em> a connection and a user mapping. If both are present, the user mapping setting overrides the connection setting.</li>
+</ul>
+<p>Only superusers may create or modify user mappings with the <code>sslcert</code> or <code>sslkey</code> settings.</p>
+<p>Non-superusers may connect to foreign servers using password authentication or with GSSAPI delegated credentials, so specify the <code>password</code> option for user mappings belonging to non-superusers where password authentication is required.</p>
+<p>A superuser may override this check on a per-user-mapping basis by setting the user mapping option <code>password_required 'false'</code>, e.g.,</p>
+<div class="codehilite"><pre><span></span><code>ALTER USER MAPPING FOR some_non_superuser SERVER loopback_nopw
+OPTIONS (ADD password_required &#39;false&#39;);
+</code></pre></div>
+
+<p>To prevent unprivileged users from exploiting the authentication rights of the unix user the postgres server is running as to escalate to superuser rights, only the superuser may set this option on a user mapping.</p>
+<p>Care is required to ensure that this does not allow the mapped user the ability to connect as superuser to the mapped database per CVE-2007-3278 and CVE-2007-6601. Don't set <code>password_required=false</code> on the <code>public</code> role. Keep in mind that the mapped user can potentially use any client certificates, <code>.pgpass</code>, <code>.pg_service.conf</code> etc. in the unix home directory of the system user the postgres server runs as. They can also use any trust relationship granted by authentication modes like <code>peer</code> or <code>ident</code> authentication.</p>
+<h3 id="object-name-options">Object Name Options<a class="headerlink" href="#object-name-options" title="Permanent link">#</a></h3>
+<p>These options can be used to control the names used in SQL statements sent to the remote PostgreSQL server. These options are needed when a foreign table is created with names different from the underlying remote table's names.</p>
+<p><code>schema_name</code> (<code>string</code>)<br>
+This option, which can be specified for a foreign table, gives the schema name to use for the foreign table on the remote server. If this option is omitted, the name of the foreign table's schema is used.</p>
+<p><code>table_name</code> (<code>string</code>)<br>
+This option, which can be specified for a foreign table, gives the table name to use for the foreign table on the remote server. If this option is omitted, the foreign table's name is used.</p>
+<p><code>column_name</code> (<code>string</code>)<br>
+This option, which can be specified for a column of a foreign table, gives the column name to use for the column on the remote server. If this option is omitted, the column's name is used.</p>
+<h3 id="cost-estimation-options">Cost Estimation Options<a class="headerlink" href="#cost-estimation-options" title="Permanent link">#</a></h3>
+<p><code>postgres_fdw</code> retrieves remote data by executing queries against remote servers, so ideally the estimated cost of scanning a foreign table should be whatever it costs to be done on the remote server, plus some overhead for communication. The most reliable way to get such an estimate is to ask the remote server and then add something for overhead but for simple queries, it may not be worth the cost of an additional remote query to get a cost estimate. So <code>postgres_fdw</code> provides the following options to control how cost estimation is done:</p>
+<p><code>use_remote_estimate</code> (<code>boolean</code>)<br>
+This option, which can be specified for a foreign table or a foreign server, controls whether <code>postgres_fdw</code> issues remote <code>EXPLAIN</code> commands to obtain cost estimates. A setting for a foreign table overrides any setting for its server, but only for that table. The default is <code>false</code>.</p>
+<p><code>fdw_startup_cost</code> (<code>floating point</code>)<br>
+This option, which can be specified for a foreign server, is a floating point value that is added to the estimated startup cost of any foreign-table scan on that server. This represents the additional overhead of establishing a connection, parsing and planning the query on the remote side, etc. The default value is <code>100</code>.</p>
+<p><code>fdw_tuple_cost</code> (<code>floating point</code>)<br>
+This option, which can be specified for a foreign server, is a floating point value that is used as extra cost per-tuple for foreign-table scans on that server. This represents the additional overhead of data transfer between servers. You might increase or decrease this number to reflect higher or lower network delay to the remote server. The default value is <code>0.2</code>.</p>
+<p>When <code>use_remote_estimate</code> is true, <code>postgres_fdw</code> obtains row count and cost estimates from the remote server and then adds <code>fdw_startup_cost</code> and <code>fdw_tuple_cost</code> to the cost estimates. When <code>use_remote_estimate</code> is false, <code>postgres_fdw</code> performs local row count and cost estimation and then adds <code>fdw_startup_cost</code> and <code>fdw_tuple_cost</code> to the cost estimates. This local estimation is unlikely to be very accurate unless local copies of the remote table's statistics are available. Running <a href="#sql-analyze">???</a> on the foreign table is the way to update the local statistics; this will perform a scan of the remote table and then calculate and store statistics just as though the table were local. Keeping local statistics can be a useful way to reduce per-query planning overhead for a remote table but if the remote table is frequently updated, the local statistics will soon be obsolete.</p>
+<p>The following option controls how such an <code>ANALYZE</code> operation behaves:</p>
+<p><code>analyze_sampling</code> (<code>string</code>)<br>
+This option, which can be specified for a foreign table or a foreign server, determines if <code>ANALYZE</code> on a foreign table samples the data on the remote side, or reads and transfers all data and performs the sampling locally. The supported values are <code>off</code>, <code>random</code>, <code>system</code>, <code>bernoulli</code> and <code>auto</code>. <code>off</code> disables remote sampling, so all data are transferred and sampled locally. <code>random</code> performs remote sampling using the <code>random()</code> function to choose returned rows, while <code>system</code> and <code>bernoulli</code> rely on the built-in <code>TABLESAMPLE</code> methods of those names. <code>random</code> works on all remote server versions, while <code>TABLESAMPLE</code> is supported only since 9.5. <code>auto</code> (the default) picks the recommended sampling method automatically; currently it means either <code>bernoulli</code> or <code>random</code> depending on the remote server version.</p>
+<h3 id="remote-execution-options">Remote Execution Options<a class="headerlink" href="#remote-execution-options" title="Permanent link">#</a></h3>
+<p>By default, only <code>WHERE</code> clauses using built-in operators and functions will be considered for execution on the remote server. Clauses involving non-built-in functions are checked locally after rows are fetched. If such functions are available on the remote server and can be relied on to produce the same results as they do locally, performance can be improved by sending such <code>WHERE</code> clauses for remote execution. This behavior can be controlled using the following option:</p>
+<p><code>extensions</code> (<code>string</code>)<br>
+This option is a comma-separated list of names of PostgreSQL extensions that are installed, in compatible versions, on both the local and remote servers. Functions and operators that are immutable and belong to a listed extension will be considered shippable to the remote server. This option can only be specified for foreign servers, not per-table.</p>
+<p>When using the <code>extensions</code> option, <em>it is the user's responsibility</em> that the listed extensions exist and behave identically on both the local and remote servers. Otherwise, remote queries may fail or behave unexpectedly.</p>
+<p><code>fetch_size</code> (<code>integer</code>)<br>
+This option specifies the number of rows <code>postgres_fdw</code> should get in each fetch operation. It can be specified for a foreign table or a foreign server. The option specified on a table overrides an option specified for the server. The default is <code>100</code>.</p>
+<p><code>batch_size</code> (<code>integer</code>)<br>
+This option specifies the number of rows <code>postgres_fdw</code> should insert in each insert operation. It can be specified for a foreign table or a foreign server. The option specified on a table overrides an option specified for the server. The default is <code>1</code>.</p>
+<p>Note the actual number of rows <code>postgres_fdw</code> inserts at once depends on the number of columns and the provided <code>batch_size</code> value. The batch is executed as a single query, and the libpq protocol (which <code>postgres_fdw</code> uses to connect to a remote server) limits the number of parameters in a single query to 65535. When the number of columns * <code>batch_size</code> exceeds the limit, the <code>batch_size</code> will be adjusted to avoid an error.</p>
+<p>This option also applies when copying into foreign tables. In that case the actual number of rows <code>postgres_fdw</code> copies at once is determined in a similar way to the insert case, but it is limited to at most 1000 due to implementation restrictions of the <code>COPY</code> command.</p>
+<h3 id="asynchronous-execution-options">Asynchronous Execution Options<a class="headerlink" href="#asynchronous-execution-options" title="Permanent link">#</a></h3>
+<p><code>postgres_fdw</code> supports asynchronous execution, which runs multiple parts of an Append node concurrently rather than serially to improve performance. This execution can be controlled using the following option:</p>
+<p><code>async_capable</code> (<code>boolean</code>)<br>
+This option controls whether <code>postgres_fdw</code> allows foreign tables to be scanned concurrently for asynchronous execution. It can be specified for a foreign table or a foreign server. A table-level option overrides a server-level option. The default is <code>false</code>.</p>
+<p>In order to ensure that the data being returned from a foreign server is consistent, <code>postgres_fdw</code> will only open one connection for a given foreign server and will run all queries against that server sequentially even if there are multiple foreign tables involved, unless those tables are subject to different user mappings. In such a case, it may be more performant to disable this option to eliminate the overhead associated with running queries asynchronously.</p>
+<p>Asynchronous execution is applied even when an Append node contains subplan(s) executed synchronously as well as subplan(s) executed asynchronously. In such a case, if the asynchronous subplans are ones processed using <code>postgres_fdw</code>, tuples from the asynchronous subplans are not returned until after at least one synchronous subplan returns all tuples, as that subplan is executed while the asynchronous subplans are waiting for the results of asynchronous queries sent to foreign servers. This behavior might change in a future release.</p>
+<h3 id="transaction-management-options">Transaction Management Options<a class="headerlink" href="#transaction-management-options" title="Permanent link">#</a></h3>
+<p>As described in the Transaction Management section, in <code>postgres_fdw</code> transactions are managed by creating corresponding remote transactions, and subtransactions are managed by creating corresponding remote subtransactions. When multiple remote transactions are involved in the current local transaction, by default <code>postgres_fdw</code> commits or aborts those remote transactions serially when the local transaction is committed or aborted. When multiple remote subtransactions are involved in the current local subtransaction, by default <code>postgres_fdw</code> commits or aborts those remote subtransactions serially when the local subtransaction is committed or aborted. Performance can be improved with the following options:</p>
+<p><code>parallel_commit</code> (<code>boolean</code>)<br>
+This option controls whether <code>postgres_fdw</code> commits, in parallel, remote transactions opened on a foreign server in a local transaction when the local transaction is committed. This setting also applies to remote and local subtransactions. This option can only be specified for foreign servers, not per-table. The default is <code>false</code>.</p>
+<p><code>parallel_abort</code> (<code>boolean</code>)<br>
+This option controls whether <code>postgres_fdw</code> aborts, in parallel, remote transactions opened on a foreign server in a local transaction when the local transaction is aborted. This setting also applies to remote and local subtransactions. This option can only be specified for foreign servers, not per-table. The default is <code>false</code>.</p>
+<p>If multiple foreign servers with these options enabled are involved in a local transaction, multiple remote transactions on those foreign servers are committed or aborted in parallel across those foreign servers when the local transaction is committed or aborted.</p>
+<p>When these options are enabled, a foreign server with many remote transactions may see a negative performance impact when the local transaction is committed or aborted.</p>
+<h3 id="updatability-options">Updatability Options<a class="headerlink" href="#updatability-options" title="Permanent link">#</a></h3>
+<p>By default all foreign tables using <code>postgres_fdw</code> are assumed to be updatable. This may be overridden using the following option:</p>
+<p><code>updatable</code> (<code>boolean</code>)<br>
+This option controls whether <code>postgres_fdw</code> allows foreign tables to be modified using <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code> commands. It can be specified for a foreign table or a foreign server. A table-level option overrides a server-level option. The default is <code>true</code>.</p>
+<p>Of course, if the remote table is not in fact updatable, an error would occur anyway. Use of this option primarily allows the error to be thrown locally without querying the remote server. Note however that the <code>information_schema</code> views will report a <code>postgres_fdw</code> foreign table to be updatable (or not) according to the setting of this option, without any check of the remote server.</p>
+<h3 id="truncatability-options">Truncatability Options<a class="headerlink" href="#truncatability-options" title="Permanent link">#</a></h3>
+<p>By default all foreign tables using <code>postgres_fdw</code> are assumed to be truncatable. This may be overridden using the following option:</p>
+<p><code>truncatable</code> (<code>boolean</code>)<br>
+This option controls whether <code>postgres_fdw</code> allows foreign tables to be truncated using the <code>TRUNCATE</code> command. It can be specified for a foreign table or a foreign server. A table-level option overrides a server-level option. The default is <code>true</code>.</p>
+<p>Of course, if the remote table is not in fact truncatable, an error would occur anyway. Use of this option primarily allows the error to be thrown locally without querying the remote server.</p>
+<h3 id="importing-options">Importing Options<a class="headerlink" href="#importing-options" title="Permanent link">#</a></h3>
+<p><code>postgres_fdw</code> is able to import foreign table definitions using <a href="#sql-importforeignschema">???</a>. This command creates foreign table definitions on the local server that match tables or views present on the remote server. If the remote tables to be imported have columns of user-defined data types, the local server must have compatible types of the same names.</p>
+<p>Importing behavior can be customized with the following options (given in the <code>IMPORT FOREIGN SCHEMA</code> command):</p>
+<p><code>import_collate</code> (<code>boolean</code>)<br>
+This option controls whether column <code>COLLATE</code> options are included in the definitions of foreign tables imported from a foreign server. The default is <code>true</code>. You might need to turn this off if the remote server has a different set of collation names than the local server does, which is likely to be the case if it's running on a different operating system. If you do so, however, there is a very severe risk that the imported table columns' collations will not match the underlying data, resulting in anomalous query behavior.</p>
+<p>Even when this parameter is set to <code>true</code>, importing columns whose collation is the remote server's default can be risky. They will be imported with <code>COLLATE "default"</code>, which will select the local server's default collation, which could be different.</p>
+<p><code>import_default</code> (<code>boolean</code>)<br>
+This option controls whether column <code>DEFAULT</code> expressions are included in the definitions of foreign tables imported from a foreign server. The default is <code>false</code>. If you enable this option, be wary of defaults that might get computed differently on the local server than they would be on the remote server; <code>nextval()</code> is a common source of problems. The <code>IMPORT</code> will fail altogether if an imported default expression uses a function or operator that does not exist locally.</p>
+<p><code>import_generated</code> (<code>boolean</code>)<br>
+This option controls whether column <code>GENERATED</code> expressions are included in the definitions of foreign tables imported from a foreign server. The default is <code>true</code>. The <code>IMPORT</code> will fail altogether if an imported generated expression uses a function or operator that does not exist locally.</p>
+<p><code>import_not_null</code> (<code>boolean</code>)<br>
+This option controls whether column <code>NOT NULL</code> constraints are included in the definitions of foreign tables imported from a foreign server. The default is <code>true</code>.</p>
+<p>Note that constraints other than <code>NOT NULL</code> will never be imported from the remote tables. Although PostgreSQL does support check constraints on foreign tables, there is no provision for importing them automatically, because of the risk that a constraint expression could evaluate differently on the local and remote servers. Any such inconsistency in the behavior of a check constraint could lead to hard-to-detect errors in query optimization. So if you wish to import check constraints, you must do so manually, and you should verify the semantics of each one carefully. For more detail about the treatment of check constraints on foreign tables, see <a href="#sql-createforeigntable">???</a>.</p>
+<p>Tables or foreign tables which are partitions of some other table are imported only when they are explicitly specified in <code>LIMIT TO</code> clause. Otherwise they are automatically excluded from <a href="#sql-importforeignschema">???</a>. Since all data can be accessed through the partitioned table which is the root of the partitioning hierarchy, importing only partitioned tables should allow access to all the data without creating extra objects.</p>
+<h3 id="connection-management-options">Connection Management Options<a class="headerlink" href="#connection-management-options" title="Permanent link">#</a></h3>
+<p>By default, all connections that <code>postgres_fdw</code> establishes to foreign servers are kept open in the local session for re-use.</p>
+<p><code>keep_connections</code> (<code>boolean</code>)<br>
+This option controls whether <code>postgres_fdw</code> keeps the connections to the foreign server open so that subsequent queries can re-use them. It can only be specified for a foreign server. The default is <code>on</code>. If set to <code>off</code>, all connections to this foreign server will be discarded at the end of each transaction.</p>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">#</a></h2>
+<p><code>postgres_fdw_get_connections(OUT server_name text, OUT valid boolean) returns setof record</code><br>
+This function returns the foreign server names of all the open connections that <code>postgres_fdw</code> established from the local session to the foreign servers. It also returns whether each connection is valid or not. <code>false</code> is returned if the foreign server connection is used in the current local transaction but its foreign server or user mapping is changed or dropped (Note that server name of an invalid connection will be <code>NULL</code> if the server is dropped), and then such invalid connection will be closed at the end of that transaction. <code>true</code> is returned otherwise. If there are no open connections, no record is returned. Example usage of the function:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT * FROM postgres_fdw_get_connections() ORDER BY 1;
+ server_name | valid
+-------------+-------
+ loopback1   | t
+ loopback2   | f
+</code></pre></div>
+
+<p><code>postgres_fdw_disconnect(server_name text) returns boolean</code><br>
+This function discards the open connections that are established by <code>postgres_fdw</code> from the local session to the foreign server with the given name. Note that there can be multiple connections to the given server using different user mappings. If the connections are used in the current local transaction, they are not disconnected and warning messages are reported. This function returns <code>true</code> if it disconnects at least one connection, otherwise <code>false</code>. If no foreign server with the given name is found, an error is reported. Example usage of the function:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT postgres_fdw_disconnect(&#39;loopback1&#39;);
+ postgres_fdw_disconnect
+-------------------------
+ t
+</code></pre></div>
+
+<p><code>postgres_fdw_disconnect_all() returns boolean</code><br>
+This function discards all the open connections that are established by <code>postgres_fdw</code> from the local session to foreign servers. If the connections are used in the current local transaction, they are not disconnected and warning messages are reported. This function returns <code>true</code> if it disconnects at least one connection, otherwise <code>false</code>. Example usage of the function:</p>
+<div class="codehilite"><pre><span></span><code>postgres=# SELECT postgres_fdw_disconnect_all();
+ postgres_fdw_disconnect_all
+-----------------------------
+ t
+</code></pre></div>
+
+<h2 id="connection-management">Connection Management<a class="headerlink" href="#connection-management" title="Permanent link">#</a></h2>
+<p><code>postgres_fdw</code> establishes a connection to a foreign server during the first query that uses a foreign table associated with the foreign server. By default this connection is kept and re-used for subsequent queries in the same session. This behavior can be controlled using <code>keep_connections</code> option for a foreign server. If multiple user identities (user mappings) are used to access the foreign server, a connection is established for each user mapping.</p>
+<p>When changing the definition of or removing a foreign server or a user mapping, the associated connections are closed. But note that if any connections are in use in the current local transaction, they are kept until the end of the transaction. Closed connections will be re-established when they are necessary by future queries using a foreign table.</p>
+<p>Once a connection to a foreign server has been established, it's by default kept until the local or corresponding remote session exits. To disconnect a connection explicitly, <code>keep_connections</code> option for a foreign server may be disabled, or <code>postgres_fdw_disconnect</code> and <code>postgres_fdw_disconnect_all</code> functions may be used. For example, these are useful to close connections that are no longer necessary, thereby releasing connections on the foreign server.</p>
+<h2 id="transaction-management">Transaction Management<a class="headerlink" href="#transaction-management" title="Permanent link">#</a></h2>
+<p>During a query that references any remote tables on a foreign server, <code>postgres_fdw</code> opens a transaction on the remote server if one is not already open corresponding to the current local transaction. The remote transaction is committed or aborted when the local transaction commits or aborts. Savepoints are similarly managed by creating corresponding remote savepoints.</p>
+<p>The remote transaction uses <code>SERIALIZABLE</code> isolation level when the local transaction has <code>SERIALIZABLE</code> isolation level; otherwise it uses <code>REPEATABLE READ</code> isolation level. This choice ensures that if a query performs multiple table scans on the remote server, it will get snapshot-consistent results for all the scans. A consequence is that successive queries within a single transaction will see the same data from the remote server, even if concurrent updates are occurring on the remote server due to other activities. That behavior would be expected anyway if the local transaction uses <code>SERIALIZABLE</code> or <code>REPEATABLE READ</code> isolation level, but it might be surprising for a <code>READ COMMITTED</code> local transaction. A future PostgreSQL release might modify these rules.</p>
+<p>Note that it is currently not supported by <code>postgres_fdw</code> to prepare the remote transaction for two-phase commit.</p>
+<h2 id="remote-query-optimization">Remote Query Optimization<a class="headerlink" href="#remote-query-optimization" title="Permanent link">#</a></h2>
+<p><code>postgres_fdw</code> attempts to optimize remote queries to reduce the amount of data transferred from foreign servers. This is done by sending query <code>WHERE</code> clauses to the remote server for execution, and by not retrieving table columns that are not needed for the current query. To reduce the risk of misexecution of queries, <code>WHERE</code> clauses are not sent to the remote server unless they use only data types, operators, and functions that are built-in or belong to an extension that's listed in the foreign server's <code>extensions</code> option. Operators and functions in such clauses must be <code>IMMUTABLE</code> as well. For an <code>UPDATE</code> or <code>DELETE</code> query, <code>postgres_fdw</code> attempts to optimize the query execution by sending the whole query to the remote server if there are no query <code>WHERE</code> clauses that cannot be sent to the remote server, no local joins for the query, no row-level local <code>BEFORE</code> or <code>AFTER</code> triggers or stored generated columns on the target table, and no <code>CHECK OPTION</code> constraints from parent views. In <code>UPDATE</code>, expressions to assign to target columns must use only built-in data types, <code>IMMUTABLE</code> operators, or <code>IMMUTABLE</code> functions, to reduce the risk of misexecution of the query.</p>
+<p>When <code>postgres_fdw</code> encounters a join between foreign tables on the same foreign server, it sends the entire join to the foreign server, unless for some reason it believes that it will be more efficient to fetch rows from each table individually, or unless the table references involved are subject to different user mappings. While sending the <code>JOIN</code> clauses, it takes the same precautions as mentioned above for the <code>WHERE</code> clauses.</p>
+<p>The query that is actually sent to the remote server for execution can be examined using <code>EXPLAIN VERBOSE</code>.</p>
+<h2 id="remote-query-execution-environment">Remote Query Execution Environment<a class="headerlink" href="#remote-query-execution-environment" title="Permanent link">#</a></h2>
+<p>In the remote sessions opened by <code>postgres_fdw</code>, the <a href="#guc-search-path">???</a> parameter is set to just <code>pg_catalog</code>, so that only built-in objects are visible without schema qualification. This is not an issue for queries generated by <code>postgres_fdw</code> itself, because it always supplies such qualification. However, this can pose a hazard for functions that are executed on the remote server via triggers or rules on remote tables. For example, if a remote table is actually a view, any functions used in that view will be executed with the restricted search path. It is recommended to schema-qualify all names in such functions, or else attach <code>SET search_path</code> options (see <a href="#sql-createfunction">???</a>) to such functions to establish their expected search path environment.</p>
+<p><code>postgres_fdw</code> likewise establishes remote session settings for various parameters:</p>
+<ul>
+<li><a href="#guc-timezone">???</a> is set to <code>UTC</code></li>
+<li><a href="#guc-datestyle">???</a> is set to <code>ISO</code></li>
+<li><a href="#guc-intervalstyle">???</a> is set to <code>postgres</code></li>
+<li><a href="#guc-extra-float-digits">???</a> is set to <code>3</code> for remote servers 9.0 and newer and is set to <code>2</code> for older versions</li>
+</ul>
+<p>These are less likely to be problematic than <code>search_path</code>, but can be handled with function <code>SET</code> options if the need arises.</p>
+<p>It is <em>not</em> recommended that you override this behavior by changing the session-level settings of these parameters; that is likely to cause <code>postgres_fdw</code> to malfunction.</p>
+<h2 id="cross-version-compatibility">Cross-Version Compatibility<a class="headerlink" href="#cross-version-compatibility" title="Permanent link">#</a></h2>
+<p><code>postgres_fdw</code> can be used with remote servers dating back to PostgreSQL 8.3. Read-only capability is available back to 8.1. A limitation however is that <code>postgres_fdw</code> generally assumes that immutable built-in functions and operators are safe to send to the remote server for execution, if they appear in a <code>WHERE</code> clause for a foreign table. Thus, a built-in function that was added since the remote server's release might be sent to it for execution, resulting in “function does not exist” or a similar error. This type of failure can be worked around by rewriting the query, for example by embedding the foreign table reference in a sub-<code>SELECT</code> with <code>OFFSET 0</code> as an optimization fence, and placing the problematic function or operator outside the sub-<code>SELECT</code>.</p>
+<h2 id="wait-events">Wait Events<a class="headerlink" href="#wait-events" title="Permanent link">#</a></h2>
+<p><code>postgres_fdw</code> can report the following wait events under the wait event type <code>Extension</code>:</p>
+<p><code>PostgresFdwCleanupResult</code><br>
+Waiting for transaction abort on remote server.</p>
+<p><code>PostgresFdwConnect</code><br>
+Waiting to establish a connection to a remote server.</p>
+<p><code>PostgresFdwGetResult</code><br>
+Waiting to receive the results of a query from a remote server.</p>
+<h2 id="configuration-parameters">Configuration Parameters<a class="headerlink" href="#configuration-parameters" title="Permanent link">#</a></h2>
+<p><code>postgres_fdw.application_name</code> (<code>string</code>) <span class="indexterm"></span><br>
+Specifies a value for <a href="#guc-application-name">???</a> configuration parameter used when <code>postgres_fdw</code> establishes a connection to a foreign server. This overrides <code>application_name</code> option of the server object. Note that change of this parameter doesn't affect any existing connections until they are re-established.</p>
+<p><code>postgres_fdw.application_name</code> can be any string of any length and contain even non-ASCII characters. However when it's passed to and used as <code>application_name</code> in a foreign server, note that it will be truncated to less than <code>NAMEDATALEN</code> characters. Anything other than printable ASCII characters are replaced with <a href="#sql-syntax-strings-escape">C-style hexadecimal escapes</a>. See <a href="#guc-application-name">???</a> for details.</p>
+<p><code>%</code> characters begin “escape sequences” that are replaced with status information as outlined below. Unrecognized escapes are ignored. Other characters are copied straight to the application name. Note that it's not allowed to specify a plus/minus sign or a numeric literal after the <code>%</code> and before the option, for alignment and padding.</p>
+<table>
+<thead>
+<tr>
+<th>Escape</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>%a</code></td>
+<td>Application name on local server</td>
+</tr>
+<tr>
+<td><code>%c</code></td>
+<td>Session ID on local server (see <a href="#guc-log-line-prefix">???</a> for details)</td>
+</tr>
+<tr>
+<td><code>%C</code></td>
+<td>Cluster name on local server (see <a href="#guc-cluster-name">???</a> for details)</td>
+</tr>
+<tr>
+<td><code>%u</code></td>
+<td>User name on local server</td>
+</tr>
+<tr>
+<td><code>%d</code></td>
+<td>Database name on local server</td>
+</tr>
+<tr>
+<td><code>%p</code></td>
+<td>Process ID of backend on local server</td>
+</tr>
+<tr>
+<td><code>%%</code></td>
+<td>Literal %</td>
+</tr>
+</tbody>
+</table>
+<p>For example, suppose user <code>local_user</code> establishes a connection from database <code>local_db</code> to <code>foreign_db</code> as user <code>foreign_user</code>, the setting <code>'db=%d, user=%u'</code> is replaced with <code>'db=local_db, user=local_user'</code>.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<p>Here is an example of creating a foreign table with <code>postgres_fdw</code>. First install the extension:</p>
+<div class="codehilite"><pre><span></span><code>CREATE EXTENSION postgres_fdw;
+</code></pre></div>
+
+<p>Then create a foreign server using <a href="#sql-createserver">???</a>. In this example we wish to connect to a PostgreSQL server on host <code>192.83.123.89</code> listening on port <code>5432</code>. The database to which the connection is made is named <code>foreign_db</code> on the remote server:</p>
+<div class="codehilite"><pre><span></span><code>CREATE SERVER foreign_server
+        FOREIGN DATA WRAPPER postgres_fdw
+        OPTIONS (host &#39;192.83.123.89&#39;, port &#39;5432&#39;, dbname &#39;foreign_db&#39;);
+</code></pre></div>
+
+<p>A user mapping, defined with <a href="#sql-createusermapping">???</a>, is needed as well to identify the role that will be used on the remote server:</p>
+<div class="codehilite"><pre><span></span><code>CREATE USER MAPPING FOR local_user
+        SERVER foreign_server
+        OPTIONS (user &#39;foreign_user&#39;, password &#39;password&#39;);
+</code></pre></div>
+
+<p>Now it is possible to create a foreign table with <a href="#sql-createforeigntable">???</a>. In this example we wish to access the table named some_schema.some_table on the remote server. The local name for it will be foreign_table:</p>
+<div class="codehilite"><pre><span></span><code>CREATE FOREIGN TABLE foreign_table (
+        id integer NOT NULL,
+        data text
+)
+        SERVER foreign_server
+        OPTIONS (schema_name &#39;some_schema&#39;, table_name &#39;some_table&#39;);
+</code></pre></div>
+
+<p>It's essential that the data types and other properties of the columns declared in <code>CREATE FOREIGN TABLE</code> match the actual remote table. Column names must match as well, unless you attach <code>column_name</code> options to the individual columns to show how they are named in the remote table. In many cases, use of <a href="#sql-importforeignschema"><code>IMPORT FOREIGN SCHEMA</code></a> is preferable to constructing foreign table definitions manually.</p>
+<h2 id="author">Author<a class="headerlink" href="#author" title="Permanent link">#</a></h2>
+<p>Shigeru Hanada <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#115;&#104;&#105;&#103;&#101;&#114;&#117;&#46;&#104;&#97;&#110;&#97;&#100;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#115;&#104;&#105;&#103;&#101;&#114;&#117;&#46;&#104;&#97;&#110;&#97;&#100;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./pltcl.html">
+          <span class="muted">Anterior</span>PL/Tcl — Tcl Procedural Language
+        </a>
+        <a class="pager-next" href="./postgres.html">
+          <span class="muted">Siguiente</span>PostgreSQL &amp;version; Documentation
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Just-in-Time Compilation (JIT) · PostgreSQL</title>
+<meta name="description" content="Just-in-Time Compilation (JIT) - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/jit.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Just-in-Time Compilation (JIT)">
+<meta property="og:description" content="Just-in-Time Compilation (JIT) - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Just-in-Time Compilation (JIT)">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Just-in-Time Compilation (JIT)",
+"url": "https://docs.raupulus.dev/postgresql/jit.html",  "description": "Just-in-Time Compilation (JIT) - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+>file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+              <li>
+                <a href="./high-availability.html"
+>High Availability, Load Balancing, and Replication</a>
+              </li>
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+>hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+class="is-current" aria-current="page">Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Just-in-Time Compilation (JIT)</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/jit.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#just-in-time-compilation-jit">Just-in-Time Compilation (JIT)#</a></li>
+              <li class="lvl-2"><a href="#what-is-jit-compilation">What Is JIT compilation?#</a></li>
+              <li class="lvl-3"><a href="#jit-accelerated-operations">JIT Accelerated Operations#</a></li>
+              <li class="lvl-3"><a href="#inlining">Inlining#</a></li>
+              <li class="lvl-3"><a href="#optimization">Optimization#</a></li>
+              <li class="lvl-2"><a href="#when-to-jit">When to JIT?#</a></li>
+              <li class="lvl-2"><a href="#configuration">Configuration#</a></li>
+              <li class="lvl-2"><a href="#extensibility">Extensibility#</a></li>
+              <li class="lvl-3"><a href="#inlining-support-for-extensions">Inlining Support for Extensions#</a></li>
+              <li class="lvl-3"><a href="#pluggable-jit-providers">Pluggable JIT Providers#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="just-in-time-compilation-jit">Just-in-Time Compilation (JIT)<a class="headerlink" href="#just-in-time-compilation-jit" title="Permanent link">#</a></h2>
+<p>JIT</p>
+<p>Just-In-Time compilation</p>
+<p>JIT</p>
+<p>This chapter explains what just-in-time compilation is, and how it can be configured in PostgreSQL.</p>
+<h2 id="what-is-jit-compilation">What Is JIT compilation?<a class="headerlink" href="#what-is-jit-compilation" title="Permanent link">#</a></h2>
+<p>Just-in-Time (JIT) compilation is the process of turning some form of interpreted program evaluation into a native program, and doing so at run time. For example, instead of using general-purpose code that can evaluate arbitrary SQL expressions to evaluate a particular SQL predicate like <code>WHERE a.col = 3</code>, it is possible to generate a function that is specific to that expression and can be natively executed by the CPU, yielding a speedup.</p>
+<p>PostgreSQL has builtin support to perform JIT compilation using <a href="https://llvm.org/" rel="noopener" target="_blank">LLVM</a> when PostgreSQL is built with <a href="#configure-with-llvm"><code>--with-llvm</code></a>.</p>
+<p>See <code>src/backend/jit/README</code> for further details.</p>
+<h3 id="jit-accelerated-operations">JIT Accelerated Operations<a class="headerlink" href="#jit-accelerated-operations" title="Permanent link">#</a></h3>
+<p>Currently PostgreSQL's JIT implementation has support for accelerating expression evaluation and tuple deforming. Several other operations could be accelerated in the future.</p>
+<p>Expression evaluation is used to evaluate <code>WHERE</code> clauses, target lists, aggregates and projections. It can be accelerated by generating code specific to each case.</p>
+<p>Tuple deforming is the process of transforming an on-disk tuple (see <a href="#storage-tuple-layout">???</a>) into its in-memory representation. It can be accelerated by creating a function specific to the table layout and the number of columns to be extracted.</p>
+<h3 id="inlining">Inlining<a class="headerlink" href="#inlining" title="Permanent link">#</a></h3>
+<p>PostgreSQL is very extensible and allows new data types, functions, operators and other database objects to be defined; see <a href="#extend">???</a>. In fact the built-in objects are implemented using nearly the same mechanisms. This extensibility implies some overhead, for example due to function calls (see <a href="#xfunc">???</a>). To reduce that overhead, JIT compilation can inline the bodies of small functions into the expressions using them. That allows a significant percentage of the overhead to be optimized away.</p>
+<h3 id="optimization">Optimization<a class="headerlink" href="#optimization" title="Permanent link">#</a></h3>
+<p>LLVM has support for optimizing generated code. Some of the optimizations are cheap enough to be performed whenever JIT is used, while others are only beneficial for longer-running queries. See <a href="https://llvm.org/docs/Passes.html#transform-passes" rel="noopener" target="_blank"></a> for more details about optimizations.</p>
+<h2 id="when-to-jit">When to JIT?<a class="headerlink" href="#when-to-jit" title="Permanent link">#</a></h2>
+<p>JIT compilation is beneficial primarily for long-running CPU-bound queries. Frequently these will be analytical queries. For short queries the added overhead of performing JIT compilation will often be higher than the time it can save.</p>
+<p>To determine whether JIT compilation should be used, the total estimated cost of a query (see <a href="#planner-stats-details">???</a> and <a href="#runtime-config-query-constants">???</a>) is used. The estimated cost of the query will be compared with the setting of <a href="#guc-jit-above-cost">???</a>. If the cost is higher, JIT compilation will be performed. Two further decisions are then needed. Firstly, if the estimated cost is more than the setting of <a href="#guc-jit-inline-above-cost">???</a>, short functions and operators used in the query will be inlined. Secondly, if the estimated cost is more than the setting of <a href="#guc-jit-optimize-above-cost">???</a>, expensive optimizations are applied to improve the generated code. Each of these options increases the JIT compilation overhead, but can reduce query execution time considerably.</p>
+<p>These cost-based decisions will be made at plan time, not execution time. This means that when prepared statements are in use, and a generic plan is used (see <a href="#sql-prepare">???</a>), the values of the configuration parameters in effect at prepare time control the decisions, not the settings at execution time.</p>
+<blockquote>
+<p>[!NOTE]
+If <a href="#guc-jit">???</a> is set to <code>off</code>, or if no JIT implementation is available (for example because the server was compiled without <code>--with-llvm</code>), JIT will not be performed, even if it would be beneficial based on the above criteria. Setting <a href="#guc-jit">???</a> to <code>off</code> has effects at both plan and execution time.</p>
+</blockquote>
+<p><a href="#sql-explain">???</a> can be used to see whether JIT is used or not. As an example, here is a query that is not using JIT:</p>
+<div class="codehilite"><pre><span></span><code>=# EXPLAIN ANALYZE SELECT SUM(relpages) FROM pg_class;
+                                                 QUERY PLAN
+-------------------------------------------------------------------​------------------------------------------
+ Aggregate  (cost=16.27..16.29 rows=1 width=8) (actual time=0.303..0.303 rows=1 loops=1)
+   -&gt;  Seq Scan on pg_class  (cost=0.00..15.42 rows=342 width=4) (actual time=0.017..0.111 rows=356 loops=1)
+ Planning Time: 0.116 ms
+ Execution Time: 0.365 ms
+(4 rows)
+</code></pre></div>
+
+<p>Given the cost of the plan, it is entirely reasonable that no JIT was used; the cost of JIT would have been bigger than the potential savings. Adjusting the cost limits will lead to JIT use:</p>
+<div class="codehilite"><pre><span></span><code>=# SET jit_above_cost = 10;
+SET
+=# EXPLAIN ANALYZE SELECT SUM(relpages) FROM pg_class;
+                                                 QUERY PLAN
+-------------------------------------------------------------------​------------------------------------------
+ Aggregate  (cost=16.27..16.29 rows=1 width=8) (actual time=6.049..6.049 rows=1 loops=1)
+   -&gt;  Seq Scan on pg_class  (cost=0.00..15.42 rows=342 width=4) (actual time=0.019..0.052 rows=356 loops=1)
+ Planning Time: 0.133 ms
+ JIT:
+   Functions: 3
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 1.259 ms (Deform 0.000 ms), Inlining 0.000 ms, Optimization 0.797 ms, Emission 5.048 ms, Total 7.104 ms
+ Execution Time: 7.416 ms
+</code></pre></div>
+
+<p>As visible here, JIT was used, but inlining and expensive optimization were not. If <a href="#guc-jit-inline-above-cost">???</a> or <a href="#guc-jit-optimize-above-cost">???</a> were also lowered, that would change.</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h2>
+<p>The configuration variable <a href="#guc-jit">???</a> determines whether JIT compilation is enabled or disabled. If it is enabled, the configuration variables <a href="#guc-jit-above-cost">???</a>, <a href="#guc-jit-inline-above-cost">???</a>, and <a href="#guc-jit-optimize-above-cost">???</a> determine whether JIT compilation is performed for a query, and how much effort is spent doing so.</p>
+<p><a href="#guc-jit-provider">???</a> determines which JIT implementation is used. It is rarely required to be changed. See <a href="#jit-pluggable">Pluggable Providers</a>.</p>
+<p>For development and debugging purposes a few additional configuration parameters exist, as described in <a href="#runtime-config-developer">???</a>.</p>
+<h2 id="extensibility">Extensibility<a class="headerlink" href="#extensibility" title="Permanent link">#</a></h2>
+<h3 id="inlining-support-for-extensions">Inlining Support for Extensions<a class="headerlink" href="#inlining-support-for-extensions" title="Permanent link">#</a></h3>
+<p>PostgreSQL's JIT implementation can inline the bodies of functions of types <code>C</code> and <code>internal</code>, as well as operators based on such functions. To do so for functions in extensions, the definitions of those functions need to be made available. When using <a href="#extend-pgxs">PGXS</a> to build an extension against a server that has been compiled with LLVM JIT support, the relevant files will be built and installed automatically.</p>
+<p>The relevant files have to be installed into <code>$pkglibdir/bitcode/$extension/</code> and a summary of them into <code>$pkglibdir/bitcode/$extension.index.bc</code>, where <code>$pkglibdir</code> is the directory returned by <code>pg_config --pkglibdir</code> and <code>$extension</code> is the base name of the extension's shared library.</p>
+<blockquote>
+<p>[!NOTE]
+For functions built into PostgreSQL itself, the bitcode is installed into <code>$pkglibdir/bitcode/postgres</code>.</p>
+</blockquote>
+<h3 id="pluggable-jit-providers">Pluggable JIT Providers<a class="headerlink" href="#pluggable-jit-providers" title="Permanent link">#</a></h3>
+<p>PostgreSQL provides a JIT implementation based on LLVM. The interface to the JIT provider is pluggable and the provider can be changed without recompiling (although currently, the build process only provides inlining support data for LLVM). The active provider is chosen via the setting <a href="#guc-jit-provider">???</a>.</p>
+<h4 id="jit-provider-interface">JIT Provider Interface<a class="headerlink" href="#jit-provider-interface" title="Permanent link">#</a></h4>
+<p>A JIT provider is loaded by dynamically loading the named shared library. The normal library search path is used to locate the library. To provide the required JIT provider callbacks and to indicate that the library is actually a JIT provider, it needs to provide a C function named <code>_PG_jit_provider_init</code>. This function is passed a struct that needs to be filled with the callback function pointers for individual actions:</p>
+<div class="codehilite"><pre><span></span><code>struct JitProviderCallbacks
+{
+    JitProviderResetAfterErrorCB reset_after_error;
+    JitProviderReleaseContextCB release_context;
+    JitProviderCompileExprCB compile_expr;
+};
+
+extern void _PG_jit_provider_init(JitProviderCallbacks *cb);
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./json.html">
+          <span class="muted">Anterior</span>JSON Types
+        </a>
+        <a class="pager-next" href="./lobj.html">
+          <span class="muted">Siguiente</span>Large Objects
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

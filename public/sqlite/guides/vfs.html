@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The SQLite OS Interface or &#34;VFS&#34; · SQLite</title>
+<meta name="description" content="The SQLite OS Interface or &#34;VFS&#34; - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/vfs.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="The SQLite OS Interface or &#34;VFS&#34;">
+<meta property="og:description" content="The SQLite OS Interface or &#34;VFS&#34; - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The SQLite OS Interface or &#34;VFS&#34;">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "The SQLite OS Interface or &#34;VFS&#34;",
+"url": "https://docs.raupulus.dev/sqlite/guides/vfs.html",  "description": "The SQLite OS Interface or &#34;VFS&#34; - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/unlock_notify.html"
+>SQLite Unlock-Notify API</a>
+              </li>
+              <li>
+                <a href="../guides/version3.html"
+>SQLite Version 3 Overview</a>
+              </li>
+              <li>
+                <a href="../guides/printf.html"
+>SQLite&#39;s Built-in printf()</a>
+              </li>
+              <li>
+                <a href="../guides/staleexpridx.html"
+>Stale Expression Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add_strm.html"
+>Streaming Versions of API functions.</a>
+              </li>
+              <li>
+                <a href="../guides/stricttables.html"
+>STRICT Tables</a>
+              </li>
+              <li>
+                <a href="../guides/swarmvtab.html"
+>Swarmvtab Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/doc_target_crossref.html"
+>Target Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/tempfiles.html"
+>Temporary Files Used By SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/glossary.html"
+>Terms of Art Glossary</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_isempty.html"
+>Test if a changeset has recorded any changes.</a>
+              </li>
+              <li>
+                <a href="../guides/th3.html"
+>TH3</a>
+              </li>
+              <li>
+                <a href="../guides/flextypegood.html"
+>The Advantages Of Flexible Typing</a>
+              </li>
+              <li>
+                <a href="../guides/amalg-v-canon.html"
+>The Amalgamation Versus Canonical Sources</a>
+              </li>
+              <li>
+                <a href="../guides/base64.html"
+>The Base64() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/base85.html"
+>The Base85() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/bytecodevtab.html"
+>The Bytecode() And Tables_Used() Table-Valued Functions</a>
+              </li>
+              <li>
+                <a href="../guides/cksumvfs.html"
+>The Checksum VFS Shim</a>
+              </li>
+              <li>
+                <a href="../guides/completion.html"
+>The COMPLETION() Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/csv.html"
+>The CSV Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/dbstat.html"
+>The DBSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/errlog.html"
+>The Error And Warning Log</a>
+              </li>
+              <li>
+                <a href="../guides/series.html"
+>The generate_series Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/geopoly.html"
+>The Geopoly Interface To The SQLite R*Tree Module</a>
+              </li>
+              <li>
+                <a href="../guides/lemon.html"
+>The Lemon LALR(1) Parser Generator</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner-ng.html"
+>The Next-Generation Query Planner</a>
+              </li>
+              <li>
+                <a href="../guides/percentile.html"
+>The Percentile Extension</a>
+              </li>
+              <li>
+                <a href="../guides/rbu.html"
+>The RBU Extension</a>
+              </li>
+              <li>
+                <a href="../guides/schematab.html"
+>The Schema Table</a>
+              </li>
+              <li>
+                <a href="../guides/sessionintro.html"
+>The Session Extension</a>
+              </li>
+              <li>
+                <a href="../guides/spellfix1.html"
+>The Spellfix1 Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/amalgamation.html"
+>The SQLite Amalgamation</a>
+              </li>
+              <li>
+                <a href="../guides/opcode.html"
+>The SQLite Bytecode Engine</a>
+              </li>
+              <li>
+                <a href="../guides/vfs.html"
+class="is-current" aria-current="page">The SQLite OS Interface or &#34;VFS&#34;</a>
+              </li>
+              <li>
+                <a href="../guides/optoverview.html"
+>The SQLite Query Optimizer Overview</a>
+              </li>
+              <li>
+                <a href="../guides/zipfile.html"
+>The SQLite Zipfile Module</a>
+              </li>
+              <li>
+                <a href="../guides/sqlanalyze.html"
+>The sqlite3_analyzer.exe Utility Program</a>
+              </li>
+              <li>
+                <a href="../guides/dbpage.html"
+>The SQLITE_DBPAGE Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/memstat.html"
+>The SQLITE_MEMSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/stmt.html"
+>The SQLITE_STMT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/tclsqlite.html"
+>The Tcl interface to the SQLite library</a>
+              </li>
+              <li>
+                <a href="../guides/uintcseq.html"
+>The UINT Collating Sequence</a>
+              </li>
+              <li>
+                <a href="../guides/unionvtab.html"
+>The UNION Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/assert.html"
+>The Use Of assert() In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/vdbe.html"
+>The Virtual Database Engine of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/uri.html"
+>Uniform Resource Identifiers</a>
+              </li>
+              <li>
+                <a href="../guides/threadsafe.html"
+>Using SQLite In Multi-Threaded Applications</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_config_strmsize.html"
+>Values for sqlite3session_config().</a>
+              </li>
+              <li>
+                <a href="../guides/versionnumbers.html"
+>Version Numbers in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cves.html"
+>Vulnerabilities</a>
+              </li>
+              <li>
+                <a href="../guides/walformat.html"
+>WAL-mode File Format</a>
+              </li>
+              <li>
+                <a href="../guides/keyword_index.html"
+>Website Keyword Index</a>
+              </li>
+              <li>
+                <a href="../guides/famous.html"
+>Well-Known Users Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/affcase1.html"
+>What If OpenDocument Used SQLite?</a>
+              </li>
+              <li>
+                <a href="../guides/whyc.html"
+>Why Is SQLite Coded In C</a>
+              </li>
+              <li>
+                <a href="../guides/whynotgit.html"
+>Why SQLite Does Not Use Git</a>
+              </li>
+              <li>
+                <a href="../guides/whybytecode.html"
+>Why SQLite Uses Bytecode</a>
+              </li>
+              <li>
+                <a href="../guides/windowfunctions.html"
+>Window Functions</a>
+              </li>
+              <li>
+                <a href="../guides/wal.html"
+>Write-Ahead Logging</a>
+              </li>
+              <li>
+                <a href="../guides/zeroconf.html"
+>Zero-Configuration</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">The SQLite OS Interface or &#34;VFS&#34;</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/vfs.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#31-standard-unix-vfses">3.1. Standard Unix VFSes#</a></li>
+              <li class="lvl-2"><a href="#32-standard-windows-vfses">3.2. Standard Windows VFSes#</a></li>
+              <li class="lvl-2"><a href="#33-specifying-which-vfs-to-use">3.3. Specifying Which VFS To Use#</a></li>
+              <li class="lvl-2"><a href="#34-vfs-shims">3.4. VFS Shims#</a></li>
+              <li class="lvl-2"><a href="#35-other-example-vfses">3.5. Other Example VFSes#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-introduction">1. Introduction<a class="headerlink" href="#1-introduction" title="Permanent link">#</a></h1>
+<p>This article describes the SQLite OS portability layer or "VFS" - the module at the bottom of the SQLite implementation stack that provides portability across operating systems.</p>
+<h1 id="2-the-vfs-in-relation-to-the-rest-of-sqlite">2. The VFS In Relation To The Rest Of SQLite<a class="headerlink" href="#2-the-vfs-in-relation-to-the-rest-of-sqlite" title="Permanent link">#</a></h1>
+<p><img src="images/vfs1.gif" data-align="right" data-hspace="10" /></p>
+<p>The internal organization of the SQLite library can be viewed as the stack of modules shown to the right. The Tokenizer, Parser, and Code Generator components are used to process SQL statements and convert them into executable programs in a virtual machine language or byte code. Roughly speaking, these top three layers implement <a href="c3ref/prepare.html">sqlite3_prepare_v2()</a>. The byte code generated by the top three layers is a <a href="c3ref/stmt.html">prepared statement</a>. The Virtual Machine module is responsible for running the SQL statement byte code. The B-Tree module organizes a database file into multiple key/value stores with ordered keys and logarithmic performance. The Pager module is responsible for loading pages of the database file into memory, for implementing and controlling transactions, and for creating and maintaining the journal files that prevent database corruption following a crash or power failure. The OS Interface is a thin abstraction that provides a common set of routines for adapting SQLite to run on different operating systems. Roughly speaking, the bottom four layers implement <a href="c3ref/step.html">sqlite3_step()</a>.</p>
+<p>This article is about the bottom layer.</p>
+<p>The OS Interface - also called the "VFS" - is what makes SQLite portable across operating systems. Whenever any of the other modules in SQLite needs to communicate with the operating system, they invoke methods in the VFS. The VFS then invokes the operating-specific code needed to satisfy the request. Hence, porting SQLite to a new operating system is simply a matter of writing a new OS interface layer or "VFS".</p>
+<h1 id="3-multiple-vfses">3. Multiple VFSes<a class="headerlink" href="#3-multiple-vfses" title="Permanent link">#</a></h1>
+<p>The standard SQLite source tree contains built-in VFSes for unix and windows. Alternative VFSes can be added at start-time or run-time using the <a href="c3ref/vfs_find.html">sqlite3_vfs_register()</a> interface.</p>
+<p>Multiple VFSes can be registered at the same time. Each VFS has a unique name. Separate <a href="c3ref/sqlite3.html">database connections</a> within the same process can be using different VFSes at the same time. For that matter, if a single database connection has multiple database files open using the <a href="lang_attach.html">ATTACH</a> command, then each attached database might be using a different VFS.</p>
+<h2 id="31-standard-unix-vfses">3.1. Standard Unix VFSes<a class="headerlink" href="#31-standard-unix-vfses" title="Permanent link">#</a></h2>
+<p>Unix builds come with multiple built-in VFSes. The default VFS for unix is called "unix" and is used in most applications. Other VFSes that might be found in unix (depending on compile-time options) include:</p>
+<ol>
+<li>
+<p><strong>unix-dotfile</strong> - uses dot-file locking rather than POSIX advisory locks.</p>
+</li>
+<li>
+<p><strong>unix-excl</strong> - obtains and holds an exclusive lock on database files, preventing other processes from accessing the database. Also keeps the <a href="walformat.html#shm">wal-index</a> in heap rather than in shared memory.</p>
+</li>
+<li>
+<p><strong>unix-none</strong> - all file locking operations are no-ops.</p>
+</li>
+<li>
+<p><strong>unix-namedsem</strong> - uses named semaphores for file locking. VXWorks only.</p>
+</li>
+</ol>
+<p>The various unix VFSes differ only in the way they handle file locking - they share most of their implementation in common with one another and are all located in the same SQLite source file: <a href="https://sqlite.org/src/doc/trunk/src/os_unix.c" rel="noopener" target="_blank">os_unix.c</a>. Note that except for "unix" and "unix-excl", the various unix VFSes all use incompatible locking implementations. If two processes are accessing the same SQLite database using different unix VFSes, they may not see each others locks and may end up interfering with one another, resulting in database corruption. The "unix-none" VFS in particular does no locking at all and will easily result in database corruption if used by two or more database connections at the same time. Programmers are encouraged to use only "unix" or "unix-excl" unless there is a compelling reason to do otherwise.</p>
+<h2 id="32-standard-windows-vfses">3.2. Standard Windows VFSes<a class="headerlink" href="#32-standard-windows-vfses" title="Permanent link">#</a></h2>
+<p>Windows builds also come with multiple built-in VFSes. The default Windows VFS is called "win32" and is used in most applications. Other VFSes that might be found on windows builds include:</p>
+<ol>
+<li>
+<p><strong>win32-longpath</strong> - like "win32" except that pathnames can be up to 65534 bytes in length, whereas pathnames max out at 1040 bytes in "win32".</p>
+</li>
+<li>
+<p><strong>win32-none</strong> - all file locking operations are no-ops.</p>
+</li>
+<li>
+<p><strong>win32-longpath-none</strong> - combination of "win32-longpath" and "win32-none" - long pathnames are supported and all lock operations are no-ops.</p>
+</li>
+</ol>
+<p>As with unix, most of the code for the various Windows VFSes is shared.</p>
+<h2 id="33-specifying-which-vfs-to-use">3.3. Specifying Which VFS To Use<a class="headerlink" href="#33-specifying-which-vfs-to-use" title="Permanent link">#</a></h2>
+<p>There is always one VFS which is the default VFS. On unix systems, the "unix" VFS comes up as the default and on windows it is "win32". If no other actions are taken, new database connections will make use of the default VFS.</p>
+<p>The default VFS can be changed by registering or re-registering the VFS using the <a href="c3ref/vfs_find.html">sqlite3_vfs_register()</a> interface with a second parameter of 1. Hence, if a (unix) process wants to always use the "unix-nolock" VFS in place of "unix", the following code would work:</p>
+<blockquote>
+<p>\
+sqlite3_vfs_register(sqlite3_vfs_find("unix-nolock"), 1);\</p>
+</blockquote>
+<p>An alternate VFS can also be specified as the 4th parameter to the <a href="c3ref/open.html">sqlite3_open_v2()</a> function. For example:</p>
+<blockquote>
+<p>\
+int rc = sqlite3_open_v2("demo.db", &amp;db, SQLITE_OPEN_READWRITE, "unix-nolock");\</p>
+</blockquote>
+<p>Finally, if <a href="uri.html">URI filenames</a> have been enabled, then the alternative VFS can be specified using the "vfs=" parameter on the URI. This technique works with <a href="c3ref/open.html">sqlite3_open()</a>, <a href="c3ref/open.html">sqlite3_open16()</a>, <a href="c3ref/open.html">sqlite3_open_v2()</a>, and when a new database is <a href="lang_attach.html">ATTACH</a>-ed to an existing database connection. For example:</p>
+<blockquote>
+<p>\
+ATTACH 'file:demo2.db?vfs=unix-none' AS demo2;\</p>
+</blockquote>
+<p>The VFS specified by a URI has the highest priority. After that comes a VFS specified as the fourth argument to <a href="c3ref/open.html">sqlite3_open_v2()</a>. The default VFS is used if no VFS is specified otherwise.</p>
+<p><span id="shim"></span></p>
+<h2 id="34-vfs-shims">3.4. VFS Shims<a class="headerlink" href="#34-vfs-shims" title="Permanent link">#</a></h2>
+<p>From the point of view of the upper layers of the SQLite stack, each open database file uses exactly one VFS. But in practice, a particular VFS might just be a thin wrapper around another VFS that does the real work. We call a wrapper VFS a "shim".</p>
+<p>A simple example of a shim is the "vfstrace" VFS. This is a VFS (implemented in the <a href="https://sqlite.org/src/doc/trunk/ext/misc/vfstrace.c" rel="noopener" target="_blank">vfstrace.c</a> source file) that writes a message associated with each VFS method call into a log file, then passes control off to another VFS to do the actual work.</p>
+<h2 id="35-other-example-vfses">3.5. Other Example VFSes<a class="headerlink" href="#35-other-example-vfses" title="Permanent link">#</a></h2>
+<p>The following are other VFS implementations available in the public SQLite source tree:</p>
+<ul>
+<li>
+<p><a href="https://sqlite.org/src/file/ext/misc/appendvfs.c" rel="noopener" target="_blank">appendvfs.c</a> - This VFS allows an SQLite database to be appended to the end of some other file. This can be used, for example, to append an SQLite database onto the end of an executable such that, when run, it can easily locate the appended database. The <a href="cli.html">command-line shell</a> will use this VFS if launched with the --append option, and its .archive command will use it given the --append flag.</p>
+</li>
+<li>
+<p><a href="https://sqlite.org/src/doc/trunk/src/test_demovfs.c" rel="noopener" target="_blank">test_demovfs.c</a> - This file implements a very simple VFS named "demo" that uses POSIX functions such as open(), read(), write(), fsync(), close(), fsync(), sleep(), time(), and so forth. This VFS only works on unix systems. But it is not intended as a replacement for the standard "unix" VFS used by default on unix platforms. The "demo" VFS is deliberately kept very simple so that it can be used as a learning aid or as template for building other VFSes or for porting SQLite to new operating systems.</p>
+</li>
+<li>
+<p><a href="https://sqlite.org/src/doc/trunk/src/test_quota.c" rel="noopener" target="_blank">test_quota.c</a> - This file implements a shim called "quota" that enforces cumulative file size limits on a collection of database files. An auxiliary interface is used to define "quota groups". A quota group is a set of files (database files, journals, and temporary files) whose names all match a <a href="lang_expr.html#glob">GLOB</a> pattern. The sum of the sizes of all files in each quota group is tracked, and if that sum exceeds a threshold defined for the quota group, a callback function is invoked. That callback can either increase the threshold or cause the operation that would have exceeded the quota to fail with an <a href="rescode.html#full">SQLITE_FULL</a> error. One of the uses of this shim is used to enforce resource limits on application databases in Firefox.</p>
+</li>
+<li>
+<p><a href="https://sqlite.org/src/doc/trunk/src/test_multiplex.c" rel="noopener" target="_blank">test_multiplex.c</a> - This file implements a shim that allows database files to exceed the maximum file size of the underlying filesystem. This shim presents an interface to the upper six layers of SQLite that makes it look like very large files are being used, when in reality each such large file is split up into many smaller files on the underlying system. This shim has been used, for example, to allow databases to grow larger than 2 gibibytes on FAT16 filesystems.</p>
+</li>
+<li>
+<p><a href="https://sqlite.org/src/doc/trunk/src/test_onefile.c" rel="noopener" target="_blank">test_onefile.c</a> - This file implements a demonstration VFS named "fs" that shows how SQLite can be used on an embedded device that lacks a filesystem. Content is written directly to the underlying media. A VFS derived from this demonstration code could be used by a gadget with a limited amount of flash memory to make SQLite behave as the filesystem for the flash memory on the device.</p>
+</li>
+<li>
+<p><a href="https://sqlite.org/src/doc/trunk/src/test_journal.c" rel="noopener" target="_blank">test_journal.c</a> - This file implements a shim used during SQLite testing that verifies that the database and rollback journal are written in the correct order and are "synced" at appropriate times in order to guarantee that the database can recover from a power loss or hard reset at any time. The shim checks several invariants on the operation of databases and rollback journals and raises exceptions if any of those invariants are violated. These invariants, in turn, assure that the database is always recoverable. Running a large suite of test cases using this shim provides added assurance that SQLite databases will not be damaged by unexpected power failures or device resets.</p>
+</li>
+<li>
+<p><a href="https://sqlite.org/src/doc/trunk/src/test_vfs.c" rel="noopener" target="_blank">test_vfs.c</a> - This file implements a shim that can be used to simulate filesystem faults. This shim is used during testing to verify that SQLite responds sanely to hardware malfunctions or to other error conditions such as running out of filesystem space that are difficult to test on a real system.</p>
+</li>
+</ul>
+<p>There are other VFS implementations both in the core SQLite source code library and in available extensions. The list above is not meant to be exhaustive but merely representative of the kinds of features that can be realized using the VFS interface.</p>
+<h1 id="4-vfs-implementations">4. VFS Implementations<a class="headerlink" href="#4-vfs-implementations" title="Permanent link">#</a></h1>
+<p>A new VFS is implemented by subclassing three objects:</p>
+<ul>
+<li><a href="c3ref/vfs.html">sqlite3_vfs</a></li>
+<li><a href="c3ref/io_methods.html">sqlite3_io_methods</a></li>
+<li><a href="c3ref/file.html">sqlite3_file</a></li>
+</ul>
+<p>An <a href="c3ref/vfs.html">sqlite3_vfs</a> object defines the name of the VFS and the core methods that implement the interface to the operating system, such as checking for existence of files, deleting files, creating files and opening and for reading and/or writing, converting filenames into their canonical form. The <a href="c3ref/vfs.html">sqlite3_vfs</a> object also contains methods for obtaining randomness from the operating system, for suspending a process (sleeping) and for finding the current date and time.</p>
+<p>The <a href="c3ref/file.html">sqlite3_file</a> object represents an open file. The xOpen method of <a href="c3ref/vfs.html">sqlite3_vfs</a> constructs an <a href="c3ref/file.html">sqlite3_file</a> object when the file is opened. The <a href="c3ref/file.html">sqlite3_file</a> keeps track of the state of the file while it is opened.</p>
+<p>The <a href="c3ref/io_methods.html">sqlite3_io_methods</a> object holds the methods used to interact with an open file. Each <a href="c3ref/file.html">sqlite3_file</a> contains a pointer to an <a href="c3ref/io_methods.html">sqlite3_io_methods</a> object that is appropriate for the file it represents. The <a href="c3ref/io_methods.html">sqlite3_io_methods</a> object contains methods to do things such as read and write from the file, to truncate the file, to flush any changes to persistent storage, to find the size of the file, to lock and unlock the file, and to close file and destroy the <a href="c3ref/file.html">sqlite3_file</a> object.</p>
+<p>Writing the code for a new VFS involves constructing a subclass for the <a href="c3ref/vfs.html">sqlite3_vfs</a> object and then registering that VFS object using a call to <a href="c3ref/vfs_find.html">sqlite3_vfs_register()</a>. The VFS implementation also provides subclasses for <a href="c3ref/file.html">sqlite3_file</a> and <a href="c3ref/io_methods.html">sqlite3_io_methods</a> but those objects are not registered directly with SQLite. Instead, the <a href="c3ref/file.html">sqlite3_file</a> object is returned from the xOpen method of <a href="c3ref/vfs.html">sqlite3_vfs</a> and the <a href="c3ref/file.html">sqlite3_file</a> object points to an instance of the <a href="c3ref/io_methods.html">sqlite3_io_methods</a> object.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/opcode.html">
+          <span class="muted">Anterior</span>The SQLite Bytecode Engine
+        </a>
+        <a class="pager-next" href="../guides/optoverview.html">
+          <span class="muted">Siguiente</span>The SQLite Query Optimizer Overview
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

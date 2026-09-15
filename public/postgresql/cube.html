@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cube — a multi-dimensional cube data type · PostgreSQL</title>
+<meta name="description" content="cube — a multi-dimensional cube data type - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/cube.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="cube — a multi-dimensional cube data type">
+<meta property="og:description" content="cube — a multi-dimensional cube data type - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cube — a multi-dimensional cube data type">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "cube — a multi-dimensional cube data type",
+"url": "https://docs.raupulus.dev/postgresql/cube.html",  "description": "cube — a multi-dimensional cube data type - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./history.html"
+>A Brief History of PostgreSQL</a>
+              </li>
+              <li>
+                <a href="./acronyms.html"
+>Acronyms</a>
+              </li>
+              <li>
+                <a href="./contrib.html"
+>Additional Supplied Modules and Extensions</a>
+              </li>
+              <li>
+                <a href="./advanced.html"
+>Advanced Features</a>
+              </li>
+              <li>
+                <a href="./ecpg.html"
+>ALLOCATE DESCRIPTOR</a>
+              </li>
+              <li>
+                <a href="./amcheck.html"
+>amcheck — tools to verify table and index consistency</a>
+              </li>
+              <li>
+                <a href="./archive-modules.html"
+>Archive Modules</a>
+              </li>
+              <li>
+                <a href="./array.html"
+>Arrays</a>
+              </li>
+              <li>
+                <a href="./auth-delay.html"
+>auth_delay — pause on authentication failure</a>
+              </li>
+              <li>
+                <a href="./auto-explain.html"
+>auto_explain — log execution plans of slow queries</a>
+              </li>
+              <li>
+                <a href="./btree.html"
+>B-Tree Indexes</a>
+              </li>
+              <li>
+                <a href="./bgworker.html"
+>Background Worker Processes</a>
+              </li>
+              <li>
+                <a href="./backup.html"
+>Backup and Restore</a>
+              </li>
+              <li>
+                <a href="./backup-manifest.html"
+>Backup Manifest Format</a>
+              </li>
+              <li>
+                <a href="./basebackup-to-shell.html"
+>basebackup_to_shell — example &#34;shell&#34; pg_basebackup module</a>
+              </li>
+              <li>
+                <a href="./basic-archive.html"
+>basic_archive — an example WAL archive module</a>
+              </li>
+              <li>
+                <a href="./biblio.html"
+>Bibliography</a>
+              </li>
+              <li>
+                <a href="./bloom.html"
+>bloom — bloom filter index access method</a>
+              </li>
+              <li>
+                <a href="./brin.html"
+>BRIN Indexes</a>
+              </li>
+              <li>
+                <a href="./btree-gin.html"
+>btree_gin — GIN operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./btree-gist.html"
+>btree_gist — GiST operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./problems.html"
+>Bug Reporting Guidelines</a>
+              </li>
+              <li>
+                <a href="./indextypes.html"
+>Built-in Index Access Methods</a>
+              </li>
+              <li>
+                <a href="./citext.html"
+>citext — a case-insensitive character string type</a>
+              </li>
+              <li>
+                <a href="./client-auth.html"
+>Client Authentication</a>
+              </li>
+              <li>
+                <a href="./color.html"
+>Color Support</a>
+              </li>
+              <li>
+                <a href="./dfunc.html"
+>Compiling and Linking Dynamically-Loaded Functions</a>
+              </li>
+              <li>
+                <a href="./rowtypes.html"
+>Composite Types</a>
+              </li>
+              <li>
+                <a href="./mvcc.html"
+>Concurrency Control</a>
+              </li>
+              <li>
+                <a href="./notation.html"
+>Conventions</a>
+              </li>
+              <li>
+                <a href="./cube.html"
+class="is-current" aria-current="page">cube — a multi-dimensional cube data type</a>
+              </li>
+              <li>
+                <a href="./custom-rmgr.html"
+>Custom WAL Resource Managers</a>
+              </li>
+              <li>
+                <a href="./ddl.html"
+>Data Definition</a>
+              </li>
+              <li>
+                <a href="./dml.html"
+>Data Manipulation</a>
+              </li>
+              <li>
+                <a href="./datatype.html"
+>Data Types</a>
+              </li>
+              <li>
+                <a href="./storage.html"
+>Database Physical Storage</a>
+              </li>
+              <li>
+                <a href="./user-manag.html"
+>Database Roles</a>
+              </li>
+              <li>
+                <a href="./datetime.html"
+>Date/Time Support</a>
+              </li>
+              <li>
+                <a href="./dblink.html"
+>dblink_connect</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-default-roles.html"
+>Default Roles Renamed to Predefined Roles</a>
+              </li>
+              <li>
+                <a href="./dict-int.html"
+>dict_int — example full-text search dictionary for integers</a>
+              </li>
+              <li>
+                <a href="./dict-xsyn.html"
+>dict_xsyn — example synonym full-text search dictionary</a>
+              </li>
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+>file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">cube — a multi-dimensional cube data type</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/cube.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#cube-a-multi-dimensional-cube-data-type">cube a multi-dimensional cube data type#</a></li>
+              <li class="lvl-2"><a href="#syntax">Syntax#</a></li>
+              <li class="lvl-2"><a href="#precision">Precision#</a></li>
+              <li class="lvl-2"><a href="#usage">Usage#</a></li>
+              <li class="lvl-2"><a href="#defaults">Defaults#</a></li>
+              <li class="lvl-2"><a href="#notes">Notes#</a></li>
+              <li class="lvl-2"><a href="#credits">Credits#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="cube-a-multi-dimensional-cube-data-type">cube a multi-dimensional cube data type<a class="headerlink" href="#cube-a-multi-dimensional-cube-data-type" title="Permanent link">#</a></h2>
+<p>cube (extension)</p>
+<p>This module implements a data type <code>cube</code> for representing multidimensional cubes.</p>
+<p>This module is considered “trusted”, that is, it can be installed by non-superusers who have <code>CREATE</code> privilege on the current database.</p>
+<h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">#</a></h2>
+<p><a href="#cube-repr-table">Cube External Representations</a> shows the valid external representations for the <code>cube</code> type. \&lt;x&gt;, \&lt;y&gt;, etc. denote floating-point numbers.</p>
+<table>
+<thead>
+<tr>
+<th>External Syntax</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code></td>
+<td>A one-dimensional point (or, zero-length one-dimensional interval)</td>
+</tr>
+<tr>
+<td><code>(x)</code></td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td><code>x1,x2,...,xn</code></td>
+<td>A point in n-dimensional space, represented internally as a zero-volume cube</td>
+</tr>
+<tr>
+<td><code>(x1,x2,...,xn)</code></td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td><code>(x),(y)</code></td>
+<td>A one-dimensional interval starting at \&lt;x&gt; and ending at \&lt;y&gt; or vice versa; the order does not matter</td>
+</tr>
+<tr>
+<td><code>[(x),(y)]</code></td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td><code>(x1,...,xn),(y1,...,yn)</code></td>
+<td>An n-dimensional cube represented by a pair of its diagonally opposite corners</td>
+</tr>
+<tr>
+<td><code>[(x1,...,xn),(y1,...,yn)]</code></td>
+<td>Same as above</td>
+</tr>
+</tbody>
+</table>
+<p>Cube External Representations {#cube-repr-table}</p>
+<p>It does not matter which order the opposite corners of a cube are entered in. The <code>cube</code> functions automatically swap values if needed to create a uniform “lower left upper right” internal representation. When the corners coincide, <code>cube</code> stores only one corner along with an “is point” flag to avoid wasting space.</p>
+<p>White space is ignored on input, so <code>[(x),(y)]</code> is the same as <code>[ ( x ), ( y ) ]</code>.</p>
+<h2 id="precision">Precision<a class="headerlink" href="#precision" title="Permanent link">#</a></h2>
+<p>Values are stored internally as 64-bit floating point numbers. This means that numbers with more than about 16 significant digits will be truncated.</p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h2>
+<p><a href="#cube-operators-table">Cube Operators</a> shows the specialized operators provided for type <code>cube</code>.</p>
+<table id="cube-operators-table">
+<caption>Cube Operators</caption>
+<thead>
+<tr>
+<th><p role="func_signature">Operator</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>&amp;&amp;</code> <code>cube</code> boolean</p>
+<p>Do the cubes overlap?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>@&gt;</code> <code>cube</code> boolean</p>
+<p>Does the first cube contain the second?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>&lt;@</code> <code>cube</code> boolean</p>
+<p>Is the first cube contained in the second?</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>-&gt;</code> <code>integer</code> float8</p>
+<p>Extracts the <code>n</code>-th coordinate of the cube (counting from 1).</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>~&gt;</code> <code>integer</code> float8</p>
+<p>Extracts the <code>n</code>-th coordinate of the cube, counting in the following way: <code>n</code> = 2 * <code>k</code> - 1 means lower bound of <code>k</code>-th dimension, <code>n</code> = 2 * <code>k</code> means upper bound of <code>k</code>-th dimension. Negative <code>n</code> denotes the inverse value of the corresponding positive coordinate. This operator is designed for KNN-GiST support.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>&lt;-&gt;</code> <code>cube</code> float8</p>
+<p>Computes the Euclidean distance between the two cubes.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>&lt;#&gt;</code> <code>cube</code> float8</p>
+<p>Computes the taxicab (L-1 metric) distance between the two cubes.</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> <code>&lt;=&gt;</code> <code>cube</code> float8</p>
+<p>Computes the Chebyshev (L-inf metric) distance between the two cubes.</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>In addition to the above operators, the usual comparison operators shown in <a href="#functions-comparison-op-table">???</a> are available for type <code>cube</code>. These operators first compare the first coordinates, and if those are equal, compare the second coordinates, etc. They exist mainly to support the b-tree index operator class for <code>cube</code>, which can be useful for example if you would like a UNIQUE constraint on a <code>cube</code> column. Otherwise, this ordering is not of much practical use.</p>
+<p>The <code>cube</code> module also provides a GiST index operator class for <code>cube</code> values. A <code>cube</code> GiST index can be used to search for values using the <code>=</code>, <code>&amp;&amp;</code>, <code>@&gt;</code>, and <code>&lt;@</code> operators in <code>WHERE</code> clauses.</p>
+<p>In addition, a <code>cube</code> GiST index can be used to find nearest neighbors using the metric operators <code>&lt;-&gt;</code>, <code>&lt;#&gt;</code>, and <code>&lt;=&gt;</code> in <code>ORDER BY</code> clauses. For example, the nearest neighbor of the 3-D point (0.5, 0.5, 0.5) could be found efficiently with:</p>
+<div class="codehilite"><pre><span></span><code>SELECT c FROM test ORDER BY c &lt;-&gt; cube(array[0.5,0.5,0.5]) LIMIT 1;
+</code></pre></div>
+
+<p>The <code>~&gt;</code> operator can also be used in this way to efficiently retrieve the first few values sorted by a selected coordinate. For example, to get the first few cubes ordered by the first coordinate (lower left corner) ascending one could use the following query:</p>
+<div class="codehilite"><pre><span></span><code>SELECT c FROM test ORDER BY c ~&gt; 1 LIMIT 5;
+</code></pre></div>
+
+<p>And to get 2-D cubes ordered by the first coordinate of the upper right corner descending:</p>
+<div class="codehilite"><pre><span></span><code>SELECT c FROM test ORDER BY c ~&gt; 3 DESC LIMIT 5;
+</code></pre></div>
+
+<p><a href="#cube-functions-table">Cube Functions</a> shows the available functions.</p>
+<table id="cube-functions-table">
+<caption>Cube Functions</caption>
+<thead>
+<tr>
+<th><p role="func_signature">Function</p>
+<p>Description</p>
+<p>Example(s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="func_signature"><code>cube</code> ( <code>float8</code> ) cube</p>
+<p>Makes a one dimensional cube with both coordinates the same.</p>
+<p><code>cube(1)</code> (1)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> ( <code>float8</code>, <code>float8</code> ) cube</p>
+<p>Makes a one dimensional cube.</p>
+<p><code>cube(1, 2)</code> (1),(2)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> ( <code>float8[]</code> ) cube</p>
+<p>Makes a zero-volume cube using the coordinates defined by the array.</p>
+<p><code>cube(ARRAY[1,2,3])</code> (1, 2, 3)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> ( <code>float8[]</code>, <code>float8[]</code> ) cube</p>
+<p>Makes a cube with upper right and lower left coordinates as defined by the two arrays, which must be of the same length.</p>
+<p><code>cube(ARRAY[1,2], ARRAY[3,4])</code> (1, 2),(3, 4)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> ( <code>cube</code>, <code>float8</code> ) cube</p>
+<p>Makes a new cube by adding a dimension on to an existing cube, with the same values for both endpoints of the new coordinate. This is useful for building cubes piece by piece from calculated values.</p>
+<p><code>cube('(1,2),(3,4)'::cube, 5)</code> (1, 2, 5),(3, 4, 5)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube</code> ( <code>cube</code>, <code>float8</code>, <code>float8</code> ) cube</p>
+<p>Makes a new cube by adding a dimension on to an existing cube. This is useful for building cubes piece by piece from calculated values.</p>
+<p><code>cube('(1,2),(3,4)'::cube, 5, 6)</code> (1, 2, 5),(3, 4, 6)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_dim</code> ( <code>cube</code> ) integer</p>
+<p>Returns the number of dimensions of the cube.</p>
+<p><code>cube_dim('(1,2),(3,4)')</code> 2</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_ll_coord</code> ( <code>cube</code>, <code>integer</code> ) float8</p>
+<p>Returns the <code>n</code>-th coordinate value for the lower left corner of the cube.</p>
+<p><code>cube_ll_coord('(1,2),(3,4)', 2)</code> 2</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_ur_coord</code> ( <code>cube</code>, <code>integer</code> ) float8</p>
+<p>Returns the <code>n</code>-th coordinate value for the upper right corner of the cube.</p>
+<p><code>cube_ur_coord('(1,2),(3,4)', 2)</code> 4</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_is_point</code> ( <code>cube</code> ) boolean</p>
+<p>Returns true if the cube is a point, that is, the two defining corners are the same.</p>
+<p><code>cube_is_point(cube(1,1))</code> t</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_distance</code> ( <code>cube</code>, <code>cube</code> ) float8</p>
+<p>Returns the distance between two cubes. If both cubes are points, this is the normal distance function.</p>
+<p><code>cube_distance('(1,2)', '(3,4)')</code> 2.8284271247461903</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_subset</code> ( <code>cube</code>, <code>integer[]</code> ) cube</p>
+<p>Makes a new cube from an existing cube, using a list of dimension indexes from an array. Can be used to extract the endpoints of a single dimension, or to drop dimensions, or to reorder them as desired.</p>
+<p><code>cube_subset(cube('(1,3,5),(6,7,8)'), ARRAY[2])</code> (3),(7)</p>
+<p><code>cube_subset(cube('(1,3,5),(6,7,8)'), ARRAY[3,2,1,1])</code> (5, 3, 1, 1),(8, 7, 6, 6)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_union</code> ( <code>cube</code>, <code>cube</code> ) cube</p>
+<p>Produces the union of two cubes.</p>
+<p><code>cube_union('(1,2)', '(3,4)')</code> (1, 2),(3, 4)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_inter</code> ( <code>cube</code>, <code>cube</code> ) cube</p>
+<p>Produces the intersection of two cubes.</p>
+<p><code>cube_inter('(1,2)', '(3,4)')</code> (3, 4),(1, 2)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>cube_enlarge</code> ( <code>c</code> <code>cube</code>, <code>r</code> <code>double</code>, <code>n</code> <code>integer</code> ) cube</p>
+<p>Increases the size of the cube by the specified radius <code>r</code> in at least <code>n</code> dimensions. If the radius is negative the cube is shrunk instead. All defined dimensions are changed by the radius <code>r</code>. Lower-left coordinates are decreased by <code>r</code> and upper-right coordinates are increased by <code>r</code>. If a lower-left coordinate is increased to more than the corresponding upper-right coordinate (this can only happen when <code>r</code> &lt; 0) than both coordinates are set to their average. If <code>n</code> is greater than the number of defined dimensions and the cube is being enlarged (<code>r</code> &gt; 0), then extra dimensions are added to make <code>n</code> altogether; 0 is used as the initial value for the extra coordinates. This function is useful for creating bounding boxes around a point for searching for nearby points.</p>
+<p><code>cube_enlarge('(1,2),(3,4)', 0.5, 3)</code> (0.5, 1.5, -0.5),(3.5, 4.5, 0.5)</p></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="defaults">Defaults<a class="headerlink" href="#defaults" title="Permanent link">#</a></h2>
+<p>This union:</p>
+<div class="codehilite"><pre><span></span><code>select cube_union(&#39;(0,5,2),(2,3,1)&#39;, &#39;0&#39;);
+cube_union
+-------------------
+(0, 0, 0),(2, 5, 2)
+(1 row)
+</code></pre></div>
+
+<p>does not contradict common sense, neither does the intersection:</p>
+<div class="codehilite"><pre><span></span><code>select cube_inter(&#39;(0,-1),(1,1)&#39;, &#39;(-2),(2)&#39;);
+cube_inter
+-------------
+(0, 0),(1, 0)
+(1 row)
+</code></pre></div>
+
+<p>In all binary operations on differently-dimensioned cubes, the lower-dimensional one is assumed to be a Cartesian projection, i. e., having zeroes in place of coordinates omitted in the string representation. The above examples are equivalent to:</p>
+<div class="codehilite"><pre><span></span><code>cube_union(&#39;(0,5,2),(2,3,1)&#39;,&#39;(0,0,0),(0,0,0)&#39;);
+cube_inter(&#39;(0,-1),(1,1)&#39;,&#39;(-2,0),(2,0)&#39;);
+</code></pre></div>
+
+<p>The following containment predicate uses the point syntax, while in fact the second argument is internally represented by a box. This syntax makes it unnecessary to define a separate point type and functions for (box,point) predicates.</p>
+<div class="codehilite"><pre><span></span><code>select cube_contains(&#39;(0,0),(1,1)&#39;, &#39;0.5,0.5&#39;);
+cube_contains
+--------------
+t
+(1 row)
+</code></pre></div>
+
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">#</a></h2>
+<p>For examples of usage, see the regression test <code>sql/cube.sql</code>.</p>
+<p>To make it harder for people to break things, there is a limit of 100 on the number of dimensions of cubes. This is set in <code>cubedata.h</code> if you need something bigger.</p>
+<h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">#</a></h2>
+<p>Original author: Gene Selkov, Jr. <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#115;&#101;&#108;&#107;&#111;&#118;&#106;&#114;&#64;&#109;&#99;&#115;&#46;&#97;&#110;&#108;&#46;&#103;&#111;&#118;">&#115;&#101;&#108;&#107;&#111;&#118;&#106;&#114;&#64;&#109;&#99;&#115;&#46;&#97;&#110;&#108;&#46;&#103;&#111;&#118;</a>, Mathematics and Computer Science Division, Argonne National Laboratory.</p>
+<p>My thanks are primarily to Prof. Joe Hellerstein (<a href="https://dsf.berkeley.edu/jmh/" rel="noopener" target="_blank"></a>) for elucidating the gist of the GiST (<a href="http://gist.cs.berkeley.edu/" rel="noopener" target="_blank"></a>), and to his former student Andy Dong for his example written for Illustra. I am also grateful to all Postgres developers, present and past, for enabling myself to create my own world and live undisturbed in it. And I would like to acknowledge my gratitude to Argonne Lab and to the U.S. Department of Energy for the years of faithful support of my database research.</p>
+<p>Minor updates to this package were made by Bruno Wolff III <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#98;&#114;&#117;&#110;&#111;&#64;&#119;&#111;&#108;&#102;&#102;&#46;&#116;&#111;">&#98;&#114;&#117;&#110;&#111;&#64;&#119;&#111;&#108;&#102;&#102;&#46;&#116;&#111;</a> in August/September of 2002. These include changing the precision from single precision to double precision and adding some new functions.</p>
+<p>Additional updates were made by Joshua Reich <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#106;&#111;&#115;&#104;&#64;&#114;&#111;&#111;&#116;&#46;&#110;&#101;&#116;">&#106;&#111;&#115;&#104;&#64;&#114;&#111;&#111;&#116;&#46;&#110;&#101;&#116;</a> in July 2006. These include <code>cube(float8[], float8[])</code> and cleaning up the code to use the V1 call protocol instead of the deprecated V0 protocol.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./notation.html">
+          <span class="muted">Anterior</span>Conventions
+        </a>
+        <a class="pager-next" href="./custom-rmgr.html">
+          <span class="muted">Siguiente</span>Custom WAL Resource Managers
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

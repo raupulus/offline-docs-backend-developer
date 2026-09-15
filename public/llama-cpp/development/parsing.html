@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parsing Model Output · llama.cpp</title>
+<meta name="description" content="Parsing Model Output - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/llama-cpp/development/parsing.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Parsing Model Output">
+<meta property="og:description" content="Parsing Model Output - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Parsing Model Output">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Parsing Model Output",
+"url": "https://docs.raupulus.dev/llama-cpp/development/parsing.html",  "description": "Parsing Model Output - Documentación técnica de llama.cpp en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">llama.cpp</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="llama-cpp" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en llama.cpp…"
+         aria-label="Buscar en llama.cpp" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de llama.cpp
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de llama.cpp">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../backend/blis.html">Backend</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Development
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../development/howto-add-model.html"
+>Add a new model architecture to llama.cpp</a>
+              </li>
+              <li>
+                <a href="../development/debugging-tests.html"
+>Debugging Tests Tips</a>
+              </li>
+              <li>
+                <a href="../development/parsing.html"
+class="is-current" aria-current="page">Parsing Model Output</a>
+              </li>
+              <li>
+                <a href="../development/token-generation-performance-tips.html"
+>Token generation performance troubleshooting</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../multimodal/mobilevlm.html">Multimodal</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../android.html">Llama.Cpp</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Parsing Model Output</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/llama-cpp.md" download="llama-cpp.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de llama.cpp en un solo archivo Markdown">Bundle .md (482 KB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#example">Example#</a></li>
+              <li class="lvl-2"><a href="#parserscombinators">Parsers/Combinators#</a></li>
+              <li class="lvl-3"><a href="#basic-matchers">Basic Matchers#</a></li>
+              <li class="lvl-3"><a href="#combinators">Combinators#</a></li>
+              <li class="lvl-3"><a href="#lookahead">Lookahead#</a></li>
+              <li class="lvl-3"><a href="#character-classes-utilities">Character Classes &amp; Utilities#</a></li>
+              <li class="lvl-3"><a href="#json-parsers">JSON Parsers#</a></li>
+              <li class="lvl-3"><a href="#grammar-building">Grammar Building#</a></li>
+              <li class="lvl-3"><a href="#ast-control">AST Control#</a></li>
+              <li class="lvl-2"><a href="#gbnf-grammar-generation">GBNF Grammar Generation#</a></li>
+              <li class="lvl-3"><a href="#lazy-grammars">Lazy Grammars#</a></li>
+              <li class="lvl-3"><a href="#json-schema">JSON Schema#</a></li>
+              <li class="lvl-2"><a href="#common-ast-shapes-for-chat-parsing">Common AST Shapes for Chat Parsing#</a></li>
+              <li class="lvl-3"><a href="#simple">Simple#</a></li>
+              <li class="lvl-3"><a href="#native">Native#</a></li>
+              <li class="lvl-3"><a href="#constructed">Constructed#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="parsing-model-output">Parsing Model Output<a class="headerlink" href="#parsing-model-output" title="Permanent link">#</a></h1>
+<p>The <code>common</code> library contains a PEG parser implementation suitable for parsing
+model output.</p>
+<p>Types with the prefix <code>common_peg_*</code> are intended for general use and may have
+applications beyond parsing model output, such as parsing user-provided regex
+patterns.</p>
+<p>Types with the prefix <code>common_chat_peg_*</code> are specialized helpers for model
+output.</p>
+<p>The parser features:</p>
+<ul>
+<li>Partial parsing of streaming input</li>
+<li>Built-in JSON parsers</li>
+<li>AST generation with semantics via "tagged" nodes</li>
+</ul>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
+<p>Below is a contrived example demonstrating how to use the PEG parser to parse
+output from a model that emits arguments as JSON.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">auto</span><span class="w"> </span><span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">build_chat_peg_parser</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">common_chat_peg_builder</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Build a choice of all available tools</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tool_choice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">choice</span><span class="p">();</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">tool</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tools</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tool</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;function&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">function</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w">   </span><span class="n">schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">common_chat_tool_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">tool_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">json_member</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">tool_args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">json_member</span><span class="p">(</span><span class="s">&quot;arguments&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">schema</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">json</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;tool-&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;-schema&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">schema</span><span class="p">));</span>
+
+<span class="w">        </span><span class="n">tool_choice</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">rule</span><span class="p">(</span><span class="s">&quot;tool-&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tool_name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tool_args</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Define the tool call structure: &lt;tool_call&gt;[{tool}]&lt;/tool_call&gt;</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tool_call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">trigger_rule</span><span class="p">(</span><span class="s">&quot;tool-call&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">sequence</span><span class="p">({</span>
+<span class="w">            </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;&lt;tool_call&gt;[&quot;</span><span class="p">),</span>
+<span class="w">            </span><span class="n">tool_choice</span><span class="p">,</span>
+<span class="w">            </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;]&lt;/tool_call&gt;&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Parser accepts content, optionally followed by a tool call</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">sequence</span><span class="p">({</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">content</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">until</span><span class="p">(</span><span class="s">&quot;&lt;tool_call&gt;&quot;</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">optional</span><span class="p">(</span><span class="n">tool_call</span><span class="p">),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>For a more complete example, see <code>test_example_native()</code> in
+<a href="/tests/test-chat-peg-parser.cpp">tests/test-chat-peg-parser.cpp</a>.</p>
+<h2 id="parserscombinators">Parsers/Combinators<a class="headerlink" href="#parserscombinators" title="Permanent link">#</a></h2>
+<h3 id="basic-matchers">Basic Matchers<a class="headerlink" href="#basic-matchers" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>eps()</code></strong> - Matches nothing and always succeeds (epsilon/empty match)</li>
+<li><strong><code>start()</code></strong> - Matches the start of input (anchor <code>^</code>)</li>
+<li><strong><code>end()</code></strong> - Matches the end of input (anchor <code>$</code>)</li>
+<li><strong><code>literal(string)</code></strong> - Matches an exact literal string</li>
+<li><strong><code>any()</code></strong> - Matches any single character (<code>.</code>)</li>
+</ul>
+<h3 id="combinators">Combinators<a class="headerlink" href="#combinators" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>sequence(...)</code></strong> - Matches parsers in order; all must succeed</li>
+<li><strong><code>choice(...)</code></strong> - Matches the first parser that succeeds from alternatives (ordered choice)</li>
+<li><strong><code>one_or_more(p)</code></strong> - Matches one or more repetitions (<code>+</code>)</li>
+<li><strong><code>zero_or_more(p)</code></strong> - Matches zero or more repetitions (<code>*</code>)</li>
+<li><strong><code>optional(p)</code></strong> - Matches zero or one occurrence (<code>?</code>)</li>
+<li><strong><code>repeat(p, min, max)</code></strong> - Matches between min and max repetitions (use <code>-1</code> for unbounded)</li>
+<li><strong><code>repeat(p, n)</code></strong> - Matches exactly n repetitions</li>
+</ul>
+<h3 id="lookahead">Lookahead<a class="headerlink" href="#lookahead" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>peek(p)</code></strong> - Positive lookahead: succeeds if parser succeeds without consuming input (<code>&amp;</code>)</li>
+<li><strong><code>negate(p)</code></strong> - Negative lookahead: succeeds if parser fails without consuming input (<code>!</code>)</li>
+</ul>
+<h3 id="character-classes-utilities">Character Classes &amp; Utilities<a class="headerlink" href="#character-classes-utilities" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>chars(classes, min, max)</code></strong> - Matches repetitions of characters from a character class</li>
+<li><strong><code>space()</code></strong> - Matches zero or more whitespace characters (space, tab, newline)</li>
+<li><strong><code>until(delimiter)</code></strong> - Matches characters until delimiter is found (delimiter not consumed)</li>
+<li><strong><code>until_one_of(delimiters)</code></strong> - Matches characters until any delimiter in the list is found</li>
+<li><strong><code>rest()</code></strong> - Matches everything remaining (<code>.*</code>)</li>
+</ul>
+<h3 id="json-parsers">JSON Parsers<a class="headerlink" href="#json-parsers" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>json()</code></strong> - Complete JSON parser (objects, arrays, strings, numbers, booleans, null)</li>
+<li><strong><code>json_object()</code></strong> - JSON object parser</li>
+<li><strong><code>json_array()</code></strong> - JSON array parser</li>
+<li><strong><code>json_string()</code></strong> - JSON string parser</li>
+<li><strong><code>json_number()</code></strong> - JSON number parser</li>
+<li><strong><code>json_bool()</code></strong> - JSON boolean parser</li>
+<li><strong><code>json_null()</code></strong> - JSON null parser</li>
+<li><strong><code>json_string_content()</code></strong> - JSON string content without surrounding quotes</li>
+<li><strong><code>json_member(key, p)</code></strong> - JSON object member with specific key and value parser</li>
+</ul>
+<h3 id="grammar-building">Grammar Building<a class="headerlink" href="#grammar-building" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>ref(name)</code></strong> - Creates a lightweight reference to a named rule (for recursive grammars)</li>
+<li><strong><code>rule(name, p, trigger)</code></strong> - Creates a named rule and returns a reference</li>
+<li><strong><code>trigger_rule(name, p)</code></strong> - Creates a trigger rule (entry point for lazy grammar generation)</li>
+<li><strong><code>schema(p, name, schema, raw)</code></strong> - Wraps parser with JSON schema metadata for grammar generation</li>
+<li><strong><code>schema(p, name, doc, node, raw)</code></strong> - Same, for a node of a <code>common_chat_schema_document</code> built earlier, e.g. one tool parameter</li>
+</ul>
+<h3 id="ast-control">AST Control<a class="headerlink" href="#ast-control" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>atomic(p)</code></strong> - Prevents AST node creation for partial parses</li>
+<li><strong><code>tag(tag, p)</code></strong> - Creates AST nodes with semantic tags (multiple nodes can share tags)</li>
+</ul>
+<h2 id="gbnf-grammar-generation">GBNF Grammar Generation<a class="headerlink" href="#gbnf-grammar-generation" title="Permanent link">#</a></h2>
+<p>The PEG parser also acts as a convenient DSL for generating GBNF grammars, with
+some exceptions.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="p">.</span><span class="n">grammar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">build_grammar</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">common_grammar_builder</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">build_grammar</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">grammar_lazy</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>The notable exception is the <code>negate(p)</code> lookahead parser, which cannot be
+defined as a CFG grammar and therefore does not produce a rule. Its usage
+should be limited and preferably hidden behind a <code>schema()</code> parser. In many
+cases, <code>until(delimiter)</code> or <code>until_one_of(delimiters)</code> is a better choice.</p>
+<p>Another limitation is that the PEG parser requires an unambiguous grammar. In
+contrast, the <code>llama-grammar</code> implementation can support ambiguous grammars,
+though they are difficult to parse.</p>
+<h3 id="lazy-grammars">Lazy Grammars<a class="headerlink" href="#lazy-grammars" title="Permanent link">#</a></h3>
+<p>During lazy grammar generation, only rules reachable from a <code>trigger_rule(p)</code>
+are emitted in the grammar. All trigger rules are added as alternations in the
+root rule. It is still necessary to define trigger patterns, as the parser has
+no interaction with the grammar sampling.</p>
+<h3 id="json-schema">JSON Schema<a class="headerlink" href="#json-schema" title="Permanent link">#</a></h3>
+<p>The <code>schema(p, name, schema, raw)</code> parser will use the <code>json-schema-to-grammar</code>
+implementation to generate the grammar instead of the underlying parser.</p>
+<p>The <code>raw</code> option emits a grammar suitable for a raw string instead of a JSON
+string. In other words, it won't be wrapped in quotes or require escaping
+quotes. It only takes effect when the schema may be a string, as reported by
+<code>common_chat_schema::may_be_string()</code>, otherwise the JSON grammar is used.</p>
+<p>The downside is that it can potentially lead to ambiguous grammars. For
+example, if a user provides the pattern <code>^.*$</code>, the following grammar may be
+generated:</p>
+<div class="codehilite"><pre><span></span><code>root ::= &quot;&lt;arg&gt;&quot; .* &quot;&lt;/arg&gt;&quot;
+</code></pre></div>
+
+<p>This creates an ambiguous grammar that cannot be parsed by the PEG parser. To
+help mitigate this, if <code>.*</code> is found in the pattern, the grammar from the
+underlying parser will be emitted instead.</p>
+<h2 id="common-ast-shapes-for-chat-parsing">Common AST Shapes for Chat Parsing<a class="headerlink" href="#common-ast-shapes-for-chat-parsing" title="Permanent link">#</a></h2>
+<p>Most model output can be placed in one of the following categories:</p>
+<ul>
+<li>Content only</li>
+<li>Tool calling with arguments emitted as a single JSON object</li>
+<li>Tool calling with arguments emitted as separate entities, either XML
+  (Qwen3-Coder, MiniMax M2) or pseudo-function calls (LFM2)</li>
+</ul>
+<p>To provide broad coverage,
+<a href="/common/chat-peg-parser.h"><code>common/chat-peg-parser.h</code></a> contains builders and
+mappers that help create parsers and visitors/extractors for these types. They
+require parsers to tag nodes to conform to an AST "shape". This normalization
+makes it easy to extract information and generalize parsing.</p>
+<h3 id="simple">Simple<a class="headerlink" href="#simple" title="Permanent link">#</a></h3>
+<p>The <code>common_chat_peg_builder</code> builds a <code>simple</code> parser that supports
+content-only models with optional reasoning.</p>
+<ul>
+<li><strong><code>reasoning(p)</code></strong> - Tag node for extracting <code>reasoning_content</code></li>
+<li><strong><code>content(p)</code></strong> - Tag node for extracting <code>content</code></li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="n">build_chat_peg_parser</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">common_chat_peg_parser</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">sequence</span><span class="p">({</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">optional</span><span class="p">(</span><span class="s">&quot;&lt;think&gt;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">reasoning</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">until</span><span class="p">(</span><span class="s">&quot;&lt;/think&gt;&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;&lt;/think&gt;&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">content</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">until</span><span class="p">(</span><span class="s">&quot;&lt;tool_call&gt;&quot;</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<p>Use <code>common_chat_peg_mapper</code> to extract the content. Note that this is already
+done for you in <code>common_chat_peg_parser</code> when
+<code>chat_format == COMMON_CHAT_FORMAT_PEG_SIMPLE</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+
+<span class="n">common_chat_msg</span><span class="w"> </span><span class="n">msg</span><span class="p">;</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">mapper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">common_chat_peg_mapper</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+<span class="n">mapper</span><span class="p">.</span><span class="n">from_ast</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">ast</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="native">Native<a class="headerlink" href="#native" title="Permanent link">#</a></h3>
+<p>The <code>common_chat_peg_builder</code> builds a <code>native</code> parser suitable for
+models that emit tool arguments as a direct JSON object.</p>
+<ul>
+<li><strong><code>reasoning(p)</code></strong> - Tag node for <code>reasoning_content</code></li>
+<li><strong><code>content(p)</code></strong> - Tag node for <code>content</code></li>
+<li><strong><code>tool(p)</code></strong> - Tag entirety of a single tool call</li>
+<li><strong><code>tool_open(p)</code></strong> - Tag start of a tool call</li>
+<li><strong><code>tool_close(p)</code></strong> - Tag end of a tool call</li>
+<li><strong><code>tool_id(p)</code></strong> - Tag the tool call ID (optional)</li>
+<li><strong><code>tool_name(p)</code></strong> - Tag the tool name</li>
+<li><strong><code>tool_args(p)</code></strong> - Tag the tool arguments</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="n">build_chat_peg_parser</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">common_chat_peg_builder</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">get_weather_tool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">tool</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">sequence</span><span class="p">({</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">tool_open</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;{&quot;</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">json_member</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">tool_name</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;get_weather&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">json_member</span><span class="p">(</span><span class="s">&quot;arguments&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">tool_args</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">json</span><span class="p">())),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">tool_close</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;}&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}));</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">sequence</span><span class="p">({</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">content</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">until</span><span class="p">(</span><span class="s">&quot;&lt;tool_call&gt;&quot;</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;&lt;tool_call&gt;&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">get_weather_tool</span><span class="p">,</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;&lt;/tool_call&gt;&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h3 id="constructed">Constructed<a class="headerlink" href="#constructed" title="Permanent link">#</a></h3>
+<p>The <code>common_chat_peg_builder</code> builds a <code>constructed</code> parser
+suitable for models that emit tool arguments as separate entities, such as XML
+tags.</p>
+<ul>
+<li><strong><code>reasoning(p)</code></strong> - Tag node for <code>reasoning_content</code></li>
+<li><strong><code>content(p)</code></strong> - Tag node for <code>content</code></li>
+<li><strong><code>tool(p)</code></strong> - Tag entirety of a single tool call</li>
+<li><strong><code>tool_open(p)</code></strong> - Tag start of a tool call</li>
+<li><strong><code>tool_close(p)</code></strong> - Tag end of a tool call</li>
+<li><strong><code>tool_name(p)</code></strong> - Tag the tool name</li>
+<li><strong><code>tool_arg(p)</code></strong> - Tag a complete tool argument (name + value)</li>
+<li><strong><code>tool_arg_open(p)</code></strong> - Tag start of a tool argument</li>
+<li><strong><code>tool_arg_close(p)</code></strong> - Tag end of a tool argument</li>
+<li><strong><code>tool_arg_name(p)</code></strong> - Tag the argument name</li>
+<li><strong><code>tool_arg_string_value(p)</code></strong> - Tag string value for the argument</li>
+<li><strong><code>tool_arg_json_value(p)</code></strong> - Tag JSON value for the argument</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="n">build_chat_peg_parser</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">common_chat_peg_builder</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">location_arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">tool_arg</span><span class="p">(</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">tool_arg_open</span><span class="p">(</span><span class="s">&quot;&lt;parameter name=</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">tool_arg_name</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;location&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&gt;&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">tool_arg_string_value</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">until</span><span class="p">(</span><span class="s">&quot;&lt;/parameter&gt;&quot;</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">tool_arg_close</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;&lt;/parameter&gt;&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">get_weather_tool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">tool</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">sequence</span><span class="p">({</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">tool_open</span><span class="p">(</span><span class="s">&quot;&lt;function name=</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">tool_name</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;get_weather&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&gt;&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">location_arg</span><span class="p">,</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">tool_close</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;&lt;/function&gt;&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}));</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">sequence</span><span class="p">({</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">content</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">until</span><span class="p">(</span><span class="s">&quot;&lt;tool_call&gt;&quot;</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;&lt;tool_call&gt;&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">get_weather_tool</span><span class="p">,</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">literal</span><span class="p">(</span><span class="s">&quot;&lt;/tool_call&gt;&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">p</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../development/debugging-tests.html">
+          <span class="muted">Anterior</span>Debugging Tests Tips
+        </a>
+        <a class="pager-next" href="../development/token-generation-performance-tips.html">
+          <span class="muted">Siguiente</span>Token generation performance troubleshooting
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

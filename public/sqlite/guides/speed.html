@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQLite Database Speed Comparison · SQLite</title>
+<meta name="description" content="SQLite Database Speed Comparison - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/speed.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="SQLite Database Speed Comparison">
+<meta property="og:description" content="SQLite Database Speed Comparison - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQLite Database Speed Comparison">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "SQLite Database Speed Comparison",
+"url": "https://docs.raupulus.dev/sqlite/guides/speed.html",  "description": "SQLite Database Speed Comparison - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/qmplan.html"
+>Quality Management</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_memory_used.html"
+>Query for the amount of heap memory used by a session object.</a>
+              </li>
+              <li>
+                <a href="../guides/lang.html"
+>Query Language Understood by SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner.html"
+>Query Planning</a>
+              </li>
+              <li>
+                <a href="../guides/climode.html"
+>Query Result Formatting In The CLI</a>
+              </li>
+              <li>
+                <a href="../guides/quirks.html"
+>Quirks, Caveats, and Gotchas In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_rebase.html"
+>Rebase a changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rebaser.html"
+>Rebasing changesets</a>
+              </li>
+              <li>
+                <a href="../guides/news.html"
+>Recent SQLite News</a>
+              </li>
+              <li>
+                <a href="../guides/recovery.html"
+>Recovering Data From A Corrupt SQLite Database</a>
+              </li>
+              <li>
+                <a href="../guides/changes.html"
+>Release History Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/rescode.html"
+>Result and Error Codes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_changeset_size.html"
+>Return An Upper-limit For The Size Of The Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rowvalue.html"
+>Row Values</a>
+              </li>
+              <li>
+                <a href="../guides/rowidtable.html"
+>Rowid Tables</a>
+              </li>
+              <li>
+                <a href="../guides/loadext.html"
+>Run-Time Loadable Extensions</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_table_filter.html"
+>Set a table filter on a Session Object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_indirect.html"
+>Set Or Clear the Indirect Change Flag</a>
+              </li>
+              <li>
+                <a href="../guides/onefile.html"
+>Single File Database</a>
+              </li>
+              <li>
+                <a href="../guides/omitted.html"
+>SQL Features That SQLite Does Not Implement</a>
+              </li>
+              <li>
+                <a href="../guides/sqldiff.html"
+>sqldiff.exe: Database Difference Utility</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite.html"
+>Sqlite</a>
+              </li>
+              <li>
+                <a href="../guides/appfileformat.html"
+>SQLite As An Application File Format</a>
+              </li>
+              <li>
+                <a href="../guides/autoinc.html"
+>SQLite Autoincrement</a>
+              </li>
+              <li>
+                <a href="../guides/34to35.html"
+>SQLite Changes From Version 3.4.2 To 3.5.0</a>
+              </li>
+              <li>
+                <a href="../guides/35to36.html"
+>SQLite Changes From Version 3.5.9 To 3.6.0</a>
+              </li>
+              <li>
+                <a href="../guides/consortium.html"
+>SQLite Consortium</a>
+              </li>
+              <li>
+                <a href="../guides/consortium_agreement-20071201.html"
+>SQLite Consortium Agreement</a>
+              </li>
+              <li>
+                <a href="../guides/copyright.html"
+>SQLite Copyright</a>
+              </li>
+              <li>
+                <a href="../guides/copyright-release.html"
+>SQLite Copyright Release Template</a>
+              </li>
+              <li>
+                <a href="../guides/speed.html"
+class="is-current" aria-current="page">SQLite Database Speed Comparison</a>
+              </li>
+              <li>
+                <a href="../guides/crew.html"
+>SQLite Developers</a>
+              </li>
+              <li>
+                <a href="../guides/docs.html"
+>SQLite Documentation</a>
+              </li>
+              <li>
+                <a href="../guides/download.html"
+>SQLite Download Page</a>
+              </li>
+              <li>
+                <a href="../guides/foreignkeys.html"
+>SQLite Foreign Key Support</a>
+              </li>
+              <li>
+                <a href="../guides/faq.html"
+>SQLite Frequently Asked Questions</a>
+              </li>
+              <li>
+                <a href="../guides/index.html"
+>SQLite Home Page</a>
+              </li>
+              <li>
+                <a href="../guides/quickstart.html"
+>SQLite In 5 Minutes Or Less</a>
+              </li>
+              <li>
+                <a href="../guides/selfcontained.html"
+>SQLite is a Self Contained System</a>
+              </li>
+              <li>
+                <a href="../guides/serverless.html"
+>SQLite Is Serverless</a>
+              </li>
+              <li>
+                <a href="../guides/transactional.html"
+>SQLite Is Transactional</a>
+              </li>
+              <li>
+                <a href="../guides/footprint.html"
+>SQLite Library Footprint</a>
+              </li>
+              <li>
+                <a href="../guides/oldnews.html"
+>SQLite Older News</a>
+              </li>
+              <li>
+                <a href="../guides/useovernet.html"
+>SQLite Over a Network, Caveats and Considerations</a>
+              </li>
+              <li>
+                <a href="../guides/prosupport.html"
+>SQLite Pro Support</a>
+              </li>
+              <li>
+                <a href="../guides/0_0.html"
+>SQLite Release 3.0.0 On 2004-06-18</a>
+              </li>
+              <li>
+                <a href="../guides/0_1.html"
+>SQLite Release 3.0.1 On 2004-06-22</a>
+              </li>
+              <li>
+                <a href="../guides/0_2.html"
+>SQLite Release 3.0.2 On 2004-06-30</a>
+              </li>
+              <li>
+                <a href="../guides/0_3.html"
+>SQLite Release 3.0.3 On 2004-07-22</a>
+              </li>
+              <li>
+                <a href="../guides/0_4.html"
+>SQLite Release 3.0.4 On 2004-08-09</a>
+              </li>
+              <li>
+                <a href="../guides/0_5.html"
+>SQLite Release 3.0.5 On 2004-08-29</a>
+              </li>
+              <li>
+                <a href="../guides/0_6.html"
+>SQLite Release 3.0.6 On 2004-09-02</a>
+              </li>
+              <li>
+                <a href="../guides/0_7.html"
+>SQLite Release 3.0.7 On 2004-09-18</a>
+              </li>
+              <li>
+                <a href="../guides/0_8.html"
+>SQLite Release 3.0.8 On 2004-10-12</a>
+              </li>
+              <li>
+                <a href="../guides/1_0.html"
+>SQLite Release 3.1.0 On 2005-01-21</a>
+              </li>
+              <li>
+                <a href="../guides/1_1.html"
+>SQLite Release 3.1.1 On 2005-02-01</a>
+              </li>
+              <li>
+                <a href="../guides/1_2.html"
+>SQLite Release 3.1.2 On 2005-02-15</a>
+              </li>
+              <li>
+                <a href="../guides/1_3.html"
+>SQLite Release 3.1.3 On 2005-02-19</a>
+              </li>
+              <li>
+                <a href="../guides/1_4.html"
+>SQLite Release 3.1.4 On 2005-03-11</a>
+              </li>
+              <li>
+                <a href="../guides/1_5.html"
+>SQLite Release 3.1.5 On 2005-03-11</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">SQLite Database Speed Comparison</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/speed.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#database-speed-comparison">Database Speed Comparison#</a></li>
+              <li class="lvl-3"><a href="#executive-summary">Executive Summary#</a></li>
+              <li class="lvl-3"><a href="#test-environment">Test Environment#</a></li>
+              <li class="lvl-3"><a href="#test-1-1000-inserts">Test 1: 1000 INSERTs#</a></li>
+              <li class="lvl-3"><a href="#test-2-25000-inserts-in-a-transaction">Test 2: 25000 INSERTs in a transaction#</a></li>
+              <li class="lvl-3"><a href="#test-3-25000-inserts-into-an-indexed-table">Test 3: 25000 INSERTs into an indexed table#</a></li>
+              <li class="lvl-3"><a href="#test-4-100-selects-without-an-index">Test 4: 100 SELECTs without an index#</a></li>
+              <li class="lvl-3"><a href="#test-5-100-selects-on-a-string-comparison">Test 5: 100 SELECTs on a string comparison#</a></li>
+              <li class="lvl-3"><a href="#test-6-creating-an-index">Test 6: Creating an index#</a></li>
+              <li class="lvl-3"><a href="#test-7-5000-selects-with-an-index">Test 7: 5000 SELECTs with an index#</a></li>
+              <li class="lvl-3"><a href="#test-8-1000-updates-without-an-index">Test 8: 1000 UPDATEs without an index#</a></li>
+              <li class="lvl-3"><a href="#test-9-25000-updates-with-an-index">Test 9: 25000 UPDATEs with an index#</a></li>
+              <li class="lvl-3"><a href="#test-10-25000-text-updates-with-an-index">Test 10: 25000 text UPDATEs with an index#</a></li>
+              <li class="lvl-3"><a href="#test-11-inserts-from-a-select">Test 11: INSERTs from a SELECT#</a></li>
+              <li class="lvl-3"><a href="#test-12-delete-without-an-index">Test 12: DELETE without an index#</a></li>
+              <li class="lvl-3"><a href="#test-13-delete-with-an-index">Test 13: DELETE with an index#</a></li>
+              <li class="lvl-3"><a href="#test-14-a-big-insert-after-a-big-delete">Test 14: A big INSERT after a big DELETE#</a></li>
+              <li class="lvl-3"><a href="#test-15-a-big-delete-followed-by-many-small-inserts">Test 15: A big DELETE followed by many small INSERTs#</a></li>
+              <li class="lvl-3"><a href="#test-16-drop-table">Test 16: DROP TABLE#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="database-speed-comparison">Database Speed Comparison<a class="headerlink" href="#database-speed-comparison" title="Permanent link">#</a></h2>
+<p><strong>Note: This document is very very old. It describes a speed comparison between archaic versions of SQLite, MySQL and PostgreSQL.</strong></p>
+<p>The numbers here have become meaningless. This page has been retained only as an historical artifact.</p>
+<h3 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">#</a></h3>
+<p>A series of tests were run to measure the relative performance of SQLite 2.7.6, PostgreSQL 7.1.3, and MySQL 3.23.41. The following are general conclusions drawn from these experiments:</p>
+<ul>
+<li>
+<p>SQLite 2.7.6 is significantly faster (sometimes as much as 10 or 20 times faster) than the default PostgreSQL 7.1.3 installation on RedHat 7.2 for most common operations.</p>
+</li>
+<li>
+<p>SQLite 2.7.6 is often faster (sometimes more than twice as fast) than MySQL 3.23.41 for most common operations.</p>
+</li>
+<li>
+<p>SQLite does not execute CREATE INDEX or DROP TABLE as fast as the other databases. But this is not seen as a problem because those are infrequent operations.</p>
+</li>
+<li>
+<p>SQLite works best if you group multiple operations together into a single transaction.</p>
+</li>
+</ul>
+<p>The results presented here come with the following caveats:</p>
+<ul>
+<li>
+<p>These tests did not attempt to measure multi-user performance or optimization of complex queries involving multiple joins and subqueries.</p>
+</li>
+<li>
+<p>These tests are on a relatively small (approximately 14 megabyte) database. They do not measure how well the database engines scale to larger problems.</p>
+</li>
+</ul>
+<h3 id="test-environment">Test Environment<a class="headerlink" href="#test-environment" title="Permanent link">#</a></h3>
+<p>The platform used for these tests is a 1.6GHz Athlon with 1GB or memory and an IDE disk drive. The operating system is RedHat Linux 7.2 with a stock kernel.</p>
+<p>The PostgreSQL and MySQL servers used were as delivered by default on RedHat 7.2. (PostgreSQL version 7.1.3 and MySQL version 3.23.41.) No effort was made to tune these engines. Note in particular the default MySQL configuration on RedHat 7.2 does not support transactions. Not having to support transactions gives MySQL a big speed advantage, but SQLite is still able to hold its own on most tests.</p>
+<p>I am told that the default PostgreSQL configuration in RedHat 7.3 is unnecessarily conservative (it is designed to work on a machine with 8MB of RAM) and that PostgreSQL could be made to run a lot faster with some knowledgeable configuration tuning. Matt Sergeant reports that he has tuned his PostgreSQL installation and rerun the tests shown below. His results show that PostgreSQL and MySQL run at about the same speed. For Matt's results, visit</p>
+<blockquote>
+<p>Obsolete URL: http://www.sergeant.org/sqlite_vs_pgsync.html</p>
+</blockquote>
+<p>SQLite was tested in the same configuration that it appears on the website. It was compiled with -O6 optimization and with the -DNDEBUG=1 switch which disables the many "assert()" statements in the SQLite code. The -DNDEBUG=1 compiler option roughly doubles the speed of SQLite.</p>
+<p>All tests are conducted on an otherwise quiescent machine. A simple Tcl script was used to generate and run all the tests. A copy of this Tcl script can be found in the SQLite source tree in the file <strong>tools/speedtest.tcl</strong>.</p>
+<p>The times reported on all tests represent wall-clock time in seconds. Two separate time values are reported for SQLite. The first value is for SQLite in its default configuration with full disk synchronization turned on. With synchronization turned on, SQLite executes an <strong>fsync()</strong> system call (or the equivalent) at key points to make certain that critical data has actually been written to the disk drive surface. Synchronization is necessary to guarantee the integrity of the database if the operating system crashes or the computer powers down unexpectedly in the middle of a database update. The second time reported for SQLite is when synchronization is turned off. With synchronization off, SQLite is sometimes much faster, but there is a risk that an operating system crash or an unexpected power failure could damage the database. Generally speaking, the synchronous SQLite times are for comparison against PostgreSQL (which is also synchronous) and the asynchronous SQLite times are for comparison against the asynchronous MySQL engine.</p>
+<h3 id="test-1-1000-inserts">Test 1: 1000 INSERTs<a class="headerlink" href="#test-1-1000-inserts" title="Permanent link">#</a></h3>
+<blockquote>
+<p>CREATE TABLE t1(a INTEGER, b INTEGER, c VARCHAR(100));\
+INSERT INTO t1 VALUES(1,13153,'thirteen thousand one hundred fifty three');\
+INSERT INTO t1 VALUES(2,75560,'seventy five thousand five hundred sixty');\
+<em>... 995 lines omitted</em>\
+INSERT INTO t1 VALUES(998,66289,'sixty six thousand two hundred eighty nine');\
+INSERT INTO t1 VALUES(999,24322,'twenty four thousand three hundred twenty two');\
+INSERT INTO t1 VALUES(1000,94142,'ninety four thousand one hundred forty two');\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   4.373</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   0.114</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   13.061</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.223</td>
+</tr>
+</tbody>
+</table>
+<p>Because it does not have a central server to coordinate access, SQLite must close and reopen the database file, and thus invalidate its cache, for each transaction. In this test, each SQL statement is a separate transaction so the database file must be opened and closed and the cache must be flushed 1000 times. In spite of this, the asynchronous version of SQLite is still nearly as fast as MySQL. Notice how much slower the synchronous version is, however. SQLite calls <strong>fsync()</strong> after each synchronous transaction to make sure that all data is safely on the disk surface before continuing. For most of the 13 seconds in the synchronous test, SQLite was sitting idle waiting on disk I/O to complete.</p>
+<h3 id="test-2-25000-inserts-in-a-transaction">Test 2: 25000 INSERTs in a transaction<a class="headerlink" href="#test-2-25000-inserts-in-a-transaction" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+CREATE TABLE t2(a INTEGER, b INTEGER, c VARCHAR(100));\
+INSERT INTO t2 VALUES(1,59672,'fifty nine thousand six hundred seventy two');\
+<em>... 24997 lines omitted</em>\
+INSERT INTO t2 VALUES(24999,89569,'eighty nine thousand five hundred sixty nine');\
+INSERT INTO t2 VALUES(25000,94666,'ninety four thousand six hundred sixty six');\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   4.900</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   2.184</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   0.914</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.757</td>
+</tr>
+</tbody>
+</table>
+<p>When all the INSERTs are put in a transaction, SQLite no longer has to close and reopen the database or invalidate its cache between each statement. It also does not have to do any fsync()s until the very end. When unshackled in this way, SQLite is much faster than either PostgreSQL and MySQL.</p>
+<h3 id="test-3-25000-inserts-into-an-indexed-table">Test 3: 25000 INSERTs into an indexed table<a class="headerlink" href="#test-3-25000-inserts-into-an-indexed-table" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+CREATE TABLE t3(a INTEGER, b INTEGER, c VARCHAR(100));\
+CREATE INDEX i3 ON t3(c);\
+<em>... 24998 lines omitted</em>\
+INSERT INTO t3 VALUES(24999,88509,'eighty eight thousand five hundred nine');\
+INSERT INTO t3 VALUES(25000,84791,'eighty four thousand seven hundred ninety one');\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   8.175</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   3.197</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   1.555</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   1.402</td>
+</tr>
+</tbody>
+</table>
+<p>There were reports that SQLite did not perform as well on an indexed table. This test was recently added to disprove those rumors. It is true that SQLite is not as fast at creating new index entries as the other engines (see Test 6 below) but its overall speed is still better.</p>
+<h3 id="test-4-100-selects-without-an-index">Test 4: 100 SELECTs without an index<a class="headerlink" href="#test-4-100-selects-without-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=0 AND b\&lt;1000;\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=100 AND b\&lt;1100;\
+<em>... 96 lines omitted</em>\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=9800 AND b\&lt;10800;\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=9900 AND b\&lt;10900;\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   3.629</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   2.760</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   2.494</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   2.526</td>
+</tr>
+</tbody>
+</table>
+<p>This test does 100 queries on a 25000 entry table without an index, thus requiring a full table scan. Prior versions of SQLite used to be slower than PostgreSQL and MySQL on this test, but recent performance enhancements have increased its speed so that it is now the fastest of the group.</p>
+<h3 id="test-5-100-selects-on-a-string-comparison">Test 5: 100 SELECTs on a string comparison<a class="headerlink" href="#test-5-100-selects-on-a-string-comparison" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+SELECT count(*), avg(b) FROM t2 WHERE c LIKE '%one%';\
+SELECT count(*), avg(b) FROM t2 WHERE c LIKE '%two%';\
+<em>... 96 lines omitted</em>\
+SELECT count(*), avg(b) FROM t2 WHERE c LIKE '%ninety nine%';\
+SELECT count(*), avg(b) FROM t2 WHERE c LIKE '%one hundred%';\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   13.409</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   4.640</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   3.362</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   3.372</td>
+</tr>
+</tbody>
+</table>
+<p>This test still does 100 full table scans but it uses uses string comparisons instead of numerical comparisons. SQLite is over three times faster than PostgreSQL here and about 30% faster than MySQL.</p>
+<h3 id="test-6-creating-an-index">Test 6: Creating an index<a class="headerlink" href="#test-6-creating-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>CREATE INDEX i2a ON t2(a);\
+CREATE INDEX i2b ON t2(b);</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   0.381</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   0.318</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   0.777</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.659</td>
+</tr>
+</tbody>
+</table>
+<p>SQLite is slower at creating new indices. This is not a huge problem (since new indices are not created very often) but it is something that is being worked on. Hopefully, future versions of SQLite will do better here.</p>
+<h3 id="test-7-5000-selects-with-an-index">Test 7: 5000 SELECTs with an index<a class="headerlink" href="#test-7-5000-selects-with-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>SELECT count(*), avg(b) FROM t2 WHERE b&gt;=0 AND b\&lt;100;\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=100 AND b\&lt;200;\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=200 AND b\&lt;300;\
+<em>... 4994 lines omitted</em>\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=499700 AND b\&lt;499800;\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=499800 AND b\&lt;499900;\
+SELECT count(*), avg(b) FROM t2 WHERE b&gt;=499900 AND b\&lt;500000;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   4.614</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   1.270</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   1.121</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   1.162</td>
+</tr>
+</tbody>
+</table>
+<p>All three database engines run faster when they have indices to work with. But SQLite is still the fastest.</p>
+<h3 id="test-8-1000-updates-without-an-index">Test 8: 1000 UPDATEs without an index<a class="headerlink" href="#test-8-1000-updates-without-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+UPDATE t1 SET b=b*2 WHERE a&gt;=0 AND a\&lt;10;\
+UPDATE t1 SET b=b*2 WHERE a&gt;=10 AND a\&lt;20;\
+<em>... 996 lines omitted</em>\
+UPDATE t1 SET b=b*2 WHERE a&gt;=9980 AND a\&lt;9990;\
+UPDATE t1 SET b=b*2 WHERE a&gt;=9990 AND a\&lt;10000;\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   1.739</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   8.410</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   0.637</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.638</td>
+</tr>
+</tbody>
+</table>
+<p>For this particular UPDATE test, MySQL is consistently five or ten times slower than PostgreSQL and SQLite. I do not know why. MySQL is normally a very fast engine. Perhaps this problem has been addressed in later versions of MySQL.</p>
+<h3 id="test-9-25000-updates-with-an-index">Test 9: 25000 UPDATEs with an index<a class="headerlink" href="#test-9-25000-updates-with-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+UPDATE t2 SET b=468026 WHERE a=1;\
+UPDATE t2 SET b=121928 WHERE a=2;\
+<em>... 24996 lines omitted</em>\
+UPDATE t2 SET b=35065 WHERE a=24999;\
+UPDATE t2 SET b=347393 WHERE a=25000;\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   18.797</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   8.134</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   3.520</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   3.104</td>
+</tr>
+</tbody>
+</table>
+<p>As recently as version 2.7.0, SQLite ran at about the same speed as MySQL on this test. But recent optimizations to SQLite have more than doubled speed of UPDATEs.</p>
+<h3 id="test-10-25000-text-updates-with-an-index">Test 10: 25000 text UPDATEs with an index<a class="headerlink" href="#test-10-25000-text-updates-with-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+UPDATE t2 SET c='one hundred forty eight thousand three hundred eighty two' WHERE a=1;\
+UPDATE t2 SET c='three hundred sixty six thousand five hundred two' WHERE a=2;\
+<em>... 24996 lines omitted</em>\
+UPDATE t2 SET c='three hundred eighty three thousand ninety nine' WHERE a=24999;\
+UPDATE t2 SET c='two hundred fifty six thousand eight hundred thirty' WHERE a=25000;\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   48.133</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   6.982</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   2.408</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   1.725</td>
+</tr>
+</tbody>
+</table>
+<p>Here again, version 2.7.0 of SQLite used to run at about the same speed as MySQL. But now version 2.7.6 is over two times faster than MySQL and over twenty times faster than PostgreSQL.</p>
+<p>In fairness to PostgreSQL, it started thrashing on this test. A knowledgeable administrator might be able to get PostgreSQL to run a lot faster here by tweaking and tuning the server a little.</p>
+<h3 id="test-11-inserts-from-a-select">Test 11: INSERTs from a SELECT<a class="headerlink" href="#test-11-inserts-from-a-select" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+INSERT INTO t1 SELECT b,a,c FROM t2;\
+INSERT INTO t2 SELECT b,a,c FROM t1;\
+COMMIT;</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   61.364</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   1.537</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   2.787</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   1.599</td>
+</tr>
+</tbody>
+</table>
+<p>The asynchronous SQLite is just a shade slower than MySQL on this test. (MySQL seems to be especially adept at INSERT...SELECT statements.) The PostgreSQL engine is still thrashing - most of the 61 seconds it used were spent waiting on disk I/O.</p>
+<h3 id="test-12-delete-without-an-index">Test 12: DELETE without an index<a class="headerlink" href="#test-12-delete-without-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>DELETE FROM t2 WHERE c LIKE '%fifty%';</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   1.509</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   0.975</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   4.004</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.560</td>
+</tr>
+</tbody>
+</table>
+<p>The synchronous version of SQLite is the slowest of the group in this test, but the asynchronous version is the fastest. The difference is the extra time needed to execute fsync().</p>
+<h3 id="test-13-delete-with-an-index">Test 13: DELETE with an index<a class="headerlink" href="#test-13-delete-with-an-index" title="Permanent link">#</a></h3>
+<blockquote>
+<p>DELETE FROM t2 WHERE a&gt;10 AND a\&lt;20000;</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   1.316</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   2.262</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   2.068</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.752</td>
+</tr>
+</tbody>
+</table>
+<p>This test is significant because it is one of the few where PostgreSQL is faster than MySQL. The asynchronous SQLite is, however, faster then both the other two.</p>
+<h3 id="test-14-a-big-insert-after-a-big-delete">Test 14: A big INSERT after a big DELETE<a class="headerlink" href="#test-14-a-big-insert-after-a-big-delete" title="Permanent link">#</a></h3>
+<blockquote>
+<p>INSERT INTO t2 SELECT * FROM t1;</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   13.168</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   1.815</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   3.210</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   1.485</td>
+</tr>
+</tbody>
+</table>
+<p>Some older versions of SQLite (prior to version 2.4.0) would show decreasing performance after a sequence of DELETEs followed by new INSERTs. As this test shows, the problem has now been resolved.</p>
+<h3 id="test-15-a-big-delete-followed-by-many-small-inserts">Test 15: A big DELETE followed by many small INSERTs<a class="headerlink" href="#test-15-a-big-delete-followed-by-many-small-inserts" title="Permanent link">#</a></h3>
+<blockquote>
+<p>BEGIN;\
+DELETE FROM t1;\
+INSERT INTO t1 VALUES(1,10719,'ten thousand seven hundred nineteen');\
+<em>... 11997 lines omitted</em>\
+INSERT INTO t1 VALUES(11999,72836,'seventy two thousand eight hundred thirty six');\
+INSERT INTO t1 VALUES(12000,64231,'sixty four thousand two hundred thirty one');\
+COMMIT;\</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   4.556</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   1.704</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   0.618</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.406</td>
+</tr>
+</tbody>
+</table>
+<p>SQLite is very good at doing INSERTs within a transaction, which probably explains why it is so much faster than the other databases at this test.</p>
+<h3 id="test-16-drop-table">Test 16: DROP TABLE<a class="headerlink" href="#test-16-drop-table" title="Permanent link">#</a></h3>
+<blockquote>
+<p>DROP TABLE t1;\
+DROP TABLE t2;\
+DROP TABLE t3;</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL:</td>
+<td style="text-align: right;">   0.135</td>
+</tr>
+<tr>
+<td>MySQL:</td>
+<td style="text-align: right;">   0.015</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6:</td>
+<td style="text-align: right;">   0.939</td>
+</tr>
+<tr>
+<td>SQLite 2.7.6 (nosync):</td>
+<td style="text-align: right;">   0.254</td>
+</tr>
+</tbody>
+</table>
+<p>SQLite is slower than the other databases when it comes to dropping tables. This probably is because when SQLite drops a table, it has to go through and erase the records in the database file that deal with that table. MySQL and PostgreSQL, on the other hand, use separate files to represent each table so they can drop a table simply by deleting a file, which is much faster.</p>
+<p>On the other hand, dropping tables is not a very common operation so if SQLite takes a little longer, that is not seen as a big problem.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/copyright-release.html">
+          <span class="muted">Anterior</span>SQLite Copyright Release Template
+        </a>
+        <a class="pager-next" href="../guides/crew.html">
+          <span class="muted">Siguiente</span>SQLite Developers
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

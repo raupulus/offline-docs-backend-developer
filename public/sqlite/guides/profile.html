@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profiling SQL Queries · SQLite</title>
+<meta name="description" content="Profiling SQL Queries - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/profile.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Profiling SQL Queries">
+<meta property="og:description" content="Profiling SQL Queries - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Profiling SQL Queries">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Profiling SQL Queries",
+"url": "https://docs.raupulus.dev/sqlite/guides/profile.html",  "description": "Profiling SQL Queries - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/hp1.html"
+>Javascript Required</a>
+              </li>
+              <li>
+                <a href="../guides/doc_keyword_crossref.html"
+>Keyword Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/constlist.html"
+>List Of SQLite Constants</a>
+              </li>
+              <li>
+                <a href="../guides/funclist.html"
+>List Of SQLite Functions</a>
+              </li>
+              <li>
+                <a href="../guides/objlist.html"
+>List Of SQLite Objects</a>
+              </li>
+              <li>
+                <a href="../guides/vtablist.html"
+>List Of Virtual Tables</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_diff.html"
+>Load The Difference Between Tables Into A Session</a>
+              </li>
+              <li>
+                <a href="../guides/locrsf.html"
+>LoC Recommended Storage Format</a>
+              </li>
+              <li>
+                <a href="../guides/lts.html"
+>Long Term Support</a>
+              </li>
+              <li>
+                <a href="../guides/privatebranch.html"
+>Maintaining Private Branches Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/np1queryprob.html"
+>Many Small Queries Are Efficient In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cpu.html"
+>Measuring and Reducing CPU Usage in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/mmap.html"
+>Memory-Mapped I/O</a>
+              </li>
+              <li>
+                <a href="../guides/mostdeployed.html"
+>Most Widely Deployed SQL Database Engine</a>
+              </li>
+              <li>
+                <a href="../guides/mingw.html"
+>No Title</a>
+              </li>
+              <li>
+                <a href="../guides/nulinstr.html"
+>NUL Characters In Strings</a>
+              </li>
+              <li>
+                <a href="../guides/nulls.html"
+>NULL Handling in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_output.html"
+>Obtain A Composite Changeset From A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_conflict.html"
+>Obtain Conflicting Row Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_new.html"
+>Obtain new.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_old.html"
+>Obtain old.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_op.html"
+>Obtain The Current Operation From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_pk.html"
+>Obtain The Primary Key Definition Of A Table</a>
+              </li>
+              <li>
+                <a href="../guides/c_changegroup_config_patchset.html"
+>Options for sqlite3changegroup_config().</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_objconfig_rowid.html"
+>Options for sqlite3session_object_config</a>
+              </li>
+              <li>
+                <a href="../guides/doc_pagelink_crossref.html"
+>Pagelink Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/partialindex.html"
+>Partial Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/bindptr.html"
+>Pointer Passing Interfaces</a>
+              </li>
+              <li>
+                <a href="../guides/psow.html"
+>Powersafe Overwrite</a>
+              </li>
+              <li>
+                <a href="../guides/pressrelease-20071212.html"
+>Pressrelease 20071212</a>
+              </li>
+              <li>
+                <a href="../guides/profile.html"
+class="is-current" aria-current="page">Profiling SQL Queries</a>
+              </li>
+              <li>
+                <a href="../guides/qmplan.html"
+>Quality Management</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_memory_used.html"
+>Query for the amount of heap memory used by a session object.</a>
+              </li>
+              <li>
+                <a href="../guides/lang.html"
+>Query Language Understood by SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner.html"
+>Query Planning</a>
+              </li>
+              <li>
+                <a href="../guides/climode.html"
+>Query Result Formatting In The CLI</a>
+              </li>
+              <li>
+                <a href="../guides/quirks.html"
+>Quirks, Caveats, and Gotchas In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_rebase.html"
+>Rebase a changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rebaser.html"
+>Rebasing changesets</a>
+              </li>
+              <li>
+                <a href="../guides/news.html"
+>Recent SQLite News</a>
+              </li>
+              <li>
+                <a href="../guides/recovery.html"
+>Recovering Data From A Corrupt SQLite Database</a>
+              </li>
+              <li>
+                <a href="../guides/changes.html"
+>Release History Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/rescode.html"
+>Result and Error Codes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_changeset_size.html"
+>Return An Upper-limit For The Size Of The Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rowvalue.html"
+>Row Values</a>
+              </li>
+              <li>
+                <a href="../guides/rowidtable.html"
+>Rowid Tables</a>
+              </li>
+              <li>
+                <a href="../guides/loadext.html"
+>Run-Time Loadable Extensions</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_table_filter.html"
+>Set a table filter on a Session Object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_indirect.html"
+>Set Or Clear the Indirect Change Flag</a>
+              </li>
+              <li>
+                <a href="../guides/onefile.html"
+>Single File Database</a>
+              </li>
+              <li>
+                <a href="../guides/omitted.html"
+>SQL Features That SQLite Does Not Implement</a>
+              </li>
+              <li>
+                <a href="../guides/sqldiff.html"
+>sqldiff.exe: Database Difference Utility</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite.html"
+>Sqlite</a>
+              </li>
+              <li>
+                <a href="../guides/appfileformat.html"
+>SQLite As An Application File Format</a>
+              </li>
+              <li>
+                <a href="../guides/autoinc.html"
+>SQLite Autoincrement</a>
+              </li>
+              <li>
+                <a href="../guides/34to35.html"
+>SQLite Changes From Version 3.4.2 To 3.5.0</a>
+              </li>
+              <li>
+                <a href="../guides/35to36.html"
+>SQLite Changes From Version 3.5.9 To 3.6.0</a>
+              </li>
+              <li>
+                <a href="../guides/consortium.html"
+>SQLite Consortium</a>
+              </li>
+              <li>
+                <a href="../guides/consortium_agreement-20071201.html"
+>SQLite Consortium Agreement</a>
+              </li>
+              <li>
+                <a href="../guides/copyright.html"
+>SQLite Copyright</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Profiling SQL Queries</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/profile.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+
+      <div class="doc-body">
+        <h1 id="1-overview">1.  Overview<a class="headerlink" href="#1-overview" title="Permanent link">#</a></h1>
+<p>SQLite contains built-in support for profiling SQL queries, but it is not enabled by default. In order to enable support for query profiling, SQLite must be compiled with the <a href="compile.html#enable_stmt_scanstatus">following option</a>:</p>
+<p>-DSQLITE_ENABLE_STMT_SCANSTATUS\</p>
+<p>Building SQLite with this option enables the <a href="c3ref/stmt_scanstatus.html">sqlite3_stmt_scanstatus_v2()</a> API, which provides access to the various profiling metrics. The remainder of this page discusses the profiling reports generated by the SQLite <a href="cli.html">command-line shell</a> using these metrics, rather than the API directly.</p>
+<p>The profiling reports generated by the shell are very similar to the query plan reports generated by the <a href="eqp.html">EXPLAIN QUERY PLAN</a> command. This page assumes that the reader is familiar with this format.</p>
+<p>Within a command-line shell compiled with the option above, query profiling is enabled using the ".scanstats on" command:</p>
+<p>sqlite&gt; .scanstats on\</p>
+<p>Once enabled, the shell automatically outputs a query profile after each SQL query executed. Query profiling can be disabled using ".scanstats off". For example:</p>
+<p>sqlite&gt; .scanstats on\
+sqlite&gt; SELECT a FROM t1, t2 WHERE a IN (1,2,3) AND a=d+e;\
+                                                  Cycles      Loops  Rows \
+                                                  ----------  -----  -----\
+QUERY PLAN                                         255M 100%     1      3\
+|--SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)  60.0M  23%     1      3\
+`--SCAN t2                                         134M  52%     3    150K\</p>
+<h1 id="2-simple-cases-rows-loops-and-cycles">2. Simple Cases - Rows, Loops and Cycles<a class="headerlink" href="#2-simple-cases-rows-loops-and-cycles" title="Permanent link">#</a></h1>
+<p>Consider a database with the following schema:</p>
+<p>CREATE VIRTUAL TABLE ft USING fts5(text);\
+CREATE TABLE t1(a, b);\
+CREATE TABLE t2(c INTEGER PRIMARY KEY, d);\</p>
+<p>Then, after first executing ".scanstats on":</p>
+<p>sqlite3&gt; SELECT * FROM t1, t2 WHERE t2.c=t1.a;\
+\&lt;...query results...&gt;\
+                                                  Cycles      Loops  Rows \
+                                                  ----------  -----  -----\
+QUERY PLAN                                        1.14M 100%\
+|--SCAN t1                                         455K  40%     1    500\
+`--SEARCH t2 USING INTEGER PRIMARY KEY (rowid=?)   620K  54%   500    250\</p>
+<p>The text in the example above following the snipped "\&lt;...query results...&gt;" is the profile report for the join query just executed. The parts of the profile report that are similar to the <a href="eqp.html">EXPLAIN QUERY PLAN</a> output indicate that the query is implemented by doing a full table-scan of table "t1", with a lookup by INTEGER PRIMARY KEY on table "t2" for each row visited.</p>
+<p>The value of "1" in the "Loops" column to the right of the EXPLAIN QUERY PLAN output on the "SCAN t1" line indicates that this loop - the full-table scan of table "t1" - ran exactly once. The value of "500" under the "Rows column indicates that that single scan generates 500 rows.</p>
+<p>The "SEARCH t2 USING ..." line contains "500" for "Loops" to indicate that this "loop" (really a lookup by INTEGER PRIMARY KEY) ran 500 times. Which makes sense - it ran once for each row visited by the full-table scan of "t1". The "250" under "Row" means that, altogether, those 500 loops generated 250 rows. In other words, only half of the INTEGER PRIMARY KEY lookups on table t2 were successful, for the other half of the lookups there was no row to find.</p>
+<p>The loop-count for a SEARCH or SCAN entry is not necessarily the same as the number of rows output by the outer loop. For example, if the query above were modified as follows:</p>
+<p>sqlite3&gt; SELECT * FROM t1, t2 WHERE t1.b\&lt;=100 AND t2.c=t1.a;\
+\&lt;...query results...&gt;\
+                                                  Cycles      Loops  Rows \
+                                                  ----------  -----  -----\
+QUERY PLAN                                          561K 100%\
+|--SCAN t1                                          345K  62%    1    500\
+`--SEARCH t2 USING INTEGER PRIMARY KEY (rowid=?)    129K  23%  100     50\</p>
+<p>This time, even though the "SCAN t1" loop still visits 500 rows, the "SEARCH t2" lookup is only performed 100 times. This is because SQLite was able to discard rows from t1 that did not match the "t1.b\&lt;=100" constraint.</p>
+<p>The "cycles" measurements are based on the <a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter" rel="noopener" target="_blank">CPU time-stamp counter</a> , and so are a good proxy for wall-clock time. For the query above, the total number of cycles was about 561,000. (All of the values displayed are rounded to three significant digits.) For each of the two loops ("SCAN t1..." and "SEARCH t2..."), the cycles count represents the time spent in operations that can be directly attributed to that loop only. Specifically, this is the time spent navigating and extracting data from the database b-trees for that loop. These values never quite add up to the total cycles for the query, as there are other internal operations performed by SQLite that are not directly attributable to either loop.</p>
+<p>The cycles count for the "SCAN t1" loop was 345K - 62% of the total for the query. The 100 lookups peformed by the "SEARCH t1" loop took 129K cycles, 23% of the total.</p>
+<p>When a virtual table is used, the "Rows" and "Loops" metrics have the same meaning as for loops on regular SQLite tables. The "Cycles" meaurement is the total cycles consumed within virtual table methods associated with the loop. For example:</p>
+<p>sqlite3&gt; SELECT * FROM ft('sqlite'), t2 WHERE t2.c=ft.rowid;\
+\&lt;...query results...&gt;\
+                                                  Cycles      Loops  Rows \
+                                                  ----------  -----  -----\
+QUERY PLAN                                         836K 100%\
+|--SCAN ft VIRTUAL TABLE INDEX 0:M1                740K  91%     1     48\
+`--SEARCH t2 USING INTEGER PRIMARY KEY (rowid=?)  62.9K   8%    48     25\</p>
+<p>In this case the single query (Loops: 1) on fts5 table "ft" returned 48 rows (Rows: 48) and consumed about 740K cycles, which was roughly 88% of the total query time.</p>
+<h1 id="3-complex-cases-rows-loops-and-cycles">3. Complex Cases - Rows, Loops and Cycles<a class="headerlink" href="#3-complex-cases-rows-loops-and-cycles" title="Permanent link">#</a></h1>
+<p>Using the same schema as in the previous section, consider this more complicated example:</p>
+<p>sqlite3&gt; WITH cnt(i) AS (\
+  SELECT 1 UNION SELECT i+1 FROM cnt WHERE i\&lt;100\
+)\
+SELECT\
+  *, (SELECT d FROM t2 WHERE c=ft.rowid)\
+FROM\
+  (SELECT count(*), a FROM t1 GROUP BY a) AS v1 CROSS JOIN\
+  ft('sqlite'),\
+  cnt\
+WHERE cnt.i=ft.rowid AND v1.a=ft.rowid;\
+\&lt;...query results...&gt;\
+                                                      Cycles      Loops  Rows \
+                                                      ----------  -----  -----\
+QUERY PLAN                                             178M 100%\
+|--CO-ROUTINE v1\
+|  |--SCAN t1                                          397K   0%     1    500\
+|  `--USE TEMP B-TREE FOR GROUP BY\
+|--MATERIALIZE cnt                                    1.28M   1%\
+|  |--SETUP\
+|  |  `--SCAN CONSTANT ROW\
+|  `--RECURSIVE STEP\
+|     `--SCAN cnt                                      129K   0%   100    100\
+|--SCAN v1                                            4.50M   3%     1    500\
+|--SCAN ft VIRTUAL TABLE INDEX 0:M1=                   162M  91%   500    271\
+|--SCAN cnt                                           7.33M   4%    95   9500\
+`--CORRELATED SCALAR SUBQUERY 3                        169K   0%    37\
+   `--SEARCH t2 USING INTEGER PRIMARY KEY (rowid=?)   94.7K   0%    37     21\</p>
+<p>The most complicated part of the example above is understanding the query plan - the portion of the report that would also be generated by an <a href="eqp.html">EXPLAIN QUERY PLAN</a> command.</p>
+<p>The following query uses an <a href="optoverview.html#autoindex">automatic index</a> and an external sort:</p>
+<p>sqlite&gt; SELECT * FROM\
+  t2,\
+  (SELECT count(*) AS cnt, d FROM t2 GROUP BY d) AS v2\
+WHERE v2.d=t2.d AND t2.d&gt;100\
+ORDER BY v2.cnt;\
+\&lt;...query results...&gt;\
+                                                    Cycles      Loops  Rows \
+                                                    ----------  -----  -----\
+QUERY PLAN                                          6.23M 100%\
+|--MATERIALIZE v2                                   2.35M  38%\
+|  |--SCAN t2                                        188K   3%     1    250\
+|  `--USE TEMP B-TREE FOR GROUP BY\
+|--SCAN t2                                           456K   7%     1    250\
+|--CREATE AUTOMATIC INDEX ON v2(d, cnt)             1.67M  27%     1    250\
+|--SEARCH v2 USING AUTOMATIC COVERING INDEX (d=?)    933K  15%   200    200\
+`--USE TEMP B-TREE FOR ORDER BY                      662K  11%     1    200\</p>
+<p>Points of interest are:</p>
+<ul>
+<li>
+<p>This query materializes the sub-query into a temp table, then creates an automatic (i.e. transient) index on it, then uses that index to optimize the join. All three of these steps - "MATERIALIZE v2", "CREATE AUTOMATIC INDEX" and "SEARCH ... USING AUTOMATIC INDEX" have separate cycle counts. The "rows" associated with the "CREATE AUTOMATIC INDEX" line represents the total number of rows included in the index. The "loops" and "rows" associated with the "SEARCH ... USING AUTOMATIC INDEX" line represent the number of lookups the index was used for and the total number of rows found by those lookups.</p>
+</li>
+<li>
+<p>The external sort "USE TEMP B-TREE FOR ORDER BY" is also accounted for separately. The cycles count represents the extra cycles consumed by sorting the returned rows, above those that would have been used if the rows were returned in arbitrary order. The rows count represents the number of rows sorted.</p>
+</li>
+</ul>
+<h1 id="4-planner-estimates">4. Planner Estimates<a class="headerlink" href="#4-planner-estimates" title="Permanent link">#</a></h1>
+<p>As well as ".scanstats on" to enable profiling and ".scanstats off" to disable it, the shell also accepts ".scanstats est":</p>
+<p>sqlite&gt; .scanstats est\</p>
+<p>This enables a special kind of profiling report that includes two extra values associated with each "SCAN..." and "SEARCH..." element of a query profile. The "Loops" and "Rows" columns show the actual number of invocations of each step and the actual number of rows generated, but now both numbers are also followed by the estimated values for those quantities that the query planner used to pick the algorithm.</p>
+<p>sqlite&gt; SELECT a FROM t1, t2 WHERE a IN (1,2,3) AND a=d+e ORDER BY a;\
+\&lt;query results...&gt;\
+                                                  Cycles      Loops  (est)  Rows   (est)\
+                                                  ----------  ------------  ------------\
+QUERY PLAN                                         264M 100%\
+|--SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)  60.5M  23%     1      1      3      3\
+`--SCAN t2                                         139M  53%     3   1.24K   450K  3.12M\</p>
+<p>The output below is from query 15c of the <a href="https://github.com/datalevin/datalevin/tree/master/benchmarks/JOB-bench" rel="noopener" target="_blank">Join Order Benchmark</a>.</p>
+<p>.scanstatus est\
+SELECT MIN(chn.name) AS character,\
+       MIN(t.title) AS movie_with_american_producer\
+FROM char_name AS chn,\
+     cast_info AS ci,\
+     company_name AS cn,\
+     company_type AS ct,\
+     movie_companies AS mc,\
+     role_type AS rt,\
+     title AS t\
+WHERE ci.note LIKE '%(producer)%'\
+  AND cn.country_code = '[us]'\
+  AND t.production_year &gt; 1990\
+  AND t.id = mc.movie_id\
+  AND t.id = ci.movie_id\
+  AND ci.movie_id = mc.movie_id\
+  AND chn.id = ci.person_role_id\
+  AND rt.id = ci.role_id\
+  AND cn.id = mc.company_id\
+  AND ct.id = mc.company_type_id;\
+\&lt;<em>... query results omitted ...</em>&gt;\
+                                                                     Cycles      Loops  (est)  Rows   (est)\
+                                                                     ----------  ------------  ------------\
+QUERY PLAN                                                           87.1G 100%\
+|--SEARCH cn USING COVERING INDEX extra_cncc (country_code=?)        13.3M   0%     1      1   84.8K  81.9K\
+|--SEARCH mc USING INDEX company_id_movie_companies (company_id=?)   3.11G   4%  84.8K  81.9K  1.15M   983K\
+|--SEARCH t USING INTEGER PRIMARY KEY (rowid=?)                      3.10G   4%  1.15M   983K  1.15M   860K\
+|--SEARCH ci USING INDEX movie_id_cast_info (movie_id=?)             77.3G  89%   609K   860K  21.0M  3.01M\
+|--SEARCH rt USING INTEGER PRIMARY KEY (rowid=?)                     40.4M   0%   802K  3.01M   802K  3.01M\
+|--SEARCH chn USING INTEGER PRIMARY KEY (rowid=?)                    20.7M   0%   802K  3.01M    26   3.01M\
+`--SEARCH ct USING INTEGER PRIMARY KEY (rowid=?)                     10.6K   0%    26   3.01M    26   3.01M\</p>
+<p>Notice that most of the Loops and Rows values predicted by the query planner are reasonably accurate, except for the case of the join against the "char_name" (alias "chn") table. The join against the "chn" table dramatically reduced the number of rows in the processing chain - a reduction that the query planner failed to predict. If the query planner had known that the join against "chn" would have this effect, it could have picked a different join order that processed the "chn" table sooner, and thus reduced downstream processing. The following output is from a variation of the 15c benchmark that uses <a href="optoverview.html#crossjoin">CROSS JOIN</a> to force the join against "chn" to happen much earlier:</p>
+<p>Cycles      Loops  (est)  Rows   (est)\
+                                                                 ----------  ------------  ------------\
+QUERY PLAN                                                       6.95G 100%\
+|--SCAN ci                                                       3.67G  53%     1      1   36.2M  7.86M\
+|--SEARCH chn USING INTEGER PRIMARY KEY (rowid=?)                36.9M   1%  1.43M  7.86M    25   7.86M\
+|--SEARCH t USING INTEGER PRIMARY KEY (rowid=?)                   221K   0%    25   7.86M    25   6.88M\
+|--SEARCH mc USING INDEX movie_id_movie_companies (movie_id=?)    455K   0%    22   6.88M    43   18.9M\
+|--SEARCH cn USING INTEGER PRIMARY KEY (rowid=?)                  209K   0%    43   18.9M    43   17.7M\
+|--SEARCH ct USING INTEGER PRIMARY KEY (rowid=?)                 6491    0%    26   17.7M    26   17.7M\
+`--SEARCH rt USING INTEGER PRIMARY KEY (rowid=?)                 2853    0%    26   17.7M    26   17.7M\</p>
+<p>This alternative query plan runs about 12.5 times faster. But based on the row count estimates, the query planner reasoned that this plan should have run about 5.9 times slower, which is what it didn't pick it.</p>
+<p>An important use case for the ".scanstatus est" feature is to help the developers quickly see when the query planner is making bad choices based on row-count estimates that differ wildly from the actual query. The question of how the query planner could have known that the join against "chn" would so dramatically reduce the row count is an area of on-going research as of this writing (2026-02-04).</p>
+<h1 id="5-low-level-profiling-data">5. Low-Level Profiling Data<a class="headerlink" href="#5-low-level-profiling-data" title="Permanent link">#</a></h1>
+<p>Also supported is the ".scanstats vm" command. This enables a lower-level profiling report showing the number of times each VM instruction was executed and the percentage of clock-cycles that passed while it was executing:</p>
+<p>sqlite&gt; .scanstats vm\</p>
+<p>Then:</p>
+<p>sqlite&gt; SELECT count(*) FROM t2 WHERE (d % 5) = 0;\
+\&lt;query results...&gt;\
+addr  cycles  nexec   opcode         p1    p2    p3    p4             p5  comment      \
+----  ------  ------  -------------  ----  ----  ----  -------------  --  -------------\
+0     0.0%    1       Init           1     18    0                    0   Start at 18\
+1     0.0%    1       Null           0     1     1                    0   r[1..1]=NULL\
+2     0.0%    1       OpenRead       0     2     0     2              0   root=2 iDb=0; t2\
+3     0.0%    1       ColumnsUsed    0     0     0     2              0   \
+4     0.0%    1       Explain        4     0     0     SCAN t2        0   \
+5     0.0%    1       CursorHint     0     0     0     EQ(REM(c1,5),0) 0   \
+6     0.0%    1       Rewind         0     14    0                    0   \
+7     46.86%  150000    Column         0     1     3                    0   r[3]= cursor 0 column 1\
+8     18.94%  150000    Remainder      4     3     2                    0   r[2]=r[3]%r[4]\
+9     5.41%   150000    ReleaseReg     3     1     0                    0   release r[3] mask 0\
+10    12.09%  150000    Ne             5     13    2                    80  if r[2]!=r[5] goto 13\
+11    1.02%   30000     ReleaseReg     2     1     0                    0   release r[2] mask 0\
+12    2.95%   30000     AggStep1       0     0     1     count(0)       0   accum=r[1] step(r[0])\
+13    12.72%  150000  Next           0     7     0                    1   \
+14    0.0%    1       AggFinal       1     0     0     count(0)       0   accum=r[1] N=0\
+15    0.0%    1       Copy           1     6     0                    0   r[6]=r[1]\
+16    0.0%    1       ResultRow      6     1     0                    0   output=r[6]\
+17    0.01%   1       Halt           0     0     0                    0   \
+18    0.0%    1       Transaction    0     0     1     0              1   usesStmtJournal=0\
+19    0.0%    1       Integer        5     4     0                    0   r[4]=5\
+20    0.0%    1       Integer        0     5     0                    0   r[5]=0\
+21    0.0%    1       Goto           0     1     0                    0   \</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/pressrelease-20071212.html">
+          <span class="muted">Anterior</span>Pressrelease 20071212
+        </a>
+        <a class="pager-next" href="../guides/qmplan.html">
+          <span class="muted">Siguiente</span>Quality Management
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

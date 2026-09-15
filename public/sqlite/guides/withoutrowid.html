@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clustered Indexes and the WITHOUT ROWID Optimization · SQLite</title>
+<meta name="description" content="Clustered Indexes and the WITHOUT ROWID Optimization - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/withoutrowid.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Clustered Indexes and the WITHOUT ROWID Optimization">
+<meta property="og:description" content="Clustered Indexes and the WITHOUT ROWID Optimization - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Clustered Indexes and the WITHOUT ROWID Optimization">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Clustered Indexes and the WITHOUT ROWID Optimization",
+"url": "https://docs.raupulus.dev/sqlite/guides/withoutrowid.html",  "description": "Clustered Indexes and the WITHOUT ROWID Optimization - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/fasterthanfs.html"
+>35% Faster Than The Filesystem</a>
+              </li>
+              <li>
+                <a href="../guides/shortnames.html"
+>8+3 Filenames</a>
+              </li>
+              <li>
+                <a href="../guides/about.html"
+>About SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_int64.html"
+>Add a 64-bit integer to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_blob.html"
+>Add a blob to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add.html"
+>Add A Changeset To A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_null.html"
+>Add a NULL to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_schema.html"
+>Add a Schema to a Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add_change.html"
+>Add A Single Change To A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_text.html"
+>Add a text value to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_double.html"
+>Add an double to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_next.html"
+>Advance A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/doclist.html"
+>Alphabetical List Of SQLite Documents</a>
+              </li>
+              <li>
+                <a href="../guides/cintro.html"
+>An Introduction To The SQLite C/C++ Interface</a>
+              </li>
+              <li>
+                <a href="../guides/appfunc.html"
+>Application-Defined SQL Functions</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_apply.html"
+>Apply A Changeset To A Database</a>
+              </li>
+              <li>
+                <a href="../guides/whentouse.html"
+>Appropriate Uses For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/arch.html"
+>Architecture of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/atomiccommit.html"
+>Atomic Commit In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_attach.html"
+>Attach A Table To A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/undoredo.html"
+>Automatic Undo/Redo With SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/doc_backlink_crossref.html"
+>Backlink Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_begin.html"
+>Begin adding a change to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/aff_short.html"
+>Benefits of SQLite As A File Format</a>
+              </li>
+              <li>
+                <a href="../guides/books.html"
+>Books About SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/tcljson.html"
+>Bridging Tcl and JSON with the SQLite Extension</a>
+              </li>
+              <li>
+                <a href="../guides/capi3.html"
+>C/C++ Interface For SQLite Version 3 (old)</a>
+              </li>
+              <li>
+                <a href="../guides/pgszchng2016.html"
+>Change in Default Page Size in SQLite Version 3.12.0</a>
+              </li>
+              <li>
+                <a href="../guides/changegroup.html"
+>Changegroup Handle</a>
+              </li>
+              <li>
+                <a href="../guides/changeset_iter.html"
+>Changeset Iterator Handle</a>
+              </li>
+              <li>
+                <a href="../guides/withoutrowid.html"
+class="is-current" aria-current="page">Clustered Indexes and the WITHOUT ROWID Optimization</a>
+              </li>
+              <li>
+                <a href="../guides/codeofconduct.html"
+>Code Of Conduct</a>
+              </li>
+              <li>
+                <a href="../guides/codeofethics.html"
+>Code Of Ethics</a>
+              </li>
+              <li>
+                <a href="../guides/compile.html"
+>Compile-time Options</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_concat.html"
+>Concatenate Two Changeset Objects</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_config.html"
+>Configure a changegroup object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_configure.html"
+>Configure a changeset rebaser object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_object_config.html"
+>Configure a Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_config.html"
+>Configure global parameters</a>
+              </li>
+              <li>
+                <a href="../guides/c_changeset_conflict.html"
+>Constants Passed To The Conflict Handler</a>
+              </li>
+              <li>
+                <a href="../guides/c_changeset_abort.html"
+>Constants Returned By The Conflict Handler</a>
+              </li>
+              <li>
+                <a href="../guides/conflict.html"
+>Constraint Conflict Resolution in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_create.html"
+>Create a changeset rebaser object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_new.html"
+>Create A New Changegroup Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_create.html"
+>Create A New Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_start.html"
+>Create An Iterator To Traverse A Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/custombuild.html"
+>Custom Builds Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/fileformat.html"
+>Database File Format</a>
+              </li>
+              <li>
+                <a href="../guides/fileformat2.html"
+>Database File Format</a>
+              </li>
+              <li>
+                <a href="../guides/rsync.html"
+>Database Remote-Copy Tool For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/datatype3.html"
+>Datatypes In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/datatypes.html"
+>Datatypes In SQLite version 2</a>
+              </li>
+              <li>
+                <a href="../guides/security.html"
+>Defense Against The Dark Arts</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_delete.html"
+>Delete A Changegroup Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_delete.html"
+>Delete a changeset rebaser object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_delete.html"
+>Delete A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_fk_conflicts.html"
+>Determine The Number Of Foreign Key Constraint Violations</a>
+              </li>
+              <li>
+                <a href="../guides/deterministic.html"
+>Deterministic SQL Functions</a>
+              </li>
+              <li>
+                <a href="../guides/different.html"
+>Distinctive Features Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/malloc.html"
+>Dynamic Memory Allocation In SQLite</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Clustered Indexes and the WITHOUT ROWID Optimization</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/withoutrowid.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#11-syntax">1.1. Syntax#</a></li>
+              <li class="lvl-2"><a href="#12-compatibility">1.2. Compatibility#</a></li>
+              <li class="lvl-2"><a href="#13-quirks">1.3. Quirks#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-introduction">1. Introduction<a class="headerlink" href="#1-introduction" title="Permanent link">#</a></h1>
+<p>By default, every row in SQLite has a special column, usually called the "<a href="lang_createtable.html#rowid">rowid</a>", that uniquely identifies that row within the table. However if the phrase "WITHOUT ROWID" is added to the end of a <a href="lang_createtable.html">CREATE TABLE</a> statement, then the special "rowid" column is omitted. There are sometimes space and performance advantages to omitting the rowid.</p>
+<p>A WITHOUT ROWID table is a table that uses a <a href="https://en.wikipedia.org/wiki/Database_index#Clustered" rel="noopener" target="_blank">Clustered Index</a> as the primary key.</p>
+<h2 id="11-syntax">1.1. Syntax<a class="headerlink" href="#11-syntax" title="Permanent link">#</a></h2>
+<p>To create a WITHOUT ROWID table, simply add the keywords "WITHOUT ROWID" to the end of the <a href="lang_createtable.html">CREATE TABLE</a> statement. For example:</p>
+<blockquote>
+<p>\
+CREATE TABLE IF NOT EXISTS wordcount(\
+  word TEXT PRIMARY KEY,\
+  cnt INTEGER\
+) <strong>WITHOUT ROWID</strong>;\</p>
+</blockquote>
+<p>As with all SQL syntax, the case of the keywords does not matter. One can write "WITHOUT rowid" or "without rowid" or "WiThOuT rOwId" and it will mean the same thing.</p>
+<p>Every WITHOUT ROWID table must have a <a href="lang_createtable.html#primkeyconst">PRIMARY KEY</a>. An error is raised if a CREATE TABLE statement with the WITHOUT ROWID clause lacks a PRIMARY KEY.</p>
+<p>In most contexts, the special "rowid" column of normal tables can also be called "oid" or "_rowid_". However, only "rowid" works as the keyword in the CREATE TABLE statement.</p>
+<h2 id="12-compatibility">1.2. Compatibility<a class="headerlink" href="#12-compatibility" title="Permanent link">#</a></h2>
+<p>SQLite <a href="releaselog/3_8_2.html">version 3.8.2</a> (2013-12-06) or later is necessary in order to use a WITHOUT ROWID table. An attempt to open a database that contains one or more WITHOUT ROWID tables using an earlier version of SQLite will result in a "malformed database schema" error.</p>
+<h2 id="13-quirks">1.3. Quirks<a class="headerlink" href="#13-quirks" title="Permanent link">#</a></h2>
+<p>WITHOUT ROWID is found only in SQLite and is not compatible with any other SQL database engine, as far as we know. In an elegant system, all tables would behave as WITHOUT ROWID tables even without the WITHOUT ROWID keyword. However, when SQLite was first designed, it used only integer <a href="lang_createtable.html#rowid">rowids</a> for row keys to simplify the implementation. This approach worked well for many years. But as the demands on SQLite grew, the need for tables in which the PRIMARY KEY really did correspond to the underlying row key grew more acute. The WITHOUT ROWID concept was added in order to meet that need without breaking backwards compatibility with the billions of SQLite databases already in use at the time (circa 2013).</p>
+<h1 id="2-differences-from-ordinary-rowid-tables">2. Differences From Ordinary Rowid Tables<a class="headerlink" href="#2-differences-from-ordinary-rowid-tables" title="Permanent link">#</a></h1>
+<p>The WITHOUT ROWID syntax is an optimization. It provides no new capabilities. Anything that can be done using a WITHOUT ROWID table can also be done in exactly the same way, and exactly the same syntax, using an ordinary rowid table. The only advantage of a WITHOUT ROWID table is that it can sometimes use less disk space and/or perform a little faster than an ordinary rowid table.</p>
+<p>For the most part, ordinary rowid tables and WITHOUT ROWID tables are interchangeable. But there are some additional restrictions on WITHOUT ROWID tables that do not apply to ordinary rowid tables:</p>
+<ol>
+<li>
+<p><strong>Every WITHOUT ROWID table must have a PRIMARY KEY.</strong> An attempt to create a WITHOUT ROWID table without a PRIMARY KEY results in an error.</p>
+</li>
+<li>
+<p><strong>The special behaviors associated with "<a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a>" do not apply on WITHOUT ROWID tables.</strong> In an ordinary table, "INTEGER PRIMARY KEY" means that the column is an alias for the rowid. But since there is no rowid in a WITHOUT ROWID table, that special meaning no longer applies. An "INTEGER PRIMARY KEY" column in a WITHOUT ROWID table works like an "INT PRIMARY KEY" column in an ordinary table: It is a PRIMARY KEY that has integer <a href="datatype3.html#affinity">affinity</a>.</p>
+</li>
+<li>
+<p><strong><a href="autoinc.html">AUTOINCREMENT</a> does not work on WITHOUT ROWID tables.</strong> The <a href="autoinc.html">AUTOINCREMENT</a> mechanism assumes the presence of a rowid and so it does not work on a WITHOUT ROWID table. An error is raised if the "AUTOINCREMENT" keyword is used in the CREATE TABLE statement for a WITHOUT ROWID table.</p>
+</li>
+<li>
+<p><strong>NOT NULL is enforced on every column of the PRIMARY KEY in a WITHOUT ROWID table.</strong> This is in accordance with the SQL standard. Each column of a PRIMARY KEY is supposed to be individually NOT NULL. However, NOT NULL was not enforced on PRIMARY KEY columns by early versions of SQLite due to a bug. By the time that this bug was discovered, so many SQLite databases were already in circulation that the decision was made not to fix this bug for fear of breaking compatibility. So, ordinary rowid tables in SQLite violate the SQL standard and allow NULL values in PRIMARY KEY fields. But WITHOUT ROWID tables do follow the standard and will throw an error on any attempt to insert a NULL into a PRIMARY KEY column.</p>
+</li>
+<li>
+<p><strong>The <a href="c3ref/last_insert_rowid.html">sqlite3_last_insert_rowid()</a> function does not work for WITHOUT ROWID tables.</strong> Inserts into a WITHOUT ROWID do not change the value returned by the <a href="c3ref/last_insert_rowid.html">sqlite3_last_insert_rowid()</a> function. The <a href="lang_corefunc.html#last_insert_rowid">last_insert_rowid()</a> SQL function is also unaffected since it is just a wrapper around <a href="c3ref/last_insert_rowid.html">sqlite3_last_insert_rowid()</a>.</p>
+</li>
+<li>
+<p><strong>The <a href="c3ref/blob_open.html">incremental blob I/O</a> mechanism does not work for WITHOUT ROWID tables.</strong> Incremental BLOB I/O uses the rowid to create an <a href="c3ref/blob.html">sqlite3_blob</a> object for doing the direct I/O. However, WITHOUT ROWID tables do not have a rowid, and so there is no way to create an <a href="c3ref/blob.html">sqlite3_blob</a> object for a WITHOUT ROWID table.</p>
+</li>
+<li>
+<p><strong>The <a href="c3ref/update_hook.html">sqlite3_update_hook()</a> interface does not fire callbacks for changes to a WITHOUT ROWID table.</strong> Part of the callback from <a href="c3ref/update_hook.html">sqlite3_update_hook()</a> is the rowid of the table row that has changed. However, WITHOUT ROWID tables do not have a rowid. Hence, the update hook is not invoked when a WITHOUT ROWID table changes.</p>
+</li>
+</ol>
+<p><span id="bene"></span></p>
+<h1 id="3-benefits-of-without-rowid-tables">3. Benefits Of WITHOUT ROWID Tables<a class="headerlink" href="#3-benefits-of-without-rowid-tables" title="Permanent link">#</a></h1>
+<p>A WITHOUT ROWID table is an optimization that can reduce storage and processing requirements.</p>
+<p>In an ordinary SQLite table, the PRIMARY KEY is really just a <a href="lang_createtable.html#uniqueconst">UNIQUE</a> index. The key used to look up records on disk is the <a href="lang_createtable.html#rowid">rowid</a>. The special "<a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a>" column type in ordinary SQLite tables causes the column to be an alias for the rowid, and so an INTEGER PRIMARY KEY is a true PRIMARY KEY. But any other kind of PRIMARY KEYs, including "INT PRIMARY KEY" are just unique indexes in an ordinary rowid table.</p>
+<p>Consider a table (shown below) intended to store a vocabulary of words together with a count of the number of occurrences of each word in some text corpus:</p>
+<blockquote>
+<p>\
+CREATE TABLE IF NOT EXISTS wordcount(\
+  word TEXT PRIMARY KEY,\
+  cnt INTEGER\
+);\</p>
+</blockquote>
+<p>As an ordinary SQLite table, "wordcount" is implemented as two separate B-Trees. The main table uses the hidden rowid value as the key and stores the "word" and "cnt" columns as data. The "TEXT PRIMARY KEY" phrase of the CREATE TABLE statement causes the creation of an <a href="lang_createindex.html#uniqueidx">unique index</a> on the "word" column. This index is a separate B-Tree that uses "word" and the "rowid" as the key and stores no data at all. Note that the complete text of every "word" is stored twice: once in the main table and again in the index.</p>
+<p>Consider querying this table to find the number of occurrences of the word "xsync":</p>
+<blockquote>
+<p>\
+SELECT cnt FROM wordcount WHERE word='xsync';\</p>
+</blockquote>
+<p>This query first has to search the index B-Tree looking for any entry that contains the matching value for "word". When an entry is found in the index, the rowid is extracted and used to search the main table. Then the "cnt" value is read out of the main table and returned. Hence, two separate binary searches are required to fulfill the request.</p>
+<p>A WITHOUT ROWID table uses a different data design for the equivalent table.</p>
+<blockquote>
+<p>\
+CREATE TABLE IF NOT EXISTS wordcount(\
+  word TEXT PRIMARY KEY,\
+  cnt INTEGER\
+) WITHOUT ROWID;\</p>
+</blockquote>
+<p>In this latter table, there is only a single B-Tree which uses the "word" column as its key and the "cnt" column as its data. (Technicality: the low-level implementation actually stores both "word" and "cnt" in the "key" area of the B-Tree. But unless you are looking at the low-level byte encoding of the database file, that fact is unimportant.) Because there is only a single B-Tree, the text of the "word" column is only stored once in the database. Furthermore, querying the "cnt" value for a specific "word" only involves a single binary search into the main B-Tree, since the "cnt" value can be retrieved directly from the record found by that first search and without the need to do a second binary search on the rowid.</p>
+<p>Thus, in some cases, a WITHOUT ROWID table can use about half the amount of disk space and can operate nearly twice as fast. Of course, in a real-world schema, there will typically be secondary indices and/or UNIQUE constraints, and the situation is more complicated. But even then, there can often be space and performance advantages to using WITHOUT ROWID on tables that have non-integer or composite PRIMARY KEYs. <span id="wtu"></span></p>
+<h1 id="4-when-to-use-without-rowid">4. When To Use WITHOUT ROWID<a class="headerlink" href="#4-when-to-use-without-rowid" title="Permanent link">#</a></h1>
+<p>The WITHOUT ROWID optimization is likely to be helpful for tables that have non-integer or composite (multi-column) PRIMARY KEYs and that do not store large strings or BLOBs.</p>
+<p>WITHOUT ROWID tables will work correctly (that is to say, they provide the correct answer) for tables with a single INTEGER PRIMARY KEY. However, ordinary rowid tables will run faster in that case. Hence, it is good design to avoid creating WITHOUT ROWID tables with single-column PRIMARY KEYs of type INTEGER.</p>
+<p>WITHOUT ROWID tables work best when individual rows are not too large. A good rule-of-thumb is that the average size of a single row in a WITHOUT ROWID table should be less than about 1/20th the size of a database page. That means that rows should not contain more than about 50 bytes each for a 1KiB page size or about 200 bytes each for 4KiB page size. WITHOUT ROWID tables will work (in the sense that they get the correct answer) for arbitrarily large rows - up to 2GB in size - but traditional rowid tables tend to work faster for large row sizes. This is because rowid tables are implemented as <a href="fileformat2.html#btree">B*-Trees</a> where all content is stored in the leaves of the tree, whereas WITHOUT ROWID tables are implemented using ordinary B-Trees with content stored on both leaves and intermediate nodes. Storing content in intermediate nodes causes each intermediate node entry to take up more space on the page and thus reduces the fan-out, increasing the search cost.</p>
+<p>The "sqlite3_analyzer.exe" utility program, available as source code in the SQLite source tree or as a precompiled binary on the <a href="https://sqlite.org/download.html" rel="noopener" target="_blank">SQLite Download page</a>, can be used to measure the average sizes of table rows in an existing SQLite database.</p>
+<p>Note that except for a few corner-case differences detailed above, WITHOUT ROWID tables and rowid tables work the same. They both generate the same answers given the same SQL statements. So it is a simple matter to run experiments on an application, late in the development cycle, to test whether or not the use of WITHOUT ROWID tables will be helpful. A good strategy is to simply not worry about WITHOUT ROWID until near the end of product development, then go back and run tests to see if adding WITHOUT ROWID to tables with non-integer PRIMARY KEYs helps or hurts performance, and retaining the WITHOUT ROWID only in those cases where it helps.</p>
+<h1 id="5-determining-if-an-existing-table-is-without-rowid">5. Determining If An Existing Table Is WITHOUT ROWID<a class="headerlink" href="#5-determining-if-an-existing-table-is-without-rowid" title="Permanent link">#</a></h1>
+<p>A WITHOUT ROWID table returns the same content for <a href="pragma.html#pragma_table_info">PRAGMA table_info</a> and <a href="pragma.html#pragma_table_xinfo">PRAGMA table_xinfo</a> as does an ordinary table. But unlike an ordinary table, a WITHOUT ROWID also responds to the <a href="pragma.html#pragma_index_info">PRAGMA index_info</a> command. The <a href="pragma.html#pragma_index_info">PRAGMA index_info</a> on a WITHOUT ROWID table returns information about the PRIMARY KEY for the table. In this way, the <a href="pragma.html#pragma_index_info">PRAGMA index_info</a> command can be used to unambiguously determine whether a particular table is a WITHOUT ROWID table or an ordinary table - an ordinary table will always return no rows but a WITHOUT ROWID table will always return one or more rows.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/changeset_iter.html">
+          <span class="muted">Anterior</span>Changeset Iterator Handle
+        </a>
+        <a class="pager-next" href="../guides/codeofconduct.html">
+          <span class="muted">Siguiente</span>Code Of Conduct
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQLite Shared-Cache Mode · SQLite</title>
+<meta name="description" content="SQLite Shared-Cache Mode - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/sharedcache.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="SQLite Shared-Cache Mode">
+<meta property="og:description" content="SQLite Shared-Cache Mode - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQLite Shared-Cache Mode">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "SQLite Shared-Cache Mode",
+"url": "https://docs.raupulus.dev/sqlite/guides/sharedcache.html",  "description": "SQLite Shared-Cache Mode - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/8_1.html"
+>SQLite Release 3.8.1 On 2013-10-17</a>
+              </li>
+              <li>
+                <a href="../guides/8_10.html"
+>SQLite Release 3.8.10 On 2015-05-07</a>
+              </li>
+              <li>
+                <a href="../guides/8_10_1.html"
+>SQLite Release 3.8.10.1 On 2015-05-09</a>
+              </li>
+              <li>
+                <a href="../guides/8_10_2.html"
+>SQLite Release 3.8.10.2 On 2015-05-20</a>
+              </li>
+              <li>
+                <a href="../guides/8_11.html"
+>SQLite Release 3.8.11 On 2015-07-27</a>
+              </li>
+              <li>
+                <a href="../guides/8_11_1.html"
+>SQLite Release 3.8.11.1 On 2015-07-29</a>
+              </li>
+              <li>
+                <a href="../guides/8_2.html"
+>SQLite Release 3.8.2 On 2013-12-06</a>
+              </li>
+              <li>
+                <a href="../guides/8_3.html"
+>SQLite Release 3.8.3 On 2014-02-03</a>
+              </li>
+              <li>
+                <a href="../guides/8_3_1.html"
+>SQLite Release 3.8.3.1 On 2014-02-11</a>
+              </li>
+              <li>
+                <a href="../guides/8_4.html"
+>SQLite Release 3.8.4 On 2014-03-10</a>
+              </li>
+              <li>
+                <a href="../guides/8_4_1.html"
+>SQLite Release 3.8.4.1 On 2014-03-11</a>
+              </li>
+              <li>
+                <a href="../guides/8_4_2.html"
+>SQLite Release 3.8.4.2 On 2014-03-26</a>
+              </li>
+              <li>
+                <a href="../guides/8_4_3.html"
+>SQLite Release 3.8.4.3 On 2014-04-03</a>
+              </li>
+              <li>
+                <a href="../guides/8_5.html"
+>SQLite Release 3.8.5 On 2014-06-04</a>
+              </li>
+              <li>
+                <a href="../guides/8_6.html"
+>SQLite Release 3.8.6 On 2014-08-15</a>
+              </li>
+              <li>
+                <a href="../guides/8_7.html"
+>SQLite Release 3.8.7 On 2014-10-17</a>
+              </li>
+              <li>
+                <a href="../guides/8_7_1.html"
+>SQLite Release 3.8.7.1 On 2014-10-29</a>
+              </li>
+              <li>
+                <a href="../guides/8_7_2.html"
+>SQLite Release 3.8.7.2 On 2014-11-18</a>
+              </li>
+              <li>
+                <a href="../guides/8_7_3.html"
+>SQLite Release 3.8.7.3 On 2014-12-05</a>
+              </li>
+              <li>
+                <a href="../guides/8_7_4.html"
+>SQLite Release 3.8.7.4 On 2014-12-09</a>
+              </li>
+              <li>
+                <a href="../guides/8_8.html"
+>SQLite Release 3.8.8 On 2015-01-16</a>
+              </li>
+              <li>
+                <a href="../guides/8_8_1.html"
+>SQLite Release 3.8.8.1 On 2015-01-20</a>
+              </li>
+              <li>
+                <a href="../guides/8_8_2.html"
+>SQLite Release 3.8.8.2 On 2015-01-30</a>
+              </li>
+              <li>
+                <a href="../guides/8_8_3.html"
+>SQLite Release 3.8.8.3 On 2015-02-25</a>
+              </li>
+              <li>
+                <a href="../guides/8_9.html"
+>SQLite Release 3.8.9 On 2015-04-08</a>
+              </li>
+              <li>
+                <a href="../guides/9_0.html"
+>SQLite Release 3.9.0 On 2015-10-14</a>
+              </li>
+              <li>
+                <a href="../guides/9_1.html"
+>SQLite Release 3.9.1 On 2015-10-16</a>
+              </li>
+              <li>
+                <a href="../guides/9_2.html"
+>SQLite Release 3.9.2 On 2015-11-02</a>
+              </li>
+              <li>
+                <a href="../guides/9_3.html"
+>SQLite Release 3.9.3 On 2016-04-01</a>
+              </li>
+              <li>
+                <a href="../guides/requirements.html"
+>SQLite Requirements</a>
+              </li>
+              <li>
+                <a href="../guides/sharedcache.html"
+class="is-current" aria-current="page">SQLite Shared-Cache Mode</a>
+              </li>
+              <li>
+                <a href="../guides/sitemap.html"
+>SQLite Site Map</a>
+              </li>
+              <li>
+                <a href="../guides/support.html"
+>SQLite Support Options</a>
+              </li>
+              <li>
+                <a href="../guides/aggregate-function-invocation.html"
+>SQLite Syntax: aggregate-function-invocation</a>
+              </li>
+              <li>
+                <a href="../guides/alter-table-stmt.html"
+>SQLite Syntax: alter-table-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/analyze-stmt.html"
+>SQLite Syntax: analyze-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/attach-stmt.html"
+>SQLite Syntax: attach-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/begin-stmt.html"
+>SQLite Syntax: begin-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/column-constraint.html"
+>SQLite Syntax: column-constraint</a>
+              </li>
+              <li>
+                <a href="../guides/column-def.html"
+>SQLite Syntax: column-def</a>
+              </li>
+              <li>
+                <a href="../guides/column-name-list.html"
+>SQLite Syntax: column-name-list</a>
+              </li>
+              <li>
+                <a href="../guides/comment-syntax.html"
+>SQLite Syntax: comment-syntax</a>
+              </li>
+              <li>
+                <a href="../guides/commit-stmt.html"
+>SQLite Syntax: commit-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/common-table-expression.html"
+>SQLite Syntax: common-table-expression</a>
+              </li>
+              <li>
+                <a href="../guides/compound-operator.html"
+>SQLite Syntax: compound-operator</a>
+              </li>
+              <li>
+                <a href="../guides/compound-select-stmt.html"
+>SQLite Syntax: compound-select-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/conflict-clause.html"
+>SQLite Syntax: conflict-clause</a>
+              </li>
+              <li>
+                <a href="../guides/create-index-stmt.html"
+>SQLite Syntax: create-index-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/create-table-stmt.html"
+>SQLite Syntax: create-table-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/create-trigger-stmt.html"
+>SQLite Syntax: create-trigger-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/create-view-stmt.html"
+>SQLite Syntax: create-view-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/create-virtual-table-stmt.html"
+>SQLite Syntax: create-virtual-table-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/cte-table-name.html"
+>SQLite Syntax: cte-table-name</a>
+              </li>
+              <li>
+                <a href="../guides/delete-stmt.html"
+>SQLite Syntax: delete-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/delete-stmt-limited.html"
+>SQLite Syntax: delete-stmt-limited</a>
+              </li>
+              <li>
+                <a href="../guides/detach-stmt.html"
+>SQLite Syntax: detach-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/drop-index-stmt.html"
+>SQLite Syntax: drop-index-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/drop-table-stmt.html"
+>SQLite Syntax: drop-table-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/drop-trigger-stmt.html"
+>SQLite Syntax: drop-trigger-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/drop-view-stmt.html"
+>SQLite Syntax: drop-view-stmt</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">SQLite Shared-Cache Mode</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/sharedcache.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#11-use-of-shared-cache-is-discouraged">1.1. Use of shared-cache is discouraged#</a></li>
+              <li class="lvl-2"><a href="#21-transaction-level-locking">2.1. Transaction Level Locking#</a></li>
+              <li class="lvl-2"><a href="#22-table-level-locking">2.2. Table Level Locking#</a></li>
+              <li class="lvl-3"><a href="#221-read-uncommitted-isolation-mode">2.2.1. Read-Uncommitted Isolation Mode#</a></li>
+              <li class="lvl-2"><a href="#23-schema-sqlite_schema-level-locking">2.3. Schema (sqlite_schema) Level Locking#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p><span id="sqlite_shared_cache_mode"></span></p>
+<h1 id="1-sqlite-shared-cache-mode">1. SQLite Shared-Cache Mode<a class="headerlink" href="#1-sqlite-shared-cache-mode" title="Permanent link">#</a></h1>
+<p>Starting with <a href="releaselog/3_3_0.html">version 3.3.0</a> (2006-01-11), SQLite includes a special "shared-cache" mode (disabled by default) intended for use in embedded servers. If shared-cache mode is enabled and a thread establishes multiple connections to the same database, the connections share a single data and schema cache. This can significantly reduce the quantity of memory and IO required by the system.</p>
+<p>In <a href="releaselog/3_5_0.html">version 3.5.0</a> (2007-09-04), shared-cache mode was modified so that the same cache can be shared across an entire process rather than just within a single thread. Prior to this change, there were restrictions on passing database connections between threads. Those restrictions were dropped in 3.5.0 update. This document describes shared-cache mode as of version 3.5.0.</p>
+<p>Shared-cache mode changes the semantics of the locking model in some cases. The details are described by this document. A basic understanding of the normal SQLite locking model (see <a href="lockingv3.html">File Locking And Concurrency In SQLite Version 3</a> for details) is assumed.</p>
+<p><span id="dontuse"></span></p>
+<h2 id="11-use-of-shared-cache-is-discouraged">1.1. Use of shared-cache is discouraged<a class="headerlink" href="#11-use-of-shared-cache-is-discouraged" title="Permanent link">#</a></h2>
+<p>Shared-cache mode is an obsolete feature. The use of shared-cache mode is discouraged. Most use cases for shared-cache are better served by <a href="wal.html">WAL mode</a>.</p>
+<p>Shared-cache mode was invented in 2006 at the request of developers of <a href="https://en.wikipedia.org/wiki/Symbian" rel="noopener" target="_blank">Symbian</a>. Their problem was that if the contacts database on the phone was being synced, that would lock the database file. Then if a call came in, the database lock would prevent them from querying the contacts database in order to find the appropriate ring-tone for the incoming call, or a photo of the caller to show on screen, and so forth. <a href="wal.html">WAL mode</a> (circa 2010) is a better solution to this problem as it permits simultaneous access without breaking transaction isolation.</p>
+<p>Applications that build their own copy of SQLite from source code are encouraged to use the <a href="compile.html#omit_shared_cache">-DSQLITE_OMIT_SHARED_CACHE</a> compile-time option, as the resulting binary will be both smaller and faster.</p>
+<p>The shared-cache interfaces described here will continue to be supported in SQLite, to insure full backwards compatibility. However, the use of shared-cache is discouraged.</p>
+<h1 id="2-shared-cache-locking-model">2. Shared-Cache Locking Model<a class="headerlink" href="#2-shared-cache-locking-model" title="Permanent link">#</a></h1>
+<p>Externally, from the point of view of another process or thread, two or more <a href="c3ref/sqlite3.html">database connections</a> using a shared-cache appear as a single connection. The locking protocol used to arbitrate between multiple shared-caches or regular database users is described elsewhere.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="" src="images/shared.gif"></td>
+</tr>
+</tbody>
+</table>
+<p>Figure 1</p>
+<p>Figure 1 depicts an example runtime configuration where three database connections have been established. Connection 1 is a normal SQLite database connection. Connections 2 and 3 share a cache The normal locking protocol is used to serialize database access between connection 1 and the shared cache. The internal protocol used to serialize (or not, see "Read-Uncommitted Isolation Mode" below) access to the shared-cache by connections 2 and 3 is described in the remainder of this section.</p>
+<p>There are three levels to the shared-cache locking model, transaction level locking, table level locking and schema level locking. They are described in the following three sub-sections.</p>
+<h2 id="21-transaction-level-locking">2.1. Transaction Level Locking<a class="headerlink" href="#21-transaction-level-locking" title="Permanent link">#</a></h2>
+<p>SQLite connections can open two kinds of transactions, read and write transactions. This is not done explicitly, a transaction is implicitly a read-transaction until it first writes to a database table, at which point it becomes a write-transaction.</p>
+<p>At most one connection to a single shared cache may open a write transaction at any one time. This may co-exist with any number of read transactions.</p>
+<h2 id="22-table-level-locking">2.2. Table Level Locking<a class="headerlink" href="#22-table-level-locking" title="Permanent link">#</a></h2>
+<p>When two or more connections use a shared-cache, locks are used to serialize concurrent access attempts on a per-table basis. Tables support two types of locks, "read-locks" and "write-locks". Locks are granted to connections - at any one time, each database connection has either a read-lock, write-lock or no lock on each database table.</p>
+<p>At any one time, a single table may have any number of active read-locks or a single active write lock. To read data from a table, a connection must first obtain a read-lock. To write to a table, a connection must obtain a write-lock on that table. If a required table lock cannot be obtained, the query fails and SQLITE_LOCKED is returned to the caller.</p>
+<p>Once a connection obtains a table lock, it is not released until the current transaction (read or write) is concluded.</p>
+<h3 id="221-read-uncommitted-isolation-mode">2.2.1. Read-Uncommitted Isolation Mode<a class="headerlink" href="#221-read-uncommitted-isolation-mode" title="Permanent link">#</a></h3>
+<p>The behaviour described above may be modified slightly by using the <a href="pragma.html#pragma_read_uncommitted">read_uncommitted</a> pragma to change the isolation level from serialized (the default), to read-uncommitted.</p>
+<p>A database connection in read-uncommitted mode does not attempt to obtain read-locks before reading from database tables as described above. This can lead to inconsistent query results if another database connection modifies a table while it is being read, but it also means that a read-transaction opened by a connection in read-uncommitted mode can neither block nor be blocked by any other connection.</p>
+<p>Read-uncommitted mode has no effect on the locks required to write to database tables (i.e. read-uncommitted connections must still obtain write-locks and hence database writes may still block or be blocked). Also, read-uncommitted mode has no effect on the <a href="schematab.html">sqlite_schema</a> locks required by the rules enumerated below (see section "Schema (sqlite_schema) Level Locking").</p>
+<blockquote>
+<p>\
+  /* Set the value of the read-uncommitted flag:\
+  **\
+  **   True  -&gt; Set the connection to read-uncommitted mode.\
+  **   False -&gt; Set the connection to serialized (the default) mode.\
+  */\
+  PRAGMA read_uncommitted = \&lt;boolean&gt;;\
+\
+  /* Retrieve the current value of the read-uncommitted flag */\
+  PRAGMA read_uncommitted;\</p>
+</blockquote>
+<h2 id="23-schema-sqlite_schema-level-locking">2.3. Schema (sqlite_schema) Level Locking<a class="headerlink" href="#23-schema-sqlite_schema-level-locking" title="Permanent link">#</a></h2>
+<p>The <a href="schematab.html">sqlite_schema table</a> supports shared-cache read and write locks in the same way as all other database tables (see description above). The following special rules also apply:</p>
+<ul>
+<li>A connection must obtain a read-lock on <em>sqlite_schema</em> before accessing any database tables or obtaining any other read or write locks.</li>
+<li>Before executing a statement that modifies the database schema (i.e. a CREATE or DROP TABLE statement), a connection must obtain a write-lock on <em>sqlite_schema</em>.</li>
+<li>A connection may not compile an SQL statement if any other connection is holding a write-lock on the <em>sqlite_schema</em> table of any attached database (including the default database, "main").</li>
+</ul>
+<h1 id="3-thread-related-issues">3. Thread Related Issues<a class="headerlink" href="#3-thread-related-issues" title="Permanent link">#</a></h1>
+<p>In SQLite versions 3.3.0 through 3.4.2 when shared-cache mode is enabled, a database connection may only be used by the thread that called <a href="c3ref/open.html">sqlite3_open()</a> to create it. And a connection could only share cache with another connection in the same thread. These restrictions were dropped beginning with SQLite <a href="releaselog/3_5_0.html">version 3.5.0</a> (2007-09-04).</p>
+<h1 id="4-shared-cache-and-virtual-tables">4. Shared Cache And Virtual Tables<a class="headerlink" href="#4-shared-cache-and-virtual-tables" title="Permanent link">#</a></h1>
+<p>In older versions of SQLite, shared cache mode could not be used together with virtual tables. This restriction was removed in SQLite <a href="releaselog/3_6_17.html">version 3.6.17</a> (2009-08-10).</p>
+<h1 id="5-enabling-shared-cache-mode">5. Enabling Shared-Cache Mode<a class="headerlink" href="#5-enabling-shared-cache-mode" title="Permanent link">#</a></h1>
+<p>Shared-cache mode is enabled on a per-process basis. Using the C interface, the following API can be used to globally enable or disable shared-cache mode:</p>
+<blockquote>
+<p>\
+int sqlite3_enable_shared_cache(int);\</p>
+</blockquote>
+<p>Each call to <a href="c3ref/enable_shared_cache.html">sqlite3_enable_shared_cache()</a> affects subsequent database connections created using <a href="c3ref/open.html">sqlite3_open()</a>, <a href="c3ref/open.html">sqlite3_open16()</a>, or <a href="c3ref/open.html">sqlite3_open_v2()</a>. Database connections that already exist are unaffected. Each call to <a href="c3ref/enable_shared_cache.html">sqlite3_enable_shared_cache()</a> overrides all previous calls within the same process.</p>
+<p>Individual database connections created using <a href="c3ref/open.html">sqlite3_open_v2()</a> can choose to participate or not participate in shared cache mode by using the <a href="c3ref/c_open_autoproxy.html">SQLITE_OPEN_SHAREDCACHE</a> or <a href="c3ref/c_open_autoproxy.html">SQLITE_OPEN_PRIVATECACHE</a> flags for the third parameter. The use of either of these flags overrides the global shared cache mode setting established by <a href="c3ref/enable_shared_cache.html">sqlite3_enable_shared_cache()</a>. No more than one of the flags should be used; if both SQLITE_OPEN_SHAREDCACHE and SQLITE_OPEN_PRIVATECACHE flags are used in the third argument to <a href="c3ref/open.html">sqlite3_open_v2()</a> then the behavior is undefined.</p>
+<p>When <a href="uri.html">URI filenames</a> are used, the "cache" query parameter can be used to specify whether or not the database will use shared cache. Use "cache=shared" to enable shared cache and "cache=private" to disable shared cache. The ability to use URI query parameters to specify the cache sharing behavior of a database connection allows cache sharing to be controlled in <a href="lang_attach.html">ATTACH</a> statements. For example:</p>
+<blockquote>
+<p>\
+ATTACH 'file:aux.db?cache=shared' AS aux;\</p>
+</blockquote>
+<p><span id="inmemsharedcache"></span></p>
+<h1 id="6-shared-cache-and-in-memory-databases">6. Shared Cache And In-Memory Databases<a class="headerlink" href="#6-shared-cache-and-in-memory-databases" title="Permanent link">#</a></h1>
+<p>Beginning with SQLite <a href="releaselog/3_7_13.html">version 3.7.13</a> (2012-06-11), shared cache can be used on <a href="inmemorydb.html">in-memory databases</a>, provided that the database is created using a <a href="uri.html">URI filename</a>. For backwards compatibility, shared cache is always disabled for in-memory databases if the unadorned name ":memory:" is used to open the database. Prior to version 3.7.13, shared cache was always disabled for in-memory databases regardless of the database name used, current system shared cache setting, or query parameters or flags.</p>
+<p>Enabling shared-cache for an in-memory database allows two or more database connections in the same process to have access to the same in-memory database. An in-memory database in shared cache is automatically deleted and memory is reclaimed when the last connection to that database closes.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/requirements.html">
+          <span class="muted">Anterior</span>SQLite Requirements
+        </a>
+        <a class="pager-next" href="../guides/sitemap.html">
+          <span class="muted">Siguiente</span>SQLite Site Map
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

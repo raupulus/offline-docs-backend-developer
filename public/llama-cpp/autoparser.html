@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto-Parser Architecture · llama.cpp</title>
+<meta name="description" content="Auto-Parser Architecture - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/llama-cpp/autoparser.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Auto-Parser Architecture">
+<meta property="og:description" content="Auto-Parser Architecture - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Auto-Parser Architecture">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Auto-Parser Architecture",
+"url": "https://docs.raupulus.dev/llama-cpp/autoparser.html",  "description": "Auto-Parser Architecture - Documentación técnica de llama.cpp en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">llama.cpp</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="llama-cpp" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en llama.cpp…"
+         aria-label="Buscar en llama.cpp" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de llama.cpp
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de llama.cpp">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./backend/blis.html">Backend</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./development/howto-add-model.html">Development</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./multimodal/mobilevlm.html">Multimodal</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Llama.Cpp
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./android.html"
+>Android</a>
+              </li>
+              <li>
+                <a href="./autoparser.html"
+class="is-current" aria-current="page">Auto-Parser Architecture</a>
+              </li>
+              <li>
+                <a href="./build-profiling.html"
+>Build profiling</a>
+              </li>
+              <li>
+                <a href="./build-riscv64-spacemit.html"
+>Build riscv64 spacemit</a>
+              </li>
+              <li>
+                <a href="./build-s390x.html"
+>Build llama.cpp locally (for s390x)</a>
+              </li>
+              <li>
+                <a href="./build.html"
+>Build llama.cpp locally</a>
+              </li>
+              <li>
+                <a href="./completions.html"
+>Completions</a>
+              </li>
+              <li>
+                <a href="./docker.html"
+>Docker</a>
+              </li>
+              <li>
+                <a href="./function-calling.html"
+>Function Calling</a>
+              </li>
+              <li>
+                <a href="./install.html"
+>Install pre-built version of llama.cpp</a>
+              </li>
+              <li>
+                <a href="./llguidance.html"
+>LLGuidance Support in llama.cpp</a>
+              </li>
+              <li>
+                <a href="./models.html"
+>Obtaining and quantizing models</a>
+              </li>
+              <li>
+                <a href="./multi-gpu.html"
+>Using multiple GPUs with llama.cpp</a>
+              </li>
+              <li>
+                <a href="./multimodal.html"
+>Multimodal</a>
+              </li>
+              <li>
+                <a href="./ops.html"
+>GGML Operations</a>
+              </li>
+              <li>
+                <a href="./preset.html"
+>llama.cpp INI Presets</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release process</a>
+              </li>
+              <li>
+                <a href="./speculative.html"
+>Speculative Decoding</a>
+              </li>
+              <li>
+                <a href="./xcframework.html"
+>XCFramework</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Auto-Parser Architecture</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/llama-cpp.md" download="llama-cpp.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de llama.cpp en un solo archivo Markdown">Bundle .md (482 KB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#overview">Overview#</a></li>
+              <li class="lvl-2"><a href="#data-structures">Data Structures#</a></li>
+              <li class="lvl-3"><a href="#top-level-autoparser-main-analyzer-and-generator">Top-Level: autoparser (main analyzer and generator)#</a></li>
+              <li class="lvl-3"><a href="#analyze_reasoning">analyze_reasoning#</a></li>
+              <li class="lvl-3"><a href="#analyze_content">analyze_content#</a></li>
+              <li class="lvl-3"><a href="#analyze_tools-and-its-sub-structs">analyze_tools and its sub-structs#</a></li>
+              <li class="lvl-3"><a href="#enums">Enums#</a></li>
+              <li class="lvl-2"><a href="#tool-calling-formats">Tool Calling Formats#</a></li>
+              <li class="lvl-3"><a href="#json_native">JSON_NATIVE#</a></li>
+              <li class="lvl-3"><a href="#tag_with_json">TAG_WITH_JSON#</a></li>
+              <li class="lvl-3"><a href="#tag_with_tagged">TAG_WITH_TAGGED#</a></li>
+              <li class="lvl-2"><a href="#analysis-flow">Analysis Flow#</a></li>
+              <li class="lvl-2"><a href="#entry-point">Entry Point#</a></li>
+              <li class="lvl-2"><a href="#algorithm-details">Algorithm Details#</a></li>
+              <li class="lvl-3"><a href="#core-mechanism-differential-comparison">Core Mechanism: Differential Comparison#</a></li>
+              <li class="lvl-3"><a href="#phase-1-reasoning-analysis">Phase 1: Reasoning Analysis#</a></li>
+              <li class="lvl-3"><a href="#phase-2-content-analysis">Phase 2: Content Analysis#</a></li>
+              <li class="lvl-3"><a href="#phase-3-tool-call-analysis">Phase 3: Tool Call Analysis#</a></li>
+              <li class="lvl-3"><a href="#workarounds">Workarounds#</a></li>
+              <li class="lvl-3"><a href="#parser-building">Parser Building#</a></li>
+              <li class="lvl-2"><a href="#mapper">Mapper#</a></li>
+              <li class="lvl-2"><a href="#files">Files#</a></li>
+              <li class="lvl-2"><a href="#testing-debugging">Testing &amp; Debugging#</a></li>
+              <li class="lvl-3"><a href="#debug-tools">Debug Tools#</a></li>
+              <li class="lvl-3"><a href="#tested-templates">Tested Templates#</a></li>
+              <li class="lvl-2"><a href="#adding-support-for-new-templates">Adding Support for New Templates#</a></li>
+              <li class="lvl-2"><a href="#edge-cases-and-quirks">Edge Cases and Quirks#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="auto-parser-architecture">Auto-Parser Architecture<a class="headerlink" href="#auto-parser-architecture" title="Permanent link">#</a></h1>
+<p>The auto-parser automatically analyzes chat templates to determine how to parse model outputs, including content, reasoning, and tool calls.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
+<p>The unified auto-parser uses a pure differential, compositional approach (inspired by the <code>git diff</code> algorithm) to analyze chat templates:</p>
+<p><strong>Core Philosophy</strong>:</p>
+<ul>
+<li><strong>Minimize Hardcoded Patterns</strong>: All markers extracted through template comparison (the only heuristic is JSON detection to distinguish <code>JSON_NATIVE</code> from tag-based formats)</li>
+<li><strong>Compositional Architecture</strong>: Separate analyzer structs for reasoning, content, and tools — each responsible for its own analysis and parser construction</li>
+</ul>
+<p><strong>Analysis + Parser Building in Two Steps</strong>:</p>
+<ol>
+<li><code>autoparser::autoparser tmpl_analysis(tmpl)</code> — runs all differential comparisons and populates the analysis structs</li>
+<li><code>autoparser::peg_generator::generate_parser(tmpl, generation_params, tmpl_analysis)</code> — uses the analysis to build a PEG parser and optional GBNF grammar</li>
+</ol>
+<h2 id="data-structures">Data Structures<a class="headerlink" href="#data-structures" title="Permanent link">#</a></h2>
+<p>All structs are defined in <a href="common/chat-auto-parser.h">common/chat-auto-parser.h</a>.</p>
+<h3 id="top-level-autoparser-main-analyzer-and-generator">Top-Level: <code>autoparser</code> (main analyzer and generator)<a class="headerlink" href="#top-level-autoparser-main-analyzer-and-generator" title="Permanent link">#</a></h3>
+<p><a href="common/chat-auto-parser.h#L367-L388">common/chat-auto-parser.h:367-388</a> — top-level analysis result aggregating <code>jinja_caps</code>, <code>reasoning</code>, <code>content</code>, and <code>tools</code> sub-analyses, plus <code>preserved_tokens</code> (union of all non-empty markers).</p>
+<h3 id="analyze_reasoning"><code>analyze_reasoning</code><a class="headerlink" href="#analyze_reasoning" title="Permanent link">#</a></h3>
+<p><a href="common/chat-auto-parser.h#L254-L274">common/chat-auto-parser.h:254-274</a> — reasoning analysis result: <code>mode</code> enum, <code>start</code> marker (e.g. <code>&lt;think&gt;</code>), and <code>end</code> marker (e.g. <code>&lt;/think&gt;</code>).</p>
+<h3 id="analyze_content"><code>analyze_content</code><a class="headerlink" href="#analyze_content" title="Permanent link">#</a></h3>
+<p><a href="common/chat-auto-parser.h#L280-L295">common/chat-auto-parser.h:280-295</a> — content analysis result: <code>mode</code> enum, <code>start</code>/<code>end</code> markers, and <code>requires_nonnull_content</code> flag.</p>
+<h3 id="analyze_tools-and-its-sub-structs"><code>analyze_tools</code> and its sub-structs<a class="headerlink" href="#analyze_tools-and-its-sub-structs" title="Permanent link">#</a></h3>
+<ul>
+<li><a href="common/chat-auto-parser.h#L176-L194">common/chat-auto-parser.h:176-194</a> — <code>tool_format_analysis</code>: <code>mode</code> enum, <code>section_start/end</code>, <code>per_call_start/end</code>, JSON field names (<code>function_field</code>, <code>name_field</code>, <code>args_field</code>, <code>id_field</code>, <code>gen_id_field</code>), and format flags (<code>fun_name_is_key</code>, <code>tools_array_wrapped</code>)</li>
+<li><a href="common/chat-auto-parser.h#L196-L200">common/chat-auto-parser.h:196-200</a> — <code>tool_function_analysis</code>: <code>name_prefix</code>, <code>name_suffix</code>, <code>close</code> markers around function names</li>
+<li><a href="common/chat-auto-parser.h#L202-L210">common/chat-auto-parser.h:202-210</a> — <code>tool_arguments_analysis</code>: <code>start/end</code> container markers, <code>name_prefix/suffix</code>, <code>value_prefix/suffix</code>, <code>separator</code></li>
+<li><a href="common/chat-auto-parser.h#L212-L217">common/chat-auto-parser.h:212-217</a> — <code>tool_id_analysis</code>: <code>pos</code> enum, <code>prefix</code>/<code>suffix</code> markers around call ID values</li>
+<li><a href="common/chat-auto-parser.h#L301-L361">common/chat-auto-parser.h:301-361</a> — <code>analyze_tools</code>: aggregates the four sub-structs above</li>
+</ul>
+<h3 id="enums">Enums<a class="headerlink" href="#enums" title="Permanent link">#</a></h3>
+<p><strong><code>reasoning_mode</code></strong>: How the template handles reasoning/thinking blocks.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NONE</code></td>
+<td>No reasoning markers detected</td>
+</tr>
+<tr>
+<td><code>TAG_BASED</code></td>
+<td>Tag-based: <code>&lt;think&gt;...&lt;/think&gt;</code> (start can be empty for delimiter-style formats)</td>
+</tr>
+<tr>
+<td><code>TOOLS_ONLY</code></td>
+<td>Reasoning only appears in tool call responses, not plain content</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Generation Prompt &amp; Reasoning Prefill</strong>: Computed in <code>common_chat_templates_apply_jinja</code> before invoking either the specialized handlers or the auto-parser, by rendering the template twice — once with <code>add_generation_prompt=false</code> and once with <code>add_generation_prompt=true</code> — and storing the diff suffix as <code>generation_params::generation_prompt</code>. This string is propagated into <code>common_chat_params::generation_prompt</code> and <code>common_chat_parser_params::generation_prompt</code>.</p>
+<p>The generation prompt is prepended to model output before PEG parsing via <code>wrap_for_generation_prompt()</code>. The portion <em>before</em> the reasoning start marker (if any) is prepended as a literal to ensure any boilerplate added by the template is consumed. The full string is also fed to the grammar sampler via <code>llama_sampler_accept</code> (stored in <code>common_params_sampling::grammar_prefill</code>), advancing the grammar past tokens already in the prompt. It is used to determine the reasoning budget sampler's initial state — COUNTING if the prefill tokens begin with the reasoning start sequence (but don't also contain the end sequence), IDLE otherwise.</p>
+<p><strong><code>grammar_prefill</code></strong> (<code>common_params_sampling</code>): The generation prompt string tokenized and accepted by the grammar sampler at init time. Only applied when <code>grammar_external</code> is false (i.e., the grammar was not set explicitly by the user).</p>
+<p>Three outcomes for reasoning-prefill handling (in <code>generate_parser()</code>):</p>
+<ol>
+<li><strong>Start+end in generation prompt</strong> (e.g. <code>&lt;think&gt;&lt;/think&gt;\n</code>): the parser sees reasoning as opened and immediately closed; whitespace-only reasoning content is discarded.</li>
+<li><strong>Only start in generation prompt</strong> (e.g. <code>&lt;think&gt;\n</code>): the parser sees reasoning as already open.</li>
+<li><strong>Start marker present but not at the end</strong> (e.g. Apriel's <code>&lt;|begin_assistant|&gt;</code> followed by boilerplate): the marker is a template artifact; the start literal is cleared so reasoning uses delimiter-style (end-only). For templates that ignore <code>add_generation_prompt</code> (empty diff), the rendered <code>data.prompt</code> is used as fallback — but only for non-TOOLS_ONLY modes, since in TOOLS_ONLY the start tag is model-generated and may appear in prior conversation turns.</li>
+</ol>
+<p><strong><code>content_mode</code></strong>: How the template wraps assistant content.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PLAIN</code></td>
+<td>No content markers</td>
+</tr>
+<tr>
+<td><code>ALWAYS_WRAPPED</code></td>
+<td>Content always wrapped: <code>&lt;response&gt;...&lt;/response&gt;</code></td>
+</tr>
+<tr>
+<td><code>WRAPPED_WITH_REASONING</code></td>
+<td>Content wrapped only when reasoning is present</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>tool_format</code></strong>: Classification of tool call structure.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NONE</code></td>
+<td>No tool support detected</td>
+</tr>
+<tr>
+<td><code>JSON_NATIVE</code></td>
+<td>Pure JSON: <code>{"name": "X", "arguments": {...}}</code></td>
+</tr>
+<tr>
+<td><code>TAG_WITH_JSON</code></td>
+<td>Tag-based with JSON args: <code>&lt;function=X&gt;{...}&lt;/function&gt;</code></td>
+</tr>
+<tr>
+<td><code>TAG_WITH_TAGGED</code></td>
+<td>Tag-based with tagged args: <code>&lt;param=key&gt;value&lt;/param&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>call_id_position</code></strong>: Where call IDs appear in tag-based formats.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NONE</code></td>
+<td>No call ID support detected</td>
+</tr>
+<tr>
+<td><code>PRE_FUNC_NAME</code></td>
+<td>Before function name</td>
+</tr>
+<tr>
+<td><code>BETWEEN_FUNC_AND_ARGS</code></td>
+<td>Between function name and arguments</td>
+</tr>
+<tr>
+<td><code>POST_ARGS</code></td>
+<td>After arguments</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tool-calling-formats">Tool Calling Formats<a class="headerlink" href="#tool-calling-formats" title="Permanent link">#</a></h2>
+<h3 id="json_native">JSON_NATIVE<a class="headerlink" href="#json_native" title="Permanent link">#</a></h3>
+<p><strong>Structure</strong>: The entire tool call (function name, arguments, values) is in JSON format. Optional enclosing tags around the section.</p>
+<p><strong>Detection</strong>: Function name appears inside a JSON structure (quotes preceded by <code>{</code> or <code>:</code>).</p>
+<p><strong>Examples</strong>:</p>
+<p>Standard OpenAI-style:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">&lt;</span><span class="kc">t</span><span class="err">ool_call&gt;</span>
+<span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;get_weather&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Paris&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;celsius&quot;</span><span class="p">}}</span>
+<span class="err">&lt;/</span><span class="kc">t</span><span class="err">ool_call&gt;</span>
+</code></pre></div>
+
+<p>Mistral Nemo with array wrapper:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">[</span><span class="err">TOOL_CALLS</span><span class="p">]</span>
+<span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;calculate&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;expr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2+2&quot;</span><span class="p">}}]</span>
+</code></pre></div>
+
+<p>Function name as JSON key (Apertus style):</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;get_weather&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Paris&quot;</span><span class="p">}}</span>
+</code></pre></div>
+
+<hr>
+<h3 id="tag_with_json">TAG_WITH_JSON<a class="headerlink" href="#tag_with_json" title="Permanent link">#</a></h3>
+<p><strong>Structure</strong>: Function name is outside JSON, in tag attributes or XML-style tags. Arguments are a JSON object.</p>
+<p><strong>Detection</strong>: Function name not in JSON, but argument names appear in JSON context.</p>
+<p><strong>Examples</strong>:</p>
+<p>Functionary v3.1:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&lt;function</span><span class="err">=get_weather</span><span class="nt">&gt;</span>{&quot;location&quot;:<span class="w"> </span>&quot;Paris&quot;,<span class="w"> </span>&quot;unit&quot;:<span class="w"> </span>&quot;celsius&quot;}<span class="nt">&lt;/function&gt;</span>
+</code></pre></div>
+
+<p>MiniMax:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&lt;minimax:tool_call&gt;</span>
+<span class="nt">&lt;tool_name&gt;</span>calculate<span class="nt">&lt;/tool_name&gt;</span>
+<span class="nt">&lt;arguments&gt;</span>{&quot;expr&quot;:<span class="w"> </span>&quot;2+2&quot;}<span class="nt">&lt;/arguments&gt;</span>
+<span class="nt">&lt;/minimax:tool_call&gt;</span>
+</code></pre></div>
+
+<hr>
+<h3 id="tag_with_tagged">TAG_WITH_TAGGED<a class="headerlink" href="#tag_with_tagged" title="Permanent link">#</a></h3>
+<p><strong>Structure</strong>: Both function name and argument names are in XML-style tags. String values are unquoted; non-string values are JSON-formatted.</p>
+<p><strong>Detection</strong>: Neither function name nor argument names appear in a JSON context.</p>
+<p><strong>Examples</strong>:</p>
+<p>Qwen/Hermes XML format:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&lt;function</span><span class="err">=get_weather</span><span class="nt">&gt;</span>
+<span class="nt">&lt;param</span><span class="err">=location</span><span class="nt">&gt;</span>Paris<span class="nt">&lt;/param&gt;</span>
+<span class="nt">&lt;param</span><span class="err">=unit</span><span class="nt">&gt;</span>celsius<span class="nt">&lt;/param&gt;</span>
+<span class="nt">&lt;/function&gt;</span>
+</code></pre></div>
+
+<p>Mixed types:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&lt;function</span><span class="err">=calculate</span><span class="nt">&gt;</span>
+<span class="nt">&lt;param</span><span class="err">=expr</span><span class="nt">&gt;</span>2+2<span class="nt">&lt;/param&gt;</span>
+<span class="nt">&lt;param</span><span class="err">=precision</span><span class="nt">&gt;</span>2<span class="nt">&lt;/param&gt;</span>
+<span class="nt">&lt;param</span><span class="err">=options</span><span class="nt">&gt;</span>{&quot;round&quot;:<span class="w"> </span>true}<span class="nt">&lt;/param&gt;</span>
+<span class="nt">&lt;/function&gt;</span>
+</code></pre></div>
+
+<p>String values (<code>Paris</code>, <code>celsius</code>, <code>2+2</code>) are unquoted; <code>options</code> (object type) is JSON-formatted.</p>
+<hr>
+<h2 id="analysis-flow">Analysis Flow<a class="headerlink" href="#analysis-flow" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>autoparser::autoparser(tmpl)
+    |
+    |-- Phase 1: analyze_reasoning(tmpl, jinja_caps.supports_tool_calls)
+    |     |-- R1: compare_reasoning_presence()   — with/without reasoning_content field
+    |     |-- R2: compare_thinking_enabled()     — enable_thinking=false vs true
+    |     &#39;-- R3: compare_reasoning_scope()      — reasoning+content vs reasoning+tools
+    |           (only if supports_tool_calls)
+    |
+    |-- Phase 2: analyze_content(tmpl, reasoning)
+    |     &#39;-- C1: compares content-only vs tools output and content-only vs reasoning output
+    |
+    |-- Phase 3: analyze_tools(tmpl, jinja_caps, reasoning)
+    |     (skipped entirely if !jinja_caps.supports_tool_calls)
+    |     |
+    |     |-- T1: analyze_tool_calls()           — no tools vs with tools; classifies format
+    |     |         |-- JSON path → analyze_tool_call_format_json_native()
+    |     |         &#39;-- tag path → analyze_tool_call_format_non_json()
+    |     |
+    |     (if format != NONE and format != JSON_NATIVE:)
+    |     |
+    |     |-- T2: check_per_call_markers()       — 1 call vs 2 calls; moves section→per-call if needed
+    |     |         (only if supports_parallel_tool_calls)
+    |     |
+    |     |-- T3: extract_function_markers()     — func_alpha vs func_beta; extracts name prefix/suffix/close
+    |     |
+    |     |-- T4: analyze_arguments()            — (TAG_WITH_TAGGED only)
+    |     |         |-- A1: extract_argument_name_markers()   — arg_name_A vs arg_name_B
+    |     |         &#39;-- A2: extract_argument_value_markers()  — value &quot;XXXX&quot; vs &quot;YYYY&quot;
+    |     |
+    |     |-- T5: extract_argument_separator()   — 1 arg vs 2 args; finds separator between args
+    |     |
+    |     |-- T6: extract_args_markers()         — 0 args vs 1 arg; finds args container markers
+    |     |
+    |     &#39;-- T7: extract_call_id_markers()      — call_id &quot;call00001&quot; vs &quot;call99999&quot;
+    |
+    &#39;-- collect_preserved_tokens()               — union of all non-empty markers
+    |
+    &#39;-- apply workarounds()                      — post-hoc patches for edge-case templates
+    |
+    v
+autoparser (analysis result)
+    |
+    v
+autoparser::peg_generator::generate_parser(tmpl, inputs, analysis)
+    |-- analysis.build_parser(inputs)            — builds PEG parser arena
+    |     |-- reasoning.build_parser(ctx)        — reasoning parser (mode-dependent)
+    |     |-- content.build_parser(ctx)          — content parser (mode-dependent)
+    |     &#39;-- tools.build_parser(ctx)            — tool parser (dispatches by tool_format)
+    |           |-- build_tool_parser_json_native()
+    |           |-- build_tool_parser_tag_json()
+    |           &#39;-- build_tool_parser_tag_tagged()
+    |
+    |-- Build GBNF grammar (if tools present and trigger_marker non-empty)
+    &#39;-- Set grammar_triggers from section_start or per_call_start
+    |
+    v
+common_chat_params (prompt, parser, grammar, triggers, preserved_tokens)
+</code></pre></div>
+
+<h2 id="entry-point">Entry Point<a class="headerlink" href="#entry-point" title="Permanent link">#</a></h2>
+<p>The auto-parser is invoked in <a href="common/chat.cpp#L1280-L1310">common/chat.cpp:1280-1310</a> in <code>common_chat_templates_apply_jinja</code>. A few specialized templates are handled first (Ministral/Magistral Large 3, GPT-OSS with <code>&lt;|channel|&gt;</code>, Functionary v3.2 with <code>&gt;&gt;&gt;all</code>), then the auto-parser handles everything else via <code>autoparser::autoparser</code> + <code>peg_generator::generate_parser</code>.</p>
+<h2 id="algorithm-details">Algorithm Details<a class="headerlink" href="#algorithm-details" title="Permanent link">#</a></h2>
+<h3 id="core-mechanism-differential-comparison">Core Mechanism: Differential Comparison<a class="headerlink" href="#core-mechanism-differential-comparison" title="Permanent link">#</a></h3>
+<p>All analysis phases use the same factorized comparison function declared in <a href="common/chat-auto-parser-helpers.h#L68">common/chat-auto-parser-helpers.h:68</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">compare_variants</span><span class="p">(</span><span class="n">tmpl</span><span class="p">,</span><span class="w"> </span><span class="n">params_A</span><span class="p">,</span><span class="w"> </span><span class="n">params_modifier</span><span class="p">)</span>
+</code></pre></div>
+
+<p>This creates variant B by applying a modifier lambda to a copy of <code>params_A</code>, renders both through the template, and computes a <code>diff_split</code> (<a href="common/chat-auto-parser.h#L28-L37">common/chat-auto-parser.h:28-37</a>):</p>
+<ul>
+<li><code>prefix</code> — common prefix between A and B</li>
+<li><code>suffix</code> — common suffix between A and B</li>
+<li><code>left</code> — unique to variant A</li>
+<li><code>right</code> — unique to variant B</li>
+</ul>
+<p>The diff is computed via <code>calculate_diff_split()</code>, which finds the longest-common-prefix and longest-common-suffix, then iteratively moves incomplete <code>&lt;...&gt;</code> or <code>[...]</code> markers from the prefix/suffix into left/right until stable (tag boundary fixing).</p>
+<p>Text is segmentized into markers and non-marker fragments using <code>segmentize_markers()</code>, which splits on <code>&lt;...&gt;</code> and <code>[...]</code> boundaries.</p>
+<h3 id="phase-1-reasoning-analysis">Phase 1: Reasoning Analysis<a class="headerlink" href="#phase-1-reasoning-analysis" title="Permanent link">#</a></h3>
+<p><strong>R1 — <code>compare_reasoning_presence()</code></strong>: Compares assistant message with vs without a <code>reasoning_content</code> field.</p>
+<ul>
+<li>Searches <code>diff.right</code> (output with reasoning) for the reasoning content needle</li>
+<li>Uses PEG parsers to find surrounding markers:</li>
+<li>If both pre/post markers found in <code>diff.right</code> → <code>TAG_BASED</code></li>
+<li>If both found but post marker only in the full output B → <code>TAG_BASED</code> (template forces markers; handled via prefill)</li>
+<li>If only post marker found → <code>TAG_BASED</code> (delimiter-style, empty start)</li>
+<li>Sets <code>reasoning.start</code> and <code>reasoning.end</code></li>
+</ul>
+<p><strong>R2 — <code>compare_thinking_enabled()</code></strong>: Compares <code>enable_thinking=false</code> vs <code>true</code> with a generation prompt.</p>
+<ul>
+<li>Detects template-added reasoning markers: <code>enable_thinking=true</code> appends a non-empty marker → sets <code>reasoning.start</code>, mode = <code>TAG_BASED</code></li>
+<li>Handles the reverse case (<code>enable_thinking=false</code> appends the marker instead): extracts both start (from the preceding segment) and end markers; mode = <code>TAG_BASED</code></li>
+<li>The reasoning prefill (markers added by the template) is later extracted in <code>common_chat_templates_apply_jinja</code> and prepended to model output before parsing</li>
+</ul>
+<p><strong>R3 — <code>compare_reasoning_scope()</code></strong>: Compares assistant message with reasoning+text-content vs reasoning+tool-calls.</p>
+<ul>
+<li>Only runs if <code>jinja_caps.supports_tool_calls</code></li>
+<li>Detects <code>TOOLS_ONLY</code>: reasoning content present in B (with tools) but not in A (with text content)</li>
+<li>Extracts reasoning markers from the tool call output using PEG parsers</li>
+</ul>
+<h3 id="phase-2-content-analysis">Phase 2: Content Analysis<a class="headerlink" href="#phase-2-content-analysis" title="Permanent link">#</a></h3>
+<p><strong>C1</strong>: Two comparisons in the <code>analyze_content</code> constructor:</p>
+<ul>
+<li>Comparison 1: content-only output vs tool-call output → <code>diff_tools</code></li>
+<li>Comparison 2: content-only output vs reasoning+empty-content output → <code>diff_reasoning</code></li>
+</ul>
+<p>Classification logic:</p>
+<ul>
+<li><code>PLAIN</code>: <code>diff_tools.left</code> equals the response string (content is the entire diff, no wrapper)</li>
+<li><code>ALWAYS_WRAPPED</code>: markers found surrounding the content text in <code>pure_content</code> → extracts <code>start</code>/<code>end</code></li>
+</ul>
+<h3 id="phase-3-tool-call-analysis">Phase 3: Tool Call Analysis<a class="headerlink" href="#phase-3-tool-call-analysis" title="Permanent link">#</a></h3>
+<p><strong>T1 — <code>analyze_tool_calls()</code></strong>: Compares no-tools vs with-tools output.</p>
+<ul>
+<li>Extracts the tool call section as <code>diff.right</code></li>
+<li>Calls <code>analyze_tool_call_format()</code> which first strips reasoning markers from the haystack, then:</li>
+<li>Calls <code>in_json_haystack()</code> for both function name and argument name needles</li>
+<li><code>in_json_haystack()</code> uses a PEG parser to check whether the needle appears in a JSON context (preceded by <code>{</code> or <code>:</code> with surrounding quotes)</li>
+<li>If function name is in JSON → <code>JSON_NATIVE</code> → <code>analyze_tool_call_format_json_native()</code></li>
+<li>If function name not in JSON, arg name is in JSON → <code>TAG_WITH_JSON</code></li>
+<li>If neither in JSON → <code>TAG_WITH_TAGGED</code></li>
+<li><code>analyze_tool_call_format_json_native()</code>: parses the JSON object, matches field values to needles to populate <code>name_field</code>, <code>args_field</code>, <code>id_field</code>, <code>gen_id_field</code>; detects <code>tools_array_wrapped</code>; extracts <code>section_start</code>/<code>section_end</code></li>
+<li><code>analyze_tool_call_format_non_json()</code>: uses PEG parsers on the haystack to find up to two opening markers (section + per-call) then up to two closing markers</li>
+</ul>
+<p><strong>T2 — <code>check_per_call_markers()</code></strong>: Compares 1 call vs 2 calls.</p>
+<ul>
+<li>Computes a secondary diff of the second call portion vs the common suffix</li>
+<li>If the second call content starts with <code>section_start</code> → the section marker is actually per-call → moves <code>section_start/end</code> to <code>per_call_start/end</code> and clears the section markers</li>
+</ul>
+<p><strong>T3 — <code>extract_function_markers()</code></strong>: Compares function name <code>FUN_FIRST</code> vs <code>FUN_SECOND</code> (two different named functions).</p>
+<ul>
+<li>Finds where the function name appears in <code>diff.left</code></li>
+<li>Extracts <code>function.name_prefix</code> from the common prefix up to the function marker, and <code>function.name_suffix</code> from after the name up to the next marker</li>
+<li>Extends <code>name_suffix</code> into <code>diff.suffix</code> (to the first marker for TAG_WITH_TAGGED; to the first <code>{</code> or <code>[</code> for TAG_WITH_JSON)</li>
+<li>Extracts <code>function.close</code> from after the last argument value up to the per-call/section end marker</li>
+</ul>
+<p><strong>T4 — <code>analyze_arguments()</code></strong> (TAG_WITH_TAGGED only):</p>
+<ul>
+<li><strong>A1 <code>extract_argument_name_markers()</code></strong>: Compares <code>arg_name_A</code> vs <code>arg_name_B</code> (two different argument names).</li>
+<li>Finds shared surrounding structure → <code>arguments.name_prefix</code>, <code>arguments.name_suffix</code></li>
+<li><strong>A2 <code>extract_argument_value_markers()</code></strong>: Compares argument value <code>"XXXX"</code> vs <code>"YYYY"</code> (same arg, different value).</li>
+<li>Finds markers surrounding the value → <code>arguments.value_prefix</code>, <code>arguments.value_suffix</code></li>
+</ul>
+<p><strong>T5 — <code>extract_argument_separator()</code></strong>: Compares 1 argument vs 2 arguments (same function).</p>
+<ul>
+<li>Uses <code>until_common_prefix(diff.right, ARG_FIRST, ARG_SECOND)</code> to find what separates the two argument blocks</li>
+</ul>
+<p><strong>T6 — <code>extract_args_markers()</code></strong>: Compares 0 arguments vs 1 argument.</p>
+<ul>
+<li>Uses <code>until_common_prefix()</code> and <code>after_common_suffix()</code> with the empty and single-arg JSON strings as anchors to find container markers (<code>arguments.start</code>, <code>arguments.end</code>)</li>
+</ul>
+<p><strong>T7 — <code>extract_call_id_markers()</code></strong>: Compares call IDs <code>"call00001"</code> vs <code>"call99999"</code>.</p>
+<ul>
+<li>Determines whether function name appears in <code>diff.prefix</code> or <code>diff.suffix</code> to classify position:</li>
+<li>Function name in prefix only → <code>BETWEEN_FUNC_AND_ARGS</code> or <code>POST_ARGS</code> (further distinguished by where <code>{</code> appears)</li>
+<li>Function name in suffix only → <code>PRE_FUNC_NAME</code></li>
+<li>Extracts <code>call_id.prefix</code> and <code>call_id.suffix</code> markers around the call ID value</li>
+<li>Clears <code>per_call_end</code> if it incorrectly incorporated the call ID suffix</li>
+</ul>
+<h3 id="workarounds">Workarounds<a class="headerlink" href="#workarounds" title="Permanent link">#</a></h3>
+<p>A workaround array in <code>common/chat-diff-analyzer.cpp</code> applies post-hoc patches after analysis. Each workaround is a lambda that inspects the template source and overrides analysis results. Current workarounds:</p>
+<ol>
+<li><strong>Old Qwen/DeepSeek thinking templates</strong> — source contains <code>content.split('&lt;/think&gt;')</code> but not <code>&lt;SPECIAL_12&gt;</code>: sets <code>reasoning.mode = TAG_BASED</code> with <code>&lt;think&gt;</code>/<code>&lt;/think&gt;</code> markers if no reasoning was detected</li>
+<li><strong>Granite 3.3</strong> — source contains specific "Write your thoughts" text: forces <code>TAG_BASED</code> reasoning with <code>&lt;think&gt;</code>/<code>&lt;/think&gt;</code> and <code>WRAPPED_WITH_REASONING</code> content with <code>&lt;response&gt;</code>/<code>&lt;/response&gt;</code></li>
+<li><strong>Cohere Command R+</strong> — source contains <code>&lt;|CHATBOT_TOKEN|&gt;</code>: sets <code>ALWAYS_WRAPPED</code> content mode if no content start is already set</li>
+<li><strong>Functionary 3.1</strong> — source contains <code>set has_code_interpreter</code>: forces <code>PLAIN</code> content, specific <code>per_call_start/end</code>, clears preserved tokens to only keep Functionary-specific markers</li>
+<li><strong>DeepSeek-R1-Distill-Qwen</strong> — source contains <code>tool▁calls▁begin</code> markers: overrides tool section/per-call markers with the correct Unicode block characters</li>
+</ol>
+<h3 id="parser-building">Parser Building<a class="headerlink" href="#parser-building" title="Permanent link">#</a></h3>
+<p>Each analyzer struct (<code>analyze_reasoning</code>, <code>analyze_content</code>, <code>analyze_tools</code>) implements <code>build_parser(parser_build_context&amp;)</code>. They share a <code>parser_build_context</code> that carries the PEG builder, inference inputs, the pre-built reasoning parser, and a pointer to the content analyzer.</p>
+<h4 id="reasoning-parser-analyze_reasoningbuild_parser">Reasoning Parser (<code>analyze_reasoning::build_parser</code>)<a class="headerlink" href="#reasoning-parser-analyze_reasoningbuild_parser" title="Permanent link">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Parser</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Not extracting reasoning</td>
+<td><code>eps()</code></td>
+</tr>
+<tr>
+<td><code>TAG_BASED</code> or <code>TOOLS_ONLY</code> (non-empty start)</td>
+<td><code>optional(start + reasoning(until(end)) + end + space())</code></td>
+</tr>
+<tr>
+<td><code>TAG_BASED</code> or <code>TOOLS_ONLY</code> (empty start)</td>
+<td><code>optional(reasoning(until(end)) + end + space())</code> — delimiter-style</td>
+</tr>
+</tbody>
+</table>
+<p>Note: The start marker may be empty either because the analyzer detected delimiter-style reasoning, or because <code>generate_parser()</code> cleared a template artifact start marker (see Generation Prompt &amp; Reasoning Prefill above). Whitespace-only reasoning content (e.g. from a <code>&lt;think&gt;&lt;/think&gt;</code> prefill) is discarded by the mapper.</p>
+<h4 id="content-parser-analyze_contentbuild_parser">Content Parser (<code>analyze_content::build_parser</code>)<a class="headerlink" href="#content-parser-analyze_contentbuild_parser" title="Permanent link">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Parser</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>json_schema</code> present</td>
+<td><code>reasoning + space() + content(schema(json(), "response-format", ...)) + end()</code></td>
+</tr>
+<tr>
+<td>Tools present</td>
+<td>Dispatches to <code>analyze_tools::build_parser()</code></td>
+</tr>
+<tr>
+<td><code>ALWAYS_WRAPPED</code> with reasoning</td>
+<td><code>reasoning + start + content(until(end)) + end + end()</code></td>
+</tr>
+<tr>
+<td><code>ALWAYS_WRAPPED</code> without reasoning</td>
+<td><code>content(until(start)) + start + content(until(end)) + end + end()</code></td>
+</tr>
+<tr>
+<td>Default (PLAIN)</td>
+<td><code>reasoning + content(rest()) + end()</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="tool-parsers-analyze_toolsbuild_parser">Tool Parsers (<code>analyze_tools::build_parser</code>)<a class="headerlink" href="#tool-parsers-analyze_toolsbuild_parser" title="Permanent link">#</a></h4>
+<p>Dispatches by <code>format.mode</code>:</p>
+<p><strong><code>build_tool_parser_json_native()</code></strong>: Calls <code>p.standard_json_tools()</code> which internally dispatches to:</p>
+<ul>
+<li><code>build_json_tools_function_is_key()</code> — function name is the JSON key: <code>{"get_weather": {...}}</code></li>
+<li><code>build_json_tools_nested_keys()</code> — nested: <code>{"function": {"name": "X", "arguments": {...}}}</code></li>
+<li><code>build_json_tools_flat_keys()</code> — flat: <code>{"name": "X", "arguments": {...}}</code></li>
+</ul>
+<p>Handles content wrappers, array wrapping (<code>tools_array_wrapped</code>), parallel calls, and <code>parameter_order</code>.</p>
+<p><strong><code>build_tool_parser_tag_json()</code></strong>: For each tool function:</p>
+<div class="codehilite"><pre><span></span><code>tool_open(name_prefix + tool_name(literal(name)) + name_suffix) +
+    call_id_section +
+    tool_args(schema(json(), tool_schema))
+  [+ function.close if non-empty]
+</code></pre></div>
+
+<p>Wrapped in per-call markers (with optional parallel call repetition) then optionally in section markers.</p>
+<p><strong><code>build_tool_parser_tag_tagged()</code></strong>: For each tool function, builds one parser per argument:</p>
+<ul>
+<li>String types: <code>tool_arg_string_value(schema(until(value_suffix), ...))</code></li>
+<li>JSON types: <code>tool_arg_json_value(schema(json(), ...))</code></li>
+<li>Required args are plain; optional args wrapped in <code>optional()</code></li>
+<li>Arguments joined with <code>space()</code> between consecutive parsers</li>
+</ul>
+<p>For closing: uses <code>function.close</code> if present; otherwise uses <code>peek(per_call_end)</code> to avoid premature close during partial streaming; falls back to <code>tool_close(space())</code> to trigger mapper callbacks.</p>
+<p>All three tool parsers return:</p>
+<div class="codehilite"><pre><span></span><code>reasoning + optional(content(until(trigger_marker))) + tool_calls + end()
+</code></pre></div>
+
+<p>Each returned parser is wrapped by <code>wrap_for_generation_prompt()</code>, which prepends a literal for any boilerplate prefix of the generation prompt (the portion before the reasoning start marker).</p>
+<h2 id="mapper">Mapper<a class="headerlink" href="#mapper" title="Permanent link">#</a></h2>
+<p><code>common_chat_peg_mapper</code> maps PEG parse results (AST nodes) into <code>common_chat_msg</code> structures. Key design:</p>
+<ul>
+<li><strong>Buffered arguments</strong>: Before <code>tool_name</code> is known, argument text goes to <code>args_buffer</code>; once the name is set, the buffer is flushed to <code>current_tool-&gt;arguments</code></li>
+<li><strong><code>args_target()</code></strong>: Returns a reference to whichever destination is currently active (buffer or tool args), eliminating branching</li>
+<li><strong><code>closing_quote_pending</code></strong>: Tracks whether a closing <code>"</code> needs to be appended when a string argument value is finalized (for schema-declared string types in tagged format)</li>
+<li><strong>Whitespace-only reasoning</strong>: Reasoning content that consists entirely of whitespace (e.g. from a <code>&lt;think&gt;&lt;/think&gt;</code> prefill) is cleared so the message shows no reasoning</li>
+<li><strong>Brace auto-closing</strong>: At tool close, unclosed <code>{</code> braces are closed automatically</li>
+</ul>
+<h2 id="files">Files<a class="headerlink" href="#files" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>common/chat-auto-parser.h</code></td>
+<td>All analysis structs, enums, <code>autoparser</code>, <code>peg_generator</code>, <code>generation_params</code></td>
+</tr>
+<tr>
+<td><code>common/chat-auto-parser-generator.cpp</code></td>
+<td>Parser generator: <code>generate_parser()</code> and <code>build_parser()</code> methods</td>
+</tr>
+<tr>
+<td><code>common/chat-diff-analyzer.cpp</code></td>
+<td>Differential analysis implementation and workarounds</td>
+</tr>
+<tr>
+<td><code>common/chat-auto-parser-helpers.h/cpp</code></td>
+<td><code>calculate_diff_split()</code>, <code>segmentize_markers()</code>, <code>compare_variants()</code>,</td>
+</tr>
+<tr>
+<td></td>
+<td><code>wrap_for_generation_prompt()</code>, string helpers</td>
+</tr>
+<tr>
+<td><code>common/chat-peg-parser.h/cpp</code></td>
+<td><code>common_chat_peg_builder</code>, <code>common_chat_peg_mapper</code>, and helpers</td>
+</tr>
+<tr>
+<td><code>common/chat.cpp</code></td>
+<td>Entry point: <code>common_chat_templates_apply_jinja()</code></td>
+</tr>
+<tr>
+<td><code>tests/test-chat-auto-parser.cpp</code></td>
+<td>Auto-parser unit tests; also a debug tool when given a template path</td>
+</tr>
+<tr>
+<td><code>tests/test-chat-analysis.cpp</code></td>
+<td>Template differential analysis debug tool</td>
+</tr>
+</tbody>
+</table>
+<h2 id="testing-debugging">Testing &amp; Debugging<a class="headerlink" href="#testing-debugging" title="Permanent link">#</a></h2>
+<h3 id="debug-tools">Debug Tools<a class="headerlink" href="#debug-tools" title="Permanent link">#</a></h3>
+<p><strong>Template Debugger</strong>: <code>tests/test-chat-auto-parser.cpp</code></p>
+<ul>
+<li>Usage: <code>./bin/test-chat-auto-parser path/to/template.jinja</code> (without a path, it runs the automated tests)</li>
+<li>Shows detected format, markers, generated parser, and GBNF grammar</li>
+</ul>
+<p><strong>Template Analysis</strong>: <code>tests/test-chat-analysis.cpp</code></p>
+<ul>
+<li>Usage: <code>./bin/test-chat-analysis --template-file path/to/template.jinja</code> (without arguments, it runs on all templates from the test suite)</li>
+</ul>
+<p><strong>Debug Logging</strong>: Enable with <code>LLAMA_ARG_LOG_VERBOSITY=2</code></p>
+<ul>
+<li>Shows detailed analysis steps, pattern extraction results, and generated parser structure</li>
+</ul>
+<p><strong>PEG Test Builder</strong>: Fluent API for creating test cases — see <a href="tests/test-chat.cpp#L947-L1043">tests/test-chat.cpp:947-1043</a>. Example usage:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">auto</span><span class="w"> </span><span class="n">tst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peg_tester</span><span class="p">(</span><span class="s">&quot;models/templates/Template.jinja&quot;</span><span class="p">);</span>
+<span class="n">tst</span><span class="p">.</span><span class="n">test</span><span class="p">(</span><span class="s">&quot;input text&quot;</span><span class="p">)</span>
+<span class="w">   </span><span class="p">.</span><span class="n">reasoning_format</span><span class="p">(</span><span class="n">COMMON_REASONING_FORMAT_AUTO</span><span class="p">)</span>
+<span class="w">   </span><span class="p">.</span><span class="n">tools</span><span class="p">({</span><span class="n">tool_json</span><span class="p">})</span>
+<span class="w">   </span><span class="p">.</span><span class="n">parallel_tool_calls</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+<span class="w">   </span><span class="p">.</span><span class="n">enable_thinking</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+<span class="w">   </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="n">expected_message</span><span class="p">)</span>
+<span class="w">   </span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="tested-templates">Tested Templates<a class="headerlink" href="#tested-templates" title="Permanent link">#</a></h3>
+<p>The following templates have active tests in <code>tests/test-chat.cpp</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Format</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ministral-3-14B-Reasoning</td>
+<td>Reasoning</td>
+<td><code>[THINK]...[/THINK]</code> tags (specialized handler)</td>
+</tr>
+<tr>
+<td>NVIDIA-Nemotron-3-Nano-30B</td>
+<td>TAG_WITH_TAGGED</td>
+<td>Reasoning + tools</td>
+</tr>
+<tr>
+<td>CohereForAI Command-R7B</td>
+<td>JSON_NATIVE</td>
+<td><code>&lt;\|START_THINKING\|&gt;</code>/<code>&lt;\|START_RESPONSE\|&gt;</code> markers</td>
+</tr>
+<tr>
+<td>Google Gemma 2 2B</td>
+<td>Content only</td>
+<td>No tool support</td>
+</tr>
+<tr>
+<td>Qwen-QwQ-32B</td>
+<td>Reasoning</td>
+<td>Forced-open thinking</td>
+</tr>
+<tr>
+<td>NousResearch Hermes 2 Pro</td>
+<td>JSON_NATIVE</td>
+<td><code>&lt;tool_call&gt;</code> wrapper</td>
+</tr>
+<tr>
+<td>IBM Granite 3.3</td>
+<td>JSON_NATIVE</td>
+<td><code>&lt;think&gt;&lt;/think&gt;</code> + <code>&lt;response&gt;&lt;/response&gt;</code></td>
+</tr>
+<tr>
+<td>IBM Granite 4.0</td>
+<td>JSON_NATIVE</td>
+<td><code>&lt;tool_call&gt;</code> wrapper (same template used by 4.1)</td>
+</tr>
+<tr>
+<td>ByteDance Seed-OSS</td>
+<td>TAG_WITH_TAGGED</td>
+<td>Custom <code>&lt;seed:think&gt;</code> and <code>&lt;seed:tool_call&gt;</code> tags</td>
+</tr>
+<tr>
+<td>Qwen3-Coder</td>
+<td>TAG_WITH_TAGGED</td>
+<td>XML-style tool format</td>
+</tr>
+<tr>
+<td>DeepSeek V3.1</td>
+<td>JSON_NATIVE</td>
+<td>Forced thinking mode</td>
+</tr>
+<tr>
+<td>GLM-4.6</td>
+<td>TAG_WITH_TAGGED</td>
+<td><code>&lt;tool_call&gt;name\n&lt;arg_key&gt;...&lt;arg_value&gt;...</code> format</td>
+</tr>
+<tr>
+<td>GLM-4.7-Flash</td>
+<td>TAG_WITH_TAGGED</td>
+<td>Updated GLM format</td>
+</tr>
+<tr>
+<td>Kimi-K2-Thinking</td>
+<td>JSON_NATIVE</td>
+<td>Reasoning + JSON tools</td>
+</tr>
+<tr>
+<td>Apertus-8B-Instruct</td>
+<td>JSON_NATIVE</td>
+<td>Function name as JSON key</td>
+</tr>
+<tr>
+<td>MiniMax-M2</td>
+<td>TAG_WITH_JSON</td>
+<td>XML invoke with JSON args</td>
+</tr>
+<tr>
+<td>NVIDIA-Nemotron-Nano-v2</td>
+<td>JSON_NATIVE</td>
+<td><code>&lt;TOOLCALL&gt;</code> wrapper (nested)</td>
+</tr>
+<tr>
+<td>CohereForAI Command-R Plus</td>
+<td>JSON_NATIVE</td>
+<td>Markdown code block format</td>
+</tr>
+<tr>
+<td>Mistral-Nemo-Instruct-2407</td>
+<td>JSON_NATIVE</td>
+<td><code>[TOOL_CALLS]</code> wrapper with ID field</td>
+</tr>
+<tr>
+<td>Functionary v3.1</td>
+<td>TAG_WITH_JSON</td>
+<td><code>&lt;function=X&gt;</code> format</td>
+</tr>
+<tr>
+<td>Functionary v3.2</td>
+<td>Specialized</td>
+<td><code>&gt;&gt;&gt;</code> recipient delimiter (dedicated handler)</td>
+</tr>
+<tr>
+<td>Fireworks Firefunction v2</td>
+<td>TAG_WITH_JSON</td>
+<td>Fireworks tool format</td>
+</tr>
+<tr>
+<td>DeepSeek R1 Distill (Llama/Qwen)</td>
+<td>Reasoning</td>
+<td>Forced-open thinking</td>
+</tr>
+<tr>
+<td>llama-cpp-deepseek-r1</td>
+<td>Reasoning</td>
+<td>Forced-open thinking</td>
+</tr>
+<tr>
+<td>Kimi-K2 / Kimi-K2-Instruct</td>
+<td>JSON_NATIVE</td>
+<td>JSON tools with special markers</td>
+</tr>
+<tr>
+<td>Llama 3.1/3.2/3.3</td>
+<td>JSON_NATIVE</td>
+<td>Standard Llama tool format</td>
+</tr>
+<tr>
+<td>OpenAI GPT-OSS</td>
+<td>Specialized</td>
+<td>Channel-based (dedicated handler)</td>
+</tr>
+<tr>
+<td>Apriel 1.5</td>
+<td>JSON_NATIVE</td>
+<td><code>&lt;tool_calls&gt;</code> wrapper with JSON array</td>
+</tr>
+<tr>
+<td>Apriel 1.6 Thinker</td>
+<td>Reasoning</td>
+<td>Implicit reasoning start</td>
+</tr>
+<tr>
+<td>Mistral Small 3.2</td>
+<td>JSON_NATIVE</td>
+<td><code>[TOOL_CALLS]func[ARGS]{...}</code> with call ID</td>
+</tr>
+<tr>
+<td>Devstral</td>
+<td>JSON_NATIVE</td>
+<td><code>[TOOL_CALLS]func[ARGS]{...}</code> without call ID</td>
+</tr>
+<tr>
+<td>StepFun 3.5 Flash</td>
+<td>TAG_WITH_TAGGED</td>
+<td><code>&lt;function=X&gt;&lt;parameter=Y&gt;</code> format</td>
+</tr>
+<tr>
+<td>Spark2.5</td>
+<td>TAG_WITH_TAGGED</td>
+<td><code>&lt;tool_call&gt;name&lt;arg_key&gt;...&lt;arg_value&gt;...</code> format</td>
+</tr>
+</tbody>
+</table>
+<h2 id="adding-support-for-new-templates">Adding Support for New Templates<a class="headerlink" href="#adding-support-for-new-templates" title="Permanent link">#</a></h2>
+<p>To support a new template format:</p>
+<ol>
+<li><strong>If it follows standard patterns</strong> — The auto-parser should detect it automatically. Run <code>test-chat-auto-parser &lt;template_path&gt;</code> to verify markers are correctly extracted.</li>
+<li><strong>If differential analysis extracts incorrect markers</strong> — Add a workaround lambda to the <code>workarounds</code> vector in <code>common/chat-diff-analyzer.cpp</code>. Inspect the template source for a unique identifying substring.</li>
+<li><strong>If it needs fundamentally different handling</strong> — Add a dedicated handler function in <code>chat.cpp</code> before the auto-parser block (as done for GPT-OSS, Functionary v3.2, and Ministral).</li>
+</ol>
+<h2 id="edge-cases-and-quirks">Edge Cases and Quirks<a class="headerlink" href="#edge-cases-and-quirks" title="Permanent link">#</a></h2>
+<ol>
+<li><strong>Generation Prompt &amp; Reasoning Prefill</strong>: The generation prompt is extracted by diffing <code>add_generation_prompt=false</code> vs <code>true</code> in <code>common_chat_templates_apply_jinja</code>, so it contains exactly what the template appends — avoiding false positives from prior conversation turns.</li>
+<li><strong>Per-Call vs Per-Section Markers</strong>: Some templates wrap each tool call individually (<code>per_call_start/end</code>); others wrap the entire section (<code>section_start/end</code>). T2 (<code>check_per_call_markers()</code>) disambiguates by checking if the second call in a two-call output starts with the section marker.</li>
+<li><strong>Tag Boundary Fixing</strong>: <code>calculate_diff_split()</code> iteratively adjusts prefix/suffix boundaries to avoid splitting <code>&lt;tag&gt;</code> or <code>[marker]</code> tokens, ensuring clean extraction.</li>
+<li><strong>Call ID Side Effects</strong>: When a call ID is detected, <code>per_call_end</code> may have been incorrectly set to include the call ID suffix. T7 clears <code>per_call_end</code> in this case.</li>
+<li><strong>Tool Analysis Gating</strong>: <code>analyze_tools</code> is only constructed (and all tool analysis phases run) when <code>jinja_caps.supports_tool_calls</code> is true. Within tool analysis, <code>check_per_call_markers()</code> (T2) only runs if <code>jinja_caps.supports_parallel_tool_calls</code>.</li>
+<li><strong><code>analyze_arguments()</code> Gating</strong>: Within tool analysis, A1 and A2 (argument name/value marker extraction) only run for <code>TAG_WITH_TAGGED</code> format. <code>extract_argument_separator()</code> and <code>extract_args_markers()</code> run for all non-<code>JSON_NATIVE</code> formats.</li>
+<li><strong>Undetected Tool Format</strong>: If <code>analyze_tools</code> concludes tool calling is supported but cannot determine the format, <code>build_parser()</code> logs an error and returns <code>eps()</code> (graceful degradation) rather than aborting.</li>
+</ol>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./android.html">
+          <span class="muted">Anterior</span>Android
+        </a>
+        <a class="pager-next" href="./build-profiling.html">
+          <span class="muted">Siguiente</span>Build profiling
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

@@ -55,7 +55,7 @@ RE_METHODPARAM = re.compile(r"<methodparam([^>]*)>(.*?)</methodparam>", re.DOTAL
 RE_PARAMETER = re.compile(r"<parameter[^>]*>(.*?)</parameter>", re.DOTALL)
 RE_MODIFIER = re.compile(r"<modifier[^>]*>(.*?)</modifier>", re.DOTALL)
 
-RE_XML_ID = re.compile(r'<\w+[^>]*\bxml:id="([^"]+)"')
+RE_XML_ID = re.compile(r'<\w+[^>]*\b(?:xml:)?id="([^"]+)"')
 RE_REFNAME = re.compile(r"<refname[^>]*>(.*?)</refname>", re.DOTALL)
 RE_REFPURPOSE = re.compile(r"<refpurpose[^>]*>(.*?)</refpurpose>", re.DOTALL)
 RE_TITLE = re.compile(r"<title[^>]*>(.*?)</title>", re.DOTALL)
@@ -70,9 +70,11 @@ RE_REVIEWED = re.compile(r"<!--\s*Reviewed:\s*(\w+)\s*-->")
 RE_BARE_DIV = re.compile(r"^\s*</?div[^>]*>\s*$", re.MULTILINE)
 RE_H1 = re.compile(r"^# ", re.MULTILINE)
 
-# Entidades de include estructural que doc-base genera al ensamblar el
-# manual. Solo aparecen en ficheros de armazón sin contenido propio.
-RE_LEFTOVER_ENTITY = re.compile(r"&[\w]+\.[\w.-]+;")
+# Entidades no resueltas antes de pandoc. Pandoc aborta con
+# UnresolvedEntityException si encuentra cualquier entidad no estándar.
+RE_LEFTOVER_ENTITY = re.compile(
+    r"&(?!lt;|gt;|amp;|quot;|apos;|#\d+;|#x[0-9a-fA-F]+;)[\w.-]+;"
+)
 
 # Marcador para las firmas, que sobrevive a pandoc sin reinterpretarse
 SIGNATURE_MARKER = "ZQSIGNATUREZQ{}ZQ"

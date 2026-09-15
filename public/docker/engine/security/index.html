@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docker Engine security · Docker</title>
+<meta name="description" content="Docker Engine security - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/index.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Docker Engine security">
+<meta property="og:description" content="Docker Engine security - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker Engine security">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Docker Engine security",
+"url": "https://docs.raupulus.dev/docker/engine/security/index.html",  "description": "Docker Engine security - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../engine/network/port-publishing.html"
+>Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../engine/security/index.html"
+class="is-current" aria-current="page">Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Docker Engine security</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#kernel-namespaces">Kernel namespaces#</a></li>
+              <li class="lvl-2"><a href="#control-groups">Control groups#</a></li>
+              <li class="lvl-2"><a href="#docker-daemon-attack-surface">Docker daemon attack surface#</a></li>
+              <li class="lvl-2"><a href="#linux-kernel-capabilities">Linux kernel capabilities#</a></li>
+              <li class="lvl-2"><a href="#docker-content-trust-signature-verification">Docker Content Trust signature verification#</a></li>
+              <li class="lvl-2"><a href="#other-kernel-security-features">Other kernel security features#</a></li>
+              <li class="lvl-2"><a href="#conclusions">Conclusions#</a></li>
+              <li class="lvl-2"><a href="#related-information">Related information#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>There are four major areas to consider when reviewing Docker security:</p>
+<ul>
+<li>The intrinsic security of the kernel and its support for
+   namespaces and cgroups</li>
+<li>The attack surface of the Docker daemon itself</li>
+<li>Loopholes in the container configuration profile, either by default,
+   or when customized by users.</li>
+<li>The "hardening" security features of the kernel and how they
+   interact with containers.</li>
+</ul>
+<h2 id="kernel-namespaces">Kernel namespaces<a class="headerlink" href="#kernel-namespaces" title="Permanent link">#</a></h2>
+<p>Docker containers are very similar to LXC containers, and they have
+similar security features. When you start a container with
+<code>docker run</code>, behind the scenes Docker creates a set of namespaces and control
+groups for the container.</p>
+<p>Namespaces provide the first and most straightforward form of
+isolation. Processes running within a container cannot see, and even
+less affect, processes running in another container, or in the host
+system.</p>
+<p>Each container also gets its own network stack, meaning that a
+container doesn't get privileged access to the sockets or interfaces
+of another container. Of course, if the host system is setup
+accordingly, containers can interact with each other through their
+respective network interfaces — just like they can interact with
+external hosts. When you specify public ports for your containers or use
+<a href="../network/links.html">links</a>
+then IP traffic is allowed between containers. They can ping each other,
+send/receive UDP packets, and establish TCP connections, but that can be
+restricted if necessary. From a network architecture point of view, all
+containers on a given Docker host are sitting on bridge interfaces. This
+means that they are just like physical machines connected through a
+common Ethernet switch; no more, no less.</p>
+<p>How mature is the code providing kernel namespaces and private
+networking? Kernel namespaces were introduced <a href="https://man7.org/linux/man-pages/man7/namespaces.7.html" rel="noopener" target="_blank">between kernel version
+2.6.15 and
+2.6.26</a>.
+This means that since July 2008 (date of the 2.6.26 release
+), namespace code has been exercised and scrutinized on a large
+number of production systems. And there is more: the design and
+inspiration for the namespaces code are even older. Namespaces are
+actually an effort to reimplement the features of <a href="https://en.wikipedia.org/wiki/OpenVZ" rel="noopener" target="_blank">OpenVZ</a> in such a way that they could be
+merged within the mainstream kernel. And OpenVZ was initially released
+in 2005, so both the design and the implementation are pretty mature.</p>
+<h2 id="control-groups">Control groups<a class="headerlink" href="#control-groups" title="Permanent link">#</a></h2>
+<p>Control Groups are another key component of Linux containers. They
+implement resource accounting and limiting. They provide many
+useful metrics, but they also help ensure that each container gets
+its fair share of memory, CPU, disk I/O; and, more importantly, that a
+single container cannot bring the system down by exhausting one of those
+resources.</p>
+<p>So while they do not play a role in preventing one container from
+accessing or affecting the data and processes of another container, they
+are essential to fend off some denial-of-service attacks. They are
+particularly important on multi-tenant platforms, like public and
+private PaaS, to guarantee a consistent uptime (and performance) even
+when some applications start to misbehave.</p>
+<p>Control Groups have been around for a while as well: the code was
+started in 2006, and initially merged in kernel 2.6.24.</p>
+<h2 id="docker-daemon-attack-surface">Docker daemon attack surface<a class="headerlink" href="#docker-daemon-attack-surface" title="Permanent link">#</a></h2>
+<p>Running containers (and applications) with Docker implies running the
+Docker daemon. This daemon requires <code>root</code> privileges unless you opt-in
+to <a href="rootless.html">Rootless mode</a>, and you should therefore be aware of
+some important details.</p>
+<p>First of all, only trusted users should be allowed to control your
+Docker daemon. This is a direct consequence of some powerful Docker
+features. Specifically, Docker allows you to share a directory between
+the Docker host and a guest container; and it allows you to do so
+without limiting the access rights of the container. This means that you
+can start a container where the <code>/host</code> directory is the <code>/</code> directory
+on your host; and the container can alter your host filesystem
+without any restriction. This is similar to how virtualization systems
+allow filesystem resource sharing. Nothing prevents you from sharing your
+root filesystem (or even your root block device) with a virtual machine.</p>
+<p>This has a strong security implication: for example, if you instrument Docker
+from a web server to provision containers through an API, you should be
+even more careful than usual with parameter checking, to make sure that
+a malicious user cannot pass crafted parameters causing Docker to create
+arbitrary containers.</p>
+<p>For this reason, the REST API endpoint (used by the Docker CLI to
+communicate with the Docker daemon) changed in Docker 0.5.2, and now
+uses a Unix socket instead of a TCP socket bound on 127.0.0.1 (the
+latter being prone to cross-site request forgery attacks if you happen to run
+Docker directly on your local machine, outside of a VM). You can then
+use traditional Unix permission checks to limit access to the control
+socket.</p>
+<p>You can also expose the REST API over HTTP if you explicitly decide to do so.
+However, if you do that, be aware of the above mentioned security implications.
+Note that even if you have a firewall to limit accesses to the REST API 
+endpoint from other hosts in the network, the endpoint can be still accessible
+from containers, and it can easily result in the privilege escalation.
+Therefore it is <em>mandatory</em> to secure API endpoints with 
+<a href="protect-access.html">HTTPS and certificates</a>.
+Exposing the daemon API over HTTP without TLS is not permitted,
+and such a configuration causes the daemon to fail early on startup, see
+<a href="../deprecated.html#unauthenticated-tcp-connections">Unauthenticated TCP connections</a>.
+It is also recommended to ensure that it is reachable only from a trusted
+network or VPN.</p>
+<p>You can also use <code>DOCKER_HOST=ssh://USER@HOST</code> or <code>ssh -L /path/to/docker.sock:/var/run/docker.sock</code>
+instead if you prefer SSH over TLS.</p>
+<p>The daemon is also potentially vulnerable to other inputs, such as image
+loading from either disk with <code>docker load</code>, or from the network with
+<code>docker pull</code>. As of Docker 1.3.2, images are now extracted in a chrooted
+subprocess on Linux/Unix platforms, being the first-step in a wider effort
+toward privilege separation. As of Docker 1.10.0, all images are stored and
+accessed by the cryptographic checksums of their contents, limiting the
+possibility of an attacker causing a collision with an existing image.</p>
+<p>Finally, if you run Docker on a server, it is recommended to run
+exclusively Docker on the server, and move all other services within
+containers controlled by Docker. Of course, it is fine to keep your
+favorite admin tools (probably at least an SSH server), as well as
+existing monitoring/supervision processes, such as NRPE and collectd.</p>
+<h2 id="linux-kernel-capabilities">Linux kernel capabilities<a class="headerlink" href="#linux-kernel-capabilities" title="Permanent link">#</a></h2>
+<p>By default, Docker starts containers with a restricted set of
+capabilities. What does that mean?</p>
+<p>Capabilities turn the binary "root/non-root" dichotomy into a
+fine-grained access control system. Processes (like web servers) that
+just need to bind on a port below 1024 do not need to run as root: they
+can just be granted the <code>net_bind_service</code> capability instead. And there
+are many other capabilities, for almost all the specific areas where root
+privileges are usually needed. This means a lot for container security.</p>
+<p>Typical servers run several processes as <code>root</code>, including the SSH daemon,
+<code>cron</code> daemon, logging daemons, kernel modules, network configuration tools,
+and more. A container is different, because almost all of those tasks are
+handled by the infrastructure around the container:</p>
+<ul>
+<li>SSH access are typically managed by a single server running on
+   the Docker host</li>
+<li><code>cron</code>, when necessary, should run as a user
+   process, dedicated and tailored for the app that needs its
+   scheduling service, rather than as a platform-wide facility</li>
+<li>Log management is also typically handed to Docker, or to
+   third-party services like Loggly or Splunk</li>
+<li>Hardware management is irrelevant, meaning that you never need to
+   run <code>udevd</code> or equivalent daemons within
+   containers</li>
+<li>Network management happens outside of the containers, enforcing
+   separation of concerns as much as possible, meaning that a container
+   should never need to perform <code>ifconfig</code>,
+   <code>route</code>, or ip commands (except when a container
+   is specifically engineered to behave like a router or firewall, of
+   course)</li>
+</ul>
+<p>This means that in most cases, containers do not need "real" root
+privileges at all* And therefore, containers can run with a reduced
+capability set; meaning that "root" within a container has much less
+privileges than the real "root". For instance, it is possible to:</p>
+<ul>
+<li>Deny all "mount" operations</li>
+<li>Deny access to raw sockets (to prevent packet spoofing)</li>
+<li>Deny access to some filesystem operations, like creating new device
+   nodes, changing the owner of files, or altering attributes (including
+   the immutable flag)</li>
+<li>Deny module loading</li>
+</ul>
+<p>This means that even if an intruder manages to escalate to root within a
+container, it is much harder to do serious damage, or to escalate
+to the host.</p>
+<p>This doesn't affect regular web apps, but reduces the vectors of attack by
+malicious users considerably. By default Docker
+drops all capabilities except <a href="https://github.com/moby/moby/blob/master/daemon/pkg/oci/caps/defaults.go#L6-L19" rel="noopener" target="_blank">those
+needed</a>,
+an allowlist instead of a denylist approach. You can see a full list of
+available capabilities in <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html" rel="noopener" target="_blank">Linux
+manpages</a>.</p>
+<p>One primary risk with running Docker containers is that the default set
+of capabilities and mounts given to a container may provide incomplete
+isolation, either independently, or when used in combination with
+kernel vulnerabilities.</p>
+<p>Docker supports the addition and removal of capabilities, allowing use
+of a non-default profile. This may make Docker more secure through
+capability removal, or less secure through the addition of capabilities.
+The best practice for users would be to remove all capabilities except
+those explicitly required for their processes.</p>
+<h2 id="docker-content-trust-signature-verification">Docker Content Trust signature verification<a class="headerlink" href="#docker-content-trust-signature-verification" title="Permanent link">#</a></h2>
+<p>Docker Engine can be configured to only run signed images. The Docker Content 
+Trust signature verification feature is built directly into the <code>dockerd</code> binary.<br>
+This is configured in the Dockerd configuration file. </p>
+<p>To enable this feature, trustpinning can be configured in <code>daemon.json</code>, whereby 
+only repositories signed with a user-specified root key can be pulled and run.</p>
+<p>This feature provides more insight to administrators than previously available with
+the CLI for enforcing and performing image signature verification. </p>
+<p>For more information on configuring Docker Content Trust Signature Verification, go to 
+<a href="trust/index.html">Content trust in Docker</a>.</p>
+<h2 id="other-kernel-security-features">Other kernel security features<a class="headerlink" href="#other-kernel-security-features" title="Permanent link">#</a></h2>
+<p>Capabilities are just one of the many security features provided by
+modern Linux kernels. It is also possible to leverage existing,
+well-known systems like TOMOYO, AppArmor, SELinux, GRSEC, etc. with
+Docker.</p>
+<p>While Docker currently only enables capabilities, it doesn't interfere
+with the other systems. This means that there are many different ways to
+harden a Docker host. Here are a few examples.</p>
+<ul>
+<li>You can run a kernel with GRSEC and PAX. This adds many safety
+   checks, both at compile-time and run-time; it also defeats many
+   exploits, thanks to techniques like address randomization. It doesn't
+   require Docker-specific configuration, since those security features
+   apply system-wide, independent of containers.</li>
+<li>If your distribution comes with security model templates for
+   Docker containers, you can use them out of the box. For instance, we
+   ship a template that works with AppArmor and Red Hat comes with SELinux
+   policies for Docker. These templates provide an extra safety net (even
+   though it overlaps greatly with capabilities).</li>
+<li>You can define your own policies using your favorite access control
+   mechanism.</li>
+</ul>
+<p>Just as you can use third-party tools to augment Docker containers, including
+special network topologies or shared filesystems, tools exist to harden Docker
+containers without the need to modify Docker itself.</p>
+<p>As of Docker 1.10 User Namespaces are supported directly by the docker
+daemon. This feature allows for the root user in a container to be mapped
+to a non uid-0 user outside the container, which can help to mitigate the
+risks of container breakout. This facility is available but not enabled
+by default.</p>
+<p>Refer to the <a href="/reference/cli/dockerd.html#daemon-user-namespace-options">daemon command</a>
+in the command line reference for more information on this feature.
+Additional information on the implementation of User Namespaces in Docker
+can be found in
+<a href="https://integratedcode.us/2015/10/13/user-namespaces-have-arrived-in-docker/" rel="noopener" target="_blank">this blog post</a>.</p>
+<h2 id="conclusions">Conclusions<a class="headerlink" href="#conclusions" title="Permanent link">#</a></h2>
+<p>Docker containers are, by default, quite secure; especially if you
+run your processes as non-privileged users inside the container.</p>
+<p>You can add an extra layer of safety by enabling AppArmor, SELinux,
+GRSEC, or another appropriate hardening system.</p>
+<p>If you think of ways to make docker more secure, we welcome feature requests,
+pull requests, or comments on the Docker community forums.</p>
+<h2 id="related-information">Related information<a class="headerlink" href="#related-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="trust/index.html">Use trusted images</a></li>
+<li><a href="seccomp.html">Seccomp security profiles for Docker</a></li>
+<li><a href="apparmor.html">AppArmor security profiles for Docker</a></li>
+<li><a href="https://medium.com/@ewindisch/on-the-security-of-containers-2c60ffe25a9e" rel="noopener" target="_blank">On the Security of Containers (2014)</a></li>
+<li><a href="../network/drivers/overlay.html">Docker swarm mode overlay network security model</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/release-notes/prior-releases.html">
+          <span class="muted">Anterior</span>Docker Engine prior releases
+        </a>
+        <a class="pager-next" href="../../engine/security/antivirus.html">
+          <span class="muted">Siguiente</span>Antivirus software and Docker
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

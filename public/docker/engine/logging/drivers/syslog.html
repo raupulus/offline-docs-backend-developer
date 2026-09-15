@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Syslog logging driver · Docker</title>
+<meta name="description" content="Syslog logging driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/logging/drivers/syslog.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Syslog logging driver">
+<meta property="og:description" content="Syslog logging driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Syslog logging driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Syslog logging driver",
+"url": "https://docs.raupulus.dev/docker/engine/logging/drivers/syslog.html",  "description": "Syslog logging driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/daemon/embedded-containerd.html"
+>Run containerd in the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/ipv6.html"
+>Use IPv6 networking</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/live-restore.html"
+>Live restore</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/logs.html"
+>Read the daemon logs</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/prometheus.html"
+>Collect Docker metrics with Prometheus</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/proxy.html"
+>Daemon proxy configuration</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/remote-access.html"
+>Configure remote access for Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/start.html"
+>Start the daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/troubleshoot.html"
+>Troubleshooting the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/index.html"
+>Install Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/binaries.html"
+>Install Docker Engine from binaries</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/centos.html"
+>Install Docker Engine on CentOS</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/debian.html"
+>Install Docker Engine on Debian</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/fedora.html"
+>Install Docker Engine on Fedora</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/linux-postinstall.html"
+>Linux post-installation steps for Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/raspberry-pi-os.html"
+>Install Docker Engine on Raspberry Pi OS (32-bit / armhf)</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/rhel.html"
+>Install Docker Engine on RHEL</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/ubuntu.html"
+>Install Docker Engine on Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/index.html"
+>View container logs</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/configure.html"
+>Configure logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/index.html"
+>Logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/journald.html"
+>Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/splunk.html"
+>Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/syslog.html"
+class="is-current" aria-current="page">Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/dual-logging.html"
+>Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/pruning.html"
+>Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/macvlan.html"
+>Macvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/none.html"
+>None network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/overlay.html"
+>Overlay network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-iptables.html"
+>Docker with iptables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-nftables.html"
+>Docker with nftables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/links.html"
+>Legacy container links</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/port-publishing.html"
+>Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Syslog logging driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#usage">Usage#</a></li>
+              <li class="lvl-2"><a href="#options">Options#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>The <code>syslog</code> logging driver routes logs to a <code>syslog</code> server. The <code>syslog</code> protocol uses
+a raw string as the log message and supports a limited set of metadata. The syslog
+message must be formatted in a specific way to be valid. From a valid message, the
+receiver can extract the following information:</p>
+<ul>
+<li>Priority: the logging level, such as <code>debug</code>, <code>warning</code>, <code>error</code>, <code>info</code>.</li>
+<li>Timestamp: when the event occurred.</li>
+<li>Hostname: where the event happened.</li>
+<li>Facility: which subsystem logged the message, such as <code>mail</code> or <code>kernel</code>.</li>
+<li>Process name and process ID (PID): The name and ID of the process that generated the log.</li>
+</ul>
+<p>The format is defined in <a href="https://tools.ietf.org/html/rfc5424" rel="noopener" target="_blank">RFC 5424</a> and Docker's syslog driver implements the
+<a href="https://tools.ietf.org/html/rfc5424#section-6" rel="noopener" target="_blank">ABNF reference</a> in the following way:</p>
+<div class="codehilite"><pre><span></span><code>                TIMESTAMP SP HOSTNAME SP APP-NAME SP PROCID SP MSGID
+                    +          +             +           |        +
+                    |          |             |           |        |
+                    |          |             |           |        |
+       +------------+          +----+        |           +----+   +---------+
+       v                            v        v                v             v
+2017-04-01T17:41:05.616647+08:00 a.vm {taskid:aa,version:} 1787791 {taskid:aa,version:}
+</code></pre></div>
+
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h2>
+<p>To use the <code>syslog</code> driver as the default logging driver, set the <code>log-driver</code>
+and <code>log-opt</code> keys to appropriate values in the <code>daemon.json</code> file. For more
+about configuring Docker using <code>daemon.json</code>, see
+<a href="/reference/cli/dockerd.html#daemon-configuration-file">daemon.json</a>.</p>
+<p>{{% include "daemon-cfg-desktop.md" %}}</p>
+<p>The following example sets the log driver to <code>syslog</code> and sets the
+<code>syslog-address</code> option. The <code>syslog-address</code> options supports both UDP and TCP;
+this example uses UDP.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;log-driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;syslog&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log-opts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;syslog-address&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;udp://1.2.3.4:1111&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Restart Docker for the changes to take effect.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p><code>log-opts</code> configuration options in the <code>daemon.json</code> configuration file must
+be provided as strings. Numeric and Boolean values (such as the value for
+<code>syslog-tls-skip-verify</code>) must therefore be enclosed in quotes (<code>"</code>).</p>
+</blockquote>
+<p>You can set the logging driver for a specific container by using the
+<code>--log-driver</code> flag to <code>docker container create</code> or <code>docker run</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--log-driver<span class="w"> </span>syslog<span class="w"> </span>--log-opt<span class="w"> </span>syslog-address<span class="o">=</span>udp://1.2.3.4:1111<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>alpine<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span>world
+</code></pre></div>
+
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">#</a></h2>
+<p>The following logging options are supported as options for the <code>syslog</code> logging
+driver. They can be set as defaults in the <code>daemon.json</code>, by adding them as
+key-value pairs to the <code>log-opts</code> JSON array. They can also be set on a given
+container by adding a <code>--log-opt &lt;key&gt;=&lt;value&gt;</code> flag for each option when
+starting the container.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Example value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>syslog-address</code></td>
+<td style="text-align: left;">The address of an external <code>syslog</code> server. The URI specifier may be <code>[tcp\|udp\|tcp+tls]://host:port</code>, <code>unix://path</code>, or <code>unixgram://path</code>. If the transport is <code>tcp</code>, <code>udp</code>, or <code>tcp+tls</code>, the default port is <code>514</code>.</td>
+<td style="text-align: left;"><code>--log-opt syslog-address=tcp+tls://192.168.1.3:514</code>, <code>--log-opt syslog-address=unix:///tmp/syslog.sock</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syslog-facility</code></td>
+<td style="text-align: left;">The <code>syslog</code> facility to use. Can be the number or name for any valid <code>syslog</code> facility. See the <a href="https://tools.ietf.org/html/rfc5424#section-6.2.1" rel="noopener" target="_blank">syslog documentation</a>.</td>
+<td style="text-align: left;"><code>--log-opt syslog-facility=daemon</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syslog-tls-ca-cert</code></td>
+<td style="text-align: left;">The absolute path to the trust certificates signed by the CA. Ignored if the address protocol isn't <code>tcp+tls</code>.</td>
+<td style="text-align: left;"><code>--log-opt syslog-tls-ca-cert=/etc/ca-certificates/custom/ca.pem</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syslog-tls-cert</code></td>
+<td style="text-align: left;">The absolute path to the TLS certificate file. Ignored if the address protocol isn't <code>tcp+tls</code>.</td>
+<td style="text-align: left;"><code>--log-opt syslog-tls-cert=/etc/ca-certificates/custom/cert.pem</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syslog-tls-key</code></td>
+<td style="text-align: left;">The absolute path to the TLS key file. Ignored if the address protocol isn't <code>tcp+tls</code>.</td>
+<td style="text-align: left;"><code>--log-opt syslog-tls-key=/etc/ca-certificates/custom/key.pem</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syslog-tls-skip-verify</code></td>
+<td style="text-align: left;">If set to <code>true</code>, TLS verification is skipped when connecting to the <code>syslog</code> daemon. Defaults to <code>false</code>. Ignored if the address protocol isn't <code>tcp+tls</code>.</td>
+<td style="text-align: left;"><code>--log-opt syslog-tls-skip-verify=true</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tag</code></td>
+<td style="text-align: left;">A string that's appended to the <code>APP-NAME</code> in the <code>syslog</code> message. By default, Docker uses the first 12 characters of the container ID to tag log messages. Refer to the <a href="../log-tags.html">log tag option documentation</a> for customizing the log tag format.</td>
+<td style="text-align: left;"><code>--log-opt tag=mailer</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syslog-format</code></td>
+<td style="text-align: left;">The <code>syslog</code> message format to use. If not specified the local Unix syslog format is used, without a specified hostname. Specify <code>rfc3164</code> for the RFC-3164 compatible format, <code>rfc5424</code> for RFC-5424 compatible format, or <code>rfc5424micro</code> for RFC-5424 compatible format with microsecond timestamp resolution.</td>
+<td style="text-align: left;"><code>--log-opt syslog-format=rfc5424micro</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;">Applies when starting the Docker daemon. A comma-separated list of logging-related labels this daemon accepts. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+<td style="text-align: left;"><code>--log-opt labels=production_status,geo</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>labels-regex</code></td>
+<td style="text-align: left;">Applies when starting the Docker daemon. Similar to and compatible with <code>labels</code>. A regular expression to match logging-related labels. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+<td style="text-align: left;"><code>--log-opt labels-regex=^(production_status\|geo)</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>env</code></td>
+<td style="text-align: left;">Applies when starting the Docker daemon. A comma-separated list of logging-related environment variables this daemon accepts. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+<td style="text-align: left;"><code>--log-opt env=os,customer</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>env-regex</code></td>
+<td style="text-align: left;">Applies when starting the Docker daemon. Similar to and compatible with <code>env</code>. A regular expression to match logging-related environment variables. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+<td style="text-align: left;"><code>--log-opt env-regex=^(os\|customer)</code></td>
+</tr>
+</tbody>
+</table>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/logging/drivers/splunk.html">
+          <span class="muted">Anterior</span>Splunk logging driver
+        </a>
+        <a class="pager-next" href="../../../engine/logging/dual-logging.html">
+          <span class="muted">Siguiente</span>Use docker logs with remote logging drivers
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

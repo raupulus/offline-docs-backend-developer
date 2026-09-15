@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use Git with sandboxes · Docker</title>
+<meta name="description" content="Use Git with sandboxes - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/ai/sandboxes/workflows/git.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Use Git with sandboxes">
+<meta property="og:description" content="Use Git with sandboxes - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Use Git with sandboxes">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Use Git with sandboxes",
+"url": "https://docs.raupulus.dev/docker/ai/sandboxes/workflows/git.html",  "description": "Use Git with sandboxes - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Ai
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../ai/sandboxes/agents/droid.html"
+>Droid</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/gemini.html"
+>Gemini</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/kiro.html"
+>Kiro</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/opencode.html"
+>OpenCode</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/shell.html"
+>Shell</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/architecture.html"
+>Architecture</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/index.html"
+>Configure Docker Sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/credentials.html"
+>Manage credentials</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/environment-files.html"
+>Sandbox environment files</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/gpu-passthrough.html"
+>Enable NVIDIA GPU passthrough</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/registry-mirror.html"
+>Configure a registry mirror</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/upstream-proxy.html"
+>Configure an upstream proxy</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/index.html"
+>Customizing sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/build-an-agent.html"
+>Build your own agent kit</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/kit-examples.html"
+>Kit examples</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/kit-reference.html"
+>Kit spec reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/kits.html"
+>Kits</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/templates.html"
+>Templates</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/faq.html"
+>FAQ</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/get-started.html"
+>Get started with Docker Sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/index.html"
+>Governance</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/index.html"
+>Access controls</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/filesystem.html"
+>Filesystem access policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/local.html"
+>Local policy</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/mcp.html"
+>MCP access policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/network.html"
+>Network access policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/organization.html"
+>Organization policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/index.html"
+>AI Governance Audit Logs</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/configure.html"
+>Configure audit delivery</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/local.html"
+>Local audit logs</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/record-reference.html"
+>Audit record reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/siem.html"
+>SIEM forwarding</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/view-export.html"
+>View and export audit events</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/concepts.html"
+>Policy concepts</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/monitor-and-enforce/index.html"
+>Monitor and enforce</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/monitor-and-enforce/monitoring.html"
+>Monitoring policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/monitor-and-enforce/sign-in-enforcement.html"
+>Sign-in enforcement</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/reference/index.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/reference/api.html"
+>AI Governance API</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/reference/mcp-policy.html"
+>MCP policy reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/install.html"
+>Install Docker Sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/index.html"
+>Editor and app integrations</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/chatgpt.html"
+>Connect ChatGPT to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/claude-desktop.html"
+>Connect Claude Desktop to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/cursor.html"
+>Connect Cursor to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/t3-code.html"
+>Connect T3 Code to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/vscode.html"
+>Connect VS Code to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/mcp-gateway.html"
+>MCP gateway</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/release-notes.html"
+>Docker Sandboxes release notes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/security/index.html"
+>Security model</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/security/defaults.html"
+>Default security posture</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/security/isolation.html"
+>Isolation layers</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/usage.html"
+>Usage</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/index.html"
+>Workflow patterns</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/agent-skills.html"
+>Share agent skills</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/authentication.html"
+>Authenticate command-line tools</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/automation.html"
+>Run sandboxes in CI</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/development.html"
+>Develop and test locally</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/git.html"
+class="is-current" aria-current="page">Use Git with sandboxes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Use Git with sandboxes</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#direct-mode">Direct mode#</a></li>
+              <li class="lvl-2"><a href="#clone-mode">Clone mode#</a></li>
+              <li class="lvl-3"><a href="#sandbox-remote-behavior">Sandbox remote behavior#</a></li>
+              <li class="lvl-3"><a href="#single-task">Single task#</a></li>
+              <li class="lvl-3"><a href="#parallel-tasks">Parallel tasks#</a></li>
+              <li class="lvl-2"><a href="#host-worktree">Host worktree#</a></li>
+              <li class="lvl-2"><a href="#commit-signing">Commit signing#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Sandboxes support three approaches for working with Git repositories. The
+right choice depends on whether you want branch isolation and whether you
+plan to run tasks in parallel:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Direct mode</th>
+<th>Clone mode (<code>--clone</code>)</th>
+<th>Host worktree</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Branch management</td>
+<td>You, on the host</td>
+<td>Agent, inside the clone</td>
+<td>You, on the host</td>
+</tr>
+<tr>
+<td>Changes visible on host</td>
+<td>Immediately</td>
+<td>After fetch or agent push</td>
+<td>Immediately</td>
+</tr>
+<tr>
+<td>Agent can use Git</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Parallelism</td>
+<td>No</td>
+<td>Multiple agents, one sandbox</td>
+<td>One sandbox per parallel task</td>
+</tr>
+<tr>
+<td>Mode fixed at create time</td>
+<td>No</td>
+<td>Yes</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="direct-mode">Direct mode<a class="headerlink" href="#direct-mode" title="Permanent link">#</a></h2>
+<p>The simplest approach. The sandbox mounts your host working tree directly —
+the agent edits files in place and changes appear immediately. You manage
+branches yourself.</p>
+<ol>
+<li>Check out the branch you want to work on:</li>
+</ol>
+<p><code>console
+   $ git checkout -b feat/my-feature</code></p>
+<ol start="2">
+<li>Start the sandbox. No special flags needed:</li>
+</ol>
+<p><code>console
+   $ sbx run claude</code></p>
+<ol start="3">
+<li>The agent edits files in your working tree. Review diffs, stage, and
+   commit as you normally would:</li>
+</ol>
+<p><code>console
+   $ git diff
+   $ git add -p
+   $ git commit
+   $ git push -u origin feat/my-feature</code></p>
+<p>Because the sandbox mounts your working tree, switching branches on the host
+also changes what the agent sees. This makes direct mode well-suited for
+focused, single-branch work where you're collaborating with the agent
+turn-by-turn.</p>
+<h2 id="clone-mode">Clone mode<a class="headerlink" href="#clone-mode" title="Permanent link">#</a></h2>
+<p>In clone mode, <code>sbx</code> creates a separate Git clone inside the sandbox. The agent
+edits this clone instead of your host working tree. Its changes stay inside the
+sandbox until you fetch a branch or the agent pushes one to a remote. Your host
+repository is also available at <code>/run/sandbox/source</code>, but only with read
+access. The sandbox clone is not a Git worktree linked to your host checkout.</p>
+<p>A single clone-mode sandbox can hold multiple branches and worktrees for
+parallel tasks. The <code>--clone</code> flag creates the clone, but it doesn't separate
+one task from another. To keep parallel tasks isolated, instruct your agent tool
+to create a separate branch or worktree for each task.</p>
+<blockquote>
+<p>[!NOTE]
+<code>--clone</code> is a create-time flag and cannot be changed on an existing
+sandbox. To change a sandbox from clone mode to direct mode, remove and
+recreate it. To run both modes against the same repository, create separate
+sandboxes with distinct names.</p>
+</blockquote>
+<h3 id="sandbox-remote-behavior">Sandbox remote behavior<a class="headerlink" href="#sandbox-remote-behavior" title="Permanent link">#</a></h3>
+<p>The CLI copies Git remotes from your host repository, such as <code>origin</code> and
+<code>upstream</code>, into the in-sandbox clone. Local-path remotes, such as <code>file://</code>
+URLs and filesystem paths, aren't copied because they aren't reachable from
+inside the sandbox.</p>
+<p>The Git daemon that exposes the in-sandbox clone runs as part of the sandbox.
+It's only reachable while the sandbox is running:</p>
+<ul>
+<li><code>sbx stop</code> shuts down the daemon. <code>git fetch sandbox-&lt;name&gt;</code> fails until the
+  sandbox starts again.</li>
+<li>Restarting the sandbox assigns another ephemeral port to the daemon. The CLI
+  updates the <code>sandbox-&lt;name&gt;</code> remote URL in your host repository's Git config,
+  so fetching continues without manual reconfiguration.</li>
+<li><code>sbx rm</code> removes the sandbox, the daemon, the published port, and the
+  <code>sandbox-&lt;name&gt;</code> remote entry from your host repository.</li>
+</ul>
+<h3 id="single-task">Single task<a class="headerlink" href="#single-task" title="Permanent link">#</a></h3>
+<ol>
+<li>Start a clone-mode sandbox:</li>
+</ol>
+<p><code>console
+   $ sbx run --clone claude .</code></p>
+<ol start="2">
+<li>Ask the agent to create a branch before it starts editing:</li>
+</ol>
+<blockquote>
+<p>Create a branch <code>feat/my-feature</code> and make the changes.</p>
+</blockquote>
+<ol start="3">
+<li>Fetch the agent's branch when it's done:</li>
+</ol>
+<p><code>console
+   $ git fetch sandbox-&lt;name&gt;
+   $ git log sandbox-&lt;name&gt;/feat/my-feature
+   $ git diff main..sandbox-&lt;name&gt;/feat/my-feature</code></p>
+<ol start="4">
+<li>Pull the branch to the host and push, or ask the agent to push directly:</li>
+</ol>
+<p>```console
+   # Pull to host, then push
+   $ git checkout -b feat/my-feature sandbox-<name>/feat/my-feature
+   $ git push -u origin feat/my-feature
+   $ gh pr create</p>
+<p># Or ask the agent
+   # "Push feat/my-feature to origin and open a PR."
+   ```</p>
+<h3 id="parallel-tasks">Parallel tasks<a class="headerlink" href="#parallel-tasks" title="Permanent link">#</a></h3>
+<ol>
+<li>Start a clone-mode sandbox and open the
+   <a href="../agents/claude-code.html#agents-view">agents view</a>:</li>
+</ol>
+<p><code>console
+   $ sbx run --clone claude .</code></p>
+<ol start="2">
+<li>Dispatch each independent task to a separate background session. Your agent
+   tool may use branches or worktrees to keep their changes separate. If it
+   doesn't, add a project instruction such as:</li>
+</ol>
+<p><code>markdown
+   Always start each task on its own git branch before making changes.</code></p>
+<ol start="3">
+<li>Fetch all branches when the agents are done:</li>
+</ol>
+<p><code>console
+   $ git fetch sandbox-&lt;name&gt;
+   $ git log sandbox-&lt;name&gt;/feat/task-a
+   $ git log sandbox-&lt;name&gt;/feat/task-b</code></p>
+<ol start="4">
+<li>Check out the branches you want to keep and open PRs as normal.</li>
+</ol>
+<h2 id="host-worktree">Host worktree<a class="headerlink" href="#host-worktree" title="Permanent link">#</a></h2>
+<p>You can create a Git worktree on your host and point the sandbox at it. The
+agent edits files directly in the worktree — but because the sandbox mounts
+only the worktree directory (not the parent repository), it can't resolve the
+<code>.git</code> pointer file and has no Git access. The agent can read and write files,
+but can't commit, branch, or check status.</p>
+<p>This is useful when you want branch isolation without the create-time
+commitment of clone mode, and you're comfortable committing from the host
+yourself after reviewing the changes.</p>
+<ol>
+<li>Create the worktree on the host:</li>
+</ol>
+<p><code>console
+   $ git worktree add -b feat/my-feature ../my-feature-work</code></p>
+<ol start="2">
+<li>Start the sandbox with the worktree as the workspace:</li>
+</ol>
+<p><code>console
+   $ sbx run claude ../my-feature-work</code></p>
+<ol start="3">
+<li>The agent edits files. When it's done, commit and push from the host:</li>
+</ol>
+<p><code>console
+   $ cd ../my-feature-work
+   $ git diff
+   $ git add -p &amp;&amp; git commit
+   $ git push -u origin feat/my-feature
+   $ gh pr create</code></p>
+<h2 id="commit-signing">Commit signing<a class="headerlink" href="#commit-signing" title="Permanent link">#</a></h2>
+<p>SSH agent forwarding is enabled by default. When <code>SSH_AUTH_SOCK</code> is set,
+sandboxes forward your host SSH agent into the sandbox, so the agent can sign
+commits with your SSH key without the private key ever leaving your host. If
+you turned off forwarding or use a fixed SSH agent socket, see
+<a href="../configuration/credentials.html#ssh-agent">SSH agent configuration</a>.</p>
+<ol>
+<li>Make sure the signing key is loaded in your host SSH agent:</li>
+</ol>
+<p><code>console
+   $ ssh-add ~/.ssh/id_ed25519
+   $ ssh-add -L  # confirm the key appears</code></p>
+<ol start="2">
+<li>Inside the sandbox, configure Git to sign with SSH. Use the forwarded key
+   directly rather than a file path, since host paths don't exist inside the
+   sandbox:</li>
+</ol>
+<p><code>console
+   $ git config --global gpg.format ssh
+   $ git config --global user.signingkey "key::$(ssh-add -L | head -n 1)"</code></p>
+<ol start="3">
+<li>Sign commits as usual:</li>
+</ol>
+<p><code>console
+   $ git commit -S -m "feat: my change"</code></p>
+<p>To apply this configuration automatically to every sandbox, use the
+<a href="https://github.com/docker/sbx-kits-contrib/tree/main/git-ssh-sign" rel="noopener" target="_blank"><code>git-ssh-sign</code></a>
+community kit, which handles all of the above setup. See <a href="../customize/kits.html">Kits</a>
+if you want to package it alongside other sandbox customizations.</p>
+<p>For troubleshooting, see
+<a href="../troubleshooting.html#sandbox-commits-arent-signed">Sandbox commits aren't signed</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../ai/sandboxes/workflows/development.html">
+          <span class="muted">Anterior</span>Develop and test locally
+        </a>
+        <a class="pager-next" href="../../../build/index.html">
+          <span class="muted">Siguiente</span>Docker Build
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

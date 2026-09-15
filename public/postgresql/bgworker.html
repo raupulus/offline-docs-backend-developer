@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Background Worker Processes · PostgreSQL</title>
+<meta name="description" content="Background Worker Processes - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/bgworker.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Background Worker Processes">
+<meta property="og:description" content="Background Worker Processes - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Background Worker Processes">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Background Worker Processes",
+"url": "https://docs.raupulus.dev/postgresql/bgworker.html",  "description": "Background Worker Processes - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./history.html"
+>A Brief History of PostgreSQL</a>
+              </li>
+              <li>
+                <a href="./acronyms.html"
+>Acronyms</a>
+              </li>
+              <li>
+                <a href="./contrib.html"
+>Additional Supplied Modules and Extensions</a>
+              </li>
+              <li>
+                <a href="./advanced.html"
+>Advanced Features</a>
+              </li>
+              <li>
+                <a href="./ecpg.html"
+>ALLOCATE DESCRIPTOR</a>
+              </li>
+              <li>
+                <a href="./amcheck.html"
+>amcheck — tools to verify table and index consistency</a>
+              </li>
+              <li>
+                <a href="./archive-modules.html"
+>Archive Modules</a>
+              </li>
+              <li>
+                <a href="./array.html"
+>Arrays</a>
+              </li>
+              <li>
+                <a href="./auth-delay.html"
+>auth_delay — pause on authentication failure</a>
+              </li>
+              <li>
+                <a href="./auto-explain.html"
+>auto_explain — log execution plans of slow queries</a>
+              </li>
+              <li>
+                <a href="./btree.html"
+>B-Tree Indexes</a>
+              </li>
+              <li>
+                <a href="./bgworker.html"
+class="is-current" aria-current="page">Background Worker Processes</a>
+              </li>
+              <li>
+                <a href="./backup.html"
+>Backup and Restore</a>
+              </li>
+              <li>
+                <a href="./backup-manifest.html"
+>Backup Manifest Format</a>
+              </li>
+              <li>
+                <a href="./basebackup-to-shell.html"
+>basebackup_to_shell — example &#34;shell&#34; pg_basebackup module</a>
+              </li>
+              <li>
+                <a href="./basic-archive.html"
+>basic_archive — an example WAL archive module</a>
+              </li>
+              <li>
+                <a href="./biblio.html"
+>Bibliography</a>
+              </li>
+              <li>
+                <a href="./bloom.html"
+>bloom — bloom filter index access method</a>
+              </li>
+              <li>
+                <a href="./brin.html"
+>BRIN Indexes</a>
+              </li>
+              <li>
+                <a href="./btree-gin.html"
+>btree_gin — GIN operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./btree-gist.html"
+>btree_gist — GiST operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./problems.html"
+>Bug Reporting Guidelines</a>
+              </li>
+              <li>
+                <a href="./indextypes.html"
+>Built-in Index Access Methods</a>
+              </li>
+              <li>
+                <a href="./citext.html"
+>citext — a case-insensitive character string type</a>
+              </li>
+              <li>
+                <a href="./client-auth.html"
+>Client Authentication</a>
+              </li>
+              <li>
+                <a href="./color.html"
+>Color Support</a>
+              </li>
+              <li>
+                <a href="./dfunc.html"
+>Compiling and Linking Dynamically-Loaded Functions</a>
+              </li>
+              <li>
+                <a href="./rowtypes.html"
+>Composite Types</a>
+              </li>
+              <li>
+                <a href="./mvcc.html"
+>Concurrency Control</a>
+              </li>
+              <li>
+                <a href="./notation.html"
+>Conventions</a>
+              </li>
+              <li>
+                <a href="./cube.html"
+>cube — a multi-dimensional cube data type</a>
+              </li>
+              <li>
+                <a href="./custom-rmgr.html"
+>Custom WAL Resource Managers</a>
+              </li>
+              <li>
+                <a href="./ddl.html"
+>Data Definition</a>
+              </li>
+              <li>
+                <a href="./dml.html"
+>Data Manipulation</a>
+              </li>
+              <li>
+                <a href="./datatype.html"
+>Data Types</a>
+              </li>
+              <li>
+                <a href="./storage.html"
+>Database Physical Storage</a>
+              </li>
+              <li>
+                <a href="./user-manag.html"
+>Database Roles</a>
+              </li>
+              <li>
+                <a href="./datetime.html"
+>Date/Time Support</a>
+              </li>
+              <li>
+                <a href="./dblink.html"
+>dblink_connect</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-default-roles.html"
+>Default Roles Renamed to Predefined Roles</a>
+              </li>
+              <li>
+                <a href="./dict-int.html"
+>dict_int — example full-text search dictionary for integers</a>
+              </li>
+              <li>
+                <a href="./dict-xsyn.html"
+>dict_xsyn — example synonym full-text search dictionary</a>
+              </li>
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+>file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Background Worker Processes</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/bgworker.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#background-worker-processes">Background Worker Processes#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="background-worker-processes">Background Worker Processes<a class="headerlink" href="#background-worker-processes" title="Permanent link">#</a></h2>
+<p>Background workers</p>
+<p>PostgreSQL can be extended to run user-supplied code in separate processes. Such processes are started, stopped and monitored by <code>postgres</code>, which permits them to have a lifetime closely linked to the server's status. These processes are attached to PostgreSQL's shared memory area and have the option to connect to databases internally; they can also run multiple transactions serially, just like a regular client-connected server process. Also, by linking to libpq they can connect to the server and behave like a regular client application.</p>
+<blockquote>
+<p>[!WARNING]
+There are considerable robustness and security risks in using background worker processes because, being written in the <code>C</code> language, they have unrestricted access to data. Administrators wishing to enable modules that include background worker processes should exercise extreme caution. Only carefully audited modules should be permitted to run background worker processes.</p>
+</blockquote>
+<p>Background workers can be initialized at the time that PostgreSQL is started by including the module name in <code>shared_preload_libraries</code>. A module wishing to run a background worker can register it by calling <code>RegisterBackgroundWorker(BackgroundWorker *worker)</code> from its <code>_PG_init()</code> function. Background workers can also be started after the system is up and running by calling <code>RegisterDynamicBackgroundWorker(BackgroundWorker *worker, BackgroundWorkerHandle **handle)</code>. Unlike <code>RegisterBackgroundWorker</code>, which can only be called from within the postmaster process, <code>RegisterDynamicBackgroundWorker</code> must be called from a regular backend or another background worker.</p>
+<p>The structure BackgroundWorker is defined thus:</p>
+<div class="codehilite"><pre><span></span><code>typedef void (*bgworker_main_type)(Datum main_arg);
+typedef struct BackgroundWorker
+{
+    char        bgw_name[BGW_MAXLEN];
+    char        bgw_type[BGW_MAXLEN];
+    int         bgw_flags;
+    BgWorkerStartTime bgw_start_time;
+    int         bgw_restart_time;       /* in seconds, or BGW_NEVER_RESTART */
+    char        bgw_library_name[MAXPGPATH];
+    char        bgw_function_name[BGW_MAXLEN];
+    Datum       bgw_main_arg;
+    char        bgw_extra[BGW_EXTRALEN];
+    pid_t       bgw_notify_pid;
+} BackgroundWorker;
+</code></pre></div>
+
+<p>bgw_name and bgw_type are strings to be used in log messages, process listings and similar contexts. bgw_type should be the same for all background workers of the same type, so that it is possible to group such workers in a process listing, for example. bgw_name on the other hand can contain additional information about the specific process. (Typically, the string for bgw_name will contain the type somehow, but that is not strictly required.)</p>
+<p>bgw_flags is a bitwise-or'd bit mask indicating the capabilities that the module wants. Possible values are:</p>
+<p><code>BGWORKER_SHMEM_ACCESS</code><br>
+<span class="indexterm"></span> Requests shared memory access. This flag is required.</p>
+<p><code>BGWORKER_BACKEND_DATABASE_CONNECTION</code><br>
+<span class="indexterm"></span> Requests the ability to establish a database connection through which it can later run transactions and queries. A background worker using <code>BGWORKER_BACKEND_DATABASE_CONNECTION</code> to connect to a database must also attach shared memory using <code>BGWORKER_SHMEM_ACCESS</code>, or worker start-up will fail.</p>
+<p>bgw_start_time is the server state during which <code>postgres</code> should start the process; it can be one of <code>BgWorkerStart_PostmasterStart</code> (start as soon as <code>postgres</code> itself has finished its own initialization; processes requesting this are not eligible for database connections), <code>BgWorkerStart_ConsistentState</code> (start as soon as a consistent state has been reached in a hot standby, allowing processes to connect to databases and run read-only queries), and <code>BgWorkerStart_RecoveryFinished</code> (start as soon as the system has entered normal read-write state). Note the last two values are equivalent in a server that's not a hot standby. Note that this setting only indicates when the processes are to be started; they do not stop when a different state is reached.</p>
+<p>bgw_restart_time is the interval, in seconds, that <code>postgres</code> should wait before restarting the process in the event that it crashes. It can be any positive value, or <code>BGW_NEVER_RESTART</code>, indicating not to restart the process in case of a crash.</p>
+<p>bgw_library_name is the name of a library in which the initial entry point for the background worker should be sought. The named library will be dynamically loaded by the worker process and bgw_function_name will be used to identify the function to be called. If calling a function in the core code, this must be set to <code>"postgres"</code>.</p>
+<p>bgw_function_name is the name of the function to use as the initial entry point for the new background worker. If this function is in a dynamically loaded library, it must be marked <code>PGDLLEXPORT</code> (and not <code>static</code>).</p>
+<p>bgw_main_arg is the <code>Datum</code> argument to the background worker main function. This main function should take a single argument of type <code>Datum</code> and return <code>void</code>. bgw_main_arg will be passed as the argument. In addition, the global variable <code>MyBgworkerEntry</code> points to a copy of the BackgroundWorker structure passed at registration time; the worker may find it helpful to examine this structure.</p>
+<p>On Windows (and anywhere else where <code>EXEC_BACKEND</code> is defined) or in dynamic background workers it is not safe to pass a <code>Datum</code> by reference, only by value. If an argument is required, it is safest to pass an int32 or other small value and use that as an index into an array allocated in shared memory. If a value like a <code>cstring</code> or <code>text</code> is passed then the pointer won't be valid from the new background worker process.</p>
+<p>bgw_extra can contain extra data to be passed to the background worker. Unlike bgw_main_arg, this data is not passed as an argument to the worker's main function, but it can be accessed via <code>MyBgworkerEntry</code>, as discussed above.</p>
+<p>bgw_notify_pid is the PID of a PostgreSQL backend process to which the postmaster should send <code>SIGUSR1</code> when the process is started or exits. It should be 0 for workers registered at postmaster startup time, or when the backend registering the worker does not wish to wait for the worker to start up. Otherwise, it should be initialized to <code>MyProcPid</code>.</p>
+<p>Once running, the process can connect to a database by calling <code>BackgroundWorkerInitializeConnection(char *dbname, char *username, uint32 flags)</code> or <code>BackgroundWorkerInitializeConnectionByOid(Oid dboid, Oid useroid, uint32 flags)</code>. This allows the process to run transactions and queries using the <code>SPI</code> interface. If <code>dbname</code> is NULL or <code>dboid</code> is <code>InvalidOid</code>, the session is not connected to any particular database, but shared catalogs can be accessed. If <code>username</code> is NULL or <code>useroid</code> is <code>InvalidOid</code>, the process will run as the superuser created during <code>initdb</code>. If <code>BGWORKER_BYPASS_ALLOWCONN</code> is specified as <code>flags</code> it is possible to bypass the restriction to connect to databases not allowing user connections. If <code>BGWORKER_BYPASS_ROLELOGINCHECK</code> is specified as <code>flags</code> it is possible to bypass the login check for the role used to connect to databases. A background worker can only call one of these two functions, and only once. It is not possible to switch databases.</p>
+<p>Signals are initially blocked when control reaches the background worker's main function, and must be unblocked by it; this is to allow the process to customize its signal handlers, if necessary. Signals can be unblocked in the new process by calling <code>BackgroundWorkerUnblockSignals</code> and blocked by calling <code>BackgroundWorkerBlockSignals</code>.</p>
+<p>If bgw_restart_time for a background worker is configured as <code>BGW_NEVER_RESTART</code>, or if it exits with an exit code of 0 or is terminated by <code>TerminateBackgroundWorker</code>, it will be automatically unregistered by the postmaster on exit. Otherwise, it will be restarted after the time period configured via bgw_restart_time, or immediately if the postmaster reinitializes the cluster due to a backend failure. Backends which need to suspend execution only temporarily should use an interruptible sleep rather than exiting; this can be achieved by calling <code>WaitLatch()</code>. Make sure the <code>WL_POSTMASTER_DEATH</code> flag is set when calling that function, and verify the return code for a prompt exit in the emergency case that <code>postgres</code> itself has terminated.</p>
+<p>When a background worker is registered using the <code>RegisterDynamicBackgroundWorker</code> function, it is possible for the backend performing the registration to obtain information regarding the status of the worker. Backends wishing to do this should pass the address of a <code>BackgroundWorkerHandle *</code> as the second argument to <code>RegisterDynamicBackgroundWorker</code>. If the worker is successfully registered, this pointer will be initialized with an opaque handle that can subsequently be passed to <code>GetBackgroundWorkerPid(BackgroundWorkerHandle *, pid_t *)</code> or <code>TerminateBackgroundWorker(BackgroundWorkerHandle *)</code>. <code>GetBackgroundWorkerPid</code> can be used to poll the status of the worker: a return value of <code>BGWH_NOT_YET_STARTED</code> indicates that the worker has not yet been started by the postmaster; <code>BGWH_STOPPED</code> indicates that it has been started but is no longer running; and <code>BGWH_STARTED</code> indicates that it is currently running. In this last case, the PID will also be returned via the second argument. <code>TerminateBackgroundWorker</code> causes the postmaster to send <code>SIGTERM</code> to the worker if it is running, and to unregister it as soon as it is not.</p>
+<p>In some cases, a process which registers a background worker may wish to wait for the worker to start up. This can be accomplished by initializing bgw_notify_pid to <code>MyProcPid</code> and then passing the <code>BackgroundWorkerHandle *</code> obtained at registration time to <code>WaitForBackgroundWorkerStartup(BackgroundWorkerHandle *handle, pid_t *)</code> function. This function will block until the postmaster has attempted to start the background worker, or until the postmaster dies. If the background worker is running, the return value will be <code>BGWH_STARTED</code>, and the PID will be written to the provided address. Otherwise, the return value will be <code>BGWH_STOPPED</code> or <code>BGWH_POSTMASTER_DIED</code>.</p>
+<p>A process can also wait for a background worker to shut down, by using the <code>WaitForBackgroundWorkerShutdown(BackgroundWorkerHandle *handle)</code> function and passing the <code>BackgroundWorkerHandle *</code> obtained at registration. This function will block until the background worker exits, or postmaster dies. When the background worker exits, the return value is <code>BGWH_STOPPED</code>, if postmaster dies it will return <code>BGWH_POSTMASTER_DIED</code>.</p>
+<p>Background workers can send asynchronous notification messages, either by using the <code>NOTIFY</code> command via SPI, or directly via <code>Async_Notify()</code>. Such notifications will be sent at transaction commit. Background workers should not register to receive asynchronous notifications with the <code>LISTEN</code> command, as there is no infrastructure for a worker to consume such notifications.</p>
+<p>The <code>src/test/modules/worker_spi</code> module contains a working example, which demonstrates some useful techniques.</p>
+<p>The maximum number of registered background workers is limited by <a href="#guc-max-worker-processes">???</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./btree.html">
+          <span class="muted">Anterior</span>B-Tree Indexes
+        </a>
+        <a class="pager-next" href="./backup.html">
+          <span class="muted">Siguiente</span>Backup and Restore
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>revert-a-faulty-merge · Git</title>
+<meta name="description" content="revert-a-faulty-merge - Documentación técnica offline de Git. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/git/howto/revert-a-faulty-merge.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="revert-a-faulty-merge">
+<meta property="og:description" content="revert-a-faulty-merge - Documentación técnica offline de Git. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="revert-a-faulty-merge">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "revert-a-faulty-merge",
+"url": "https://docs.raupulus.dev/git/howto/revert-a-faulty-merge.html",  "description": "revert-a-faulty-merge - Documentación técnica de Git en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">Git</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="git" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Git…"
+         aria-label="Buscar en Git" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Git
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Git">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../commands/git-bisect-lk2009.html">Commands</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../formats/gitattributes.html">Formats</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../guides/user-manual.html">Guides</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Howto
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../howto/update-hook-example.html"
+>$(id -u -n)</a>
+              </li>
+              <li>
+                <a href="../howto/coordinate-embargoed-releases.html"
+>coordinate-embargoed-releases</a>
+              </li>
+              <li>
+                <a href="../howto/keep-canonical-history-correct.html"
+>keep-canonical-history-correct</a>
+              </li>
+              <li>
+                <a href="../howto/maintain-git.html"
+>maintain-git</a>
+              </li>
+              <li>
+                <a href="../howto/new-command.html"
+>new-command</a>
+              </li>
+              <li>
+                <a href="../howto/rebase-from-internal-branch.html"
+>rebase-from-internal-branch</a>
+              </li>
+              <li>
+                <a href="../howto/rebuild-from-update-hook.html"
+>rebuild-from-update-hook</a>
+              </li>
+              <li>
+                <a href="../howto/recover-corrupted-blob-object.html"
+>recover-corrupted-blob-object</a>
+              </li>
+              <li>
+                <a href="../howto/recover-corrupted-object-harder.html"
+>recover-corrupted-object-harder</a>
+              </li>
+              <li>
+                <a href="../howto/revert-a-faulty-merge.html"
+class="is-current" aria-current="page">revert-a-faulty-merge</a>
+              </li>
+              <li>
+                <a href="../howto/revert-branch-rebase.html"
+>revert-branch-rebase</a>
+              </li>
+              <li>
+                <a href="../howto/separating-topic-branches.html"
+>separating-topic-branches</a>
+              </li>
+              <li>
+                <a href="../howto/setup-git-server-over-http.html"
+>setup-git-server-over-http</a>
+              </li>
+              <li>
+                <a href="../howto/use-git-daemon.html"
+>use-git-daemon</a>
+              </li>
+              <li>
+                <a href="../howto/using-merge-subtree.html"
+>using-merge-subtree</a>
+              </li>
+              <li>
+                <a href="../howto/using-signed-tag-in-pull-request.html"
+>using-signed-tag-in-pull-request</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">revert-a-faulty-merge</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://git-scm.com/doc/revert-a-faulty-merge" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia GPL-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/git.md" download="git.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Git en un solo archivo Markdown">Bundle .md (3.3 MB) ↓</a>
+      </p>
+
+
+      <div class="doc-body">
+        <p>Date: Fri, 19 Dec 2008 00:45:19 -0800 From: Linus Torvalds \&lt;torvalds@linux-foundation.org&gt;, Junio C Hamano \&lt;<a href="gitster@pobox.com">gitster@pobox.com</a>&gt; Subject: Re: Odd merge behaviour involving reverts Abstract: Sometimes a branch that was already merged to the mainline is later found to be faulty. Linus and Junio give guidance on recovering from such a premature merge and continuing development after the offending branch is fixed. Message-ID: \&lt;7vocz8a6zk.fsf@gitster.siamese.dyndns.org&gt; References: \&lt;alpine.LFD.2.00.0812181949450.14014@localhost.localdomain&gt; Content-type: text/asciidoc</p>
+<p>How to revert a faulty merge ============================</p>
+<p>Alan \&lt;<a href="alan@clueserver.org">alan@clueserver.org</a>&gt; said:</p>
+<div class="codehilite"><pre><span></span><code>I have a master branch.  We have a branch off of that that some
+developers are doing work on.  They claim it is ready. We merge it
+into the master branch.  It breaks something so we revert the merge.
+They make changes to the code.  they get it to a point where they say
+it is ok and we merge again.
+
+When examined, we find that code changes made before the revert are
+not in the master branch, but code changes after are in the master
+branch.
+</code></pre></div>
+
+<p>and asked for help recovering from this situation.</p>
+<p>The history immediately after the "revert of the merge" would look like this:</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x---W
+              /
+      ---A---B
+</code></pre></div>
+
+<p>where A and B are on the side development that was not so good, M is the merge that brings these premature changes into the mainline, x are changes unrelated to what the side branch did and already made on the mainline, and W is the "revert of the merge M" (doesn’t W look M upside down?). IOW, <code>"diff</code> <code>W^..W"</code> is similar to <code>"diff</code> <code>-R</code> <code>M^..M"</code>.</p>
+<p>Such a "revert" of a merge can be made with:</p>
+<div class="codehilite"><pre><span></span><code>$ git revert -m 1 M
+</code></pre></div>
+
+<p>After the developers of the side branch fix their mistakes, the history may look like this:</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x---W---x
+              /
+      ---A---B-------------------C---D
+</code></pre></div>
+
+<p>where C and D are to fix what was broken in A and B, and you may already have some other changes on the mainline after W.</p>
+<p>If you merge the updated side branch (with D at its tip), none of the changes made in A or B will be in the result, because they were reverted by W. That is what Alan saw.</p>
+<p>Linus explains the situation:</p>
+<div class="codehilite"><pre><span></span><code>Reverting a regular commit just effectively undoes what that commit
+did, and is fairly straightforward. But reverting a merge commit also
+undoes the _data_ that the commit changed, but it does absolutely
+nothing to the effects on _history_ that the merge had.
+
+So the merge will still exist, and it will still be seen as joining
+the two branches together, and future merges will see that merge as
+the last shared state - and the revert that reverted the merge brought
+in will not affect that at all.
+
+So a &quot;revert&quot; undoes the data changes, but it&#39;s very much _not_ an
+&quot;undo&quot; in the sense that it doesn&#39;t undo the effects of a commit on
+the repository history.
+
+So if you think of &quot;revert&quot; as &quot;undo&quot;, then you&#39;re going to always
+miss this part of reverts. Yes, it undoes the data, but no, it doesn&#39;t
+undo history.
+</code></pre></div>
+
+<p>In such a situation, you would want to first revert the previous revert, which would make the history look like this:</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x---W---x---Y
+              /
+      ---A---B-------------------C---D
+</code></pre></div>
+
+<p>where Y is the revert of W. Such a "revert of the revert" can be done with:</p>
+<div class="codehilite"><pre><span></span><code>$ git revert W
+</code></pre></div>
+
+<p>This history would (ignoring possible conflicts between what W and W..Y changed) be equivalent to not having W or Y at all in the history:</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x-------x----
+              /
+      ---A---B-------------------C---D
+</code></pre></div>
+
+<p>and merging the side branch again will not have conflict arising from an earlier revert and revert of the revert.</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x-------x-------*
+              /                       /
+      ---A---B-------------------C---D
+</code></pre></div>
+
+<p>Of course the changes made in C and D still can conflict with what was done by any of the x, but that is just a normal merge conflict.</p>
+<p>On the other hand, if the developers of the side branch discarded their faulty A and B, and redone the changes on top of the updated mainline after the revert, the history would have looked like this:</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x---W---x---x
+              /                 \
+      ---A---B                   A&#39;--B&#39;--C&#39;
+</code></pre></div>
+
+<p>If you reverted the revert in such a case as in the previous example:</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x---W---x---x---Y---*
+              /                 \         /
+      ---A---B                   A&#39;--B&#39;--C&#39;
+</code></pre></div>
+
+<p>where Y is the revert of W, A’ and B’ are rerolled A and B, and there may also be a further fix-up C’ on the side branch. <code>"diff</code> <code>Y^..Y"</code> is similar to <code>"diff</code> <code>-R</code> <code>W^..W"</code> (which in turn means it is similar to <code>"diff</code> <code>M^..M"</code>), and <code>"diff</code> <code>A’^..C’"</code> by definition would be similar but different from that, because it is a rerolled series of the earlier change. There will be a lot of overlapping changes that result in conflicts. So do not do "revert of revert" blindly without thinking..</p>
+<div class="codehilite"><pre><span></span><code>---o---o---o---M---x---x---W---x---x
+              /                 \
+      ---A---B                   A&#39;--B&#39;--C&#39;
+</code></pre></div>
+
+<p>In the history with rebased side branch, W (and M) are behind the merge base of the updated branch and the tip of the mainline, and they should merge without the past faulty merge and its revert getting in the way.</p>
+<p>To recap, these are two very different scenarios, and they want two very different resolution strategies:</p>
+<ul>
+<li>If the faulty side branch was fixed by adding corrections on top, then doing a revert of the previous revert would be the right thing to do.</li>
+</ul>
+<!-- -->
+
+<ul>
+<li>If the faulty side branch whose effects were discarded by an earlier revert of a merge was rebuilt from scratch (i.e. rebasing and fixing, as you seem to have interpreted), then re-merging the result without doing anything else fancy would be the right thing to do. (See the ADDENDUM below for how to rebuild a branch from scratch without changing its original branching-off point.)</li>
+</ul>
+<p>However, there are things to keep in mind when reverting a merge (and reverting such a revert).</p>
+<p>For example, think about what reverting a merge (and then reverting the revert) does to bisectability. Ignore the fact that the revert of a revert is undoing it - just think of it as a "single commit that does a lot". Because that is what it does.</p>
+<p>When you have a problem you are chasing down, and you hit a "revert this merge", what you’re hitting is essentially a single commit that contains all the changes (but obviously in reverse) of all the commits that got merged. So it’s debugging hell, because now you don’t have lots of small changes that you can try to pinpoint which <em>part</em> of it changes.</p>
+<p>But does it all work? Sure it does. You can revert a merge, and from a purely technical angle, Git did it very naturally and had no real troubles. It just considered it a change from "state before merge" to "state after merge", and that was it. Nothing complicated, nothing odd, nothing really dangerous. Git will do it without even thinking about it.</p>
+<p>So from a technical angle, there’s nothing wrong with reverting a merge, but from a workflow angle it’s something that you generally should try to avoid.</p>
+<p>If at all possible, for example, if you find a problem that got merged into the main tree, rather than revert the merge, try <em>really</em> hard to bisect the problem down into the branch you merged, and just fix it, or try to revert the individual commit that caused it.</p>
+<p>Yes, it’s more complex, and no, it’s not always going to work (sometimes the answer is: "oops, I really shouldn’t have merged it, because it wasn’t ready yet, and I really need to undo <em>all</em> of the merge"). So then you really should revert the merge, but when you want to re-do the merge, you now need to do it by reverting the revert.</p>
+<p>ADDENDUM</p>
+<p>Sometimes you have to rewrite one of a topic branch’s commits <strong>and</strong> you can’t change the topic’s branching-off point. Consider the following situation:</p>
+<div class="codehilite"><pre><span></span><code>P---o---o---M---x---x---W---x
+ \         /
+  A---B---C
+</code></pre></div>
+
+<p>where commit W reverted commit M because it turned out that commit B was wrong and needs to be rewritten, but you need the rewritten topic to still branch from commit P (perhaps P is a branching-off point for yet another branch, and you want be able to merge the topic into both branches).</p>
+<p>The natural thing to do in this case is to checkout the A-B-C branch and use "rebase -i P" to change commit B. However this does not rewrite commit A, because "rebase -i" by default fast-forwards over any initial commits selected with the "pick" command. So you end up with this:</p>
+<div class="codehilite"><pre><span></span><code>P---o---o---M---x---x---W---x
+ \         /
+  A---B---C   &lt;-- old branch
+   \
+    B&#39;---C&#39;   &lt;-- naively rewritten branch
+</code></pre></div>
+
+<p>To merge A-B’-C’ into the mainline branch you would still have to first revert commit W in order to pick up the changes in A, but then it’s likely that the changes in B’ will conflict with the original B changes re-introduced by the reversion of W.</p>
+<p>However, you can avoid these problems if you recreate the entire branch, including commit A:</p>
+<div class="codehilite"><pre><span></span><code>  A&#39;---B&#39;---C&#39;  &lt;-- completely rewritten branch
+ /
+P---o---o---M---x---x---W---x
+ \         /
+  A---B---C
+</code></pre></div>
+
+<p>You can merge A’-B’-C’ into the mainline branch without worrying about first reverting W. Mainline’s history would look like this:</p>
+<div class="codehilite"><pre><span></span><code>  A&#39;---B&#39;---C&#39;------------------
+ /                              \
+P---o---o---M---x---x---W---x---M2
+ \         /
+  A---B---C
+</code></pre></div>
+
+<p>But if you don’t actually need to change commit A, then you need some way to recreate it as a new commit with the same changes in it. The rebase command’s --no-ff option provides a way to do this:</p>
+<div class="codehilite"><pre><span></span><code>$ git rebase [-i] --no-ff P
+</code></pre></div>
+
+<p>The --no-ff option creates a new branch A’-B’-C’ with all-new commits (all the SHA IDs will be different) even if in the interactive case you only actually modify commit B. You can then merge this new branch directly into the mainline branch and be sure you’ll get all of the branch’s changes.</p>
+<p>You can also use --no-ff in cases where you just add extra commits to the topic to fix it up. Let’s revisit the situation discussed at the start of this howto:</p>
+<div class="codehilite"><pre><span></span><code>P---o---o---M---x---x---W---x
+ \         /
+  A---B---C----------------D---E   &lt;-- fixed-up topic branch
+</code></pre></div>
+
+<p>At this point, you can use --no-ff to recreate the topic branch:</p>
+<div class="codehilite"><pre><span></span><code>$ git checkout E
+$ git rebase --no-ff P
+</code></pre></div>
+
+<p>yielding</p>
+<div class="codehilite"><pre><span></span><code>  A&#39;---B&#39;---C&#39;------------D&#39;---E&#39;  &lt;-- recreated topic branch
+ /
+P---o---o---M---x---x---W---x
+ \         /
+  A---B---C----------------D---E
+</code></pre></div>
+
+<p>You can merge the recreated branch into the mainline without reverting commit W, and mainline’s history will look like this:</p>
+<div class="codehilite"><pre><span></span><code>  A&#39;---B&#39;---C&#39;------------D&#39;---E&#39;
+ /                              \
+P---o---o---M---x---x---W---x---M2
+ \         /
+  A---B---C
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../howto/recover-corrupted-object-harder.html">
+          <span class="muted">Anterior</span>recover-corrupted-object-harder
+        </a>
+        <a class="pager-next" href="../howto/revert-branch-rebase.html">
+          <span class="muted">Siguiente</span>revert-branch-rebase
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

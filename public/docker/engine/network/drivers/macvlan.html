@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Macvlan network driver · Docker</title>
+<meta name="description" content="Macvlan network driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/network/drivers/macvlan.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Macvlan network driver">
+<meta property="og:description" content="Macvlan network driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Macvlan network driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Macvlan network driver",
+"url": "https://docs.raupulus.dev/docker/engine/network/drivers/macvlan.html",  "description": "Macvlan network driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/install/linux-postinstall.html"
+>Linux post-installation steps for Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/raspberry-pi-os.html"
+>Install Docker Engine on Raspberry Pi OS (32-bit / armhf)</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/rhel.html"
+>Install Docker Engine on RHEL</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/ubuntu.html"
+>Install Docker Engine on Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/index.html"
+>View container logs</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/configure.html"
+>Configure logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/index.html"
+>Logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/journald.html"
+>Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/splunk.html"
+>Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/syslog.html"
+>Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/dual-logging.html"
+>Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/pruning.html"
+>Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/macvlan.html"
+class="is-current" aria-current="page">Macvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/none.html"
+>None network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/overlay.html"
+>Overlay network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-iptables.html"
+>Docker with iptables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-nftables.html"
+>Docker with nftables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/links.html"
+>Legacy container links</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/port-publishing.html"
+>Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.07.html"
+>Docker Engine 17.07 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.09.html"
+>Docker Engine 17.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Macvlan network driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#platform-support-and-requirements">Platform support and requirements#</a></li>
+              <li class="lvl-2"><a href="#considerations">Considerations#</a></li>
+              <li class="lvl-2"><a href="#options">Options#</a></li>
+              <li class="lvl-2"><a href="#create-a-macvlan-network">Create a Macvlan network#</a></li>
+              <li class="lvl-3"><a href="#bridge-mode">Bridge mode#</a></li>
+              <li class="lvl-3"><a href="#8021q-trunk-bridge-mode">802.1Q trunk bridge mode#</a></li>
+              <li class="lvl-3"><a href="#use-an-ipvlan-instead-of-macvlan">Use an IPvlan instead of Macvlan#</a></li>
+              <li class="lvl-2"><a href="#use-ipv6">Use IPv6#</a></li>
+              <li class="lvl-3"><a href="#use-router-assigned-ipv6-addresses">Use router-assigned IPv6 addresses#</a></li>
+              <li class="lvl-2"><a href="#usage-examples">Usage examples#</a></li>
+              <li class="lvl-3"><a href="#bridge-mode-example">Bridge mode example#</a></li>
+              <li class="lvl-3"><a href="#8021q-trunked-bridge-mode-example">802.1Q trunked bridge mode example#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Some applications, especially legacy applications or applications which monitor
+network traffic, expect to be directly connected to the physical network. In
+this type of situation, you can use the <code>macvlan</code> network driver to assign a MAC
+address to each container's virtual network interface, making it appear to be
+a physical network interface directly connected to the physical network. In this
+case, you need to designate a physical interface on your Docker host to use for
+the Macvlan, as well as the subnet and gateway of the network. You can even
+isolate your Macvlan networks using different physical network interfaces.</p>
+<h2 id="platform-support-and-requirements">Platform support and requirements<a class="headerlink" href="#platform-support-and-requirements" title="Permanent link">#</a></h2>
+<ul>
+<li>The macvlan driver only works on Linux hosts. It is not supported on
+  Docker Desktop for Mac or Windows, or Docker Engine on Windows.</li>
+<li>Most cloud providers block macvlan networking. You may need physical access to
+  your networking equipment.</li>
+<li>Requires at least Linux kernel version 3.9 (version 4.0 or later is
+  recommended).</li>
+<li>The macvlan driver is not supported in rootless mode.</li>
+</ul>
+<h2 id="considerations">Considerations<a class="headerlink" href="#considerations" title="Permanent link">#</a></h2>
+<ul>
+<li>
+<p>You may unintentionally degrade your network due to IP address
+  exhaustion or to "VLAN spread", a situation that occurs when you have an
+  inappropriately large number of unique MAC addresses in your network.</p>
+</li>
+<li>
+<p>Your networking equipment needs to be able to handle "promiscuous mode",
+  where one physical interface can be assigned multiple MAC addresses.</p>
+</li>
+<li>
+<p>If your application can work using a bridge (on a single Docker host) or
+  overlay (to communicate across multiple Docker hosts), these solutions may be
+  better in the long term.</p>
+</li>
+<li>
+<p>Containers attached to a macvlan network cannot communicate with the host
+  directly, this is a restriction in the Linux kernel. If you need communication
+  between the host and the containers, you can connect the containers to a
+  bridge network as well as the macvlan. It is also possible to create a
+  macvlan interface on the host with the same parent interface, and assign it
+  an IP address in the Docker network's subnet.</p>
+</li>
+</ul>
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">#</a></h2>
+<p>The following table describes the driver-specific options that you can pass to
+<code>--opt</code> when creating a network using the <code>macvlan</code> driver.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>macvlan_mode</code></td>
+<td><code>bridge</code></td>
+<td>Sets the Macvlan mode. Can be one of: <code>bridge</code>, <code>vepa</code>, <code>passthru</code>, <code>private</code></td>
+</tr>
+<tr>
+<td><code>parent</code></td>
+<td></td>
+<td>Specifies the parent interface to use.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="create-a-macvlan-network">Create a Macvlan network<a class="headerlink" href="#create-a-macvlan-network" title="Permanent link">#</a></h2>
+<p>When you create a Macvlan network, it can either be in bridge mode or 802.1Q
+trunk bridge mode.</p>
+<ul>
+<li>
+<p>In bridge mode, Macvlan traffic goes through a physical device on the host.</p>
+</li>
+<li>
+<p>In 802.1Q trunk bridge mode, traffic goes through an 802.1Q sub-interface
+  which Docker creates on the fly. This allows you to control routing and
+  filtering at a more granular level.</p>
+</li>
+</ul>
+<h3 id="bridge-mode">Bridge mode<a class="headerlink" href="#bridge-mode" title="Permanent link">#</a></h3>
+<p>To create a <code>macvlan</code> network which bridges with a given physical network
+interface, use <code>--driver macvlan</code> with the <code>docker network create</code> command. You
+also need to specify the <code>parent</code>, which is the interface the traffic will
+physically go through on the Docker host.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span>macvlan<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--subnet<span class="o">=</span><span class="m">172</span>.16.86.0/24<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--gateway<span class="o">=</span><span class="m">172</span>.16.86.1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">parent</span><span class="o">=</span>eth0<span class="w"> </span>pub_net
+</code></pre></div>
+
+<p>If you need to exclude IP addresses from being used in the <code>macvlan</code> network, such
+as when a given IP address is already in use, use <code>--aux-addresses</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span>macvlan<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--subnet<span class="o">=</span><span class="m">192</span>.168.32.0/24<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ip-range<span class="o">=</span><span class="m">192</span>.168.32.128/25<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--gateway<span class="o">=</span><span class="m">192</span>.168.32.254<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--aux-address<span class="o">=</span><span class="s2">&quot;my-router=192.168.32.129&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">parent</span><span class="o">=</span>eth0<span class="w"> </span>macnet32
+</code></pre></div>
+
+<h3 id="8021q-trunk-bridge-mode">802.1Q trunk bridge mode<a class="headerlink" href="#8021q-trunk-bridge-mode" title="Permanent link">#</a></h3>
+<p>If you specify a <code>parent</code> interface name with a dot included, such as <code>eth0.50</code>,
+Docker interprets that as a sub-interface of <code>eth0</code> and creates the sub-interface
+automatically.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span>macvlan<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--subnet<span class="o">=</span><span class="m">192</span>.168.50.0/24<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--gateway<span class="o">=</span><span class="m">192</span>.168.50.1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-o<span class="w"> </span><span class="nv">parent</span><span class="o">=</span>eth0.50<span class="w"> </span>macvlan50
+</code></pre></div>
+
+<h3 id="use-an-ipvlan-instead-of-macvlan">Use an IPvlan instead of Macvlan<a class="headerlink" href="#use-an-ipvlan-instead-of-macvlan" title="Permanent link">#</a></h3>
+<p>An <code>ipvlan</code> network created with option <code>-o ipvlan_mode=l2</code> is similar
+to a macvlan network. The main difference is that the <code>ipvlan</code> driver
+doesn't assign a MAC address to each container, the layer-2 network stack
+is shared by devices in the ipvlan network. So, containers use the parent
+interface's MAC address.</p>
+<p>The network will see fewer MAC addresses, and the host's MAC address will be
+associated with the IP address of each container.</p>
+<p>The choice of network type depends on your environment and requirements.
+There are some notes about the trade-offs in the <a href="https://docs.kernel.org/networking/ipvlan.html#what-to-choose-macvlan-vs-ipvlan" rel="noopener" target="_blank">Linux kernel
+documentation</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span>ipvlan<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--subnet<span class="o">=</span><span class="m">192</span>.168.210.0/24<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--gateway<span class="o">=</span><span class="m">192</span>.168.210.254<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-o<span class="w"> </span><span class="nv">ipvlan_mode</span><span class="o">=</span>l2<span class="w"> </span>-o<span class="w"> </span><span class="nv">parent</span><span class="o">=</span>eth0<span class="w"> </span>ipvlan210
+</code></pre></div>
+
+<h2 id="use-ipv6">Use IPv6<a class="headerlink" href="#use-ipv6" title="Permanent link">#</a></h2>
+<p>If you have <a href="../../daemon/ipv6.html">configured the Docker daemon to allow IPv6</a>,
+you can use dual-stack IPv4/IPv6 <code>macvlan</code> networks.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span>macvlan<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--subnet<span class="o">=</span><span class="m">192</span>.168.216.0/24<span class="w"> </span>--subnet<span class="o">=</span><span class="m">192</span>.168.218.0/24<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--gateway<span class="o">=</span><span class="m">192</span>.168.216.1<span class="w"> </span>--gateway<span class="o">=</span><span class="m">192</span>.168.218.1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--subnet<span class="o">=</span><span class="m">2001</span>:db8:abc8::/64<span class="w"> </span>--gateway<span class="o">=</span><span class="m">2001</span>:db8:abc8::10<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-o<span class="w"> </span><span class="nv">parent</span><span class="o">=</span>eth0.218<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-o<span class="w"> </span><span class="nv">macvlan_mode</span><span class="o">=</span>bridge<span class="w"> </span>macvlan216
+</code></pre></div>
+
+<h3 id="use-router-assigned-ipv6-addresses">Use router-assigned IPv6 addresses<a class="headerlink" href="#use-router-assigned-ipv6-addresses" title="Permanent link">#</a></h3>
+<p>The previous example assigns IPv6 addresses from a subnet managed by Docker's
+IPAM. On a <code>macvlan</code> network, you can instead let containers receive IPv6
+addresses directly from a router on the parent network, using stateless
+address autoconfiguration (SLAAC).</p>
+<p>When a <code>macvlan</code> network has no IPv6 subnet, Docker disables IPv6 on the
+container's interface, so it can't accept the router advertisements that SLAAC
+relies on. To re-enable IPv6 on the interface, set its <code>disable_ipv6</code> sysctl
+to <code>0</code> when you connect the container to the network:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>network<span class="w"> </span>connect<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--driver-opt<span class="o">=</span><span class="s2">&quot;com.docker.network.endpoint.sysctls=net.ipv6.conf.IFNAME.disable_ipv6=0&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>my-macvlan-net<span class="w"> </span>my-container
+</code></pre></div>
+
+<p>Use the literal string <code>IFNAME</code> in the sysctl name. Docker replaces it with
+the name of the container's interface on this network. <code>disable_ipv6</code> is a
+per-interface sysctl, so it must be set with the <code>endpoint.sysctls</code>
+driver option rather than <code>docker run --sysctl</code>. For more details, see
+<a href="../../../security/authentication/single-sign-on/connect.html#sysctl"><code>docker network connect</code></a>.</p>
+<h2 id="usage-examples">Usage examples<a class="headerlink" href="#usage-examples" title="Permanent link">#</a></h2>
+<p>This section provides hands-on examples for working with macvlan networks,
+including bridge mode and 802.1Q trunk bridge mode.</p>
+<blockquote>
+<p>[!NOTE]
+These examples assume your ethernet interface is <code>eth0</code>. If your device has a
+different name, use that instead.</p>
+</blockquote>
+<h3 id="bridge-mode-example">Bridge mode example<a class="headerlink" href="#bridge-mode-example" title="Permanent link">#</a></h3>
+<p>In bridge mode, your traffic flows through <code>eth0</code> and Docker routes traffic to
+your container using its MAC address. To network devices on your network, your
+container appears to be physically attached to the network.</p>
+<ol>
+<li>Create a macvlan network called <code>my-macvlan-net</code>. Modify the <code>subnet</code>,
+   <code>gateway</code>, and <code>parent</code> values to match your environment:</li>
+</ol>
+<p><code>console
+   $ docker network create -d macvlan \
+     --subnet=172.16.86.0/24 \
+     --gateway=172.16.86.1 \
+     -o parent=eth0 \
+     my-macvlan-net</code></p>
+<p>Verify the network was created:</p>
+<p><code>console
+   $ docker network ls
+   $ docker network inspect my-macvlan-net</code></p>
+<ol start="2">
+<li>Start an <code>alpine</code> container and attach it to the <code>my-macvlan-net</code> network.
+   The <code>-dit</code> flags start the container in the background. The <code>--rm</code> flag
+   removes the container when it stops:</li>
+</ol>
+<p><code>console
+   $ docker run --rm -dit \
+     --network my-macvlan-net \
+     --name my-macvlan-alpine \
+     alpine:latest \
+     ash</code></p>
+<ol start="3">
+<li>Inspect the container and notice the <code>MacAddress</code> key within the <code>Networks</code>
+   section:</li>
+</ol>
+<p><code>console
+   $ docker container inspect my-macvlan-alpine</code></p>
+<p>Look for output similar to:</p>
+<p><code>json
+   "Networks": {
+     "my-macvlan-net": {
+       "Gateway": "172.16.86.1",
+       "IPAddress": "172.16.86.2",
+       "IPPrefixLen": 24,
+       "MacAddress": "02:42:ac:10:56:02",
+       ...
+     }
+   }</code></p>
+<ol start="4">
+<li>Check how the container sees its own network interfaces:</li>
+</ol>
+<p>```console
+   $ docker exec my-macvlan-alpine ip addr show eth0</p>
+<p>9: eth0@tunl0: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+   link/ether 02:42:ac:10:56:02 brd ff:ff:ff:ff:ff:ff
+   inet 172.16.86.2/24 brd 172.16.86.255 scope global eth0
+      valid_lft forever preferred_lft forever
+   ```</p>
+<p>Check the routing table:</p>
+<p>```console
+   $ docker exec my-macvlan-alpine ip route</p>
+<p>default via 172.16.86.1 dev eth0
+   172.16.86.0/24 dev eth0 scope link  src 172.16.86.2
+   ```</p>
+<ol start="5">
+<li>Stop the container (Docker removes it automatically) and remove the network:</li>
+</ol>
+<p><code>console
+   $ docker container stop my-macvlan-alpine
+   $ docker network rm my-macvlan-net</code></p>
+<h3 id="8021q-trunked-bridge-mode-example">802.1Q trunked bridge mode example<a class="headerlink" href="#8021q-trunked-bridge-mode-example" title="Permanent link">#</a></h3>
+<p>In 802.1Q trunk bridge mode, your traffic flows through a sub-interface of
+<code>eth0</code> (called <code>eth0.10</code>) and Docker routes traffic to your container using its
+MAC address. To network devices on your network, your container appears to be
+physically attached to the network.</p>
+<ol>
+<li>Create a macvlan network called <code>my-8021q-macvlan-net</code>. Modify the <code>subnet</code>,
+   <code>gateway</code>, and <code>parent</code> values to match your environment:</li>
+</ol>
+<p><code>console
+   $ docker network create -d macvlan \
+     --subnet=172.16.86.0/24 \
+     --gateway=172.16.86.1 \
+     -o parent=eth0.10 \
+     my-8021q-macvlan-net</code></p>
+<p>Verify the network was created and has parent <code>eth0.10</code>. You can use <code>ip addr
+show</code> on the Docker host to verify that the interface <code>eth0.10</code> exists:</p>
+<p><code>console
+   $ docker network ls
+   $ docker network inspect my-8021q-macvlan-net</code></p>
+<ol start="2">
+<li>Start an <code>alpine</code> container and attach it to the <code>my-8021q-macvlan-net</code>
+   network:</li>
+</ol>
+<p><code>console
+   $ docker run --rm -itd \
+     --network my-8021q-macvlan-net \
+     --name my-second-macvlan-alpine \
+     alpine:latest \
+     ash</code></p>
+<ol start="3">
+<li>Inspect the container and notice the <code>MacAddress</code> key:</li>
+</ol>
+<p><code>console
+   $ docker container inspect my-second-macvlan-alpine</code></p>
+<p>Look for the <code>Networks</code> section with the MAC address.</p>
+<ol start="4">
+<li>Check how the container sees its own network interfaces:</li>
+</ol>
+<p>```console
+   $ docker exec my-second-macvlan-alpine ip addr show eth0</p>
+<p>11: eth0@if10: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+   link/ether 02:42:ac:10:56:02 brd ff:ff:ff:ff:ff:ff
+   inet 172.16.86.2/24 brd 172.16.86.255 scope global eth0
+      valid_lft forever preferred_lft forever
+   ```</p>
+<p>Check the routing table:</p>
+<p>```console
+   $ docker exec my-second-macvlan-alpine ip route</p>
+<p>default via 172.16.86.1 dev eth0
+   172.16.86.0/24 dev eth0 scope link  src 172.16.86.2
+   ```</p>
+<ol start="5">
+<li>Stop the container and remove the network:</li>
+</ol>
+<p><code>console
+   $ docker container stop my-second-macvlan-alpine
+   $ docker network rm my-8021q-macvlan-net</code></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/network/drivers/ipvlan.html">
+          <span class="muted">Anterior</span>IPvlan network driver
+        </a>
+        <a class="pager-next" href="../../../engine/network/drivers/none.html">
+          <span class="muted">Siguiente</span>None network driver
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

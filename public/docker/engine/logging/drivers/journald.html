@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Journald logging driver · Docker</title>
+<meta name="description" content="Journald logging driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/logging/drivers/journald.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Journald logging driver">
+<meta property="og:description" content="Journald logging driver - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Journald logging driver">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Journald logging driver",
+"url": "https://docs.raupulus.dev/docker/engine/logging/drivers/journald.html",  "description": "Journald logging driver - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/containers/runmetrics.html"
+>Runtime metrics</a>
+              </li>
+              <li>
+                <a href="../../../engine/containers/start-containers-automatically.html"
+>Start containers automatically</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/index.html"
+>Docker daemon configuration overview</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/alternative-runtimes.html"
+>Alternative container runtimes</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/embedded-containerd.html"
+>Run containerd in the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/ipv6.html"
+>Use IPv6 networking</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/live-restore.html"
+>Live restore</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/logs.html"
+>Read the daemon logs</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/prometheus.html"
+>Collect Docker metrics with Prometheus</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/proxy.html"
+>Daemon proxy configuration</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/remote-access.html"
+>Configure remote access for Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/start.html"
+>Start the daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/daemon/troubleshoot.html"
+>Troubleshooting the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/index.html"
+>Install Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/binaries.html"
+>Install Docker Engine from binaries</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/centos.html"
+>Install Docker Engine on CentOS</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/debian.html"
+>Install Docker Engine on Debian</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/fedora.html"
+>Install Docker Engine on Fedora</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/linux-postinstall.html"
+>Linux post-installation steps for Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/raspberry-pi-os.html"
+>Install Docker Engine on Raspberry Pi OS (32-bit / armhf)</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/rhel.html"
+>Install Docker Engine on RHEL</a>
+              </li>
+              <li>
+                <a href="../../../engine/install/ubuntu.html"
+>Install Docker Engine on Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/index.html"
+>View container logs</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/configure.html"
+>Configure logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/index.html"
+>Logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/journald.html"
+class="is-current" aria-current="page">Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/splunk.html"
+>Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/drivers/syslog.html"
+>Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/dual-logging.html"
+>Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../../engine/manage-resources/pruning.html"
+>Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/macvlan.html"
+>Macvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/none.html"
+>None network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/drivers/overlay.html"
+>Overlay network driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-iptables.html"
+>Docker with iptables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/firewall-nftables.html"
+>Docker with nftables</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/links.html"
+>Legacy container links</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/packet-filtering-firewalls.html"
+>Packet filtering and firewalls</a>
+              </li>
+              <li>
+                <a href="../../../engine/network/port-publishing.html"
+>Port publishing and mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.03.html"
+>Docker Engine 17.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.04.html"
+>Docker Engine 17.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.05.html"
+>Docker Engine 17.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.06.html"
+>Docker Engine 17.06 release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Journald logging driver</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#usage">Usage#</a></li>
+              <li class="lvl-2"><a href="#options">Options#</a></li>
+              <li class="lvl-2"><a href="#note-regarding-container-names">Note regarding container names#</a></li>
+              <li class="lvl-2"><a href="#retrieve-log-messages-with-journalctl">Retrieve log messages with journalctl#</a></li>
+              <li class="lvl-3"><a href="#view-logs-for-a-container-with-a-tty-enabled">View logs for a container with a TTY enabled#</a></li>
+              <li class="lvl-2"><a href="#retrieve-log-messages-with-the-journal-api">Retrieve log messages with the journal API#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>The <code>journald</code> logging driver sends container logs to the
+<a href="https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html" rel="noopener" target="_blank"><code>systemd</code> journal</a>.
+Log entries can be retrieved using the <code>journalctl</code> command, through use of the
+<code>journal</code> API, or using the <code>docker logs</code> command.</p>
+<p>In addition to the text of the log message itself, the <code>journald</code> log driver
+stores the following metadata in the journal with each message:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>CONTAINER_ID</code></td>
+<td style="text-align: left;">The container ID truncated to 12 characters.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTAINER_ID_FULL</code></td>
+<td style="text-align: left;">The full 64-character container ID.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTAINER_NAME</code></td>
+<td style="text-align: left;">The container name at the time it was started. If you use <code>docker rename</code> to rename a container, the new name isn't reflected in the journal entries.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTAINER_TAG</code>, <code>SYSLOG_IDENTIFIER</code></td>
+<td style="text-align: left;">The container tag (<a href="../log-tags.html">log tag option documentation</a>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONTAINER_PARTIAL_MESSAGE</code></td>
+<td style="text-align: left;">A field that flags log integrity. Improve logging of long log lines.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>IMAGE_NAME</code></td>
+<td style="text-align: left;">The name of the container image.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h2>
+<p>To use the <code>journald</code> driver as the default logging driver, set the <code>log-driver</code>
+and <code>log-opts</code> keys to appropriate values in the <code>daemon.json</code> file. For more
+about configuring Docker using <code>daemon.json</code>, see
+<a href="/reference/cli/dockerd.html#daemon-configuration-file">daemon.json</a>.</p>
+<p>{{% include "daemon-cfg-desktop.md" %}}</p>
+<p>The following example sets the log driver to <code>journald</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;log-driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;journald&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Restart Docker for the changes to take effect.</p>
+<p>To configure the logging driver for a specific container, use the <code>--log-driver</code>
+flag on the <code>docker run</code> command.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--log-driver<span class="o">=</span>journald<span class="w"> </span>...
+</code></pre></div>
+
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">#</a></h2>
+<p>Use the <code>--log-opt NAME=VALUE</code> flag to specify additional <code>journald</code> logging
+driver options.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tag</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Specify template to set <code>CONTAINER_TAG</code> and <code>SYSLOG_IDENTIFIER</code> value in journald logs. Refer to <a href="../log-tags.html">log tag option documentation</a> to customize the log tag format.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Comma-separated list of keys of labels, which should be included in message, if these labels are specified for the container.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>labels-regex</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Similar to and compatible with labels. A regular expression to match logging-related labels. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>env</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Comma-separated list of keys of environment variables, which should be included in message, if these variables are specified for the container.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>env-regex</code></td>
+<td style="text-align: left;">optional</td>
+<td style="text-align: left;">Similar to and compatible with <code>env</code>. A regular expression to match logging-related environment variables. Used for advanced <a href="../log-tags.html">log tag options</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>If a collision occurs between <code>label</code> and <code>env</code> options, the value of the <code>env</code>
+takes precedence. Each option adds additional fields to the attributes of a
+logging message.</p>
+<p>The following is an example of the logging options required to log to journald.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-driver<span class="o">=</span>journald<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span><span class="nv">labels</span><span class="o">=</span>location<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--log-opt<span class="w"> </span><span class="nv">env</span><span class="o">=</span>TEST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--env<span class="w"> </span><span class="s2">&quot;TEST=false&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--label<span class="w"> </span><span class="nv">location</span><span class="o">=</span>west<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>your/application
+</code></pre></div>
+
+<p>This configuration also directs the driver to include in the payload the label
+location, and the environment variable <code>TEST</code>. If the <code>--env "TEST=false"</code>
+or <code>--label location=west</code> arguments were omitted, the corresponding key would
+not be set in the journald log.</p>
+<h2 id="note-regarding-container-names">Note regarding container names<a class="headerlink" href="#note-regarding-container-names" title="Permanent link">#</a></h2>
+<p>The value logged in the <code>CONTAINER_NAME</code> field is the name of the container that
+was set at startup. If you use <code>docker rename</code> to rename a container, the new
+name isn't reflected in the journal entries. Journal entries continue
+to use the original name.</p>
+<h2 id="retrieve-log-messages-with-journalctl">Retrieve log messages with <code>journalctl</code><a class="headerlink" href="#retrieve-log-messages-with-journalctl" title="Permanent link">#</a></h2>
+<p>Use the <code>journalctl</code> command to retrieve log messages. You can apply filter
+expressions to limit the retrieved messages to those associated with a specific
+container:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>journalctl<span class="w"> </span><span class="nv">CONTAINER_NAME</span><span class="o">=</span>webserver
+</code></pre></div>
+
+<p>You can use additional filters to further limit the messages retrieved. The <code>-b</code>
+flag only retrieves messages generated since the last system boot:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>journalctl<span class="w"> </span>-b<span class="w"> </span><span class="nv">CONTAINER_NAME</span><span class="o">=</span>webserver
+</code></pre></div>
+
+<p>The <code>-o</code> flag specifies the format for the retrieved log messages. Use <code>-o json</code>
+to return the log messages in JSON format.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>journalctl<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span><span class="nv">CONTAINER_NAME</span><span class="o">=</span>webserver
+</code></pre></div>
+
+<h3 id="view-logs-for-a-container-with-a-tty-enabled">View logs for a container with a TTY enabled<a class="headerlink" href="#view-logs-for-a-container-with-a-tty-enabled" title="Permanent link">#</a></h3>
+<p>If TTY is enabled on a container you may see <code>[10B blob data]</code> in the output
+when retrieving log messages.
+The reason for that is that <code>\r</code> is appended to the end of the line and
+<code>journalctl</code> doesn't strip it automatically unless <code>--all</code> is set:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>journalctl<span class="w"> </span>-b<span class="w"> </span><span class="nv">CONTAINER_NAME</span><span class="o">=</span>webserver<span class="w"> </span>--all
+</code></pre></div>
+
+<h2 id="retrieve-log-messages-with-the-journal-api">Retrieve log messages with the <code>journal</code> API<a class="headerlink" href="#retrieve-log-messages-with-the-journal-api" title="Permanent link">#</a></h2>
+<p>This example uses the <code>systemd</code> Python module to retrieve container
+logs:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">systemd.journal</span>
+
+<span class="n">reader</span> <span class="o">=</span> <span class="n">systemd</span><span class="o">.</span><span class="n">journal</span><span class="o">.</span><span class="n">Reader</span><span class="p">()</span>
+<span class="n">reader</span><span class="o">.</span><span class="n">add_match</span><span class="p">(</span><span class="s1">&#39;CONTAINER_NAME=web&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{CONTAINER_ID_FULL}</span><span class="s1">: </span><span class="si">{MESSAGE}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">msg</span><span class="p">))</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/logging/drivers/gelf.html">
+          <span class="muted">Anterior</span>Graylog Extended Format logging driver
+        </a>
+        <a class="pager-next" href="../../../engine/logging/drivers/json-file.html">
+          <span class="muted">Siguiente</span>JSON File logging driver
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

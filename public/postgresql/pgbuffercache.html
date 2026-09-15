@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pg_buffercache — inspect PostgreSQL buffer cache state · PostgreSQL</title>
+<meta name="description" content="pg_buffercache — inspect PostgreSQL buffer cache state - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/pgbuffercache.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="pg_buffercache — inspect PostgreSQL buffer cache state">
+<meta property="og:description" content="pg_buffercache — inspect PostgreSQL buffer cache state - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pg_buffercache — inspect PostgreSQL buffer cache state">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "pg_buffercache — inspect PostgreSQL buffer cache state",
+"url": "https://docs.raupulus.dev/postgresql/pgbuffercache.html",  "description": "pg_buffercache — inspect PostgreSQL buffer cache state - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+>hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+class="is-current" aria-current="page">pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+>pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+              <li>
+                <a href="./rangetypes.html"
+>Range Types</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-recovery-config.html"
+>recovery.conf file merged into postgresql.conf</a>
+              </li>
+              <li>
+                <a href="./reference.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="./regress.html"
+>Regression Tests</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">pg_buffercache — inspect PostgreSQL buffer cache state</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/pgbuffercache.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#pg_buffercache-inspect-postgresql-buffer-cache-state">pg_buffercache inspect PostgreSQL buffer cache state#</a></li>
+              <li class="lvl-2"><a href="#the-pg_buffercache-view">The pg_buffercache View#</a></li>
+              <li class="lvl-2"><a href="#the-pg_buffercache_summary-function">The pg_buffercache_summary() Function#</a></li>
+              <li class="lvl-2"><a href="#the-pg_buffercache_usage_counts-function">The pg_buffercache_usage_counts() Function#</a></li>
+              <li class="lvl-2"><a href="#the-pg_buffercache_evict-function">The pg_buffercache_evict() Function#</a></li>
+              <li class="lvl-2"><a href="#sample-output">Sample Output#</a></li>
+              <li class="lvl-2"><a href="#authors">Authors#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="pg_buffercache-inspect-postgresql-buffer-cache-state">pg_buffercache inspect PostgreSQL buffer cache state<a class="headerlink" href="#pg_buffercache-inspect-postgresql-buffer-cache-state" title="Permanent link">#</a></h2>
+<p>pg_buffercache</p>
+<p>The <code>pg_buffercache</code> module provides a means for examining what's happening in the shared buffer cache in real time. It also offers a low-level way to evict data from it, for testing purposes.</p>
+<p>pg_buffercache_pages</p>
+<p>pg_buffercache_summary</p>
+<p>pg_buffercache_evict</p>
+<p>This module provides the <code>pg_buffercache_pages()</code> function (wrapped in the pg_buffercache view), the <code>pg_buffercache_summary()</code> function, the <code>pg_buffercache_usage_counts()</code> function and the <code>pg_buffercache_evict()</code> function.</p>
+<p>The <code>pg_buffercache_pages()</code> function returns a set of records, each row describing the state of one shared buffer entry. The pg_buffercache view wraps the function for convenient use.</p>
+<p>The <code>pg_buffercache_summary()</code> function returns a single row summarizing the state of the shared buffer cache.</p>
+<p>The <code>pg_buffercache_usage_counts()</code> function returns a set of records, each row describing the number of buffers with a given usage count.</p>
+<p>By default, use of the above functions is restricted to superusers and roles with privileges of the <code>pg_monitor</code> role. Access may be granted to others using <code>GRANT</code>.</p>
+<p>The <code>pg_buffercache_evict()</code> function allows a block to be evicted from the buffer pool given a buffer identifier. Use of this function is restricted to superusers only.</p>
+<h2 id="the-pg_buffercache-view">The pg_buffercache View<a class="headerlink" href="#the-pg_buffercache-view" title="Permanent link">#</a></h2>
+<p>The definitions of the columns exposed by the view are shown in <a href="#pgbuffercache-columns"> Columns</a>.</p>
+<table id="pgbuffercache-columns">
+<caption>pg_buffercache Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">bufferid <code>integer</code></p>
+<p>ID, in the range 1..<code>shared_buffers</code></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">relfilenode <code>oid</code> (references <a href="#catalog-pg-class">pg_class</a>.relfilenode)</p>
+<p>Filenode number of the relation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">reltablespace <code>oid</code> (references <a href="#catalog-pg-tablespace">pg_tablespace</a>.oid)</p>
+<p>Tablespace OID of the relation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">reldatabase <code>oid</code> (references <a href="#catalog-pg-database">pg_database</a>.oid)</p>
+<p>Database OID of the relation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">relforknumber <code>smallint</code></p>
+<p>Fork number within the relation; see <code>common/relpath.h</code></p></td>
+</tr>
+<tr>
+<td><p role="column_definition">relblocknumber <code>bigint</code></p>
+<p>Page number within the relation</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">isdirty <code>boolean</code></p>
+<p>Is the page dirty?</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usagecount <code>smallint</code></p>
+<p>Clock-sweep access count</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">pinning_backends <code>integer</code></p>
+<p>Number of backends pinning this buffer</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>There is one row for each buffer in the shared cache. Unused buffers are shown with all fields null except bufferid. Shared system catalogs are shown as belonging to database zero.</p>
+<p>Because the cache is shared by all the databases, there will normally be pages from relations not belonging to the current database. This means that there may not be matching join rows in pg_class for some rows, or that there could even be incorrect joins. If you are trying to join against pg_class, it's a good idea to restrict the join to rows having reldatabase equal to the current database's OID or zero.</p>
+<p>Since buffer manager locks are not taken to copy the buffer state data that the view will display, accessing pg_buffercache view has less impact on normal buffer activity but it doesn't provide a consistent set of results across all buffers. However, we ensure that the information of each buffer is self-consistent.</p>
+<h2 id="the-pg_buffercache_summary-function">The <code>pg_buffercache_summary()</code> Function<a class="headerlink" href="#the-pg_buffercache_summary-function" title="Permanent link">#</a></h2>
+<p>The definitions of the columns exposed by the function are shown in <a href="#pgbuffercache-summary-columns"> Output Columns</a>.</p>
+<table id="pgbuffercache-summary-columns">
+<caption><code>pg_buffercache_summary()</code> Output Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">buffers_used <code>int4</code></p>
+<p>Number of used shared buffers</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">buffers_unused <code>int4</code></p>
+<p>Number of unused shared buffers</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">buffers_dirty <code>int4</code></p>
+<p>Number of dirty shared buffers</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">buffers_pinned <code>int4</code></p>
+<p>Number of pinned shared buffers</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">usagecount_avg <code>float8</code></p>
+<p>Average usage count of used shared buffers</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>pg_buffercache_summary()</code> function returns a single row summarizing the state of all shared buffers. Similar and more detailed information is provided by the pg_buffercache view, but <code>pg_buffercache_summary()</code> is significantly cheaper.</p>
+<p>Like the pg_buffercache view, <code>pg_buffercache_summary()</code> does not acquire buffer manager locks. Therefore concurrent activity can lead to minor inaccuracies in the result.</p>
+<h2 id="the-pg_buffercache_usage_counts-function">The <code>pg_buffercache_usage_counts()</code> Function<a class="headerlink" href="#the-pg_buffercache_usage_counts-function" title="Permanent link">#</a></h2>
+<p>The definitions of the columns exposed by the function are shown in <a href="#pgbuffercache_usage_counts-columns"> Output Columns</a>.</p>
+<table id="pgbuffercache_usage_counts-columns">
+<caption><code>pg_buffercache_usage_counts()</code> Output Columns</caption>
+<thead>
+<tr>
+<th><p role="column_definition">Column Type</p>
+<p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="column_definition">usage_count <code>int4</code></p>
+<p>A possible buffer usage count</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">buffers <code>int4</code></p>
+<p>Number of buffers with the usage count</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">dirty <code>int4</code></p>
+<p>Number of dirty buffers with the usage count</p></td>
+</tr>
+<tr>
+<td><p role="column_definition">pinned <code>int4</code></p>
+<p>Number of pinned buffers with the usage count</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>pg_buffercache_usage_counts()</code> function returns a set of rows summarizing the states of all shared buffers, aggregated over the possible usage count values. Similar and more detailed information is provided by the pg_buffercache view, but <code>pg_buffercache_usage_counts()</code> is significantly cheaper.</p>
+<p>Like the pg_buffercache view, <code>pg_buffercache_usage_counts()</code> does not acquire buffer manager locks. Therefore concurrent activity can lead to minor inaccuracies in the result.</p>
+<h2 id="the-pg_buffercache_evict-function">The <code>pg_buffercache_evict()</code> Function<a class="headerlink" href="#the-pg_buffercache_evict-function" title="Permanent link">#</a></h2>
+<p>The <code>pg_buffercache_evict()</code> function takes a buffer identifier, as shown in the bufferid column of the pg_buffercache view. It returns true on success, and false if the buffer wasn't valid, if it couldn't be evicted because it was pinned, or if it became dirty again after an attempt to write it out. The result is immediately out of date upon return, as the buffer might become valid again at any time due to concurrent activity. The function is intended for developer testing only.</p>
+<h2 id="sample-output">Sample Output<a class="headerlink" href="#sample-output" title="Permanent link">#</a></h2>
+<div class="codehilite"><pre><span></span><code>regression=# SELECT n.nspname, c.relname, count(*) AS buffers
+             FROM pg_buffercache b JOIN pg_class c
+             ON b.relfilenode = pg_relation_filenode(c.oid) AND
+                b.reldatabase IN (0, (SELECT oid FROM pg_database
+                                      WHERE datname = current_database()))
+             JOIN pg_namespace n ON n.oid = c.relnamespace
+             GROUP BY n.nspname, c.relname
+             ORDER BY 3 DESC
+             LIMIT 10;
+
+  nspname   |        relname         | buffers
+------------+------------------------+---------
+ public     | delete_test_table      |     593
+ public     | delete_test_table_pkey |     494
+ pg_catalog | pg_attribute           |     472
+ public     | quad_poly_tbl          |     353
+ public     | tenk2                  |     349
+ public     | tenk1                  |     349
+ public     | gin_test_idx           |     306
+ pg_catalog | pg_largeobject         |     206
+ public     | gin_test_tbl           |     188
+ public     | spgist_text_tbl        |     182
+(10 rows)
+
+regression=# SELECT * FROM pg_buffercache_summary();
+ buffers_used | buffers_unused | buffers_dirty | buffers_pinned | usagecount_avg
+--------------+----------------+---------------+----------------+----------------
+          248 |        2096904 |            39 |              0 |       3.141129
+(1 row)
+
+regression=# SELECT * FROM pg_buffercache_usage_counts();
+ usage_count | buffers | dirty | pinned
+-------------+---------+-------+--------
+           0 |   14650 |     0 |      0
+           1 |    1436 |   671 |      0
+           2 |     102 |    88 |      0
+           3 |      23 |    21 |      0
+           4 |       9 |     7 |      0
+           5 |     164 |   106 |      0
+(6 rows)
+</code></pre></div>
+
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">#</a></h2>
+<p>Mark Kirkwood <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#105;&#114;&#64;&#112;&#97;&#114;&#97;&#100;&#105;&#115;&#101;&#46;&#110;&#101;&#116;&#46;&#110;&#122;">&#109;&#97;&#114;&#107;&#105;&#114;&#64;&#112;&#97;&#114;&#97;&#100;&#105;&#115;&#101;&#46;&#110;&#101;&#116;&#46;&#110;&#122;</a></p>
+<p>Design suggestions: Neil Conway <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#110;&#101;&#105;&#108;&#99;&#64;&#115;&#97;&#109;&#117;&#114;&#97;&#105;&#46;&#99;&#111;&#109;">&#110;&#101;&#105;&#108;&#99;&#64;&#115;&#97;&#109;&#117;&#114;&#97;&#105;&#46;&#99;&#111;&#109;</a></p>
+<p>Debugging advice: Tom Lane <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#103;&#108;&#64;&#115;&#115;&#115;&#46;&#112;&#103;&#104;&#46;&#112;&#97;&#46;&#117;&#115;">&#116;&#103;&#108;&#64;&#115;&#115;&#115;&#46;&#112;&#103;&#104;&#46;&#112;&#97;&#46;&#117;&#115;</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./perform.html">
+          <span class="muted">Anterior</span>Performance Tips
+        </a>
+        <a class="pager-next" href="./pgfreespacemap.html">
+          <span class="muted">Siguiente</span>pg_freespacemap — examine the free space map
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

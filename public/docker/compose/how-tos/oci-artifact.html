@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Package and deploy Docker Compose applications as OCI artifacts · Docker</title>
+<meta name="description" content="Package and deploy Docker Compose applications as OCI artifacts - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/compose/how-tos/oci-artifact.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Package and deploy Docker Compose applications as OCI artifacts">
+<meta property="og:description" content="Package and deploy Docker Compose applications as OCI artifacts - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Package and deploy Docker Compose applications as OCI artifacts">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Package and deploy Docker Compose applications as OCI artifacts",
+"url": "https://docs.raupulus.dev/docker/compose/how-tos/oci-artifact.html",  "description": "Package and deploy Docker Compose applications as OCI artifacts - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Compose
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../compose/index.html"
+>Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/index.html"
+>Overview of Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/customize.html"
+>Customize Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/usage.html"
+>Use the default Compose Bridge transformation</a>
+              </li>
+              <li>
+                <a href="../../compose/bridge/use-model-runner.html"
+>Use Docker Model Runner with Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../compose/compose-sdk.html"
+>Using the Compose SDK</a>
+              </li>
+              <li>
+                <a href="../../compose/gettingstarted.html"
+>Docker Compose Quickstart</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/dependent-images.html"
+>Build dependent images</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/index.html"
+>Environment variables in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/best-practices.html"
+>Best practices for working with environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/envvars-precedence.html"
+>Environment variables precedence in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/envvars.html"
+>Configure pre-defined environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/set-environment-variables.html"
+>Set environment variables within your container&#39;s environment</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/environment-variables/variable-interpolation.html"
+>Set, use, and manage variables in a Compose file with interpolation</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/file-watch.html"
+>Use Compose Watch</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/gpu-support.html"
+>Run Docker Compose services with GPU access</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/init-containers.html"
+>Use init containers in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/lifecycle.html"
+>Using lifecycle hooks with Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/index.html"
+>Use multiple Compose files</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/extends.html"
+>Extend your Compose file</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/include.html"
+>Include</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/multiple-compose-files/merge.html"
+>Merge Compose files</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/networking.html"
+>Networking in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/oci-artifact.html"
+class="is-current" aria-current="page">Package and deploy Docker Compose applications as OCI artifacts</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/production.html"
+>Use Compose in production</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/profiles.html"
+>Using profiles with Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/project-name.html"
+>Specify a project name</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/provider-services.html"
+>Use provider services</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/startup-order.html"
+>Control startup and shutdown order in Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/how-tos/use-secrets.html"
+>Manage secrets securely in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/install/index.html"
+>Overview of installing Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/install/linux.html"
+>Install the Docker Compose plugin</a>
+              </li>
+              <li>
+                <a href="../../compose/install/standalone.html"
+>Install the Docker Compose standalone (Legacy)</a>
+              </li>
+              <li>
+                <a href="../../compose/install/uninstall.html"
+>Uninstall Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/index.html"
+>Introduction to Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/compose-application-model.html"
+>How Compose works</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/features-uses.html"
+>Why use Compose?</a>
+              </li>
+              <li>
+                <a href="../../compose/intro/history.html"
+>History and development of Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/release-notes.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/faq.html"
+>Frequently asked questions about Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../compose/support-and-feedback/feedback.html"
+>Give feedback</a>
+              </li>
+              <li>
+                <a href="../../compose/trust-model.html"
+>Trust model for Compose files</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Package and deploy Docker Compose applications as OCI artifacts</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#publish-your-compose-application-as-an-oci-artifact">Publish your Compose application as an OCI artifact#</a></li>
+              <li class="lvl-3"><a href="#general-steps">General steps#</a></li>
+              <li class="lvl-3"><a href="#advanced-publishing-options">Advanced publishing options#</a></li>
+              <li class="lvl-2"><a href="#limitations">Limitations#</a></li>
+              <li class="lvl-2"><a href="#start-an-oci-artifact-application">Start an OCI artifact application#</a></li>
+              <li class="lvl-3"><a href="#troubleshooting">Troubleshooting#</a></li>
+              <li class="lvl-2"><a href="#next-steps">Next steps#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>{{&lt; summary-bar feature_name="Compose OCI artifact" &gt;}}</p>
+<p>Docker Compose supports working with <a href="../../docker-hub/repos/manage/hub-images/oci-artifacts.html">OCI artifacts</a>, allowing you to package and distribute your Compose applications through container registries. This means you can store your Compose files alongside your container images, making it easier to version, share, and deploy your multi-container applications.</p>
+<h2 id="publish-your-compose-application-as-an-oci-artifact">Publish your Compose application as an OCI artifact<a class="headerlink" href="#publish-your-compose-application-as-an-oci-artifact" title="Permanent link">#</a></h2>
+<p>To distribute your Compose application as an OCI artifact, you can use the <code>docker compose publish</code> command, to publish it to an OCI-compliant registry. 
+This allows others to then deploy your application directly from the registry.</p>
+<p>The publish function supports most of the composition capabilities of Compose, like overrides, extends or include, <a href="#limitations">with some limitations</a>.</p>
+<h3 id="general-steps">General steps<a class="headerlink" href="#general-steps" title="Permanent link">#</a></h3>
+<ol>
+<li>
+<p>Navigate to your Compose application's directory.<br>
+   Ensure you're in the directory containing your <code>compose.yml</code> file or that you are specifying your Compose file with the <code>-f</code> flag.</p>
+</li>
+<li>
+<p>In your terminal, sign in to your Docker account so you're authenticated with Docker Hub.</p>
+</li>
+</ol>
+<p><code>console
+   $ docker login</code></p>
+<ol start="3">
+<li>Use the <code>docker compose publish</code> command to push your application as an OCI artifact:</li>
+</ol>
+<p><code>console
+   $ docker compose publish username/my-compose-app:latest</code>
+   If you have multiple Compose files, run:</p>
+<p><code>console
+   $ docker compose -f compose-base.yml -f compose-production.yml publish username/my-compose-app:latest</code></p>
+<h3 id="advanced-publishing-options">Advanced publishing options<a class="headerlink" href="#advanced-publishing-options" title="Permanent link">#</a></h3>
+<p>When publishing, you can pass additional options: 
+- <code>--oci-version</code>: Specify the OCI version (default is automatically determined).
+- <code>--resolve-image-digests</code>: Pin image tags to digests.
+- <code>--with-env</code>: Include environment variables in the published OCI artifact.</p>
+<p>Compose checks to make sure there isn't any sensitive data in your configuration and displays your environment variables to confirm you want to publish them.</p>
+<div class="codehilite"><pre><span></span><code>...
+you are about to publish sensitive data within your OCI artifact.
+please double check that you are not leaking sensitive data
+AWS Client ID
+&quot;services.serviceA.environment.AWS_ACCESS_KEY_ID&quot;: xxxxxxxxxx
+AWS Secret Key
+&quot;services.serviceA.environment.AWS_SECRET_ACCESS_KEY&quot;: aws&quot;xxxx/xxxx+xxxx+&quot;
+Github authentication
+&quot;GITHUB_TOKEN&quot;: ghp_xxxxxxxxxx
+JSON Web Token
+&quot;&quot;: xxxxxxx.xxxxxxxx.xxxxxxxx
+Private Key
+&quot;&quot;: -----BEGIN DSA PRIVATE KEY-----
+xxxxx
+-----END DSA PRIVATE KEY-----
+Are you ok to publish these sensitive data? [y/N]:y
+
+you are about to publish environment variables within your OCI artifact.
+please double check that you are not leaking sensitive data
+Service/Config  serviceA
+FOO=bar
+Service/Config  serviceB
+FOO=bar
+QUIX=
+BAR=baz
+Are you ok to publish these environment variables? [y/N]: 
+</code></pre></div>
+
+<p>If you decline, the publish process stops without sending anything to the registry.</p>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">#</a></h2>
+<p>There are limitations to publishing Compose applications as OCI artifacts. You can't publish a Compose configuration:
+- With service(s) containing bind mounts
+- With service(s) containing only a <code>build</code> section
+- That includes local files with the <code>include</code> attribute. To publish successfully, ensure that any included local files are also published. You can then use  <code>include</code> to reference these files as remote <code>include</code> is supported.</p>
+<h2 id="start-an-oci-artifact-application">Start an OCI artifact application<a class="headerlink" href="#start-an-oci-artifact-application" title="Permanent link">#</a></h2>
+<p>To start a Docker Compose application that uses an OCI artifact, you can use the <code>-f</code> (or <code>--file</code>) flag followed by the OCI artifact reference. This allows you to specify a Compose file stored as an OCI artifact in a registry.</p>
+<p>The <code>oci://</code> prefix indicates that the Compose file should be pulled from an OCI-compliant registry rather than loaded from the local filesystem.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>oci://docker.io/username/my-compose-app:latest<span class="w"> </span>up
+</code></pre></div>
+
+<p>To then run the Compose application, use the <code>docker compose up</code> command with the <code>-f</code> flag pointing to your OCI artifact:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>oci://docker.io/username/my-compose-app:latest<span class="w"> </span>up
+</code></pre></div>
+
+<h3 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">#</a></h3>
+<p>When you run an application from an OCI artifact, Compose may display warning messages that require you to confirm the following so as to limit the risk of running a malicious application:</p>
+<ul>
+<li>A list of the interpolation variables used along with their values</li>
+<li>A list of all environment variables used by the application</li>
+<li>If your OCI artifact application is using another remote resources, for example via <a href="../../reference/compose-file/include.html"><code>include</code></a>.</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>$ REGISTRY=myregistry.com docker compose -f oci://docker.io/username/my-compose-app:latest up
+
+Found the following variables in configuration:
+VARIABLE     VALUE                SOURCE        REQUIRED    DEFAULT
+REGISTRY     myregistry.com      command-line   yes         
+TAG          v1.0                environment    no          latest
+DOCKERFILE   Dockerfile          default        no          Dockerfile
+API_KEY      &lt;unset&gt;             none           no          
+
+Do you want to proceed with these variables? [Y/n]:y
+
+Warning: This Compose project includes files from remote sources:
+- oci://registry.example.com/stack:latest
+Remote includes could potentially be malicious. Make sure you trust the source.
+Do you want to continue? [y/N]: 
+</code></pre></div>
+
+<p>If you agree to start the application, Compose displays the directory where all the resources from the OCI artifact have been downloaded:</p>
+<div class="codehilite"><pre><span></span><code>...
+Do you want to continue? [y/N]: y
+
+Your compose stack &quot;oci://registry.example.com/stack:latest&quot; is stored in &quot;~/Library/Caches/docker-compose/964e715660d6f6c3b384e05e7338613795f7dcd3613890cfa57e3540353b9d6d&quot;
+</code></pre></div>
+
+<p>The <code>docker compose publish</code> command supports non-interactive execution, letting you skip the confirmation prompt by including the <code>-y</code> (or <code>--yes</code>) flag: </p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>publish<span class="w"> </span>-y<span class="w"> </span>username/my-compose-app:latest
+</code></pre></div>
+
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../trust-model.html">Familiarize yourself with Compose's trust model</a></li>
+<li><a href="../../docker-hub/repos/manage/hub-images/oci-artifacts.html">Learn about OCI artifacts in Docker Hub</a></li>
+<li><a href="../../extensions/extensions-sdk/extensions/publish.html">Compose publish command</a></li>
+<li><a href="../../reference/compose-file/include.html">Understand <code>include</code></a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../compose/how-tos/networking.html">
+          <span class="muted">Anterior</span>Networking in Compose
+        </a>
+        <a class="pager-next" href="../../compose/how-tos/production.html">
+          <span class="muted">Siguiente</span>Use Compose in production
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

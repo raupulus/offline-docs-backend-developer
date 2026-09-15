@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Next-Generation Query Planner · SQLite</title>
+<meta name="description" content="The Next-Generation Query Planner - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/queryplanner-ng.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="The Next-Generation Query Planner">
+<meta property="og:description" content="The Next-Generation Query Planner - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Next-Generation Query Planner">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "The Next-Generation Query Planner",
+"url": "https://docs.raupulus.dev/sqlite/guides/queryplanner-ng.html",  "description": "The Next-Generation Query Planner - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/upsert-clause.html"
+>SQLite Syntax: upsert-clause</a>
+              </li>
+              <li>
+                <a href="../guides/vacuum-stmt.html"
+>SQLite Syntax: vacuum-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/window-defn.html"
+>SQLite Syntax: window-defn</a>
+              </li>
+              <li>
+                <a href="../guides/window-function-invocation.html"
+>SQLite Syntax: window-function-invocation</a>
+              </li>
+              <li>
+                <a href="../guides/with-clause.html"
+>SQLite Syntax: with-clause</a>
+              </li>
+              <li>
+                <a href="../guides/unlock_notify.html"
+>SQLite Unlock-Notify API</a>
+              </li>
+              <li>
+                <a href="../guides/version3.html"
+>SQLite Version 3 Overview</a>
+              </li>
+              <li>
+                <a href="../guides/printf.html"
+>SQLite&#39;s Built-in printf()</a>
+              </li>
+              <li>
+                <a href="../guides/staleexpridx.html"
+>Stale Expression Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add_strm.html"
+>Streaming Versions of API functions.</a>
+              </li>
+              <li>
+                <a href="../guides/stricttables.html"
+>STRICT Tables</a>
+              </li>
+              <li>
+                <a href="../guides/swarmvtab.html"
+>Swarmvtab Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/doc_target_crossref.html"
+>Target Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/tempfiles.html"
+>Temporary Files Used By SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/glossary.html"
+>Terms of Art Glossary</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_isempty.html"
+>Test if a changeset has recorded any changes.</a>
+              </li>
+              <li>
+                <a href="../guides/th3.html"
+>TH3</a>
+              </li>
+              <li>
+                <a href="../guides/flextypegood.html"
+>The Advantages Of Flexible Typing</a>
+              </li>
+              <li>
+                <a href="../guides/amalg-v-canon.html"
+>The Amalgamation Versus Canonical Sources</a>
+              </li>
+              <li>
+                <a href="../guides/base64.html"
+>The Base64() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/base85.html"
+>The Base85() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/bytecodevtab.html"
+>The Bytecode() And Tables_Used() Table-Valued Functions</a>
+              </li>
+              <li>
+                <a href="../guides/cksumvfs.html"
+>The Checksum VFS Shim</a>
+              </li>
+              <li>
+                <a href="../guides/completion.html"
+>The COMPLETION() Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/csv.html"
+>The CSV Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/dbstat.html"
+>The DBSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/errlog.html"
+>The Error And Warning Log</a>
+              </li>
+              <li>
+                <a href="../guides/series.html"
+>The generate_series Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/geopoly.html"
+>The Geopoly Interface To The SQLite R*Tree Module</a>
+              </li>
+              <li>
+                <a href="../guides/lemon.html"
+>The Lemon LALR(1) Parser Generator</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner-ng.html"
+class="is-current" aria-current="page">The Next-Generation Query Planner</a>
+              </li>
+              <li>
+                <a href="../guides/percentile.html"
+>The Percentile Extension</a>
+              </li>
+              <li>
+                <a href="../guides/rbu.html"
+>The RBU Extension</a>
+              </li>
+              <li>
+                <a href="../guides/schematab.html"
+>The Schema Table</a>
+              </li>
+              <li>
+                <a href="../guides/sessionintro.html"
+>The Session Extension</a>
+              </li>
+              <li>
+                <a href="../guides/spellfix1.html"
+>The Spellfix1 Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/amalgamation.html"
+>The SQLite Amalgamation</a>
+              </li>
+              <li>
+                <a href="../guides/opcode.html"
+>The SQLite Bytecode Engine</a>
+              </li>
+              <li>
+                <a href="../guides/vfs.html"
+>The SQLite OS Interface or &#34;VFS&#34;</a>
+              </li>
+              <li>
+                <a href="../guides/optoverview.html"
+>The SQLite Query Optimizer Overview</a>
+              </li>
+              <li>
+                <a href="../guides/zipfile.html"
+>The SQLite Zipfile Module</a>
+              </li>
+              <li>
+                <a href="../guides/sqlanalyze.html"
+>The sqlite3_analyzer.exe Utility Program</a>
+              </li>
+              <li>
+                <a href="../guides/dbpage.html"
+>The SQLITE_DBPAGE Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/memstat.html"
+>The SQLITE_MEMSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/stmt.html"
+>The SQLITE_STMT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/tclsqlite.html"
+>The Tcl interface to the SQLite library</a>
+              </li>
+              <li>
+                <a href="../guides/uintcseq.html"
+>The UINT Collating Sequence</a>
+              </li>
+              <li>
+                <a href="../guides/unionvtab.html"
+>The UNION Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/assert.html"
+>The Use Of assert() In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/vdbe.html"
+>The Virtual Database Engine of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/uri.html"
+>Uniform Resource Identifiers</a>
+              </li>
+              <li>
+                <a href="../guides/threadsafe.html"
+>Using SQLite In Multi-Threaded Applications</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_config_strmsize.html"
+>Values for sqlite3session_config().</a>
+              </li>
+              <li>
+                <a href="../guides/versionnumbers.html"
+>Version Numbers in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cves.html"
+>Vulnerabilities</a>
+              </li>
+              <li>
+                <a href="../guides/walformat.html"
+>WAL-mode File Format</a>
+              </li>
+              <li>
+                <a href="../guides/keyword_index.html"
+>Website Keyword Index</a>
+              </li>
+              <li>
+                <a href="../guides/famous.html"
+>Well-Known Users Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/affcase1.html"
+>What If OpenDocument Used SQLite?</a>
+              </li>
+              <li>
+                <a href="../guides/whyc.html"
+>Why Is SQLite Coded In C</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">The Next-Generation Query Planner</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/queryplanner-ng.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#21-query-planning-in-sqlite">2.1.  Query Planning In SQLite#</a></li>
+              <li class="lvl-2"><a href="#22-the-sqlite-query-planner-stability-guarantee">2.2.  The SQLite Query Planner Stability Guarantee#</a></li>
+              <li class="lvl-2"><a href="#31-query-details">3.1.  Query Details#</a></li>
+              <li class="lvl-2"><a href="#32-complications">3.2.  Complications#</a></li>
+              <li class="lvl-2"><a href="#33-finding-the-best-query-plan">3.3.  Finding The Best Query Plan#</a></li>
+              <li class="lvl-2"><a href="#34-the-n-nearest-neighbors-or-n3-algorithm">3.4.  The N Nearest Neighbors or &#34;N3&#34; Algorithm#</a></li>
+              <li class="lvl-2"><a href="#41-background-what-is-a-star-query">4.1. Background: What Is A Star-Query#</a></li>
+              <li class="lvl-2"><a href="#42-query-planning-problems-with-high-dimensionality-star-queries">4.2. Query Planning Problems With High-Dimensionality Star-Queries#</a></li>
+              <li class="lvl-2"><a href="#43-a-large-test-case">4.3. A Large Test Case#</a></li>
+              <li class="lvl-2"><a href="#44-tweaks-to-n3-to-support-star-queries">4.4. Tweaks To N3 To Support Star Queries#</a></li>
+              <li class="lvl-2"><a href="#51-case-study-upgrading-fossil-to-the-ngqp">5.1.  Case Study: Upgrading Fossil to the NGQP#</a></li>
+              <li class="lvl-2"><a href="#52-fixing-the-problem">5.2.  Fixing The Problem#</a></li>
+              <li class="lvl-2"><a href="#53-update-2017-a-better-fix">5.3. Update 2017: A Better Fix#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-introduction">1.  Introduction<a class="headerlink" href="#1-introduction" title="Permanent link">#</a></h1>
+<p>The task of the "query planner" is to figure out the best algorithm or "query plan" to accomplish an SQL statement. Beginning with SQLite <a href="releaselog/3_8_0.html">version 3.8.0</a> (2013-08-26), the query planner component has been rewritten so that it runs faster and generates better plans. The rewrite is called the "next generation query planner" or "NGQP".</p>
+<p>This article overviews the importance of query planning, describes some of the problems inherent to query planning, and outlines how the NGQP solves those problems.</p>
+<p>The NGQP is almost always better than the legacy query planner. However, there may exist legacy applications that unknowingly depend on undefined and/or suboptimal behavior in the legacy query planner, and upgrading to the NGQP on those legacy applications could cause performance regressions. This risk is considered and a checklist is provided for reducing the risk and for fixing any issues that do arise.</p>
+<p>This document focuses on the NGQP. For a more general overview of the SQLite query planner that encompasses the entire history of SQLite, see the "<a href="optoverview.html">The SQLite Query Optimizer Overview</a>" and "<a href="queryplanner.html">How Indexes Work</a>" documents.</p>
+<h1 id="2-background">2.  Background<a class="headerlink" href="#2-background" title="Permanent link">#</a></h1>
+<p>For simple queries against a single table with few indexes, there is usually an obvious choice for the best algorithm. But for larger and more complex queries, such as multi-way joins with many indexes and subqueries, there can be hundreds, thousands, or millions of reasonable algorithms for computing the result. The job of the query planner is to choose the single "best" query plan from this multitude of possibilities.</p>
+<p>Query planners are what make SQL database engines so amazingly useful and powerful. (This is true of all SQL database engines, not just SQLite.) The query planner frees the programmer from the chore of selecting a particular query plan, and thereby allows the programmer to focus more mental energy on higher-level application issues and on providing more value to the end user. For simple queries where the choice of query plan is obvious, this is convenient but not hugely important. But as applications and schemas and queries grow more complex, a clever query planner can greatly speed and simplify the work of application development. There is amazing power in being able to tell the database engine what content is desired, and then let the database engine figure out the best way to retrieve that content.</p>
+<p>Writing a good query planner is more art than science. The query planner must work with incomplete information. It cannot determine how long any particular plan will take without actually running that plan. So when comparing two or more plans to figure out which is "best", the query planner has to make some guesses and assumptions and those guesses and assumptions will sometimes be wrong. A good query planner is one that will find the correct solution often enough that application programmers rarely need to get involved.</p>
+<h2 id="21-query-planning-in-sqlite">2.1.  Query Planning In SQLite<a class="headerlink" href="#21-query-planning-in-sqlite" title="Permanent link">#</a></h2>
+<p>SQLite computes joins using nested loops, one loop for each table in the join. (Additional loops might be inserted for IN and OR operators in the WHERE clause. SQLite considers those too, but for simplicity we will ignore them in this essay.) One or more indexes might be used on each loop to speed the search, or a loop might be a "full table scan" that reads every row in the table. Thus query planning decomposes into two subtasks:</p>
+<ol>
+<li>Picking the nested order of the various loops</li>
+<li>Choosing good indexes for each loop</li>
+</ol>
+<p>Picking the nesting order is generally the more challenging problem. Once the nesting order of the join is established, the choice of indexes for each loop is normally obvious.</p>
+<p><span id="qpstab"></span></p>
+<h2 id="22-the-sqlite-query-planner-stability-guarantee">2.2.  The SQLite Query Planner Stability Guarantee<a class="headerlink" href="#22-the-sqlite-query-planner-stability-guarantee" title="Permanent link">#</a></h2>
+<p>When the Query Planner Stability Guarantee (QPSG) is enabled SQLite will always pick the same query plan for any given SQL statement as long as:</p>
+<ol>
+<li>the database schema does not change in significant ways such as adding or dropping indexes,</li>
+<li>the ANALYZE command is not rerun,</li>
+<li>the same version of SQLite is used.</li>
+</ol>
+<p>The QPSG is disabled by default. It can be enabled at compile-time using the <a href="compile.html#enable_qpsg">SQLITE_ENABLE_QPSG</a> compile-time option, or at run-time by invoking <a href="c3ref/db_config.html">sqlite3_db_config</a>(db,<a href="c3ref/c_dbconfig_defensive.html#sqlitedbconfigenableqpsg">SQLITE_DBCONFIG_ENABLE_QPSG</a>,1,0).</p>
+<p>The QPSG means that if all of your queries run efficiently during testing, and if your application does not change the schema, then SQLite will not suddenly decide to start using a different query plan, possibly causing a performance problem after your application is released to users. If your application works in the lab, it will continue working the same way after deployment.</p>
+<p>Client/server SQL database engines do not normally make this guarantee. In client/server SQL database engines, the server keeps track of statistics on the sizes of tables and on the quality of indexes and the query planner uses those statistics to help select the best plans. As content is added, deleted, or changed in the database, the statistics will evolve and may cause the query planner to begin using a different query plan for some particular query. Usually the new plan will be better for the evolving structure of the data. But sometimes the new query plan will cause a performance reduction. With a client/server database engine, there is typically a Database Administrator (DBA) on hand to deal with these rare problems as they come up. But DBAs are not available to fix problems in an embedded database like SQLite, and hence SQLite is careful to ensure that plans do not change unexpectedly after deployment.</p>
+<p>It is important to note that changing versions of SQLite might cause changes in query plans. The same version of SQLite will always pick the same query plan, but if you relink your application to use a different version of SQLite, then query plans might change. In rare cases, an SQLite version change might lead to a performance regression. This is one reason you should consider statically linking your applications against SQLite rather than use a system-wide SQLite shared library which might change without your knowledge or control.</p>
+<p>See also:</p>
+<ul>
+<li><a href="lang_analyze.html#req">Recommended usage patterns for ANALYZE</a></li>
+<li><a href="pragma.html#pragma_optimize">PRAGMA optimize</a></li>
+</ul>
+<h1 id="3-a-difficult-case">3.  A Difficult Case<a class="headerlink" href="#3-a-difficult-case" title="Permanent link">#</a></h1>
+<p>"TPC-H Q8" is a test query from the <a href="http://www.tpc.org/tpch/" rel="noopener" target="_blank">Transaction Processing Performance Council</a>. The query planners in SQLite versions 3.7.17 and earlier do not choose good plans for TPC-H Q8. And it has been determined that no amount of tweaking of the legacy query planner will fix that. In order to find a good solution to the TPC-H Q8 query, and to continue improving the quality of SQLite's query planner, it became necessary to redesign the query planner. This section tries to explain why this redesign was necessary and how the NGQP is different and addresses the TPC-H Q8 problem.</p>
+<h2 id="31-query-details">3.1.  Query Details<a class="headerlink" href="#31-query-details" title="Permanent link">#</a></h2>
+<p>TPC-H Q8 is an eight-way join. As observed above, the main task of the query planner is to figure out the best nesting order of the eight loops in order to minimize the work needed to complete the join. A simplified model of this problem for the case of TPC-H Q8 is shown by the following diagram:</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHN0eWxlPSJmb250LXNpemU6aW5pdGlhbDsiIGNsYXNzPSJwaWtjaHIiIHZpZXdib3g9IjAgMCA2NzcuNTAzIDMxMC4wMzEiIGRhdGEtcGlrY2hyLWRhdGU9IjIwMjUwMzE5MTYxOTQzIj4KPGNpcmNsZSBjeD0iMTMyLjM3IiBjeT0iMTA0LjA2NCIgcj0iMjguMzA2NiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSIxMzIuMzciIHk9IjEwNC4wNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjE1Ni4yNSUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj5TPC90ZXh0Pgo8Y2lyY2xlIGN4PSIyMzQuMjc0IiBjeT0iMTA0LjA2NCIgcj0iMjguMzA2NiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSIyMzQuMjc0IiB5PSIxMDQuMDY0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSIxNTYuMjUlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+TDwvdGV4dD4KPGNpcmNsZSBjeD0iMzM2LjE3OCIgY3k9IjEwNC4wNjQiIHI9IjI4LjMwNjYiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7Ij48L2NpcmNsZT4KPHRleHQgeD0iMzM2LjE3OCIgeT0iMTA0LjA2NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iMTU2LjI1JSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPk88L3RleHQ+CjxjaXJjbGUgY3g9IjQzOC4wODIiIGN5PSIxMDQuMDY0IiByPSIyOC4zMDY2IiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjQzOC4wODIiIHk9IjEwNC4wNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjE1Ni4yNSUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj5DPC90ZXh0Pgo8Y2lyY2xlIGN4PSI1MzkuOTg1IiBjeT0iMTA0LjA2NCIgcj0iMjguMzA2NiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSI1MzkuOTg1IiB5PSIxMDQuMDY0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSIxNTYuMjUlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+TjE8L3RleHQ+CjxjaXJjbGUgY3g9IjY0MS44ODkiIGN5PSIxMDQuMDY0IiByPSIyOC4zMDY2IiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjY0MS44ODkiIHk9IjEwNC4wNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjE1Ni4yNSUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj5SPC90ZXh0Pgo8Y2lyY2xlIGN4PSIyMzQuMjc0IiBjeT0iMjA1Ljk2OCIgcj0iMjguMzA2NiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSIyMzQuMjc0IiB5PSIyMDUuOTY4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSIxNTYuMjUlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+UDwvdGV4dD4KPGNpcmNsZSBjeD0iMzAuNDY2NiIgY3k9IjEwNC4wNjQiIHI9IjI4LjMwNjYiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7Ij48L2NpcmNsZT4KPHRleHQgeD0iMzAuNDY2NiIgeT0iMTA0LjA2NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iMTU2LjI1JSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPk4yPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjEwNC4wNjQsMTAxLjIyOSA5MS43NjA0LDEwMS4yMjMgOTQuNzk3OCw5My4xMzQ5IiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik01OC43NzMyLDEwMS4yMjkgTCA3MC4wOTU4LDk2Ljk3NzEgUSA4MS40MTg1LDkyLjcyNTIgOTAuMDQ1LDk1Ljk2NDcgTCA5OC42NzE0LDk5LjIwNDEiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSI4MS40MTg1IiB5PSI4NC42NjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjgwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPjYuMDA8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNTguNzczMiwxMDYuODk4IDcxLjA3NjYsMTA2LjkwNCA2OC4wMzkxLDExNC45OTMiIHN0eWxlPSJmaWxsOnJnYigwLDAsMCkiPjwvcG9seWdvbj4KPHBhdGggZD0iTTEwNC4wNjQsMTA2Ljg5OCBMIDkyLjc0MTEsMTExLjE1IFEgODEuNDE4NSwxMTUuNDAyIDcyLjc5MiwxMTIuMTYzIEwgNjQuMTY1NSwxMDguOTIzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iODEuNDE4NSIgeT0iMTIzLjQ2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj4yLjA4PC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjIwNS45NjgsMTAxLjIyOSAxOTMuNjY0LDEwMS4yMjMgMTk2LjcwMiw5My4xMzQ5IiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik0xNjAuNjc3LDEwMS4yMjkgTCAxNzIsOTYuOTc3MSBRIDE4My4zMjIsOTIuNzI1MiAxOTEuOTQ5LDk1Ljk2NDcgTCAyMDAuNTc1LDk5LjIwNDEiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSIxODMuMzIyIiB5PSI4NC42NjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjgwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPjkuMTc8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMTYwLjY3NywxMDYuODk4IDE3Mi45OCwxMDYuOTA0IDE2OS45NDMsMTE0Ljk5MyIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNMjA1Ljk2OCwxMDYuODk4IEwgMTk0LjY0NSwxMTEuMTUgUSAxODMuMzIyLDExNS40MDIgMTc0LjY5NiwxMTIuMTYzIEwgMTY2LjA2OSwxMDguOTIzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iMTgzLjMyMiIgeT0iMTIzLjQ2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj4yLjMwPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjMwNy44NzEsMTAxLjIyOSAyOTUuNTY4LDEwMS4yMjMgMjk4LjYwNSw5My4xMzQ5IiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik0yNjIuNTgxLDEwMS4yMjkgTCAyNzMuOTAzLDk2Ljk3NzEgUSAyODUuMjI2LDkyLjcyNTIgMjkzLjg1Miw5NS45NjQ3IEwgMzAyLjQ3OSw5OS4yMDQxIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iMjg1LjIyNiIgeT0iODQuNjYxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj4yLjc3PC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjI2Mi41ODEsMTA2Ljg5OCAyNzQuODg0LDEwNi45MDQgMjcxLjg0NywxMTQuOTkzIiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik0zMDcuODcxLDEwNi44OTggTCAyOTYuNTQ5LDExMS4xNSBRIDI4NS4yMjYsMTE1LjQwMiAyNzYuNiwxMTIuMTYzIEwgMjY3Ljk3MywxMDguOTIzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iMjg1LjIyNiIgeT0iMTIzLjQ2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj40LjAzPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjQwOS43NzUsMTAxLjIyOSAzOTcuNDcyLDEwMS4yMjMgNDAwLjUwOSw5My4xMzQ5IiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik0zNjQuNDg0LDEwMS4yMjkgTCAzNzUuODA3LDk2Ljk3NzEgUSAzODcuMTMsOTIuNzI1MiAzOTUuNzU2LDk1Ljk2NDcgTCA0MDQuMzgzLDk5LjIwNDEiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSIzODcuMTMiIHk9Ijg0LjY2MTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+Mi42NDwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIzNjQuNDg0LDEwNi44OTggMzc2Ljc4OCwxMDYuOTA0IDM3My43NSwxMTQuOTkzIiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik00MDkuNzc1LDEwNi44OTggTCAzOTguNDUyLDExMS4xNSBRIDM4Ny4xMywxMTUuNDAyIDM3OC41MDMsMTEyLjE2MyBMIDM2OS44NzcsMTA4LjkyMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjM4Ny4xMyIgeT0iMTIzLjQ2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj41LjMwPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjUxMS42NzksMTAxLjIyOSA0OTkuMzc1LDEwMS4yMjMgNTAyLjQxMyw5My4xMzQ5IiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik00NjYuMzg4LDEwMS4yMjkgTCA0NzcuNzExLDk2Ljk3NzEgUSA0ODkuMDM0LDkyLjcyNTIgNDk3LjY2LDk1Ljk2NDcgTCA1MDYuMjg2LDk5LjIwNDEiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSI0ODkuMDM0IiB5PSI4NC42NjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjgwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPjIuMDg8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNDY2LjM4OCwxMDYuODk4IDQ3OC42OTIsMTA2LjkwNCA0NzUuNjU0LDExNC45OTMiIHN0eWxlPSJmaWxsOnJnYigwLDAsMCkiPjwvcG9seWdvbj4KPHBhdGggZD0iTTUxMS42NzksMTA2Ljg5OCBMIDUwMC4zNTYsMTExLjE1IFEgNDg5LjAzNCwxMTUuNDAyIDQ4MC40MDcsMTEyLjE2MyBMIDQ3MS43ODEsMTA4LjkyMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjQ4OS4wMzQiIHk9IjEyMy40NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+Ni40MDwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI2MTMuNTgzLDEwMS4yMjkgNjAxLjI3OSwxMDEuMjIzIDYwNC4zMTcsOTMuMTM0OSIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNNTY4LjI5MiwxMDEuMjI5IEwgNTc5LjYxNSw5Ni45NzcxIFEgNTkwLjkzNyw5Mi43MjUyIDU5OS41NjQsOTUuOTY0NyBMIDYwOC4xOSw5OS4yMDQxIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iNTkwLjkzNyIgeT0iODQuNjYxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj4xLjc5PC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjU2OC4yOTIsMTA2Ljg5OCA1ODAuNTk1LDEwNi45MDQgNTc3LjU1OCwxMTQuOTkzIiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik02MTMuNTgzLDEwNi44OTggTCA2MDIuMjYsMTExLjE1IFEgNTkwLjkzNywxMTUuNDAyIDU4Mi4zMTEsMTEyLjE2MyBMIDU3My42ODQsMTA4LjkyMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjU5MC45MzciIHk9IjEyMy40NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+My40NzwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIyMzcuMTA5LDE3Ny42NjEgMjM3LjExNCwxNjUuMzU4IDI0NS4yMDMsMTY4LjM5NSIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNMjM3LjEwOSwxMzIuMzcgTCAyNDEuMzYxLDE0My42OTMgUSAyNDUuNjEzLDE1NS4wMTYgMjQyLjM3MywxNjMuNjQyIEwgMjM5LjEzNCwxNzIuMjY5IiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iMjQ1LjYxMyIgeT0iMTU1LjAxNiIgdGV4dC1hbmNob3I9InN0YXJ0IiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjgwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPjIuNjQ8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMjMxLjQzOSwxMzIuMzcgMjMxLjQzNCwxNDQuNjc0IDIyMy4zNDUsMTQxLjYzNiIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNMjMxLjQzOSwxNzcuNjYxIEwgMjI3LjE4OCwxNjYuMzM4IFEgMjIyLjkzNiwxNTUuMDE2IDIyNi4xNzUsMTQ2LjM4OSBMIDIyOS40MTUsMTM3Ljc2MyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjIyMi45MzYiIHk9IjE1NS4wMTYiIHRleHQtYW5jaG9yPSJlbmQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+Ni4wMTwvdGV4dD4KPGNpcmNsZSBjeD0iMzAuNDY2NiIgY3k9IjE2LjMxMzMiIHI9IjE0LjE1MzMiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7Ij48L2NpcmNsZT4KPHRleHQgeD0iMzAuNDY2NiIgeT0iMTYuMzEzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9InJnYigwLDAsMCkiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj4qPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjMwLjQ2NjYsNzUuNzU3MiAyNi4xNDY2LDY0LjIzNzIgMzQuNzg2Niw2NC4yMzcyIiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik0zMC40NjY2LDMwLjQ2NjZMMzAuNDY2Niw2OS45OTcyIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iMzAuNDY2NiIgeT0iNTMuMTExOSIgdGV4dC1hbmNob3I9InN0YXJ0IiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjgwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPsKgNS41MjwvdGV4dD4KPGNpcmNsZSBjeD0iMTMyLjM3IiBjeT0iMTYuMzEzMyIgcj0iMTQuMTUzMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSIxMzIuMzciIHk9IjE2LjMxMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+KjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIxMzIuMzcsNzUuNzU3MiAxMjguMDUsNjQuMjM3MiAxMzYuNjksNjQuMjM3MiIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNMTMyLjM3LDMwLjQ2NjZMMTMyLjM3LDY5Ljk5NzIiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSIxMzIuMzciIHk9IjUzLjExMTkiIHRleHQtYW5jaG9yPSJzdGFydCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7CoDkuNDc8L3RleHQ+CjxjaXJjbGUgY3g9IjIzNC4yNzQiIGN5PSIxNi4zMTMzIiByPSIxNC4xNTMzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjIzNC4yNzQiIHk9IjE2LjMxMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+KjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIyMzQuMjc0LDc1Ljc1NzIgMjI5Ljk1NCw2NC4yMzcyIDIzOC41OTQsNjQuMjM3MiIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNMjM0LjI3NCwzMC40NjY2TDIzNC4yNzQsNjkuOTk3MiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjIzNC4yNzQiIHk9IjUzLjExMTkiIHRleHQtYW5jaG9yPSJzdGFydCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7CoDE2LjQwPC90ZXh0Pgo8Y2lyY2xlIGN4PSIzMzYuMTc4IiBjeT0iMTYuMzEzMyIgcj0iMTQuMTUzMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSIzMzYuMTc4IiB5PSIxNi4zMTMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPio8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzM2LjE3OCw3NS43NTcyIDMzMS44NTgsNjQuMjM3MiAzNDAuNDk4LDY0LjIzNzIiIHN0eWxlPSJmaWxsOnJnYigwLDAsMCkiPjwvcG9seWdvbj4KPHBhdGggZD0iTTMzNi4xNzgsMzAuNDY2NkwzMzYuMTc4LDY5Ljk5NzIiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSIzMzYuMTc4IiB5PSI1My4xMTE5IiB0ZXh0LWFuY2hvcj0ic3RhcnQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+wqAxMy44NzwvdGV4dD4KPGNpcmNsZSBjeD0iNDM4LjA4MiIgY3k9IjE2LjMxMzMiIHI9IjE0LjE1MzMiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7Ij48L2NpcmNsZT4KPHRleHQgeD0iNDM4LjA4MiIgeT0iMTYuMzEzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9InJnYigwLDAsMCkiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj4qPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjQzOC4wODIsNzUuNzU3MiA0MzMuNzYyLDY0LjIzNzIgNDQyLjQwMiw2NC4yMzcyIiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik00MzguMDgyLDMwLjQ2NjZMNDM4LjA4Miw2OS45OTcyIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iNDM4LjA4MiIgeT0iNTMuMTExOSIgdGV4dC1hbmNob3I9InN0YXJ0IiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjgwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPsKgMTIuNTY8L3RleHQ+CjxjaXJjbGUgY3g9IjUzOS45ODUiIGN5PSIxNi4zMTMzIiByPSIxNC4xNTMzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjUzOS45ODUiIHk9IjE2LjMxMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+KjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI1MzkuOTg1LDc1Ljc1NzIgNTM1LjY2NSw2NC4yMzcyIDU0NC4zMDUsNjQuMjM3MiIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNNTM5Ljk4NSwzMC40NjY2TDUzOS45ODUsNjkuOTk3MiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjUzOS45ODUiIHk9IjUzLjExMTkiIHRleHQtYW5jaG9yPSJzdGFydCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7CoDUuNTI8L3RleHQ+CjxjaXJjbGUgY3g9IjY0MS44ODkiIGN5PSIxNi4zMTMzIiByPSIxNC4xNTMzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjY0MS44ODkiIHk9IjE2LjMxMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+KjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI2NDEuODg5LDc1Ljc1NzIgNjM3LjU2OSw2NC4yMzcyIDY0Ni4yMDksNjQuMjM3MiIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNNjQxLjg4OSwzMC40NjY2TDY0MS44ODksNjkuOTk3MiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjY0MS44ODkiIHk9IjUzLjExMTkiIHRleHQtYW5jaG9yPSJzdGFydCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7CoDMuNTY8L3RleHQ+CjxjaXJjbGUgY3g9IjIzNC4yNzQiIGN5PSIyOTMuNzE4IiByPSIxNC4xNTMzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjIzNC4yNzQiIHk9IjI5My43MTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+KjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIyMzQuMjc0LDIzNC4yNzQgMjM4LjU5NCwyNDUuNzk0IDIyOS45NTQsMjQ1Ljc5NCIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNMjM0LjI3NCwyNzkuNTY1TDIzNC4yNzQsMjQwLjAzNCIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjIzNC4yNzQiIHk9IjI1Ni45MTkiIHRleHQtYW5jaG9yPSJzdGFydCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7CoDcuNzE8L3RleHQ+Cjwvc3ZnPg==" class="pikchr" /></p>
+<p>In the diagram, each of the 8 tables in the FROM clause of the query is identified by a large circle with the label of the FROM-clause term: N2, S, L, P, O, C, N1 and R. The arcs in the graph represent the estimated cost of computing each term assuming that the origin of the arc is in an outer loop. For example, the cost of running the S loop as an inner loop to L is 2.30 whereas the cost of running the S loop as an outer loop to L is 9.17.</p>
+<p>The "cost" here is logarithmic. With nested loops, the work is multiplied, not added. But it is customary to think of graphs with additive weights and so the graph shows the logarithm of the various costs. The graph shows a cost advantage of S being inside of L of about 6.87, but this translates into the query running about 963 times faster when S loop is inside of the L loop rather than being outside of it.</p>
+<p>The arrows from the small circles labeled with "*" indicate the cost of running each loop with no dependencies. The outermost loop must use this *-cost. Inner loops have the option of using the *-cost or a cost assuming one of the other terms is in an outer loop, whichever gives the best result. One can think of the *-costs as a short-hand notation indicating multiple arcs, one from each of the other nodes in the graph. The graph is therefore "complete", meaning that there are arcs (some explicit and some implied) in both directions between every pair of nodes in the graph.</p>
+<p>The problem of finding the best query plan is equivalent to finding a minimum-cost path through the graph that visits each node exactly once.</p>
+<p>(Side note: The cost estimates in the TPC-H Q8 graph above were computed by the query planner in SQLite 3.7.16 and converted using a natural logarithm.)</p>
+<h2 id="32-complications">3.2.  Complications<a class="headerlink" href="#32-complications" title="Permanent link">#</a></h2>
+<p>The presentation of the query planner problem above is a simplification. The costs are estimates. We cannot know what the true cost of running a loop is until we actually run the loop. SQLite makes guesses for the cost of running a loop based on the availability of indexes and constraints found in the WHERE clause. These guesses are usually pretty good, but they can sometimes be off. Using the <a href="lang_analyze.html">ANALYZE</a> command to collect additional statistical information about the database can sometimes enable SQLite to make better guesses about the cost.</p>
+<p>The costs are comprised of multiple numbers, not a single number as shown in the graph. SQLite computes several different estimated costs for each loop that apply at different times. For example, there is a "setup" cost that is incurred just once when the query starts. The setup cost is the cost of computing a <a href="optoverview.html#autoindex">query-time index</a> for a table that does not already have an index. Then there is the cost of running each step of the loop. Finally, there is an estimate of the number of rows generated by the loop, which is information needed in estimating the costs of inner loops. Sorting costs may come into play if the query has an ORDER BY clause.</p>
+<p>In a general query, dependencies need not be on a single loop, and hence the matrix of dependencies might not be representable as a graph. For example, one of the WHERE clause constraints might be S.a=L.b+P.c, implying that the S loop must be an inner loop of both L and P. Such dependencies cannot be drawn as a graph since there is no way for an arc to originate at two or more nodes at once.</p>
+<p>If the query contains an ORDER BY clause or a GROUP BY clause or if the query uses the DISTINCT keyword then it is advantageous to select a path through the graph that causes rows to naturally appear in sorted order, so that no separate sorting step is required. Automatic elimination of ORDER BY clauses can make a large performance difference, so this is another factor that needs to be considered in a complete implementation.</p>
+<p>In the TPC-H Q8 query, the setup costs are all negligible, all dependencies are between individual nodes, and there is no ORDER BY, GROUP BY, or DISTINCT clause. So for TPC-H Q8, the graph above is a reasonable representation of what needs to be computed. The general case involves a lot of extra complication, which for clarity is neglected in the remainder of this article.</p>
+<h2 id="33-finding-the-best-query-plan">3.3.  Finding The Best Query Plan<a class="headerlink" href="#33-finding-the-best-query-plan" title="Permanent link">#</a></h2>
+<p>Prior to <a href="releaselog/3_8_0.html">version 3.8.0</a> (2013-08-26), SQLite always used the "Nearest Neighbor" or "NN" heuristic when searching for the best query plan. The NN heuristic makes a single traversal of the graph, always choosing the lowest-cost arc as the next step. The NN heuristic works surprisingly well in most cases. And NN is fast, so that SQLite is able to quickly find good plans for even large 64-way joins. In contrast, other SQL database engines that do more extensive searching tend to bog down when the number of tables in a join goes above 10 or 15.</p>
+<p>Unfortunately, the query plan computed by NN for TPC-H Q8 is not optimal. The plan computed using NN is R-N1-N2-S-C-O-L-P with a cost of 36.92. The notation in the previous sentence means that the R table is run in the outer loop, N1 is in the next inner loop, N2 is in the third loop, and so forth down to P which is in the inner-most loop. The shortest path through the graph (as found via exhaustive search) is P-L-O-C-N1-R-S-N2 with a cost of 27.38. The difference might not seem like much, but remember that the costs are logarithmic, so the shortest path is nearly 750 times faster than that path found using the NN heuristic.</p>
+<p>One solution to this problem is to change SQLite to do an exhaustive search for the best path. But an exhaustive search requires time proportional to K! (where K is the number of tables in the join) and so when you get beyond a 10-way join, the time to run <a href="c3ref/prepare.html">sqlite3_prepare()</a> becomes very large.</p>
+<p><span id="n3"></span></p>
+<h2 id="34-the-n-nearest-neighbors-or-n3-algorithm">3.4.  The N Nearest Neighbors or "N3" Algorithm<a class="headerlink" href="#34-the-n-nearest-neighbors-or-n3-algorithm" title="Permanent link">#</a></h2>
+<p>The NGQP uses a new algorithm for seeking the best path through the graph: "N Nearest Neighbors" (hereafter "N3"). With N3, instead of choosing just one nearest neighbor for each step, the algorithm keeps track of the N bests paths at each step for some small integer N.</p>
+<p>Suppose N=4. Then for the TPC-H Q8 graph, the first step finds the four shortest paths to visit any single node in the graph:</p>
+<blockquote>
+<p>R (cost: 3.56)\
+N1 (cost: 5.52)\
+N2 (cost: 5.52)\
+P (cost: 7.71)\</p>
+</blockquote>
+<p>The second step finds the four shortest paths to visit two nodes beginning with one of the four paths from the previous step. In the case where two or more paths are equivalent (they have the same set of visited nodes, though possibly in a different order) only the first and lowest-cost path is retained. We have:</p>
+<blockquote>
+<p>R-N1 (cost: 7.03)\
+R-N2 (cost: 9.08)\
+N2-N1 (cost: 11.04)\
+R-P {cost: 11.27}\</p>
+</blockquote>
+<p>The third step starts with the four shortest two-node paths and finds the four shortest three-node paths:</p>
+<blockquote>
+<p>R-N1-N2 (cost: 12.55)\
+R-N1-C (cost: 13.43)\
+R-N1-P (cost: 14.74)\
+R-N2-S (cost: 15.08)\</p>
+</blockquote>
+<p>And so forth. There are 8 nodes in the TPC-H Q8 query, so this process repeats a total of 8 times. In the general case of a K-way join, the storage requirement is O(N) and the computation time is O(K*N), which is significantly faster than the O(2<span class="small"><sup>K</sup></span>) exact solution.</p>
+<p>But what value to choose for N? One might try N=K. This makes the algorithm O(K<span class="small"><sup>2</sup></span>) which is actually still quite efficient, since the maximum value of K is 64 and K rarely exceeds 10. But that is not enough for the TPC-H Q8 problem. With N=8 on TPC-H Q8 the N3 algorithm finds the solution R-N1-C-O-L-S-N2-P with a cost of 29.78. That is a big improvement over NN, but it is still not optimal. N3 finds the optimal solution for TPC-H Q8 when N is 10 or greater.</p>
+<p>The initial implementation of NGQP chooses N=1 for simple queries, N=5 for two-way joins and N=10 for all joins with three or more tables. Later, the N value for joins with three or more tables was raised to 12 or to 18 if the join is against a star-schema. Further refinements are likely in the future.</p>
+<p><span id="starq"></span></p>
+<h1 id="4-the-star-query-heuristic">4. The Star-Query Heuristic<a class="headerlink" href="#4-the-star-query-heuristic" title="Permanent link">#</a></h1>
+<p>The <a href="queryplanner-ng.html#n3">N3 algorithm</a> works well for most queries. But there are a few cases where it generates a bad plan. Specifically, for some queries against a <a href="https://en.wikipedia.org/wiki/Star_schema" rel="noopener" target="_blank">star-schema</a> where there is a large fact table and six or more small dimension tables and where there exist indexes going in both directions, the N3 algorithm misses the best query plan unless the N parameter is very large - exponential in the number of dimension tables. Call these kinds of queries "star-queries". More recent versions of SQLite (circa 2024 or 2025 and later) implement a heuristic to work around this, so that efficient query plans are chosen for star-queries, without requiring hints from the programmer.</p>
+<h2 id="41-background-what-is-a-star-query">4.1. Background: What Is A Star-Query<a class="headerlink" href="#41-background-what-is-a-star-query" title="Permanent link">#</a></h2>
+<p>A star-schema is a common relational database design in which there is a large "fact-table" surrounding by smaller "dimension-tables". The dimension-tables are typically keyed by integer ID values and hold a variety of other attributes that are accessed using that ID. The fact-table contains ID values referencing the various dimension tables.</p>
+<p>For example, suppose you have dimension tables, all with integer ID values as their PRIMARY KEY, like this:</p>
+<ul>
+<li>A PRODUCT table holds information about each product.</li>
+<li>A SELLER table holds information about each sales staff member.</li>
+<li>A CUSTOMER table holds information about each customer.</li>
+<li>A CARRIER table holds information about each shipping provider.</li>
+<li>A WAREHOUSE table holds information about all warehouses.</li>
+</ul>
+<p>Each of the dimension tables is relatively small. How many warehouses does your business operate? Maybe PRODUCT and CUSTOMER are somewhat larger, but the number of entries might be still measured in thousands, not millions.</p>
+<p>The dimension tables are bound together by a single SALES table that records each sale. The SALES table contains things like:</p>
+<ul>
+<li>The time and value of the sale.</li>
+<li>The PRODUCT-id, SELLER-id, CUSTOMER-id, CARRIER-id, and WAREHOUSE-id.</li>
+</ul>
+<p>The SALES table is our fact-table. The number of entries in SALES is orders of magnitude larger than any of the dimension tables. And each SALES table row references a single entry in the various dimension tables. A dimension table row might reference many thousands of SALES table rows, on the other hand.</p>
+<p>This is a classic example of a star-schema. Data representations like this come up all the time, and in diverse fields. We call queries against this schema a "star-query". For example, asking for a complete report of all sales between the hours of 12:00 and 14:00 on 2024-01-04 would be a star-query. The SALES table would be consulted to find all entries between the specified hours, then the various dimension tables would be consulted to look up information about each individual sale.</p>
+<h2 id="42-query-planning-problems-with-high-dimensionality-star-queries">4.2. Query Planning Problems With High-Dimensionality Star-Queries<a class="headerlink" href="#42-query-planning-problems-with-high-dimensionality-star-queries" title="Permanent link">#</a></h2>
+<p>The <a href="queryplanner-ng.html#n3">N3 query planning algorithm</a> described above works fine and generates a optimal solution for star-queries with less than five or six dimension tables. However, if the number of dimension tables grows larger, then depending on how indexes are defined and on the relative sizes of the fact and dimension tables, the N3 algorithm will sometimes find a suboptimal plan.</p>
+<p>That happens because N3 is still a greedy algorithm. Even though it is keeping track of up to N different solutions at each step, it only follows the N best solutions. That leads to problems as follows:</p>
+<p>The step of finding all relevant entries in the fact table can be slow, because the fact table is so big. Finding relevant values of the fact table might be slower than doing a full table scan of the relatively small dimension tables. The best plan is usually to spend time finding the relevant rows of the fact table first and then do primary-key lookups of corresponding dimension table rows. But because N3 is a greedy algorithm, it tends to accumulate a bunch of full-table scans of dimension tables in its N-best plan set early in the search. If there enough dimension tables, they can fill up all N available slots and push out the best plan which starts with the more expensive search of the fact table.</p>
+<p>N3 will still always find the best plan in the end, given a large enough value for N. The trouble is that a sufficiently large N might be exponential in the number of dimension tables. That means that overall query planning algorithm would require exponential time. N3 works great with three or four dimension tables. With a larger number of dimension tables, however, it starts to generate query plans that include full-table scans of the smaller dimension tables, which severely degrades performance.</p>
+<h2 id="43-a-large-test-case">4.3. A Large Test Case<a class="headerlink" href="#43-a-large-test-case" title="Permanent link">#</a></h2>
+<p>The <a href="https://sqlite.org/src/file/test/starschema1.test" rel="noopener" target="_blank">test/starschema1.test</a> test script in the SQLite source tree shows a star-query with one fact table and 63 dimension tables. This test case is contrived, but it does demonstrate how the N3 algorithm can fail unless it is amended, as described in the next section.</p>
+<h2 id="44-tweaks-to-n3-to-support-star-queries">4.4. Tweaks To N3 To Support Star Queries<a class="headerlink" href="#44-tweaks-to-n3-to-support-star-queries" title="Permanent link">#</a></h2>
+<p>To help the SQLite query planner come up with better query plans for star-queries, heuristics are used to adjust cost estimates for searching the various tables.</p>
+<p>The current heuristic, as of version 3.49.0 (2025-02-06), is to artificially raise the estimated full-table scan cost for dimension tables so that the cost is slightly greater than the cost of finding the relevant rows of the fact table. This prevents a bunch of pointless full-table scans of dimension tables from pushing the search of the fact table out of the set of N-best solutions early in the algorithm, so that doing the fact table search wins in the end. Only the full-table scan costs of dimension tables are modified. The estimated costs for all other access methods is unchanged, and no costs are changed for tables of the query that are not clearly dimension tables, or for which the evaluation order is already constrained by OUTER JOINs. So the disruption to the algorithm is minimal, but sufficient to always find a good solution for star-queries even with a large number of dimensions.</p>
+<p>A different heuristic was used in SQLite versions 3.47.0 and 3.48.0. The earlier heuristic was to lower the cost of all fact-table access methods so that they were able to out-compete full-table scans of the dimension tables, and thus avoid being eliminated from consideration early in the algorithm. However, this artificial lowering of the fact-table cost created other distortions that lead to performance regressions for other complex joins. <span id="hazards"></span></p>
+<h1 id="5-hazards-of-upgrading-to-ngqp">5.  Hazards Of Upgrading To NGQP<a class="headerlink" href="#5-hazards-of-upgrading-to-ngqp" title="Permanent link">#</a></h1>
+<p><em>→ </em><em>This section is obsolete and retained for historical reference only.</em><em> ← This section was important when the NGQP was new. But a decade has elapsed, the NGQP has been deployed successfully to billions of devices, and everyone has upgraded, and no performance regressions were ever reported back to the SQLite developers. The upgrade hazard has vanished. </em><em>Skip ahead to the <a href="queryplanner-ng.html#howtofix">query planner checklist</a></em><em>.</em></p>
+<p>For most applications, upgrading from the legacy query planner to the NGQP requires little thought or effort. Simply replace the older SQLite version with the newer version of SQLite and recompile and the application will run faster. There are no API changes nor modifications to compilation procedures.</p>
+<p>But as with any query planner change, upgrading to the NGQP does carry a small risk of introducing performance regressions. The problem here is not that the NGQP is incorrect or buggy or inferior to the legacy query planner. Given reliable information about the selectivity of indexes, the NGQP should always pick a plan that is as good as before, or better. The problem is that some applications may be using low-quality and low-selectivity indexes without having run <a href="lang_analyze.html">ANALYZE</a>. The older query planners look at many fewer possible implementations for each query and so they may have stumbled over a good plan by stupid luck. The NGQP, on the other hand, looks at many more query plan possibilities, and it may choose a different query plan that works better in theory, assuming good indexes, but which gives a performance regression in practice, because of the shape of the data.</p>
+<p>Key points:</p>
+<ul>
+<li>
+<p>The NGQP will always find an equal or better query plan, compared to prior query planners, as long as it has access to accurate <a href="lang_analyze.html">ANALYZE</a> data in the <a href="fileformat2.html#stat1tab">SQLITE_STAT1</a> file.</p>
+</li>
+<li>
+<p>The NGQP will always find a good query plan as long as the schema does not contain indexes that have more than about 10 or 20 rows with the same value in the left-most column of the index.</p>
+</li>
+</ul>
+<p>Not all applications meet these conditions. Fortunately, the NGQP will still usually find good query plans, even without these conditions. However, cases do arise (rarely) where performance regressions can occur.</p>
+<p><span id="fossilcasestudy"></span></p>
+<h2 id="51-case-study-upgrading-fossil-to-the-ngqp">5.1.  Case Study: Upgrading Fossil to the NGQP<a class="headerlink" href="#51-case-study-upgrading-fossil-to-the-ngqp" title="Permanent link">#</a></h2>
+<p>The <a href="http://www.fossil-scm.org/" rel="noopener" target="_blank">Fossil DVCS</a> is the version control system used to track all of the SQLite source code. A Fossil repository is an SQLite database file. (Readers are invited to ponder this recursion as an independent exercise.) Fossil is both the version-control system for SQLite and a test platform for SQLite. Whenever enhancements are made to SQLite, Fossil is one of the first applications to test and evaluate those enhancements. So Fossil was an early adopter of the NGQP.</p>
+<p>Unfortunately, the NGQP caused a performance regression in Fossil.</p>
+<p>One of the many reports that Fossil makes available is a timeline of changes to a single branch showing all merges in and out of that branch. See <a href="https://sqlite.org/src/timeline?nd&amp;n=200&amp;r=trunk" rel="noopener" target="_blank">https://sqlite.org/src/timeline?nd&amp;n=200&amp;r=trunk</a> for a typical example of such a report. Generating such a report normally takes just a few milliseconds. But after upgrading to the NGQP we noticed that this one report was taking closer to 10 seconds for the trunk of the repository.</p>
+<p>The core query used to generate the branch timeline is shown below. (Readers are not expected to understand the details of this query. Commentary will follow.)</p>
+<blockquote>
+<p>\
+SELECT\
+     blob.rid AS blobRid,\
+     uuid AS uuid,\
+     datetime(event.mtime,'localtime') AS timestamp,\
+     coalesce(ecomment, comment) AS comment,\
+     coalesce(euser, user) AS user,\
+     blob.rid IN leaf AS leaf,\
+     bgcolor AS bgColor,\
+     event.type AS eventType,\
+     (SELECT group_concat(substr(tagname,5), ', ')\
+        FROM tag, tagxref\
+       WHERE tagname GLOB 'sym-*'\
+         AND tag.tagid=tagxref.tagid\
+         AND tagxref.rid=blob.rid\
+         AND tagxref.tagtype&gt;0) AS tags,\
+     tagid AS tagid,\
+     brief AS brief,\
+     event.mtime AS mtime\
+  FROM event CROSS JOIN blob\
+ WHERE blob.rid=event.objid\
+   AND (EXISTS(SELECT 1 FROM tagxref\
+                WHERE tagid=11 AND tagtype&gt;0 AND rid=blob.rid)\
+        OR EXISTS(SELECT 1 FROM plink JOIN tagxref ON rid=cid\
+                   WHERE tagid=11 AND tagtype&gt;0 AND pid=blob.rid)\
+        OR EXISTS(SELECT 1 FROM plink JOIN tagxref ON rid=pid\
+                   WHERE tagid=11 AND tagtype&gt;0 AND cid=blob.rid))\
+ ORDER BY event.mtime DESC\
+ LIMIT 200;\</p>
+</blockquote>
+<p>This query is not especially complicated, but even so it replaces hundreds or perhaps thousands of lines of procedural code. The gist of the query is this: Scan down the EVENT table looking for the most recent 200 check-ins that satisfy any one of three conditions:</p>
+<ol>
+<li>The check-in has a "trunk" tag.</li>
+<li>The check-in has a child that has a "trunk" tag.</li>
+<li>The check-in has a parent that has a "trunk" tag.</li>
+</ol>
+<p>The first condition causes all of the trunk check-ins to be displayed and the second and third cause check-ins that merge into or fork from the trunk to also be included. The three conditions are implemented by the three OR-connected EXISTS statements in the WHERE clause of the query. The slowdown that occurred with the NGQP was caused by the second and third conditions. The problem is the same in each, so we will examine just the second one. The subquery of the second condition can be rewritten (with minor and immaterial simplifications) as follows:</p>
+<blockquote>
+<p>\
+SELECT 1\
+  FROM plink JOIN tagxref ON tagxref.rid=plink.cid\
+ WHERE tagxref.tagid=\$trunk\
+   AND plink.pid=\$ckid;\</p>
+</blockquote>
+<p>The PLINK table holds parent-child relationships between check-ins. The TAGXREF table maps tags into check-ins. For reference, the relevant portions of the schemas for these two tables is shown here:</p>
+<blockquote>
+<p>\
+CREATE TABLE plink(\
+  pid INTEGER REFERENCES blob,\
+  cid INTEGER REFERENCES blob\
+);\
+CREATE UNIQUE INDEX plink_i1 ON plink(pid,cid);\
+\
+CREATE TABLE tagxref(\
+  tagid INTEGER REFERENCES tag,\
+  mtime TIMESTAMP,\
+  rid INTEGER REFERENCE blob,\
+  UNIQUE(rid, tagid)\
+);\
+CREATE INDEX tagxref_i1 ON tagxref(tagid, mtime);\</p>
+</blockquote>
+<p>There are only two reasonable ways to implement this query. (There are many other possible algorithms, but none of the others are contenders for being the "best" algorithm.)</p>
+<ol>
+<li>
+<p>Find all children of check-in \$ckid and test each one to see if it has the \$trunk tag.</p>
+</li>
+<li>
+<p>Find all check-ins with the \$trunk tag and test each one to see if it is a child of \$ckid.</p>
+</li>
+</ol>
+<p>Intuitively, we humans understand that algorithm-1 is best. Each check-in is likely to have few children (one child is the most common case) and each child can be tested for the \$trunk tag in logarithmic time. Indeed, algorithm-1 is the faster choice in practice. But the NGQP has no intuition. The NGQP must use hard math, and algorithm-2 is slightly better mathematically. This is because, in the absence of other information, the NGQP must assume that the indexes PLINK_I1 and TAGXREF_I1 are of equal quality and are equally selective. Algorithm-2 uses one field of the TAGXREF_I1 index and both fields of the PLINK_I1 index whereas algorithm-1 only uses the first field of each index. Since algorithm-2 uses more index material, the NGQP is correct to judge it to be the better algorithm. The scores are close and algorithm-2 just barely squeaks ahead of algorithm-1. But algorithm-2 really is the correct choice here.</p>
+<p>Unfortunately, algorithm-2 is slower than algorithm-1 in this application.</p>
+<p>The problem is that the indexes are not of equal quality. A check-in is likely to only have one child. So the first field of PLINK_I1 will usually narrow down the search to just a single row. But there are thousands and thousands of check-ins tagged with "trunk", so the first field of TAGXREF_I1 will be of little help in narrowing down the search.</p>
+<p>The NGQP has no way of knowing that TAGXREF_I1 is almost useless in this query, unless <a href="lang_analyze.html">ANALYZE</a> has been run on the database. The <a href="lang_analyze.html">ANALYZE</a> command gathers statistics on the quality of the various indexes and stores those statistics in <a href="fileformat2.html#stat1tab">SQLITE_STAT1</a> table. Having access to this statistical information, the NGQP easily chooses algorithm-1 as the best algorithm, by a wide margin.</p>
+<p>Why didn't the legacy query planner choose algorithm-2? Easy: because the NN algorithm never even considered algorithm-2. Graphs of the planning problem look like this:</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHN0eWxlPSJmb250LXNpemU6aW5pdGlhbDsiIGNsYXNzPSJwaWtjaHIiIHZpZXdib3g9IjAgMCA1MzQuNzUyIDE5MS44IiBkYXRhLXBpa2Noci1kYXRlPSIyMDI1MDMxOTE2MTk0MyI+CjxjaXJjbGUgY3g9IjYxLjU5MTMiIGN5PSIxMDQuMDY0IiByPSIyOC4zMDY2IiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjYxLjU5MTMiIHk9IjEwNC4wNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjE1Ni4yNSUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj5QPC90ZXh0Pgo8Y2lyY2xlIGN4PSIxNjMuNDk1IiBjeT0iMTA0LjA2NCIgcj0iMjguMzA2NiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSIxNjMuNDk1IiB5PSIxMDQuMDY0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSIxNTYuMjUlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+VDwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIxMzUuMTg4LDEwMS4yMjkgMTIyLjg4NSwxMDEuMjIzIDEyNS45MjMsOTMuMTM0OSIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNODkuODk3OSwxMDEuMjI5IEwgMTAxLjIyMSw5Ni45NzcxIFEgMTEyLjU0Myw5Mi43MjUyIDEyMS4xNyw5NS45NjQ3IEwgMTI5Ljc5Niw5OS4yMDQxIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iMTEyLjU0MyIgeT0iODQuNjYxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj40Ljg8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iODkuODk3OSwxMDYuODk4IDEwMi4yMDEsMTA2LjkwNCA5OS4xNjM4LDExNC45OTMiIHN0eWxlPSJmaWxsOnJnYigwLDAsMCkiPjwvcG9seWdvbj4KPHBhdGggZD0iTTEzNS4xODgsMTA2Ljg5OCBMIDEyMy44NjYsMTExLjE1IFEgMTEyLjU0MywxMTUuNDAyIDEwMy45MTcsMTEyLjE2MyBMIDk1LjI5MDIsMTA4LjkyMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjExMi41NDMiIHk9IjEyMy40NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+NC40PC90ZXh0Pgo8Y2lyY2xlIGN4PSI2MS41OTEzIiBjeT0iMTYuMzEzMyIgcj0iMTQuMTUzMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSI2MS41OTEzIiB5PSIxNi4zMTMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPio8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iNjEuNTkxMyw3NS43NTcyIDU3LjI3MTMsNjQuMjM3MiA2NS45MTEzLDY0LjIzNzIiIHN0eWxlPSJmaWxsOnJnYigwLDAsMCkiPjwvcG9seWdvbj4KPHBhdGggZD0iTTYxLjU5MTMsMzAuNDY2Nkw2MS41OTEzLDY5Ljk5NzIiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSI2MS41OTEzIiB5PSI1My4xMTE5IiB0ZXh0LWFuY2hvcj0ic3RhcnQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+wqA0Ljk8L3RleHQ+CjxjaXJjbGUgY3g9IjE2My40OTUiIGN5PSIxNi4zMTMzIiByPSIxNC4xNTMzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjE2My40OTUiIHk9IjE2LjMxMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+KjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSIxNjMuNDk1LDc1Ljc1NzIgMTU5LjE3NSw2NC4yMzcyIDE2Ny44MTUsNjQuMjM3MiIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNMTYzLjQ5NSwzMC40NjY2TDE2My40OTUsNjkuOTk3MiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjE2My40OTUiIHk9IjUzLjExMTkiIHRleHQtYW5jaG9yPSJzdGFydCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7CoDUuMjwvdGV4dD4KPHRleHQgeD0iMTEyLjU0MyIgeT0iMTcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSIxMjUlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+d2l0aG91dMKgQU5BTFlaRTwvdGV4dD4KPGNpcmNsZSBjeD0iMzg5Ljk0OCIgY3k9IjEwNC4wNjQiIHI9IjI4LjMwNjYiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7Ij48L2NpcmNsZT4KPHRleHQgeD0iMzg5Ljk0OCIgeT0iMTA0LjA2NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iMTU2LjI1JSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPlA8L3RleHQ+CjxjaXJjbGUgY3g9IjQ5MS44NTIiIGN5PSIxMDQuMDY0IiByPSIyOC4zMDY2IiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjQ5MS44NTIiIHk9IjEwNC4wNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjE1Ni4yNSUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj5UPC90ZXh0Pgo8cG9seWdvbiBwb2ludHM9IjQ2My41NDUsMTAxLjIyOSA0NTEuMjQyLDEwMS4yMjMgNDU0LjI3OSw5My4xMzQ5IiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik00MTguMjU0LDEwMS4yMjkgTCA0MjkuNTc3LDk2Ljk3NzEgUSA0NDAuOSw5Mi43MjUyIDQ0OS41MjYsOTUuOTY0NyBMIDQ1OC4xNTMsOTkuMjA0MSIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjQ0MC45IiB5PSI4NC42NjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwwLDApIiBmb250LXNpemU9IjgwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPjQuNDwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI0MTguMjU0LDEwNi44OTggNDMwLjU1OCwxMDYuOTA0IDQyNy41MiwxMTQuOTkzIiBzdHlsZT0iZmlsbDpyZ2IoMCwwLDApIj48L3BvbHlnb24+CjxwYXRoIGQ9Ik00NjMuNTQ1LDEwNi44OTggTCA0NTIuMjIyLDExMS4xNSBRIDQ0MC45LDExNS40MDIgNDMyLjI3MywxMTIuMTYzIEwgNDIzLjY0NywxMDguOTIzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyIgLz4KPHRleHQgeD0iNDQwLjkiIHk9IjEyMy40NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+My44PC90ZXh0Pgo8Y2lyY2xlIGN4PSIzODkuOTQ4IiBjeT0iMTYuMzEzMyIgcj0iMTQuMTUzMyIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiPjwvY2lyY2xlPgo8dGV4dCB4PSIzODkuOTQ4IiB5PSIxNi4zMTMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiKDAsMCwwKSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPio8L3RleHQ+Cjxwb2x5Z29uIHBvaW50cz0iMzg5Ljk0OCw3NS43NTcyIDM4NS42MjgsNjQuMjM3MiAzOTQuMjY4LDY0LjIzNzIiIHN0eWxlPSJmaWxsOnJnYigwLDAsMCkiPjwvcG9seWdvbj4KPHBhdGggZD0iTTM4OS45NDgsMzAuNDY2NkwzODkuOTQ4LDY5Ljk5NzIiIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlLXdpZHRoOjIuMTY7c3Ryb2tlOnJnYigwLDAsMCk7IiAvPgo8dGV4dCB4PSIzODkuOTQ4IiB5PSI1My4xMTE5IiB0ZXh0LWFuY2hvcj0ic3RhcnQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iODAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+wqAzLjk8L3RleHQ+CjxjaXJjbGUgY3g9IjQ5MS44NTIiIGN5PSIxNi4zMTMzIiByPSIxNC4xNTMzIiBzdHlsZT0iZmlsbDpub25lO3N0cm9rZS13aWR0aDoyLjE2O3N0cm9rZTpyZ2IoMCwwLDApOyI+PC9jaXJjbGU+Cjx0ZXh0IHg9IjQ5MS44NTIiIHk9IjE2LjMxMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJyZ2IoMCwwLDApIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCI+KjwvdGV4dD4KPHBvbHlnb24gcG9pbnRzPSI0OTEuODUyLDc1Ljc1NzIgNDg3LjUzMiw2NC4yMzcyIDQ5Ni4xNzIsNjQuMjM3MiIgc3R5bGU9ImZpbGw6cmdiKDAsMCwwKSI+PC9wb2x5Z29uPgo8cGF0aCBkPSJNNDkxLjg1MiwzMC40NjY2TDQ5MS44NTIsNjkuOTk3MiIgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6Mi4xNjtzdHJva2U6cmdiKDAsMCwwKTsiIC8+Cjx0ZXh0IHg9IjQ5MS44NTIiIHk9IjUzLjExMTkiIHRleHQtYW5jaG9yPSJzdGFydCIgZmlsbD0icmdiKDAsMCwwKSIgZm9udC1zaXplPSI4MCUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7CoDYuMTwvdGV4dD4KPHRleHQgeD0iNDQwLjkiIHk9IjE3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9InJnYigwLDAsMCkiIGZvbnQtc2l6ZT0iMTI1JSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPndpdGjCoEFOQUxZWkU8L3RleHQ+Cjwvc3ZnPg==" class="pikchr" /></p>
+<p>In the "without ANALYZE" case on the left, the NN algorithm chooses loop P (PLINK) as the outer loop because 4.9 is less than 5.2, resulting in path P-T which is algorithm-1. NN only looks at the single best choice at each step so it completely misses the fact that 5.2+4.4 makes a slightly cheaper plan than 4.9+4.8. But the N3 algorithm keeps track of the 5 best paths for a 2-way join, so it ends up selecting path T-P because of its slightly lower overall cost. Path T-P is algorithm-2.</p>
+<p>Note that with ANALYZE the cost estimates are better aligned with reality and algorithm-1 is selected by both NN and N3.</p>
+<p>(Side note: The costs estimates in the two most recent graphs were computed by the NGQP using a base-2 logarithm and slightly different cost assumptions compared to the legacy query planner. Hence, the cost estimates in these latter two graphs are not directly comparable to the cost estimates in the TPC-H Q8 graph.)</p>
+<h2 id="52-fixing-the-problem">5.2.  Fixing The Problem<a class="headerlink" href="#52-fixing-the-problem" title="Permanent link">#</a></h2>
+<p>Running <a href="lang_analyze.html">ANALYZE</a> on the repository database immediately fixed the performance problem. However, we want Fossil to be robust and to always work quickly regardless of whether or not its repository has been analyzed. For this reason, the query was modified to use the CROSS JOIN operator instead of the plain JOIN operator. SQLite will not reorder the tables of a CROSS JOIN. This is a long-standing feature of SQLite that is specifically designed to allow knowledgeable programmers to enforce a particular loop nesting order. Once the join was changed to CROSS JOIN (the addition of a single keyword) the NGQP was forced to choose the faster algorithm-1 regardless of whether or not statistical information had been gathered using ANALYZE.</p>
+<p>We say that algorithm-1 is "faster", but this is not strictly true. Algorithm-1 is faster in common repositories, but it is possible to construct a repository in which every check-in is on a different uniquely-named branch and all check-ins are children of the root check-in. In that case, TAGXREF_I1 would become more selective than PLINK_I1 and algorithm-2 really would be the faster choice. However such repositories are very unlikely to appear in practice and so hard-coding the loop nested order using the CROSS JOIN syntax is a reasonable solution to the problem in this case.</p>
+<h2 id="53-update-2017-a-better-fix">5.3. Update 2017: A Better Fix<a class="headerlink" href="#53-update-2017-a-better-fix" title="Permanent link">#</a></h2>
+<p>The prior text was written in early 2013, before the first release of SQLite version 3.8.0. This paragraph was added in mid 2021. While all of the previous discussion remains true, a lot of improvements have been made to the query planner, making this whole section largely moot.</p>
+<p>In 2017, Fossil was enhanced to make use of the new <a href="pragma.html#pragma_optimize">PRAGMA optimize</a> statement. Whenever Fossil is about to close the database connection to its repository, it first runs "PRAGMA optimize", which will in turn cause ANALYZE to be run if it is needed. Usually an ANALYZE is not needed, and so there is no measurable performance penalty for doing this. But every now and then ANALYZE might be run on a few of the tables in the repository database. Because of this, query planning issues such as the one described here no longer come up in Fossil. The fact that ANALYZE is run periodically to keep the <a href="fileformat2.html#stat1tab">sqlite_stat1</a> table up-to-date means that hand-tuning of queries is no longer required. We have not had to tweak a query in Fossil in ages.</p>
+<p>Therefore, the current recommendation for avoiding problems such as this one is to simply run "PRAGMA optimize" just prior to closing each database connection. Or, if your application is long-running and never closes any database connections, then run "PRAGMA optimize" once per day or so. Also consider running "PRAGMA optimize" after any schema change. <span id="howtofix"></span></p>
+<h1 id="6-checklist-for-avoiding-or-fixing-query-planner-problems">6.  Checklist For Avoiding Or Fixing Query Planner Problems<a class="headerlink" href="#6-checklist-for-avoiding-or-fixing-query-planner-problems" title="Permanent link">#</a></h1>
+<ol>
+<li>
+<p><strong>Don't panic!</strong> Cases where the query planner picks an inferior plan are actually quite rare. You are unlikely to run across any problems in your application. If you are not having performance issues, you do not need to worry about any of this.</p>
+</li>
+<li>
+<p><strong>Create appropriate indexes.</strong> Most SQL performance problems arise not because of query planner issues but rather due to lack of appropriate indexes. Make sure indexes are available to assist all large queries. Most performance issues can be resolved by one or two CREATE INDEX commands and with no changes to application code.</p>
+</li>
+<li>
+<p><strong>Avoid creating low-quality indexes.</strong>. A low-quality index (for the purpose of this checklist) is one where there are more than 10 or 20 rows in the table that have the same value for the left-most column of the index. In particular, avoid using boolean or "enum" columns as the left-most columns of your indexes.</p>
+<p>The Fossil performance problem described in the previous section of this document arose because there were over ten-thousand entries in the TAGXREF table with the same value for the left-most column (the TAGID column) of the TAGXREF_I1 index.</p>
+</li>
+<li>
+<p><strong>If you must use a low-quality index, be sure to run <a href="lang_analyze.html">ANALYZE</a>.</strong> Low-quality indexes will not confuse the query planner as long as the query planner knows that the indexes are of low quality. And the way the query planner knows this is by the content of the <a href="fileformat2.html#stat1tab">SQLITE_STAT1</a> table, which is computed by the ANALYZE command.</p>
+<p>Of course, ANALYZE only works effectively if you have a significant amount of content in your database in the first place. When creating a new database that you expect to accumulate a lot of data, you can run the command "ANALYZE sqlite_schema" to create the SQLITE_STAT1 table, then prepopulate the <a href="fileformat2.html#stat1tab">sqlite_stat1</a> table (using ordinary INSERT statements) with content that describes a typical database for your application - perhaps content that you extracted after running ANALYZE on a well-populated template database in the lab. Or, you could just run "<a href="pragma.html#pragma_optimize">PRAGMA optimize</a>" before shutting down database connections so that ANALYZE will be run automatically as needed to keep the <a href="fileformat2.html#stat1tab">sqlite_stat1</a> table current.</p>
+</li>
+<li>
+<p><strong>Instrument your code.</strong> Add logic that lets you know quickly and easily which queries are taking too much time. Then work on just those specific queries.</p>
+<hr>
+<p><em>Update 2024: The query planner has been improved so much over the years that you should never need to use any of the hacks described below. The capabilities described below are still available, for backwards compatibility. But you shouldn't use them. If you do find a case where you are getting a suboptimal query plan, please report it to the SQLite developers on the <a href="https://sqlite.org/forum" rel="noopener" target="_blank">SQLite Forum</a> so that they can try to fix the problem. In other words:</em></p>
+<p><strong>Stop Reading Here!</strong></p>
+<p>To help encourage you to stop reading, the remainder of this checklist is now grayed out.</p>
+<hr>
+</li>
+<li>
+<p>Use <a href="lang_corefunc.html#unlikely">unlikely()</a> and <a href="lang_corefunc.html#likelihood">likelihood()</a> SQL functions. SQLite normally assumes that terms in the WHERE clause that cannot be used by indexes have a strong probability of being true. If this assumption is incorrect, it could lead to a suboptimal query plan. The <a href="lang_corefunc.html#unlikely">unlikely()</a> and <a href="lang_corefunc.html#likelihood">likelihood()</a> SQL functions can be used to provide hints to the query planner about WHERE clause terms that are probably not true, and thus aid the query planner in selecting the best possible plan.</p>
+</li>
+<li>
+<p>Use the <a href="optoverview.html#crossjoin">CROSS JOIN</a> syntax to enforce a particular loop nesting order on queries that might use low-quality indexes in an unanalyzed database. SQLite <a href="lang_select.html#crossjoin">treats the CROSS JOIN operator specially</a>, forcing the table to the left to be an outer loop relative to the table on the right.</p>
+</li>
+<li>
+<p>Use unary "+" operators to disqualify WHERE clause terms. If the query planner insists on selecting a poor-quality index for a particular query when a much higher-quality index is available, then <a href="optoverview.html#uplus">careful use of unary "+" operators</a> in the WHERE clause can force the query planner away from the poor-quality index. Avoid using this trick if at all possible, and especially avoid it early in the application development cycle. Beware that adding a unary "+" operator to an equality expression might change the result of that expression if <a href="datatype3.html#affinity">type affinity</a> is involved.</p>
+</li>
+<li>
+<p>Use the <a href="lang_indexedby.html">INDEXED BY</a> syntax to enforce the selection of particular indexes on problem queries. As with the previous two bullets, avoid this step if possible, and especially avoid doing this early in development as it is clearly a premature optimization.</p>
+</li>
+</ol>
+<h1 id="7-summary">7.  Summary<a class="headerlink" href="#7-summary" title="Permanent link">#</a></h1>
+<p>The query planner in SQLite normally does a terrific job of selecting fast algorithms for running your SQL statements. This is true of the legacy query planner and even more true of the new NGQP. There may be an occasional situation where, due to incomplete information, the query planner selects a suboptimal plan. This will happen less often with the NGQP than with the legacy query planner, but it might still happen. Only in those rare cases do application developers need to get involved and help the query planner to do the right thing. In the common case, the NGQP is just a new enhancement to SQLite that makes the application run a little faster and which requires no new developer thought or action.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/lemon.html">
+          <span class="muted">Anterior</span>The Lemon LALR(1) Parser Generator
+        </a>
+        <a class="pager-next" href="../guides/percentile.html">
+          <span class="muted">Siguiente</span>The Percentile Extension
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

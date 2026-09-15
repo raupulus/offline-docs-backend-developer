@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isolate containers with a user namespace · Docker</title>
+<meta name="description" content="Isolate containers with a user namespace - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/userns-remap.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Isolate containers with a user namespace">
+<meta property="og:description" content="Isolate containers with a user namespace - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Isolate containers with a user namespace">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Isolate containers with a user namespace",
+"url": "https://docs.raupulus.dev/docker/engine/security/userns-remap.html",  "description": "Isolate containers with a user namespace - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+class="is-current" aria-current="page">Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Isolate containers with a user namespace</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#about-remapping-and-subordinate-user-and-group-ids">About remapping and subordinate user and group IDs#</a></li>
+              <li class="lvl-2"><a href="#prerequisites">Prerequisites#</a></li>
+              <li class="lvl-2"><a href="#enable-userns-remap-on-the-daemon">Enable userns-remap on the daemon#</a></li>
+              <li class="lvl-2"><a href="#disable-namespace-remapping-for-a-container">Disable namespace remapping for a container#</a></li>
+              <li class="lvl-2"><a href="#user-namespace-known-limitations">User namespace known limitations#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Linux namespaces provide isolation for running processes, limiting their access
+to system resources without the running process being aware of the limitations.
+For more information on Linux namespaces, see
+<a href="https://www.linux.com/news/understanding-and-securing-linux-namespaces" rel="noopener" target="_blank">Linux namespaces</a>.</p>
+<p>The best way to prevent privilege-escalation attacks from within a container is
+to configure your container's applications to run as unprivileged users. For
+containers whose processes must run as the <code>root</code> user within the container, you
+can re-map this user to a less-privileged user on the Docker host. The mapped
+user is assigned a range of UIDs which function within the namespace as normal
+UIDs from 0 to 65536, but have no privileges on the host machine itself.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>With <code>userns-remap</code>, the Docker daemon still runs as root. To run both the
+daemon and containers without root privileges, see <a href="rootless/index.html">Rootless mode</a>
+instead.</p>
+</blockquote>
+<h2 id="about-remapping-and-subordinate-user-and-group-ids">About remapping and subordinate user and group IDs<a class="headerlink" href="#about-remapping-and-subordinate-user-and-group-ids" title="Permanent link">#</a></h2>
+<p>The remapping itself is handled by two files: <code>/etc/subuid</code> and <code>/etc/subgid</code>.
+Each file works the same, but one is concerned with the user ID range, and the
+other with the group ID range. Consider the following entry in <code>/etc/subuid</code>:</p>
+<div class="codehilite"><pre><span></span><code>testuser:231072:65536
+</code></pre></div>
+
+<p>This means that <code>testuser</code> is assigned a subordinate user ID range of <code>231072</code>
+and the next 65536 integers in sequence. UID <code>231072</code> is mapped within the
+namespace (within the container, in this case) as UID <code>0</code> (<code>root</code>). UID <code>231073</code>
+is mapped as UID <code>1</code>, and so forth. If a process attempts to escalate privilege
+outside of the namespace, the process is running as an unprivileged high-number
+UID on the host, which does not even map to a real user. This means the process
+has no privileges on the host system at all.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>It is possible to assign multiple subordinate ranges for a given user or group
+by adding multiple non-overlapping mappings for the same user or group in the
+<code>/etc/subuid</code> or <code>/etc/subgid</code> file. In this case, Docker uses only the first
+five mappings, in accordance with the kernel's limitation of only five entries
+in <code>/proc/self/uid_map</code> and <code>/proc/self/gid_map</code>.</p>
+</blockquote>
+<p>When you configure Docker to use the <code>userns-remap</code> feature, you can optionally
+specify an existing user and/or group, or you can specify <code>default</code>. If you
+specify <code>default</code>, a user and group <code>dockremap</code> is created and used for this
+purpose.</p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>Some distributions do not automatically add the new group to the
+<code>/etc/subuid</code> and <code>/etc/subgid</code> files. If that's the case, you may have
+to manually edit these files and assign non-overlapping ranges. This step is
+covered in <a href="#prerequisites">Prerequisites</a>.</p>
+</blockquote>
+<p>It is very important that the ranges do not overlap, so that a process cannot gain
+access in a different namespace. On most Linux distributions, system utilities
+manage the ranges for you when you add or remove users.</p>
+<p>This re-mapping is transparent to the container, but introduces some
+configuration complexity in situations where the container needs access to
+resources on the Docker host, such as bind mounts into areas of the filesystem
+that the system user cannot write to. From a security standpoint, it is best to
+avoid these situations.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>The subordinate UID and GID ranges must be associated with an existing user,
+    even though the association is an implementation detail. The user owns
+    the namespaced storage directories under <code>/var/lib/docker/</code>. If you don't
+    want to use an existing user, Docker can create one for you and use that. If
+    you want to use an existing username or user ID, it must already exist.
+    Typically, this means that the relevant entries need to be in
+    <code>/etc/passwd</code> and <code>/etc/group</code>, but if you are using a different
+    authentication back-end, this requirement may translate differently.</p>
+<p>To verify this, use the <code>id</code> command:</p>
+<p>```console
+$ id testuser</p>
+<p>uid=1001(testuser) gid=1001(testuser) groups=1001(testuser)
+```</p>
+</li>
+<li>
+<p>The way the namespace remapping is handled on the host is using two files,
+    <code>/etc/subuid</code> and <code>/etc/subgid</code>. These files are typically managed
+    automatically when you add or remove users or groups, but on some
+    distributions, you may need to manage these files manually.</p>
+<p>Each file contains three fields: the username or ID of the user, followed by
+a beginning UID or GID (which is treated as UID or GID 0 within the namespace)
+and a maximum number of UIDs or GIDs available to the user. For instance,
+given the following entry:</p>
+<p><code>text
+testuser:231072:65536</code></p>
+<p>This means that user-namespaced processes started by <code>testuser</code> are
+owned by host UID <code>231072</code> (which looks like UID <code>0</code> inside the
+namespace) through 296607 (231072 + 65536 - 1). These ranges should not overlap,
+to ensure that namespaced processes cannot access each other's namespaces.</p>
+<p>After adding your user, check <code>/etc/subuid</code> and <code>/etc/subgid</code> to see if your
+user has an entry in each. If not, you need to add it, being careful to
+avoid overlap.</p>
+<p>If you want to use the <code>dockremap</code> user automatically created by Docker,
+check for the <code>dockremap</code> entry in these files after
+configuring and restarting Docker.</p>
+</li>
+<li>
+<p>If there are any locations on the Docker host where the unprivileged
+    user needs to write, adjust the permissions of those locations
+    accordingly. This is also true if you want to use the <code>dockremap</code> user
+    automatically created by Docker, but you can't modify the
+    permissions until after configuring and restarting Docker.</p>
+</li>
+<li>
+<p>Enabling <code>userns-remap</code> effectively masks existing image and container
+    layers, as well as other Docker objects within <code>/var/lib/docker/</code>. This is
+    because Docker needs to adjust the ownership of these resources and actually
+    stores them in a subdirectory within <code>/var/lib/docker/</code>. It is best to enable
+    this feature on a new Docker installation rather than an existing one.</p>
+<p>Along the same lines, if you disable <code>userns-remap</code> you can't access any
+of the resources created while it was enabled.</p>
+</li>
+<li>
+<p>Check the <a href="#user-namespace-known-limitations">limitations</a> on user
+    namespaces to be sure your use case is possible.</p>
+</li>
+</ol>
+<h2 id="enable-userns-remap-on-the-daemon">Enable userns-remap on the daemon<a class="headerlink" href="#enable-userns-remap-on-the-daemon" title="Permanent link">#</a></h2>
+<p>You can start <code>dockerd</code> with the <code>--userns-remap</code> flag or follow this
+procedure to configure the daemon using the <code>daemon.json</code> configuration file.
+The <code>daemon.json</code> method is recommended. If you use the flag, use the following
+command as a model:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>dockerd<span class="w"> </span>--userns-remap<span class="o">=</span><span class="s2">&quot;testuser:testuser&quot;</span>
+</code></pre></div>
+
+<ol>
+<li>
+<p>Edit <code>/etc/docker/daemon.json</code>. Assuming the file was previously empty, the
+    following entry enables <code>userns-remap</code> using user and group called
+    <code>testuser</code>. You can address the user and group by ID or name. You only need to
+    specify the group name or ID if it is different from the user name or ID. If
+    you provide both the user and group name or ID, separate them by a colon
+    (<code>:</code>) character. The following formats all work for the value, assuming
+    the UID and GID of <code>testuser</code> are <code>1001</code>:</p>
+<ul>
+<li><code>testuser</code></li>
+<li><code>testuser:testuser</code></li>
+<li><code>1001</code></li>
+<li><code>1001:1001</code></li>
+<li><code>testuser:1001</code></li>
+<li><code>1001:testuser</code></li>
+</ul>
+<p><code>json
+{
+  "userns-remap": "testuser"
+}</code></p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>To use the <code>dockremap</code> user and have Docker create it for you,
+set the value to <code>default</code> rather than <code>testuser</code>.</p>
+</blockquote>
+<p>Save the file and restart Docker.</p>
+</li>
+<li>
+<p>If you are using the <code>dockremap</code> user, verify that Docker created it using
+    the <code>id</code> command.</p>
+<p>```console
+$ id dockremap</p>
+<p>uid=112(dockremap) gid=116(dockremap) groups=116(dockremap)
+```</p>
+<p>Verify that the entry has been added to <code>/etc/subuid</code> and <code>/etc/subgid</code>:</p>
+<p>```console
+$ grep dockremap /etc/subuid</p>
+<p>dockremap:231072:65536</p>
+<p>$ grep dockremap /etc/subgid</p>
+<p>dockremap:231072:65536
+```</p>
+<p>If these entries are not present, edit the files as the <code>root</code> user and
+assign a starting UID and GID that is the highest-assigned one plus the
+offset (in this case, <code>65536</code>). Be careful not to allow any overlap in the
+ranges.</p>
+</li>
+<li>
+<p>Verify that previous images are not available using the <code>docker image ls</code>
+    command. The output should be empty.</p>
+</li>
+<li>
+<p>Start a container from the <code>hello-world</code> image.</p>
+<p><code>console
+$ docker run hello-world</code></p>
+</li>
+<li>
+<p>Verify that a namespaced directory exists within <code>/var/lib/docker/</code> named
+    with the UID and GID of the namespaced user, owned by that UID and GID,
+    and not group-or-world-readable. Some of the subdirectories are still
+    owned by <code>root</code> and have different permissions.</p>
+<p>```console
+$ sudo ls -ld /var/lib/docker/231072.231072/</p>
+<p>drwx------ 11 231072 231072 11 Jun 21 21:19 /var/lib/docker/231072.231072/</p>
+<p>$ sudo ls -l /var/lib/docker/231072.231072/</p>
+<p>total 14
+drwx------ 5 231072 231072 5 Jun 21 21:19 aufs
+drwx------ 3 231072 231072 3 Jun 21 21:21 containers
+drwx------ 3 root   root   3 Jun 21 21:19 image
+drwxr-x--- 3 root   root   3 Jun 21 21:19 network
+drwx------ 4 root   root   4 Jun 21 21:19 plugins
+drwx------ 2 root   root   2 Jun 21 21:19 swarm
+drwx------ 2 231072 231072 2 Jun 21 21:21 tmp
+drwx------ 2 root   root   2 Jun 21 21:19 trust
+drwx------ 2 231072 231072 3 Jun 21 21:19 volumes
+```</p>
+<p>Your directory listing may have some differences, especially if you
+use a different container storage driver than <code>aufs</code>.</p>
+<p>The directories which are owned by the remapped user are used instead
+of the same directories directly beneath <code>/var/lib/docker/</code> and the
+unused versions (such as <code>/var/lib/docker/tmp/</code> in the example here)
+can be removed. Docker does not use them while <code>userns-remap</code> is
+enabled.</p>
+</li>
+</ol>
+<h2 id="disable-namespace-remapping-for-a-container">Disable namespace remapping for a container<a class="headerlink" href="#disable-namespace-remapping-for-a-container" title="Permanent link">#</a></h2>
+<p>If you enable user namespaces on the daemon, all containers are started with
+user namespaces enabled by default. In some situations, such as privileged
+containers, you may need to disable user namespaces for a specific container.
+See
+<a href="#user-namespace-known-limitations">user namespace known limitations</a>
+for some of these limitations.</p>
+<p>To disable user namespaces for a specific container, add the <code>--userns=host</code>
+flag to the <code>docker container create</code>, <code>docker container run</code>, or <code>docker container exec</code> command.</p>
+<p>There is a side effect when using this flag: user remapping will not be enabled for that container but, because the read-only (image) layers are shared between containers, ownership of the containers filesystem will still be remapped.</p>
+<p>What this means is that the whole container filesystem will belong to the user specified in the <code>--userns-remap</code> daemon config (<code>231072</code> in the example above). This can lead to unexpected behavior of programs inside the container. For instance <code>sudo</code> (which checks that its binaries belong to user <code>0</code>) or binaries with a <code>setuid</code> flag.</p>
+<h2 id="user-namespace-known-limitations">User namespace known limitations<a class="headerlink" href="#user-namespace-known-limitations" title="Permanent link">#</a></h2>
+<p>The following standard Docker features are incompatible with running a Docker
+daemon with user namespaces enabled:</p>
+<ul>
+<li>Sharing PID or NET namespaces with the host (<code>--pid=host</code> or <code>--network=host</code>).</li>
+<li>External (volume or storage) drivers which are unaware or incapable of using
+  daemon user mappings.</li>
+<li>Using the <code>--privileged</code> mode flag on <code>docker run</code> without also specifying
+  <code>--userns=host</code>.</li>
+</ul>
+<p>User namespaces are an advanced feature and require coordination with other
+capabilities. For example, if volumes are mounted from the host, file ownership
+must be pre-arranged if you need read or write access to the volume contents.</p>
+<p>While the root user inside a user-namespaced container process has many of the
+expected privileges of the superuser within the container, the Linux kernel
+imposes restrictions based on internal knowledge that this is a user-namespaced
+process. One notable restriction is the inability to use the <code>mknod</code> command.
+Permission is denied for device creation within the container when run by
+the <code>root</code> user.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/security/trust/trust-sandbox.html">
+          <span class="muted">Anterior</span>Play in a content trust sandbox
+        </a>
+        <a class="pager-next" href="../../engine/storage/index.html">
+          <span class="muted">Siguiente</span>Storage
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

@@ -131,8 +131,10 @@ def fetch_git_markdown(source: Source, out_dir: Path, force: bool) -> dict:
 # Extensión de los documentos según el adaptador. Contar .md en una
 # fuente DocBook daba un falso aviso de "faltan ficheros".
 DOCUMENT_GLOBS = {
-    "docbook_xml": ("*.xml",),
+    "docbook_xml": ("*.xml", "*.sgml", "*.rawxml"),
     "git_markdown": ("*.md", "*.mdx"),
+    "asciidoc": ("*.adoc",),
+    "rst": ("*.rst",),
 }
 
 
@@ -214,6 +216,9 @@ ADAPTERS = {
     "docbook_xml": fetch_docbook_xml,
     "plaintext": fetch_archive,
     "texinfo": fetch_archive,
+    "asciidoc": fetch_git_markdown,
+    "html_tarball": fetch_archive,
+    "rst": fetch_git_markdown,
 }
 
 PENDING_ADAPTERS: set[str] = set()

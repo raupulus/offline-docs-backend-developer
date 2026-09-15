@@ -1,0 +1,39 @@
+---
+title: Device Characteristics
+source_url: https://www.sqlite.org/c3ref/c_iocap_atomic.html
+source_path: c3ref/c_iocap_atomic.html
+technology: sqlite
+version: 3.53.4
+license: Blessing
+retrieved_at: '2026-09-15'
+section: c-api
+order: 580
+---
+
+> \
+> \#define SQLITE_IOCAP_ATOMIC                 0x00000001\
+> \#define SQLITE_IOCAP_ATOMIC512              0x00000002\
+> \#define SQLITE_IOCAP_ATOMIC1K               0x00000004\
+> \#define SQLITE_IOCAP_ATOMIC2K               0x00000008\
+> \#define SQLITE_IOCAP_ATOMIC4K               0x00000010\
+> \#define SQLITE_IOCAP_ATOMIC8K               0x00000020\
+> \#define SQLITE_IOCAP_ATOMIC16K              0x00000040\
+> \#define SQLITE_IOCAP_ATOMIC32K              0x00000080\
+> \#define SQLITE_IOCAP_ATOMIC64K              0x00000100\
+> \#define SQLITE_IOCAP_SAFE_APPEND            0x00000200\
+> \#define SQLITE_IOCAP_SEQUENTIAL             0x00000400\
+> \#define SQLITE_IOCAP_UNDELETABLE_WHEN_OPEN  0x00000800\
+> \#define SQLITE_IOCAP_POWERSAFE_OVERWRITE    0x00001000\
+> \#define SQLITE_IOCAP_IMMUTABLE              0x00002000\
+> \#define SQLITE_IOCAP_BATCH_ATOMIC           0x00004000\
+> \#define SQLITE_IOCAP_SUBPAGE_READ           0x00008000\
+
+The xDeviceCharacteristics method of the [sqlite3_io_methods](../c3ref/io_methods.md) object returns an integer which is a vector of these bit values expressing I/O characteristics of the mass storage device that holds the file that the [sqlite3_io_methods](../c3ref/io_methods.md) refers to.
+
+The SQLITE_IOCAP_ATOMIC property means that all writes of any size are atomic. The SQLITE_IOCAP_ATOMICnnn values mean that writes of blocks that are nnn bytes in size and are aligned to an address which is an integer multiple of nnn are atomic. The SQLITE_IOCAP_SAFE_APPEND value means that when data is appended to a file, the data is appended first then the size of the file is extended, never the other way around. The SQLITE_IOCAP_SEQUENTIAL property means that information is written to disk in the same order as calls to xWrite(). The SQLITE_IOCAP_POWERSAFE_OVERWRITE property means that after reboot following a crash or power loss, the only bytes in a file that were written at the application level might have changed and that adjacent bytes, even bytes within the same sector are guaranteed to be unchanged. The SQLITE_IOCAP_UNDELETABLE_WHEN_OPEN flag indicates that a file cannot be deleted when open. The SQLITE_IOCAP_IMMUTABLE flag indicates that the file is on read-only media and cannot be changed even by processes with elevated privileges.
+
+The SQLITE_IOCAP_BATCH_ATOMIC property means that the underlying filesystem supports doing multiple write operations atomically when those write operations are bracketed by [SQLITE_FCNTL_BEGIN_ATOMIC_WRITE](../c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlbeginatomicwrite) and [SQLITE_FCNTL_COMMIT_ATOMIC_WRITE](../c3ref/c_fcntl_begin_atomic_write.md#sqlitefcntlcommitatomicwrite).
+
+The SQLITE_IOCAP_SUBPAGE_READ property means that it is ok to read from the database file in amounts that are not a multiple of the page size and that do not begin at a page boundary. Without this property, SQLite is careful to only do full-page reads and write on aligned pages, with the one exception that it will do a sub-page read of the first page to access the database header.
+
+See also lists of [Objects](../c3ref/objlist.md), [Constants](../c3ref/constlist.md), and [Functions](../c3ref/funclist.md).

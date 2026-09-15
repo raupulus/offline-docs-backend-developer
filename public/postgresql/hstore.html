@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hstore — hstore key/value datatype · PostgreSQL</title>
+<meta name="description" content="hstore — hstore key/value datatype - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/hstore.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="hstore — hstore key/value datatype">
+<meta property="og:description" content="hstore — hstore key/value datatype - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hstore — hstore key/value datatype">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "hstore — hstore key/value datatype",
+"url": "https://docs.raupulus.dev/postgresql/hstore.html",  "description": "hstore — hstore key/value datatype - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./ddl.html"
+>Data Definition</a>
+              </li>
+              <li>
+                <a href="./dml.html"
+>Data Manipulation</a>
+              </li>
+              <li>
+                <a href="./datatype.html"
+>Data Types</a>
+              </li>
+              <li>
+                <a href="./storage.html"
+>Database Physical Storage</a>
+              </li>
+              <li>
+                <a href="./user-manag.html"
+>Database Roles</a>
+              </li>
+              <li>
+                <a href="./datetime.html"
+>Date/Time Support</a>
+              </li>
+              <li>
+                <a href="./dblink.html"
+>dblink_connect</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-default-roles.html"
+>Default Roles Renamed to Predefined Roles</a>
+              </li>
+              <li>
+                <a href="./dict-int.html"
+>dict_int — example full-text search dictionary for integers</a>
+              </li>
+              <li>
+                <a href="./dict-xsyn.html"
+>dict_xsyn — example synonym full-text search dictionary</a>
+              </li>
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+>file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+              <li>
+                <a href="./high-availability.html"
+>High Availability, Load Balancing, and Replication</a>
+              </li>
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+class="is-current" aria-current="page">hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">hstore — hstore key/value datatype</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/hstore.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#hstore-hstore-keyvalue-datatype">hstore hstore key/value datatype#</a></li>
+              <li class="lvl-2"><a href="#hstore-external-representation">hstore External Representation#</a></li>
+              <li class="lvl-2"><a href="#hstore-operators-and-functions">hstore Operators and Functions#</a></li>
+              <li class="lvl-2"><a href="#indexes">Indexes#</a></li>
+              <li class="lvl-2"><a href="#examples">Examples#</a></li>
+              <li class="lvl-2"><a href="#statistics">Statistics#</a></li>
+              <li class="lvl-2"><a href="#compatibility">Compatibility#</a></li>
+              <li class="lvl-2"><a href="#transforms">Transforms#</a></li>
+              <li class="lvl-2"><a href="#authors">Authors#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="hstore-hstore-keyvalue-datatype">hstore hstore key/value datatype<a class="headerlink" href="#hstore-hstore-keyvalue-datatype" title="Permanent link">#</a></h2>
+<p>hstore</p>
+<p>This module implements the <code>hstore</code> data type for storing sets of key/value pairs within a single PostgreSQL value. This can be useful in various scenarios, such as rows with many attributes that are rarely examined, or semi-structured data. Keys and values are simply text strings.</p>
+<p>This module is considered “trusted”, that is, it can be installed by non-superusers who have <code>CREATE</code> privilege on the current database.</p>
+<h2 id="hstore-external-representation"><code>hstore</code> External Representation<a class="headerlink" href="#hstore-external-representation" title="Permanent link">#</a></h2>
+<p>The text representation of an <code>hstore</code>, used for input and output, includes zero or more \&lt;key&gt; <code>=&gt;</code> \&lt;value&gt; pairs separated by commas. Some examples: k =&gt; v foo =&gt; bar, baz =&gt; whatever "1-a" =&gt; "anything at all" The order of the pairs is not significant (and may not be reproduced on output). Whitespace between pairs or around the <code>=&gt;</code> sign is ignored. Double-quote keys and values that include whitespace, commas, <code>=</code>s or <code>&gt;</code>s. To include a double quote or a backslash in a key or value, escape it with a backslash.</p>
+<p>Each key in an <code>hstore</code> is unique. If you declare an <code>hstore</code> with duplicate keys, only one will be stored in the <code>hstore</code> and there is no guarantee as to which will be kept:</p>
+<div class="codehilite"><pre><span></span><code>SELECT &#39;a=&gt;1,a=&gt;2&#39;::hstore;
+  hstore
+----------
+ &quot;a&quot;=&gt;&quot;1&quot;
+</code></pre></div>
+
+<p>A value (but not a key) can be an SQL <code>NULL</code>. For example:</p>
+<div class="codehilite"><pre><span></span><code>key =&gt; NULL
+</code></pre></div>
+
+<p>The <code>NULL</code> keyword is case-insensitive. Double-quote the <code>NULL</code> to treat it as the ordinary string “NULL”.</p>
+<blockquote>
+<p>[!NOTE]
+Keep in mind that the <code>hstore</code> text format, when used for input, applies <em>before</em> any required quoting or escaping. If you are passing an <code>hstore</code> literal via a parameter, then no additional processing is needed. But if you're passing it as a quoted literal constant, then any single-quote characters and (depending on the setting of the <code>standard_conforming_strings</code> configuration parameter) backslash characters need to be escaped correctly. See <a href="#sql-syntax-strings">???</a> for more on the handling of string constants.</p>
+</blockquote>
+<p>On output, double quotes always surround keys and values, even when it's not strictly necessary.</p>
+<h2 id="hstore-operators-and-functions"><code>hstore</code> Operators and Functions<a class="headerlink" href="#hstore-operators-and-functions" title="Permanent link">#</a></h2>
+<p>The operators provided by the <code>hstore</code> module are shown in <a href="#hstore-op-table"> Operators</a>, the functions in <a href="#hstore-func-table"> Functions</a>.</p>
+<table id="hstore-op-table">
+<caption><code>hstore</code> Operators</caption>
+<thead>
+<tr>
+<th><p role="func_signature">Operator</p>
+<p>Description</p>
+<p>Example(s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>-&gt;</code> <code>text</code> text</p>
+<p>Returns value associated with given key, or <code>NULL</code> if not present.</p>
+<p><code>'a=&gt;x, b=&gt;y'::hstore -&gt; 'a'</code> x</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>-&gt;</code> <code>text[]</code> text[]</p>
+<p>Returns values associated with given keys, or <code>NULL</code> if not present.</p>
+<p><code>'a=&gt;x, b=&gt;y, c=&gt;z'::hstore -&gt; ARRAY['c','a']</code> {"z","x"}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>||</code> <code>hstore</code> hstore</p>
+<p>Concatenates two <code>hstore</code>s.</p>
+<p><code>'a=&gt;b, c=&gt;d'::hstore || 'c=&gt;x, d=&gt;q'::hstore</code> "a"=&gt;"b", "c"=&gt;"x", "d"=&gt;"q"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>?</code> <code>text</code> boolean</p>
+<p>Does <code>hstore</code> contain key?</p>
+<p><code>'a=&gt;1'::hstore ? 'a'</code> t</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>?&amp;</code> <code>text[]</code> boolean</p>
+<p>Does <code>hstore</code> contain all the specified keys?</p>
+<p><code>'a=&gt;1,b=&gt;2'::hstore ?&amp; ARRAY['a','b']</code> t</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>?|</code> <code>text[]</code> boolean</p>
+<p>Does <code>hstore</code> contain any of the specified keys?</p>
+<p><code>'a=&gt;1,b=&gt;2'::hstore ?| ARRAY['b','c']</code> t</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>@&gt;</code> <code>hstore</code> boolean</p>
+<p>Does left operand contain right?</p>
+<p><code>'a=&gt;b, b=&gt;1, c=&gt;NULL'::hstore @&gt; 'b=&gt;1'</code> t</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>&lt;@</code> <code>hstore</code> boolean</p>
+<p>Is left operand contained in right?</p>
+<p><code>'a=&gt;c'::hstore &lt;@ 'a=&gt;b, b=&gt;1, c=&gt;NULL'</code> f</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>-</code> <code>text</code> hstore</p>
+<p>Deletes key from left operand.</p>
+<p><code>'a=&gt;1, b=&gt;2, c=&gt;3'::hstore - 'b'::text</code> "a"=&gt;"1", "c"=&gt;"3"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>-</code> <code>text[]</code> hstore</p>
+<p>Deletes keys from left operand.</p>
+<p><code>'a=&gt;1, b=&gt;2, c=&gt;3'::hstore - ARRAY['a','b']</code> "c"=&gt;"3"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> <code>-</code> <code>hstore</code> hstore</p>
+<p>Deletes pairs from left operand that match pairs in the right operand.</p>
+<p><code>'a=&gt;1, b=&gt;2, c=&gt;3'::hstore - 'a=&gt;4, b=&gt;2'::hstore</code> "a"=&gt;"1", "c"=&gt;"3"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>anyelement</code> <code>#=</code> <code>hstore</code> anyelement</p>
+<p>Replaces fields in the left operand (which must be a composite type) with matching values from <code>hstore</code>.</p>
+<p><code>ROW(1,3) #= 'f1=&gt;11'::hstore</code> (11,3)</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>%%</code> <code>hstore</code> text[]</p>
+<p>Converts <code>hstore</code> to an array of alternating keys and values.</p>
+<p><code>%% 'a=&gt;foo, b=&gt;bar'::hstore</code> {a,foo,b,bar}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>%#</code> <code>hstore</code> text[]</p>
+<p>Converts <code>hstore</code> to a two-dimensional key/value array.</p>
+<p><code>%# 'a=&gt;foo, b=&gt;bar'::hstore</code> {{a,foo},{b,bar}}</p></td>
+</tr>
+</tbody>
+</table>
+
+<table id="hstore-func-table">
+<caption><code>hstore</code> Functions</caption>
+<thead>
+<tr>
+<th><p role="func_signature">Function</p>
+<p>Description</p>
+<p>Example(s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>hstore</code> ( <code>record</code> ) hstore</p>
+<p>Constructs an <code>hstore</code> from a record or row.</p>
+<p><code>hstore(ROW(1,2))</code> "f1"=&gt;"1", "f2"=&gt;"2"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> ( <code>text[]</code> ) hstore</p>
+<p>Constructs an <code>hstore</code> from an array, which may be either a key/value array, or a two-dimensional array.</p>
+<p><code>hstore(ARRAY['a','1','b','2'])</code> "a"=&gt;"1", "b"=&gt;"2"</p>
+<p><code>hstore(ARRAY[['c','3'],['d','4']])</code> "c"=&gt;"3", "d"=&gt;"4"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> ( <code>text[]</code>, <code>text[]</code> ) hstore</p>
+<p>Constructs an <code>hstore</code> from separate key and value arrays.</p>
+<p><code>hstore(ARRAY['a','b'], ARRAY['1','2'])</code> "a"=&gt;"1", "b"=&gt;"2"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>hstore</code> ( <code>text</code>, <code>text</code> ) hstore</p>
+<p>Makes a single-item <code>hstore</code>.</p>
+<p><code>hstore('a', 'b')</code> "a"=&gt;"b"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>akeys</code> ( <code>hstore</code> ) text[]</p>
+<p>Extracts an <code>hstore</code>'s keys as an array.</p>
+<p><code>akeys('a=&gt;1,b=&gt;2')</code> {a,b}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>skeys</code> ( <code>hstore</code> ) setof text</p>
+<p>Extracts an <code>hstore</code>'s keys as a set.</p>
+<p><code>skeys('a=&gt;1,b=&gt;2')</code></p>
+<pre><code>a
+b</code></pre></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>avals</code> ( <code>hstore</code> ) text[]</p>
+<p>Extracts an <code>hstore</code>'s values as an array.</p>
+<p><code>avals('a=&gt;1,b=&gt;2')</code> {1,2}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>svals</code> ( <code>hstore</code> ) setof text</p>
+<p>Extracts an <code>hstore</code>'s values as a set.</p>
+<p><code>svals('a=&gt;1,b=&gt;2')</code></p>
+<pre><code>1
+2</code></pre></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>hstore_to_array</code> ( <code>hstore</code> ) text[]</p>
+<p>Extracts an <code>hstore</code>'s keys and values as an array of alternating keys and values.</p>
+<p><code>hstore_to_array('a=&gt;1,b=&gt;2')</code> {a,1,b,2}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>hstore_to_matrix</code> ( <code>hstore</code> ) text[]</p>
+<p>Extracts an <code>hstore</code>'s keys and values as a two-dimensional array.</p>
+<p><code>hstore_to_matrix('a=&gt;1,b=&gt;2')</code> {{a,1},{b,2}}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>hstore_to_json</code> ( <code>hstore</code> ) json</p>
+<p>Converts an <code>hstore</code> to a <code>json</code> value, converting all non-null values to JSON strings.</p>
+<p>This function is used implicitly when an <code>hstore</code> value is cast to <code>json</code>.</p>
+<p><code>hstore_to_json('"a key"=&gt;1, b=&gt;t, c=&gt;null, d=&gt;12345, e=&gt;012345, f=&gt;1.234, g=&gt;2.345e+4')</code> {"a key": "1", "b": "t", "c": null, "d": "12345", "e": "012345", "f": "1.234", "g": "2.345e+4"}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>hstore_to_jsonb</code> ( <code>hstore</code> ) jsonb</p>
+<p>Converts an <code>hstore</code> to a <code>jsonb</code> value, converting all non-null values to JSON strings.</p>
+<p>This function is used implicitly when an <code>hstore</code> value is cast to <code>jsonb</code>.</p>
+<p><code>hstore_to_jsonb('"a key"=&gt;1, b=&gt;t, c=&gt;null, d=&gt;12345, e=&gt;012345, f=&gt;1.234, g=&gt;2.345e+4')</code> {"a key": "1", "b": "t", "c": null, "d": "12345", "e": "012345", "f": "1.234", "g": "2.345e+4"}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>hstore_to_json_loose</code> ( <code>hstore</code> ) json</p>
+<p>Converts an <code>hstore</code> to a <code>json</code> value, but attempts to distinguish numerical and Boolean values so they are unquoted in the JSON.</p>
+<p><code>hstore_to_json_loose('"a key"=&gt;1, b=&gt;t, c=&gt;null, d=&gt;12345, e=&gt;012345, f=&gt;1.234, g=&gt;2.345e+4')</code> {"a key": 1, "b": true, "c": null, "d": 12345, "e": "012345", "f": 1.234, "g": 2.345e+4}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>hstore_to_jsonb_loose</code> ( <code>hstore</code> ) jsonb</p>
+<p>Converts an <code>hstore</code> to a <code>jsonb</code> value, but attempts to distinguish numerical and Boolean values so they are unquoted in the JSON.</p>
+<p><code>hstore_to_jsonb_loose('"a key"=&gt;1, b=&gt;t, c=&gt;null, d=&gt;12345, e=&gt;012345, f=&gt;1.234, g=&gt;2.345e+4')</code> {"a key": 1, "b": true, "c": null, "d": 12345, "e": "012345", "f": 1.234, "g": 2.345e+4}</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>slice</code> ( <code>hstore</code>, <code>text[]</code> ) hstore</p>
+<p>Extracts a subset of an <code>hstore</code> containing only the specified keys.</p>
+<p><code>slice('a=&gt;1,b=&gt;2,c=&gt;3'::hstore, ARRAY['b','c','x'])</code> "b"=&gt;"2", "c"=&gt;"3"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>each</code> ( <code>hstore</code> ) setof record ( <code>key</code> <code>text</code>, <code>value</code> <code>text</code> )</p>
+<p>Extracts an <code>hstore</code>'s keys and values as a set of records.</p>
+<p><code>select * from each('a=&gt;1,b=&gt;2')</code></p>
+<pre><code> key | value
+-----+-------
+ a   | 1
+ b   | 2</code></pre></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>exist</code> ( <code>hstore</code>, <code>text</code> ) boolean</p>
+<p>Does <code>hstore</code> contain key?</p>
+<p><code>exist('a=&gt;1', 'a')</code> t</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>defined</code> ( <code>hstore</code>, <code>text</code> ) boolean</p>
+<p>Does <code>hstore</code> contain a non-<code>NULL</code> value for key?</p>
+<p><code>defined('a=&gt;NULL', 'a')</code> f</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>delete</code> ( <code>hstore</code>, <code>text</code> ) hstore</p>
+<p>Deletes pair with matching key.</p>
+<p><code>delete('a=&gt;1,b=&gt;2', 'b')</code> "a"=&gt;"1"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>delete</code> ( <code>hstore</code>, <code>text[]</code> ) hstore</p>
+<p>Deletes pairs with matching keys.</p>
+<p><code>delete('a=&gt;1,b=&gt;2,c=&gt;3', ARRAY['a','b'])</code> "c"=&gt;"3"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><code>delete</code> ( <code>hstore</code>, <code>hstore</code> ) hstore</p>
+<p>Deletes pairs matching those in the second argument.</p>
+<p><code>delete('a=&gt;1,b=&gt;2', 'a=&gt;4,b=&gt;2'::hstore)</code> "a"=&gt;"1"</p></td>
+</tr>
+<tr>
+<td><p role="func_signature"><span class="indexterm"></span> <code>populate_record</code> ( <code>anyelement</code>, <code>hstore</code> ) anyelement</p>
+<p>Replaces fields in the left operand (which must be a composite type) with matching values from <code>hstore</code>.</p>
+<p><code>populate_record(ROW(1,2), 'f1=&gt;42'::hstore)</code> (42,2)</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>In addition to these operators and functions, values of the <code>hstore</code> type can be subscripted, allowing them to act like associative arrays. Only a single subscript of type <code>text</code> can be specified; it is interpreted as a key and the corresponding value is fetched or stored. For example,</p>
+<div class="codehilite"><pre><span></span><code>CREATE TABLE mytable (h hstore);
+INSERT INTO mytable VALUES (&#39;a=&gt;b, c=&gt;d&#39;);
+SELECT h[&#39;a&#39;] FROM mytable;
+ h
+---
+ b
+(1 row)
+
+UPDATE mytable SET h[&#39;c&#39;] = &#39;new&#39;;
+SELECT h FROM mytable;
+          h
+----------------------
+ &quot;a&quot;=&gt;&quot;b&quot;, &quot;c&quot;=&gt;&quot;new&quot;
+(1 row)
+</code></pre></div>
+
+<p>A subscripted fetch returns <code>NULL</code> if the subscript is <code>NULL</code> or that key does not exist in the <code>hstore</code>. (Thus, a subscripted fetch is not greatly different from the <code>-&gt;</code> operator.) A subscripted update fails if the subscript is <code>NULL</code>; otherwise, it replaces the value for that key, adding an entry to the <code>hstore</code> if the key does not already exist.</p>
+<h2 id="indexes">Indexes<a class="headerlink" href="#indexes" title="Permanent link">#</a></h2>
+<p><code>hstore</code> has GiST and GIN index support for the <code>@&gt;</code>, <code>?</code>, <code>?&amp;</code> and <code>?|</code> operators. For example:</p>
+<div class="codehilite"><pre><span></span><code>CREATE INDEX hidx ON testhstore USING GIST (h);
+
+CREATE INDEX hidx ON testhstore USING GIN (h);
+</code></pre></div>
+
+<p><code>gist_hstore_ops</code> GiST opclass approximates a set of key/value pairs as a bitmap signature. Its optional integer parameter <code>siglen</code> determines the signature length in bytes. The default length is 16 bytes. Valid values of signature length are between 1 and 2024 bytes. Longer signatures lead to a more precise search (scanning a smaller fraction of the index and fewer heap pages), at the cost of a larger index.</p>
+<p>Example of creating such an index with a signature length of 32 bytes:</p>
+<div class="codehilite"><pre><span></span><code>CREATE INDEX hidx ON testhstore USING GIST (h gist_hstore_ops(siglen=32));
+</code></pre></div>
+
+<p><code>hstore</code> also supports <code>btree</code> or <code>hash</code> indexes for the <code>=</code> operator. This allows <code>hstore</code> columns to be declared <code>UNIQUE</code>, or to be used in <code>GROUP BY</code>, <code>ORDER BY</code> or <code>DISTINCT</code> expressions. The sort ordering for <code>hstore</code> values is not particularly useful, but these indexes may be useful for equivalence lookups. Create indexes for <code>=</code> comparisons as follows:</p>
+<div class="codehilite"><pre><span></span><code>CREATE INDEX hidx ON testhstore USING BTREE (h);
+
+CREATE INDEX hidx ON testhstore USING HASH (h);
+</code></pre></div>
+
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<p>Add a key, or update an existing key with a new value:</p>
+<div class="codehilite"><pre><span></span><code>UPDATE tab SET h[&#39;c&#39;] = &#39;3&#39;;
+</code></pre></div>
+
+<p>Another way to do the same thing is:</p>
+<div class="codehilite"><pre><span></span><code>UPDATE tab SET h = h || hstore(&#39;c&#39;, &#39;3&#39;);
+</code></pre></div>
+
+<p>If multiple keys are to be added or changed in one operation, the concatenation approach is more efficient than subscripting:</p>
+<div class="codehilite"><pre><span></span><code>UPDATE tab SET h = h || hstore(array[&#39;q&#39;, &#39;w&#39;], array[&#39;11&#39;, &#39;12&#39;]);
+</code></pre></div>
+
+<p>Delete a key:</p>
+<div class="codehilite"><pre><span></span><code>UPDATE tab SET h = delete(h, &#39;k1&#39;);
+</code></pre></div>
+
+<p>Convert a <code>record</code> to an <code>hstore</code>:</p>
+<div class="codehilite"><pre><span></span><code>CREATE TABLE test (col1 integer, col2 text, col3 text);
+INSERT INTO test VALUES (123, &#39;foo&#39;, &#39;bar&#39;);
+
+SELECT hstore(t) FROM test AS t;
+                   hstore
+---------------------------------------------
+ &quot;col1&quot;=&gt;&quot;123&quot;, &quot;col2&quot;=&gt;&quot;foo&quot;, &quot;col3&quot;=&gt;&quot;bar&quot;
+(1 row)
+</code></pre></div>
+
+<p>Convert an <code>hstore</code> to a predefined <code>record</code> type:</p>
+<div class="codehilite"><pre><span></span><code>CREATE TABLE test (col1 integer, col2 text, col3 text);
+
+SELECT * FROM populate_record(null::test,
+                              &#39;&quot;col1&quot;=&gt;&quot;456&quot;, &quot;col2&quot;=&gt;&quot;zzz&quot;&#39;);
+ col1 | col2 | col3
+------+------+------
+  456 | zzz  |
+(1 row)
+</code></pre></div>
+
+<p>Modify an existing record using the values from an <code>hstore</code>:</p>
+<div class="codehilite"><pre><span></span><code>CREATE TABLE test (col1 integer, col2 text, col3 text);
+INSERT INTO test VALUES (123, &#39;foo&#39;, &#39;bar&#39;);
+
+SELECT (r).* FROM (SELECT t #= &#39;&quot;col3&quot;=&gt;&quot;baz&quot;&#39; AS r FROM test t) s;
+ col1 | col2 | col3
+------+------+------
+  123 | foo  | baz
+(1 row)
+</code></pre></div>
+
+<h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">#</a></h2>
+<p>The <code>hstore</code> type, because of its intrinsic liberality, could contain a lot of different keys. Checking for valid keys is the task of the application. The following examples demonstrate several techniques for checking keys and obtaining statistics.</p>
+<p>Simple example:</p>
+<div class="codehilite"><pre><span></span><code>SELECT * FROM each(&#39;aaa=&gt;bq, b=&gt;NULL, &quot;&quot;=&gt;1&#39;);
+</code></pre></div>
+
+<p>Using a table:</p>
+<div class="codehilite"><pre><span></span><code>CREATE TABLE stat AS SELECT (each(h)).key, (each(h)).value FROM testhstore;
+</code></pre></div>
+
+<p>Online statistics:</p>
+<div class="codehilite"><pre><span></span><code>SELECT key, count(*) FROM
+  (SELECT (each(h)).key FROM testhstore) AS stat
+  GROUP BY key
+  ORDER BY count DESC, key;
+    key    | count
+-----------+-------
+ line      |   883
+ query     |   207
+ pos       |   203
+ node      |   202
+ space     |   197
+ status    |   195
+ public    |   194
+ title     |   190
+ org       |   189
+...................
+</code></pre></div>
+
+<h2 id="compatibility">Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">#</a></h2>
+<p>As of PostgreSQL 9.0, <code>hstore</code> uses a different internal representation than previous versions. This presents no obstacle for dump/restore upgrades since the text representation (used in the dump) is unchanged.</p>
+<p>In the event of a binary upgrade, upward compatibility is maintained by having the new code recognize old-format data. This will entail a slight performance penalty when processing data that has not yet been modified by the new code. It is possible to force an upgrade of all values in a table column by doing an <code>UPDATE</code> statement as follows:</p>
+<div class="codehilite"><pre><span></span><code>UPDATE tablename SET hstorecol = hstorecol || &#39;&#39;;
+</code></pre></div>
+
+<p>Another way to do it is:</p>
+<div class="codehilite"><pre><span></span><code>ALTER TABLE tablename ALTER hstorecol TYPE hstore USING hstorecol || &#39;&#39;;
+</code></pre></div>
+
+<p>The <code>ALTER TABLE</code> method requires an <code>ACCESS EXCLUSIVE</code> lock on the table, but does not result in bloating the table with old row versions.</p>
+<h2 id="transforms">Transforms<a class="headerlink" href="#transforms" title="Permanent link">#</a></h2>
+<p>Additional extensions are available that implement transforms for the <code>hstore</code> type for the languages PL/Perl and PL/Python. The extensions for PL/Perl are called <code>hstore_plperl</code> and <code>hstore_plperlu</code>, for trusted and untrusted PL/Perl. If you install these transforms and specify them when creating a function, <code>hstore</code> values are mapped to Perl hashes. The extension for PL/Python is called <code>hstore_plpython3u</code>. If you use it, <code>hstore</code> values are mapped to Python dictionaries.</p>
+<blockquote>
+<p>[!CAUTION]
+It is strongly recommended that the transform extensions be installed in the same schema as <code>hstore</code>. Otherwise there are installation-time security hazards if a transform extension's schema contains objects defined by a hostile user.</p>
+</blockquote>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">#</a></h2>
+<p>Oleg Bartunov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#108;&#101;&#103;&#64;&#115;&#97;&#105;&#46;&#109;&#115;&#117;&#46;&#115;&#117;">&#111;&#108;&#101;&#103;&#64;&#115;&#97;&#105;&#46;&#109;&#115;&#117;&#46;&#115;&#117;</a>, Moscow, Moscow University, Russia</p>
+<p>Teodor Sigaev <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#111;&#100;&#111;&#114;&#64;&#115;&#105;&#103;&#97;&#101;&#118;&#46;&#114;&#117;">&#116;&#101;&#111;&#100;&#111;&#114;&#64;&#115;&#105;&#103;&#97;&#101;&#118;&#46;&#114;&#117;</a>, Moscow, Delta-Soft Ltd., Russia</p>
+<p>Additional enhancements by Andrew Gierth <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#97;&#110;&#100;&#114;&#101;&#119;&#64;&#116;&#97;&#111;&#49;&#49;&#46;&#114;&#105;&#100;&#100;&#108;&#101;&#115;&#46;&#111;&#114;&#103;&#46;&#117;&#107;">&#97;&#110;&#100;&#114;&#101;&#119;&#64;&#116;&#97;&#111;&#49;&#49;&#46;&#114;&#105;&#100;&#100;&#108;&#101;&#115;&#46;&#111;&#114;&#103;&#46;&#117;&#107;</a>, United Kingdom</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./planstats.html">
+          <span class="muted">Anterior</span>How the Planner Uses Statistics
+        </a>
+        <a class="pager-next" href="./indexam.html">
+          <span class="muted">Siguiente</span>Index Access Method Interface Definition
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

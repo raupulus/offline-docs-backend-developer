@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speculative Decoding · llama.cpp</title>
+<meta name="description" content="Speculative Decoding - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/llama-cpp/speculative.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Speculative Decoding">
+<meta property="og:description" content="Speculative Decoding - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Speculative Decoding">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Speculative Decoding",
+"url": "https://docs.raupulus.dev/llama-cpp/speculative.html",  "description": "Speculative Decoding - Documentación técnica de llama.cpp en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">llama.cpp</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="llama-cpp" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en llama.cpp…"
+         aria-label="Buscar en llama.cpp" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de llama.cpp
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de llama.cpp">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./backend/blis.html">Backend</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./development/howto-add-model.html">Development</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./multimodal/mobilevlm.html">Multimodal</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Llama.Cpp
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./android.html"
+>Android</a>
+              </li>
+              <li>
+                <a href="./autoparser.html"
+>Auto-Parser Architecture</a>
+              </li>
+              <li>
+                <a href="./build-profiling.html"
+>Build profiling</a>
+              </li>
+              <li>
+                <a href="./build-riscv64-spacemit.html"
+>Build riscv64 spacemit</a>
+              </li>
+              <li>
+                <a href="./build-s390x.html"
+>Build llama.cpp locally (for s390x)</a>
+              </li>
+              <li>
+                <a href="./build.html"
+>Build llama.cpp locally</a>
+              </li>
+              <li>
+                <a href="./completions.html"
+>Completions</a>
+              </li>
+              <li>
+                <a href="./docker.html"
+>Docker</a>
+              </li>
+              <li>
+                <a href="./function-calling.html"
+>Function Calling</a>
+              </li>
+              <li>
+                <a href="./install.html"
+>Install pre-built version of llama.cpp</a>
+              </li>
+              <li>
+                <a href="./llguidance.html"
+>LLGuidance Support in llama.cpp</a>
+              </li>
+              <li>
+                <a href="./models.html"
+>Obtaining and quantizing models</a>
+              </li>
+              <li>
+                <a href="./multi-gpu.html"
+>Using multiple GPUs with llama.cpp</a>
+              </li>
+              <li>
+                <a href="./multimodal.html"
+>Multimodal</a>
+              </li>
+              <li>
+                <a href="./ops.html"
+>GGML Operations</a>
+              </li>
+              <li>
+                <a href="./preset.html"
+>llama.cpp INI Presets</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release process</a>
+              </li>
+              <li>
+                <a href="./speculative.html"
+class="is-current" aria-current="page">Speculative Decoding</a>
+              </li>
+              <li>
+                <a href="./xcframework.html"
+>XCFramework</a>
+              </li>
+          </ul>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Speculative Decoding</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/llama-cpp.md" download="llama-cpp.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de llama.cpp en un solo archivo Markdown">Bundle .md (482 KB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#implementations">Implementations#</a></li>
+              <li class="lvl-3"><a href="#draft-model-draft">Draft Model (draft)#</a></li>
+              <li class="lvl-3"><a href="#eagle-3-draft-eagle3">EAGLE-3 (draft-eagle3)#</a></li>
+              <li class="lvl-3"><a href="#dflash-draft-dflash">DFlash (draft-dflash)#</a></li>
+              <li class="lvl-3"><a href="#dspark-draft-dspark">DSpark (draft-dspark)#</a></li>
+              <li class="lvl-3"><a href="#n-gram-cache-ngram-cache">n-gram Cache (ngram-cache)#</a></li>
+              <li class="lvl-3"><a href="#n-gram-map-ngram-simple-ngram-map-">n-gram Map (ngram-simple, ngram-map-*)#</a></li>
+              <li class="lvl-3"><a href="#n-gram-mod-ngram-mod">n-gram Mod (ngram-mod)#</a></li>
+              <li class="lvl-3"><a href="#differences-between-ngram-simple-ngram-map-and-ngram-mod">Differences between ngram-simple, ngram-map and ngram-mod#</a></li>
+              <li class="lvl-2"><a href="#command-line-options">Command-Line Options#</a></li>
+              <li class="lvl-3"><a href="#backend-sampling">Backend Sampling#</a></li>
+              <li class="lvl-3"><a href="#synthetic-acceptance">Synthetic Acceptance#</a></li>
+              <li class="lvl-3"><a href="#general-speculative-parameters">General Speculative Parameters#</a></li>
+              <li class="lvl-3"><a href="#draft-model-parameters">Draft Model Parameters#</a></li>
+              <li class="lvl-3"><a href="#draft-model-cpu-scheduling-parameters">Draft Model CPU Scheduling Parameters#</a></li>
+              <li class="lvl-3"><a href="#draft-model-kv-cache-and-tensor-override-parameters">Draft Model KV Cache and Tensor Override Parameters#</a></li>
+              <li class="lvl-3"><a href="#n-gram-mod-parameters">n-gram Mod Parameters#</a></li>
+              <li class="lvl-3"><a href="#n-gram-simple-parameters">n-gram Simple Parameters#</a></li>
+              <li class="lvl-3"><a href="#n-gram-map-key-parameters">n-gram Map Key Parameters#</a></li>
+              <li class="lvl-3"><a href="#n-gram-map-key-4-values-parameters">n-gram Map Key-4-Values Parameters#</a></li>
+              <li class="lvl-3"><a href="#-spec-type-type">--spec-type TYPE#</a></li>
+              <li class="lvl-3"><a href="#-spec-ngram-size-n-n">--spec-ngram-*-size-n N#</a></li>
+              <li class="lvl-3"><a href="#-spec-ngram-size-m-m">--spec-ngram-*-size-m M#</a></li>
+              <li class="lvl-3"><a href="#-spec-ngram-min-hits-h">--spec-ngram-*-min-hits H#</a></li>
+              <li class="lvl-2"><a href="#statistics">Statistics#</a></li>
+              <li class="lvl-2"><a href="#benchmarking">Benchmarking#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="speculative-decoding">Speculative Decoding<a class="headerlink" href="#speculative-decoding" title="Permanent link">#</a></h1>
+<p>llama.cpp supports speculative decoding, a technique that can significantly accelerate token generation by predicting multiple tokens ahead of the main model.</p>
+<p><a href="https://en.wikipedia.org/wiki/Transformer_(deep_learning)#Speculative_decoding" rel="noopener" target="_blank">Speculative decoding</a> leverages the fact that computing n tokens in a batch (as in prompt processing) is more efficient than computing n sequentially (as in response generation). By generating draft tokens quickly and then verifying them with the target model in a single batch, this approach can achieve substantial speedups when the draft predictions are frequently correct.</p>
+<h2 id="implementations">Implementations<a class="headerlink" href="#implementations" title="Permanent link">#</a></h2>
+<p>The <code>llama-server</code> application supports several implementations of speculative decoding. An implementation with draft model can be mixed with an implementation without draft model.</p>
+<h3 id="draft-model-draft">Draft Model (<code>draft</code>)<a class="headerlink" href="#draft-model-draft" title="Permanent link">#</a></h3>
+<p>A much smaller model (called the <em>draft model</em>) generates drafts.
+A draft model is the most used approach in speculative decoding.</p>
+<h3 id="eagle-3-draft-eagle3">EAGLE-3 (<code>draft-eagle3</code>)<a class="headerlink" href="#eagle-3-draft-eagle3" title="Permanent link">#</a></h3>
+<p>EAGLE-3 uses a small draft model that reads the target model's hidden states to predict the next tokens, so it
+reaches higher acceptance than a standalone draft model of the same size. The draft is a one-layer transformer
+trained for a specific target model; it shares the target model's tokenizer and, optionally, uses a reduced draft
+vocabulary with its own <code>lm_head</code>, which is mapped back using a <code>d2t</code> table.</p>
+<p>Convert the EAGLE-3 checkpoint with <code>--target-model-dir</code> so it inherits the target's tokenizer and the layer
+indices to read. Both the SpecForge <code>LlamaForCausalLMEagle3</code> and the vLLM/AngelSlim <code>Eagle3LlamaForCausalLM</code>
+checkpoint formats are supported (for example <a href="https://huggingface.co/AngelSlim/Qwen3-4B_eagle3" rel="noopener" target="_blank"><code>AngelSlim/Qwen3-4B_eagle3</code></a>
+for <code>Qwen/Qwen3-4B</code>):</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>convert_hf_to_gguf.py<span class="w"> </span>AngelSlim/Qwen3-4B_eagle3<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-model-dir<span class="w"> </span>Qwen/Qwen3-4B<span class="w"> </span>--outtype<span class="w"> </span>bf16<span class="w"> </span>--outfile<span class="w"> </span>Qwen3-4B-eagle3.gguf
+
+llama-server<span class="w"> </span>-m<span class="w"> </span>Qwen3-4B.gguf<span class="w"> </span>-md<span class="w"> </span>Qwen3-4B-eagle3.gguf<span class="w"> </span>--spec-type<span class="w"> </span>draft-eagle3
+</code></pre></div>
+
+<p>Supported EAGLE-3 draft models include:</p>
+<ul>
+<li><a href="https://huggingface.co/yuhuili/EAGLE3-LLaMA3.1-Instruct-8B" rel="noopener" target="_blank">yuhuili/EAGLE3-LLaMA3.1-Instruct-8B</a></li>
+<li><a href="https://huggingface.co/yuhuili/EAGLE3-LLaMA3.3-Instruct-70B" rel="noopener" target="_blank">yuhuili/EAGLE3-LLaMA3.3-Instruct-70B</a></li>
+<li><a href="https://huggingface.co/RedHatAI/gemma-4-31B-it-speculator.eagle3" rel="noopener" target="_blank">RedHatAI/gemma-4-31B-it-speculator.eagle3</a></li>
+<li><a href="https://huggingface.co/RedHatAI/gemma-4-26B-A4B-it-speculator.eagle3" rel="noopener" target="_blank">RedHatAI/gemma-4-26B-A4B-it-speculator.eagle3</a></li>
+<li><a href="https://huggingface.co/Tengyunw/qwen3_8b_eagle3" rel="noopener" target="_blank">Tengyunw/qwen3_8b_eagle3</a></li>
+<li><a href="https://huggingface.co/Tengyunw/qwen3_30b_moe_eagle3" rel="noopener" target="_blank">Tengyunw/qwen3_30b_moe_eagle3</a></li>
+<li><a href="https://huggingface.co/AngelSlim/Qwen3-1.7B_eagle3" rel="noopener" target="_blank">AngelSlim/Qwen3-1.7B_eagle3</a></li>
+<li><a href="https://huggingface.co/AngelSlim/Qwen3-4B_eagle3" rel="noopener" target="_blank">AngelSlim/Qwen3-4B_eagle3</a></li>
+<li><a href="https://huggingface.co/AngelSlim/Qwen3-8B_eagle3" rel="noopener" target="_blank">AngelSlim/Qwen3-8B_eagle3</a></li>
+<li><a href="https://huggingface.co/AngelSlim/Qwen3-14B_eagle3" rel="noopener" target="_blank">AngelSlim/Qwen3-14B_eagle3</a></li>
+<li><a href="https://huggingface.co/AngelSlim/Qwen3-32B_eagle3" rel="noopener" target="_blank">AngelSlim/Qwen3-32B_eagle3</a></li>
+<li><a href="https://huggingface.co/AngelSlim/Qwen3-a3B_eagle3" rel="noopener" target="_blank">AngelSlim/Qwen3-a3B_eagle3</a></li>
+<li><a href="https://huggingface.co/RedHatAI/gpt-oss-20b-speculator.eagle3" rel="noopener" target="_blank">RedHatAI/gpt-oss-20b-speculator.eagle3</a></li>
+<li><a href="https://huggingface.co/lmsys/EAGLE3-gpt-oss-120b-bf16" rel="noopener" target="_blank">lmsys/EAGLE3-gpt-oss-120b-bf16</a></li>
+<li><a href="https://huggingface.co/nvidia/gpt-oss-120b-Eagle3-long-context" rel="noopener" target="_blank">nvidia/gpt-oss-120b-Eagle3-long-context</a></li>
+</ul>
+<p>For the full and up-to-date list of supported models, see #18039.</p>
+<h3 id="dflash-draft-dflash">DFlash (<code>draft-dflash</code>)<a class="headerlink" href="#dflash-draft-dflash" title="Permanent link">#</a></h3>
+<p>DFlash produces an entire block of draft tokens in a single forward pass (block diffusion) and
+injects the target model's hidden states into the draft model's attention, instead of drafting one
+token at a time. This keeps the draft model small while making drafting GPU-friendly. Unlike EAGLE-3
+(a single-layer autoregressive draft), the DFlash draft uses several transformer layers but emits a
+whole block per draft step.</p>
+<p>The draft is a small block-diffusion model trained for a specific target (for example
+<code>z-lab/Qwen3-4B-DFlash</code> for <code>Qwen/Qwen3-4B</code>). Convert it with <code>--target-model-dir</code> so it inherits the
+target's tokenizer and token embeddings:</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>convert_hf_to_gguf.py<span class="w"> </span>z-lab/Qwen3-4B-DFlash<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-model-dir<span class="w"> </span>Qwen/Qwen3-4B<span class="w"> </span>--outtype<span class="w"> </span>bf16<span class="w"> </span>--outfile<span class="w"> </span>Qwen3-4B-DFlash.gguf
+
+llama-server<span class="w"> </span>-m<span class="w"> </span>Qwen3-4B.gguf<span class="w"> </span>-md<span class="w"> </span>Qwen3-4B-DFlash.gguf<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--spec-type<span class="w"> </span>draft-dflash<span class="w"> </span>--spec-draft-n-max<span class="w"> </span><span class="m">15</span><span class="w"> </span>-fa<span class="w"> </span>on<span class="w"> </span>--jinja
+</code></pre></div>
+
+<p><code>--spec-draft-n-max</code> is clamped to the draft model's trained block size.</p>
+<p>See:</p>
+<ul>
+<li>
+<h1 id="22105">22105<a class="headerlink" href="#22105" title="Permanent link">#</a></h1>
+</li>
+</ul>
+<h3 id="dspark-draft-dspark">DSpark (<code>draft-dspark</code>)<a class="headerlink" href="#dspark-draft-dspark" title="Permanent link">#</a></h3>
+<p>DSpark extends DFlash with a semi-autoregressive <em>Markov head</em>: the draft still emits a whole
+block per forward pass, but each block position's logits are biased by a low-rank term keyed on
+the previous token, chained in-graph across the block. This keeps drafting at one decode per
+block while recovering some of the left-to-right signal that pure block diffusion loses.</p>
+<p>The draft is a small DeepSpec checkpoint trained for a specific target (for example
+<a href="https://huggingface.co/deepseek-ai/dspark_qwen3_4b_block7" rel="noopener" target="_blank"><code>deepseek-ai/dspark_qwen3_4b_block7</code></a>
+for <code>Qwen/Qwen3-4B</code>). Convert it with <code>--target-model-dir</code> so it inherits the target's tokenizer
+and token embeddings:</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>convert_hf_to_gguf.py<span class="w"> </span>deepseek-ai/dspark_qwen3_4b_block7<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-model-dir<span class="w"> </span>Qwen/Qwen3-4B<span class="w"> </span>--outtype<span class="w"> </span>bf16<span class="w"> </span>--outfile<span class="w"> </span>Qwen3-4B-DSpark.gguf
+
+llama-server<span class="w"> </span>-m<span class="w"> </span>Qwen3-4B.gguf<span class="w"> </span>-md<span class="w"> </span>Qwen3-4B-DSpark.gguf<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--spec-type<span class="w"> </span>draft-dspark<span class="w"> </span>--spec-draft-n-max<span class="w"> </span><span class="m">7</span><span class="w"> </span>-fa<span class="w"> </span>on<span class="w"> </span>--jinja
+</code></pre></div>
+
+<p><code>--spec-draft-n-max</code> is clamped to the draft model's trained block size.</p>
+<p><code>--spec-draft-conf-min P</code> truncates each drafted block at the first position whose predicted
+acceptance (from the draft's confidence head, if present) falls below <code>P</code> (default 0 = disabled).</p>
+<p>Currently only drafts with a Qwen3 backbone are supported; support for other backbones
+(e.g. Gemma4) is planned.</p>
+<p>DSpark drafts exported in the <a href="https://github.com/vllm-project/speculators" rel="noopener" target="_blank">speculators</a> format
+(for example <a href="https://huggingface.co/RedHatAI/gemma-4-31B-it-speculator.dspark" rel="noopener" target="_blank"><code>RedHatAI/gemma-4-31B-it-speculator.dspark</code></a>)
+convert the same way.</p>
+<p>See:</p>
+<ul>
+<li>
+<h1 id="25173">25173<a class="headerlink" href="#25173" title="Permanent link">#</a></h1>
+</li>
+</ul>
+<h3 id="n-gram-cache-ngram-cache">n-gram Cache (<code>ngram-cache</code>)<a class="headerlink" href="#n-gram-cache-ngram-cache" title="Permanent link">#</a></h3>
+<p>An n-gram is a sequence of n tokens. The n-gram cache implementation maintains statistics about short n-gram sequences.
+A draft is computed using probabilities derived from these statistics. External statistics can also be loaded from files for improved accuracy.</p>
+<p>See:</p>
+<ul>
+<li>
+<h1 id="5479-6828-6848">5479, #6828, #6848<a class="headerlink" href="#5479-6828-6848" title="Permanent link">#</a></h1>
+</li>
+</ul>
+<h3 id="n-gram-map-ngram-simple-ngram-map-">n-gram Map (<code>ngram-simple</code>, <code>ngram-map-*</code>)<a class="headerlink" href="#n-gram-map-ngram-simple-ngram-map-" title="Permanent link">#</a></h3>
+<p>These implementations search the token history for patterns and use matching sequences as draft candidates.
+They require no additional model but rely on patterns that have already appeared in the generated text.
+An example to use this approach can be the rewriting of source code by a LLM.</p>
+<h4 id="n-gram-map-ngram-simple">n-gram Map (<code>ngram-simple</code>)<a class="headerlink" href="#n-gram-map-ngram-simple" title="Permanent link">#</a></h4>
+<p>This implementation looks for the last n-gram in history that matches the current n-gram and creates a draft using the m tokens following the matched n-gram. It is the simplest self-speculative approach with minimal overhead.</p>
+<div class="codehilite"><pre><span></span><code>llama-server [...] --spec-type ngram-simple --spec-draft-n-max 64
+</code></pre></div>
+
+<h4 id="n-gram-map-key-ngram-map-k">n-gram Map Key (<code>ngram-map-k</code>)<a class="headerlink" href="#n-gram-map-key-ngram-map-k" title="Permanent link">#</a></h4>
+<p>This implementation looks for the current n-gram of size n (called the <em>key</em>) in the token history. If the key n-gram is followed by the same m tokens (called the <em>mgram</em>) multiple times, it creates a draft using these m tokens. This approach requires a minimum number of occurrences (argument <code>--spec-ngram-map-k-min-hits</code>, default is 1) before generating drafts.</p>
+<p>The number of accepted tokens is stored for each used n-gram.</p>
+<p><strong>Example:</strong></p>
+<div class="codehilite"><pre><span></span><code>llama-server [...] --spec-type ngram-map-k --spec-draft-n-max 64
+</code></pre></div>
+
+<h4 id="n-gram-map-key-4-values-ngram-map-k4v">n-gram Map Key-4-Values (<code>ngram-map-k4v</code>)<a class="headerlink" href="#n-gram-map-key-4-values-ngram-map-k4v" title="Permanent link">#</a></h4>
+<p>This experimental implementation looks for the current n-gram of size n (called the <em>key</em>) in the token history. For each key, up to four <em>values</em> (n-grams of size m, called <em>mgrams</em>) are tracked. An internal statistic counts the occurrences of each mgram after the key n-gram. If one mgram is significantly more frequent than the others, it is used as the draft.</p>
+<p>The number of accepted tokens is stored for each used n-gram.</p>
+<p><strong>Example:</strong> Server options to be used if there are a lot of longer repetitions.</p>
+<div class="codehilite"><pre><span></span><code>llama-server [...] --spec-type ngram-map-k4v --spec-ngram-map-k4v-size-n 8 --spec-ngram-map-k4v-size-m 8 --spec-ngram-map-k4v-min-hits 2 --spec-draft-n-max 64
+</code></pre></div>
+
+<h3 id="n-gram-mod-ngram-mod">n-gram Mod (<code>ngram-mod</code>)<a class="headerlink" href="#n-gram-mod-ngram-mod" title="Permanent link">#</a></h3>
+<p>Add basic ngram hasher for speculative decoding:</p>
+<ul>
+<li>For each ngram, compute a hash using LCG</li>
+<li>For each computed hash, store the next token</li>
+<li>During speculation, iteratively compute the rolling hash of the last n tokens and pick the next token from the storage</li>
+</ul>
+<p>Some characteristics:</p>
+<ul>
+<li>Lightweight (~16 MB)</li>
+<li>Constant memory and complexity</li>
+<li>Can generate variable draft lengths (i.e. m is not fixed)</li>
+</ul>
+<p>Currently, a single hash pool is shared across all server slots, so different requests can benefit from each other.</p>
+<p><strong>Sample usage:</strong></p>
+<div class="codehilite"><pre><span></span><code># notes:
+# - small `n` are not recommended
+# - MoEs require long drafts
+# - dense models: can reduce `--spec-ngram-mod-n-min` and `--spec-ngram-mod-n-max`
+
+llama-server ... --spec-type ngram-mod --spec-ngram-mod-n-match 24 --spec-ngram-mod-n-min 48 --spec-ngram-mod-n-max 64
+</code></pre></div>
+
+<p>Applications:</p>
+<ul>
+<li>Iterating over a block of text/code (e.g. in llama.vim)</li>
+<li>Reasoning models (when they have to repeat their thinking in the final answer)</li>
+<li>Summarization</li>
+</ul>
+<p>Example Video:</p>
+<ul>
+<li>See #19164</li>
+</ul>
+<h3 id="differences-between-ngram-simple-ngram-map-and-ngram-mod">Differences between ngram-simple, ngram-map and ngram-mod<a class="headerlink" href="#differences-between-ngram-simple-ngram-map-and-ngram-mod" title="Permanent link">#</a></h3>
+<ul>
+<li>ngram-simple looks for a previous matching n-gram and inserts the following m-gram.</li>
+<li>ngram-map-k looks for a previous matching n-gram and inserts the following m-gram but uses an internal hash-map of n-grams in the current context window.</li>
+<li>ngram-mod uses a hash pool which is shared across all server slots. The hash pool is a map from n-gram hash to the next token (not the next m-gram as in ngram-map).</li>
+</ul>
+<h2 id="command-line-options">Command-Line Options<a class="headerlink" href="#command-line-options" title="Permanent link">#</a></h2>
+<p>If a draft model is combined with a draftless decoding the draftless decoding has higher precedence.</p>
+<h3 id="backend-sampling">Backend Sampling<a class="headerlink" href="#backend-sampling" title="Permanent link">#</a></h3>
+<p>Use <code>--backend-sampling</code> to run supported target-model samplers on the model backend. Draft-model sampling uses the backend by default and can be controlled with <code>--spec-draft-backend-sampling</code> and <code>--no-spec-draft-backend-sampling</code>.</p>
+<p>Unsupported samplers and device layouts fall back to CPU sampling. Tensor split mode does not support backend sampling. A fixed seed produces repeatable random draws, but stochastic CPU and backend sampling can still select different tokens because floating-point operations can differ between implementations and devices. Use greedy sampling when exact output matching is required.</p>
+<h3 id="synthetic-acceptance">Synthetic Acceptance<a class="headerlink" href="#synthetic-acceptance" title="Permanent link">#</a></h3>
+<p><code>llama-server</code> and <code>llama-cli</code> can replace normal speculative verification with synthetic decisions for benchmarking. The generated output is not valid model output because accepted draft tokens do not have to match the target model.</p>
+<p>Use exactly one of these options:</p>
+<ul>
+<li><code>--spec-synth-rates P0,P1,...</code> sets unconditional per-position acceptance probabilities. Entry <code>i</code> is the probability that the first <code>i+1</code> draft tokens are all accepted. The number of entries must match the effective maximum draft length. Values must be finite, within <code>[0, 1]</code>, and monotonically non-increasing.</li>
+<li><code>--spec-synth-len L</code> sets the target mean acceptance length, including the target token. For <code>K</code> maximum draft tokens, <code>L</code> must be within <code>[1, K+1]</code>. The server finds a constant conditional probability <code>p</code> such that <code>p + p^2 + ... + p^K = L - 1</code>, then uses unconditional rates <code>[p, p^2, ..., p^K]</code>.</li>
+</ul>
+<h3 id="general-speculative-parameters">General Speculative Parameters<a class="headerlink" href="#general-speculative-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-type [none|draft-simple|draft-eagle3|draft-dflash|draft-dspark|draft-mtp|ngram-cache|ngram-simple|ngram-map-k|ngram-map-k4v|ngram-mod]
+                                        comma-separated list of types of speculative decoding to use
+                                        (default: none)
+                                        (env: LLAMA_ARG_SPEC_TYPE)
+--spec-default                          use default speculative decoding config
+                                        (enables ngram-mod)
+</code></pre></div>
+
+<h3 id="draft-model-parameters">Draft Model Parameters<a class="headerlink" href="#draft-model-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-draft-model, -md, --model-draft  FNAME
+                                        draft model for speculative decoding (default: unused)
+                                        (env: LLAMA_ARG_SPEC_DRAFT_MODEL)
+--spec-draft-hf, -hfd, -hfrd, --hf-repo-draft  &lt;user&gt;/&lt;model&gt;[:quant]
+                                        HuggingFace repository for the draft model
+                                        (env: LLAMA_ARG_SPEC_DRAFT_HF_REPO)
+--spec-draft-n-max                      N
+                                        number of tokens to draft for speculative decoding (default: 3)
+                                        (env: LLAMA_ARG_SPEC_DRAFT_N_MAX)
+--spec-draft-n-min                      N
+                                        minimum number of draft tokens to use for speculative decoding (default: 0)
+                                        (env: LLAMA_ARG_SPEC_DRAFT_N_MIN)
+--spec-draft-p-split, --draft-p-split   P
+                                        speculative decoding split probability (default: 0.10)
+                                        (env: LLAMA_ARG_SPEC_DRAFT_P_SPLIT)
+--spec-draft-p-min, --draft-p-min       P
+                                        minimum speculative decoding probability (greedy) (default: 0.00)
+                                        (env: LLAMA_ARG_SPEC_DRAFT_P_MIN)
+--spec-draft-ngl, -ngld, --gpu-layers-draft, --n-gpu-layers-draft  N
+                                        max. number of draft model layers to store in VRAM, either an exact number, &#39;auto&#39;, or &#39;all&#39; (default: auto)
+                                        (env: LLAMA_ARG_N_GPU_LAYERS_DRAFT)
+--spec-draft-device, -devd, --device-draft  &lt;dev1,dev2,..&gt;
+                                        comma-separated list of devices to use for offloading the draft model
+                                        (use --list-devices to see available devices)
+</code></pre></div>
+
+<h3 id="draft-model-cpu-scheduling-parameters">Draft Model CPU Scheduling Parameters<a class="headerlink" href="#draft-model-cpu-scheduling-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-draft-threads, -td, --threads-draft  N
+                                        number of CPU threads to use during generation
+--spec-draft-threads-batch, -tbd, --threads-batch-draft  N
+                                        number of threads to use during batch and prompt processing (default: same as --threads-draft)
+--spec-draft-cpu-mask, -Cd, --cpu-mask-draft  M
+                                        Draft model CPU affinity mask. Complements cpu-range-draft
+--spec-draft-cpu-range, -Crd, --cpu-range-draft  lo-hi
+                                        Ranges of CPUs for affinity. Complements --cpu-mask-draft
+--spec-draft-cpu-strict, --cpu-strict-draft  &lt;0|1&gt;
+                                        Use strict CPU placement for draft model (default: same as --cpu-strict)
+--spec-draft-prio, --prio-draft  N
+                                        set draft process/thread priority : 0-normal, 1-medium, 2-high, 3-realtime
+--spec-draft-poll, --poll-draft  &lt;0|1&gt;
+                                        Use polling to wait for draft model work (default: same as --poll)
+--spec-draft-cpu-mask-batch, -Cbd, --cpu-mask-batch-draft  M
+                                        Draft model CPU affinity mask for batch. Complements cpu-range-batch-draft
+--spec-draft-cpu-range-batch, -Crbd, --cpu-range-batch-draft  lo-hi
+                                        Ranges of CPUs for affinity for batch. Complements --cpu-mask-batch-draft
+--spec-draft-cpu-strict-batch, --cpu-strict-batch-draft  &lt;0|1&gt;
+                                        Use strict CPU placement for draft model batch (default: --cpu-strict-draft)
+--spec-draft-prio-batch, --prio-batch-draft  N
+                                        set draft process/thread priority for batch : 0-normal, 1-medium, 2-high, 3-realtime
+--spec-draft-poll-batch, --poll-batch-draft  &lt;0|1&gt;
+                                        Use polling to wait for draft model work for batch (default: --poll-draft)
+</code></pre></div>
+
+<h3 id="draft-model-kv-cache-and-tensor-override-parameters">Draft Model KV Cache and Tensor Override Parameters<a class="headerlink" href="#draft-model-kv-cache-and-tensor-override-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-draft-type-k, -ctkd, --cache-type-k-draft  TYPE
+                                        KV cache data type for K for the draft model
+                                        allowed values: f32, f16, bf16, q8_0, q4_0, q4_1, iq4_nl, q5_0, q5_1
+                                        (env: LLAMA_ARG_SPEC_DRAFT_CACHE_TYPE_K)
+--spec-draft-type-v, -ctvd, --cache-type-v-draft  TYPE
+                                        KV cache data type for V for the draft model
+                                        allowed values: f32, f16, bf16, q8_0, q4_0, q4_1, iq4_nl, q5_0, q5_1
+                                        (env: LLAMA_ARG_SPEC_DRAFT_CACHE_TYPE_V)
+--spec-draft-override-tensor, -otd, --override-tensor-draft  &lt;tensor name pattern&gt;=&lt;buffer type&gt;,...
+                                        override tensor buffer type for draft model
+--spec-draft-cpu-moe, -cmoed, --cpu-moe-draft
+                                        keep all Mixture of Experts (MoE) weights in the CPU for the draft model
+                                        (env: LLAMA_ARG_SPEC_DRAFT_CPU_MOE)
+--spec-draft-n-cpu-moe, --spec-draft-ncmoe, -ncmoed, --n-cpu-moe-draft  N
+                                        keep the MoE weights of the first N layers in the CPU for the draft model
+                                        (env: LLAMA_ARG_SPEC_DRAFT_N_CPU_MOE)
+</code></pre></div>
+
+<h3 id="n-gram-mod-parameters">n-gram Mod Parameters<a class="headerlink" href="#n-gram-mod-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-ngram-mod-n-match                N
+                                        ngram-mod lookup length (default: 24)
+--spec-ngram-mod-n-min                  N
+                                        minimum number of ngram tokens to use for ngram-based speculative decoding (default: 48)
+--spec-ngram-mod-n-max                  N
+                                        maximum number of ngram tokens to use for ngram-based speculative decoding (default: 64)
+</code></pre></div>
+
+<h3 id="n-gram-simple-parameters">n-gram Simple Parameters<a class="headerlink" href="#n-gram-simple-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-ngram-simple-size-n              N
+                                        ngram size N for ngram-simple speculative decoding, length of lookup n-gram (default: 12)
+--spec-ngram-simple-size-m              N
+                                        ngram size M for ngram-simple speculative decoding, length of draft m-gram (default: 48)
+--spec-ngram-simple-min-hits            N
+                                        minimum hits for ngram-simple speculative decoding (default: 1)
+</code></pre></div>
+
+<h3 id="n-gram-map-key-parameters">n-gram Map Key Parameters<a class="headerlink" href="#n-gram-map-key-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-ngram-map-k-size-n               N
+                                        ngram size N for ngram-map-k speculative decoding, length of lookup n-gram (default: 12)
+--spec-ngram-map-k-size-m               N
+                                        ngram size M for ngram-map-k speculative decoding, length of draft m-gram (default: 48)
+--spec-ngram-map-k-min-hits             N
+                                        minimum hits for ngram-map-k speculative decoding (default: 1)
+</code></pre></div>
+
+<h3 id="n-gram-map-key-4-values-parameters">n-gram Map Key-4-Values Parameters<a class="headerlink" href="#n-gram-map-key-4-values-parameters" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code>--spec-ngram-map-k4v-size-n             N
+                                        ngram size N for ngram-map-k4v speculative decoding, length of lookup n-gram (default: 12)
+--spec-ngram-map-k4v-size-m             N
+                                        ngram size M for ngram-map-k4v speculative decoding, length of draft m-gram (default: 48)
+--spec-ngram-map-k4v-min-hits           N
+                                        minimum hits for ngram-map-k4v speculative decoding (default: 1)
+</code></pre></div>
+
+<h3 id="-spec-type-type"><code>--spec-type TYPE</code><a class="headerlink" href="#-spec-type-type" title="Permanent link">#</a></h3>
+<p>Specifies a comma-separated list of speculative decoding types to use.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>No speculative decoding (default)</td>
+</tr>
+<tr>
+<td><code>draft-simple</code></td>
+<td>Use a simple draft model for speculation</td>
+</tr>
+<tr>
+<td><code>draft-eagle3</code></td>
+<td>Use an EAGLE-3 draft model that reads the target's hidden states</td>
+</tr>
+<tr>
+<td><code>draft-dflash</code></td>
+<td>Use a DFlash block-diffusion draft model that emits a block per step</td>
+</tr>
+<tr>
+<td><code>draft-dspark</code></td>
+<td>Use a DSpark draft model (DFlash backbone + semi-autoregressive Markov head)</td>
+</tr>
+<tr>
+<td><code>draft-mtp</code></td>
+<td>Use Multi Token Prediction (MTP) heads from the main model</td>
+</tr>
+<tr>
+<td><code>ngram-cache</code></td>
+<td>Use n-gram cache lookup</td>
+</tr>
+<tr>
+<td><code>ngram-simple</code></td>
+<td>Use simple n-gram pattern matching</td>
+</tr>
+<tr>
+<td><code>ngram-map-k</code></td>
+<td>Use n-gram pattern matching with n-gram-keys</td>
+</tr>
+<tr>
+<td><code>ngram-map-k4v</code></td>
+<td>Use n-gram pattern matching with n-gram-keys and up to four m-gram values (experimental)</td>
+</tr>
+<tr>
+<td><code>ngram-mod</code></td>
+<td>Use basic ngram hasher for speculative decoding with shared pool</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong> Server-instance used to refactor source code.</p>
+<div class="codehilite"><pre><span></span><code>./llama-server<span class="w"> </span><span class="o">[</span>...<span class="o">]</span><span class="w"> </span>--spec-type<span class="w"> </span>ngram-simple
+</code></pre></div>
+
+<p><strong>Example:</strong> Multiple speculative implementations.</p>
+<div class="codehilite"><pre><span></span><code>./llama-server<span class="w"> </span><span class="o">[</span>...<span class="o">]</span><span class="w"> </span>--spec-type<span class="w"> </span>ngram-mod,ngram-map-k4v
+</code></pre></div>
+
+<h3 id="-spec-ngram-size-n-n"><code>--spec-ngram-*-size-n N</code><a class="headerlink" href="#-spec-ngram-size-n-n" title="Permanent link">#</a></h3>
+<p>Sets the size N of the lookup n-gram for n-gram map based speculative decoding.
+The n-gram size N determines how many tokens in a row to look back when searching for matching patterns.</p>
+<p>Each n-gram implementation has its own parameter:</p>
+<ul>
+<li><code>--spec-ngram-simple-size-n</code> for <code>ngram-simple</code></li>
+<li><code>--spec-ngram-map-k-size-n</code> for <code>ngram-map-k</code></li>
+<li><code>--spec-ngram-map-k4v-size-n</code> for <code>ngram-map-k4v</code></li>
+<li><code>--spec-ngram-mod-n-match</code> for <code>ngram-mod</code></li>
+</ul>
+<h3 id="-spec-ngram-size-m-m"><code>--spec-ngram-*-size-m M</code><a class="headerlink" href="#-spec-ngram-size-m-m" title="Permanent link">#</a></h3>
+<p>Sets the size M of the draft m-gram for n-gram map based speculative decoding.
+The m-gram size determines how many tokens to draft when a match is found.
+Larger values can provide more speedup but may reduce acceptance rate.</p>
+<p>Each n-gram implementation has its own parameter:</p>
+<ul>
+<li><code>--spec-ngram-simple-size-m</code> for <code>ngram-simple</code></li>
+<li><code>--spec-ngram-map-k-size-m</code> for <code>ngram-map-k</code></li>
+<li><code>--spec-ngram-map-k4v-size-m</code> for <code>ngram-map-k4v</code></li>
+</ul>
+<h3 id="-spec-ngram-min-hits-h"><code>--spec-ngram-*-min-hits H</code><a class="headerlink" href="#-spec-ngram-min-hits-h" title="Permanent link">#</a></h3>
+<p>This option defines how often a key has to appear in the token history to be used as a draft (default is 1).</p>
+<p>Each n-gram implementation has its own parameter:</p>
+<ul>
+<li><code>--spec-ngram-simple-min-hits</code> for <code>ngram-simple</code></li>
+<li><code>--spec-ngram-map-k-min-hits</code> for <code>ngram-map-k</code></li>
+<li><code>--spec-ngram-map-k4v-min-hits</code> for <code>ngram-map-k4v</code></li>
+</ul>
+<h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">#</a></h2>
+<p>Each speculative decoding implementation prints statistics.</p>
+<div class="codehilite"><pre><span></span><code>draft acceptance rate = 0.57576 (  171 accepted /   297 generated)
+statistics ngram_simple: #calls = 15, #gen drafts = 5, #acc drafts = 5, #gen tokens = 187, #acc tokens = 73
+statistics draft: #calls = 10, #gen drafts = 10, #acc drafts = 10, #gen tokens = 110, #acc tokens = 98
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>draft acceptance rate = 0.70312 (   90 accepted /   128 generated)
+statistics ngram_mod: #calls = 810, #gen drafts = 15, #acc drafts = 15, #gen tokens = 960, #acc tokens = 730, dur(b,g,a) = 0.149, 0.347, 0.005 ms
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>statistics ngram_map_k: #calls(b,g,a) = 6 1690 26, #gen drafts = 26, #acc drafts = 26, #gen tokens = 1248, #acc tokens = 968, dur(b,g,a) = 2.234, 1.427, 0.016 ms
+</code></pre></div>
+
+<ul>
+<li><code>#calls(b,g,a)</code>: number of calls of begin (new prompt), generation and accumulation of this implementations</li>
+<li><code>#gen drafts</code>: number of drafts generated by this implementation</li>
+<li><code>#acc drafts</code>: number of drafts accepted (partially) by the main model</li>
+<li><code>#gen tokens</code>: number of tokens generated by this implementation (including rejected tokens)</li>
+<li><code>#acc tokens</code>: number of tokens accepted by the main model</li>
+<li>`dur(b,g,a): durations of begin (new prompt), generation and accumulation (process acceptance).</li>
+</ul>
+<h2 id="benchmarking">Benchmarking<a class="headerlink" href="#benchmarking" title="Permanent link">#</a></h2>
+<p>To measure the end-to-end effect of speculative decoding (throughput, latency, and draft acceptance) across diverse prompts, see the SPEED-Bench client in <a href="backend/snapdragon/readme.html">tools/server/bench/speed-bench</a>.
+It runs against a running <code>llama-server</code> and can compare a baseline run against a speculative-decoding run.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./release.html">
+          <span class="muted">Anterior</span>Release process
+        </a>
+        <a class="pager-next" href="./xcframework.html">
+          <span class="muted">Siguiente</span>XCFramework
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

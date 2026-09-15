@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Application-Defined SQL Functions · SQLite</title>
+<meta name="description" content="Application-Defined SQL Functions - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/appfunc.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Application-Defined SQL Functions">
+<meta property="og:description" content="Application-Defined SQL Functions - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Application-Defined SQL Functions">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Application-Defined SQL Functions",
+"url": "https://docs.raupulus.dev/sqlite/guides/appfunc.html",  "description": "Application-Defined SQL Functions - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/fasterthanfs.html"
+>35% Faster Than The Filesystem</a>
+              </li>
+              <li>
+                <a href="../guides/shortnames.html"
+>8+3 Filenames</a>
+              </li>
+              <li>
+                <a href="../guides/about.html"
+>About SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_int64.html"
+>Add a 64-bit integer to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_blob.html"
+>Add a blob to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add.html"
+>Add A Changeset To A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_null.html"
+>Add a NULL to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_schema.html"
+>Add a Schema to a Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add_change.html"
+>Add A Single Change To A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_text.html"
+>Add a text value to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_double.html"
+>Add an double to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_next.html"
+>Advance A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/doclist.html"
+>Alphabetical List Of SQLite Documents</a>
+              </li>
+              <li>
+                <a href="../guides/cintro.html"
+>An Introduction To The SQLite C/C++ Interface</a>
+              </li>
+              <li>
+                <a href="../guides/appfunc.html"
+class="is-current" aria-current="page">Application-Defined SQL Functions</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_apply.html"
+>Apply A Changeset To A Database</a>
+              </li>
+              <li>
+                <a href="../guides/whentouse.html"
+>Appropriate Uses For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/arch.html"
+>Architecture of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/atomiccommit.html"
+>Atomic Commit In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_attach.html"
+>Attach A Table To A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/undoredo.html"
+>Automatic Undo/Redo With SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/doc_backlink_crossref.html"
+>Backlink Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_begin.html"
+>Begin adding a change to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/aff_short.html"
+>Benefits of SQLite As A File Format</a>
+              </li>
+              <li>
+                <a href="../guides/books.html"
+>Books About SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/tcljson.html"
+>Bridging Tcl and JSON with the SQLite Extension</a>
+              </li>
+              <li>
+                <a href="../guides/capi3.html"
+>C/C++ Interface For SQLite Version 3 (old)</a>
+              </li>
+              <li>
+                <a href="../guides/pgszchng2016.html"
+>Change in Default Page Size in SQLite Version 3.12.0</a>
+              </li>
+              <li>
+                <a href="../guides/changegroup.html"
+>Changegroup Handle</a>
+              </li>
+              <li>
+                <a href="../guides/changeset_iter.html"
+>Changeset Iterator Handle</a>
+              </li>
+              <li>
+                <a href="../guides/withoutrowid.html"
+>Clustered Indexes and the WITHOUT ROWID Optimization</a>
+              </li>
+              <li>
+                <a href="../guides/codeofconduct.html"
+>Code Of Conduct</a>
+              </li>
+              <li>
+                <a href="../guides/codeofethics.html"
+>Code Of Ethics</a>
+              </li>
+              <li>
+                <a href="../guides/compile.html"
+>Compile-time Options</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_concat.html"
+>Concatenate Two Changeset Objects</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_config.html"
+>Configure a changegroup object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_configure.html"
+>Configure a changeset rebaser object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_object_config.html"
+>Configure a Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_config.html"
+>Configure global parameters</a>
+              </li>
+              <li>
+                <a href="../guides/c_changeset_conflict.html"
+>Constants Passed To The Conflict Handler</a>
+              </li>
+              <li>
+                <a href="../guides/c_changeset_abort.html"
+>Constants Returned By The Conflict Handler</a>
+              </li>
+              <li>
+                <a href="../guides/conflict.html"
+>Constraint Conflict Resolution in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_create.html"
+>Create a changeset rebaser object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_new.html"
+>Create A New Changegroup Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_create.html"
+>Create A New Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_start.html"
+>Create An Iterator To Traverse A Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/custombuild.html"
+>Custom Builds Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/fileformat.html"
+>Database File Format</a>
+              </li>
+              <li>
+                <a href="../guides/fileformat2.html"
+>Database File Format</a>
+              </li>
+              <li>
+                <a href="../guides/rsync.html"
+>Database Remote-Copy Tool For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/datatype3.html"
+>Datatypes In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/datatypes.html"
+>Datatypes In SQLite version 2</a>
+              </li>
+              <li>
+                <a href="../guides/security.html"
+>Defense Against The Dark Arts</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_delete.html"
+>Delete A Changegroup Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_delete.html"
+>Delete a changeset rebaser object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_delete.html"
+>Delete A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_fk_conflicts.html"
+>Determine The Number Of Foreign Key Constraint Violations</a>
+              </li>
+              <li>
+                <a href="../guides/deterministic.html"
+>Deterministic SQL Functions</a>
+              </li>
+              <li>
+                <a href="../guides/different.html"
+>Distinctive Features Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/malloc.html"
+>Dynamic Memory Allocation In SQLite</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Application-Defined SQL Functions</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/appfunc.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#21-common-parameters">2.1. Common Parameters#</a></li>
+              <li class="lvl-2"><a href="#22-multiple-calls-to-sqlite3_create_function-for-the-same-function">2.2. Multiple Calls To sqlite3_create_function() For The Same Function#</a></li>
+              <li class="lvl-2"><a href="#23-callbacks">2.3. Callbacks#</a></li>
+              <li class="lvl-3"><a href="#231-the-scalar-function-callback">2.3.1. The Scalar Function Callback#</a></li>
+              <li class="lvl-3"><a href="#232-the-aggregate-function-callbacks">2.3.2. The Aggregate Function Callbacks#</a></li>
+              <li class="lvl-3"><a href="#233-the-window-function-callbacks">2.3.3. The Window Function Callbacks#</a></li>
+              <li class="lvl-3"><a href="#234-examples">2.3.4. Examples#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">#</a></h1>
+<p>Applications that use SQLite can define custom SQL functions that call back into application code to compute their results. The custom SQL function implementations can be embedded in the application code itself, or can be <a href="loadext.html">loadable extensions</a>.</p>
+<p>Application-defined or custom SQL functions are created using the <a href="c3ref/create_function.html">sqlite3_create_function()</a> family of interfaces. Custom SQL functions can be scalar functions, aggregate functions, or <a href="windowfunctions.html">window functions</a>. Custom SQL functions can have any number of arguments from 0 up to <a href="limits.html#max_function_arg">SQLITE_MAX_FUNCTION_ARG</a>. The <a href="c3ref/create_function.html">sqlite3_create_function()</a> interface specifies callbacks that are invoked to carry out the processing for the new SQL function.</p>
+<p>SQLite also supports custom <a href="vtab.html#tabfunc2">table-valued functions</a>, but they are implemented by a different mechanism that is not covered in this document.</p>
+<h1 id="2-defining-new-sql-functions">2. Defining New SQL Functions<a class="headerlink" href="#2-defining-new-sql-functions" title="Permanent link">#</a></h1>
+<p>The <a href="c3ref/create_function.html">sqlite3_create_function()</a> family of interfaces is used to create new custom SQL functions. Each member of this family is a wrapper around a common core. All family members accomplish the same thing; they merely have different calling signatures.</p>
+<ul>
+<li>
+<p><strong><a href="c3ref/create_function.html">sqlite3_create_function()</a></strong> → The original version of sqlite3_create_function() allows the application to create a single new SQL function that can be either a scalar or an aggregate. The name of the function is specified using UTF8.</p>
+</li>
+<li>
+<p><strong><a href="c3ref/create_function.html">sqlite3_create_function16()</a></strong> → This variant works exactly like the sqlite3_create_function() original except that the name of the function itself is specified as a UTF16 string rather than as a UTF8 string.</p>
+</li>
+<li>
+<p><strong><a href="c3ref/create_function.html">sqlite3_create_function_v2()</a></strong> → This variant works like the original sqlite3_create_function() except that it includes an additional parameter that is a pointer to a destructor for the <a href="c3ref/user_data.html">sqlite3_user_data()</a> pointer that is passed in as the 5th argument to all of the sqlite3_create_function() variants. That destructor function (if it is non-NULL) is called when the custom function is deleted - usually when the database connection is closing.</p>
+</li>
+<li>
+<p><strong><a href="c3ref/create_function.html">sqlite3_create_window_function()</a></strong> → This variant works like the original sqlite3_create_function() except that it accepts a different set of callback pointers - the callback pointers used by <a href="windowfunctions.html">window function</a> definitions.</p>
+</li>
+</ul>
+<h2 id="21-common-parameters">2.1. Common Parameters<a class="headerlink" href="#21-common-parameters" title="Permanent link">#</a></h2>
+<p>Many of the parameters passed to the <a href="c3ref/create_function.html">sqlite3_create_function()</a> family of interfaces are common across the entire family.</p>
+<ol>
+<li>
+<p><strong>db</strong> → The 1st parameter is always a pointer to the <a href="c3ref/sqlite3.html">database connection</a> on which the custom SQL function will work. Custom SQL functions are created separately for each database connection. There is no short-hand mechanism for creating SQL functions that work across all database connections.</p>
+</li>
+<li>
+<p><strong>zFunctionName</strong> → The 2nd parameter is the name of the SQL function that is being created. The name is usually in UTF8, except that the name should be in UTF16 in the native byte order for <a href="c3ref/create_function.html">sqlite3_create_function16()</a>.</p>
+<p>The maximum length of a SQL function name is 255 bytes of UTF8. Any attempt to create a function with a longer name will result in an <a href="rescode.html#misuse">SQLITE_MISUSE</a> error.</p>
+<p>The SQL function creation interfaces may be called multiple times with the same function name. If two calls have the same function number but a different number of arguments, for example, then two variants of the SQL function will be registered, each taking a different number of arguments.</p>
+</li>
+<li>
+<p><strong>nArg</strong> → The 3rd parameter is always the number of arguments that the function accepts. The value must be an integer between -1 and <a href="limits.html#max_function_arg">SQLITE_MAX_FUNCTION_ARG</a> (default value: 127). A value of -1 means that the SQL function is a variadic function that can take any number of arguments between 0 and <a href="limits.html#max_function_arg">SQLITE_MAX_FUNCTION_ARG</a>.</p>
+</li>
+<li>
+<p><strong>eTextRep</strong> → The 4th parameter is a 32-bit integer flag whose bits convey various properties about the new function. The original purpose of this parameter was to specify the preferred text encoding for the function, using one of the following constants:</p>
+<ul>
+<li><a href="c3ref/c_any.html#sqliteutf8">SQLITE_UTF8</a></li>
+<li><a href="c3ref/c_any.html#sqliteutf16be">SQLITE_UTF16BE</a></li>
+<li><a href="c3ref/c_any.html#sqliteutf16le">SQLITE_UTF16LE</a></li>
+</ul>
+<p>All custom SQL functions will accept text in any encoding. Encoding conversions will happen automatically. The preferred encoding merely specifies the encoding for which the function implementation is optimized. It is possible to specify multiple functions with the same name and the same number of arguments, but different preferred encodings and different callbacks used to implement the function, and SQLite will choose the set of callbacks for which the input encodings most closely match the preferred encoding.</p>
+<p>The preferred text encoding flag may be OR-ed together with zero or more of the following property flags:</p>
+<ul>
+<li><a href="c3ref/c_deterministic.html#sqlitedeterministic">SQLITE_DETERMINISTIC</a></li>
+<li><a href="c3ref/c_deterministic.html#sqlitedirectonly">SQLITE_DIRECTONLY</a></li>
+<li><a href="c3ref/c_deterministic.html#sqliteinnocuous">SQLITE_INNOCUOUS</a></li>
+<li><a href="c3ref/c_deterministic.html#sqlitesubtype">SQLITE_SUBTYPE</a></li>
+</ul>
+<p>Additional function property flags bits may be added in future versions of SQLite.</p>
+</li>
+<li>
+<p><strong>pApp</strong> → The 5th parameter is an arbitrary pointer that is passed through into the callback routines. SQLite itself does nothing with this pointer, except to make it available to the callbacks, and to pass it into the destructor when the function is unregistered.</p>
+</li>
+</ol>
+<h2 id="22-multiple-calls-to-sqlite3_create_function-for-the-same-function">2.2. Multiple Calls To sqlite3_create_function() For The Same Function<a class="headerlink" href="#22-multiple-calls-to-sqlite3_create_function-for-the-same-function" title="Permanent link">#</a></h2>
+<p>It is common for an application to invoke sqlite3_create_function() multiple times for the same SQL function. For example, if an SQL function can take either 2 or 3 arguments, then sqlite3_create_function() would be invoked once for the 2-argument version and a second time for the 3-argument version. The underlying implementation (the callbacks) can be different for both variants.</p>
+<p>An application can also register multiple SQL functions with the same name and same number of arguments, but a different preferred text encoding. In that case, SQLite will invoke the function using the callbacks for the version whose preferred text encoding most closely matches the database text encoding. In this way, multiple implementations of the same function can be provided that are optimized for UTF8 or UTF16.</p>
+<p>If multiple calls to sqlite3_create_function() specify the same function name, and the same number of arguments, and the same preferred text encoding, then the callbacks and other parameters of the second call overwrite the first, and the destructor callback from the first call (if it exists) is invoked.</p>
+<h2 id="23-callbacks">2.3. Callbacks<a class="headerlink" href="#23-callbacks" title="Permanent link">#</a></h2>
+<p>SQLite evaluates an SQL function by invoking callback routines.</p>
+<h3 id="231-the-scalar-function-callback">2.3.1. The Scalar Function Callback<a class="headerlink" href="#231-the-scalar-function-callback" title="Permanent link">#</a></h3>
+<p>Scalar SQL functions are implemented by a single callback in the <strong>xFunc</strong> parameter to sqlite3_create_function(). The following code demonstrates the implementation of a "noop(X)" scalar SQL function that merely returns its argument:</p>
+<p>static void noopfunc(\
+  sqlite3_context *context,\
+  int argc,\
+  sqlite3_value **argv\
+){\
+  assert( argc==1 );\
+  sqlite3_result_value(context, argv[0]);\
+}\</p>
+<p>The 1st parameter, <strong>context</strong>, is a pointer to an opaque object that describes the content from which the SQL function was invoked. This context pointer becomes the first parameter to many other routines that the function implementation might want to invoke, including:</p>
+<ul>
+<li><a href="c3ref/aggregate_context.html">sqlite3_aggregate_context</a></li>
+<li><a href="c3ref/context_db_handle.html">sqlite3_context_db_handle</a></li>
+<li><a href="c3ref/get_auxdata.html">sqlite3_get_auxdata</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_blob</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_blob64</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_double</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_error</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_error16</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_error_code</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_error_nomem</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_error_toobig</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_int</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_int64</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_null</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_pointer</a></li>
+<li><a href="c3ref/result_subtype.html">sqlite3_result_subtype</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_text</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_text16</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_text16be</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_text16le</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_text64</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_value</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_zeroblob</a></li>
+<li><a href="c3ref/result_blob.html">sqlite3_result_zeroblob64</a></li>
+<li><a href="c3ref/get_auxdata.html">sqlite3_set_auxdata</a></li>
+<li><a href="c3ref/user_data.html">sqlite3_user_data</a></li>
+</ul>
+<p>The <a href="c3ref/result_blob.html">sqlite3_result() family of functions</a> are used to specify the result of the scalar SQL function. One or more of these should be invoked by the callback to set the function return value. If none of these routines are invoked for a specific callback, then the return value will be NULL.</p>
+<p>The <a href="c3ref/user_data.html">sqlite3_user_data()</a> routine returns a copy of the <strong>pArg</strong> pointer that was given to <a href="c3ref/create_function.html">sqlite3_create_function()</a> when the SQL function was created.</p>
+<p>The <a href="c3ref/context_db_handle.html">sqlite3_context_db_handle()</a> routine returns a pointer to the <a href="c3ref/sqlite3.html">database connection</a> object.</p>
+<p>The <a href="c3ref/aggregate_context.html">sqlite3_aggregate_context()</a> routine is used only in the implementations of aggregate and window functions. Scalar functions may not use <a href="c3ref/aggregate_context.html">sqlite3_aggregate_context()</a>. The <a href="c3ref/aggregate_context.html">sqlite3_aggregate_context()</a> function is included in the interface list only for completeness.</p>
+<p>The 2nd and 3rd arguments to the scalar SQL function implementation, <strong>argc</strong> and <strong>argv</strong>, are the number of arguments to the SQL function itself and the values for each argument of the SQL function. Argument values can be of any datatype and are thus stored in instances of the <a href="c3ref/value.html">sqlite3_value</a> object. Specific C-language values can be extracted from this object using the <a href="c3ref/value_blob.html">sqlite3_value() family of interfaces</a>.</p>
+<h3 id="232-the-aggregate-function-callbacks">2.3.2. The Aggregate Function Callbacks<a class="headerlink" href="#232-the-aggregate-function-callbacks" title="Permanent link">#</a></h3>
+<p>Aggregate SQL functions are implemented by using two callback functions, <strong>xStep</strong> and <strong>xFinal</strong>. The xStep() function is called for each row of the aggregate and the xFinal() function is invoked to compute the final answer at the end. The following (slightly simplified) version of the built-in count() function illustrates:</p>
+<p>typedef struct CountCtx CountCtx;\
+struct CountCtx {\
+  i64 n;\
+};\
+static void countStep(sqlite3_context *context, int argc, sqlite3_value **argv){\
+  CountCtx *p;\
+  p = sqlite3_aggregate_context(context, sizeof(*p));\
+  if( (argc==0 || SQLITE_NULL!=sqlite3_value_type(argv[0])) &amp;&amp; p ){\
+    p-&gt;n++;\
+  }\
+}   \
+static void countFinalize(sqlite3_context *context){\
+  CountCtx *p;\
+  p = sqlite3_aggregate_context(context, 0);\
+  sqlite3_result_int64(context, p ? p-&gt;n : 0);\
+}\</p>
+<p>Recall that there are two versions of the count() aggregate. With zero arguments, count() returns a count of the number of rows. With one argument, count() returns the number of times that the argument was non-NULL.</p>
+<p>The countStep() callback is invoked once for each row in the aggregate. As you can see, the count is incremented if either there are no arguments, or if the one argument is not NULL.</p>
+<p>The step function for an aggregate should always begin with a call to the <a href="c3ref/aggregate_context.html">sqlite3_aggregate_context()</a> routine to fetch the persistent state of the aggregate function. On the first invocation of the step() function, the aggregate context is initialized to a block of memory that is N bytes in size, where N is the second parameter to sqlite3_aggregate_context() and that memory is zeroed. On all subsequent calls to the step() function, the same block of memory is returned. Except, sqlite3_aggregate_context() might return NULL in the case of an out-of-memory error, so aggregate functions should be prepared to deal with that case.</p>
+<p>After all rows are processed the countFinalize() routine is called exactly once. This routine computes the final result and invokes one of the <a href="c3ref/result_blob.html">sqlite3_result()</a> family of functions to set the final result. The aggregate context will be freed automatically by SQLite, though the xFinalize() routine must clean up any substructure associated with the aggregate context before it returns. If the xStep() method is called one or more times, then SQLite guarantees that the xFinal() method will be called at once, even if the query aborts.</p>
+<h3 id="233-the-window-function-callbacks">2.3.3. The Window Function Callbacks<a class="headerlink" href="#233-the-window-function-callbacks" title="Permanent link">#</a></h3>
+<p><a href="windowfunctions.html">Window functions</a> use the same xStep() and xFinal() callbacks that aggregate functions use, plus two others: <strong>xValue</strong> and <strong>xInverse</strong>. See the documentation on <a href="windowfunctions.html#udfwinfunc">application-defined window functions</a> for further details.</p>
+<h3 id="234-examples">2.3.4. Examples<a class="headerlink" href="#234-examples" title="Permanent link">#</a></h3>
+<p>There are dozens and dozens of SQL function implementations scattered throughout the SQLite source code that can be used as example applications. The built-in SQL functions use the same interface as application-defined SQL functions, so built-in functions can be used as examples too. Search for "sqlite3_context" in the SQLite source code to find examples. <span id="sec"></span></p>
+<h1 id="3-security-implications">3. Security Implications<a class="headerlink" href="#3-security-implications" title="Permanent link">#</a></h1>
+<p>Application-defined SQL functions can become security vulnerabilities if not carefully managed. Suppose, for example, an application defines a new "system(X)" SQL function that runs its argument X as a command and returns the integer result code. Perhaps the implementation is like this:</p>
+<p>static void systemFunc(\
+  sqlite3_context *context,\
+  int argc,\
+  sqlite3_value **argv\
+){\
+  const char *zCmd = (const char*)sqlite3_value_text(argv[0]);\
+  if( zCmd!=0 ){\
+    int rc = system(zCmd);\
+    sqlite3_result_int(context, rc);\
+  }\
+}\</p>
+<p>This is a function with powerful side-effects. Most programmers would be naturally cautious about using it, but probably would not see the harm in merely having it available. But there is great risk in merely defining such a function, even if the application itself never invokes it!</p>
+<p>Suppose the application normally does a query against table TAB1 when it starts up. If an attacker can gain access to the database file and modify the schema like this:</p>
+<p>ALTER TABLE tab1 RENAME TO tab1_real;\
+CREATE VIEW tab1 AS\
+   SELECT * FROM tab1_real\
+    WHERE system('rm -rf *') IS NOT NULL;\</p>
+<p>Then, when the application attempts to open the database, register the system() function, then run an innocent query against the "tab1" table, it instead deletes all the files in its working directory. Yikes!</p>
+<p>To prevent this kind of mischief, applications that create their own custom SQL functions should take one or more of the following safety precautions. The more precautions taken the better:</p>
+<ol>
+<li>
+<p>Invoke <a href="c3ref/db_config.html">sqlite3_db_config</a>(db,<a href="c3ref/c_dbconfig_defensive.html#sqlitedbconfigtrustedschema">SQLITE_DBCONFIG_TRUSTED_SCHEMA</a>,0,0) on each <a href="c3ref/sqlite3.html">database connection</a> as soon as it is opened. This prevents application-defined functions from being used in places where an attacker might be able to surreptiously invoke them by modifying a database schema:</p>
+<ul>
+<li>In VIEWs.</li>
+<li>In TRIGGERs.</li>
+<li>In CHECK constraints of a table definition.</li>
+<li>In DEFAULT constraints of a table definition.</li>
+<li>In the definitions of generated columns.</li>
+<li>In the expression part of an index on an expression.</li>
+<li>In the WHERE clause of a partial index.</li>
+</ul>
+<p>To put it another way, this setting requires that application-defined functions only be run directly by top-level SQL invoked from the application itself, not as a consequence of doing some other innocent-looking query.</p>
+</li>
+<li>
+<p>Use the <a href="pragma.html#pragma_trusted_schema">PRAGMA trusted_schema=OFF</a> SQL statement to disable trusted schema. This has the same effect as the previous bullet, but does not require the use of C-code and hence can be performed in programs written in another programming language and that do not have access to SQLite C-language APIs.</p>
+</li>
+<li>
+<p>Compile SQLite using the <a href="compile.html#trusted_schema">-DSQLITE_TRUSTED_SCHEMA=0</a> compile-time option. This makes SQLite distrust application-defined functions inside of the schema by default.</p>
+</li>
+<li>
+<p>If any application-defined SQL functions have potentially dangerous side-effects, or if they could potentially leak sensitive information to an attacker if misused, then tag those functions using the <a href="c3ref/c_deterministic.html#sqlitedirectonly">SQLITE_DIRECTONLY</a> option on the "enc" parameter. This means that the function can never be run from schema-code even if the trusted-schema option is on.</p>
+</li>
+<li>
+<p>Never tag an application-defined SQL function with <a href="c3ref/c_deterministic.html#sqliteinnocuous">SQLITE_INNOCUOUS</a> unless you really need to and you have checked the implementation closely and are certain that it can do no harm even if it falls under the control of an attacker.</p>
+</li>
+</ol>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/cintro.html">
+          <span class="muted">Anterior</span>An Introduction To The SQLite C/C++ Interface
+        </a>
+        <a class="pager-next" href="../guides/sqlite3changeset_apply.html">
+          <span class="muted">Siguiente</span>Apply A Changeset To A Database
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

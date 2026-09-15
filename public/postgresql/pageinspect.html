@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pageinspect — low-level inspection of database pages · PostgreSQL</title>
+<meta name="description" content="pageinspect — low-level inspection of database pages - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/pageinspect.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="pageinspect — low-level inspection of database pages">
+<meta property="og:description" content="pageinspect — low-level inspection of database pages - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pageinspect — low-level inspection of database pages">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "pageinspect — low-level inspection of database pages",
+"url": "https://docs.raupulus.dev/postgresql/pageinspect.html",  "description": "pageinspect — low-level inspection of database pages - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+              <li>
+                <a href="./high-availability.html"
+>High Availability, Load Balancing, and Replication</a>
+              </li>
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+>hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+class="is-current" aria-current="page">pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+>pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">pageinspect — low-level inspection of database pages</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/pageinspect.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#pageinspect-low-level-inspection-of-database-pages">pageinspect low-level inspection of database pages#</a></li>
+              <li class="lvl-2"><a href="#general-functions">General Functions#</a></li>
+              <li class="lvl-2"><a href="#heap-functions">Heap Functions#</a></li>
+              <li class="lvl-2"><a href="#b-tree-functions">B-Tree Functions#</a></li>
+              <li class="lvl-2"><a href="#brin-functions">BRIN Functions#</a></li>
+              <li class="lvl-2"><a href="#gin-functions">GIN Functions#</a></li>
+              <li class="lvl-2"><a href="#gist-functions">GiST Functions#</a></li>
+              <li class="lvl-2"><a href="#hash-functions">Hash Functions#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="pageinspect-low-level-inspection-of-database-pages">pageinspect low-level inspection of database pages<a class="headerlink" href="#pageinspect-low-level-inspection-of-database-pages" title="Permanent link">#</a></h2>
+<p>pageinspect</p>
+<p>The <code>pageinspect</code> module provides functions that allow you to inspect the contents of database pages at a low level, which is useful for debugging purposes. All of these functions may be used only by superusers.</p>
+<h2 id="general-functions">General Functions<a class="headerlink" href="#general-functions" title="Permanent link">#</a></h2>
+<p><code>get_raw_page(relname text, fork text, blkno bigint) returns bytea</code> <span class="indexterm"></span><br>
+<code>get_raw_page</code> reads the specified block of the named relation and returns a copy as a <code>bytea</code> value. This allows a single time-consistent copy of the block to be obtained. \&lt;fork&gt; should be <code>'main'</code> for the main data fork, <code>'fsm'</code> for the <a href="#storage-fsm">free space map</a>, <code>'vm'</code> for the <a href="#storage-vm">visibility map</a>, or <code>'init'</code> for the initialization fork.</p>
+<p><code>get_raw_page(relname text, blkno bigint) returns bytea</code><br>
+A shorthand version of <code>get_raw_page</code>, for reading from the main fork. Equivalent to <code>get_raw_page(relname, 'main', blkno)</code></p>
+<p><code>page_header(page bytea) returns record</code> <span class="indexterm"></span><br>
+<code>page_header</code> shows fields that are common to all PostgreSQL heap and index pages.</p>
+<p>A page image obtained with <code>get_raw_page</code> should be passed as argument. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM page_header(get_raw_page(&#39;pg_class&#39;, 0));
+    lsn    | checksum | flags  | lower | upper | special | pagesize | version | prune_xid
+-----------+----------+--------+-------+-------+---------+----------+---------+-----------
+ 0/24A1B50 |        0 |      1 |   232 |   368 |    8192 |     8192 |       4 |         0
+</code></pre></div>
+
+<p>The returned columns correspond to the fields in the PageHeaderData struct. See <code>src/include/storage/bufpage.h</code> for details.</p>
+<p>The checksum field is the checksum stored in the page, which might be incorrect if the page is somehow corrupted. If data checksums are not enabled for this instance, then the value stored is meaningless.</p>
+<p><code>page_checksum(page bytea, blkno bigint) returns smallint</code> <span class="indexterm"></span><br>
+<code>page_checksum</code> computes the checksum for the page, as if it was located at the given block.</p>
+<p>A page image obtained with <code>get_raw_page</code> should be passed as argument. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT page_checksum(get_raw_page(&#39;pg_class&#39;, 0), 0);
+ page_checksum
+---------------
+         13443
+</code></pre></div>
+
+<p>Note that the checksum depends on the block number, so matching block numbers should be passed (except when doing esoteric debugging).</p>
+<p>The checksum computed with this function can be compared with the checksum result field of the function <code>page_header</code>. If data checksums are enabled for this instance, then the two values should be equal.</p>
+<p><code>fsm_page_contents(page bytea) returns text</code> <span class="indexterm"></span><br>
+<code>fsm_page_contents</code> shows the internal node structure of an FSM page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT fsm_page_contents(get_raw_page(&#39;pg_class&#39;, &#39;fsm&#39;, 0));
+</code></pre></div>
+
+<p>The output is a multiline string, with one line per node in the binary tree within the page. Only those nodes that are not zero are printed. The so-called "next" pointer, which points to the next slot to be returned from the page, is also printed.</p>
+<p>See <code>src/backend/storage/freespace/README</code> for more information on the structure of an FSM page.</p>
+<h2 id="heap-functions">Heap Functions<a class="headerlink" href="#heap-functions" title="Permanent link">#</a></h2>
+<p><code>heap_page_items(page bytea) returns setof record</code> <span class="indexterm"></span><br>
+<code>heap_page_items</code> shows all line pointers on a heap page. For those line pointers that are in use, tuple headers as well as tuple raw data are also shown. All tuples are shown, whether or not the tuples were visible to an MVCC snapshot at the time the raw page was copied.</p>
+<p>A heap page image obtained with <code>get_raw_page</code> should be passed as argument. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM heap_page_items(get_raw_page(&#39;pg_class&#39;, 0));
+</code></pre></div>
+
+<p>See <code>src/include/storage/itemid.h</code> and <code>src/include/access/htup_details.h</code> for explanations of the fields returned.</p>
+<p>The <code>heap_tuple_infomask_flags</code> function can be used to unpack the flag bits of t_infomask and t_infomask2 for heap tuples.</p>
+<p><code>tuple_data_split(rel_oid oid, t_data bytea, t_infomask integer, t_infomask2 integer, t_bits text [, do_detoast bool]) returns bytea[]</code> <span class="indexterm"></span><br>
+<code>tuple_data_split</code> splits tuple data into attributes in the same way as backend internals.</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT tuple_data_split(&#39;pg_class&#39;::regclass, t_data, t_infomask, t_infomask2, t_bits) FROM heap_page_items(get_raw_page(&#39;pg_class&#39;, 0));
+</code></pre></div>
+
+<p>This function should be called with the same arguments as the return attributes of <code>heap_page_items</code>.</p>
+<p>If <code>do_detoast</code> is <code>true</code>, attributes will be detoasted as needed. Default value is <code>false</code>.</p>
+<p><code>heap_page_item_attrs(page bytea, rel_oid regclass [, do_detoast bool]) returns setof record</code> <span class="indexterm"></span><br>
+<code>heap_page_item_attrs</code> is equivalent to <code>heap_page_items</code> except that it returns tuple raw data as an array of attributes that can optionally be detoasted by <code>do_detoast</code> which is <code>false</code> by default.</p>
+<p>A heap page image obtained with <code>get_raw_page</code> should be passed as argument. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM heap_page_item_attrs(get_raw_page(&#39;pg_class&#39;, 0), &#39;pg_class&#39;::regclass);
+</code></pre></div>
+
+<p><code>heap_tuple_infomask_flags(t_infomask integer, t_infomask2 integer) returns record</code> <span class="indexterm"></span><br>
+<code>heap_tuple_infomask_flags</code> decodes the t_infomask and t_infomask2 returned by <code>heap_page_items</code> into a human-readable set of arrays made of flag names, with one column for all the flags and one column for combined flags. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT t_ctid, raw_flags, combined_flags
+         FROM heap_page_items(get_raw_page(&#39;pg_class&#39;, 0)),
+           LATERAL heap_tuple_infomask_flags(t_infomask, t_infomask2)
+         WHERE t_infomask IS NOT NULL OR t_infomask2 IS NOT NULL;
+</code></pre></div>
+
+<p>This function should be called with the same arguments as the return attributes of <code>heap_page_items</code>.</p>
+<p>Combined flags are displayed for source-level macros that take into account the value of more than one raw bit, such as <code>HEAP_XMIN_FROZEN</code>.</p>
+<p>See <code>src/include/access/htup_details.h</code> for explanations of the flag names returned.</p>
+<h2 id="b-tree-functions">B-Tree Functions<a class="headerlink" href="#b-tree-functions" title="Permanent link">#</a></h2>
+<p><code>bt_metap(relname text) returns record</code> <span class="indexterm"></span><br>
+<code>bt_metap</code> returns information about a B-tree index's metapage. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM bt_metap(&#39;pg_cast_oid_index&#39;);
+-[ RECORD 1 ]-------------+-------
+magic                     | 340322
+version                   | 4
+root                      | 1
+level                     | 0
+fastroot                  | 1
+fastlevel                 | 0
+last_cleanup_num_delpages | 0
+last_cleanup_num_tuples   | 230
+allequalimage             | f
+</code></pre></div>
+
+<p><code>bt_page_stats(relname text, blkno bigint) returns record</code> <span class="indexterm"></span><br>
+<code>bt_page_stats</code> returns summary information about a data page of a B-tree index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM bt_page_stats(&#39;pg_cast_oid_index&#39;, 1);
+-[ RECORD 1 ]-+-----
+blkno         | 1
+type          | l
+live_items    | 224
+dead_items    | 0
+avg_item_size | 16
+page_size     | 8192
+free_size     | 3668
+btpo_prev     | 0
+btpo_next     | 0
+btpo_level    | 0
+btpo_flags    | 3
+</code></pre></div>
+
+<p><code>bt_multi_page_stats(relname text, blkno bigint, blk_count bigint) returns setof record</code> <span class="indexterm"></span><br>
+<code>bt_multi_page_stats</code> returns the same information as <code>bt_page_stats</code>, but does so for each page of the range of pages beginning at <code>blkno</code> and extending for <code>blk_count</code> pages. If <code>blk_count</code> is negative, all pages from <code>blkno</code> to the end of the index are reported on. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM bt_multi_page_stats(&#39;pg_proc_oid_index&#39;, 5, 2);
+-[ RECORD 1 ]-+-----
+blkno         | 5
+type          | l
+live_items    | 367
+dead_items    | 0
+avg_item_size | 16
+page_size     | 8192
+free_size     | 808
+btpo_prev     | 4
+btpo_next     | 6
+btpo_level    | 0
+btpo_flags    | 1
+-[ RECORD 2 ]-+-----
+blkno         | 6
+type          | l
+live_items    | 367
+dead_items    | 0
+avg_item_size | 16
+page_size     | 8192
+free_size     | 808
+btpo_prev     | 5
+btpo_next     | 7
+btpo_level    | 0
+btpo_flags    | 1
+</code></pre></div>
+
+<p><code>bt_page_items(relname text, blkno bigint) returns setof record</code> <span class="indexterm"></span><br>
+<code>bt_page_items</code> returns detailed information about all of the items on a B-tree index page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT itemoffset, ctid, itemlen, nulls, vars, data, dead, htid, tids[0:2] AS some_tids
+        FROM bt_page_items(&#39;tenk2_hundred&#39;, 5);
+ itemoffset |   ctid    | itemlen | nulls | vars |          data           | dead |  htid  |      some_tids
+------------+-----------+---------+-------+------+-------------------------+------+--------+---------------------
+          1 | (16,1)    |      16 | f     | f    | 30 00 00 00 00 00 00 00 |      |        |
+          2 | (16,8292) |     616 | f     | f    | 24 00 00 00 00 00 00 00 | f    | (1,6)  | {&quot;(1,6)&quot;,&quot;(10,22)&quot;}
+          3 | (16,8292) |     616 | f     | f    | 25 00 00 00 00 00 00 00 | f    | (1,18) | {&quot;(1,18)&quot;,&quot;(4,22)&quot;}
+          4 | (16,8292) |     616 | f     | f    | 26 00 00 00 00 00 00 00 | f    | (4,18) | {&quot;(4,18)&quot;,&quot;(6,17)&quot;}
+          5 | (16,8292) |     616 | f     | f    | 27 00 00 00 00 00 00 00 | f    | (1,2)  | {&quot;(1,2)&quot;,&quot;(1,19)&quot;}
+          6 | (16,8292) |     616 | f     | f    | 28 00 00 00 00 00 00 00 | f    | (2,24) | {&quot;(2,24)&quot;,&quot;(4,11)&quot;}
+          7 | (16,8292) |     616 | f     | f    | 29 00 00 00 00 00 00 00 | f    | (2,17) | {&quot;(2,17)&quot;,&quot;(11,2)&quot;}
+          8 | (16,8292) |     616 | f     | f    | 2a 00 00 00 00 00 00 00 | f    | (0,25) | {&quot;(0,25)&quot;,&quot;(3,20)&quot;}
+          9 | (16,8292) |     616 | f     | f    | 2b 00 00 00 00 00 00 00 | f    | (0,10) | {&quot;(0,10)&quot;,&quot;(0,14)&quot;}
+         10 | (16,8292) |     616 | f     | f    | 2c 00 00 00 00 00 00 00 | f    | (1,3)  | {&quot;(1,3)&quot;,&quot;(3,9)&quot;}
+         11 | (16,8292) |     616 | f     | f    | 2d 00 00 00 00 00 00 00 | f    | (6,28) | {&quot;(6,28)&quot;,&quot;(11,1)&quot;}
+         12 | (16,8292) |     616 | f     | f    | 2e 00 00 00 00 00 00 00 | f    | (0,27) | {&quot;(0,27)&quot;,&quot;(1,13)&quot;}
+         13 | (16,8292) |     616 | f     | f    | 2f 00 00 00 00 00 00 00 | f    | (4,17) | {&quot;(4,17)&quot;,&quot;(4,21)&quot;}
+(13 rows)
+</code></pre></div>
+
+<p>This is a B-tree leaf page. All tuples that point to the table happen to be posting list tuples (all of which store a total of 100 6 byte TIDs). There is also a “high key” tuple at <code>itemoffset</code> number 1. ctid is used to store encoded information about each tuple in this example, though leaf page tuples often store a heap TID directly in the ctid field instead. tids is the list of TIDs stored as a posting list.</p>
+<p>In an internal page (not shown), the block number part of ctid is a “downlink”, which is a block number of another page in the index itself. The offset part (the second number) of ctid stores encoded information about the tuple, such as the number of columns present (suffix truncation may have removed unneeded suffix columns). Truncated columns are treated as having the value “minus infinity”.</p>
+<p>htid shows a heap TID for the tuple, regardless of the underlying tuple representation. This value may match ctid, or may be decoded from the alternative representations used by posting list tuples and tuples from internal pages. Tuples in internal pages usually have the implementation level heap TID column truncated away, which is represented as a NULL htid value.</p>
+<p>Note that the first item on any non-rightmost page (any page with a non-zero value in the btpo_next field) is the page's “high key”, meaning its data serves as an upper bound on all items appearing on the page, while its ctid field does not point to another block. Also, on internal pages, the first real data item (the first item that is not a high key) reliably has every column truncated away, leaving no actual value in its data field. Such an item does have a valid downlink in its ctid field, however.</p>
+<p>For more details about the structure of B-tree indexes, see <a href="#btree-structure">???</a>. For more details about deduplication and posting lists, see <a href="#btree-deduplication">???</a>.</p>
+<p><code>bt_page_items(page bytea) returns setof record</code> <span class="indexterm"></span><br>
+It is also possible to pass a page to <code>bt_page_items</code> as a <code>bytea</code> value. A page image obtained with <code>get_raw_page</code> should be passed as argument. So the last example could also be rewritten like this:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT itemoffset, ctid, itemlen, nulls, vars, data, dead, htid, tids[0:2] AS some_tids
+        FROM bt_page_items(get_raw_page(&#39;tenk2_hundred&#39;, 5));
+ itemoffset |   ctid    | itemlen | nulls | vars |          data           | dead |  htid  |      some_tids
+------------+-----------+---------+-------+------+-------------------------+------+--------+---------------------
+          1 | (16,1)    |      16 | f     | f    | 30 00 00 00 00 00 00 00 |      |        |
+          2 | (16,8292) |     616 | f     | f    | 24 00 00 00 00 00 00 00 | f    | (1,6)  | {&quot;(1,6)&quot;,&quot;(10,22)&quot;}
+          3 | (16,8292) |     616 | f     | f    | 25 00 00 00 00 00 00 00 | f    | (1,18) | {&quot;(1,18)&quot;,&quot;(4,22)&quot;}
+          4 | (16,8292) |     616 | f     | f    | 26 00 00 00 00 00 00 00 | f    | (4,18) | {&quot;(4,18)&quot;,&quot;(6,17)&quot;}
+          5 | (16,8292) |     616 | f     | f    | 27 00 00 00 00 00 00 00 | f    | (1,2)  | {&quot;(1,2)&quot;,&quot;(1,19)&quot;}
+          6 | (16,8292) |     616 | f     | f    | 28 00 00 00 00 00 00 00 | f    | (2,24) | {&quot;(2,24)&quot;,&quot;(4,11)&quot;}
+          7 | (16,8292) |     616 | f     | f    | 29 00 00 00 00 00 00 00 | f    | (2,17) | {&quot;(2,17)&quot;,&quot;(11,2)&quot;}
+          8 | (16,8292) |     616 | f     | f    | 2a 00 00 00 00 00 00 00 | f    | (0,25) | {&quot;(0,25)&quot;,&quot;(3,20)&quot;}
+          9 | (16,8292) |     616 | f     | f    | 2b 00 00 00 00 00 00 00 | f    | (0,10) | {&quot;(0,10)&quot;,&quot;(0,14)&quot;}
+         10 | (16,8292) |     616 | f     | f    | 2c 00 00 00 00 00 00 00 | f    | (1,3)  | {&quot;(1,3)&quot;,&quot;(3,9)&quot;}
+         11 | (16,8292) |     616 | f     | f    | 2d 00 00 00 00 00 00 00 | f    | (6,28) | {&quot;(6,28)&quot;,&quot;(11,1)&quot;}
+         12 | (16,8292) |     616 | f     | f    | 2e 00 00 00 00 00 00 00 | f    | (0,27) | {&quot;(0,27)&quot;,&quot;(1,13)&quot;}
+         13 | (16,8292) |     616 | f     | f    | 2f 00 00 00 00 00 00 00 | f    | (4,17) | {&quot;(4,17)&quot;,&quot;(4,21)&quot;}
+(13 rows)
+</code></pre></div>
+
+<p>All the other details are the same as explained in the previous item.</p>
+<h2 id="brin-functions">BRIN Functions<a class="headerlink" href="#brin-functions" title="Permanent link">#</a></h2>
+<p><code>brin_page_type(page bytea) returns text</code> <span class="indexterm"></span><br>
+<code>brin_page_type</code> returns the page type of the given BRIN index page, or throws an error if the page is not a valid BRIN page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT brin_page_type(get_raw_page(&#39;brinidx&#39;, 0));
+ brin_page_type
+----------------
+ meta
+</code></pre></div>
+
+<p><code>brin_metapage_info(page bytea) returns record</code> <span class="indexterm"></span><br>
+<code>brin_metapage_info</code> returns assorted information about a BRIN index metapage. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM brin_metapage_info(get_raw_page(&#39;brinidx&#39;, 0));
+   magic    | version | pagesperrange | lastrevmappage
+------------+---------+---------------+----------------
+ 0xA8109CFA |       1 |             4 |              2
+</code></pre></div>
+
+<p><code>brin_revmap_data(page bytea) returns setof tid</code> <span class="indexterm"></span><br>
+<code>brin_revmap_data</code> returns the list of tuple identifiers in a BRIN index range map page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM brin_revmap_data(get_raw_page(&#39;brinidx&#39;, 2)) LIMIT 5;
+  pages
+---------
+ (6,137)
+ (6,138)
+ (6,139)
+ (6,140)
+ (6,141)
+</code></pre></div>
+
+<p><code>brin_page_items(page bytea, index oid) returns setof record</code> <span class="indexterm"></span><br>
+<code>brin_page_items</code> returns the data stored in the BRIN data page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM brin_page_items(get_raw_page(&#39;brinidx&#39;, 5),
+                                     &#39;brinidx&#39;)
+       ORDER BY blknum, attnum LIMIT 6;
+ itemoffset | blknum | attnum | allnulls | hasnulls | placeholder | empty |    value
+------------+--------+--------+----------+----------+-------------+-------+--------------
+        137 |      0 |      1 | t        | f        | f           | f     |
+        137 |      0 |      2 | f        | f        | f           | f     | {1 .. 88}
+        138 |      4 |      1 | t        | f        | f           | f     |
+        138 |      4 |      2 | f        | f        | f           | f     | {89 .. 176}
+        139 |      8 |      1 | t        | f        | f           | f     |
+        139 |      8 |      2 | f        | f        | f           | f     | {177 .. 264}
+</code></pre></div>
+
+<p>The returned columns correspond to the fields in the BrinMemTuple and BrinValues structs. See <code>src/include/access/brin_tuple.h</code> for details.</p>
+<h2 id="gin-functions">GIN Functions<a class="headerlink" href="#gin-functions" title="Permanent link">#</a></h2>
+<p><code>gin_metapage_info(page bytea) returns record</code> <span class="indexterm"></span><br>
+<code>gin_metapage_info</code> returns information about a GIN index metapage. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM gin_metapage_info(get_raw_page(&#39;gin_index&#39;, 0));
+-[ RECORD 1 ]----+-----------
+pending_head     | 4294967295
+pending_tail     | 4294967295
+tail_free_size   | 0
+n_pending_pages  | 0
+n_pending_tuples | 0
+n_total_pages    | 7
+n_entry_pages    | 6
+n_data_pages     | 0
+n_entries        | 693
+version          | 2
+</code></pre></div>
+
+<p><code>gin_page_opaque_info(page bytea) returns record</code> <span class="indexterm"></span><br>
+<code>gin_page_opaque_info</code> returns information about a GIN index opaque area, like the page type. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM gin_page_opaque_info(get_raw_page(&#39;gin_index&#39;, 2));
+ rightlink | maxoff |         flags
+-----------+--------+------------------------
+         5 |      0 | {data,leaf,compressed}
+(1 row)
+</code></pre></div>
+
+<p><code>gin_leafpage_items(page bytea) returns setof record</code> <span class="indexterm"></span><br>
+<code>gin_leafpage_items</code> returns information about the data stored in a compressed GIN leaf page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT first_tid, nbytes, tids[0:5] AS some_tids
+        FROM gin_leafpage_items(get_raw_page(&#39;gin_test_idx&#39;, 2));
+ first_tid | nbytes |                        some_tids
+-----------+--------+----------------------------------------------------------
+ (8,41)    |    244 | {&quot;(8,41)&quot;,&quot;(8,43)&quot;,&quot;(8,44)&quot;,&quot;(8,45)&quot;,&quot;(8,46)&quot;}
+ (10,45)   |    248 | {&quot;(10,45)&quot;,&quot;(10,46)&quot;,&quot;(10,47)&quot;,&quot;(10,48)&quot;,&quot;(10,49)&quot;}
+ (12,52)   |    248 | {&quot;(12,52)&quot;,&quot;(12,53)&quot;,&quot;(12,54)&quot;,&quot;(12,55)&quot;,&quot;(12,56)&quot;}
+ (14,59)   |    320 | {&quot;(14,59)&quot;,&quot;(14,60)&quot;,&quot;(14,61)&quot;,&quot;(14,62)&quot;,&quot;(14,63)&quot;}
+ (167,16)  |    376 | {&quot;(167,16)&quot;,&quot;(167,17)&quot;,&quot;(167,18)&quot;,&quot;(167,19)&quot;,&quot;(167,20)&quot;}
+ (170,30)  |    376 | {&quot;(170,30)&quot;,&quot;(170,31)&quot;,&quot;(170,32)&quot;,&quot;(170,33)&quot;,&quot;(170,34)&quot;}
+ (173,44)  |    197 | {&quot;(173,44)&quot;,&quot;(173,45)&quot;,&quot;(173,46)&quot;,&quot;(173,47)&quot;,&quot;(173,48)&quot;}
+(7 rows)
+</code></pre></div>
+
+<h2 id="gist-functions">GiST Functions<a class="headerlink" href="#gist-functions" title="Permanent link">#</a></h2>
+<p><code>gist_page_opaque_info(page bytea) returns record</code> <span class="indexterm"></span><br>
+<code>gist_page_opaque_info</code> returns information from a GiST index page's opaque area, such as the NSN, rightlink and page type. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM gist_page_opaque_info(get_raw_page(&#39;test_gist_idx&#39;, 2));
+ lsn | nsn | rightlink | flags
+-----+-----+-----------+--------
+ 0/1 | 0/0 |         1 | {leaf}
+(1 row)
+</code></pre></div>
+
+<p><code>gist_page_items(page bytea, index_oid regclass) returns setof record</code> <span class="indexterm"></span><br>
+<code>gist_page_items</code> returns information about the data stored in a page of a GiST index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM gist_page_items(get_raw_page(&#39;test_gist_idx&#39;, 0), &#39;test_gist_idx&#39;);
+ itemoffset |   ctid    | itemlen | dead |             keys
+------------+-----------+---------+------+-------------------------------
+          1 | (1,65535) |      40 | f    | (p)=(&quot;(185,185),(1,1)&quot;)
+          2 | (2,65535) |      40 | f    | (p)=(&quot;(370,370),(186,186)&quot;)
+          3 | (3,65535) |      40 | f    | (p)=(&quot;(555,555),(371,371)&quot;)
+          4 | (4,65535) |      40 | f    | (p)=(&quot;(740,740),(556,556)&quot;)
+          5 | (5,65535) |      40 | f    | (p)=(&quot;(870,870),(741,741)&quot;)
+          6 | (6,65535) |      40 | f    | (p)=(&quot;(1000,1000),(871,871)&quot;)
+(6 rows)
+</code></pre></div>
+
+<p><code>gist_page_items_bytea(page bytea) returns setof record</code> <span class="indexterm"></span><br>
+Same as <code>gist_page_items</code>, but returns the key data as a raw <code>bytea</code> blob. Since it does not attempt to decode the key, it does not need to know which index is involved. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM gist_page_items_bytea(get_raw_page(&#39;test_gist_idx&#39;, 0));
+ itemoffset |   ctid    | itemlen | dead |                                      key_data
+------------+-----------+---------+------+-----------------------------------------​-------------------------------------------
+          1 | (1,65535) |      40 | f    | \x00000100ffff28000000000000c0644000000000​00c06440000000000000f03f000000000000f03f
+          2 | (2,65535) |      40 | f    | \x00000200ffff28000000000000c0744000000000​00c074400000000000e064400000000000e06440
+          3 | (3,65535) |      40 | f    | \x00000300ffff28000000000000207f4000000000​00207f400000000000d074400000000000d07440
+          4 | (4,65535) |      40 | f    | \x00000400ffff28000000000000c0844000000000​00c084400000000000307f400000000000307f40
+          5 | (5,65535) |      40 | f    | \x00000500ffff28000000000000f0894000000000​00f089400000000000c884400000000000c88440
+          6 | (6,65535) |      40 | f    | \x00000600ffff28000000000000208f4000000000​00208f400000000000f889400000000000f88940
+          7 | (7,65535) |      40 | f    | \x00000700ffff28000000000000408f4000000000​00408f400000000000288f400000000000288f40
+(7 rows)
+</code></pre></div>
+
+<h2 id="hash-functions">Hash Functions<a class="headerlink" href="#hash-functions" title="Permanent link">#</a></h2>
+<p><code>hash_page_type(page bytea) returns text</code> <span class="indexterm"></span><br>
+<code>hash_page_type</code> returns page type of the given HASH index page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT hash_page_type(get_raw_page(&#39;con_hash_index&#39;, 0));
+ hash_page_type
+----------------
+ metapage
+</code></pre></div>
+
+<p><code>hash_page_stats(page bytea) returns setof record</code> <span class="indexterm"></span><br>
+<code>hash_page_stats</code> returns information about a bucket or overflow page of a HASH index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM hash_page_stats(get_raw_page(&#39;con_hash_index&#39;, 1));
+-[ RECORD 1 ]---+-----------
+live_items      | 407
+dead_items      | 0
+page_size       | 8192
+free_size       | 8
+hasho_prevblkno | 4096
+hasho_nextblkno | 8474
+hasho_bucket    | 0
+hasho_flag      | 66
+hasho_page_id   | 65408
+</code></pre></div>
+
+<p><code>hash_page_items(page bytea) returns setof record</code> <span class="indexterm"></span><br>
+<code>hash_page_items</code> returns information about the data stored in a bucket or overflow page of a HASH index page. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM hash_page_items(get_raw_page(&#39;con_hash_index&#39;, 1)) LIMIT 5;
+ itemoffset |   ctid    |    data
+------------+-----------+------------
+          1 | (899,77)  | 1053474816
+          2 | (897,29)  | 1053474816
+          3 | (894,207) | 1053474816
+          4 | (892,159) | 1053474816
+          5 | (890,111) | 1053474816
+</code></pre></div>
+
+<p><code>hash_bitmap_info(index oid, blkno bigint) returns record</code> <span class="indexterm"></span><br>
+<code>hash_bitmap_info</code> shows the status of a bit in the bitmap page for a particular overflow page of HASH index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT * FROM hash_bitmap_info(&#39;con_hash_index&#39;, 2052);
+ bitmapblkno | bitmapbit | bitstatus
+-------------+-----------+-----------
+          65 |         3 | t
+</code></pre></div>
+
+<p><code>hash_metapage_info(page bytea) returns record</code> <span class="indexterm"></span><br>
+<code>hash_metapage_info</code> returns information stored in the meta page of a HASH index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=# SELECT magic, version, ntuples, ffactor, bsize, bmsize, bmshift,
+test-#     maxbucket, highmask, lowmask, ovflpoint, firstfree, nmaps, procid,
+test-#     regexp_replace(spares::text, &#39;(,0)*}&#39;, &#39;}&#39;) as spares,
+test-#     regexp_replace(mapp::text, &#39;(,0)*}&#39;, &#39;}&#39;) as mapp
+test-# FROM hash_metapage_info(get_raw_page(&#39;con_hash_index&#39;, 0));
+-[ RECORD 1 ]-------------------------------------------------​------------------------------
+magic     | 105121344
+version   | 4
+ntuples   | 500500
+ffactor   | 40
+bsize     | 8152
+bmsize    | 4096
+bmshift   | 15
+maxbucket | 12512
+highmask  | 16383
+lowmask   | 8191
+ovflpoint | 28
+firstfree | 1204
+nmaps     | 1
+procid    | 450
+spares    | {0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,45,55,58,59,​508,567,628,704,1193,1202,1204}
+mapp      | {65}
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./arch-dev.html">
+          <span class="muted">Anterior</span>Overview of PostgreSQL Internals
+        </a>
+        <a class="pager-next" href="./parallel.html">
+          <span class="muted">Siguiente</span>Parallel Query
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

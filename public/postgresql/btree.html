@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B-Tree Indexes · PostgreSQL</title>
+<meta name="description" content="B-Tree Indexes - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/btree.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="B-Tree Indexes">
+<meta property="og:description" content="B-Tree Indexes - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="B-Tree Indexes">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "B-Tree Indexes",
+"url": "https://docs.raupulus.dev/postgresql/btree.html",  "description": "B-Tree Indexes - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./history.html"
+>A Brief History of PostgreSQL</a>
+              </li>
+              <li>
+                <a href="./acronyms.html"
+>Acronyms</a>
+              </li>
+              <li>
+                <a href="./contrib.html"
+>Additional Supplied Modules and Extensions</a>
+              </li>
+              <li>
+                <a href="./advanced.html"
+>Advanced Features</a>
+              </li>
+              <li>
+                <a href="./ecpg.html"
+>ALLOCATE DESCRIPTOR</a>
+              </li>
+              <li>
+                <a href="./amcheck.html"
+>amcheck — tools to verify table and index consistency</a>
+              </li>
+              <li>
+                <a href="./archive-modules.html"
+>Archive Modules</a>
+              </li>
+              <li>
+                <a href="./array.html"
+>Arrays</a>
+              </li>
+              <li>
+                <a href="./auth-delay.html"
+>auth_delay — pause on authentication failure</a>
+              </li>
+              <li>
+                <a href="./auto-explain.html"
+>auto_explain — log execution plans of slow queries</a>
+              </li>
+              <li>
+                <a href="./btree.html"
+class="is-current" aria-current="page">B-Tree Indexes</a>
+              </li>
+              <li>
+                <a href="./bgworker.html"
+>Background Worker Processes</a>
+              </li>
+              <li>
+                <a href="./backup.html"
+>Backup and Restore</a>
+              </li>
+              <li>
+                <a href="./backup-manifest.html"
+>Backup Manifest Format</a>
+              </li>
+              <li>
+                <a href="./basebackup-to-shell.html"
+>basebackup_to_shell — example &#34;shell&#34; pg_basebackup module</a>
+              </li>
+              <li>
+                <a href="./basic-archive.html"
+>basic_archive — an example WAL archive module</a>
+              </li>
+              <li>
+                <a href="./biblio.html"
+>Bibliography</a>
+              </li>
+              <li>
+                <a href="./bloom.html"
+>bloom — bloom filter index access method</a>
+              </li>
+              <li>
+                <a href="./brin.html"
+>BRIN Indexes</a>
+              </li>
+              <li>
+                <a href="./btree-gin.html"
+>btree_gin — GIN operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./btree-gist.html"
+>btree_gist — GiST operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./problems.html"
+>Bug Reporting Guidelines</a>
+              </li>
+              <li>
+                <a href="./indextypes.html"
+>Built-in Index Access Methods</a>
+              </li>
+              <li>
+                <a href="./citext.html"
+>citext — a case-insensitive character string type</a>
+              </li>
+              <li>
+                <a href="./client-auth.html"
+>Client Authentication</a>
+              </li>
+              <li>
+                <a href="./color.html"
+>Color Support</a>
+              </li>
+              <li>
+                <a href="./dfunc.html"
+>Compiling and Linking Dynamically-Loaded Functions</a>
+              </li>
+              <li>
+                <a href="./rowtypes.html"
+>Composite Types</a>
+              </li>
+              <li>
+                <a href="./mvcc.html"
+>Concurrency Control</a>
+              </li>
+              <li>
+                <a href="./notation.html"
+>Conventions</a>
+              </li>
+              <li>
+                <a href="./cube.html"
+>cube — a multi-dimensional cube data type</a>
+              </li>
+              <li>
+                <a href="./custom-rmgr.html"
+>Custom WAL Resource Managers</a>
+              </li>
+              <li>
+                <a href="./ddl.html"
+>Data Definition</a>
+              </li>
+              <li>
+                <a href="./dml.html"
+>Data Manipulation</a>
+              </li>
+              <li>
+                <a href="./datatype.html"
+>Data Types</a>
+              </li>
+              <li>
+                <a href="./storage.html"
+>Database Physical Storage</a>
+              </li>
+              <li>
+                <a href="./user-manag.html"
+>Database Roles</a>
+              </li>
+              <li>
+                <a href="./datetime.html"
+>Date/Time Support</a>
+              </li>
+              <li>
+                <a href="./dblink.html"
+>dblink_connect</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-default-roles.html"
+>Default Roles Renamed to Predefined Roles</a>
+              </li>
+              <li>
+                <a href="./dict-int.html"
+>dict_int — example full-text search dictionary for integers</a>
+              </li>
+              <li>
+                <a href="./dict-xsyn.html"
+>dict_xsyn — example synonym full-text search dictionary</a>
+              </li>
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+>file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">B-Tree Indexes</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/btree.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#b-tree-indexes">B-Tree Indexes#</a></li>
+              <li class="lvl-2"><a href="#introduction">Introduction#</a></li>
+              <li class="lvl-2"><a href="#behavior-of-b-tree-operator-classes">Behavior of B-Tree Operator Classes#</a></li>
+              <li class="lvl-2"><a href="#b-tree-support-functions">B-Tree Support Functions#</a></li>
+              <li class="lvl-2"><a href="#implementation">Implementation#</a></li>
+              <li class="lvl-3"><a href="#b-tree-structure">B-Tree Structure#</a></li>
+              <li class="lvl-3"><a href="#bottom-up-index-deletion">Bottom-up Index Deletion#</a></li>
+              <li class="lvl-3"><a href="#deduplication">Deduplication#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="b-tree-indexes">B-Tree Indexes<a class="headerlink" href="#b-tree-indexes" title="Permanent link">#</a></h2>
+<p>index</p>
+<p>B-Tree</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
+<p>PostgreSQL includes an implementation of the standard btree (multi-way balanced tree) index data structure. Any data type that can be sorted into a well-defined linear order can be indexed by a btree index. The only limitation is that an index entry cannot exceed approximately one-third of a page (after TOAST compression, if applicable).</p>
+<p>Because each btree operator class imposes a sort order on its data type, btree operator classes (or, really, operator families) have come to be used as PostgreSQL's general representation and understanding of sorting semantics. Therefore, they've acquired some features that go beyond what would be needed just to support btree indexes, and parts of the system that are quite distant from the btree AM make use of them.</p>
+<h2 id="behavior-of-b-tree-operator-classes">Behavior of B-Tree Operator Classes<a class="headerlink" href="#behavior-of-b-tree-operator-classes" title="Permanent link">#</a></h2>
+<p>As shown in <a href="#xindex-btree-strat-table">???</a>, a btree operator class must provide five comparison operators, <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>&gt;=</code> and <code>&gt;</code>. One might expect that <code>&lt;&gt;</code> should also be part of the operator class, but it is not, because it would almost never be useful to use a <code>&lt;&gt;</code> WHERE clause in an index search. (For some purposes, the planner treats <code>&lt;&gt;</code> as associated with a btree operator class; but it finds that operator via the <code>=</code> operator's negator link, rather than from pg_amop.)</p>
+<p>When several data types share near-identical sorting semantics, their operator classes can be grouped into an operator family. Doing so is advantageous because it allows the planner to make deductions about cross-type comparisons. Each operator class within the family should contain the single-type operators (and associated support functions) for its input data type, while cross-type comparison operators and support functions are “loose” in the family. It is recommendable that a complete set of cross-type operators be included in the family, thus ensuring that the planner can represent any comparison conditions that it deduces from transitivity.</p>
+<p>There are some basic assumptions that a btree operator family must satisfy:</p>
+<ul>
+<li>
+<p>An <code>=</code> operator must be an equivalence relation; that is, for all non-null values \&lt;A&gt;, \&lt;B&gt;, \&lt;C&gt; of the data type:</p>
+</li>
+<li>
+<p>\&lt;A&gt; <code>=</code> \&lt;A&gt; is true (reflexive law)</p>
+</li>
+<li>
+<p>if \&lt;A&gt; <code>=</code> \&lt;B&gt;, then \&lt;B&gt; <code>=</code> \&lt;A&gt; (symmetric law)</p>
+</li>
+<li>
+<p>if \&lt;A&gt; <code>=</code> \&lt;B&gt; and \&lt;B&gt; <code>=</code> \&lt;C&gt;, then \&lt;A&gt; <code>=</code> \&lt;C&gt; (transitive law)</p>
+</li>
+<li>
+<p>A <code>&lt;</code> operator must be a strong ordering relation; that is, for all non-null values \&lt;A&gt;, \&lt;B&gt;, \&lt;C&gt;:</p>
+</li>
+<li>
+<p>\&lt;A&gt; <code>&lt;</code> \&lt;A&gt; is false (irreflexive law)</p>
+</li>
+<li>
+<p>if \&lt;A&gt; <code>&lt;</code> \&lt;B&gt; and \&lt;B&gt; <code>&lt;</code> \&lt;C&gt;, then \&lt;A&gt; <code>&lt;</code> \&lt;C&gt; (transitive law)</p>
+</li>
+<li>
+<p>Furthermore, the ordering is total; that is, for all non-null values \&lt;A&gt;, \&lt;B&gt;:</p>
+</li>
+<li>
+<p>exactly one of \&lt;A&gt; <code>&lt;</code> \&lt;B&gt;, \&lt;A&gt; <code>=</code> \&lt;B&gt;, and \&lt;B&gt; <code>&lt;</code> \&lt;A&gt; is true (trichotomy law)</p>
+</li>
+</ul>
+<p>(The trichotomy law justifies the definition of the comparison support function, of course.)</p>
+<p>The other three operators are defined in terms of <code>=</code> and <code>&lt;</code> in the obvious way, and must act consistently with them.</p>
+<p>For an operator family supporting multiple data types, the above laws must hold when \&lt;A&gt;, \&lt;B&gt;, \&lt;C&gt; are taken from any data types in the family. The transitive laws are the trickiest to ensure, as in cross-type situations they represent statements that the behaviors of two or three different operators are consistent. As an example, it would not work to put <code>float8</code> and <code>numeric</code> into the same operator family, at least not with the current semantics that <code>numeric</code> values are converted to <code>float8</code> for comparison to a <code>float8</code>. Because of the limited accuracy of <code>float8</code>, this means there are distinct <code>numeric</code> values that will compare equal to the same <code>float8</code> value, and thus the transitive law would fail.</p>
+<p>Another requirement for a multiple-data-type family is that any implicit or binary-coercion casts that are defined between data types included in the operator family must not change the associated sort ordering.</p>
+<p>It should be fairly clear why a btree index requires these laws to hold within a single data type: without them there is no ordering to arrange the keys with. Also, index searches using a comparison key of a different data type require comparisons to behave sanely across two data types. The extensions to three or more data types within a family are not strictly required by the btree index mechanism itself, but the planner relies on them for optimization purposes.</p>
+<h2 id="b-tree-support-functions">B-Tree Support Functions<a class="headerlink" href="#b-tree-support-functions" title="Permanent link">#</a></h2>
+<p>As shown in <a href="#xindex-btree-support-table">???</a>, btree defines one required and four optional support functions. The five user-defined methods are:</p>
+<p><code>order</code><br>
+For each combination of data types that a btree operator family provides comparison operators for, it must provide a comparison support function, registered in pg_amproc with support function number 1 and amproclefttype/amprocrighttype equal to the left and right data types for the comparison (i.e., the same data types that the matching operators are registered with in pg_amop). The comparison function must take two non-null values \&lt;A&gt; and \&lt;B&gt; and return an <code>int32</code> value that is <code>&lt;</code> <code>0</code>, <code>0</code>, or <code>&gt;</code> <code>0</code> when \&lt;A&gt; <code>&lt;</code> \&lt;B&gt;, \&lt;A&gt; <code>=</code> \&lt;B&gt;, or \&lt;A&gt; <code>&gt;</code> \&lt;B&gt;, respectively. A null result is disallowed: all values of the data type must be comparable. See <code>src/backend/access/nbtree/nbtcompare.c</code> for examples.</p>
+<p>If the compared values are of a collatable data type, the appropriate collation OID will be passed to the comparison support function, using the standard <code>PG_GET_COLLATION()</code> mechanism.</p>
+<p><code>sortsupport</code><br>
+Optionally, a btree operator family may provide sort support function(s), registered under support function number 2. These functions allow implementing comparisons for sorting purposes in a more efficient way than naively calling the comparison support function. The APIs involved in this are defined in <code>src/include/utils/sortsupport.h</code>.</p>
+<p><code>in_range</code><br>
+in_range support functions</p>
+<p>support functions</p>
+<p>in_range</p>
+<p>Optionally, a btree operator family may provide in_range support function(s), registered under support function number 3. These are not used during btree index operations; rather, they extend the semantics of the operator family so that it can support window clauses containing the <code>RANGE</code> \&lt;offset&gt; <code>PRECEDING</code> and <code>RANGE</code> \&lt;offset&gt; <code>FOLLOWING</code> frame bound types (see <a href="#syntax-window-functions">???</a>). Fundamentally, the extra information provided is how to add or subtract an \&lt;offset&gt; value in a way that is compatible with the family's data ordering.</p>
+<p>An <code>in_range</code> function must have the signature in_range(\&lt;val&gt; type1, \&lt;base&gt; type1, \&lt;offset&gt; type2, \&lt;sub&gt; bool, \&lt;less&gt; bool) returns bool \&lt;val&gt; and \&lt;base&gt; must be of the same type, which is one of the types supported by the operator family (i.e., a type for which it provides an ordering). However, \&lt;offset&gt; could be of a different type, which might be one otherwise unsupported by the family. An example is that the built-in <code>time_ops</code> family provides an <code>in_range</code> function that has \&lt;offset&gt; of type <code>interval</code>. A family can provide <code>in_range</code> functions for any of its supported types and one or more \&lt;offset&gt; types. Each <code>in_range</code> function should be entered in pg_amproc with amproclefttype equal to <code>type1</code> and amprocrighttype equal to <code>type2</code>.</p>
+<p>The essential semantics of an <code>in_range</code> function depend on the two Boolean flag parameters. It should add or subtract \&lt;base&gt; and \&lt;offset&gt;, then compare \&lt;val&gt; to the result, as follows:</p>
+<ul>
+<li>
+<p>if <code>!</code>\&lt;sub&gt; and <code>!</code>\&lt;less&gt;, return \&lt;val&gt; <code>&gt;=</code> (\&lt;base&gt; <code>+</code> \&lt;offset&gt;)</p>
+</li>
+<li>
+<p>if <code>!</code>\&lt;sub&gt; and \&lt;less&gt;, return \&lt;val&gt; <code>&lt;=</code> (\&lt;base&gt; <code>+</code> \&lt;offset&gt;)</p>
+</li>
+<li>
+<p>if \&lt;sub&gt; and <code>!</code>\&lt;less&gt;, return \&lt;val&gt; <code>&gt;=</code> (\&lt;base&gt; <code>-</code> \&lt;offset&gt;)</p>
+</li>
+<li>
+<p>if \&lt;sub&gt; and \&lt;less&gt;, return \&lt;val&gt; <code>&lt;=</code> (\&lt;base&gt; <code>-</code> \&lt;offset&gt;)</p>
+</li>
+</ul>
+<p>Before doing so, the function should check the sign of \&lt;offset&gt;: if it is less than zero, raise error <code>ERRCODE_INVALID_PRECEDING_OR_FOLLOWING_SIZE</code> (22013) with error text like “invalid preceding or following size in window function”. (This is required by the SQL standard, although nonstandard operator families might perhaps choose to ignore this restriction, since there seems to be little semantic necessity for it.) This requirement is delegated to the <code>in_range</code> function so that the core code needn't understand what “less than zero” means for a particular data type.</p>
+<p>An additional expectation is that <code>in_range</code> functions should, if practical, avoid throwing an error if \&lt;base&gt; <code>+</code> \&lt;offset&gt; or \&lt;base&gt; <code>-</code> \&lt;offset&gt; would overflow. The correct comparison result can be determined even if that value would be out of the data type's range. Note that if the data type includes concepts such as “infinity” or “NaN”, extra care may be needed to ensure that <code>in_range</code>'s results agree with the normal sort order of the operator family.</p>
+<p>The results of the <code>in_range</code> function must be consistent with the sort ordering imposed by the operator family. To be precise, given any fixed values of \&lt;offset&gt; and \&lt;sub&gt;, then:</p>
+<ul>
+<li>
+<p>If <code>in_range</code> with \&lt;less&gt; = true is true for some \&lt;val1&gt; and \&lt;base&gt;, it must be true for every \&lt;val2&gt; <code>&lt;=</code> \&lt;val1&gt; with the same \&lt;base&gt;.</p>
+</li>
+<li>
+<p>If <code>in_range</code> with \&lt;less&gt; = true is false for some \&lt;val1&gt; and \&lt;base&gt;, it must be false for every \&lt;val2&gt; <code>&gt;=</code> \&lt;val1&gt; with the same \&lt;base&gt;.</p>
+</li>
+<li>
+<p>If <code>in_range</code> with \&lt;less&gt; = true is true for some \&lt;val&gt; and \&lt;base1&gt;, it must be true for every \&lt;base2&gt; <code>&gt;=</code> \&lt;base1&gt; with the same \&lt;val&gt;.</p>
+</li>
+<li>
+<p>If <code>in_range</code> with \&lt;less&gt; = true is false for some \&lt;val&gt; and \&lt;base1&gt;, it must be false for every \&lt;base2&gt; <code>&lt;=</code> \&lt;base1&gt; with the same \&lt;val&gt;.</p>
+</li>
+</ul>
+<p>Analogous statements with inverted conditions hold when \&lt;less&gt; = false.</p>
+<p>If the type being ordered (<code>type1</code>) is collatable, the appropriate collation OID will be passed to the <code>in_range</code> function, using the standard PG_GET_COLLATION() mechanism.</p>
+<p><code>in_range</code> functions need not handle NULL inputs, and typically will be marked strict.</p>
+<p><code>equalimage</code><br>
+Optionally, a btree operator family may provide <code>equalimage</code> (“equality implies image equality”) support functions, registered under support function number 4. These functions allow the core code to determine when it is safe to apply the btree deduplication optimization. Currently, <code>equalimage</code> functions are only called when building or rebuilding an index.</p>
+<p>An <code>equalimage</code> function must have the signature equalimage(\&lt;opcintype&gt; <code>oid</code>) returns bool The return value is static information about an operator class and collation. Returning <code>true</code> indicates that the <code>order</code> function for the operator class is guaranteed to only return <code>0</code> (“arguments are equal”) when its \&lt;A&gt; and \&lt;B&gt; arguments are also interchangeable without any loss of semantic information. Not registering an <code>equalimage</code> function or returning <code>false</code> indicates that this condition cannot be assumed to hold.</p>
+<p>The \&lt;opcintype&gt; argument is the <code>pg_type.oid</code> of the data type that the operator class indexes. This is a convenience that allows reuse of the same underlying <code>equalimage</code> function across operator classes. If \&lt;opcintype&gt; is a collatable data type, the appropriate collation OID will be passed to the <code>equalimage</code> function, using the standard <code>PG_GET_COLLATION()</code> mechanism.</p>
+<p>As far as the operator class is concerned, returning <code>true</code> indicates that deduplication is safe (or safe for the collation whose OID was passed to its <code>equalimage</code> function). However, the core code will only deem deduplication safe for an index when <em>every</em> indexed column uses an operator class that registers an <code>equalimage</code> function, and each function actually returns <code>true</code> when called.</p>
+<p>Image equality is <em>almost</em> the same condition as simple bitwise equality. There is one subtle difference: When indexing a varlena data type, the on-disk representation of two image equal datums may not be bitwise equal due to inconsistent application of TOAST compression on input. Formally, when an operator class's <code>equalimage</code> function returns <code>true</code>, it is safe to assume that the <code>datum_image_eq()</code> C function will always agree with the operator class's <code>order</code> function (provided that the same collation OID is passed to both the <code>equalimage</code> and <code>order</code> functions).</p>
+<p>The core code is fundamentally unable to deduce anything about the “equality implies image equality” status of an operator class within a multiple-data-type family based on details from other operator classes in the same family. Also, it is not sensible for an operator family to register a cross-type <code>equalimage</code> function, and attempting to do so will result in an error. This is because “equality implies image equality” status does not just depend on sorting/equality semantics, which are more or less defined at the operator family level. In general, the semantics that one particular data type implements must be considered separately.</p>
+<p>The convention followed by the operator classes included with the core PostgreSQL distribution is to register a stock, generic <code>equalimage</code> function. Most operator classes register <code>btequalimage()</code>, which indicates that deduplication is safe unconditionally. Operator classes for collatable data types such as <code>text</code> register <code>btvarstrequalimage()</code>, which indicates that deduplication is safe with deterministic collations. Best practice for third-party extensions is to register their own custom function to retain control.</p>
+<p><code>options</code><br>
+Optionally, a B-tree operator family may provide <code>options</code> (“operator class specific options”) support functions, registered under support function number 5. These functions define a set of user-visible parameters that control operator class behavior.</p>
+<p>An <code>options</code> support function must have the signature options(\&lt;relopts&gt; <code>local_relopts *</code>) returns void The function is passed a pointer to a local_relopts struct, which needs to be filled with a set of operator class specific options. The options can be accessed from other support functions using the <code>PG_HAS_OPCLASS_OPTIONS()</code> and <code>PG_GET_OPCLASS_OPTIONS()</code> macros.</p>
+<p>Currently, no B-Tree operator class has an <code>options</code> support function. B-tree doesn't allow flexible representation of keys like GiST, SP-GiST, GIN and BRIN do. So, <code>options</code> probably doesn't have much application in the current B-tree index access method. Nevertheless, this support function was added to B-tree for uniformity, and will probably find uses during further evolution of B-tree in PostgreSQL.</p>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">#</a></h2>
+<p>This section covers B-Tree index implementation details that may be of use to advanced users. See <code>src/backend/access/nbtree/README</code> in the source distribution for a much more detailed, internals-focused description of the B-Tree implementation.</p>
+<h3 id="b-tree-structure">B-Tree Structure<a class="headerlink" href="#b-tree-structure" title="Permanent link">#</a></h3>
+<p>PostgreSQL B-Tree indexes are multi-level tree structures, where each level of the tree can be used as a doubly-linked list of pages. A single metapage is stored in a fixed position at the start of the first segment file of the index. All other pages are either leaf pages or internal pages. Leaf pages are the pages on the lowest level of the tree. All other levels consist of internal pages. Each leaf page contains tuples that point to table rows. Each internal page contains tuples that point to the next level down in the tree. Typically, over 99% of all pages are leaf pages. Both internal pages and leaf pages use the standard page format described in <a href="#storage-page-layout">???</a>.</p>
+<p>New leaf pages are added to a B-Tree index when an existing leaf page cannot fit an incoming tuple. A page split operation makes room for items that originally belonged on the overflowing page by moving a portion of the items to a new page. Page splits must also insert a new downlink to the new page in the parent page, which may cause the parent to split in turn. Page splits “cascade upwards” in a recursive fashion. When the root page finally cannot fit a new downlink, a root page split operation takes place. This adds a new level to the tree structure by creating a new root page that is one level above the original root page.</p>
+<h3 id="bottom-up-index-deletion">Bottom-up Index Deletion<a class="headerlink" href="#bottom-up-index-deletion" title="Permanent link">#</a></h3>
+<p>B-Tree indexes are not directly aware that under MVCC, there might be multiple extant versions of the same logical table row; to an index, each tuple is an independent object that needs its own index entry. “Version churn” tuples may sometimes accumulate and adversely affect query latency and throughput. This typically occurs with <code>UPDATE</code>-heavy workloads where most individual updates cannot apply the <a href="#storage-hot">HOT optimization.</a> Changing the value of only one column covered by one index during an <code>UPDATE</code> <em>always</em> necessitates a new set of index tuples one for <em>each and every</em> index on the table. Note in particular that this includes indexes that were not “logically modified” by the <code>UPDATE</code>. All indexes will need a successor physical index tuple that points to the latest version in the table. Each new tuple within each index will generally need to coexist with the original “updated” tuple for a short period of time (typically until shortly after the <code>UPDATE</code> transaction commits).</p>
+<p>B-Tree indexes incrementally delete version churn index tuples by performing bottom-up index deletion passes. Each deletion pass is triggered in reaction to an anticipated “version churn page split”. This only happens with indexes that are not logically modified by <code>UPDATE</code> statements, where concentrated build up of obsolete versions in particular pages would occur otherwise. A page split will usually be avoided, though it's possible that certain implementation-level heuristics will fail to identify and delete even one garbage index tuple (in which case a page split or deduplication pass resolves the issue of an incoming new tuple not fitting on a leaf page). The worst-case number of versions that any index scan must traverse (for any single logical row) is an important contributor to overall system responsiveness and throughput. A bottom-up index deletion pass targets suspected garbage tuples in a single leaf page based on <em>qualitative</em> distinctions involving logical rows and versions. This contrasts with the “top-down” index cleanup performed by autovacuum workers, which is triggered when certain <em>quantitative</em> table-level thresholds are exceeded (see <a href="#autovacuum">???</a>).</p>
+<blockquote>
+<p>[!NOTE]
+Not all deletion operations that are performed within B-Tree indexes are bottom-up deletion operations. There is a distinct category of index tuple deletion: simple index tuple deletion. This is a deferred maintenance operation that deletes index tuples that are known to be safe to delete (those whose item identifier's <code>LP_DEAD</code> bit is already set). Like bottom-up index deletion, simple index deletion takes place at the point that a page split is anticipated as a way of avoiding the split.</p>
+<p>Simple deletion is opportunistic in the sense that it can only take place when recent index scans set the <code>LP_DEAD</code> bits of affected items in passing. Prior to PostgreSQL 14, the only category of B-Tree deletion was simple deletion. The main differences between it and bottom-up deletion are that only the former is opportunistically driven by the activity of passing index scans, while only the latter specifically targets version churn from <code>UPDATE</code>s that do not logically modify indexed columns.</p>
+</blockquote>
+<p>Bottom-up index deletion performs the vast majority of all garbage index tuple cleanup for particular indexes with certain workloads. This is expected with any B-Tree index that is subject to significant version churn from <code>UPDATE</code>s that rarely or never logically modify the columns that the index covers. The average and worst-case number of versions per logical row can be kept low purely through targeted incremental deletion passes. It's quite possible that the on-disk size of certain indexes will never increase by even one single page/block despite <em>constant</em> version churn from <code>UPDATE</code>s. Even then, an exhaustive “clean sweep” by a <code>VACUUM</code> operation (typically run in an autovacuum worker process) will eventually be required as a part of <em>collective</em> cleanup of the table and each of its indexes.</p>
+<p>Unlike <code>VACUUM</code>, bottom-up index deletion does not provide any strong guarantees about how old the oldest garbage index tuple may be. No index can be permitted to retain “floating garbage” index tuples that became dead prior to a conservative cutoff point shared by the table and all of its indexes collectively. This fundamental table-level invariant makes it safe to recycle table TIDs. This is how it is possible for distinct logical rows to reuse the same table TID over time (though this can never happen with two logical rows whose lifetimes span the same <code>VACUUM</code> cycle).</p>
+<h3 id="deduplication">Deduplication<a class="headerlink" href="#deduplication" title="Permanent link">#</a></h3>
+<p>A duplicate is a leaf page tuple (a tuple that points to a table row) where <em>all</em> indexed key columns have values that match corresponding column values from at least one other leaf page tuple in the same index. Duplicate tuples are quite common in practice. B-Tree indexes can use a special, space-efficient representation for duplicates when an optional technique is enabled: deduplication.</p>
+<p>Deduplication works by periodically merging groups of duplicate tuples together, forming a single posting list tuple for each group. The column key value(s) only appear once in this representation. This is followed by a sorted array of TIDs that point to rows in the table. This significantly reduces the storage size of indexes where each value (or each distinct combination of column values) appears several times on average. The latency of queries can be reduced significantly. Overall query throughput may increase significantly. The overhead of routine index vacuuming may also be reduced significantly.</p>
+<blockquote>
+<p>[!NOTE]
+B-Tree deduplication is just as effective with “duplicates” that contain a NULL value, even though NULL values are never equal to each other according to the <code>=</code> member of any B-Tree operator class. As far as any part of the implementation that understands the on-disk B-Tree structure is concerned, NULL is just another value from the domain of indexed values.</p>
+</blockquote>
+<p>The deduplication process occurs lazily, when a new item is inserted that cannot fit on an existing leaf page, though only when index tuple deletion could not free sufficient space for the new item (typically deletion is briefly considered and then skipped over). Unlike GIN posting list tuples, B-Tree posting list tuples do not need to expand every time a new duplicate is inserted; they are merely an alternative physical representation of the original logical contents of the leaf page. This design prioritizes consistent performance with mixed read-write workloads. Most client applications will at least see a moderate performance benefit from using deduplication. Deduplication is enabled by default.</p>
+<p><code>CREATE INDEX</code> and <code>REINDEX</code> apply deduplication to create posting list tuples, though the strategy they use is slightly different. Each group of duplicate ordinary tuples encountered in the sorted input taken from the table is merged into a posting list tuple <em>before</em> being added to the current pending leaf page. Individual posting list tuples are packed with as many TIDs as possible. Leaf pages are written out in the usual way, without any separate deduplication pass. This strategy is well-suited to <code>CREATE INDEX</code> and <code>REINDEX</code> because they are once-off batch operations.</p>
+<p>Write-heavy workloads that don't benefit from deduplication due to having few or no duplicate values in indexes will incur a small, fixed performance penalty (unless deduplication is explicitly disabled). The <code>deduplicate_items</code> storage parameter can be used to disable deduplication within individual indexes. There is never any performance penalty with read-only workloads, since reading posting list tuples is at least as efficient as reading the standard tuple representation. Disabling deduplication isn't usually helpful.</p>
+<p>It is sometimes possible for unique indexes (as well as unique constraints) to use deduplication. This allows leaf pages to temporarily “absorb” extra version churn duplicates. Deduplication in unique indexes augments bottom-up index deletion, especially in cases where a long-running transaction holds a snapshot that blocks garbage collection. The goal is to buy time for the bottom-up index deletion strategy to become effective again. Delaying page splits until a single long-running transaction naturally goes away can allow a bottom-up deletion pass to succeed where an earlier deletion pass failed.</p>
+<blockquote>
+<p>[!TIP]
+A special heuristic is applied to determine whether a deduplication pass in a unique index should take place. It can often skip straight to splitting a leaf page, avoiding a performance penalty from wasting cycles on unhelpful deduplication passes. If you're concerned about the overhead of deduplication, consider setting <code>deduplicate_items = off</code> selectively. Leaving deduplication enabled in unique indexes has little downside.</p>
+</blockquote>
+<p>Deduplication cannot be used in all cases due to implementation-level restrictions. Deduplication safety is determined when <code>CREATE INDEX</code> or <code>REINDEX</code> is run.</p>
+<p>Note that deduplication is deemed unsafe and cannot be used in the following cases involving semantically significant differences among equal datums:</p>
+<ul>
+<li>
+<p><code>text</code>, <code>varchar</code>, and <code>char</code> cannot use deduplication when a <em>nondeterministic</em> collation is used. Case and accent differences must be preserved among equal datums.</p>
+</li>
+<li>
+<p><code>numeric</code> cannot use deduplication. Numeric display scale must be preserved among equal datums.</p>
+</li>
+<li>
+<p><code>jsonb</code> cannot use deduplication, since the <code>jsonb</code> B-Tree operator class uses <code>numeric</code> internally.</p>
+</li>
+<li>
+<p><code>float4</code> and <code>float8</code> cannot use deduplication. These types have distinct representations for <code>-0</code> and <code>0</code>, which are nevertheless considered equal. This difference must be preserved.</p>
+</li>
+</ul>
+<p>There is one further implementation-level restriction that may be lifted in a future version of PostgreSQL:</p>
+<ul>
+<li>Container types (such as composite types, arrays, or range types) cannot use deduplication.</li>
+</ul>
+<p>There is one further implementation-level restriction that applies regardless of the operator class or collation used:</p>
+<ul>
+<li><code>INCLUDE</code> indexes can never use deduplication.</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./auto-explain.html">
+          <span class="muted">Anterior</span>auto_explain — log execution plans of slow queries
+        </a>
+        <a class="pager-next" href="./bgworker.html">
+          <span class="muted">Siguiente</span>Background Worker Processes
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

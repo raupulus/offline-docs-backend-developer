@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collect Docker metrics with Prometheus · Docker</title>
+<meta name="description" content="Collect Docker metrics with Prometheus - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/daemon/prometheus.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Collect Docker metrics with Prometheus">
+<meta property="og:description" content="Collect Docker metrics with Prometheus - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Collect Docker metrics with Prometheus">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Collect Docker metrics with Prometheus",
+"url": "https://docs.raupulus.dev/docker/engine/daemon/prometheus.html",  "description": "Collect Docker metrics with Prometheus - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/index.html"
+>Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/cli/index.html"
+>CLI</a>
+              </li>
+              <li>
+                <a href="../../engine/cli/completion.html"
+>Completion</a>
+              </li>
+              <li>
+                <a href="../../engine/cli/filter.html"
+>Filter commands</a>
+              </li>
+              <li>
+                <a href="../../engine/cli/formatting.html"
+>Format command and log output</a>
+              </li>
+              <li>
+                <a href="../../engine/cli/otel.html"
+>OpenTelemetry for the Docker CLI</a>
+              </li>
+              <li>
+                <a href="../../engine/cli/proxy.html"
+>Use a proxy server with the Docker CLI</a>
+              </li>
+              <li>
+                <a href="../../engine/containers/index.html"
+>Containers</a>
+              </li>
+              <li>
+                <a href="../../engine/containers/gpu.html"
+>GPU access</a>
+              </li>
+              <li>
+                <a href="../../engine/containers/multi-service-container.html"
+>Run multiple processes in a container</a>
+              </li>
+              <li>
+                <a href="../../engine/containers/resource-constraints.html"
+>Resource constraints</a>
+              </li>
+              <li>
+                <a href="../../engine/containers/runmetrics.html"
+>Runtime metrics</a>
+              </li>
+              <li>
+                <a href="../../engine/containers/start-containers-automatically.html"
+>Start containers automatically</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/index.html"
+>Docker daemon configuration overview</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/alternative-runtimes.html"
+>Alternative container runtimes</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/embedded-containerd.html"
+>Run containerd in the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/ipv6.html"
+>Use IPv6 networking</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/live-restore.html"
+>Live restore</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/logs.html"
+>Read the daemon logs</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/prometheus.html"
+class="is-current" aria-current="page">Collect Docker metrics with Prometheus</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/proxy.html"
+>Daemon proxy configuration</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/remote-access.html"
+>Configure remote access for Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/start.html"
+>Start the daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/daemon/troubleshoot.html"
+>Troubleshooting the Docker daemon</a>
+              </li>
+              <li>
+                <a href="../../engine/install/index.html"
+>Install Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/install/binaries.html"
+>Install Docker Engine from binaries</a>
+              </li>
+              <li>
+                <a href="../../engine/install/centos.html"
+>Install Docker Engine on CentOS</a>
+              </li>
+              <li>
+                <a href="../../engine/install/debian.html"
+>Install Docker Engine on Debian</a>
+              </li>
+              <li>
+                <a href="../../engine/install/fedora.html"
+>Install Docker Engine on Fedora</a>
+              </li>
+              <li>
+                <a href="../../engine/install/linux-postinstall.html"
+>Linux post-installation steps for Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/install/raspberry-pi-os.html"
+>Install Docker Engine on Raspberry Pi OS (32-bit / armhf)</a>
+              </li>
+              <li>
+                <a href="../../engine/install/rhel.html"
+>Install Docker Engine on RHEL</a>
+              </li>
+              <li>
+                <a href="../../engine/install/ubuntu.html"
+>Install Docker Engine on Ubuntu</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/index.html"
+>View container logs</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/configure.html"
+>Configure logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/index.html"
+>Logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/awslogs.html"
+>Amazon CloudWatch Logs logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/etwlogs.html"
+>ETW logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/fluentd.html"
+>Fluentd logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gcplogs.html"
+>Google Cloud Logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/gelf.html"
+>Graylog Extended Format logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/journald.html"
+>Journald logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/json-file.html"
+>JSON File logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/local.html"
+>Local file logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/splunk.html"
+>Splunk logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/drivers/syslog.html"
+>Syslog logging driver</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/dual-logging.html"
+>Use docker logs with remote logging drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/log-tags.html"
+>Customize log driver output</a>
+              </li>
+              <li>
+                <a href="../../engine/logging/plugins.html"
+>Use a logging driver plugin</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/index.html"
+>Manage resources</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/contexts.html"
+>Docker contexts</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/labels.html"
+>Docker object labels</a>
+              </li>
+              <li>
+                <a href="../../engine/manage-resources/pruning.html"
+>Prune unused Docker objects</a>
+              </li>
+              <li>
+                <a href="../../engine/network/index.html"
+>Networking overview</a>
+              </li>
+              <li>
+                <a href="../../engine/network/ca-certs.html"
+>Use CA certificates with Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/index.html"
+>Network drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/bridge.html"
+>Bridge network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/host.html"
+>Host network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/ipvlan.html"
+>IPvlan network driver</a>
+              </li>
+              <li>
+                <a href="../../engine/network/drivers/macvlan.html"
+>Macvlan network driver</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Collect Docker metrics with Prometheus</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#example">Example#</a></li>
+              <li class="lvl-3"><a href="#configure-the-daemon">Configure the daemon#</a></li>
+              <li class="lvl-3"><a href="#create-a-prometheus-configuration">Create a Prometheus configuration#</a></li>
+              <li class="lvl-3"><a href="#run-prometheus-in-a-container">Run Prometheus in a container#</a></li>
+              <li class="lvl-3"><a href="#open-the-prometheus-dashboard">Open the Prometheus Dashboard#</a></li>
+              <li class="lvl-3"><a href="#use-prometheus">Use Prometheus#</a></li>
+              <li class="lvl-2"><a href="#next-steps">Next steps#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p><a href="https://prometheus.io/" rel="noopener" target="_blank">Prometheus</a> is an open-source systems monitoring and
+alerting toolkit. You can configure Docker as a Prometheus target.</p>
+<blockquote>
+<p>[!WARNING]</p>
+<p>The available metrics and the names of those metrics are in active
+development and may change at any time.</p>
+</blockquote>
+<p>Currently, you can only monitor Docker itself. You can't currently monitor your
+application using the Docker target.</p>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
+<p>The following example shows you how to configure your Docker daemon, set up
+Prometheus to run as a container on your local machine, and monitor your Docker
+instance using Prometheus.</p>
+<h3 id="configure-the-daemon">Configure the daemon<a class="headerlink" href="#configure-the-daemon" title="Permanent link">#</a></h3>
+<p>To configure the Docker daemon as a Prometheus target, you need to specify the
+<code>metrics-address</code> in the <code>daemon.json</code> configuration file. This daemon expects
+the file to be located at one of the following locations by default. If the
+file doesn't exist, create it.</p>
+<ul>
+<li><strong>Linux</strong>: <code>/etc/docker/daemon.json</code></li>
+<li><strong>Windows Server</strong>: <code>C:\ProgramData\docker\config\daemon.json</code></li>
+<li><strong>Docker Desktop</strong>: Open the Docker Desktop settings and select <strong>Docker Engine</strong> to edit the file.</li>
+</ul>
+<p>Add the following configuration:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;metrics-addr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1:9323&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Save the file, or in the case of Docker Desktop for Mac or Docker Desktop for
+Windows, save the configuration. Restart Docker.</p>
+<p>Docker now exposes Prometheus-compatible metrics on port 9323 via the loopback
+interface. You can configure it to use the wildcard address <code>0.0.0.0</code> instead,
+but this will expose the Prometheus port to the wider network. Consider your
+threat model carefully when deciding which option best suits your environment.</p>
+<h3 id="create-a-prometheus-configuration">Create a Prometheus configuration<a class="headerlink" href="#create-a-prometheus-configuration" title="Permanent link">#</a></h3>
+<p>Copy the following configuration file and save it to a location of your choice,
+for example <code>/tmp/prometheus.yml</code>. This is a stock Prometheus configuration file,
+except for the addition of the Docker job definition at the bottom of the file.</p>
+<div class="codehilite"><pre><span></span><code># my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: &quot;codelab-monitor&quot;
+
+# Load rules once and periodically evaluate them according to the global &#39;evaluation_interval&#39;.
+rule_files:
+  # - &quot;first.rules&quot;
+  # - &quot;second.rules&quot;
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it&#39;s Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.
+  - job_name: prometheus
+
+    # metrics_path defaults to &#39;/metrics&#39;
+    # scheme defaults to &#39;http&#39;.
+
+    static_configs:
+      - targets: [&quot;localhost:9090&quot;]
+
+  - job_name: docker
+      # metrics_path defaults to &#39;/metrics&#39;
+      # scheme defaults to &#39;http&#39;.
+
+    static_configs:
+      - targets: [&quot;host.docker.internal:9323&quot;]
+</code></pre></div>
+
+<h3 id="run-prometheus-in-a-container">Run Prometheus in a container<a class="headerlink" href="#run-prometheus-in-a-container" title="Permanent link">#</a></h3>
+<p>Next, start a Prometheus container using this configuration.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>my-prometheus<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span>/tmp/prometheus.yml,destination<span class="o">=</span>/etc/prometheus/prometheus.yml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--add-host<span class="w"> </span>host.docker.internal<span class="o">=</span>host-gateway<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>prom/prometheus
+</code></pre></div>
+
+<p>If you're using Docker Desktop, the <code>--add-host</code> flag is optional. This flag
+makes sure that the host's internal IP gets exposed to the Prometheus
+container. Docker Desktop does this by default. The host IP is exposed as the
+<code>host.docker.internal</code> hostname. This matches the configuration defined in
+<code>prometheus.yml</code> in the previous step.</p>
+<h3 id="open-the-prometheus-dashboard">Open the Prometheus Dashboard<a class="headerlink" href="#open-the-prometheus-dashboard" title="Permanent link">#</a></h3>
+<p>Verify that the Docker target is listed at <code>http://localhost:9090/targets/</code>.</p>
+<p><img alt="Prometheus targets page" src="images/prometheus-targets.webp"></p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>You can't access the endpoint URLs on this page directly if you use Docker
+Desktop.</p>
+</blockquote>
+<h3 id="use-prometheus">Use Prometheus<a class="headerlink" href="#use-prometheus" title="Permanent link">#</a></h3>
+<p>Create a graph. Select the <strong>Graphs</strong> link in the Prometheus UI. Choose a metric
+from the combo box to the right of the <strong>Execute</strong> button, and click
+<strong>Execute</strong>. The screenshot below shows the graph for
+<code>engine_daemon_network_actions_seconds_count</code>.</p>
+<p><img alt="Idle Prometheus report" src="images/prometheus-graph_idle.webp"></p>
+<p>The graph shows a pretty idle Docker instance, unless you're already running
+active workloads on your system.</p>
+<p>To make the graph more interesting, run a container that uses some network
+actions by starting downloading some packages using a package manager:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>alpine<span class="w"> </span>apk<span class="w"> </span>add<span class="w"> </span>git<span class="w"> </span>make<span class="w"> </span>musl-dev<span class="w"> </span>go
+</code></pre></div>
+
+<p>Wait a few seconds (the default scrape interval is 15 seconds) and reload your
+graph. You should see an uptick in the graph, showing the increased network
+traffic caused by the container you just ran.</p>
+<p><img alt="Prometheus report showing traffic" src="images/prometheus-graph_load.webp"></p>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<p>The example provided here shows how to run Prometheus as a container on your
+local system. In practice, you'll probably be running Prometheus on another
+system or as a cloud service somewhere. You can set up the Docker daemon as a
+Prometheus target in such contexts too. Configure the <code>metrics-addr</code> of the
+daemon and add the address of the daemon as a scrape endpoint in your
+Prometheus configuration.</p>
+<div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker</span>
+<span class="w">  </span><span class="nt">static_configs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;docker.daemon.example:&lt;PORT&gt;&quot;</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+
+<p>For more information about Prometheus, refer to the
+<a href="https://prometheus.io/docs/introduction/overview/" rel="noopener" target="_blank">Prometheus documentation</a></p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/daemon/logs.html">
+          <span class="muted">Anterior</span>Read the daemon logs
+        </a>
+        <a class="pager-next" href="../../engine/daemon/proxy.html">
+          <span class="muted">Siguiente</span>Daemon proxy configuration
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add a new model architecture to llama.cpp · llama.cpp</title>
+<meta name="description" content="Add a new model architecture to llama.cpp - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/llama-cpp/development/howto-add-model.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Add a new model architecture to llama.cpp">
+<meta property="og:description" content="Add a new model architecture to llama.cpp - Documentación técnica offline de llama.cpp. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Add a new model architecture to llama.cpp">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Add a new model architecture to llama.cpp",
+"url": "https://docs.raupulus.dev/llama-cpp/development/howto-add-model.html",  "description": "Add a new model architecture to llama.cpp - Documentación técnica de llama.cpp en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">llama.cpp</a>
+<span class="badge">master</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="llama-cpp" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en llama.cpp…"
+         aria-label="Buscar en llama.cpp" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de llama.cpp
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de llama.cpp">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../backend/blis.html">Backend</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Development
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../development/howto-add-model.html"
+class="is-current" aria-current="page">Add a new model architecture to llama.cpp</a>
+              </li>
+              <li>
+                <a href="../development/debugging-tests.html"
+>Debugging Tests Tips</a>
+              </li>
+              <li>
+                <a href="../development/parsing.html"
+>Parsing Model Output</a>
+              </li>
+              <li>
+                <a href="../development/token-generation-performance-tips.html"
+>Token generation performance troubleshooting</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../multimodal/mobilevlm.html">Multimodal</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../android.html">Llama.Cpp</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Add a new model architecture to llama.cpp</h1>
+
+      <p class="doc-meta">
+<span class="badge">master</span>          <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia MIT</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/llama-cpp.md" download="llama-cpp.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de llama.cpp en un solo archivo Markdown">Bundle .md (482 KB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-3"><a href="#1-convert-the-model-to-gguf">1. Convert the model to GGUF#</a></li>
+              <li class="lvl-3"><a href="#2-define-the-model-architecture-in-llamacpp">2. Define the model architecture in llama.cpp#</a></li>
+              <li class="lvl-3"><a href="#3-build-the-ggml-graph-implementation">3. Build the GGML graph implementation#</a></li>
+              <li class="lvl-3"><a href="#4-optional-add-multimodal-encoder-implementation">4. Optional: Add multimodal encoder implementation#</a></li>
+              <li class="lvl-2"><a href="#tips-and-tricks">Tips and tricks#</a></li>
+              <li class="lvl-3"><a href="#prefer-conversion-time-tensor-modifications-over-graph-time-ones">Prefer conversion-time tensor modifications over graph-time ones#</a></li>
+              <li class="lvl-3"><a href="#working-with-ggml_rope_ext">Working with ggml_rope_ext#</a></li>
+              <li class="lvl-3"><a href="#rotating-only-a-part-of-the-head">Rotating only a part of the head#</a></li>
+              <li class="lvl-2"><a href="#gguf-specification">GGUF specification#</a></li>
+              <li class="lvl-2"><a href="#resources">Resources#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="add-a-new-model-architecture-to-llamacpp">Add a new model architecture to <code>llama.cpp</code><a class="headerlink" href="#add-a-new-model-architecture-to-llamacpp" title="Permanent link">#</a></h1>
+<p>Adding a model requires few steps:</p>
+<ol>
+<li>Convert the model to GGUF</li>
+<li>Define the model architecture in <code>llama.cpp</code></li>
+<li>Build the GGML graph implementation</li>
+<li>Optional: Add multimodal encoder implementation</li>
+</ol>
+<p>After following these steps, you can open PR.</p>
+<p>Also, it is important to check that the examples and main ggml backends (CUDA, METAL, CPU) are working with the new architecture, especially:
+- <a href="/tools/cli/">cli</a>
+- <a href="/tools/completion/">completion</a>
+- <a href="/tools/imatrix/">imatrix</a>
+- <a href="/tools/quantize/">quantize</a>
+- <a href="/tools/server/">server</a></p>
+<h3 id="1-convert-the-model-to-gguf">1. Convert the model to GGUF<a class="headerlink" href="#1-convert-the-model-to-gguf" title="Permanent link">#</a></h3>
+<p>This step is done in python with a <code>convert</code> script using the <a href="https://pypi.org/project/gguf/" rel="noopener" target="_blank">gguf</a> library.
+Depending on the model architecture, you can use either <a href="/convert_hf_to_gguf.py">convert_hf_to_gguf.py</a> or <a href="/examples/convert_legacy_llama.py">examples/convert_legacy_llama.py</a> (for <code>llama/llama2</code> models in <code>.pth</code> format).</p>
+<p>The convert script reads the model configuration, tokenizer, tensor names+data and converts them to GGUF metadata and tensors.</p>
+<p>The required steps to implement for an HF model are:</p>
+<ol>
+<li>Define the model <code>ModelBase.register</code> annotation in a new <code>TextModel</code> or <code>MmprojModel</code> subclass in the <a href="/conversion">conversion</a> folder, example:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="nd">@ModelBase</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;MyModelForCausalLM&quot;</span><span class="p">)</span>
+<span class="nd">@ModelBase</span><span class="o">.</span><span class="n">example</span><span class="p">(</span><span class="s2">&quot;user/model&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">TextModel</span><span class="p">):</span>
+    <span class="n">model_arch</span> <span class="o">=</span> <span class="n">gguf</span><span class="o">.</span><span class="n">MODEL_ARCH</span><span class="o">.</span><span class="n">MYMODEL</span>
+</code></pre></div>
+
+<p>or</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@ModelBase</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;MyModelForConditionalGeneration&quot;</span><span class="p">)</span>
+<span class="nd">@ModelBase</span><span class="o">.</span><span class="n">example</span><span class="p">(</span><span class="s2">&quot;user/model&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">MmprojModel</span><span class="p">):</span>
+    <span class="n">model_arch</span> <span class="o">=</span> <span class="n">gguf</span><span class="o">.</span><span class="n">MODEL_ARCH</span><span class="o">.</span><span class="n">MYMODEL</span>
+</code></pre></div>
+
+<p>The <code>example</code> should point to a valid Hugging Face model that will be used for testing. You can add multiple models if necessary. Prefer a non-gated model, or tiny random weights if no such model exists.</p>
+<ol start="2">
+<li>Define the layout of the GGUF tensors in <a href="/gguf-py/gguf/constants.py">constants.py</a></li>
+</ol>
+<p>Add an enum entry in <code>MODEL_ARCH</code>, the model human friendly name in <code>MODEL_ARCH_NAMES</code> and the GGUF tensor names in <code>MODEL_TENSORS</code>.</p>
+<p>NOTE: Pick the GGUF arch string (and the matching <code>src/models/&lt;name&gt;.cpp</code> filename, see section 3) carefully up front, following existing naming conventions. Once GGUF files are published under a given arch string, renaming it later breaks the community's existing files, so this is not something to leave for cleanup in a follow-up PR.</p>
+<p>Example for <code>falcon</code> model:</p>
+<div class="codehilite"><pre><span></span><code>    <span class="n">MODEL_ARCH</span><span class="o">.</span><span class="n">FALCON</span><span class="p">:</span> <span class="p">[</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">TOKEN_EMBD</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">OUTPUT_NORM</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">ATTN_NORM</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">ATTN_NORM_2</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">ATTN_QKV</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">ATTN_OUT</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">FFN_DOWN</span><span class="p">,</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">FFN_UP</span><span class="p">,</span>
+    <span class="p">]</span>
+</code></pre></div>
+
+<ol start="3">
+<li>Map the original tensor names to the standardize equivalent in GGUF</li>
+</ol>
+<p>As a general rule, before adding a new tensor name to GGUF, be sure the equivalent naming does not already exist.</p>
+<p>Once you have found the GGUF tensor name equivalent, add it to the <a href="/gguf-py/gguf/tensor_mapping.py">tensor_mapping.py</a> file.</p>
+<p>If the tensor name is part of a repetitive layer/block, the key word <code>bid</code> substitutes it.</p>
+<p>Example for the normalization tensor in attention layers:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">block_mappings_cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">MODEL_TENSOR</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># Attention norm</span>
+        <span class="n">MODEL_TENSOR</span><span class="o">.</span><span class="n">ATTN_NORM</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;gpt_neox.layers.</span><span class="si">{bid}</span><span class="s2">.input_layernorm&quot;</span><span class="p">,</span>                <span class="c1"># gptneox</span>
+            <span class="s2">&quot;transformer.h.</span><span class="si">{bid}</span><span class="s2">.ln_1&quot;</span><span class="p">,</span>                             <span class="c1"># gpt2 gpt-j refact qwen</span>
+            <span class="s2">&quot;transformer.blocks.</span><span class="si">{bid}</span><span class="s2">.norm_1&quot;</span><span class="p">,</span>                      <span class="c1"># mpt</span>
+            <span class="o">...</span>
+        <span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>transformer.blocks.{bid}.norm_1</code> will be mapped to <code>blk.{bid}.attn_norm</code> in GGUF.</p>
+<p>Depending on the model configuration, tokenizer, code and tensors layout, you will have to override:
+- <code>TextModel#set_gguf_parameters</code>
+- <code>MmprojModel#set_gguf_parameters</code>
+- <code>ModelBase#set_vocab</code>
+- <code>ModelBase#modify_tensors</code></p>
+<p>NOTE: Tensor names must end with <code>.weight</code> or <code>.bias</code> suffixes, that is the convention and several tools like <code>quantize</code> expect this to proceed the weights.</p>
+<h3 id="2-define-the-model-architecture-in-llamacpp">2. Define the model architecture in <code>llama.cpp</code><a class="headerlink" href="#2-define-the-model-architecture-in-llamacpp" title="Permanent link">#</a></h3>
+<p>The model params and tensors layout must be defined in <code>llama.cpp</code> source files:
+1. Define a new <code>llm_arch</code> enum value in <code>src/llama-arch.h</code>.
+2. In <code>src/llama-arch.cpp</code>:
+    - Add the architecture name to the <code>LLM_ARCH_NAMES</code> map.
+    - You may also need to update <code>LLM_KV_NAMES</code>, <code>LLM_TENSOR_NAMES</code> and <code>LLM_TENSOR_INFOS</code>
+3. Add any non-standard metadata loading in the <code>llama_model_loader</code> constructor in <code>src/llama-model-loader.cpp</code>.
+4. If the model has a RoPE operation, add a case for the architecture in <code>llama_model_rope_type</code> function in <code>src/llama-model.cpp</code>.
+5. Check for other places that switch/iterate over every <code>llm_arch</code> value, e.g. <code>src/llama-model-saver.cpp</code> and any mandatory-hparam lists (such as which archs require MoE metadata). Grep for <code>LLM_ARCH_</code> usages to find them. Missing one of these is a common cause of CI test failures (e.g. <code>test-llama-archs</code>) after adding a new arch.</p>
+<p>NOTE: The dimensions in <code>ggml</code> are typically in the reverse order of the <code>pytorch</code> dimensions.</p>
+<h3 id="3-build-the-ggml-graph-implementation">3. Build the GGML graph implementation<a class="headerlink" href="#3-build-the-ggml-graph-implementation" title="Permanent link">#</a></h3>
+<p>This is the funniest part, you have to provide the inference graph implementation of the new model architecture in <code>src/llama-model.cpp</code>:
+1. Create a new struct that inherits from <code>llama_model_base</code>.
+2. Implement the graph-building logic in its <code>build_arch_graph</code> method.
+3. The <code>build_arch_graph</code> method should return a constructed graph (inherited from <code>llm_graph_context</code>). Have a look at existing implementations like <code>llama_model_llama</code>, <code>llama_model_dbrx</code> or <code>llama_model_bert</code>.
+4. Then, in the <code>llama_model_mapping</code> function, add a case for your architecture to instantiate your new graph-building struct.</p>
+<p>Some <code>ggml</code> backends do not support all operations. Backend implementations can be added in a separate PR.</p>
+<p>Note: to debug the inference graph: you can use <a href="/examples/eval-callback/">llama-eval-callback</a>.</p>
+<h3 id="4-optional-add-multimodal-encoder-implementation">4. Optional: Add multimodal encoder implementation<a class="headerlink" href="#4-optional-add-multimodal-encoder-implementation" title="Permanent link">#</a></h3>
+<p>If the new model supports multimodal inputs, you will need to add a new encoder definition in <code>libmtmd</code>. You can find more information about llama.cpp's multimodal support in <a href="../multimodal.html">the docs</a> and in the <code>tools/mtmd</code> source directory.</p>
+<ol>
+<li>In the conversion script, make sure you add a subclass that extends <code>MmprojModel</code> or another class that inherits from the same base class.</li>
+<li>Add the encoder definition in <code>clip.cpp</code>.</li>
+<li>Implement the preprocessor in <code>mtmd.cpp</code>. In most cases, you can reuse an existing preprocessor.</li>
+<li>Implement the encoder GGML graph, either in a dedicated file if the model is truly different from existing ones, or by reusing an existing implementation (for example: siglip, pixtral, or qwen) and adding a model-specific projector.</li>
+</ol>
+<p>Note:
+- Many multimodal encoders are based on models that are already supported. Make sure to read the existing encoder definitions in <code>tools/mtmd/models</code> before adding a new one. In <code>libmtmd</code>, it is generally better to extend an existing model than to duplicate code.
+- To debug the multimodal preprocessor and encoder, you can use <a href="tools/mtmd/debug/mtmd-debug.cpp">llama-mtmd-debug</a>.
+- Adding a model-specific API or CLI is an anti-pattern in <code>libmtmd</code>. The goal of <code>libmtmd</code> is to provide an easy-to-use, model-agnostic library for multimodal pipeline.
+- In most cases, <code>llama-mtmd-cli</code> should not be modified. If a model requires a specific prompt, either let the user provide it or bake it into the Jinja chat template.
+- For audio generation models, see <code>tools/mtmd/README-dev.md</code></p>
+<h2 id="tips-and-tricks">Tips and tricks<a class="headerlink" href="#tips-and-tricks" title="Permanent link">#</a></h2>
+<h3 id="prefer-conversion-time-tensor-modifications-over-graph-time-ones">Prefer conversion-time tensor modifications over graph-time ones<a class="headerlink" href="#prefer-conversion-time-tensor-modifications-over-graph-time-ones" title="Permanent link">#</a></h3>
+<p>If the model contains constant modifications of tensors in the graph (for example, <code>norm(1 + weight)</code>) or performs tensor permutations/chunking, perform the modifications during conversion rather than in the graph code. This keeps the inference graph simpler and avoids extra runtime ops.</p>
+<p>Examples:
+- Gemma 3 folds the <code>1 +</code> of its <code>norm(1 + weight)</code> normalization into the weights at conversion time, so the graph just does a plain RMS norm.
+- Qwen3-Next applies its tensor permutation during conversion (in <code>modify_tensors</code>), so the graph can consume the already-permuted weights directly.</p>
+<p>Exception: a plain <code>weight * scale</code> with a constant scale is usually better left to inference time rather than folded into the weight at conversion. The scale conceptually applies to the activation, not the weight, so folding it into the weight can hurt numerical stability, and it shifts the weight's value range in a way that can make quantization worse. In this case, write the scale to GGUF as its own metadata key (e.g. <code>%s.attention.output_scale</code>, <code>%s.attention.value_scale</code>, <code>%s.embedding_scale</code>) and apply it in the graph, instead of pre-multiplying the weight tensor during conversion.</p>
+<h3 id="working-with-ggml_rope_ext">Working with ggml_rope_ext<a class="headerlink" href="#working-with-ggml_rope_ext" title="Permanent link">#</a></h3>
+<p>PyTorch implementations usually prefer explicitly calculating <code>freq_cis</code>/<code>sin</code>/<code>cos</code> components. However, in llama.cpp, most RoPE operations can be handled via <code>ggml_rope_ext</code>, which does not require a sin/cos matrix. This saves memory while allowing the GGML RoPE kernel to be fused with other ops.</p>
+<p>However, since <code>ggml_rope_ext</code> only provides a subset of the RoPE implementations that models use, converting models from PyTorch to llama.cpp may require some creative adaptations.</p>
+<p>For more information about <code>ggml_rope_ext</code>, please refer to the in-code documentation in <code>ggml.h</code>.</p>
+<p>Examples:
+- <code>libmtmd</code> implements 2D RoPE with <code>GGML_ROPE_TYPE_NORMAL</code> ordering by splitting the input tensor in half, applying <code>ggml_rope_ext</code> separately to each half, then joining them back together using <code>ggml_concat</code>.
+- The <a href="https://github.com/ggml-org/llama.cpp/pull/19170" rel="noopener" target="_blank">Kimi-K2.5</a> vision encoder uses vision RoPE with interleaved frequencies. The weights must be permuted during conversion in order to reuse the <code>build_rope_2d()</code> function.
+- <a href="https://github.com/ggml-org/llama.cpp/pull/21309" rel="noopener" target="_blank">Gemma 4</a> uses "proportional" RoPE. We employ a trick where <code>rope_freqs</code> is set to a very large value in the last dimensions to prevent those dimensions from being rotated. See the <code>Gemma4Model</code> class in <code>convert_hf_to_gguf.py</code>.
+- Some models require scaling the input position. For example, <code>[0, 1, 2, ...]</code> becomes <code>[0, 0.5, 1, ...]</code>. In this case, you can provide the scaling via <code>freq_scale = 0.5f</code>.
+- Some models use learned RoPE frequencies instead of relying on <code>powf(freq_base, -2.0 * i / n_dims)</code>. In this case, you can provide the learned frequencies via the <code>rope_freqs</code> tensor (corresponding to the <code>c</code> argument in <code>ggml_rope_ext</code>), then set <code>freq_base = 1.0f</code>. An important note is that <code>rope_freqs</code> in GGML is the <strong>inverse</strong> (<code>theta = pos[i] / rope_freqs</code>), so you may need to invert <code>rope_freqs</code> during conversion.</p>
+<h3 id="rotating-only-a-part-of-the-head">Rotating only a part of the head<a class="headerlink" href="#rotating-only-a-part-of-the-head" title="Permanent link">#</a></h3>
+<p>Many models rotate only a part of each head and leave the rest untouched (often called the "nope" part). Do not build this with views plus <code>ggml_concat</code>, it's not efficient. Both layouts can be done with a single RoPE op:</p>
+<ul>
+<li><code>[rope|nope]</code>, rotated dims first: pass <code>n_dims</code> smaller than the head size to <code>ggml_rope_ext</code>. Dims from <code>n_dims</code> to the end are copied as-is.</li>
+<li><code>[nope|rope]</code>, rotated dims last: call <code>ggml_rope_set_offset(cur, n_offs)</code> on the result of the RoPE, where <code>n_offs</code> is the size of the leading untouched part. Dims outside <code>[n_offs, n_offs + n_dims)</code> are copied as-is.</li>
+</ul>
+<p><code>n_offs</code> must be even, <code>n_offs + n_dims</code> must fit in the row, and vision RoPE is not supported. Note that the frequencies are computed relative to the rotated window.</p>
+<p>Example: DeepSeek-V4 uses <code>[nope|rope]</code> for its query, key and compressed KV tensors, so <code>src/models/deepseek4.cpp</code> ropes the whole tensor and then calls <code>ggml_rope_set_offset(cur, n_embd_head_nope)</code>.</p>
+<p>Exception: some models apply an extra op to the <code>nope</code> part, for example <code>deepseek32.cpp</code>, and may not use this optimization. While RoPE can be applied selectively to a part of the head, the extra op may not, so these models still need views plus <code>ggml_concat</code>.</p>
+<h2 id="gguf-specification">GGUF specification<a class="headerlink" href="#gguf-specification" title="Permanent link">#</a></h2>
+<p>https://github.com/ggml-org/ggml/blob/master/docs/gguf.md</p>
+<h2 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">#</a></h2>
+<ul>
+<li>YaRN RoPE scaling https://github.com/ggml-org/llama.cpp/pull/2268</li>
+<li>support Baichuan serial models https://github.com/ggml-org/llama.cpp/pull/3009</li>
+<li>support attention bias https://github.com/ggml-org/llama.cpp/pull/4283</li>
+<li>Mixtral support https://github.com/ggml-org/llama.cpp/pull/4406</li>
+<li>BERT embeddings https://github.com/ggml-org/llama.cpp/pull/5423</li>
+<li>Grok-1 support https://github.com/ggml-org/llama.cpp/pull/6204</li>
+<li>Command R Plus support https://github.com/ggml-org/llama.cpp/pull/6491</li>
+<li>support arch DBRX https://github.com/ggml-org/llama.cpp/pull/6515</li>
+<li>How to convert HuggingFace model to GGUF format https://github.com/ggml-org/llama.cpp/discussions/2948</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../backend/zdnn.html">
+          <span class="muted">Anterior</span>llama.cpp for IBM zDNN Accelerator
+        </a>
+        <a class="pager-next" href="../development/debugging-tests.html">
+          <span class="muted">Siguiente</span>Debugging Tests Tips
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

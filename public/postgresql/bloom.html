@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bloom — bloom filter index access method · PostgreSQL</title>
+<meta name="description" content="bloom — bloom filter index access method - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/bloom.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="bloom — bloom filter index access method">
+<meta property="og:description" content="bloom — bloom filter index access method - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="bloom — bloom filter index access method">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "bloom — bloom filter index access method",
+"url": "https://docs.raupulus.dev/postgresql/bloom.html",  "description": "bloom — bloom filter index access method - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./history.html"
+>A Brief History of PostgreSQL</a>
+              </li>
+              <li>
+                <a href="./acronyms.html"
+>Acronyms</a>
+              </li>
+              <li>
+                <a href="./contrib.html"
+>Additional Supplied Modules and Extensions</a>
+              </li>
+              <li>
+                <a href="./advanced.html"
+>Advanced Features</a>
+              </li>
+              <li>
+                <a href="./ecpg.html"
+>ALLOCATE DESCRIPTOR</a>
+              </li>
+              <li>
+                <a href="./amcheck.html"
+>amcheck — tools to verify table and index consistency</a>
+              </li>
+              <li>
+                <a href="./archive-modules.html"
+>Archive Modules</a>
+              </li>
+              <li>
+                <a href="./array.html"
+>Arrays</a>
+              </li>
+              <li>
+                <a href="./auth-delay.html"
+>auth_delay — pause on authentication failure</a>
+              </li>
+              <li>
+                <a href="./auto-explain.html"
+>auto_explain — log execution plans of slow queries</a>
+              </li>
+              <li>
+                <a href="./btree.html"
+>B-Tree Indexes</a>
+              </li>
+              <li>
+                <a href="./bgworker.html"
+>Background Worker Processes</a>
+              </li>
+              <li>
+                <a href="./backup.html"
+>Backup and Restore</a>
+              </li>
+              <li>
+                <a href="./backup-manifest.html"
+>Backup Manifest Format</a>
+              </li>
+              <li>
+                <a href="./basebackup-to-shell.html"
+>basebackup_to_shell — example &#34;shell&#34; pg_basebackup module</a>
+              </li>
+              <li>
+                <a href="./basic-archive.html"
+>basic_archive — an example WAL archive module</a>
+              </li>
+              <li>
+                <a href="./biblio.html"
+>Bibliography</a>
+              </li>
+              <li>
+                <a href="./bloom.html"
+class="is-current" aria-current="page">bloom — bloom filter index access method</a>
+              </li>
+              <li>
+                <a href="./brin.html"
+>BRIN Indexes</a>
+              </li>
+              <li>
+                <a href="./btree-gin.html"
+>btree_gin — GIN operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./btree-gist.html"
+>btree_gist — GiST operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./problems.html"
+>Bug Reporting Guidelines</a>
+              </li>
+              <li>
+                <a href="./indextypes.html"
+>Built-in Index Access Methods</a>
+              </li>
+              <li>
+                <a href="./citext.html"
+>citext — a case-insensitive character string type</a>
+              </li>
+              <li>
+                <a href="./client-auth.html"
+>Client Authentication</a>
+              </li>
+              <li>
+                <a href="./color.html"
+>Color Support</a>
+              </li>
+              <li>
+                <a href="./dfunc.html"
+>Compiling and Linking Dynamically-Loaded Functions</a>
+              </li>
+              <li>
+                <a href="./rowtypes.html"
+>Composite Types</a>
+              </li>
+              <li>
+                <a href="./mvcc.html"
+>Concurrency Control</a>
+              </li>
+              <li>
+                <a href="./notation.html"
+>Conventions</a>
+              </li>
+              <li>
+                <a href="./cube.html"
+>cube — a multi-dimensional cube data type</a>
+              </li>
+              <li>
+                <a href="./custom-rmgr.html"
+>Custom WAL Resource Managers</a>
+              </li>
+              <li>
+                <a href="./ddl.html"
+>Data Definition</a>
+              </li>
+              <li>
+                <a href="./dml.html"
+>Data Manipulation</a>
+              </li>
+              <li>
+                <a href="./datatype.html"
+>Data Types</a>
+              </li>
+              <li>
+                <a href="./storage.html"
+>Database Physical Storage</a>
+              </li>
+              <li>
+                <a href="./user-manag.html"
+>Database Roles</a>
+              </li>
+              <li>
+                <a href="./datetime.html"
+>Date/Time Support</a>
+              </li>
+              <li>
+                <a href="./dblink.html"
+>dblink_connect</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-default-roles.html"
+>Default Roles Renamed to Predefined Roles</a>
+              </li>
+              <li>
+                <a href="./dict-int.html"
+>dict_int — example full-text search dictionary for integers</a>
+              </li>
+              <li>
+                <a href="./dict-xsyn.html"
+>dict_xsyn — example synonym full-text search dictionary</a>
+              </li>
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+>file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">bloom — bloom filter index access method</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/bloom.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#bloom-bloom-filter-index-access-method">bloom bloom filter index access method#</a></li>
+              <li class="lvl-2"><a href="#parameters">Parameters#</a></li>
+              <li class="lvl-2"><a href="#examples">Examples#</a></li>
+              <li class="lvl-2"><a href="#operator-class-interface">Operator Class Interface#</a></li>
+              <li class="lvl-2"><a href="#limitations">Limitations#</a></li>
+              <li class="lvl-2"><a href="#authors">Authors#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="bloom-bloom-filter-index-access-method">bloom bloom filter index access method<a class="headerlink" href="#bloom-bloom-filter-index-access-method" title="Permanent link">#</a></h2>
+<p>bloom</p>
+<p><code>bloom</code> provides an index access method based on <a href="https://en.wikipedia.org/wiki/Bloom_filter" rel="noopener" target="_blank">Bloom filters</a>.</p>
+<p>A Bloom filter is a space-efficient data structure that is used to test whether an element is a member of a set. In the case of an index access method, it allows fast exclusion of non-matching tuples via signatures whose size is determined at index creation.</p>
+<p>A signature is a lossy representation of the indexed attribute(s), and as such is prone to reporting false positives; that is, it may be reported that an element is in the set, when it is not. So index search results must always be rechecked using the actual attribute values from the heap entry. Larger signatures reduce the odds of a false positive and thus reduce the number of useless heap visits, but of course also make the index larger and hence slower to scan.</p>
+<p>This type of index is most useful when a table has many attributes and queries test arbitrary combinations of them. A traditional btree index is faster than a bloom index, but it can require many btree indexes to support all possible queries where one needs only a single bloom index. Note however that bloom indexes only support equality queries, whereas btree indexes can also perform inequality and range searches.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
+<p>A <code>bloom</code> index accepts the following parameters in its <code>WITH</code> clause:</p>
+<p><code>length</code><br>
+Length of each signature (index entry) in bits. It is rounded up to the nearest multiple of <code>16</code>. The default is <code>80</code> bits and the maximum is <code>4096</code>.</p>
+<!-- -->
+
+<p><code>col1 col32</code><br>
+Number of bits generated for each index column. Each parameter's name refers to the number of the index column that it controls. The default is <code>2</code> bits and the maximum is <code>4095</code>. Parameters for index columns not actually used are ignored.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<p>This is an example of creating a bloom index:</p>
+<div class="codehilite"><pre><span></span><code>CREATE INDEX bloomidx ON tbloom USING bloom (i1,i2,i3)
+       WITH (length=80, col1=2, col2=2, col3=4);
+</code></pre></div>
+
+<p>The index is created with a signature length of 80 bits, with attributes i1 and i2 mapped to 2 bits, and attribute i3 mapped to 4 bits. We could have omitted the <code>length</code>, <code>col1</code>, and <code>col2</code> specifications since those have the default values.</p>
+<p>Here is a more complete example of bloom index definition and usage, as well as a comparison with equivalent btree indexes. The bloom index is considerably smaller than the btree index, and can perform better.</p>
+<div class="codehilite"><pre><span></span><code>=# CREATE TABLE tbloom AS
+   SELECT
+     (random() * 1000000)::int as i1,
+     (random() * 1000000)::int as i2,
+     (random() * 1000000)::int as i3,
+     (random() * 1000000)::int as i4,
+     (random() * 1000000)::int as i5,
+     (random() * 1000000)::int as i6
+   FROM
+  generate_series(1,10000000);
+SELECT 10000000
+</code></pre></div>
+
+<p>A sequential scan over this large table takes a long time:</p>
+<div class="codehilite"><pre><span></span><code>=# EXPLAIN ANALYZE SELECT * FROM tbloom WHERE i2 = 898732 AND i5 = 123451;
+                                              QUERY PLAN
+-------------------------------------------------------------------​-----------------------------------
+ Seq Scan on tbloom  (cost=0.00..213744.00 rows=250 width=24) (actual time=357.059..357.059 rows=0 loops=1)
+   Filter: ((i2 = 898732) AND (i5 = 123451))
+   Rows Removed by Filter: 10000000
+ Planning Time: 0.346 ms
+ Execution Time: 357.076 ms
+(5 rows)
+</code></pre></div>
+
+<p>Even with the btree index defined the result will still be a sequential scan:</p>
+<div class="codehilite"><pre><span></span><code>=# CREATE INDEX btreeidx ON tbloom (i1, i2, i3, i4, i5, i6);
+CREATE INDEX
+=# SELECT pg_size_pretty(pg_relation_size(&#39;btreeidx&#39;));
+ pg_size_pretty
+----------------
+ 386 MB
+(1 row)
+=# EXPLAIN ANALYZE SELECT * FROM tbloom WHERE i2 = 898732 AND i5 = 123451;
+                                              QUERY PLAN
+-------------------------------------------------------------------​-----------------------------------
+ Seq Scan on tbloom  (cost=0.00..213744.00 rows=2 width=24) (actual time=351.016..351.017 rows=0 loops=1)
+   Filter: ((i2 = 898732) AND (i5 = 123451))
+   Rows Removed by Filter: 10000000
+ Planning Time: 0.138 ms
+ Execution Time: 351.035 ms
+(5 rows)
+</code></pre></div>
+
+<p>Having the bloom index defined on the table is better than btree in handling this type of search:</p>
+<div class="codehilite"><pre><span></span><code>=# CREATE INDEX bloomidx ON tbloom USING bloom (i1, i2, i3, i4, i5, i6);
+CREATE INDEX
+=# SELECT pg_size_pretty(pg_relation_size(&#39;bloomidx&#39;));
+ pg_size_pretty
+----------------
+ 153 MB
+(1 row)
+=# EXPLAIN ANALYZE SELECT * FROM tbloom WHERE i2 = 898732 AND i5 = 123451;
+                                                     QUERY PLAN
+-------------------------------------------------------------------​--------------------------------------------------
+ Bitmap Heap Scan on tbloom  (cost=1792.00..1799.69 rows=2 width=24) (actual time=22.605..22.606 rows=0 loops=1)
+   Recheck Cond: ((i2 = 898732) AND (i5 = 123451))
+   Rows Removed by Index Recheck: 2300
+   Heap Blocks: exact=2256
+   -&gt;  Bitmap Index Scan on bloomidx  (cost=0.00..178436.00 rows=1 width=0) (actual time=20.005..20.005 rows=2300 loops=1)
+         Index Cond: ((i2 = 898732) AND (i5 = 123451))
+ Planning Time: 0.099 ms
+ Execution Time: 22.632 ms
+(8 rows)
+</code></pre></div>
+
+<p>Now, the main problem with the btree search is that btree is inefficient when the search conditions do not constrain the leading index column(s). A better strategy for btree is to create a separate index on each column. Then the planner will choose something like this:</p>
+<div class="codehilite"><pre><span></span><code>=# CREATE INDEX btreeidx1 ON tbloom (i1);
+CREATE INDEX
+=# CREATE INDEX btreeidx2 ON tbloom (i2);
+CREATE INDEX
+=# CREATE INDEX btreeidx3 ON tbloom (i3);
+CREATE INDEX
+=# CREATE INDEX btreeidx4 ON tbloom (i4);
+CREATE INDEX
+=# CREATE INDEX btreeidx5 ON tbloom (i5);
+CREATE INDEX
+=# CREATE INDEX btreeidx6 ON tbloom (i6);
+CREATE INDEX
+=# EXPLAIN ANALYZE SELECT * FROM tbloom WHERE i2 = 898732 AND i5 = 123451;
+                                                        QUERY PLAN
+-------------------------------------------------------------------​--------------------------------------------------------
+ Bitmap Heap Scan on tbloom  (cost=9.29..13.30 rows=1 width=24) (actual time=0.032..0.033 rows=0 loops=1)
+   Recheck Cond: ((i5 = 123451) AND (i2 = 898732))
+   -&gt;  BitmapAnd  (cost=9.29..9.29 rows=1 width=0) (actual time=0.047..0.047 rows=0 loops=1)
+         -&gt;  Bitmap Index Scan on btreeidx5  (cost=0.00..4.52 rows=11 width=0) (actual time=0.026..0.026 rows=7 loops=1)
+               Index Cond: (i5 = 123451)
+         -&gt;  Bitmap Index Scan on btreeidx2  (cost=0.00..4.52 rows=11 width=0) (actual time=0.007..0.007 rows=8 loops=1)
+               Index Cond: (i2 = 898732)
+ Planning Time: 0.264 ms
+ Execution Time: 0.047 ms
+(9 rows)
+</code></pre></div>
+
+<p>Although this query runs much faster than with either of the single indexes, we pay a penalty in index size. Each of the single-column btree indexes occupies 88.5 MB, so the total space needed is 531 MB, over three times the space used by the bloom index.</p>
+<h2 id="operator-class-interface">Operator Class Interface<a class="headerlink" href="#operator-class-interface" title="Permanent link">#</a></h2>
+<p>An operator class for bloom indexes requires only a hash function for the indexed data type and an equality operator for searching. This example shows the operator class definition for the <code>text</code> data type:</p>
+<div class="codehilite"><pre><span></span><code>CREATE OPERATOR CLASS text_ops
+DEFAULT FOR TYPE text USING bloom AS
+    OPERATOR    1   =(text, text),
+    FUNCTION    1   hashtext(text);
+</code></pre></div>
+
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">#</a></h2>
+<ul>
+<li>
+<p>Only operator classes for <code>int4</code> and <code>text</code> are included with the module.</p>
+</li>
+<li>
+<p>Only the <code>=</code> operator is supported for search. But it is possible to add support for arrays with union and intersection operations in the future.</p>
+</li>
+<li>
+<p><code>bloom</code> access method doesn't support <code>UNIQUE</code> indexes.</p>
+</li>
+<li>
+<p><code>bloom</code> access method doesn't support searching for <code>NULL</code> values.</p>
+</li>
+</ul>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">#</a></h2>
+<p>Teodor Sigaev <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#111;&#100;&#111;&#114;&#64;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#112;&#114;&#111;&#46;&#114;&#117;">&#116;&#101;&#111;&#100;&#111;&#114;&#64;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#112;&#114;&#111;&#46;&#114;&#117;</a>, Postgres Professional, Moscow, Russia</p>
+<p>Alexander Korotkov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#97;&#46;&#107;&#111;&#114;&#111;&#116;&#107;&#111;&#118;&#64;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#112;&#114;&#111;&#46;&#114;&#117;">&#97;&#46;&#107;&#111;&#114;&#111;&#116;&#107;&#111;&#118;&#64;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#112;&#114;&#111;&#46;&#114;&#117;</a>, Postgres Professional, Moscow, Russia</p>
+<p>Oleg Bartunov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#98;&#97;&#114;&#116;&#117;&#110;&#111;&#118;&#64;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#112;&#114;&#111;&#46;&#114;&#117;">&#111;&#98;&#97;&#114;&#116;&#117;&#110;&#111;&#118;&#64;&#112;&#111;&#115;&#116;&#103;&#114;&#101;&#115;&#112;&#114;&#111;&#46;&#114;&#117;</a>, Postgres Professional, Moscow, Russia</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./biblio.html">
+          <span class="muted">Anterior</span>Bibliography
+        </a>
+        <a class="pager-next" href="./brin.html">
+          <span class="muted">Siguiente</span>BRIN Indexes
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

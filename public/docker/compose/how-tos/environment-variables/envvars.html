@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configure pre-defined environment variables in Docker Compose · Docker</title>
+<meta name="description" content="Configure pre-defined environment variables in Docker Compose - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/compose/how-tos/environment-variables/envvars.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Configure pre-defined environment variables in Docker Compose">
+<meta property="og:description" content="Configure pre-defined environment variables in Docker Compose - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Configure pre-defined environment variables in Docker Compose">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Configure pre-defined environment variables in Docker Compose",
+"url": "https://docs.raupulus.dev/docker/compose/how-tos/environment-variables/envvars.html",  "description": "Configure pre-defined environment variables in Docker Compose - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Compose
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../compose/index.html"
+>Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/index.html"
+>Overview of Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/customize.html"
+>Customize Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/usage.html"
+>Use the default Compose Bridge transformation</a>
+              </li>
+              <li>
+                <a href="../../../compose/bridge/use-model-runner.html"
+>Use Docker Model Runner with Compose Bridge</a>
+              </li>
+              <li>
+                <a href="../../../compose/compose-sdk.html"
+>Using the Compose SDK</a>
+              </li>
+              <li>
+                <a href="../../../compose/gettingstarted.html"
+>Docker Compose Quickstart</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/dependent-images.html"
+>Build dependent images</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/index.html"
+>Environment variables in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/best-practices.html"
+>Best practices for working with environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/envvars-precedence.html"
+>Environment variables precedence in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/envvars.html"
+class="is-current" aria-current="page">Configure pre-defined environment variables in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/set-environment-variables.html"
+>Set environment variables within your container&#39;s environment</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/environment-variables/variable-interpolation.html"
+>Set, use, and manage variables in a Compose file with interpolation</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/file-watch.html"
+>Use Compose Watch</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/gpu-support.html"
+>Run Docker Compose services with GPU access</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/init-containers.html"
+>Use init containers in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/lifecycle.html"
+>Using lifecycle hooks with Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/index.html"
+>Use multiple Compose files</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/extends.html"
+>Extend your Compose file</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/include.html"
+>Include</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/multiple-compose-files/merge.html"
+>Merge Compose files</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/networking.html"
+>Networking in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/oci-artifact.html"
+>Package and deploy Docker Compose applications as OCI artifacts</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/production.html"
+>Use Compose in production</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/profiles.html"
+>Using profiles with Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/project-name.html"
+>Specify a project name</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/provider-services.html"
+>Use provider services</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/startup-order.html"
+>Control startup and shutdown order in Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/how-tos/use-secrets.html"
+>Manage secrets securely in Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/index.html"
+>Overview of installing Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/linux.html"
+>Install the Docker Compose plugin</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/standalone.html"
+>Install the Docker Compose standalone (Legacy)</a>
+              </li>
+              <li>
+                <a href="../../../compose/install/uninstall.html"
+>Uninstall Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/index.html"
+>Introduction to Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/compose-application-model.html"
+>How Compose works</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/features-uses.html"
+>Why use Compose?</a>
+              </li>
+              <li>
+                <a href="../../../compose/intro/history.html"
+>History and development of Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/release-notes.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../compose/support-and-feedback/index.html"
+>Index</a>
+              </li>
+              <li>
+                <a href="../../../compose/support-and-feedback/faq.html"
+>Frequently asked questions about Docker Compose</a>
+              </li>
+              <li>
+                <a href="../../../compose/support-and-feedback/feedback.html"
+>Give feedback</a>
+              </li>
+              <li>
+                <a href="../../../compose/trust-model.html"
+>Trust model for Compose files</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Configure pre-defined environment variables in Docker Compose</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#methods-to-override">Methods to override#</a></li>
+              <li class="lvl-2"><a href="#configuration-details">Configuration details#</a></li>
+              <li class="lvl-3"><a href="#project-and-file-configuration">Project and file configuration#</a></li>
+              <li class="lvl-3"><a href="#environment-handling-and-container-lifecycle">Environment handling and container lifecycle#</a></li>
+              <li class="lvl-3"><a href="#output">Output#</a></li>
+              <li class="lvl-3"><a href="#user-experience">User experience#</a></li>
+              <li class="lvl-2"><a href="#unsupported-in-compose-v2">Unsupported in Compose V2#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Docker Compose includes several pre-defined environment variables. It also inherits common Docker CLI environment variables, such as <code>DOCKER_HOST</code> and <code>DOCKER_CONTEXT</code>. See <a href="/reference/cli/docker/#environment-variables">Docker CLI environment variable reference</a> for details.</p>
+<p>This page explains how to set or change the following pre-defined environment variables:</p>
+<ul>
+<li><code>COMPOSE_PROJECT_NAME</code></li>
+<li><code>COMPOSE_FILE</code></li>
+<li><code>COMPOSE_PROFILES</code></li>
+<li><code>COMPOSE_CONVERT_WINDOWS_PATHS</code></li>
+<li><code>COMPOSE_PATH_SEPARATOR</code></li>
+<li><code>COMPOSE_IGNORE_ORPHANS</code></li>
+<li><code>COMPOSE_REMOVE_ORPHANS</code></li>
+<li><code>COMPOSE_PARALLEL_LIMIT</code></li>
+<li><code>COMPOSE_ANSI</code></li>
+<li><code>COMPOSE_STATUS_STDOUT</code></li>
+<li><code>COMPOSE_ENV_FILES</code></li>
+<li><code>COMPOSE_DISABLE_ENV_FILE</code></li>
+<li><code>COMPOSE_MENU</code></li>
+<li><code>COMPOSE_EXPERIMENTAL</code></li>
+<li><code>COMPOSE_PROGRESS</code></li>
+</ul>
+<h2 id="methods-to-override">Methods to override<a class="headerlink" href="#methods-to-override" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="variable-interpolation.html"><code>.env</code> file</a></td>
+<td>Located in the working directory.</td>
+</tr>
+<tr>
+<td><a href="variable-interpolation.html#substitute-from-the-shell">Shell</a></td>
+<td>Defined in the host operating system shell.</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td>Passed with <code>--env</code> or <code>-e</code> flag at runtime.</td>
+</tr>
+</tbody>
+</table>
+<p>When changing or setting any environment variables, be aware of <a href="envvars-precedence.html">Environment variable precedence</a>.</p>
+<h2 id="configuration-details">Configuration details<a class="headerlink" href="#configuration-details" title="Permanent link">#</a></h2>
+<h3 id="project-and-file-configuration">Project and file configuration<a class="headerlink" href="#project-and-file-configuration" title="Permanent link">#</a></h3>
+<h4 id="compose_project_name">COMPOSE_PROJECT_NAME<a class="headerlink" href="#compose_project_name" title="Permanent link">#</a></h4>
+<p>Sets the project name. This value is prepended along with the service name to
+the container's name on startup.</p>
+<p>For example, if your project name is <code>myapp</code> and it includes two services <code>db</code> and <code>web</code>, 
+then Compose starts containers named <code>myapp-db-1</code> and <code>myapp-web-1</code> respectively.</p>
+<p>Compose can set the project name in different ways. The level of precedence (from highest to lowest) for each method is as follows:</p>
+<ol>
+<li>The <code>-p</code> command line flag </li>
+<li><code>COMPOSE_PROJECT_NAME</code></li>
+<li>The top-level <code>name:</code> variable from the config file (or the last <code>name:</code> from
+  a series of config files specified using <code>-f</code>)</li>
+<li>The <code>basename</code> of the project directory containing the config file (or
+  containing the first config file specified using <code>-f</code>)</li>
+<li>The <code>basename</code> of the current directory if no config file is specified</li>
+</ol>
+<p>Project names must contain only lowercase letters, decimal digits, dashes, and
+underscores, and must begin with a lowercase letter or decimal digit. If the
+<code>basename</code> of the project directory or current directory violates this
+constraint, you must use one of the other mechanisms.</p>
+<p>See also <a href="/reference/cli/docker/compose/#use--p-to-specify-a-project-name">using <code>-p</code> to specify a project name</a>.</p>
+<h4 id="compose_file">COMPOSE_FILE<a class="headerlink" href="#compose_file" title="Permanent link">#</a></h4>
+<p>Specifies the path to a Compose file. Specifying multiple Compose files is supported.</p>
+<ul>
+<li>Default behavior: If not provided, Compose looks for a file named <code>compose.yaml</code> in the current directory and, if not found, then Compose searches each parent directory recursively until a file by that name is found.</li>
+<li>When specifying multiple Compose files, the path separators are, by default, on:</li>
+<li>Mac and Linux: <code>:</code> (colon)</li>
+<li>
+<p>Windows: <code>;</code> (semicolon)
+   For example:</p>
+<p><code>console
+  COMPOSE_FILE=compose.yaml:compose.prod.yaml</code><br>
+   The path separator can also be customized using <a href="#compose_path_separator"><code>COMPOSE_PATH_SEPARATOR</code></a>.  </p>
+</li>
+</ul>
+<p>See also <a href="/reference/cli/docker/compose/#use--f-to-specify-the-name-and-path-of-one-or-more-compose-files">using <code>-f</code> to specify name and path of one or more Compose files</a>.</p>
+<h4 id="compose_profiles">COMPOSE_PROFILES<a class="headerlink" href="#compose_profiles" title="Permanent link">#</a></h4>
+<p>Specifies one or more profiles to be enabled when <code>docker compose up</code> is run.</p>
+<p>Services with matching profiles are started as well as any services for which no profile has been defined.</p>
+<p>For example, calling <code>docker compose up</code> with <code>COMPOSE_PROFILES=frontend</code> selects services with the 
+<code>frontend</code> profile as well as any services without a profile specified.</p>
+<p>If specifying multiple profiles, use a comma as a separator.</p>
+<p>The following example enables all services matching both the <code>frontend</code> and <code>debug</code> profiles and services without a profile. </p>
+<div class="codehilite"><pre><span></span><code><span class="go">COMPOSE_PROFILES=frontend,debug</span>
+</code></pre></div>
+
+<p>See also <a href="../profiles.html">Using profiles with Compose</a> and the <a href="/reference/cli/docker/compose/#use-profiles-to-enable-optional-services"><code>--profile</code> command-line option</a>.</p>
+<h4 id="compose_path_separator">COMPOSE_PATH_SEPARATOR<a class="headerlink" href="#compose_path_separator" title="Permanent link">#</a></h4>
+<p>Specifies a different path separator for items listed in <code>COMPOSE_FILE</code>.</p>
+<ul>
+<li>Defaults to:<ul>
+<li>On macOS and Linux to <code>:</code></li>
+<li>On Windows to<code>;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="compose_env_files">COMPOSE_ENV_FILES<a class="headerlink" href="#compose_env_files" title="Permanent link">#</a></h4>
+<p>Specifies which environment files Compose should use if <code>--env-file</code> isn't used.</p>
+<p>When using multiple environment files, use a comma as a separator. For example: </p>
+<div class="codehilite"><pre><span></span><code><span class="go">COMPOSE_ENV_FILES=.env.envfile1,.env.envfile2</span>
+</code></pre></div>
+
+<p>If <code>COMPOSE_ENV_FILES</code> is not set, and you don't provide <code>--env-file</code> in the CLI, Docker Compose uses the default behavior, which is to look for an <code>.env</code> file in the project directory.</p>
+<h4 id="compose_disable_env_file">COMPOSE_DISABLE_ENV_FILE<a class="headerlink" href="#compose_disable_env_file" title="Permanent link">#</a></h4>
+<p>Lets you disable the use of the default <code>.env</code> file. </p>
+<ul>
+<li>Supported values: <ul>
+<li><code>true</code> or <code>1</code>, Compose ignores the <code>.env</code> file</li>
+<li><code>false</code> or <code>0</code>, Compose looks for an <code>.env</code> file in the project directory</li>
+</ul>
+</li>
+<li>Defaults to: <code>0</code></li>
+</ul>
+<h3 id="environment-handling-and-container-lifecycle">Environment handling and container lifecycle<a class="headerlink" href="#environment-handling-and-container-lifecycle" title="Permanent link">#</a></h3>
+<h4 id="compose_convert_windows_paths">COMPOSE_CONVERT_WINDOWS_PATHS<a class="headerlink" href="#compose_convert_windows_paths" title="Permanent link">#</a></h4>
+<p>When enabled, Compose performs path conversion from Windows-style to Unix-style in volume definitions.</p>
+<ul>
+<li>Supported values: <ul>
+<li><code>true</code> or <code>1</code>, to enable</li>
+<li><code>false</code> or <code>0</code>, to disable</li>
+</ul>
+</li>
+<li>Defaults to: <code>0</code></li>
+</ul>
+<h4 id="compose_ignore_orphans">COMPOSE_IGNORE_ORPHANS<a class="headerlink" href="#compose_ignore_orphans" title="Permanent link">#</a></h4>
+<p>When enabled, Compose doesn't try to detect orphaned containers for the project.</p>
+<ul>
+<li>Supported values: </li>
+<li><code>true</code> or <code>1</code>, to enable</li>
+<li><code>false</code> or <code>0</code>, to disable</li>
+<li>Defaults to: <code>0</code></li>
+</ul>
+<h4 id="compose_remove_orphans">COMPOSE_REMOVE_ORPHANS<a class="headerlink" href="#compose_remove_orphans" title="Permanent link">#</a></h4>
+<p>When enabled, Compose automatically removes orphaned containers when updating a service or stack. Orphaned containers are those that were created by a previous configuration but are no longer defined in the current <code>compose.yaml</code> file.</p>
+<ul>
+<li>Supported values:</li>
+<li><code>true</code> or <code>1</code>, to enable automatic removal of orphaned containers</li>
+<li><code>false</code> or <code>0</code>, to disable automatic removal. Compose displays a warning about orphaned containers instead.</li>
+<li>Defaults to: <code>0</code></li>
+</ul>
+<h4 id="compose_parallel_limit">COMPOSE_PARALLEL_LIMIT<a class="headerlink" href="#compose_parallel_limit" title="Permanent link">#</a></h4>
+<p>Specifies the maximum level of parallelism for concurrent engine calls.</p>
+<h3 id="output">Output<a class="headerlink" href="#output" title="Permanent link">#</a></h3>
+<h4 id="compose_ansi">COMPOSE_ANSI<a class="headerlink" href="#compose_ansi" title="Permanent link">#</a></h4>
+<p>Specifies when to print ANSI control characters. </p>
+<ul>
+<li>Supported values:</li>
+<li><code>auto</code>, Compose detects if TTY mode can be used. Otherwise, use plain text mode</li>
+<li><code>never</code>, use plain text mode</li>
+<li><code>always</code> or <code>0</code>, use TTY mode</li>
+<li>Defaults to: <code>auto</code></li>
+</ul>
+<h4 id="compose_status_stdout">COMPOSE_STATUS_STDOUT<a class="headerlink" href="#compose_status_stdout" title="Permanent link">#</a></h4>
+<p>When enabled, Compose writes its internal status and progress messages to <code>stdout</code> instead of <code>stderr</code>. 
+The default value is false to clearly separate the output streams between Compose messages and your container's logs.</p>
+<ul>
+<li>Supported values:</li>
+<li><code>true</code> or <code>1</code>, to enable</li>
+<li><code>false</code> or <code>0</code>, to disable</li>
+<li>Defaults to: <code>0</code></li>
+</ul>
+<h4 id="compose_progress">COMPOSE_PROGRESS<a class="headerlink" href="#compose_progress" title="Permanent link">#</a></h4>
+<p>{{&lt; summary-bar feature_name="Compose progress" &gt;}}</p>
+<p>Defines the type of progress output, if <code>--progress</code> isn't used. </p>
+<p>Supported values are <code>auto</code>, <code>tty</code>, <code>plain</code>, <code>json</code>, and <code>quiet</code>.
+Default is <code>auto</code>. </p>
+<h3 id="user-experience">User experience<a class="headerlink" href="#user-experience" title="Permanent link">#</a></h3>
+<h4 id="compose_menu">COMPOSE_MENU<a class="headerlink" href="#compose_menu" title="Permanent link">#</a></h4>
+<p>{{&lt; summary-bar feature_name="Compose menu" &gt;}}</p>
+<p>When enabled, Compose displays a navigation menu where you can choose to open the Compose stack in Docker Desktop, switch on <a href="../file-watch.html"><code>watch</code> mode</a>, or use <a href="/reference/cli/docker/debug/">Docker Debug</a>.</p>
+<ul>
+<li>Supported values:</li>
+<li><code>true</code> or <code>1</code>, to enable</li>
+<li><code>false</code> or <code>0</code>, to disable</li>
+<li>Defaults to: <code>1</code> if you obtained Docker Compose through Docker Desktop, otherwise the default is <code>0</code></li>
+</ul>
+<h4 id="compose_experimental">COMPOSE_EXPERIMENTAL<a class="headerlink" href="#compose_experimental" title="Permanent link">#</a></h4>
+<p>{{&lt; summary-bar feature_name="Compose experimental" &gt;}}</p>
+<p>This is an opt-out variable. When turned off it deactivates the experimental features.</p>
+<ul>
+<li>Supported values:</li>
+<li><code>true</code> or <code>1</code>, to enable</li>
+<li><code>false</code> or <code>0</code>, to disable</li>
+<li>Defaults to: <code>1</code></li>
+</ul>
+<h2 id="unsupported-in-compose-v2">Unsupported in Compose V2<a class="headerlink" href="#unsupported-in-compose-v2" title="Permanent link">#</a></h2>
+<p>The following environment variables have no effect in Compose V2.</p>
+<ul>
+<li><code>COMPOSE_API_VERSION</code>
+    By default the API version is negotiated with the server. Use <code>DOCKER_API_VERSION</code>.<br>
+    See the <a href="/reference/cli/docker/#environment-variables">Docker CLI environment variable reference</a> page.</li>
+<li><code>COMPOSE_HTTP_TIMEOUT</code></li>
+<li><code>COMPOSE_TLS_VERSION</code></li>
+<li><code>COMPOSE_FORCE_WINDOWS_HOST</code></li>
+<li><code>COMPOSE_INTERACTIVE_NO_CLI</code></li>
+<li><code>COMPOSE_DOCKER_CLI_BUILD</code>
+    Use <code>DOCKER_BUILDKIT</code> to select between BuildKit and the classic builder. If <code>DOCKER_BUILDKIT=0</code> then <code>docker compose build</code> uses the classic builder to build images.</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../compose/how-tos/environment-variables/envvars-precedence.html">
+          <span class="muted">Anterior</span>Environment variables precedence in Docker Compose
+        </a>
+        <a class="pager-next" href="../../../compose/how-tos/environment-variables/set-environment-variables.html">
+          <span class="muted">Siguiente</span>Set environment variables within your container&#39;s environment
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

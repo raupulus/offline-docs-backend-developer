@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Internal Versus External BLOBs · SQLite</title>
+<meta name="description" content="Internal Versus External BLOBs - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/intern-v-extern-blob.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Internal Versus External BLOBs">
+<meta property="og:description" content="Internal Versus External BLOBs - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Internal Versus External BLOBs">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Internal Versus External BLOBs",
+"url": "https://docs.raupulus.dev/sqlite/guides/intern-v-extern-blob.html",  "description": "Internal Versus External BLOBs - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/sqlite3changeset_fk_conflicts.html"
+>Determine The Number Of Foreign Key Constraint Violations</a>
+              </li>
+              <li>
+                <a href="../guides/deterministic.html"
+>Deterministic SQL Functions</a>
+              </li>
+              <li>
+                <a href="../guides/different.html"
+>Distinctive Features Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/malloc.html"
+>Dynamic Memory Allocation In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_enable.html"
+>Enable Or Disable A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/eqp.html"
+>EXPLAIN QUERY PLAN</a>
+              </li>
+              <li>
+                <a href="../guides/features.html"
+>Features Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/formatchng.html"
+>File Format Changes in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/lockingv3.html"
+>File Locking And Concurrency In SQLite Version 3</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_finalize.html"
+>Finalize A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_change_finish.html"
+>Finish adding one-at-at-time changes to a changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/c_changesetapply_fknoaction.html"
+>Flags for sqlite3changeset_apply_v2</a>
+              </li>
+              <li>
+                <a href="../guides/c_changesetstart_invert.html"
+>Flags for sqlite3changeset_start_v2</a>
+              </li>
+              <li>
+                <a href="../guides/floatingpoint.html"
+>Floating Point Numbers</a>
+              </li>
+              <li>
+                <a href="../guides/fullsql.html"
+>Full-Featured SQL</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_changeset.html"
+>Generate A Changeset From A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_patchset.html"
+>Generate A Patchset From A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/gencol.html"
+>Generated Columns</a>
+              </li>
+              <li>
+                <a href="../guides/hirely.html"
+>High Reliability</a>
+              </li>
+              <li>
+                <a href="../guides/debugging.html"
+>Hints for Debugging SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/chronology.html"
+>History Of SQLite Releases</a>
+              </li>
+              <li>
+                <a href="../guides/testing.html"
+>How SQLite Is Tested</a>
+              </li>
+              <li>
+                <a href="../guides/howitworks.html"
+>How SQLite Works</a>
+              </li>
+              <li>
+                <a href="../guides/howtocompile.html"
+>How To Compile SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/howtocorrupt.html"
+>How To Corrupt An SQLite Database File</a>
+              </li>
+              <li>
+                <a href="../guides/getthecode.html"
+>How To Download Canonical SQLite Source Code</a>
+              </li>
+              <li>
+                <a href="../guides/limits.html"
+>Implementation Limits For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/imposter.html"
+>Imposter Tables</a>
+              </li>
+              <li>
+                <a href="../guides/inmemorydb.html"
+>In-Memory Databases</a>
+              </li>
+              <li>
+                <a href="../guides/expridx.html"
+>Indexes On Expressions</a>
+              </li>
+              <li>
+                <a href="../guides/intern-v-extern-blob.html"
+class="is-current" aria-current="page">Internal Versus External BLOBs</a>
+              </li>
+              <li>
+                <a href="../guides/intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="../guides/invalidutf.html"
+>Invalid UTF Policy</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_invert.html"
+>Invert A Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/isolation.html"
+>Isolation In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/hp1.html"
+>Javascript Required</a>
+              </li>
+              <li>
+                <a href="../guides/doc_keyword_crossref.html"
+>Keyword Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/constlist.html"
+>List Of SQLite Constants</a>
+              </li>
+              <li>
+                <a href="../guides/funclist.html"
+>List Of SQLite Functions</a>
+              </li>
+              <li>
+                <a href="../guides/objlist.html"
+>List Of SQLite Objects</a>
+              </li>
+              <li>
+                <a href="../guides/vtablist.html"
+>List Of Virtual Tables</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_diff.html"
+>Load The Difference Between Tables Into A Session</a>
+              </li>
+              <li>
+                <a href="../guides/locrsf.html"
+>LoC Recommended Storage Format</a>
+              </li>
+              <li>
+                <a href="../guides/lts.html"
+>Long Term Support</a>
+              </li>
+              <li>
+                <a href="../guides/privatebranch.html"
+>Maintaining Private Branches Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/np1queryprob.html"
+>Many Small Queries Are Efficient In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cpu.html"
+>Measuring and Reducing CPU Usage in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/mmap.html"
+>Memory-Mapped I/O</a>
+              </li>
+              <li>
+                <a href="../guides/mostdeployed.html"
+>Most Widely Deployed SQL Database Engine</a>
+              </li>
+              <li>
+                <a href="../guides/mingw.html"
+>No Title</a>
+              </li>
+              <li>
+                <a href="../guides/nulinstr.html"
+>NUL Characters In Strings</a>
+              </li>
+              <li>
+                <a href="../guides/nulls.html"
+>NULL Handling in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_output.html"
+>Obtain A Composite Changeset From A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_conflict.html"
+>Obtain Conflicting Row Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_new.html"
+>Obtain new.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_old.html"
+>Obtain old.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_op.html"
+>Obtain The Current Operation From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_pk.html"
+>Obtain The Primary Key Definition Of A Table</a>
+              </li>
+              <li>
+                <a href="../guides/c_changegroup_config_patchset.html"
+>Options for sqlite3changegroup_config().</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_objconfig_rowid.html"
+>Options for sqlite3session_object_config</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Internal Versus External BLOBs</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/intern-v-extern-blob.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+
+      <div class="doc-body">
+        <h1 id="internal-versus-external-blobs-in-sqlite">Internal Versus External BLOBs in SQLite<a class="headerlink" href="#internal-versus-external-blobs-in-sqlite" title="Permanent link">#</a></h1>
+<p>If you have a database of large BLOBs, do you get better read performance when you store the complete BLOB content directly in the database or is it faster to store each BLOB in a separate file and store just the corresponding filename in the database?</p>
+<p>To try to answer this, we ran 49 test cases with various BLOB sizes and SQLite page sizes on a Linux workstation (Ubuntu circa 2011 with the Ext4 filesystem on a fast SATA disk). For each test case, a database was created containing 100MB of BLOB content. The sizes of the BLOBs ranged from 10KB to 1MB. The number of BLOBs varied in order to keep the total BLOB content at about 100MB. (Hence, 100 BLOBs for the 1MB size and 10000 BLOBs for the 10K size and so forth.) SQLite <a href="releaselog/3_7_8.html">version 3.7.8</a> (2011-09-19) was used.</p>
+<blockquote>
+<p><em>Update: New measurements for SQLite version 3.19.0 (2017-05-22) show that SQLite is about <a href="fasterthanfs.html">35% faster</a> than direct disk I/O for both reads and writes of 10KB blobs.</em></p>
+</blockquote>
+<p>The matrix below shows the time needed to read BLOBs stored in separate files divided by the time needed to read BLOBs stored entirely in the database. Hence, for numbers larger than 1.0, it is faster to store the BLOBs directly in the database. For numbers smaller than 1.0, it is faster to store the BLOBs in separate files.</p>
+<p>In every case, the pager cache size was adjusted to keep the amount of cache memory at about 2MB. For example, a 2000 page cache was used for 1024 byte pages and a 31 page cache was used for 65536 byte pages. The BLOB values were read in a random order.</p>
+<p>Database Page Size</p>
+<p>BLOB size</p>
+<p>10k</p>
+<p>20k</p>
+<p>50k</p>
+<p>100k</p>
+<p>200k</p>
+<p>500k</p>
+<p>1m</p>
+<p>1024</p>
+<p>1.535</p>
+<p>1.020</p>
+<p>0.608</p>
+<p>0.456</p>
+<p>0.330</p>
+<p>0.247</p>
+<p>0.233</p>
+<p>2048</p>
+<p>2.004</p>
+<p>1.437</p>
+<p>0.870</p>
+<p>0.636</p>
+<p>0.483</p>
+<p>0.372</p>
+<p>0.340</p>
+<p>4096</p>
+<p>2.261</p>
+<p>1.886</p>
+<p>1.173</p>
+<p>0.890</p>
+<p>0.701</p>
+<p>0.526</p>
+<p>0.487</p>
+<p>8192</p>
+<p>2.240</p>
+<p>1.866</p>
+<p>1.334</p>
+<p>1.035</p>
+<p>0.830</p>
+<p>0.625</p>
+<p>0.720</p>
+<p>16384</p>
+<p>2.439</p>
+<p>1.757</p>
+<p>1.292</p>
+<p>1.023</p>
+<p>0.829</p>
+<p>0.820</p>
+<p>0.598</p>
+<p>32768</p>
+<p>1.878</p>
+<p>1.843</p>
+<p>1.296</p>
+<p>0.981</p>
+<p>0.976</p>
+<p>0.675</p>
+<p>0.613</p>
+<p>65536</p>
+<p>1.256</p>
+<p>1.255</p>
+<p>1.339</p>
+<p>0.983</p>
+<p>0.769</p>
+<p>0.687</p>
+<p>0.609</p>
+<p>We deduce the following rules of thumb from the matrix above:</p>
+<ul>
+<li>
+<p>A database page size of 8192 or 16384 gives the best performance for large BLOB I/O.</p>
+</li>
+<li>
+<p>For BLOBs smaller than 100KB, reads are faster when the BLOBs are stored directly in the database file. For BLOBs larger than 100KB, reads from a separate file are faster.</p>
+</li>
+</ul>
+<p>Of course, your mileage may vary depending on hardware, filesystem, and operating system. Double-check these figures on target hardware before committing to a particular design.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/expridx.html">
+          <span class="muted">Anterior</span>Indexes On Expressions
+        </a>
+        <a class="pager-next" href="../guides/intro.html">
+          <span class="muted">Siguiente</span>Introduction
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

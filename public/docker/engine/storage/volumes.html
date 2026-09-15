@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volumes · Docker</title>
+<meta name="description" content="Volumes - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/storage/volumes.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Volumes">
+<meta property="og:description" content="Volumes - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Volumes">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Volumes",
+"url": "https://docs.raupulus.dev/docker/engine/storage/volumes.html",  "description": "Volumes - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/volumes.html"
+class="is-current" aria-current="page">Volumes</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/swarm-task-states.html"
+>Swarm task states</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/ingress.html"
+>Use Swarm mode routing mesh</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/join-nodes.html"
+>Join nodes to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/key-concepts.html"
+>Swarm mode key concepts</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/manage-nodes.html"
+>Manage nodes in a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/networking.html"
+>Manage swarm service networks</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/raft.html"
+>Raft consensus in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/secrets.html"
+>Manage sensitive data with Docker secrets</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/services.html"
+>Deploy services to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/stack-deploy.html"
+>Deploy a stack to a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-mode.html"
+>Run Docker Engine in swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/index.html"
+>Getting started with Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/add-nodes.html"
+>Add nodes to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/create-swarm.html"
+>Create a swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/delete-service.html"
+>Delete the service running on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/deploy-service.html"
+>Deploy a service to the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/drain-node.html"
+>Drain a node on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/inspect-service.html"
+>Inspect a service on the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/rolling-update.html"
+>Apply rolling updates to a service</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-tutorial/scale-service.html"
+>Scale the service in the swarm</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/swarm-manager-locking.html"
+>Lock your swarm to protect its encryption key</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Volumes</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#when-to-use-volumes">When to use volumes#</a></li>
+              <li class="lvl-2"><a href="#a-volumes-lifecycle">A volume&#39;s lifecycle#</a></li>
+              <li class="lvl-2"><a href="#mounting-a-volume-over-existing-data">Mounting a volume over existing data#</a></li>
+              <li class="lvl-2"><a href="#named-and-anonymous-volumes">Named and anonymous volumes#</a></li>
+              <li class="lvl-2"><a href="#syntax">Syntax#</a></li>
+              <li class="lvl-3"><a href="#options-for-mount">Options for --mount#</a></li>
+              <li class="lvl-2"><a href="#start-a-container-with-a-volume">Start a container with a volume#</a></li>
+              <li class="lvl-2"><a href="#use-a-volume-with-docker-compose">Use a volume with Docker Compose#</a></li>
+              <li class="lvl-3"><a href="#start-a-service-with-volumes">Start a service with volumes#</a></li>
+              <li class="lvl-3"><a href="#populate-a-volume-using-a-container">Populate a volume using a container#</a></li>
+              <li class="lvl-2"><a href="#use-a-read-only-volume">Use a read-only volume#</a></li>
+              <li class="lvl-2"><a href="#mount-a-volume-subdirectory">Mount a volume subdirectory#</a></li>
+              <li class="lvl-2"><a href="#share-data-between-machines">Share data between machines#</a></li>
+              <li class="lvl-2"><a href="#use-a-volume-driver">Use a volume driver#</a></li>
+              <li class="lvl-3"><a href="#initial-setup">Initial setup#</a></li>
+              <li class="lvl-3"><a href="#create-a-volume-using-a-volume-driver">Create a volume using a volume driver#</a></li>
+              <li class="lvl-3"><a href="#start-a-container-which-creates-a-volume-using-a-volume-driver">Start a container which creates a volume using a volume driver#</a></li>
+              <li class="lvl-3"><a href="#create-a-service-which-creates-an-nfs-volume">Create a service which creates an NFS volume#</a></li>
+              <li class="lvl-3"><a href="#create-cifssamba-volumes">Create CIFS/Samba volumes#</a></li>
+              <li class="lvl-3"><a href="#block-storage-devices">Block storage devices#</a></li>
+              <li class="lvl-2"><a href="#back-up-restore-or-migrate-data-volumes">Back up, restore, or migrate data volumes#</a></li>
+              <li class="lvl-3"><a href="#back-up-a-volume">Back up a volume#</a></li>
+              <li class="lvl-3"><a href="#restore-volume-from-a-backup">Restore volume from a backup#</a></li>
+              <li class="lvl-2"><a href="#remove-volumes">Remove volumes#</a></li>
+              <li class="lvl-3"><a href="#remove-anonymous-volumes">Remove anonymous volumes#</a></li>
+              <li class="lvl-3"><a href="#remove-all-volumes">Remove all volumes#</a></li>
+              <li class="lvl-2"><a href="#next-steps">Next steps#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Volumes are persistent data stores for containers, created and managed by
+Docker. You can create a volume explicitly using the <code>docker volume create</code>
+command, or Docker can create a volume during container or service creation.</p>
+<p>When you create a volume, it's stored within a directory on the Docker
+host. When you mount the volume into a container, this directory is what's
+mounted into the container. This is similar to the way that bind mounts work,
+except that volumes are managed by Docker and are isolated from the core
+functionality of the host machine.</p>
+<h2 id="when-to-use-volumes">When to use volumes<a class="headerlink" href="#when-to-use-volumes" title="Permanent link">#</a></h2>
+<p>Volumes are the preferred mechanism for persisting data generated by and used
+by Docker containers. While <a href="bind-mounts.html">bind mounts</a> are dependent on the
+directory structure and OS of the host machine, volumes are completely managed by
+Docker. Volumes are a good choice for the following use cases:</p>
+<ul>
+<li>Volumes are easier to back up or migrate than bind mounts.</li>
+<li>You can manage volumes using Docker CLI commands or the Docker API.</li>
+<li>Volumes work on both Linux and Windows containers.</li>
+<li>Volumes can be more safely shared among multiple containers.</li>
+<li>New volumes can have their content pre-populated by a container or build.</li>
+<li>When your application requires high-performance I/O.</li>
+</ul>
+<p>Volumes are not a good choice if you need to access the files from the host, as
+the volume is completely managed by Docker. Use <a href="bind-mounts.html">bind mounts</a>
+if you need to access files or directories from both containers and the host.</p>
+<p>Volumes are often a better choice than writing data directly to a container,
+because a volume doesn't increase the size of the containers using it. Using a
+volume is also faster; writing into a container's writable layer requires a
+<a href="drivers/index.html">storage driver</a> to manage the
+filesystem. The storage driver provides a union filesystem, using the Linux
+kernel. This extra abstraction reduces performance as compared to using
+volumes, which write directly to the host filesystem.</p>
+<p>If your container generates non-persistent state data, consider using a
+<a href="tmpfs.html">tmpfs mount</a> to avoid storing the data anywhere permanently, and to
+increase the container's performance by avoiding writing into the container's
+writable layer.</p>
+<p>Volumes use <code>rprivate</code> (recursive private) bind propagation, and bind propagation isn't
+configurable for volumes.</p>
+<h2 id="a-volumes-lifecycle">A volume's lifecycle<a class="headerlink" href="#a-volumes-lifecycle" title="Permanent link">#</a></h2>
+<p>A volume's contents exist outside the lifecycle of a given container. When a
+container is destroyed, the writable layer is destroyed with it. Using a volume
+ensures that the data is persisted even if the container using it is removed.</p>
+<p>A given volume can be mounted into multiple containers simultaneously. When no
+running container is using a volume, the volume is still available to Docker
+and isn't removed automatically. You can remove unused volumes using <code>docker
+volume prune</code>.</p>
+<h2 id="mounting-a-volume-over-existing-data">Mounting a volume over existing data<a class="headerlink" href="#mounting-a-volume-over-existing-data" title="Permanent link">#</a></h2>
+<p>If you mount a <em>non-empty volume</em> into a directory in the container in which
+files or directories exist, the pre-existing files are obscured by the mount.
+This is similar to if you were to save files into <code>/mnt</code> on a Linux host, and
+then mounted a USB drive into <code>/mnt</code>. The contents of <code>/mnt</code> would be obscured
+by the contents of the USB drive until the USB drive was unmounted.</p>
+<p>With containers, there's no straightforward way of removing a mount to reveal
+the obscured files again. Your best option is to recreate the container without
+the mount.</p>
+<p>If you mount an <em>empty volume</em> into a directory in the container in which files
+or directories exist, these files or directories are propagated (copied) into
+the volume by default. Similarly, if you start a container and specify a volume
+which does not already exist, an empty volume is created for you. This is a
+good way to pre-populate data that another container needs.</p>
+<p>To prevent Docker from copying a container's pre-existing files into an empty
+volume, use the <code>volume-nocopy</code> option, see <a href="#options-for---mount">Options for --mount</a>.</p>
+<h2 id="named-and-anonymous-volumes">Named and anonymous volumes<a class="headerlink" href="#named-and-anonymous-volumes" title="Permanent link">#</a></h2>
+<p>A volume may be named or anonymous. Anonymous volumes are given a random name
+that's guaranteed to be unique within a given Docker host. Just like named
+volumes, anonymous volumes persist even if you remove the container that uses
+them, except if you use the <code>--rm</code> flag when creating the container, in which
+case the anonymous volume associated with the container is destroyed. See
+<a href="volumes.html#remove-anonymous-volumes">Remove anonymous volumes</a>.</p>
+<p>If you create multiple containers consecutively that each use anonymous
+volumes, each container creates its own volume. Anonymous volumes aren't reused
+or shared between containers automatically. To share an anonymous volume
+between two or more containers, you must mount the anonymous volume using the
+random volume ID.</p>
+<h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">#</a></h2>
+<p>To mount a volume with the <code>docker run</code> command, you can use either the
+<code>--mount</code> or <code>--volume</code> flag.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>volume,src<span class="o">=</span>&lt;volume-name&gt;,dst<span class="o">=</span>&lt;mount-path&gt;
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--volume<span class="w"> </span>&lt;volume-name&gt;:&lt;mount-path&gt;
+</code></pre></div>
+
+<p>In general, <code>--mount</code> is preferred. The main difference is that the <code>--mount</code>
+flag is more explicit and supports all the available options.</p>
+<p>You must use <code>--mount</code> if you want to:</p>
+<ul>
+<li>Specify <a href="#use-a-volume-driver">volume driver options</a></li>
+<li>Mount a <a href="#mount-a-volume-subdirectory">volume subdirectory</a></li>
+<li>Mount a volume into a Swarm service</li>
+</ul>
+<h3 id="options-for-mount">Options for --mount<a class="headerlink" href="#options-for-mount" title="Permanent link">#</a></h3>
+<p>The <code>--mount</code> flag consists of multiple key-value pairs, separated by commas
+and each consisting of a <code>&lt;key&gt;=&lt;value&gt;</code> tuple. The order of the keys isn't
+significant.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>volume<span class="o">[</span>,src<span class="o">=</span>&lt;volume-name&gt;<span class="o">]</span>,dst<span class="o">=</span>&lt;mount-path&gt;<span class="o">[</span>,&lt;key&gt;<span class="o">=</span>&lt;value&gt;...<span class="o">]</span>
+</code></pre></div>
+
+<p>Valid options for <code>--mount type=volume</code> include:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code>, <code>src</code></td>
+<td>The source of the mount. For named volumes, this is the name of the volume. For anonymous volumes, this field is omitted.</td>
+</tr>
+<tr>
+<td><code>destination</code>, <code>dst</code>, <code>target</code></td>
+<td>The path where the file or directory is mounted in the container.</td>
+</tr>
+<tr>
+<td><code>volume-subpath</code></td>
+<td>A path to a subdirectory within the volume to mount into the container. The subdirectory must exist in the volume before the volume is mounted to a container. See <a href="#mount-a-volume-subdirectory">Mount a volume subdirectory</a>.</td>
+</tr>
+<tr>
+<td><code>readonly</code>, <code>ro</code></td>
+<td>If present, causes the volume to be <a href="#use-a-read-only-volume">mounted into the container as read-only</a>.</td>
+</tr>
+<tr>
+<td><code>volume-nocopy</code></td>
+<td>If present, data at the destination isn't copied into the volume if the volume is empty. By default, content at the target destination gets copied into a mounted volume if empty.</td>
+</tr>
+<tr>
+<td><code>volume-opt</code></td>
+<td>Can be specified more than once, takes a key-value pair consisting of the option name and its value.</td>
+</tr>
+</tbody>
+</table>
+<p>```console {title="Example"}
+$ docker run --mount type=volume,src=myvolume,dst=/data,ro,volume-subpath=/foo</p>
+<div class="codehilite"><pre><span></span><code>### Options for --volume
+
+The `--volume` or `-v` flag consists of three fields, separated by colon
+characters (`:`). The fields must be in the correct order.
+
+```console
+$ docker run -v [&lt;volume-name&gt;:]&lt;mount-path&gt;[:opts]
+</code></pre></div>
+
+<p>In the case of named volumes, the first field is the name of the volume, and is
+unique on a given host machine. For anonymous volumes, the first field is
+omitted. The second field is the path where the file or directory is mounted in
+the container.</p>
+<p>The third field is optional, and is a comma-separated list of options. Valid
+options for <code>--volume</code> with a data volume include:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>readonly</code>, <code>ro</code></td>
+<td>If present, causes the volume to be <a href="#use-a-read-only-volume">mounted into the container as read-only</a>.</td>
+</tr>
+<tr>
+<td><code>volume-nocopy</code></td>
+<td>If present, data at the destination isn't copied into the volume if the volume is empty. By default, content at the target destination gets copied into a mounted volume if empty.</td>
+</tr>
+</tbody>
+</table>
+<p>```console {title="Example"}
+$ docker run -v myvolume:/data:ro</p>
+<div class="codehilite"><pre><span></span><code>## Create and manage volumes
+
+Unlike a bind mount, you can create and manage volumes outside the scope of any
+container.
+
+Create a volume:
+
+```console
+$ docker volume create my-vol
+</code></pre></div>
+
+<p>List volumes:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>ls
+
+<span class="go">local               my-vol</span>
+</code></pre></div>
+
+<p>Inspect a volume:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>inspect<span class="w"> </span>my-vol
+<span class="go">[</span>
+<span class="go">    {</span>
+<span class="go">        &quot;Driver&quot;: &quot;local&quot;,</span>
+<span class="go">        &quot;Labels&quot;: {},</span>
+<span class="go">        &quot;Mountpoint&quot;: &quot;/var/lib/docker/volumes/my-vol/_data&quot;,</span>
+<span class="go">        &quot;Name&quot;: &quot;my-vol&quot;,</span>
+<span class="go">        &quot;Options&quot;: {},</span>
+<span class="go">        &quot;Scope&quot;: &quot;local&quot;</span>
+<span class="go">    }</span>
+<span class="go">]</span>
+</code></pre></div>
+
+<p>Remove a volume:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>rm<span class="w"> </span>my-vol
+</code></pre></div>
+
+<h2 id="start-a-container-with-a-volume">Start a container with a volume<a class="headerlink" href="#start-a-container-with-a-volume" title="Permanent link">#</a></h2>
+<p>If you start a container with a volume that doesn't yet exist, Docker creates
+the volume for you. The following example mounts the volume <code>myvol2</code> into
+<code>/app/</code> in the container.</p>
+<p>The following <code>-v</code> and <code>--mount</code> examples produce the same result. You can't
+run them both unless you remove the <code>devtest</code> container and the <code>myvol2</code> volume
+after running the first one.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="<code>--mount</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">source</span><span class="o">=</span>myvol2,target<span class="o">=</span>/app<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="<code>-v</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>myvol2:/app<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>Use <code>docker inspect devtest</code> to verify that Docker created the volume and it mounted
+correctly. Look for the <code>Mounts</code> section:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;Mounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myvol2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/var/lib/docker/volumes/myvol2/_data&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Destination&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/app&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;RW&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Propagation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+
+<p>This shows that the mount is a volume, it shows the correct source and
+destination, and that the mount is read-write.</p>
+<p>Stop the container and remove the volume. Note volume removal is a separate
+step.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>stop<span class="w"> </span>devtest
+
+<span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>rm<span class="w"> </span>devtest
+
+<span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>rm<span class="w"> </span>myvol2
+</code></pre></div>
+
+<h2 id="use-a-volume-with-docker-compose">Use a volume with Docker Compose<a class="headerlink" href="#use-a-volume-with-docker-compose" title="Permanent link">#</a></h2>
+<p>The following example shows a single Docker Compose service with a volume:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">frontend</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">node:lts</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp:/home/node/app</span>
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">myapp</span><span class="p">:</span>
+</code></pre></div>
+
+<p>Running <code>docker compose up</code> for the first time creates a volume. Docker reuses the same volume when you run the command subsequently.</p>
+<p>You can create a volume directly outside of Compose using <code>docker volume create</code> and
+then reference it inside <code>compose.yaml</code> as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">frontend</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">node:lts</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp:/home/node/app</span>
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">myapp</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">external</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+
+<p>For more information about using volumes with Compose, refer to the
+<a href="../../reference/compose-file/volumes.html">Volumes</a>
+section in the Compose specification.</p>
+<h3 id="start-a-service-with-volumes">Start a service with volumes<a class="headerlink" href="#start-a-service-with-volumes" title="Permanent link">#</a></h3>
+<p>When you start a service and define a volume, each service container uses its own
+local volume. None of the containers can share this data if you use the <code>local</code>
+volume driver. However, some volume drivers do support shared storage.</p>
+<p>The following example starts an <code>nginx</code> service with four replicas, each of which
+uses a local volume called <code>myvol2</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>service<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--replicas<span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>devtest-service<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">source</span><span class="o">=</span>myvol2,target<span class="o">=</span>/app<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>Use <code>docker service ps devtest-service</code> to verify that the service is running:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>service<span class="w"> </span>ps<span class="w"> </span>devtest-service
+
+<span class="go">ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE            ERROR               PORTS</span>
+<span class="go">4d7oz1j85wwn        devtest-service.1   nginx:latest        moby                Running             Running 14 seconds ago</span>
+</code></pre></div>
+
+<p>You can remove the service to stop the running tasks:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>service<span class="w"> </span>rm<span class="w"> </span>devtest-service
+</code></pre></div>
+
+<p>Removing the service doesn't remove any volumes created by the service.
+Volume removal is a separate step.</p>
+<h3 id="populate-a-volume-using-a-container">Populate a volume using a container<a class="headerlink" href="#populate-a-volume-using-a-container" title="Permanent link">#</a></h3>
+<p>If you start a container which creates a new volume, and the container
+has files or directories in the directory to be mounted such as <code>/app/</code>,
+Docker copies the directory's contents into the volume. The container then
+mounts and uses the volume, and other containers which use the volume also
+have access to the pre-populated content.</p>
+<p>To show this, the following example starts an <code>nginx</code> container and
+populates the new volume <code>nginx-vol</code> with the contents of the container's
+<code>/usr/share/nginx/html</code> directory. This is where Nginx stores its default HTML
+content.</p>
+<p>The <code>--mount</code> and <code>-v</code> examples have the same end result.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="<code>--mount</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span>nginxtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">source</span><span class="o">=</span>nginx-vol,destination<span class="o">=</span>/usr/share/nginx/html<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="<code>-v</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span>nginxtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nginx-vol:/usr/share/nginx/html<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>After running either of these examples, run the following commands to clean up
+the containers and volumes. Note volume removal is a separate step.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>stop<span class="w"> </span>nginxtest
+
+<span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>rm<span class="w"> </span>nginxtest
+
+<span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>rm<span class="w"> </span>nginx-vol
+</code></pre></div>
+
+<h2 id="use-a-read-only-volume">Use a read-only volume<a class="headerlink" href="#use-a-read-only-volume" title="Permanent link">#</a></h2>
+<p>For some applications, the container needs to write to the volume. At other
+times, the container only needs read access to the data. Multiple
+containers can mount the same volume. You can simultaneously mount a
+single volume as <code>read-write</code> for some containers and as <code>read-only</code> for others.</p>
+<p>The following example changes the previous one. It mounts the directory as a read-only
+volume, by adding <code>ro</code> to the (empty by default) list of options, after the
+mount point within the container. Where multiple options are present, you can separate
+them using commas.</p>
+<p>The <code>--mount</code> and <code>-v</code> examples have the same result.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="<code>--mount</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span>nginxtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">source</span><span class="o">=</span>nginx-vol,destination<span class="o">=</span>/usr/share/nginx/html,readonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="<code>-v</code>" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span>nginxtest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nginx-vol:/usr/share/nginx/html:ro<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>Use <code>docker inspect nginxtest</code> to verify that Docker created the read-only mount
+correctly. Look for the <code>Mounts</code> section:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;Mounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nginx-vol&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/var/lib/docker/volumes/nginx-vol/_data&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Destination&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/usr/share/nginx/html&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;RW&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Propagation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">],</span>
+</code></pre></div>
+
+<p>Stop and remove the container, and remove the volume. Volume removal is a
+separate step.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>stop<span class="w"> </span>nginxtest
+
+<span class="gp">$ </span>docker<span class="w"> </span>container<span class="w"> </span>rm<span class="w"> </span>nginxtest
+
+<span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>rm<span class="w"> </span>nginx-vol
+</code></pre></div>
+
+<h2 id="mount-a-volume-subdirectory">Mount a volume subdirectory<a class="headerlink" href="#mount-a-volume-subdirectory" title="Permanent link">#</a></h2>
+<p>When you mount a volume to a container, you can specify a subdirectory of the
+volume to use, with the <code>volume-subpath</code> parameter for the <code>--mount</code> flag. The
+subdirectory that you specify must exist in the volume before you attempt to
+mount it into a container; if it doesn't exist, the mount fails.</p>
+<p>Specifying <code>volume-subpath</code> is useful if you only want to share a specific
+portion of a volume with a container. Say for example that you have multiple
+containers running and you want to store logs from each container in a shared
+volume. You can create a subdirectory for each container in the shared volume,
+and mount the subdirectory to the container.</p>
+<p>The following example creates a <code>logs</code> volume and initiates the subdirectories
+<code>app1</code> and <code>app2</code> in the volume. It then starts two containers and mounts one
+of the subdirectories of the <code>logs</code> volume to each container. This example
+assumes that the processes in the containers write their logs to
+<code>/var/log/app1</code> and <code>/var/log/app2</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span>logs
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">src</span><span class="o">=</span>logs,dst<span class="o">=</span>/logs<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>alpine<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/logs/app1<span class="w"> </span>/logs/app2
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span>app1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">src</span><span class="o">=</span>logs,dst<span class="o">=</span>/var/log/app1,volume-subpath<span class="o">=</span>app1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>app1:latest
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span>app2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">src</span><span class="o">=</span>logs,dst<span class="o">=</span>/var/log/app2,volume-subpath<span class="o">=</span>app2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>app2:latest
+</code></pre></div>
+
+<p>With this setup, the containers write their logs to separate subdirectories of
+the <code>logs</code> volume. The containers can't access the other container's logs.</p>
+<h2 id="share-data-between-machines">Share data between machines<a class="headerlink" href="#share-data-between-machines" title="Permanent link">#</a></h2>
+<p>When building fault-tolerant applications, you may need to configure multiple
+replicas of the same service to have access to the same files.</p>
+<p><img alt="shared storage" src="images/volumes-shared-storage.webp"></p>
+<p>There are several ways to achieve this when developing your applications.
+One is to add logic to your application to store files on a cloud object
+storage system like Amazon S3. Another is to create volumes with a driver that
+supports writing files to an external storage system like NFS or Amazon S3.</p>
+<p>Volume drivers let you abstract the underlying storage system from the
+application logic. For example, if your services use a volume with an NFS
+driver, you can update the services to use a different driver. For example, to
+store data in the cloud, without changing the application logic.</p>
+<h2 id="use-a-volume-driver">Use a volume driver<a class="headerlink" href="#use-a-volume-driver" title="Permanent link">#</a></h2>
+<p>When you create a volume using <code>docker volume create</code>, or when you start a
+container which uses a not-yet-created volume, you can specify a volume driver.
+The following examples use the <code>rclone/docker-volume-rclone</code> volume driver, first when creating
+a standalone volume, and then when starting a container which creates a new
+volume.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>If your volume driver accepts a comma-separated list as an option,
+you must escape the value from the outer CSV parser. To escape a <code>volume-opt</code>,
+surround it with double quotes (<code>"</code>) and surround the entire mount parameter
+with single quotes (<code>'</code>).</p>
+<p>For example, the <code>local</code> driver accepts mount options as a comma-separated
+list in the <code>o</code> parameter. This example shows the correct way to escape the list.</p>
+<p><code>console
+$ docker service create \
+ --mount 'type=volume,src=&lt;VOLUME-NAME&gt;,dst=&lt;CONTAINER-PATH&gt;,volume-driver=local,volume-opt=type=nfs,volume-opt=device=&lt;nfs-server&gt;:&lt;nfs-path&gt;,"volume-opt=o=addr=&lt;nfs-address&gt;,vers=4,soft,timeo=180,bg,tcp,rw"'
+ --name myservice \
+ &lt;IMAGE&gt;</code></p>
+</blockquote>
+<h3 id="initial-setup">Initial setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h3>
+<p>The following example assumes that you have two nodes, the first of which is a Docker
+host and can connect to the second node using SSH.</p>
+<p>On the Docker host, install the <code>rclone/docker-volume-rclone</code> plugin:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>--grant-all-permissions<span class="w"> </span>rclone/docker-volume-rclone<span class="w"> </span>--aliases<span class="w"> </span>rclone
+</code></pre></div>
+
+<h3 id="create-a-volume-using-a-volume-driver">Create a volume using a volume driver<a class="headerlink" href="#create-a-volume-using-a-volume-driver" title="Permanent link">#</a></h3>
+<p>This example mounts the <code>/remote</code> directory on host <code>1.2.3.4</code> into a
+volume named <code>rclonevolume</code>. Each volume driver may have zero or more
+configurable options, you specify each of them using an <code>-o</code> flag.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>rclone<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>rclonevolume<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">type</span><span class="o">=</span>sftp<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">path</span><span class="o">=</span>remote<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>sftp-host<span class="o">=</span><span class="m">1</span>.2.3.4<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>sftp-user<span class="o">=</span>user<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="s2">&quot;sftp-password=</span><span class="k">$(</span>cat<span class="w"> </span>file_containing_password_for_remote_host<span class="k">)</span><span class="s2">&quot;</span>
+</code></pre></div>
+
+<p>This volume can now be mounted into containers.</p>
+<h3 id="start-a-container-which-creates-a-volume-using-a-volume-driver">Start a container which creates a volume using a volume driver<a class="headerlink" href="#start-a-container-which-creates-a-volume-using-a-volume-driver" title="Permanent link">#</a></h3>
+<blockquote>
+<p>[!NOTE]</p>
+<p>If the volume driver requires you to pass any options,
+you must use the <code>--mount</code> flag to mount the volume, and not <code>-v</code>.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>rclone-container<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="nv">type</span><span class="o">=</span>volume,volume-driver<span class="o">=</span>rclone,src<span class="o">=</span>rclonevolume,target<span class="o">=</span>/app,volume-opt<span class="o">=</span><span class="nv">type</span><span class="o">=</span>sftp,volume-opt<span class="o">=</span><span class="nv">path</span><span class="o">=</span>remote,<span class="w"> </span>volume-opt<span class="o">=</span>sftp-host<span class="o">=</span><span class="m">1</span>.2.3.4,volume-opt<span class="o">=</span>sftp-user<span class="o">=</span>user,volume-opt<span class="o">=</span>-o<span class="w"> </span><span class="s2">&quot;sftp-password=</span><span class="k">$(</span>cat<span class="w"> </span>file_containing_password_for_remote_host<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<h3 id="create-a-service-which-creates-an-nfs-volume">Create a service which creates an NFS volume<a class="headerlink" href="#create-a-service-which-creates-an-nfs-volume" title="Permanent link">#</a></h3>
+<p>The following example shows how you can create an NFS volume when creating a service.
+It uses <code>10.0.0.10</code> as the NFS server and <code>/var/docker-nfs</code> as the exported directory on the NFS server.
+Note that the volume driver specified is <code>local</code>.</p>
+<h4 id="nfsv3">NFSv3<a class="headerlink" href="#nfsv3" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>service<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>nfs-service<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="s1">&#39;type=volume,source=nfsvolume,target=/app,volume-driver=local,volume-opt=type=nfs,volume-opt=device=:/var/docker-nfs,volume-opt=o=addr=10.0.0.10&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>nginx:latest
+</code></pre></div>
+
+<h4 id="nfsv4">NFSv4<a class="headerlink" href="#nfsv4" title="Permanent link">#</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>service<span class="w"> </span>create<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span>nfs-service<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="w"> </span><span class="s1">&#39;type=volume,source=nfsvolume,target=/app,volume-driver=local,volume-opt=type=nfs,volume-opt=device=:/var/docker-nfs,&quot;volume-opt=o=addr=10.0.0.10,rw,nfsvers=4,async&quot;&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>nginx:latest
+</code></pre></div>
+
+<h3 id="create-cifssamba-volumes">Create CIFS/Samba volumes<a class="headerlink" href="#create-cifssamba-volumes" title="Permanent link">#</a></h3>
+<p>You can mount a Samba share directly in Docker without configuring a mount point on your host.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--driver<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--opt<span class="w"> </span><span class="nv">type</span><span class="o">=</span>cifs<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--opt<span class="w"> </span><span class="nv">device</span><span class="o">=</span>//uxxxxx.your-server.de/backup<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--opt<span class="w"> </span><span class="nv">o</span><span class="o">=</span><span class="nv">addr</span><span class="o">=</span>uxxxxx.your-server.de,username<span class="o">=</span>uxxxxxxx,password<span class="o">=</span>*****,file_mode<span class="o">=</span><span class="m">0777</span>,dir_mode<span class="o">=</span><span class="m">0777</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span>cifs-volume
+</code></pre></div>
+
+<p>The <code>addr</code> option is required if you specify a hostname instead of an IP.
+This lets Docker perform the hostname lookup.</p>
+<h3 id="block-storage-devices">Block storage devices<a class="headerlink" href="#block-storage-devices" title="Permanent link">#</a></h3>
+<p>You can mount a block storage device, such as an external drive or a drive partition, to a container.
+The following example shows how to create and use a file as a block storage device,
+and how to mount the block device as a container volume.</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>The following procedure is only an example.
+The solution illustrated here isn't recommended as a general practice.
+Don't attempt this approach unless you're confident about what you're doing.</p>
+</blockquote>
+<h4 id="how-mounting-block-devices-works">How mounting block devices works<a class="headerlink" href="#how-mounting-block-devices-works" title="Permanent link">#</a></h4>
+<p>Under the hood, the <code>--mount</code> flag using the <code>local</code> storage driver invokes the
+Linux <code>mount</code> syscall and forwards the options you pass to it unaltered.
+Docker doesn't implement any additional functionality on top of the native mount features supported by the Linux kernel.</p>
+<p>If you're familiar with the
+<a href="https://man7.org/linux/man-pages/man8/mount.8.html" rel="noopener" target="_blank">Linux <code>mount</code> command</a>,
+you can think of the <code>--mount</code> options as forwarded to the <code>mount</code> command in the following manner:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>mount<span class="w"> </span>-t<span class="w"> </span>&lt;mount.volume-opt.type&gt;<span class="w"> </span>&lt;mount.volume-opt.device&gt;<span class="w"> </span>&lt;mount.dst&gt;<span class="w"> </span>-o<span class="w"> </span>&lt;mount.volume-opts.o&gt;
+</code></pre></div>
+
+<p>To explain this further, consider the following <code>mount</code> command example.
+This command mounts the <code>/dev/loop5</code> device to the path <code>/external-drive</code> on the system.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>mount<span class="w"> </span>-t<span class="w"> </span>ext4<span class="w"> </span>/dev/loop5<span class="w"> </span>/external-drive
+</code></pre></div>
+
+<p>The following <code>docker run</code> command achieves a similar result, from the point of view of the container being run.
+Running a container with this <code>--mount</code> option sets up the mount in the same way as if you had executed the
+<code>mount</code> command from the previous example.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="o">=</span><span class="s1">&#39;type=volume,dst=/external-drive,volume-driver=local,volume-opt=device=/dev/loop5,volume-opt=type=ext4&#39;</span>
+</code></pre></div>
+
+<p>You can't run the <code>mount</code> command inside the container directly,
+because the container is unable to access the <code>/dev/loop5</code> device.
+That's why the <code>docker run</code> command uses the <code>--mount</code> option.</p>
+<h4 id="example-mounting-a-block-device-in-a-container">Example: Mounting a block device in a container<a class="headerlink" href="#example-mounting-a-block-device-in-a-container" title="Permanent link">#</a></h4>
+<p>The following steps create an <code>ext4</code> filesystem and mounts it into a container.
+The filesystem support of your system depends on the version of the Linux kernel you are using.</p>
+<ol>
+<li>Create a file and allocate some space to it:</li>
+</ol>
+<p><code>console
+   $ fallocate -l 1G disk.raw</code></p>
+<ol start="2">
+<li>Build a filesystem onto the <code>disk.raw</code> file:</li>
+</ol>
+<p><code>console
+   $ mkfs.ext4 disk.raw</code></p>
+<ol start="3">
+<li>Create a loop device:</li>
+</ol>
+<p><code>console
+   $ losetup -f --show disk.raw
+   /dev/loop5</code></p>
+<blockquote>
+<p>[!NOTE]</p>
+<p><code>losetup</code> creates an ephemeral loop device that's removed after
+system reboot, or manually removed with <code>losetup -d</code>.</p>
+</blockquote>
+<ol start="4">
+<li>Run a container that mounts the loop device as a volume:</li>
+</ol>
+<p><code>console
+   $ docker run -it --rm \
+     --mount='type=volume,dst=/external-drive,volume-driver=local,volume-opt=device=/dev/loop5,volume-opt=type=ext4' \
+     ubuntu bash</code></p>
+<p>When the container starts, the path <code>/external-drive</code> mounts the
+   <code>disk.raw</code> file from the host filesystem as a block device.</p>
+<ol start="5">
+<li>When you're done, and the device is unmounted from the container,
+   detach the loop device to remove the device from the host system:</li>
+</ol>
+<p><code>console
+   $ losetup -d /dev/loop5</code></p>
+<h2 id="back-up-restore-or-migrate-data-volumes">Back up, restore, or migrate data volumes<a class="headerlink" href="#back-up-restore-or-migrate-data-volumes" title="Permanent link">#</a></h2>
+<p>Volumes are useful for backups, restores, and migrations.
+Use the <code>--volumes-from</code> flag to create a new container that mounts that volume.</p>
+<h3 id="back-up-a-volume">Back up a volume<a class="headerlink" href="#back-up-a-volume" title="Permanent link">#</a></h3>
+<p>For example, create a new container named <code>dbstore</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span>/dbdata<span class="w"> </span>--name<span class="w"> </span>dbstore<span class="w"> </span>ubuntu<span class="w"> </span>/bin/bash
+</code></pre></div>
+
+<p>In the next command:</p>
+<ul>
+<li>Launch a new container and mount the volume from the <code>dbstore</code> container</li>
+<li>Mount a local host directory as <code>/backup</code></li>
+<li>Pass a command that tars the contents of the <code>dbdata</code> volume to a <code>backup.tar</code> file inside the <code>/backup</code> directory.</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--volumes-from<span class="w"> </span>dbstore<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/backup<span class="w"> </span>ubuntu<span class="w"> </span>tar<span class="w"> </span>cvf<span class="w"> </span>/backup/backup.tar<span class="w"> </span>/dbdata
+</code></pre></div>
+
+<p>When the command completes and the container stops, it creates a backup of
+the <code>dbdata</code> volume.</p>
+<h3 id="restore-volume-from-a-backup">Restore volume from a backup<a class="headerlink" href="#restore-volume-from-a-backup" title="Permanent link">#</a></h3>
+<p>With the backup just created, you can restore it to the same container,
+or to another container that you created elsewhere.</p>
+<p>For example, create a new container named <code>dbstore2</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span>/dbdata<span class="w"> </span>--name<span class="w"> </span>dbstore2<span class="w"> </span>ubuntu<span class="w"> </span>/bin/bash
+</code></pre></div>
+
+<p>Then, un-tar the backup file in the new container’s data volume:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--volumes-from<span class="w"> </span>dbstore2<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/backup<span class="w"> </span>ubuntu<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;cd /dbdata &amp;&amp; tar xvf /backup/backup.tar --strip 1&quot;</span>
+</code></pre></div>
+
+<p>You can use these techniques to automate backup, migration, and restore
+testing using your preferred tools.</p>
+<h2 id="remove-volumes">Remove volumes<a class="headerlink" href="#remove-volumes" title="Permanent link">#</a></h2>
+<p>A Docker data volume persists after you delete a container. There are two types
+of volumes to consider:</p>
+<ul>
+<li>Named volumes have a specific name, for example, <code>awesome:/bar</code>, where <code>awesome</code> is the name.</li>
+<li>Anonymous volumes have no specific name. Therefore, when the container is deleted, you can instruct the Docker Engine daemon to remove them.</li>
+</ul>
+<h3 id="remove-anonymous-volumes">Remove anonymous volumes<a class="headerlink" href="#remove-anonymous-volumes" title="Permanent link">#</a></h3>
+<p>To automatically remove anonymous volumes, use the <code>--rm</code> option. For example,
+this command creates an anonymous <code>/foo</code> volume. When you remove the container,
+the Docker Engine removes the <code>/foo</code> volume but not the <code>awesome</code> volume.</p>
+<p>The <code>--rm</code> option works with both foreground and detached (<code>-d</code>) containers.
+The anonymous volumes are cleaned up when the container exits.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>/foo<span class="w"> </span>-v<span class="w"> </span>awesome:/bar<span class="w"> </span>busybox<span class="w"> </span>top
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>If another container binds the volumes with
+<code>--volumes-from</code>, the volume definitions are <em>copied</em> and the
+anonymous volume also stays after the first container is removed.</p>
+</blockquote>
+<h3 id="remove-all-volumes">Remove all volumes<a class="headerlink" href="#remove-all-volumes" title="Permanent link">#</a></h3>
+<p>To remove all unused volumes and free up space:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>volume<span class="w"> </span>prune
+</code></pre></div>
+
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<ul>
+<li>Learn about <a href="bind-mounts.html">bind mounts</a>.</li>
+<li>Learn about <a href="tmpfs.html">tmpfs mounts</a>.</li>
+<li>Learn about <a href="image-mounts.html">image mounts</a>.</li>
+<li>Learn about <a href="/engine/storage/drivers/">storage drivers</a>.</li>
+<li>Learn about <a href="/engine/extend/legacy_plugins/">third-party volume driver plugins</a>.</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/storage/tmpfs.html">
+          <span class="muted">Anterior</span>tmpfs mounts
+        </a>
+        <a class="pager-next" href="../../engine/swarm/index.html">
+          <span class="muted">Siguiente</span>Swarm mode
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

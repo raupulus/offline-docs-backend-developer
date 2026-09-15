@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seccomp security profiles for Docker · Docker</title>
+<meta name="description" content="Seccomp security profiles for Docker - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/seccomp.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Seccomp security profiles for Docker">
+<meta property="og:description" content="Seccomp security profiles for Docker - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Seccomp security profiles for Docker">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Seccomp security profiles for Docker",
+"url": "https://docs.raupulus.dev/docker/engine/security/seccomp.html",  "description": "Seccomp security profiles for Docker - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/tips.html"
+>Tips</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../engine/security/seccomp.html"
+class="is-current" aria-current="page">Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/nodes.html"
+>How nodes work</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/pki.html"
+>Manage swarm security with public key infrastructure (PKI)</a>
+              </li>
+              <li>
+                <a href="../../engine/swarm/how-swarm-mode-works/services.html"
+>How services work</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Seccomp security profiles for Docker</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#pass-a-profile-for-a-container">Pass a profile for a container#</a></li>
+              <li class="lvl-3"><a href="#significant-syscalls-blocked-by-the-default-profile">Significant syscalls blocked by the default profile#</a></li>
+              <li class="lvl-2"><a href="#run-without-the-default-seccomp-profile">Run without the default seccomp profile#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Secure computing mode (<code>seccomp</code>) is a Linux kernel feature. You can use it to
+restrict the actions available within the container. The <code>seccomp()</code> system
+call operates on the seccomp state of the calling process. You can use this
+feature to restrict your application's access.</p>
+<p>This feature is available only if Docker has been built with <code>seccomp</code> and the
+kernel is configured with <code>CONFIG_SECCOMP</code> enabled. To check if your kernel
+supports <code>seccomp</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>grep<span class="w"> </span><span class="nv">CONFIG_SECCOMP</span><span class="o">=</span><span class="w"> </span>/boot/config-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
+<span class="go">CONFIG_SECCOMP=y</span>
+</code></pre></div>
+
+<h2 id="pass-a-profile-for-a-container">Pass a profile for a container<a class="headerlink" href="#pass-a-profile-for-a-container" title="Permanent link">#</a></h2>
+<p>The <a href="https://github.com/moby/profiles/blob/main/seccomp/default.json" rel="noopener" target="_blank">default <code>seccomp</code> profile</a>
+provides a sane default for running containers with seccomp and disables around
+44 system calls out of 300+. It is moderately protective while providing wide
+application compatibility.</p>
+<p>In effect, the profile is an allowlist that denies access to system calls by
+default and then allows specific system calls. The profile works by defining a
+<code>defaultAction</code> of <code>SCMP_ACT_ERRNO</code> and overriding that action only for specific
+system calls. The effect of <code>SCMP_ACT_ERRNO</code> is to cause a <code>Permission Denied</code>
+error. Next, the profile defines a specific list of system calls which are fully
+allowed, because their <code>action</code> is overridden to be <code>SCMP_ACT_ALLOW</code>. Finally,
+some specific rules are for individual system calls such as <code>personality</code>, and others,
+to allow variants of those system calls with specific arguments.</p>
+<p><code>seccomp</code> is instrumental for running Docker containers with least privilege. It
+is not recommended to change the default <code>seccomp</code> profile.</p>
+<p>When you run a container, it uses the default profile unless you override it
+with the <code>--security-opt</code> option. For example, the following explicitly
+specifies a policy:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">             </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">             </span>--security-opt<span class="w"> </span><span class="nv">seccomp</span><span class="o">=</span>/path/to/seccomp/profile.json<span class="w"> </span><span class="se">\</span>
+<span class="w">             </span>hello-world
+</code></pre></div>
+
+<p>The Docker CLI resolves a relative profile path from the working directory
+where you invoke <code>docker</code>. The CLI reads the profile and sends its contents to
+the daemon, so the profile must be available on the client host when the client
+and daemon run on separate hosts.</p>
+<h3 id="significant-syscalls-blocked-by-the-default-profile">Significant syscalls blocked by the default profile<a class="headerlink" href="#significant-syscalls-blocked-by-the-default-profile" title="Permanent link">#</a></h3>
+<p>Docker's default seccomp profile is an allowlist which specifies the calls that
+are allowed. The table below lists the significant (but not all) syscalls that
+are effectively blocked because they are not on the allowlist. The table includes
+the reason each syscall is blocked rather than white-listed.</p>
+<table>
+<thead>
+<tr>
+<th>Syscall</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>acct</code></td>
+<td>Accounting syscall which could let containers disable their own resource limits or process accounting. Also gated by <code>CAP_SYS_PACCT</code>.</td>
+</tr>
+<tr>
+<td><code>add_key</code></td>
+<td>Prevent containers from using the kernel keyring, which is not namespaced.</td>
+</tr>
+<tr>
+<td><code>bpf</code></td>
+<td>Deny loading potentially persistent BPF programs into kernel, already gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>clock_adjtime</code></td>
+<td>Time/date is not namespaced. Also gated by <code>CAP_SYS_TIME</code>.</td>
+</tr>
+<tr>
+<td><code>clock_settime</code></td>
+<td>Time/date is not namespaced. Also gated by <code>CAP_SYS_TIME</code>.</td>
+</tr>
+<tr>
+<td><code>clone</code></td>
+<td>Deny cloning new namespaces. Also gated by <code>CAP_SYS_ADMIN</code> for CLONE_* flags, except <code>CLONE_NEWUSER</code>.</td>
+</tr>
+<tr>
+<td><code>create_module</code></td>
+<td>Deny manipulation and functions on kernel modules. Obsolete. Also gated by <code>CAP_SYS_MODULE</code>.</td>
+</tr>
+<tr>
+<td><code>delete_module</code></td>
+<td>Deny manipulation and functions on kernel modules. Also gated by <code>CAP_SYS_MODULE</code>.</td>
+</tr>
+<tr>
+<td><code>finit_module</code></td>
+<td>Deny manipulation and functions on kernel modules. Also gated by <code>CAP_SYS_MODULE</code>.</td>
+</tr>
+<tr>
+<td><code>get_kernel_syms</code></td>
+<td>Deny retrieval of exported kernel and module symbols. Obsolete.</td>
+</tr>
+<tr>
+<td><code>get_mempolicy</code></td>
+<td>Syscall that modifies kernel memory and NUMA settings. Already gated by <code>CAP_SYS_NICE</code>.</td>
+</tr>
+<tr>
+<td><code>init_module</code></td>
+<td>Deny manipulation and functions on kernel modules. Also gated by <code>CAP_SYS_MODULE</code>.</td>
+</tr>
+<tr>
+<td><code>ioperm</code></td>
+<td>Prevent containers from modifying kernel I/O privilege levels. Already gated by <code>CAP_SYS_RAWIO</code>.</td>
+</tr>
+<tr>
+<td><code>iopl</code></td>
+<td>Prevent containers from modifying kernel I/O privilege levels. Already gated by <code>CAP_SYS_RAWIO</code>.</td>
+</tr>
+<tr>
+<td><code>io_uring_enter</code></td>
+<td>Blocked due to security vulnerabilities that can be exploited to break out of containers. See <a href="https://github.com/moby/moby/pull/46762" rel="noopener" target="_blank">moby/moby#46762</a>.</td>
+</tr>
+<tr>
+<td><code>io_uring_register</code></td>
+<td>Blocked due to security vulnerabilities that can be exploited to break out of containers. See <a href="https://github.com/moby/moby/pull/46762" rel="noopener" target="_blank">moby/moby#46762</a>.</td>
+</tr>
+<tr>
+<td><code>io_uring_setup</code></td>
+<td>Blocked due to security vulnerabilities that can be exploited to break out of containers. See <a href="https://github.com/moby/moby/pull/46762" rel="noopener" target="_blank">moby/moby#46762</a>.</td>
+</tr>
+<tr>
+<td><code>kcmp</code></td>
+<td>Restrict process inspection capabilities, already blocked by dropping <code>CAP_SYS_PTRACE</code>.</td>
+</tr>
+<tr>
+<td><code>kexec_file_load</code></td>
+<td>Sister syscall of <code>kexec_load</code> that does the same thing, slightly different arguments. Also gated by <code>CAP_SYS_BOOT</code>.</td>
+</tr>
+<tr>
+<td><code>kexec_load</code></td>
+<td>Deny loading a new kernel for later execution. Also gated by <code>CAP_SYS_BOOT</code>.</td>
+</tr>
+<tr>
+<td><code>keyctl</code></td>
+<td>Prevent containers from using the kernel keyring, which is not namespaced.</td>
+</tr>
+<tr>
+<td><code>lookup_dcookie</code></td>
+<td>Tracing/profiling syscall, which could leak a lot of information on the host. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>mbind</code></td>
+<td>Syscall that modifies kernel memory and NUMA settings. Already gated by <code>CAP_SYS_NICE</code>.</td>
+</tr>
+<tr>
+<td><code>mount</code></td>
+<td>Deny mounting, already gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>move_pages</code></td>
+<td>Syscall that modifies kernel memory and NUMA settings.</td>
+</tr>
+<tr>
+<td><code>nfsservctl</code></td>
+<td>Deny interaction with the kernel NFS daemon. Obsolete since Linux 3.1.</td>
+</tr>
+<tr>
+<td><code>open_by_handle_at</code></td>
+<td>Cause of an old container breakout. Also gated by <code>CAP_DAC_READ_SEARCH</code>.</td>
+</tr>
+<tr>
+<td><code>perf_event_open</code></td>
+<td>Tracing/profiling syscall, which could leak a lot of information on the host.</td>
+</tr>
+<tr>
+<td><code>personality</code></td>
+<td>Prevent container from enabling BSD emulation. Not inherently dangerous, but poorly tested, potential for a lot of kernel vulnerabilities.</td>
+</tr>
+<tr>
+<td><code>pivot_root</code></td>
+<td>Deny <code>pivot_root</code>, should be privileged operation.</td>
+</tr>
+<tr>
+<td><code>process_vm_readv</code></td>
+<td>Restrict process inspection capabilities, already blocked by dropping <code>CAP_SYS_PTRACE</code>.</td>
+</tr>
+<tr>
+<td><code>process_vm_writev</code></td>
+<td>Restrict process inspection capabilities, already blocked by dropping <code>CAP_SYS_PTRACE</code>.</td>
+</tr>
+<tr>
+<td><code>ptrace</code></td>
+<td>Tracing/profiling syscall. Blocked in Linux kernel versions before 4.8 to avoid seccomp bypass. Tracing/profiling arbitrary processes is already blocked by dropping <code>CAP_SYS_PTRACE</code>, because it could leak a lot of information on the host.</td>
+</tr>
+<tr>
+<td><code>query_module</code></td>
+<td>Deny manipulation and functions on kernel modules. Obsolete.</td>
+</tr>
+<tr>
+<td><code>quotactl</code></td>
+<td>Quota syscall which could let containers disable their own resource limits or process accounting. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>reboot</code></td>
+<td>Don't let containers reboot the host. Also gated by <code>CAP_SYS_BOOT</code>.</td>
+</tr>
+<tr>
+<td><code>request_key</code></td>
+<td>Prevent containers from using the kernel keyring, which is not namespaced.</td>
+</tr>
+<tr>
+<td><code>set_mempolicy</code></td>
+<td>Syscall that modifies kernel memory and NUMA settings. Already gated by <code>CAP_SYS_NICE</code>.</td>
+</tr>
+<tr>
+<td><code>setns</code></td>
+<td>Deny associating a thread with a namespace. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>settimeofday</code></td>
+<td>Time/date is not namespaced. Also gated by <code>CAP_SYS_TIME</code>.</td>
+</tr>
+<tr>
+<td><code>stime</code></td>
+<td>Time/date is not namespaced. Also gated by <code>CAP_SYS_TIME</code>.</td>
+</tr>
+<tr>
+<td><code>socket</code></td>
+<td>Blocked for <code>AF_ALG</code> to prevent in-container privilege escalation via the kernel cryptographic API (<a href="https://nvd.nist.gov/vuln/detail/CVE-2026-31431" rel="noopener" target="_blank">CVE-2026-31431</a>). Also blocked for <code>AF_VSOCK</code>. These do not cover <code>socketcall(2)</code>, which can be easily bypassed. <code>AF_ALG</code> is denied on both paths by the default AppArmor profile (<code>deny network alg,</code>) or the SELinux policy module; <code>AF_VSOCK</code> has no equivalent LSM rule. See <a href="https://github.com/moby/moby/pull/52494" rel="noopener" target="_blank">moby/moby#52494</a>.</td>
+</tr>
+<tr>
+<td><code>swapon</code></td>
+<td>Deny start/stop swapping to file/device. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>swapoff</code></td>
+<td>Deny start/stop swapping to file/device. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>sysfs</code></td>
+<td>Obsolete syscall.</td>
+</tr>
+<tr>
+<td><code>_sysctl</code></td>
+<td>Obsolete, replaced by /proc/sys.</td>
+</tr>
+<tr>
+<td><code>umount</code></td>
+<td>Should be a privileged operation. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>umount2</code></td>
+<td>Should be a privileged operation. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>unshare</code></td>
+<td>Deny cloning new namespaces for processes. Also gated by <code>CAP_SYS_ADMIN</code>, with the exception of <code>unshare --user</code>.</td>
+</tr>
+<tr>
+<td><code>uselib</code></td>
+<td>Older syscall related to shared libraries, unused for a long time.</td>
+</tr>
+<tr>
+<td><code>userfaultfd</code></td>
+<td>Userspace page fault handling, largely needed for process migration.</td>
+</tr>
+<tr>
+<td><code>ustat</code></td>
+<td>Obsolete syscall.</td>
+</tr>
+<tr>
+<td><code>vm86</code></td>
+<td>In kernel x86 real mode virtual machine. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+<tr>
+<td><code>vm86old</code></td>
+<td>In kernel x86 real mode virtual machine. Also gated by <code>CAP_SYS_ADMIN</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="run-without-the-default-seccomp-profile">Run without the default seccomp profile<a class="headerlink" href="#run-without-the-default-seccomp-profile" title="Permanent link">#</a></h2>
+<p>You can pass <code>unconfined</code> to run a container without the default seccomp
+profile.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>--security-opt<span class="w"> </span><span class="nv">seccomp</span><span class="o">=</span>unconfined<span class="w"> </span>debian:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>unshare<span class="w"> </span>--map-root-user<span class="w"> </span>--user<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span>whoami
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../engine/security/rootless/uid-gid-mapping.html">
+          <span class="muted">Anterior</span>UID/GID mapping
+        </a>
+        <a class="pager-next" href="../../engine/security/trust/index.html">
+          <span class="muted">Siguiente</span>Content trust in Docker
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>

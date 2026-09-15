@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The generate_series Table-Valued Function · SQLite</title>
+<meta name="description" content="The generate_series Table-Valued Function - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/series.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="The generate_series Table-Valued Function">
+<meta property="og:description" content="The generate_series Table-Valued Function - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The generate_series Table-Valued Function">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "The generate_series Table-Valued Function",
+"url": "https://docs.raupulus.dev/sqlite/guides/series.html",  "description": "The generate_series Table-Valued Function - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/type-name.html"
+>SQLite Syntax: type-name</a>
+              </li>
+              <li>
+                <a href="../guides/update-stmt.html"
+>SQLite Syntax: update-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/update-stmt-limited.html"
+>SQLite Syntax: update-stmt-limited</a>
+              </li>
+              <li>
+                <a href="../guides/upsert-clause.html"
+>SQLite Syntax: upsert-clause</a>
+              </li>
+              <li>
+                <a href="../guides/vacuum-stmt.html"
+>SQLite Syntax: vacuum-stmt</a>
+              </li>
+              <li>
+                <a href="../guides/window-defn.html"
+>SQLite Syntax: window-defn</a>
+              </li>
+              <li>
+                <a href="../guides/window-function-invocation.html"
+>SQLite Syntax: window-function-invocation</a>
+              </li>
+              <li>
+                <a href="../guides/with-clause.html"
+>SQLite Syntax: with-clause</a>
+              </li>
+              <li>
+                <a href="../guides/unlock_notify.html"
+>SQLite Unlock-Notify API</a>
+              </li>
+              <li>
+                <a href="../guides/version3.html"
+>SQLite Version 3 Overview</a>
+              </li>
+              <li>
+                <a href="../guides/printf.html"
+>SQLite&#39;s Built-in printf()</a>
+              </li>
+              <li>
+                <a href="../guides/staleexpridx.html"
+>Stale Expression Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_add_strm.html"
+>Streaming Versions of API functions.</a>
+              </li>
+              <li>
+                <a href="../guides/stricttables.html"
+>STRICT Tables</a>
+              </li>
+              <li>
+                <a href="../guides/swarmvtab.html"
+>Swarmvtab Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/doc_target_crossref.html"
+>Target Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/tempfiles.html"
+>Temporary Files Used By SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/glossary.html"
+>Terms of Art Glossary</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_isempty.html"
+>Test if a changeset has recorded any changes.</a>
+              </li>
+              <li>
+                <a href="../guides/th3.html"
+>TH3</a>
+              </li>
+              <li>
+                <a href="../guides/flextypegood.html"
+>The Advantages Of Flexible Typing</a>
+              </li>
+              <li>
+                <a href="../guides/amalg-v-canon.html"
+>The Amalgamation Versus Canonical Sources</a>
+              </li>
+              <li>
+                <a href="../guides/base64.html"
+>The Base64() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/base85.html"
+>The Base85() SQL Function</a>
+              </li>
+              <li>
+                <a href="../guides/bytecodevtab.html"
+>The Bytecode() And Tables_Used() Table-Valued Functions</a>
+              </li>
+              <li>
+                <a href="../guides/cksumvfs.html"
+>The Checksum VFS Shim</a>
+              </li>
+              <li>
+                <a href="../guides/completion.html"
+>The COMPLETION() Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/csv.html"
+>The CSV Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/dbstat.html"
+>The DBSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/errlog.html"
+>The Error And Warning Log</a>
+              </li>
+              <li>
+                <a href="../guides/series.html"
+class="is-current" aria-current="page">The generate_series Table-Valued Function</a>
+              </li>
+              <li>
+                <a href="../guides/geopoly.html"
+>The Geopoly Interface To The SQLite R*Tree Module</a>
+              </li>
+              <li>
+                <a href="../guides/lemon.html"
+>The Lemon LALR(1) Parser Generator</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner-ng.html"
+>The Next-Generation Query Planner</a>
+              </li>
+              <li>
+                <a href="../guides/percentile.html"
+>The Percentile Extension</a>
+              </li>
+              <li>
+                <a href="../guides/rbu.html"
+>The RBU Extension</a>
+              </li>
+              <li>
+                <a href="../guides/schematab.html"
+>The Schema Table</a>
+              </li>
+              <li>
+                <a href="../guides/sessionintro.html"
+>The Session Extension</a>
+              </li>
+              <li>
+                <a href="../guides/spellfix1.html"
+>The Spellfix1 Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/amalgamation.html"
+>The SQLite Amalgamation</a>
+              </li>
+              <li>
+                <a href="../guides/opcode.html"
+>The SQLite Bytecode Engine</a>
+              </li>
+              <li>
+                <a href="../guides/vfs.html"
+>The SQLite OS Interface or &#34;VFS&#34;</a>
+              </li>
+              <li>
+                <a href="../guides/optoverview.html"
+>The SQLite Query Optimizer Overview</a>
+              </li>
+              <li>
+                <a href="../guides/zipfile.html"
+>The SQLite Zipfile Module</a>
+              </li>
+              <li>
+                <a href="../guides/sqlanalyze.html"
+>The sqlite3_analyzer.exe Utility Program</a>
+              </li>
+              <li>
+                <a href="../guides/dbpage.html"
+>The SQLITE_DBPAGE Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/memstat.html"
+>The SQLITE_MEMSTAT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/stmt.html"
+>The SQLITE_STMT Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/tclsqlite.html"
+>The Tcl interface to the SQLite library</a>
+              </li>
+              <li>
+                <a href="../guides/uintcseq.html"
+>The UINT Collating Sequence</a>
+              </li>
+              <li>
+                <a href="../guides/unionvtab.html"
+>The UNION Virtual Table</a>
+              </li>
+              <li>
+                <a href="../guides/assert.html"
+>The Use Of assert() In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/vdbe.html"
+>The Virtual Database Engine of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/uri.html"
+>Uniform Resource Identifiers</a>
+              </li>
+              <li>
+                <a href="../guides/threadsafe.html"
+>Using SQLite In Multi-Threaded Applications</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_config_strmsize.html"
+>Values for sqlite3session_config().</a>
+              </li>
+              <li>
+                <a href="../guides/versionnumbers.html"
+>Version Numbers in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cves.html"
+>Vulnerabilities</a>
+              </li>
+              <li>
+                <a href="../guides/walformat.html"
+>WAL-mode File Format</a>
+              </li>
+              <li>
+                <a href="../guides/keyword_index.html"
+>Website Keyword Index</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">The generate_series Table-Valued Function</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/series.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#11-equivalent-recursive-common-table-expression">1.1. Equivalent Recursive Common Table Expression#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-overview">1. Overview<a class="headerlink" href="#1-overview" title="Permanent link">#</a></h1>
+<p>The generate_series(START,STOP,STEP) <a href="vtab.html#tabfunc2">table-valued function</a> is a <a href="loadext.html">loadable extension</a> included in the SQLite source tree, and compiled into the <a href="cli.html">command-line shell</a>. The generate_series() table has one visible result column named "value" holding integer values and a number of rows determined by the parameters START, STOP, and STEP. The first row of the table has a value of START. Subsequent rows increment by STEP to a value not exceeding STOP.</p>
+<p>The generate_series() table has additional, hidden columns named "start", "stop", and "step" whose values are the effective values of START, STOP and STEP as provided or defaulted. It also has a rowid, accessible by its usual names.</p>
+<p>Omitted parameters take on default values. STEP defaults to 1. STOP defaults to 4294967295. The START parameter is required as of version 3.37.0 (2021-11-27) and later and an error will be raised if START is omitted or has a self-referential or otherwise uncomputable value. Older versions used a default of 0 for START. The legacy behavior can be obtained from recent code by compiling with -DZERO_ARGUMENT_GENERATE_SERIES.</p>
+<h2 id="11-equivalent-recursive-common-table-expression">1.1. Equivalent Recursive Common Table Expression<a class="headerlink" href="#11-equivalent-recursive-common-table-expression" title="Permanent link">#</a></h2>
+<p>The generate_series table can be simulated for positive step values using a <a href="lang_with.html#recursivecte">recursive common table expression</a>. If the three parameters are \$start, \$end, and \$step, then the equivalent common table expression is:</p>
+<p>WITH RECURSIVE generate_series(value) AS (\
+  SELECT \$start\
+  UNION ALL\
+  SELECT value+\$step FROM generate_series\
+   WHERE value+\$step\&lt;=\$end\
+) ...\</p>
+<p>The common table expression works without having to load an extension. On the other hand, the extension is easier to program and faster.</p>
+<h1 id="2-usage-examples">2. Usage Examples<a class="headerlink" href="#2-usage-examples" title="Permanent link">#</a></h1>
+<p>Generate all multiples of 5 less than or equal to 100:</p>
+<p>SELECT value FROM generate_series(5,100,5);\</p>
+<p>Generate the 20 random integer values:</p>
+<p>SELECT random() FROM generate_series(1,20);\</p>
+<p>Find the name of every customer whose account number is an even multiple of 100 between 10000 and 20000.</p>
+<p>SELECT customer.name\
+  FROM customer, generate_series(10000,20000,100)\
+ WHERE customer.id=value;\
+/* or */\
+SELECT name FROM customer\
+ WHERE id IN (SELECT value\
+                FROM generate_series(10000,20000,200));\</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/errlog.html">
+          <span class="muted">Anterior</span>The Error And Warning Log
+        </a>
+        <a class="pager-next" href="../guides/geopoly.html">
+          <span class="muted">Siguiente</span>The Geopoly Interface To The SQLite R*Tree Module
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

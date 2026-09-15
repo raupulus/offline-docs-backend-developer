@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pgstattuple — obtain tuple-level statistics · PostgreSQL</title>
+<meta name="description" content="pgstattuple — obtain tuple-level statistics - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/pgstattuple.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="pgstattuple — obtain tuple-level statistics">
+<meta property="og:description" content="pgstattuple — obtain tuple-level statistics - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pgstattuple — obtain tuple-level statistics">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "pgstattuple — obtain tuple-level statistics",
+"url": "https://docs.raupulus.dev/postgresql/pgstattuple.html",  "description": "pgstattuple — obtain tuple-level statistics - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+>Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+class="is-current" aria-current="page">pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+              <li>
+                <a href="./rangetypes.html"
+>Range Types</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-recovery-config.html"
+>recovery.conf file merged into postgresql.conf</a>
+              </li>
+              <li>
+                <a href="./reference.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="./regress.html"
+>Regression Tests</a>
+              </li>
+              <li>
+                <a href="./release-17.html"
+>Release 17.11</a>
+              </li>
+              <li>
+                <a href="./release.html"
+>Release Notes</a>
+              </li>
+              <li>
+                <a href="./wal.html"
+>Reliability and the Write-Ahead Log</a>
+              </li>
+              <li>
+                <a href="./replication-origins.html"
+>Replication Progress Tracking</a>
+              </li>
+              <li>
+                <a href="./maintenance.html"
+>Routine Database Maintenance Tasks</a>
+              </li>
+              <li>
+                <a href="./seg.html"
+>seg — a datatype for line segments or floating point intervals</a>
+              </li>
+              <li>
+                <a href="./sepgsql.html"
+>sepgsql — SELinux-, label-based mandatory access control (MAC) security module</a>
+              </li>
+              <li>
+                <a href="./config.html"
+>Server Configuration</a>
+              </li>
+              <li>
+                <a href="./runtime.html"
+>Server Setup and Operation</a>
+              </li>
+              <li>
+                <a href="./spgist.html"
+>SP-GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./contrib-spi.html"
+>spi — Server Programming Interface features/examples</a>
+              </li>
+              <li>
+                <a href="./spi.html"
+>SPI_connect</a>
+              </li>
+              <li>
+                <a href="./features.html"
+>SQL Conformance</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">pgstattuple — obtain tuple-level statistics</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/pgstattuple.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#pgstattuple-obtain-tuple-level-statistics">pgstattuple obtain tuple-level statistics#</a></li>
+              <li class="lvl-2"><a href="#functions">Functions#</a></li>
+              <li class="lvl-2"><a href="#authors">Authors#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="pgstattuple-obtain-tuple-level-statistics">pgstattuple obtain tuple-level statistics<a class="headerlink" href="#pgstattuple-obtain-tuple-level-statistics" title="Permanent link">#</a></h2>
+<p>pgstattuple</p>
+<p>The <code>pgstattuple</code> module provides various functions to obtain tuple-level statistics.</p>
+<p>Because these functions return detailed page-level information, access is restricted by default. By default, only the role <code>pg_stat_scan_tables</code> has <code>EXECUTE</code> privilege. Superusers of course bypass this restriction. After the extension has been installed, users may issue <code>GRANT</code> commands to change the privileges on the functions to allow others to execute them. However, it might be preferable to add those users to the <code>pg_stat_scan_tables</code> role instead.</p>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">#</a></h2>
+<p><span class="indexterm"></span> <code>pgstattuple(regclass) returns record</code><br>
+<code>pgstattuple</code> returns a relation's physical length, percentage of “dead” tuples, and other info. This may help users to determine whether vacuum is necessary or not. The argument is the target relation's name (optionally schema-qualified) or OID. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=&gt; SELECT * FROM pgstattuple(&#39;pg_catalog.pg_proc&#39;);
+-[ RECORD 1 ]------+-------
+table_len          | 458752
+tuple_count        | 1470
+tuple_len          | 438896
+tuple_percent      | 95.67
+dead_tuple_count   | 11
+dead_tuple_len     | 3157
+dead_tuple_percent | 0.69
+free_space         | 8932
+free_percent       | 1.95
+</code></pre></div>
+
+<p>The output columns are described in <a href="#pgstattuple-columns"> Output Columns</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>table_len</td>
+<td><code>bigint</code></td>
+<td>Physical relation length in bytes</td>
+</tr>
+<tr>
+<td>tuple_count</td>
+<td><code>bigint</code></td>
+<td>Number of live tuples</td>
+</tr>
+<tr>
+<td>tuple_len</td>
+<td><code>bigint</code></td>
+<td>Total length of live tuples in bytes</td>
+</tr>
+<tr>
+<td>tuple_percent</td>
+<td><code>float8</code></td>
+<td>Percentage of live tuples</td>
+</tr>
+<tr>
+<td>dead_tuple_count</td>
+<td><code>bigint</code></td>
+<td>Number of dead tuples</td>
+</tr>
+<tr>
+<td>dead_tuple_len</td>
+<td><code>bigint</code></td>
+<td>Total length of dead tuples in bytes</td>
+</tr>
+<tr>
+<td>dead_tuple_percent</td>
+<td><code>float8</code></td>
+<td>Percentage of dead tuples</td>
+</tr>
+<tr>
+<td>free_space</td>
+<td><code>bigint</code></td>
+<td>Total free space in bytes</td>
+</tr>
+<tr>
+<td>free_percent</td>
+<td><code>float8</code></td>
+<td>Percentage of free space</td>
+</tr>
+</tbody>
+</table>
+<p><code>pgstattuple</code> Output Columns {#pgstattuple-columns}</p>
+<blockquote>
+<p>[!NOTE]
+The <code>table_len</code> will always be greater than the sum of the <code>tuple_len</code>, <code>dead_tuple_len</code> and <code>free_space</code>. The difference is accounted for by fixed page overhead, the per-page table of pointers to tuples, and padding to ensure that tuples are correctly aligned.</p>
+</blockquote>
+<p><code>pgstattuple</code> acquires only a read lock on the relation. So the results do not reflect an instantaneous snapshot; concurrent updates will affect them.</p>
+<p><code>pgstattuple</code> judges a tuple is “dead” if <code>HeapTupleSatisfiesDirty</code> returns false.</p>
+<p><code>pgstattuple(text) returns record</code><br>
+This is the same as <code>pgstattuple(regclass)</code>, except that the target relation is specified as TEXT. This function is kept because of backward-compatibility so far, and will be deprecated in some future release.</p>
+<p><span class="indexterm"></span> <code>pgstatindex(regclass) returns record</code><br>
+<code>pgstatindex</code> returns a record showing information about a B-tree index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=&gt; SELECT * FROM pgstatindex(&#39;pg_cast_oid_index&#39;);
+-[ RECORD 1 ]------+------
+version            | 2
+tree_level         | 0
+index_size         | 16384
+root_block_no      | 1
+internal_pages     | 0
+leaf_pages         | 1
+empty_pages        | 0
+deleted_pages      | 0
+avg_leaf_density   | 54.27
+leaf_fragmentation | 0
+</code></pre></div>
+
+<p>The output columns are:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>version</td>
+<td><code>integer</code></td>
+<td>B-tree version number</td>
+</tr>
+<tr>
+<td>tree_level</td>
+<td><code>integer</code></td>
+<td>Tree level of the root page</td>
+</tr>
+<tr>
+<td>index_size</td>
+<td><code>bigint</code></td>
+<td>Total index size in bytes</td>
+</tr>
+<tr>
+<td>root_block_no</td>
+<td><code>bigint</code></td>
+<td>Location of root page (zero if none)</td>
+</tr>
+<tr>
+<td>internal_pages</td>
+<td><code>bigint</code></td>
+<td>Number of “internal” (upper-level) pages</td>
+</tr>
+<tr>
+<td>leaf_pages</td>
+<td><code>bigint</code></td>
+<td>Number of leaf pages</td>
+</tr>
+<tr>
+<td>empty_pages</td>
+<td><code>bigint</code></td>
+<td>Number of empty pages</td>
+</tr>
+<tr>
+<td>deleted_pages</td>
+<td><code>bigint</code></td>
+<td>Number of deleted pages</td>
+</tr>
+<tr>
+<td>avg_leaf_density</td>
+<td><code>float8</code></td>
+<td>Average density of leaf pages</td>
+</tr>
+<tr>
+<td>leaf_fragmentation</td>
+<td><code>float8</code></td>
+<td>Leaf page fragmentation</td>
+</tr>
+</tbody>
+</table>
+<p>The reported <code>index_size</code> will normally correspond to one more page than is accounted for by <code>internal_pages + leaf_pages + empty_pages + deleted_pages</code>, because it also includes the index's metapage.</p>
+<p>As with <code>pgstattuple</code>, the results are accumulated page-by-page, and should not be expected to represent an instantaneous snapshot of the whole index.</p>
+<p><code>pgstatindex(text) returns record</code><br>
+This is the same as <code>pgstatindex(regclass)</code>, except that the target index is specified as TEXT. This function is kept because of backward-compatibility so far, and will be deprecated in some future release.</p>
+<p><span class="indexterm"></span> <code>pgstatginindex(regclass) returns record</code><br>
+<code>pgstatginindex</code> returns a record showing information about a GIN index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=&gt; SELECT * FROM pgstatginindex(&#39;test_gin_index&#39;);
+-[ RECORD 1 ]--+--
+version        | 1
+pending_pages  | 0
+pending_tuples | 0
+</code></pre></div>
+
+<p>The output columns are:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>version</td>
+<td><code>integer</code></td>
+<td>GIN version number</td>
+</tr>
+<tr>
+<td>pending_pages</td>
+<td><code>integer</code></td>
+<td>Number of pages in the pending list</td>
+</tr>
+<tr>
+<td>pending_tuples</td>
+<td><code>bigint</code></td>
+<td>Number of tuples in the pending list</td>
+</tr>
+</tbody>
+</table>
+<p><span class="indexterm"></span> <code>pgstathashindex(regclass) returns record</code><br>
+<code>pgstathashindex</code> returns a record showing information about a HASH index. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=&gt; select * from pgstathashindex(&#39;con_hash_index&#39;);
+-[ RECORD 1 ]--+-----------------
+version        | 4
+bucket_pages   | 33081
+overflow_pages | 0
+bitmap_pages   | 1
+unused_pages   | 32455
+live_items     | 10204006
+dead_items     | 0
+free_percent   | 61.8005949100872
+</code></pre></div>
+
+<p>The output columns are:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>version</td>
+<td><code>integer</code></td>
+<td>HASH version number</td>
+</tr>
+<tr>
+<td>bucket_pages</td>
+<td><code>bigint</code></td>
+<td>Number of bucket pages</td>
+</tr>
+<tr>
+<td>overflow_pages</td>
+<td><code>bigint</code></td>
+<td>Number of overflow pages</td>
+</tr>
+<tr>
+<td>bitmap_pages</td>
+<td><code>bigint</code></td>
+<td>Number of bitmap pages</td>
+</tr>
+<tr>
+<td>unused_pages</td>
+<td><code>bigint</code></td>
+<td>Number of unused pages</td>
+</tr>
+<tr>
+<td>live_items</td>
+<td><code>bigint</code></td>
+<td>Number of live tuples</td>
+</tr>
+<tr>
+<td>dead_tuples</td>
+<td><code>bigint</code></td>
+<td>Number of dead tuples</td>
+</tr>
+<tr>
+<td>free_percent</td>
+<td><code>float</code></td>
+<td>Percentage of free space</td>
+</tr>
+</tbody>
+</table>
+<p><span class="indexterm"></span> <code>pg_relpages(regclass) returns bigint</code><br>
+<code>pg_relpages</code> returns the number of pages in the relation.</p>
+<p><code>pg_relpages(text) returns bigint</code><br>
+This is the same as <code>pg_relpages(regclass)</code>, except that the target relation is specified as TEXT. This function is kept because of backward-compatibility so far, and will be deprecated in some future release.</p>
+<p><span class="indexterm"></span> <code>pgstattuple_approx(regclass) returns record</code><br>
+<code>pgstattuple_approx</code> is a faster alternative to <code>pgstattuple</code> that returns approximate results. The argument is the target relation's name or OID. For example:</p>
+<div class="codehilite"><pre><span></span><code>test=&gt; SELECT * FROM pgstattuple_approx(&#39;pg_catalog.pg_proc&#39;::regclass);
+-[ RECORD 1 ]--------+-------
+table_len            | 573440
+scanned_percent      | 2
+approx_tuple_count   | 2740
+approx_tuple_len     | 561210
+approx_tuple_percent | 97.87
+dead_tuple_count     | 0
+dead_tuple_len       | 0
+dead_tuple_percent   | 0
+approx_free_space    | 11996
+approx_free_percent  | 2.09
+</code></pre></div>
+
+<p>The output columns are described in <a href="#pgstatapprox-columns"> Output Columns</a>.</p>
+<p>Whereas <code>pgstattuple</code> always performs a full-table scan and returns an exact count of live and dead tuples (and their sizes) and free space, <code>pgstattuple_approx</code> tries to avoid the full-table scan and returns exact dead tuple statistics along with an approximation of the number and size of live tuples and free space.</p>
+<p>It does this by skipping pages that have only visible tuples according to the visibility map (if a page has the corresponding VM bit set, then it is assumed to contain no dead tuples). For such pages, it derives the free space value from the free space map, and assumes that the rest of the space on the page is taken up by live tuples.</p>
+<p>For pages that cannot be skipped, it scans each tuple, recording its presence and size in the appropriate counters, and adding up the free space on the page. At the end, it estimates the total number of live tuples based on the number of pages and tuples scanned (in the same way that VACUUM estimates pg_class.reltuples).</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>table_len</td>
+<td><code>bigint</code></td>
+<td>Physical relation length in bytes (exact)</td>
+</tr>
+<tr>
+<td>scanned_percent</td>
+<td><code>float8</code></td>
+<td>Percentage of table scanned</td>
+</tr>
+<tr>
+<td>approx_tuple_count</td>
+<td><code>bigint</code></td>
+<td>Number of live tuples (estimated)</td>
+</tr>
+<tr>
+<td>approx_tuple_len</td>
+<td><code>bigint</code></td>
+<td>Total length of live tuples in bytes (estimated)</td>
+</tr>
+<tr>
+<td>approx_tuple_percent</td>
+<td><code>float8</code></td>
+<td>Percentage of live tuples</td>
+</tr>
+<tr>
+<td>dead_tuple_count</td>
+<td><code>bigint</code></td>
+<td>Number of dead tuples (exact)</td>
+</tr>
+<tr>
+<td>dead_tuple_len</td>
+<td><code>bigint</code></td>
+<td>Total length of dead tuples in bytes (exact)</td>
+</tr>
+<tr>
+<td>dead_tuple_percent</td>
+<td><code>float8</code></td>
+<td>Percentage of dead tuples</td>
+</tr>
+<tr>
+<td>approx_free_space</td>
+<td><code>bigint</code></td>
+<td>Total free space in bytes (estimated)</td>
+</tr>
+<tr>
+<td>approx_free_percent</td>
+<td><code>float8</code></td>
+<td>Percentage of free space</td>
+</tr>
+</tbody>
+</table>
+<p><code>pgstattuple_approx</code> Output Columns {#pgstatapprox-columns}</p>
+<p>In the above output, the free space figures may not match the <code>pgstattuple</code> output exactly, because the free space map gives us an exact figure, but is not guaranteed to be accurate to the byte.</p>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">#</a></h2>
+<p>Tatsuo Ishii, Satoshi Nagayasu and Abhijit Menon-Sen</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./pgrowlocks.html">
+          <span class="muted">Anterior</span>pgrowlocks — show a table&#39;s row locking information
+        </a>
+        <a class="pager-next" href="./plperl.html">
+          <span class="muted">Siguiente</span>PL/Perl — Perl Procedural Language
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

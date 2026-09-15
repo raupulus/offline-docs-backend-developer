@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cache management with GitHub Actions · Docker</title>
+<meta name="description" content="Cache management with GitHub Actions - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/build/ci/github-actions/cache.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Cache management with GitHub Actions">
+<meta property="og:description" content="Cache management with GitHub Actions - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cache management with GitHub Actions">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Cache management with GitHub Actions",
+"url": "https://docs.raupulus.dev/docker/build/ci/github-actions/cache.html",  "description": "Cache management with GitHub Actions - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Build
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../build/building/index.html"
+>Building</a>
+              </li>
+              <li>
+                <a href="../../../build/building/base-images.html"
+>Base images</a>
+              </li>
+              <li>
+                <a href="../../../build/building/best-practices.html"
+>Building best practices</a>
+              </li>
+              <li>
+                <a href="../../../build/building/cdi.html"
+>Container Device Interface (CDI)</a>
+              </li>
+              <li>
+                <a href="../../../build/building/export.html"
+>Export binaries</a>
+              </li>
+              <li>
+                <a href="../../../build/building/multi-platform.html"
+>Multi-platform builds</a>
+              </li>
+              <li>
+                <a href="../../../build/building/multi-stage.html"
+>Multi-stage builds</a>
+              </li>
+              <li>
+                <a href="../../../build/building/secrets.html"
+>Build secrets</a>
+              </li>
+              <li>
+                <a href="../../../build/building/variables.html"
+>Build variables</a>
+              </li>
+              <li>
+                <a href="../../../build/buildkit/index.html"
+>BuildKit</a>
+              </li>
+              <li>
+                <a href="../../../build/buildkit/configure.html"
+>Configure BuildKit</a>
+              </li>
+              <li>
+                <a href="../../../build/buildkit/dockerfile-release-notes.html"
+>Dockerfile release notes</a>
+              </li>
+              <li>
+                <a href="../../../build/buildkit/frontend.html"
+>Custom Dockerfile syntax</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/index.html"
+>Docker build cache</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/backends/index.html"
+>Cache storage backends</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/backends/azblob.html"
+>Azure Blob Storage cache</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/backends/gha.html"
+>GitHub Actions cache</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/backends/inline.html"
+>Inline cache</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/backends/local.html"
+>Local cache</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/backends/registry.html"
+>Registry cache</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/backends/s3.html"
+>Amazon S3 cache</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/garbage-collection.html"
+>Build garbage collection</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/invalidation.html"
+>Build cache invalidation</a>
+              </li>
+              <li>
+                <a href="../../../build/cache/optimize.html"
+>Optimize cache usage in builds</a>
+              </li>
+              <li>
+                <a href="../../../build/checks.html"
+>Checking your build configuration</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/index.html"
+>Continuous integration with Docker</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/index.html"
+>Docker Build GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/annotations.html"
+>Add image annotations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/attestations.html"
+>Add SBOM and provenance attestations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/build-summary.html"
+>GitHub Actions build summary</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/cache.html"
+class="is-current" aria-current="page">Cache management with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/checks.html"
+>Validating build configuration with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/configure-builder.html"
+>Configuring your GitHub Actions builder</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/copy-image-registries.html"
+>Copy image between registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/export-docker.html"
+>Export to Docker with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/github-builder/index.html"
+>Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/github-builder/architecture.html"
+>Docker GitHub Builder architecture</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/github-builder/bake.html"
+>Bake with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/github-builder/build.html"
+>Build with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/local-registry.html"
+>Local registry with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/manage-tags-labels.html"
+>Manage tags and labels with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/multi-platform.html"
+>Multi-platform image with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/named-contexts.html"
+>Named contexts with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/push-multi-registries.html"
+>Push to multiple registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/reproducible-builds.html"
+>Reproducible builds with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/secrets.html"
+>Using secrets with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/share-image-jobs.html"
+>Share built image between jobs with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/test-before-push.html"
+>Test before push with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/ci/github-actions/update-dockerhub-desc.html"
+>Update Docker Hub description with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../build/concepts/index.html"
+>Core concepts</a>
+              </li>
+              <li>
+                <a href="../../../build/concepts/context.html"
+>Build context</a>
+              </li>
+              <li>
+                <a href="../../../build/concepts/dockerfile.html"
+>Dockerfile overview</a>
+              </li>
+              <li>
+                <a href="../../../build/concepts/overview.html"
+>Docker Build Overview</a>
+              </li>
+              <li>
+                <a href="../../../build/debug/index.html"
+>Debugging</a>
+              </li>
+              <li>
+                <a href="../../../build/debug/opentelemetry.html"
+>OpenTelemetry support</a>
+              </li>
+              <li>
+                <a href="../../../build/exporters/index.html"
+>Exporters overview</a>
+              </li>
+              <li>
+                <a href="../../../build/exporters/image-registry.html"
+>Image and registry exporters</a>
+              </li>
+              <li>
+                <a href="../../../build/exporters/local-tar.html"
+>Local and tar exporters</a>
+              </li>
+              <li>
+                <a href="../../../build/exporters/oci-docker.html"
+>OCI and Docker exporters</a>
+              </li>
+              <li>
+                <a href="../../../build/metadata/index.html"
+>Metadata</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Cache management with GitHub Actions</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#inline-cache">Inline cache#</a></li>
+              <li class="lvl-2"><a href="#registry-cache">Registry cache#</a></li>
+              <li class="lvl-2"><a href="#github-cache">GitHub cache#</a></li>
+              <li class="lvl-3"><a href="#cache-backend-api">Cache backend API#</a></li>
+              <li class="lvl-2"><a href="#yaml">```yaml#</a></li>
+              <li class="lvl-3"><a href="#cache-write-restrictions">Cache write restrictions#</a></li>
+              <li class="lvl-3"><a href="#cache-mounts">Cache mounts#</a></li>
+              <li class="lvl-3"><a href="#local-cache">Local cache#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>This page contains examples on using the cache storage backends with GitHub
+Actions.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>See <a href="../../cache/backends/index.html">Cache storage backends</a> for more
+details about cache storage backends.</p>
+</blockquote>
+<h2 id="inline-cache">Inline cache<a class="headerlink" href="#inline-cache" title="Permanent link">#</a></h2>
+<p>In most cases you want to use the <a href="../../cache/backends/inline.html">inline cache exporter</a>.
+However, note that the <code>inline</code> cache exporter only supports <code>min</code> cache mode.
+To use <code>max</code> cache mode, push the image and the cache separately using the
+registry cache exporter with the <code>cache-to</code> option, as shown in the <a href="#registry-cache">registry cache example</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">docker</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Login to Docker Hub</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/login-action@{{% param &quot;login_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.DOCKERHUB_USERNAME }}</span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Docker Buildx</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@{{% param &quot;setup_buildx_action_version&quot; %}}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@{{% param &quot;build_push_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user/app:latest</span>
+<span class="w">          </span><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=registry,ref=user/app:latest</span>
+<span class="w">          </span><span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=inline</span>
+</code></pre></div>
+
+<h2 id="registry-cache">Registry cache<a class="headerlink" href="#registry-cache" title="Permanent link">#</a></h2>
+<p>You can import/export cache from a cache manifest or (special) image
+configuration on the registry with the <a href="../../cache/backends/registry.html">registry cache exporter</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">docker</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Login to Docker Hub</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/login-action@{{% param &quot;login_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.DOCKERHUB_USERNAME }}</span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Docker Buildx</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@{{% param &quot;setup_buildx_action_version&quot; %}}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@{{% param &quot;build_push_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user/app:latest</span>
+<span class="w">          </span><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=registry,ref=user/app:buildcache</span>
+<span class="w">          </span><span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=registry,ref=user/app:buildcache,mode=max</span>
+</code></pre></div>
+
+<h2 id="github-cache">GitHub cache<a class="headerlink" href="#github-cache" title="Permanent link">#</a></h2>
+<h3 id="cache-backend-api">Cache backend API<a class="headerlink" href="#cache-backend-api" title="Permanent link">#</a></h3>
+<p>{{&lt; summary-bar feature_name="Cache backend API" &gt;}}</p>
+<p>The <a href="../../cache/backends/gha.html">GitHub Actions cache exporter</a>
+backend uses the <a href="https://github.com/tonistiigi/go-actions-cache" rel="noopener" target="_blank">GitHub Cache service API</a>
+to fetch and upload cache blobs. That's why you should only use this cache
+backend in a GitHub Action workflow, as the <code>url</code> (<code>$ACTIONS_RESULTS_URL</code>) and
+<code>token</code> (<code>$ACTIONS_RUNTIME_TOKEN</code>) attributes only get populated in a workflow
+context.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">docker</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Login to Docker Hub</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/login-action@{{% param &quot;login_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.DOCKERHUB_USERNAME }}</span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Docker Buildx</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@{{% param &quot;setup_buildx_action_version&quot; %}}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@{{% param &quot;build_push_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user/app:latest</span>
+<span class="w">          </span><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha</span>
+<span class="w">          </span><span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha,mode=max</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>As of April 15th, 2025, <a href="https://gh.io/gha-cache-sunset" rel="noopener" target="_blank">only GitHub Cache service API v2 is supported.</a>. The legacy v1 API has been shut down.</p>
+<p>If you encounter the following error during your build:</p>
+<p><code>console
+ERROR: failed to solve: This legacy service is shutting down, effective April 15, 2025. Migrate to the new service ASAP. For more information: https://gh.io/gha-cache-sunset</code></p>
+<p>You're probably using outdated tools that only support the legacy GitHub
+Cache service API v1. Here are the minimum versions you need to upgrade to
+depending on your use case:
+* Docker Buildx &gt;= v0.21.0
+* BuildKit &gt;= v0.20.0
+* Docker Compose &gt;= v2.33.1
+* Docker Engine &gt;= v28.0.0 (if you're building using the Docker driver with containerd image store enabled)</p>
+<p>If you're building using the <code>docker/build-push-action</code> or <code>docker/bake-action</code>
+actions on GitHub hosted runners, Docker Buildx and BuildKit are already up
+to date but on self-hosted runners, you may need to update them yourself.
+Alternatively, you can use the <code>docker/setup-buildx-action</code> action to install
+the latest version of Docker Buildx:</p>
+<p><code>yaml
+- name: Set up Docker Buildx
+  uses: docker/setup-buildx-action@{{% param "setup_buildx_action_version" %}}
+  with:
+   version: latest</code></p>
+<p>If you're building using Docker Compose, you can use the
+<code>docker/setup-compose-action</code> action:</p>
+<p><code>yaml
+- name: Set up Docker Compose
+  uses: docker/setup-compose-action@{{% param "setup_compose_action_version" %}}
+  with:
+   version: latest</code></p>
+<p>If you're building using the Docker Engine with the containerd image store
+enabled, you can use the <code>docker/setup-docker-action</code> action:</p>
+<h2 id="yaml">```yaml<a class="headerlink" href="#yaml" title="Permanent link">#</a></h2>
+<p>name: Set up Docker
+  uses: docker/setup-docker-action@{{% param "setup_docker_action_version" %}}
+  with:
+    version: latest
+    daemon-config: |
+      {
+        "features": {
+          "containerd-snapshotter": true
+        }
+      }
+```</p>
+</blockquote>
+<h3 id="cache-write-restrictions">Cache write restrictions<a class="headerlink" href="#cache-write-restrictions" title="Permanent link">#</a></h3>
+<p>Cache export requires write access to the GitHub Actions cache. GitHub gives
+events such as <code>issue_comment</code> and <code>pull_request_target</code> read-only cache access
+by default when they run in the default-branch context. These workflows can
+restore existing cache entries, but exporting with <code>cache-to: type=gha</code> can fail
+with <code>error writing layer blob: failed to reserve cache</code>, even after the image
+has been built and pushed.</p>
+<p>This also affects <code>pull_request</code> workflows with <code>types: [closed]</code> when a pull
+request is merged into the default branch: the run uses the target branch ref
+instead of the pull request merge ref. Regular <code>pull_request</code> runs using a
+merge ref retain read-write cache access by default. See GitHub's
+<a href="https://github.blog/changelog/2026-06-26-read-only-actions-cache-for-untrusted-triggers/" rel="noopener" target="_blank">cache access policy</a>.</p>
+<p>For workflows with read-only cache access, keep <code>cache-from: type=gha</code> and omit
+<code>cache-to</code>. Populate the cache from a workflow with write access, such as a
+<code>push</code> workflow on the default branch. For builds after a merge, use <code>push</code> on
+the target branch instead of <code>pull_request</code> with <code>types: [closed]</code>.</p>
+<p>GitHub's workflow or job-level
+<a href="https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#cache-mode" rel="noopener" target="_blank"><code>cache-mode</code> setting</a>
+can override the default cache access. Granting write access to untrusted
+workflows increases the risk of cache poisoning.</p>
+<p>If cache export is optional, you can make export failures non-fatal:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha</span>
+<span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha,mode=max,ignore-error=true</span>
+</code></pre></div>
+
+<p><code>ignore-error=true</code> suppresses all cache export errors, not only access errors.
+It doesn't grant write access or save the cache when writes are denied.</p>
+<h3 id="cache-mounts">Cache mounts<a class="headerlink" href="#cache-mounts" title="Permanent link">#</a></h3>
+<p>BuildKit doesn't preserve cache mounts in the GitHub Actions cache by default.
+To put your cache mounts into GitHub Actions cache and reuse it
+between builds, you can use a workaround provided by
+<a href="https://github.com/reproducible-containers/buildkit-cache-dance" rel="noopener" target="_blank"><code>reproducible-containers/buildkit-cache-dance</code></a>.</p>
+<p>This GitHub Action creates temporary containers to extract and inject the
+cache mount data with your Docker build steps.</p>
+<p>The following example shows how to use this workaround with a Go project.</p>
+<p>Example Dockerfile in <code>build/package/Dockerfile</code></p>
+<div class="codehilite"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">golang:1.21.1-alpine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">base-build</span>
+
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/build</span>
+
+<span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/go/pkg/mod<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span>go.mod,target<span class="o">=</span>go.mod<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span>go.sum,target<span class="o">=</span>go.sum<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>go<span class="w"> </span>mod<span class="w"> </span>download
+
+<span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/go/pkg/mod<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>cache,target<span class="o">=</span>/root/.cache/go-build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--mount<span class="o">=</span><span class="nv">type</span><span class="o">=</span>bind,target<span class="o">=</span>.<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>go<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>/bin/app<span class="w"> </span>./src
+...
+</code></pre></div>
+
+<p>Example CI action</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Login to Docker Hub</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/login-action@{{% param &quot;login_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.DOCKERHUB_USERNAME }}</span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up QEMU</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/setup-qemu-action@{{% param &quot;setup_qemu_action_version&quot; %}}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Docker Buildx</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@{{% param &quot;setup_buildx_action_version&quot; %}}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Docker meta</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meta</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/metadata-action@{{% param &quot;metadata_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">images</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user/app</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">type=ref,event=branch</span>
+<span class="w">            </span><span class="no">type=ref,event=pr</span>
+<span class="w">            </span><span class="no">type=semver,pattern={{version}}</span>
+<span class="w">            </span><span class="no">type=semver,pattern={{major}}.{{minor}}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Go Build Cache for Docker</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/cache@{{% param &quot;cache_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">go-build-cache</span>
+<span class="w">          </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ runner.os }}-go-build-cache-${{ hashFiles(&#39;**/go.sum&#39;) }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Inject go-build-cache</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reproducible-containers/buildkit-cache-dance@4b2444fec0c0fb9dbf175a96c094720a692ef810</span><span class="w"> </span><span class="c1"># v2.1.4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">cache-source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">go-build-cache</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@{{% param &quot;build_push_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha</span>
+<span class="w">          </span><span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha,mode=max</span>
+<span class="w">          </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build/package/Dockerfile</span>
+<span class="w">          </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name != &#39;pull_request&#39; }}</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.meta.outputs.tags }}</span>
+<span class="w">          </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.meta.outputs.labels }}</span>
+<span class="w">          </span><span class="nt">platforms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linux/amd64,linux/arm64</span>
+</code></pre></div>
+
+<p>For more information about this workaround, refer to the
+<a href="https://github.com/reproducible-containers/buildkit-cache-dance" rel="noopener" target="_blank">GitHub repository</a>.</p>
+<h3 id="local-cache">Local cache<a class="headerlink" href="#local-cache" title="Permanent link">#</a></h3>
+<blockquote>
+<p>[!NOTE]</p>
+<p>Exporting to a directory that already holds a cache leaves the blobs of the
+previous export behind, so the directory grows with every run. The following
+example passes <code>reset=true</code> to delete them. This parameter requires Buildx
+version 0.35.0 or later.</p>
+</blockquote>
+<p>You can also leverage <a href="https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows" rel="noopener" target="_blank">GitHub cache</a>
+using the <a href="https://github.com/actions/cache" rel="noopener" target="_blank">actions/cache</a> and <a href="../../cache/backends/local.html">local cache exporter</a>
+with this action:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">docker</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Login to Docker Hub</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/login-action@{{% param &quot;login_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.DOCKERHUB_USERNAME }}</span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Docker Buildx</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@{{% param &quot;setup_buildx_action_version&quot; %}}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Cache Docker layers</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/cache@{{% param &quot;cache_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ runner.temp }}/.buildx-cache</span>
+<span class="w">          </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ runner.os }}-buildx-${{ github.sha }}</span>
+<span class="w">          </span><span class="nt">restore-keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">${{ runner.os }}-buildx-</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@{{% param &quot;build_push_action_version&quot; %}}</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user/app:latest</span>
+<span class="w">          </span><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=local,src=${{ runner.temp }}/.buildx-cache</span>
+<span class="w">          </span><span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=local,dest=${{ runner.temp }}/.buildx-cache,mode=max,reset=true</span>
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../build/ci/github-actions/build-summary.html">
+          <span class="muted">Anterior</span>GitHub Actions build summary
+        </a>
+        <a class="pager-next" href="../../../build/ci/github-actions/checks.html">
+          <span class="muted">Siguiente</span>Validating build configuration with GitHub Actions
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

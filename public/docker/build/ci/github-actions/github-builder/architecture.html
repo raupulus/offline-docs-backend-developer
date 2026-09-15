@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docker GitHub Builder architecture · Docker</title>
+<meta name="description" content="Docker GitHub Builder architecture - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/build/ci/github-actions/github-builder/architecture.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Docker GitHub Builder architecture">
+<meta property="og:description" content="Docker GitHub Builder architecture - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker GitHub Builder architecture">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Docker GitHub Builder architecture",
+"url": "https://docs.raupulus.dev/docker/build/ci/github-actions/github-builder/architecture.html",  "description": "Docker GitHub Builder architecture - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Build
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../../build/building/multi-stage.html"
+>Multi-stage builds</a>
+              </li>
+              <li>
+                <a href="../../../../build/building/secrets.html"
+>Build secrets</a>
+              </li>
+              <li>
+                <a href="../../../../build/building/variables.html"
+>Build variables</a>
+              </li>
+              <li>
+                <a href="../../../../build/buildkit/index.html"
+>BuildKit</a>
+              </li>
+              <li>
+                <a href="../../../../build/buildkit/configure.html"
+>Configure BuildKit</a>
+              </li>
+              <li>
+                <a href="../../../../build/buildkit/dockerfile-release-notes.html"
+>Dockerfile release notes</a>
+              </li>
+              <li>
+                <a href="../../../../build/buildkit/frontend.html"
+>Custom Dockerfile syntax</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/index.html"
+>Docker build cache</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/backends/index.html"
+>Cache storage backends</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/backends/azblob.html"
+>Azure Blob Storage cache</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/backends/gha.html"
+>GitHub Actions cache</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/backends/inline.html"
+>Inline cache</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/backends/local.html"
+>Local cache</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/backends/registry.html"
+>Registry cache</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/backends/s3.html"
+>Amazon S3 cache</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/garbage-collection.html"
+>Build garbage collection</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/invalidation.html"
+>Build cache invalidation</a>
+              </li>
+              <li>
+                <a href="../../../../build/cache/optimize.html"
+>Optimize cache usage in builds</a>
+              </li>
+              <li>
+                <a href="../../../../build/checks.html"
+>Checking your build configuration</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/index.html"
+>Continuous integration with Docker</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/index.html"
+>Docker Build GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/annotations.html"
+>Add image annotations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/attestations.html"
+>Add SBOM and provenance attestations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/build-summary.html"
+>GitHub Actions build summary</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/cache.html"
+>Cache management with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/checks.html"
+>Validating build configuration with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/configure-builder.html"
+>Configuring your GitHub Actions builder</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/copy-image-registries.html"
+>Copy image between registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/export-docker.html"
+>Export to Docker with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/github-builder/index.html"
+>Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/github-builder/architecture.html"
+class="is-current" aria-current="page">Docker GitHub Builder architecture</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/github-builder/bake.html"
+>Bake with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/github-builder/build.html"
+>Build with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/local-registry.html"
+>Local registry with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/manage-tags-labels.html"
+>Manage tags and labels with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/multi-platform.html"
+>Multi-platform image with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/named-contexts.html"
+>Named contexts with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/push-multi-registries.html"
+>Push to multiple registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/reproducible-builds.html"
+>Reproducible builds with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/secrets.html"
+>Using secrets with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/share-image-jobs.html"
+>Share built image between jobs with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/test-before-push.html"
+>Test before push with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/ci/github-actions/update-dockerhub-desc.html"
+>Update Docker Hub description with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../../../build/concepts/index.html"
+>Core concepts</a>
+              </li>
+              <li>
+                <a href="../../../../build/concepts/context.html"
+>Build context</a>
+              </li>
+              <li>
+                <a href="../../../../build/concepts/dockerfile.html"
+>Dockerfile overview</a>
+              </li>
+              <li>
+                <a href="../../../../build/concepts/overview.html"
+>Docker Build Overview</a>
+              </li>
+              <li>
+                <a href="../../../../build/debug/index.html"
+>Debugging</a>
+              </li>
+              <li>
+                <a href="../../../../build/debug/opentelemetry.html"
+>OpenTelemetry support</a>
+              </li>
+              <li>
+                <a href="../../../../build/exporters/index.html"
+>Exporters overview</a>
+              </li>
+              <li>
+                <a href="../../../../build/exporters/image-registry.html"
+>Image and registry exporters</a>
+              </li>
+              <li>
+                <a href="../../../../build/exporters/local-tar.html"
+>Local and tar exporters</a>
+              </li>
+              <li>
+                <a href="../../../../build/exporters/oci-docker.html"
+>OCI and Docker exporters</a>
+              </li>
+              <li>
+                <a href="../../../../build/metadata/index.html"
+>Metadata</a>
+              </li>
+              <li>
+                <a href="../../../../build/metadata/annotations.html"
+>Annotations</a>
+              </li>
+              <li>
+                <a href="../../../../build/metadata/attestations/index.html"
+>Build attestations</a>
+              </li>
+              <li>
+                <a href="../../../../build/metadata/attestations/sbom.html"
+>SBOM attestations</a>
+              </li>
+              <li>
+                <a href="../../../../build/metadata/attestations/slsa-provenance.html"
+>Provenance attestations</a>
+              </li>
+              <li>
+                <a href="../../../../build/policies/index.html"
+>Validating build inputs with policies</a>
+              </li>
+              <li>
+                <a href="../../../../build/policies/built-ins.html"
+>Built-in functions</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Docker GitHub Builder architecture</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#core-architecture">Core architecture#</a></li>
+              <li class="lvl-3"><a href="#runner-selection">Runner selection#</a></li>
+              <li class="lvl-2"><a href="#execution-path">Execution path#</a></li>
+              <li class="lvl-2"><a href="#the-two-reusable-entrypoints">The two reusable entrypoints#</a></li>
+              <li class="lvl-2"><a href="#output-model">Output model#</a></li>
+              <li class="lvl-2"><a href="#examples">Examples#</a></li>
+              <li class="lvl-3"><a href="#dockerfile-oriented-image-build">Dockerfile-oriented image build#</a></li>
+              <li class="lvl-3"><a href="#bake-oriented-local-output">Bake-oriented local output#</a></li>
+              <li class="lvl-2"><a href="#why-this-architecture-works">Why this architecture works#</a></li>
+              <li class="lvl-3"><a href="#performance">Performance#</a></li>
+              <li class="lvl-3"><a href="#security">Security#</a></li>
+              <li class="lvl-3"><a href="#isolation-and-reliability">Isolation and reliability#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>Docker GitHub Builder separates repository orchestration from build
+implementation. A consuming repository decides when a build runs, which
+permissions and secrets are granted, and which inputs are passed. The reusable
+workflow in <a href="https://github.com/docker/github-builder" rel="noopener" target="_blank"><code>docker/github-builder</code> repository</a>
+owns the build implementation itself. That split keeps repository workflows
+short while centralizing BuildKit, caching, provenance, SBOM generation,
+signing, and multi-platform assembly in one Docker-maintained path.</p>
+<p><img alt="GitHub Builder overview" src="./images/architecture-overview.png"></p>
+<h2 id="core-architecture">Core architecture<a class="headerlink" href="#core-architecture" title="Permanent link">#</a></h2>
+<p>A caller workflow invokes either <a href="build.html"><code>build.yml</code></a> or <a href="bake.html"><code>bake.yml</code></a>.
+<a href="build.html"><code>build.yml</code></a> is the entrypoint for Dockerfile-oriented builds.
+<a href="bake.html"><code>bake.yml</code></a> is the entrypoint for Bake-oriented builds, where the
+Bake definition remains the source of truth for targets and overrides. In both
+cases the caller still owns repository policy, including triggers, branch
+conditions, permissions, secrets, target selection, metadata inputs, and the
+choice between image output and local output.</p>
+<p>Inside the reusable workflow, the first phase prepares the build. It validates
+the incoming inputs, resolves the runner config, and expands a multi-platform
+request into one job per platform. The execution model is easiest to picture as
+a matrix where <code>linux/amd64</code> runs on <code>ubuntu-24.04</code> and <code>linux/arm64</code> runs on
+<code>ubuntu-24.04-arm</code>. Each platform job builds independently, then the workflow
+finalizes the result into one caller-facing output contract.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">requested platforms</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">linux/amd64,linux/arm64</span>
+
+<span class="nt">conceptual platform jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">linux/amd64 -&gt; ubuntu-24.04</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">linux/arm64 -&gt; ubuntu-24.04-arm</span>
+</code></pre></div>
+
+<h3 id="runner-selection">Runner selection<a class="headerlink" href="#runner-selection" title="Permanent link">#</a></h3>
+<p>The <code>runner</code> input accepts either a single GitHub-hosted Linux runner label or a
+newline-delimited platform mapping.</p>
+<p>The default value is a platform mapping that uses GitHub-hosted Ubuntu runners:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">runner</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no">default=ubuntu-24.04</span>
+<span class="w">  </span><span class="no">linux/arm=ubuntu-24.04-arm</span>
+<span class="w">  </span><span class="no">linux/arm64=ubuntu-24.04-arm</span>
+</code></pre></div>
+
+<p>In the platform job, the runner label resolves to a single value:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">runner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+</code></pre></div>
+
+<p>A mapping must define a <code>default</code> runner. Other keys are platform prefixes, and
+the most specific matching prefix wins. For example, <code>linux/arm</code> matches
+variants such as <code>linux/arm/v7</code>, while <code>linux/arm64</code> is a separate prefix:</p>
+<p>In the following example, <code>linux</code> matches Linux platforms that do not match a
+longer prefix. The <code>default</code> key is still required because it is the fallback
+when no platform prefix matches.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">runner</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">  </span><span class="no">default=ubuntu-24.04</span>
+<span class="w">  </span><span class="no">linux=ubuntu-24.04</span>
+<span class="w">  </span><span class="no">linux/arm=ubuntu-24.04-arm</span>
+<span class="w">  </span><span class="no">linux/arm64=ubuntu-24.04-arm</span>
+</code></pre></div>
+
+<p>The reusable workflows require GitHub-hosted Linux runners. The legacy <code>auto</code>,
+<code>amd64</code>, and <code>arm64</code> values are still accepted for compatibility, but emit
+deprecation warnings. Use an explicit runner label or platform mapping instead.</p>
+<h2 id="execution-path">Execution path<a class="headerlink" href="#execution-path" title="Permanent link">#</a></h2>
+<p><img alt="GitHub Builder execution flow" src="./images/execution-flow.png"></p>
+<p>The execution path stays short on purpose. The consuming repository calls the
+reusable workflow. The reusable workflow prepares the build, runs the
+per-platform jobs, and finalizes the result. For image output, finalization
+produces a registry image and multi-platform manifest. For local output,
+finalization merges the per-platform files and can upload the merged result as
+a GitHub artifact. The caller does not need to reconstruct how Buildx,
+BuildKit, caching, or manifest assembly were wired together.</p>
+<h2 id="the-two-reusable-entrypoints">The two reusable entrypoints<a class="headerlink" href="#the-two-reusable-entrypoints" title="Permanent link">#</a></h2>
+<p><a href="build.html"><code>build.yml</code></a> is the better fit when the build is already expressed as
+a Dockerfile-oriented workflow. It lines up naturally with concepts such as
+<code>context</code>, <code>file</code>, <code>target</code>, <code>build-args</code>, <code>labels</code>, <code>annotations</code>, and
+<code>platforms</code>. This is the entrypoint that feels closest to
+<code>docker/build-push-action</code>, except the workflow implementation is centralized.</p>
+<p><a href="bake.html"><code>bake.yml</code></a> is the better fit when the repository already uses Bake
+as the build definition. It preserves the Bake model, including target
+resolution, <code>files</code>, <code>set</code>, and <code>vars</code>, while still routing execution through
+the same Docker-maintained build path. One important architectural detail is
+that the Bake workflow is centered on one target per workflow call, which keeps
+provenance, digest handling, and final manifest assembly scoped to one build
+unit at a time.</p>
+<h2 id="output-model">Output model<a class="headerlink" href="#output-model" title="Permanent link">#</a></h2>
+<p>The reusable workflows expose a stable set of caller-facing outputs so
+downstream jobs can consume results without understanding the internal job
+graph. In practice, the main values are <code>digest</code>, <code>meta-json</code>, <code>artifact-name</code>,
+<code>output-type</code>, and <code>signed</code>. That contract matters because it keeps promotion,
+publishing, or follow-on automation decoupled from the mechanics of runner
+selection and per-platform assembly.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<h3 id="dockerfile-oriented-image-build">Dockerfile-oriented image build<a class="headerlink" href="#dockerfile-oriented-image-build" title="Permanent link">#</a></h3>
+<p>The following example shows the shape of a multi-platform image build driven
+by <a href="build.html"><code>build.yml</code></a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;main&quot;</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;v*&quot;</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/github-builder/.github/workflows/build.yml@{{% param &quot;github_builder_version&quot; %}}</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<span class="w">      </span><span class="nt">id-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">image</span>
+<span class="w">      </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name != &#39;pull_request&#39; }}</span>
+<span class="w">      </span><span class="nt">platforms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linux/amd64,linux/arm64</span>
+<span class="w">      </span><span class="nt">meta-images</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name/app</span>
+<span class="w">      </span><span class="nt">meta-tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">type=ref,event=branch</span>
+<span class="w">        </span><span class="no">type=ref,event=pr</span>
+<span class="w">        </span><span class="no">type=semver,pattern={{version}}</span>
+<span class="w">    </span><span class="nt">secrets</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">registry-auths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">- registry: docker.io</span>
+<span class="w">          </span><span class="no">username: ${{ vars.DOCKERHUB_USERNAME }}</span>
+<span class="w">          </span><span class="no">password: ${{ secrets.DOCKERHUB_TOKEN }}</span>
+</code></pre></div>
+
+<p>This call is small because the reusable workflow absorbs the heavy lifting. The
+repository decides when the build should run and which inputs it wants, while
+the shared implementation handles Buildx setup, BuildKit configuration,
+platform fan-out, metadata generation, provenance, SBOM generation, signing,
+and final manifest creation.</p>
+<h3 id="bake-oriented-local-output">Bake-oriented local output<a class="headerlink" href="#bake-oriented-local-output" title="Permanent link">#</a></h3>
+<p>The following example shows the shape of a Bake call that exports local output
+and uploads the merged artifact.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">bake</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/github-builder/.github/workflows/bake.yml@{{% param &quot;github_builder_version&quot; %}}</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<span class="w">      </span><span class="nt">id-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<span class="w">      </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">binaries</span>
+<span class="w">      </span><span class="nt">artifact-upload</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">artifact-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bake-output</span>
+</code></pre></div>
+
+<p>This form is useful when the repository already keeps its build definition in
+Bake and wants to preserve that source of truth. The workflow injects the local
+output behavior into the Bake run, executes the target per platform when
+needed, and merges the result into one caller-facing artifact.</p>
+<h2 id="why-this-architecture-works">Why this architecture works<a class="headerlink" href="#why-this-architecture-works" title="Permanent link">#</a></h2>
+<h3 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">#</a></h3>
+<p>The performance story comes from native platform fan-out, shared BuildKit
+configuration, and centralized cache handling. Multi-platform work can be
+spread across matching GitHub-hosted runners instead of forcing every
+architecture through one build machine. That reduces emulation pressure,
+shortens the critical path for cross-platform builds, and gives every
+consuming repository the same optimized build baseline.</p>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link">#</a></h3>
+<p>The security model comes from putting the build implementation in
+Docker-maintained reusable workflows instead of ad hoc job steps in each
+consumer repository. The caller still controls permissions and secrets, but
+the build logic itself is centrally reviewed and versioned. The project also
+treats provenance, SBOM generation, and signing as first-class concerns,
+which strengthens the trust boundary between repository orchestration and
+artifact production.</p>
+<h3 id="isolation-and-reliability">Isolation and reliability<a class="headerlink" href="#isolation-and-reliability" title="Permanent link">#</a></h3>
+<p>The reliability story comes from separation of concerns. The consuming
+repository orchestrates the build. The reusable workflow executes the build.
+That reduces CI drift, removes repeated glue code from repositories, and makes
+the outcome easier to reason about because the caller sees a stable contract
+instead of a large custom job definition.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../../build/ci/github-actions/github-builder/index.html">
+          <span class="muted">Anterior</span>Docker GitHub Builder
+        </a>
+        <a class="pager-next" href="../../../../build/ci/github-actions/github-builder/bake.html">
+          <span class="muted">Siguiente</span>Bake with Docker GitHub Builder
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../../_assets/app.js"></script>
+</body>
+</html>

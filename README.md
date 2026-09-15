@@ -53,17 +53,28 @@ Tener el markdown separado del HTML permite además consultarlo con `grep`, `rg`
 
 | Tecnología | Origen | Formato de origen |
 |---|---|---|
-| Laravel | `laravel/docs` | Markdown nativo |
-| Filament | `filamentphp/filament` | Markdown nativo |
+| Bash | ftp.gnu.org (tarball) | Texinfo → DocBook con texi2any |
 | Composer | `composer/composer` | Markdown nativo |
+| Debian | `salsa.debian.org` (debian-reference) | DocBook XML, convertido con pandoc |
+| Docker | `docker/docs` | Markdown nativo |
+| Filament | `filamentphp/filament` | Markdown nativo |
+| Git | `git/git` | AsciiDoc, convertido con pandoc |
+| JavaScript | `mdn/content` | Markdown nativo (MDN Web Docs) |
+| Laravel | `laravel/docs` | Markdown nativo |
+| llama.cpp | `ggml-org/llama.cpp` | Markdown nativo |
+| MicroPython (Pico) | `micropython/micropython` | Sphinx RST, convertido con pandoc |
 | Node.js | `nodejs/node` | Markdown nativo |
 | npm | `npm/cli` | Markdown nativo |
-| pnpm | `pnpm/pnpm.io` | Markdown nativo |
+| Nuxt | `nuxt/nuxt` | Markdown nativo |
 | PHP | `php/doc-es` (+ `php/doc-base`) | DocBook XML, convertido con pandoc |
+| pnpm | `pnpm/pnpm.io` | Markdown nativo |
+| PostgreSQL | `postgres/postgres` | DocBook XML / SGML, convertido con pandoc |
 | Python | docs.python.org | Texto plano, sin conversión |
-| Bash | ftp.gnu.org (tarball) | Texinfo → DocBook con texi2any |
+| SQLite | `sqlite.org` (tarball zip) | HTML estático limpio, con pandoc |
+| Tailwind CSS | `tailwindlabs/tailwindcss.com` | MDX (con tablas extraídas a Markdown) |
+| Vue 3 | `vuejs/docs` | Markdown nativo |
 
-PHP se toma del **fuente en DocBook**, no del tarball de HTML de php.net. Sale más limpio, viene de git como el resto, y cada fichero trae el estado de su traducción al español (`translation_status`, `translation_reviewed`), que el pipeline vuelca al front-matter. Para la versión inglesa basta cambiar el `repo` a `php/doc-en` en `sources.yaml`.
+PHP y PostgreSQL se toman de sus **fuentes en DocBook/SGML**, no de tarballs HTML. Salen más limpios, vienen de git como el resto, y cada fichero conserva su estructura canónica. Para la versión inglesa de PHP basta cambiar el `repo` a `php/doc-en` en `sources.yaml`.
 
 ---
 
@@ -124,21 +135,29 @@ En reorganización. La arquitectura descrita arriba es la de destino; el plan co
 
 ### Estado real del pipeline
 
-Verificado con **13.820 documentos** normalizados, validados y publicados en 12 tecnologías:
+Verificado con **16.577 documentos** normalizados, validados y publicados en **20 tecnologías**:
 
 | Tecnología | Documentos | Formato de origen |
 |---|---:|---|
 | Bash | 70 | Texinfo oficial de GNU |
 | Composer | 33 | Markdown nativo |
+| Debian Reference | 14 | DocBook XML (`debian-reference`) |
+| Docker | 905 | Markdown nativo (`docker/docs`) |
 | Filament | 82 | Markdown nativo |
+| Git | 226 | AsciiDoc oficial (`git/git`) |
 | JavaScript | 1.331 | MDN Web Docs |
 | Laravel | 101 | Markdown nativo |
+| llama.cpp | 51 | Markdown nativo |
+| MicroPython (Pico) | 143 | Sphinx RST (`micropython/micropython`) |
 | Node.js | 70 | Markdown nativo |
 | npm | 87 | Markdown nativo |
 | Nuxt | 261 | Markdown nativo |
 | PHP | 11.000 | DocBook XML (`doc-es`) |
 | pnpm | 140 | Markdown nativo |
+| PostgreSQL | 384 | DocBook XML / SGML (`postgres/postgres`) |
 | Python | 536 | Documentación oficial compilada |
+| SQLite | 837 | HTML estático procesado con pandoc |
+| Tailwind CSS | 197 | MDX procesado a Markdown nativo |
 | Vue 3 | 109 | Markdown nativo |
 
 El sitio generado se abre con doble clic en `public/index.html`: sin servidor, sin conexión y sin cargar ningún recurso externo. Además, `bundles/` ofrece 1 archivo Markdown plano por tecnología listo para descargar o usar con IA.

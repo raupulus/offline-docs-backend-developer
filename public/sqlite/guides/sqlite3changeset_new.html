@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obtain new.* Values From A Changeset Iterator · SQLite</title>
+<meta name="description" content="Obtain new.* Values From A Changeset Iterator - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/sqlite3changeset_new.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Obtain new.* Values From A Changeset Iterator">
+<meta property="og:description" content="Obtain new.* Values From A Changeset Iterator - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Obtain new.* Values From A Changeset Iterator">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Obtain new.* Values From A Changeset Iterator",
+"url": "https://docs.raupulus.dev/sqlite/guides/sqlite3changeset_new.html",  "description": "Obtain new.* Values From A Changeset Iterator - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/howtocorrupt.html"
+>How To Corrupt An SQLite Database File</a>
+              </li>
+              <li>
+                <a href="../guides/getthecode.html"
+>How To Download Canonical SQLite Source Code</a>
+              </li>
+              <li>
+                <a href="../guides/limits.html"
+>Implementation Limits For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/imposter.html"
+>Imposter Tables</a>
+              </li>
+              <li>
+                <a href="../guides/inmemorydb.html"
+>In-Memory Databases</a>
+              </li>
+              <li>
+                <a href="../guides/expridx.html"
+>Indexes On Expressions</a>
+              </li>
+              <li>
+                <a href="../guides/intern-v-extern-blob.html"
+>Internal Versus External BLOBs</a>
+              </li>
+              <li>
+                <a href="../guides/intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="../guides/invalidutf.html"
+>Invalid UTF Policy</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_invert.html"
+>Invert A Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/isolation.html"
+>Isolation In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/hp1.html"
+>Javascript Required</a>
+              </li>
+              <li>
+                <a href="../guides/doc_keyword_crossref.html"
+>Keyword Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/constlist.html"
+>List Of SQLite Constants</a>
+              </li>
+              <li>
+                <a href="../guides/funclist.html"
+>List Of SQLite Functions</a>
+              </li>
+              <li>
+                <a href="../guides/objlist.html"
+>List Of SQLite Objects</a>
+              </li>
+              <li>
+                <a href="../guides/vtablist.html"
+>List Of Virtual Tables</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_diff.html"
+>Load The Difference Between Tables Into A Session</a>
+              </li>
+              <li>
+                <a href="../guides/locrsf.html"
+>LoC Recommended Storage Format</a>
+              </li>
+              <li>
+                <a href="../guides/lts.html"
+>Long Term Support</a>
+              </li>
+              <li>
+                <a href="../guides/privatebranch.html"
+>Maintaining Private Branches Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/np1queryprob.html"
+>Many Small Queries Are Efficient In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cpu.html"
+>Measuring and Reducing CPU Usage in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/mmap.html"
+>Memory-Mapped I/O</a>
+              </li>
+              <li>
+                <a href="../guides/mostdeployed.html"
+>Most Widely Deployed SQL Database Engine</a>
+              </li>
+              <li>
+                <a href="../guides/mingw.html"
+>No Title</a>
+              </li>
+              <li>
+                <a href="../guides/nulinstr.html"
+>NUL Characters In Strings</a>
+              </li>
+              <li>
+                <a href="../guides/nulls.html"
+>NULL Handling in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_output.html"
+>Obtain A Composite Changeset From A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_conflict.html"
+>Obtain Conflicting Row Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_new.html"
+class="is-current" aria-current="page">Obtain new.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_old.html"
+>Obtain old.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_op.html"
+>Obtain The Current Operation From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_pk.html"
+>Obtain The Primary Key Definition Of A Table</a>
+              </li>
+              <li>
+                <a href="../guides/c_changegroup_config_patchset.html"
+>Options for sqlite3changegroup_config().</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_objconfig_rowid.html"
+>Options for sqlite3session_object_config</a>
+              </li>
+              <li>
+                <a href="../guides/doc_pagelink_crossref.html"
+>Pagelink Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/partialindex.html"
+>Partial Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/bindptr.html"
+>Pointer Passing Interfaces</a>
+              </li>
+              <li>
+                <a href="../guides/psow.html"
+>Powersafe Overwrite</a>
+              </li>
+              <li>
+                <a href="../guides/pressrelease-20071212.html"
+>Pressrelease 20071212</a>
+              </li>
+              <li>
+                <a href="../guides/profile.html"
+>Profiling SQL Queries</a>
+              </li>
+              <li>
+                <a href="../guides/qmplan.html"
+>Quality Management</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_memory_used.html"
+>Query for the amount of heap memory used by a session object.</a>
+              </li>
+              <li>
+                <a href="../guides/lang.html"
+>Query Language Understood by SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner.html"
+>Query Planning</a>
+              </li>
+              <li>
+                <a href="../guides/climode.html"
+>Query Result Formatting In The CLI</a>
+              </li>
+              <li>
+                <a href="../guides/quirks.html"
+>Quirks, Caveats, and Gotchas In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_rebase.html"
+>Rebase a changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rebaser.html"
+>Rebasing changesets</a>
+              </li>
+              <li>
+                <a href="../guides/news.html"
+>Recent SQLite News</a>
+              </li>
+              <li>
+                <a href="../guides/recovery.html"
+>Recovering Data From A Corrupt SQLite Database</a>
+              </li>
+              <li>
+                <a href="../guides/changes.html"
+>Release History Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/rescode.html"
+>Result and Error Codes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_changeset_size.html"
+>Return An Upper-limit For The Size Of The Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rowvalue.html"
+>Row Values</a>
+              </li>
+              <li>
+                <a href="../guides/rowidtable.html"
+>Rowid Tables</a>
+              </li>
+              <li>
+                <a href="../guides/loadext.html"
+>Run-Time Loadable Extensions</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_table_filter.html"
+>Set a table filter on a Session Object.</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_indirect.html"
+>Set Or Clear the Indirect Change Flag</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Obtain new.* Values From A Changeset Iterator</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/session/sqlite3changeset_new.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#session-module-c-interface">Session Module C Interface#</a></li>
+              <li class="lvl-2"><a href="#obtain-new-values-from-a-changeset-iterator">Obtain new.* Values From A Changeset Iterator#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p><a href="../session/intro.html"></a></p>
+<h2 id="session-module-c-interface">Session Module C Interface<a class="headerlink" href="#session-module-c-interface" title="Permanent link">#</a></h2>
+<h2 id="obtain-new-values-from-a-changeset-iterator">Obtain new.* Values From A Changeset Iterator<a class="headerlink" href="#obtain-new-values-from-a-changeset-iterator" title="Permanent link">#</a></h2>
+<blockquote>
+<p>int sqlite3changeset_new(\
+  sqlite3_changeset_iter *pIter,  /* Changeset iterator */\
+  int iVal,                       /* Column number */\
+  sqlite3_value **ppValue         /* OUT: New value (or NULL pointer) */\
+);\</p>
+</blockquote>
+<p>The pIter argument passed to this function may either be an iterator passed to a conflict-handler by <a href="../session/sqlite3changeset_apply.html">sqlite3changeset_apply()</a>, or an iterator created by <a href="../session/sqlite3changeset_start.html">sqlite3changeset_start()</a>. In the latter case, the most recent call to <a href="../session/sqlite3changeset_next.html">sqlite3changeset_next()</a> must have returned SQLITE_ROW. Furthermore, it may only be called if the type of change that the iterator currently points to is either <a href="../c3ref/c_alter_table.html">SQLITE_UPDATE</a> or <a href="../c3ref/c_alter_table.html">SQLITE_INSERT</a>. Otherwise, this function returns <a href="../rescode.html#misuse">SQLITE_MISUSE</a> and sets *ppValue to NULL.</p>
+<p>Argument iVal must be greater than or equal to 0, and less than the number of columns in the table affected by the current change. Otherwise, <a href="../rescode.html#range">SQLITE_RANGE</a> is returned and *ppValue is set to NULL.</p>
+<p>If successful, this function sets *ppValue to point to a protected sqlite3_value object containing the iVal'th value from the vector of new row values stored as part of the UPDATE or INSERT change and returns SQLITE_OK. If the change is an UPDATE and does not include a new value for the requested column, *ppValue is set to NULL and SQLITE_OK returned. The name of the function comes from the fact that this is similar to the "new.*" columns available to update or delete triggers.</p>
+<p>If some other error occurs (e.g. an OOM condition), an SQLite error code is returned and *ppValue is set to NULL.</p>
+<p>See also lists of <a href="../session/objlist.html">Objects</a>, <a href="../session/constlist.html">Constants</a>, and <a href="../session/funclist.html">Functions</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/sqlite3changeset_conflict.html">
+          <span class="muted">Anterior</span>Obtain Conflicting Row Values From A Changeset Iterator
+        </a>
+        <a class="pager-next" href="../guides/sqlite3changeset_old.html">
+          <span class="muted">Siguiente</span>Obtain old.* Values From A Changeset Iterator
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

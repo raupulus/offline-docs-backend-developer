@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genetic Query Optimizer · PostgreSQL</title>
+<meta name="description" content="Genetic Query Optimizer - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/geqo.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Genetic Query Optimizer">
+<meta property="og:description" content="Genetic Query Optimizer - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Genetic Query Optimizer">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Genetic Query Optimizer",
+"url": "https://docs.raupulus.dev/postgresql/geqo.html",  "description": "Genetic Query Optimizer - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./client-auth.html"
+>Client Authentication</a>
+              </li>
+              <li>
+                <a href="./color.html"
+>Color Support</a>
+              </li>
+              <li>
+                <a href="./dfunc.html"
+>Compiling and Linking Dynamically-Loaded Functions</a>
+              </li>
+              <li>
+                <a href="./rowtypes.html"
+>Composite Types</a>
+              </li>
+              <li>
+                <a href="./mvcc.html"
+>Concurrency Control</a>
+              </li>
+              <li>
+                <a href="./notation.html"
+>Conventions</a>
+              </li>
+              <li>
+                <a href="./cube.html"
+>cube — a multi-dimensional cube data type</a>
+              </li>
+              <li>
+                <a href="./custom-rmgr.html"
+>Custom WAL Resource Managers</a>
+              </li>
+              <li>
+                <a href="./ddl.html"
+>Data Definition</a>
+              </li>
+              <li>
+                <a href="./dml.html"
+>Data Manipulation</a>
+              </li>
+              <li>
+                <a href="./datatype.html"
+>Data Types</a>
+              </li>
+              <li>
+                <a href="./storage.html"
+>Database Physical Storage</a>
+              </li>
+              <li>
+                <a href="./user-manag.html"
+>Database Roles</a>
+              </li>
+              <li>
+                <a href="./datetime.html"
+>Date/Time Support</a>
+              </li>
+              <li>
+                <a href="./dblink.html"
+>dblink_connect</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-default-roles.html"
+>Default Roles Renamed to Predefined Roles</a>
+              </li>
+              <li>
+                <a href="./dict-int.html"
+>dict_int — example full-text search dictionary for integers</a>
+              </li>
+              <li>
+                <a href="./dict-xsyn.html"
+>dict_xsyn — example synonym full-text search dictionary</a>
+              </li>
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+>file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+class="is-current" aria-current="page">Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+              <li>
+                <a href="./high-availability.html"
+>High Availability, Load Balancing, and Replication</a>
+              </li>
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+>hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Genetic Query Optimizer</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/geqo.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#genetic-query-optimizer">Genetic Query Optimizer#</a></li>
+              <li class="lvl-2"><a href="#query-handling-as-a-complex-optimization-problem">Query Handling as a Complex Optimization Problem#</a></li>
+              <li class="lvl-2"><a href="#genetic-algorithms">Genetic Algorithms#</a></li>
+              <li class="lvl-2"><a href="#genetic-query-optimization-geqo-in-postgresql">Genetic Query Optimization (GEQO) in PostgreSQL#</a></li>
+              <li class="lvl-3"><a href="#generating-possible-plans-with-geqo">Generating Possible Plans with GEQO#</a></li>
+              <li class="lvl-3"><a href="#future-implementation-tasks-for-postgresql-geqo">Future Implementation Tasks for PostgreSQL GEQO#</a></li>
+              <li class="lvl-2"><a href="#further-reading">Further Reading#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="genetic-query-optimizer">Genetic Query Optimizer<a class="headerlink" href="#genetic-query-optimizer" title="Permanent link">#</a></h2>
+<blockquote>
+<p>[!NOTE]
+Written by Martin Utesch (<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#116;&#101;&#115;&#99;&#104;&#64;&#97;&#117;&#116;&#46;&#116;&#117;&#45;&#102;&#114;&#101;&#105;&#98;&#101;&#114;&#103;&#46;&#100;&#101;">&#117;&#116;&#101;&#115;&#99;&#104;&#64;&#97;&#117;&#116;&#46;&#116;&#117;&#45;&#102;&#114;&#101;&#105;&#98;&#101;&#114;&#103;&#46;&#100;&#101;</a>) for the Institute of Automatic Control at the University of Mining and Technology in Freiberg, Germany.</p>
+</blockquote>
+<h2 id="query-handling-as-a-complex-optimization-problem">Query Handling as a Complex Optimization Problem<a class="headerlink" href="#query-handling-as-a-complex-optimization-problem" title="Permanent link">#</a></h2>
+<p>Among all relational operators the most difficult one to process and optimize is the join. The number of possible query plans grows exponentially with the number of joins in the query. Further optimization effort is caused by the support of a variety of join methods (e.g., nested loop, hash join, merge join in PostgreSQL) to process individual joins and a diversity of indexes (e.g., B-tree, hash, GiST and GIN in PostgreSQL) as access paths for relations.</p>
+<p>The normal PostgreSQL query optimizer performs a near-exhaustive search over the space of alternative strategies. This algorithm, first introduced in IBM's System R database, produces a near-optimal join order, but can take an enormous amount of time and memory space when the number of joins in the query grows large. This makes the ordinary PostgreSQL query optimizer inappropriate for queries that join a large number of tables.</p>
+<p>The Institute of Automatic Control at the University of Mining and Technology, in Freiberg, Germany, encountered some problems when it wanted to use PostgreSQL as the backend for a decision support knowledge based system for the maintenance of an electrical power grid. The DBMS needed to handle large join queries for the inference machine of the knowledge based system. The number of joins in these queries made using the normal query optimizer infeasible.</p>
+<p>In the following we describe the implementation of a genetic algorithm to solve the join ordering problem in a manner that is efficient for queries involving large numbers of joins.</p>
+<h2 id="genetic-algorithms">Genetic Algorithms<a class="headerlink" href="#genetic-algorithms" title="Permanent link">#</a></h2>
+<p>The genetic algorithm (GA) is a heuristic optimization method which operates through randomized search. The set of possible solutions for the optimization problem is considered as a population of individuals. The degree of adaptation of an individual to its environment is specified by its fitness.</p>
+<p>The coordinates of an individual in the search space are represented by chromosomes, in essence a set of character strings. A gene is a subsection of a chromosome which encodes the value of a single parameter being optimized. Typical encodings for a gene could be binary or integer.</p>
+<p>Through simulation of the evolutionary operations recombination, mutation, and selection new generations of search points are found that show a higher average fitness than their ancestors. <a href="#geqo-figure">Structure of a Genetic Algorithm</a> illustrates these steps.</p>
+<figure id="geqo-figure">
+<img src="images/genetic-algorithm.svg" style="width:100.0%" />
+<figcaption>Structure of a Genetic Algorithm</figcaption>
+</figure>
+
+<p>According to the <code>comp.ai.genetic</code> FAQ it cannot be stressed too strongly that a GA is not a pure random search for a solution to a problem. A GA uses stochastic processes, but the result is distinctly non-random (better than random).</p>
+<h2 id="genetic-query-optimization-geqo-in-postgresql">Genetic Query Optimization (GEQO) in PostgreSQL<a class="headerlink" href="#genetic-query-optimization-geqo-in-postgresql" title="Permanent link">#</a></h2>
+<p>The GEQO module approaches the query optimization problem as though it were the well-known traveling salesman problem (TSP). Possible query plans are encoded as integer strings. Each string represents the join order from one relation of the query to the next. For example, the join tree</p>
+<div class="codehilite"><pre><span></span><code>   /\
+  /\ 2
+ /\ 3
+4  1
+</code></pre></div>
+
+<p>is encoded by the integer string '4-1-3-2', which means, first join relation '4' and '1', then '3', and then '2', where 1, 2, 3, 4 are relation IDs within the PostgreSQL optimizer.</p>
+<p>Specific characteristics of the GEQO implementation in PostgreSQL are:</p>
+<ul>
+<li>Usage of a steady state GA (replacement of the least fit individuals in a population, not whole-generational replacement) allows fast convergence towards improved query plans. This is essential for query handling with reasonable time;</li>
+<li>Usage of edge recombination crossover which is especially suited to keep edge losses low for the solution of the TSP by means of a GA;</li>
+<li>Mutation as genetic operator is deprecated so that no repair mechanisms are needed to generate legal TSP tours.</li>
+</ul>
+<p>Parts of the GEQO module are adapted from D. Whitley's Genitor algorithm.</p>
+<p>The GEQO module allows the PostgreSQL query optimizer to support large join queries effectively through non-exhaustive search.</p>
+<h3 id="generating-possible-plans-with-geqo">Generating Possible Plans with GEQO<a class="headerlink" href="#generating-possible-plans-with-geqo" title="Permanent link">#</a></h3>
+<p>The GEQO planning process uses the standard planner code to generate plans for scans of individual relations. Then join plans are developed using the genetic approach. As shown above, each candidate join plan is represented by a sequence in which to join the base relations. In the initial stage, the GEQO code simply generates some possible join sequences at random. For each join sequence considered, the standard planner code is invoked to estimate the cost of performing the query using that join sequence. (For each step of the join sequence, all three possible join strategies are considered; and all the initially-determined relation scan plans are available. The estimated cost is the cheapest of these possibilities.) Join sequences with lower estimated cost are considered “more fit” than those with higher cost. The genetic algorithm discards the least fit candidates. Then new candidates are generated by combining genes of more-fit candidates that is, by using randomly-chosen portions of known low-cost join sequences to create new sequences for consideration. This process is repeated until a preset number of join sequences have been considered; then the best one found at any time during the search is used to generate the finished plan.</p>
+<p>This process is inherently nondeterministic, because of the randomized choices made during both the initial population selection and subsequent “mutation” of the best candidates. To avoid surprising changes of the selected plan, each run of the GEQO algorithm restarts its random number generator with the current <a href="#guc-geqo-seed">???</a> parameter setting. As long as <code>geqo_seed</code> and the other GEQO parameters are kept fixed, the same plan will be generated for a given query (and other planner inputs such as statistics). To experiment with different search paths, try changing <code>geqo_seed</code>.</p>
+<h3 id="future-implementation-tasks-for-postgresql-geqo">Future Implementation Tasks for PostgreSQL GEQO<a class="headerlink" href="#future-implementation-tasks-for-postgresql-geqo" title="Permanent link">#</a></h3>
+<p>Work is still needed to improve the genetic algorithm parameter settings. In file <code>src/backend/optimizer/geqo/geqo_main.c</code>, routines <code>gimme_pool_size</code> and <code>gimme_number_generations</code>, we have to find a compromise for the parameter settings to satisfy two competing demands:</p>
+<ul>
+<li>Optimality of the query plan</li>
+<li>Computing time</li>
+</ul>
+<p>In the current implementation, the fitness of each candidate join sequence is estimated by running the standard planner's join selection and cost estimation code from scratch. To the extent that different candidates use similar sub-sequences of joins, a great deal of work will be repeated. This could be made significantly faster by retaining cost estimates for sub-joins. The problem is to avoid expending unreasonable amounts of memory on retaining that state.</p>
+<p>At a more basic level, it is not clear that solving query optimization with a GA algorithm designed for TSP is appropriate. In the TSP case, the cost associated with any substring (partial tour) is independent of the rest of the tour, but this is certainly not true for query optimization. Thus it is questionable whether edge recombination crossover is the most effective mutation procedure.</p>
+<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">#</a></h2>
+<p>The following resources contain additional information about genetic algorithms:</p>
+<ul>
+<li>
+<p><a href="http://www.faqs.org/faqs/ai-faq/genetic/part1/" rel="noopener" target="_blank"> The Hitch-Hiker's Guide to Evolutionary Computation</a>, (FAQ for <a href="news://comp.ai.genetic"></a>)</p>
+</li>
+<li>
+<p><a href="https://www.red3d.com/cwr/evolve.html" rel="noopener" target="_blank"> Evolutionary Computation and its application to art and design</a>, by Craig Reynolds</p>
+</li>
+<li>
+<p><a href="#elma04">???</a></p>
+</li>
+<li>
+<p><a href="#fong">???</a></p>
+</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./generic-wal.html">
+          <span class="muted">Anterior</span>Generic WAL Records
+        </a>
+        <a class="pager-next" href="./start.html">
+          <span class="muted">Siguiente</span>Getting Started
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

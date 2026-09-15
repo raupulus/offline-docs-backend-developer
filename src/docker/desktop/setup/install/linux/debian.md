@@ -1,0 +1,95 @@
+---
+title: Install Docker Desktop on Debian
+description: Instructions for installing Docker Desktop on Debian
+source_repo: docker/docs
+source_ref: main
+source_commit: 083f66104
+source_path: manuals/desktop/setup/install/linux/debian.md
+technology: docker
+version: main
+license: Apache-2.0
+retrieved_at: '2026-09-15'
+section: desktop
+order: 3180
+---
+
+> **Docker Desktop terms**
+>
+> Commercial use of Docker Desktop in larger enterprises (more than 250
+> employees OR more than $10 million USD in annual revenue) requires a [paid
+> subscription](https://www.docker.com/pricing?ref=Docs&refAction=DocsDesktopDebianInstall).
+
+This page contains information on how to install, launch, and upgrade Docker Desktop on a Debian distribution.
+
+## Prerequisites
+
+To install Docker Desktop successfully, you must:
+
+- Meet the [general system requirements](index.md#general-system-requirements).
+- Have a 64-bit version of Debian 12.
+- For a Gnome Desktop environment, you must also install AppIndicator and KStatusNotifierItem [Gnome extensions](https://extensions.gnome.org/extension/615/appindicator-support/).
+- If you're not using GNOME, you must install `gnome-terminal` to enable terminal access from Docker Desktop:
+
+  ```console
+  $ sudo apt install gnome-terminal
+  ```
+
+## Install Docker Desktop
+
+Recommended approach to install Docker Desktop on Debian:
+
+1. Set up Docker's `apt` repository.
+   See step one of [Install using the `apt` repository](../../../../engine/install/debian.md#install-using-the-repository).
+
+2. Download the latest [DEB package](https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64). For checksums, see the [Release notes](../../../release-notes.md).
+
+3. Install the package using `apt`:
+
+  ```console
+  $ sudo apt-get update
+  $ sudo apt-get install ./docker-desktop-amd64.deb
+  ```
+
+  > [!NOTE]
+  >
+  > At the end of the installation process, `apt` displays an error due to installing a downloaded package. You
+  > can ignore this error message.
+  >
+  > ```text
+  > N: Download is performed unsandboxed as root, as file '/home/user/Downloads/docker-desktop.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
+  > ```
+
+   By default, Docker Desktop is installed at `/opt/docker-desktop`.
+
+The DEB package includes a post-install script that completes additional setup steps automatically.
+
+The post-install script:
+
+- Sets the capability on the Docker Desktop binary to map privileged ports and set resource limits.
+- Adds a DNS name for Kubernetes to `/etc/hosts`.
+- Creates a symlink from `/usr/local/bin/com.docker.cli` to `/usr/bin/docker`.
+  This is because the classic Docker CLI is installed at `/usr/bin/docker`. The Docker Desktop installer also installs a Docker CLI binary that includes cloud-integration capabilities and is essentially a wrapper for the Compose CLI, at`/usr/local/bin/com.docker.cli`. The symlink ensures that the wrapper can access the classic Docker CLI. 
+
+## Launch Docker Desktop
+
+{{% include "desktop-linux-launch.md" %}}
+
+## Upgrade Docker Desktop
+
+Once a new version for Docker Desktop is released, the Docker UI shows a notification.
+You need to download the new package each time you want to upgrade Docker Desktop and run:
+
+```console
+$ sudo apt-get install ./docker-desktop-amd64.deb
+```
+
+## Next steps
+
+- Explore [Docker's subscriptions](https://www.docker.com/pricing?ref=Docs&refAction=DocsDesktopDebianInstall) to see what Docker can offer you.
+- Take a look at [Get started with Docker](/get-started/tutorials/run-an-app.md) to learn how to build an image and run it as a containerized application.
+- [Explore Docker Desktop](../../../use-desktop/index.md) and all its features.
+- [Troubleshooting](../../../troubleshoot-and-support/troubleshoot/index.md) describes common problems, workarounds, how to run and submit diagnostics, and submit issues.
+- [FAQs](../../../troubleshoot-and-support/faqs/general.md) provide answers to frequently asked questions.
+- [Release notes](../../../release-notes.md) lists component updates, new features, and improvements associated with Docker Desktop releases.
+- [Back up and restore data](../../../settings-and-maintenance/backup-and-restore.md) provides instructions
+  on backing up and restoring data related to Docker.

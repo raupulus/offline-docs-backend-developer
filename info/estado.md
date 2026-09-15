@@ -19,17 +19,25 @@
 |---|---:|
 | Bash | 70 |
 | Composer | 33 |
+| Debian Reference | 14 |
+| Docker | 905 |
 | Filament | 82 |
+| Git | 226 |
 | JavaScript | 1.331 |
 | Laravel | 101 |
+| llama.cpp | 51 |
+| MicroPython (Pico) | 143 |
 | Node.js | 70 |
 | npm | 87 |
 | Nuxt | 261 |
 | PHP | 11.000 |
 | pnpm | 140 |
+| PostgreSQL | 384 |
 | Python | 536 |
+| SQLite | 837 |
+| Tailwind CSS | 197 |
 | Vue 3 | 109 |
-| **Total** | **13.820 documentos** |
+| **Total** | **16.577 documentos** |
 
 Enlaces internos comprobados en el sitio generado: ninguno roto. `make test` pasa 16 comprobaciones sin red.
 
@@ -59,3 +67,9 @@ No reintroducir:
 | Rutas absolutas del sitio oficial muertas en local | `RE_HREF_ABS` en `build.py` |
 | Prefijos numéricos en directorios | `target_path` los quita también de los segmentos |
 | `source_url` construido a ojo | Se usa el `xml:id` real del documento |
+| Bloqueo infinito de Pandoc con AsciiDoc (Git) | Sanitización de `\n#` por `\n //` y colapso de `--` antes de pandoc en `normalize_asciidoc.py` |
+| Versiones de notas de release en Docker | `RE_NUMERIC_PREFIX` sin punto `.` y renombre de index de directorio descartado |
+| Entidades no-XML en PostgreSQL DocBook | Sanitización de entidades desconocidas antes de parsear XML en `docbook.py` |
+| Tablas `<ApiTable>` en MDX de Tailwind v4 | Parser AST de expresiones JS en `normalize.py` convierte a tablas Markdown estándar |
+| HTML estático para SQLite | Limpieza de chrome de navegación/búsqueda antes de conversión Pandoc en `normalize_html.py` |
+| Sphinx RST para MicroPython | Normalización y filtrado de directivas Sphinx previo a Pandoc en `normalize_rst.py` |

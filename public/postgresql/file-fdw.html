@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>file_fdw — access data files in the server&#39;s file system · PostgreSQL</title>
+<meta name="description" content="file_fdw — access data files in the server&#39;s file system - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/file-fdw.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="file_fdw — access data files in the server&#39;s file system">
+<meta property="og:description" content="file_fdw — access data files in the server&#39;s file system - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="file_fdw — access data files in the server&#39;s file system">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "file_fdw — access data files in the server&#39;s file system",
+"url": "https://docs.raupulus.dev/postgresql/file-fdw.html",  "description": "file_fdw — access data files in the server&#39;s file system - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./bloom.html"
+>bloom — bloom filter index access method</a>
+              </li>
+              <li>
+                <a href="./brin.html"
+>BRIN Indexes</a>
+              </li>
+              <li>
+                <a href="./btree-gin.html"
+>btree_gin — GIN operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./btree-gist.html"
+>btree_gist — GiST operator classes with B-tree behavior</a>
+              </li>
+              <li>
+                <a href="./problems.html"
+>Bug Reporting Guidelines</a>
+              </li>
+              <li>
+                <a href="./indextypes.html"
+>Built-in Index Access Methods</a>
+              </li>
+              <li>
+                <a href="./citext.html"
+>citext — a case-insensitive character string type</a>
+              </li>
+              <li>
+                <a href="./client-auth.html"
+>Client Authentication</a>
+              </li>
+              <li>
+                <a href="./color.html"
+>Color Support</a>
+              </li>
+              <li>
+                <a href="./dfunc.html"
+>Compiling and Linking Dynamically-Loaded Functions</a>
+              </li>
+              <li>
+                <a href="./rowtypes.html"
+>Composite Types</a>
+              </li>
+              <li>
+                <a href="./mvcc.html"
+>Concurrency Control</a>
+              </li>
+              <li>
+                <a href="./notation.html"
+>Conventions</a>
+              </li>
+              <li>
+                <a href="./cube.html"
+>cube — a multi-dimensional cube data type</a>
+              </li>
+              <li>
+                <a href="./custom-rmgr.html"
+>Custom WAL Resource Managers</a>
+              </li>
+              <li>
+                <a href="./ddl.html"
+>Data Definition</a>
+              </li>
+              <li>
+                <a href="./dml.html"
+>Data Manipulation</a>
+              </li>
+              <li>
+                <a href="./datatype.html"
+>Data Types</a>
+              </li>
+              <li>
+                <a href="./storage.html"
+>Database Physical Storage</a>
+              </li>
+              <li>
+                <a href="./user-manag.html"
+>Database Roles</a>
+              </li>
+              <li>
+                <a href="./datetime.html"
+>Date/Time Support</a>
+              </li>
+              <li>
+                <a href="./dblink.html"
+>dblink_connect</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-default-roles.html"
+>Default Roles Renamed to Predefined Roles</a>
+              </li>
+              <li>
+                <a href="./dict-int.html"
+>dict_int — example full-text search dictionary for integers</a>
+              </li>
+              <li>
+                <a href="./dict-xsyn.html"
+>dict_xsyn — example synonym full-text search dictionary</a>
+              </li>
+              <li>
+                <a href="./docguide.html"
+>Documentation</a>
+              </li>
+              <li>
+                <a href="./earthdistance.html"
+>earthdistance — calculate great-circle distances</a>
+              </li>
+              <li>
+                <a href="./event-trigger.html"
+>Event Triggers</a>
+              </li>
+              <li>
+                <a href="./extend.html"
+>Extending SQL</a>
+              </li>
+              <li>
+                <a href="./external-projects.html"
+>External Projects</a>
+              </li>
+              <li>
+                <a href="./file-fdw.html"
+class="is-current" aria-current="page">file_fdw — access data files in the server&#39;s file system</a>
+              </li>
+              <li>
+                <a href="./protocol.html"
+>Frontend/Backend Protocol</a>
+              </li>
+              <li>
+                <a href="./textsearch.html"
+>Full Text Search</a>
+              </li>
+              <li>
+                <a href="./func.html"
+>Functions and Operators</a>
+              </li>
+              <li>
+                <a href="./info.html"
+>Further Information</a>
+              </li>
+              <li>
+                <a href="./fuzzystrmatch.html"
+>fuzzystrmatch — determine string similarities and distance</a>
+              </li>
+              <li>
+                <a href="./generic-wal.html"
+>Generic WAL Records</a>
+              </li>
+              <li>
+                <a href="./geqo.html"
+>Genetic Query Optimizer</a>
+              </li>
+              <li>
+                <a href="./start.html"
+>Getting Started</a>
+              </li>
+              <li>
+                <a href="./gin.html"
+>GIN Indexes</a>
+              </li>
+              <li>
+                <a href="./gist.html"
+>GiST Indexes</a>
+              </li>
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+              <li>
+                <a href="./high-availability.html"
+>High Availability, Load Balancing, and Replication</a>
+              </li>
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+>hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">file_fdw — access data files in the server&#39;s file system</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/file-fdw.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#file_fdw-access-data-files-in-the-servers-file-system">file_fdw access data files in the server&#39;s file system#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="file_fdw-access-data-files-in-the-servers-file-system">file_fdw access data files in the server's file system<a class="headerlink" href="#file_fdw-access-data-files-in-the-servers-file-system" title="Permanent link">#</a></h2>
+<p>file_fdw</p>
+<p>The <code>file_fdw</code> module provides the foreign-data wrapper <code>file_fdw</code>, which can be used to access data files in the server's file system, or to execute programs on the server and read their output. The data file or program output must be in a format that can be read by <code>COPY FROM</code>; see <a href="#sql-copy">???</a> for details. Access to data files is currently read-only.</p>
+<p>A foreign table created using this wrapper can have the following options:</p>
+<p><code>filename</code><br>
+Specifies the file to be read. Relative paths are relative to the data directory. Either <code>filename</code> or <code>program</code> must be specified, but not both.</p>
+<p><code>program</code><br>
+Specifies the command to be executed. The standard output of this command will be read as though <code>COPY FROM PROGRAM</code> were used. Either <code>program</code> or <code>filename</code> must be specified, but not both.</p>
+<p><code>format</code><br>
+Specifies the data format, the same as <code>COPY</code>'s <code>FORMAT</code> option.</p>
+<p><code>header</code><br>
+Specifies whether the data has a header line, the same as <code>COPY</code>'s <code>HEADER</code> option.</p>
+<p><code>delimiter</code><br>
+Specifies the data delimiter character, the same as <code>COPY</code>'s <code>DELIMITER</code> option.</p>
+<p><code>quote</code><br>
+Specifies the data quote character, the same as <code>COPY</code>'s <code>QUOTE</code> option.</p>
+<p><code>escape</code><br>
+Specifies the data escape character, the same as <code>COPY</code>'s <code>ESCAPE</code> option.</p>
+<p><code>null</code><br>
+Specifies the data null string, the same as <code>COPY</code>'s <code>NULL</code> option.</p>
+<p><code>default</code><br>
+Specifies the string that represents a default value, the same as <code>COPY</code>'s <code>DEFAULT</code> option.</p>
+<p><code>encoding</code><br>
+Specifies the data encoding, the same as <code>COPY</code>'s <code>ENCODING</code> option.</p>
+<p>Note that while <code>COPY</code> allows options such as <code>HEADER</code> to be specified without a corresponding value, the foreign table option syntax requires a value to be present in all cases. To activate <code>COPY</code> options typically written without a value, you can pass the value TRUE, since all such options are Booleans.</p>
+<p>A column of a foreign table created using this wrapper can have the following options:</p>
+<p><code>force_not_null</code><br>
+This is a Boolean option. If true, it specifies that values of the column should not be matched against the null string (that is, the table-level <code>null</code> option). This has the same effect as listing the column in <code>COPY</code>'s <code>FORCE_NOT_NULL</code> option.</p>
+<p><code>force_null</code><br>
+This is a Boolean option. If true, it specifies that values of the column which match the null string are returned as <code>NULL</code> even if the value is quoted. Without this option, only unquoted values matching the null string are returned as <code>NULL</code>. This has the same effect as listing the column in <code>COPY</code>'s <code>FORCE_NULL</code> option.</p>
+<p><code>COPY</code>'s <code>FORCE_QUOTE</code> option is currently not supported by <code>file_fdw</code>.</p>
+<p>These options can only be specified for a foreign table or its columns, not in the options of the <code>file_fdw</code> foreign-data wrapper, nor in the options of a server or user mapping using the wrapper.</p>
+<p>Changing table-level options requires being a superuser or having the privileges of the role <code>pg_read_server_files</code> (to use a filename) or the role <code>pg_execute_server_program</code> (to use a program), for security reasons: only certain users should be able to control which file is read or which program is run. In principle regular users could be allowed to change the other options, but that's not supported at present.</p>
+<p>When specifying the <code>program</code> option, keep in mind that the option string is executed by the shell. If you need to pass any arguments to the command that come from an untrusted source, you must be careful to strip or escape any characters that might have special meaning to the shell. For security reasons, it is best to use a fixed command string, or at least avoid passing any user input in it.</p>
+<p>For a foreign table using <code>file_fdw</code>, <code>EXPLAIN</code> shows the name of the file to be read or program to be run. For a file, unless <code>COSTS OFF</code> is specified, the file size (in bytes) is shown as well.</p>
+<p>Create a Foreign Table for PostgreSQL CSV Logs</p>
+<p>One of the obvious uses for <code>file_fdw</code> is to make the PostgreSQL activity log available as a table for querying. To do this, first you must be <a href="#runtime-config-logging-csvlog">logging to a CSV file,</a> which here we will call <code>pglog.csv</code>. First, install <code>file_fdw</code> as an extension:</p>
+<div class="codehilite"><pre><span></span><code>CREATE EXTENSION file_fdw;
+</code></pre></div>
+
+<p>Then create a foreign server:</p>
+<div class="codehilite"><pre><span></span><code>CREATE SERVER pglog FOREIGN DATA WRAPPER file_fdw;
+</code></pre></div>
+
+<p>Now you are ready to create the foreign data table. Using the <code>CREATE FOREIGN TABLE</code> command, you will need to define the columns for the table, the CSV file name, and its format:</p>
+<div class="codehilite"><pre><span></span><code>CREATE FOREIGN TABLE pglog (
+  log_time timestamp(3) with time zone,
+  user_name text,
+  database_name text,
+  process_id integer,
+  connection_from text,
+  session_id text,
+  session_line_num bigint,
+  command_tag text,
+  session_start_time timestamp with time zone,
+  virtual_transaction_id text,
+  transaction_id bigint,
+  error_severity text,
+  sql_state_code text,
+  message text,
+  detail text,
+  hint text,
+  internal_query text,
+  internal_query_pos integer,
+  context text,
+  query text,
+  query_pos integer,
+  location text,
+  application_name text,
+  backend_type text,
+  leader_pid integer,
+  query_id bigint
+) SERVER pglog
+OPTIONS ( filename &#39;log/pglog.csv&#39;, format &#39;csv&#39; );
+</code></pre></div>
+
+<p>That's it now you can query your log directly. In production, of course, you would need to define some way to deal with log rotation.</p>
+<p>Create a Foreign Table with an Option on a Column</p>
+<p>To set the <code>force_null</code> option for a column, use the <code>OPTIONS</code> keyword.</p>
+<div class="codehilite"><pre><span></span><code>CREATE FOREIGN TABLE films (
+ code char(5) NOT NULL,
+ title text NOT NULL,
+ rating text OPTIONS (force_null &#39;true&#39;)
+) SERVER film_server
+OPTIONS ( filename &#39;films/db.csv&#39;, format &#39;csv&#39; );
+</code></pre></div>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./external-projects.html">
+          <span class="muted">Anterior</span>External Projects
+        </a>
+        <a class="pager-next" href="./protocol.html">
+          <span class="muted">Siguiente</span>Frontend/Backend Protocol
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

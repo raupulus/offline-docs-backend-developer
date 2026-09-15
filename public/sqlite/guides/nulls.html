@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NULL Handling in SQLite · SQLite</title>
+<meta name="description" content="NULL Handling in SQLite - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/nulls.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="NULL Handling in SQLite">
+<meta property="og:description" content="NULL Handling in SQLite - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NULL Handling in SQLite">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "NULL Handling in SQLite",
+"url": "https://docs.raupulus.dev/sqlite/guides/nulls.html",  "description": "NULL Handling in SQLite - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/testing.html"
+>How SQLite Is Tested</a>
+              </li>
+              <li>
+                <a href="../guides/howitworks.html"
+>How SQLite Works</a>
+              </li>
+              <li>
+                <a href="../guides/howtocompile.html"
+>How To Compile SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/howtocorrupt.html"
+>How To Corrupt An SQLite Database File</a>
+              </li>
+              <li>
+                <a href="../guides/getthecode.html"
+>How To Download Canonical SQLite Source Code</a>
+              </li>
+              <li>
+                <a href="../guides/limits.html"
+>Implementation Limits For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/imposter.html"
+>Imposter Tables</a>
+              </li>
+              <li>
+                <a href="../guides/inmemorydb.html"
+>In-Memory Databases</a>
+              </li>
+              <li>
+                <a href="../guides/expridx.html"
+>Indexes On Expressions</a>
+              </li>
+              <li>
+                <a href="../guides/intern-v-extern-blob.html"
+>Internal Versus External BLOBs</a>
+              </li>
+              <li>
+                <a href="../guides/intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="../guides/invalidutf.html"
+>Invalid UTF Policy</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_invert.html"
+>Invert A Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/isolation.html"
+>Isolation In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/hp1.html"
+>Javascript Required</a>
+              </li>
+              <li>
+                <a href="../guides/doc_keyword_crossref.html"
+>Keyword Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/constlist.html"
+>List Of SQLite Constants</a>
+              </li>
+              <li>
+                <a href="../guides/funclist.html"
+>List Of SQLite Functions</a>
+              </li>
+              <li>
+                <a href="../guides/objlist.html"
+>List Of SQLite Objects</a>
+              </li>
+              <li>
+                <a href="../guides/vtablist.html"
+>List Of Virtual Tables</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_diff.html"
+>Load The Difference Between Tables Into A Session</a>
+              </li>
+              <li>
+                <a href="../guides/locrsf.html"
+>LoC Recommended Storage Format</a>
+              </li>
+              <li>
+                <a href="../guides/lts.html"
+>Long Term Support</a>
+              </li>
+              <li>
+                <a href="../guides/privatebranch.html"
+>Maintaining Private Branches Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/np1queryprob.html"
+>Many Small Queries Are Efficient In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cpu.html"
+>Measuring and Reducing CPU Usage in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/mmap.html"
+>Memory-Mapped I/O</a>
+              </li>
+              <li>
+                <a href="../guides/mostdeployed.html"
+>Most Widely Deployed SQL Database Engine</a>
+              </li>
+              <li>
+                <a href="../guides/mingw.html"
+>No Title</a>
+              </li>
+              <li>
+                <a href="../guides/nulinstr.html"
+>NUL Characters In Strings</a>
+              </li>
+              <li>
+                <a href="../guides/nulls.html"
+class="is-current" aria-current="page">NULL Handling in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_output.html"
+>Obtain A Composite Changeset From A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_conflict.html"
+>Obtain Conflicting Row Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_new.html"
+>Obtain new.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_old.html"
+>Obtain old.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_op.html"
+>Obtain The Current Operation From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_pk.html"
+>Obtain The Primary Key Definition Of A Table</a>
+              </li>
+              <li>
+                <a href="../guides/c_changegroup_config_patchset.html"
+>Options for sqlite3changegroup_config().</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_objconfig_rowid.html"
+>Options for sqlite3session_object_config</a>
+              </li>
+              <li>
+                <a href="../guides/doc_pagelink_crossref.html"
+>Pagelink Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/partialindex.html"
+>Partial Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/bindptr.html"
+>Pointer Passing Interfaces</a>
+              </li>
+              <li>
+                <a href="../guides/psow.html"
+>Powersafe Overwrite</a>
+              </li>
+              <li>
+                <a href="../guides/pressrelease-20071212.html"
+>Pressrelease 20071212</a>
+              </li>
+              <li>
+                <a href="../guides/profile.html"
+>Profiling SQL Queries</a>
+              </li>
+              <li>
+                <a href="../guides/qmplan.html"
+>Quality Management</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_memory_used.html"
+>Query for the amount of heap memory used by a session object.</a>
+              </li>
+              <li>
+                <a href="../guides/lang.html"
+>Query Language Understood by SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner.html"
+>Query Planning</a>
+              </li>
+              <li>
+                <a href="../guides/climode.html"
+>Query Result Formatting In The CLI</a>
+              </li>
+              <li>
+                <a href="../guides/quirks.html"
+>Quirks, Caveats, and Gotchas In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_rebase.html"
+>Rebase a changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rebaser.html"
+>Rebasing changesets</a>
+              </li>
+              <li>
+                <a href="../guides/news.html"
+>Recent SQLite News</a>
+              </li>
+              <li>
+                <a href="../guides/recovery.html"
+>Recovering Data From A Corrupt SQLite Database</a>
+              </li>
+              <li>
+                <a href="../guides/changes.html"
+>Release History Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/rescode.html"
+>Result and Error Codes</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_changeset_size.html"
+>Return An Upper-limit For The Size Of The Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rowvalue.html"
+>Row Values</a>
+              </li>
+              <li>
+                <a href="../guides/rowidtable.html"
+>Rowid Tables</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">NULL Handling in SQLite</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/nulls.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#null-handling-in-sqlite-versus-other-database-engines">NULL Handling in SQLite Versus Other Database Engines#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="null-handling-in-sqlite-versus-other-database-engines">NULL Handling in SQLite Versus Other Database Engines<a class="headerlink" href="#null-handling-in-sqlite-versus-other-database-engines" title="Permanent link">#</a></h2>
+<p>The goal is to make SQLite handle NULLs in a standards-compliant way. But the descriptions in the SQL standards on how to handle NULLs seem ambiguous. It is not clear from the standards documents exactly how NULLs should be handled in all circumstances.</p>
+<p>So instead of going by the standards documents, various popular SQL engines were tested to see how they handle NULLs. The idea was to make SQLite work like all the other engines. An SQL test script was developed and run by volunteers on various SQL RDBMSes and the results of those tests were used to deduce how each engine processed NULL values. The original tests were run in May of 2002. A copy of the test script is found at the end of this document.</p>
+<p>SQLite was originally coded in such a way that the answer to all questions in the chart below would be "Yes". But the experiments run on other SQL engines showed that none of them worked this way. So SQLite was modified to work the same as Oracle, PostgreSQL, and DB2. This involved making NULLs indistinct for the purposes of the SELECT DISTINCT statement and for the UNION operator in a SELECT. NULLs are still distinct in a UNIQUE column. This seems somewhat arbitrary, but the desire to be compatible with other engines outweighed that objection.</p>
+<p>It is possible to make SQLite treat NULLs as distinct for the purposes of the SELECT DISTINCT and UNION. To do so, one should change the value of the NULL_ALWAYS_DISTINCT #define in the <code>sqliteInt.h</code> source file and recompile.</p>
+<blockquote>
+<p><em>Update 2003-07-13:</em> Since this document was originally written some of the database engines tested have been updated and users have been kind enough to send in corrections to the chart below. The original data showed a wide variety of behaviors, but over time the range of behaviors has converged toward the PostgreSQL/Oracle model. The only significant difference is that Informix and MS-SQL both treat NULLs as indistinct in a UNIQUE column.</p>
+<p>The fact that NULLs are distinct for UNIQUE columns but are indistinct for SELECT DISTINCT and UNION continues to be puzzling. It seems that NULLs should be either distinct everywhere or nowhere. And the SQL standards documents suggest that NULLs should be distinct everywhere. Yet as of this writing, no SQL engine tested treats NULLs as distinct in a SELECT DISTINCT statement or in a UNION.</p>
+</blockquote>
+<p>The following table shows the results of the NULL handling experiments.</p>
+<table>
+<thead>
+<tr>
+<th>  </th>
+<th style="text-align: center;">SQLite</th>
+<th style="text-align: center;">PostgreSQL</th>
+<th style="text-align: center;">Oracle</th>
+<th style="text-align: center;">Informix</th>
+<th style="text-align: center;">DB2</th>
+<th style="text-align: center;">MS-SQL</th>
+<th style="text-align: center;">OCELOT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adding anything to null gives null</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td>Multiplying null by zero gives null</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td>nulls are distinct in a UNIQUE column</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">(Note 4)</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td>nulls are distinct in SELECT DISTINCT</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>nulls are distinct in a UNION</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>"CASE WHEN null THEN 1 ELSE 0 END" is 0?</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td>"null OR true" is true</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td>"not (null AND false)" is true</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+</tbody>
+</table>
+<table style="width:100%;" data-border="1" data-cellpadding="3" width="100%">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>  </th>
+<th style="text-align: center;">MySQL<br />
+3.23.41</th>
+<th style="text-align: center;">MySQL<br />
+4.0.16</th>
+<th style="text-align: center;">Firebird</th>
+<th style="text-align: center;">SQL<br />
+Anywhere</th>
+<th style="text-align: center;">Borland<br />
+Interbase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adding anything to null gives null</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+</tr>
+<tr>
+<td>Multiplying null by zero gives null</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+</tr>
+<tr>
+<td>nulls are distinct in a UNIQUE column</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#aaaad2">(Note 4)</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#aaaad2">(Note 4)</td>
+</tr>
+<tr>
+<td>nulls are distinct in SELECT DISTINCT</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No (Note 1)</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+</tr>
+<tr>
+<td>nulls are distinct in a UNION</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#aaaad2">(Note 3)</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No (Note 1)</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+</tr>
+<tr>
+<td>"CASE WHEN null THEN 1 ELSE 0 END" is 0?</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#aaaad2">(Note 5)</td>
+</tr>
+<tr>
+<td>"null OR true" is true</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+</tr>
+<tr>
+<td>"not (null AND false)" is true</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#c7a9a9">No</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+<td style="text-align: center;" data-valign="center" data-bgcolor="#a9c7a9">Yes</td>
+</tr>
+</tbody>
+</table>
+
+<table data-border="0" data-align="right" data-cellpadding="0" data-cellspacing="0">
+<tbody>
+<tr>
+<td rowspan="5" data-valign="top">Notes:  </td>
+<td>1. </td>
+<td>Older versions of firebird omit all NULLs from SELECT DISTINCT and from UNION.</td>
+</tr>
+<tr>
+<td>2. </td>
+<td>Test data unavailable.</td>
+</tr>
+<tr>
+<td>3. </td>
+<td>MySQL version 3.23.41 does not support UNION.</td>
+</tr>
+<tr>
+<td>4. </td>
+<td>DB2, SQL Anywhere, and Borland Interbase do not allow NULLs in a UNIQUE column.</td>
+</tr>
+<tr>
+<td>5. </td>
+<td>Borland Interbase does not support CASE expressions.</td>
+</tr>
+</tbody>
+</table>
+
+<p>\</p>
+<p>The following script was used to gather information for the table above.</p>
+<p>\
+-- I have about decided that SQL's treatment of NULLs is capricious and cannot be\
+-- deduced by logic.  It must be discovered by experiment.  To that end, I have \
+-- prepared the following script to test how various SQL databases deal with NULL.\
+-- My aim is to use the information gathered from this script to make SQLite as\
+-- much like other databases as possible.\
+--\
+-- If you could please run this script in your database engine and mail the results\
+-- to me at drh@hwaci.com, that will be a big help.  Please be sure to identify the\
+-- database engine you use for this test.  Thanks.\
+--\
+-- If you have to change anything to get this script to run with your database\
+-- engine, please send your revised script together with your results.\
+--\
+\
+-- Create a test table with data\
+create table t1(a int, b int, c int);\
+insert into t1 values(1,0,0);\
+insert into t1 values(2,0,1);\
+insert into t1 values(3,1,0);\
+insert into t1 values(4,1,1);\
+insert into t1 values(5,null,0);\
+insert into t1 values(6,null,1);\
+insert into t1 values(7,null,null);\
+\
+-- Check to see what CASE does with NULLs in its test expressions\
+select a, case when b\&lt;&gt;0 then 1 else 0 end from t1;\
+select a+10, case when not b\&lt;&gt;0 then 1 else 0 end from t1;\
+select a+20, case when b\&lt;&gt;0 and c\&lt;&gt;0 then 1 else 0 end from t1;\
+select a+30, case when not (b\&lt;&gt;0 and c\&lt;&gt;0) then 1 else 0 end from t1;\
+select a+40, case when b\&lt;&gt;0 or c\&lt;&gt;0 then 1 else 0 end from t1;\
+select a+50, case when not (b\&lt;&gt;0 or c\&lt;&gt;0) then 1 else 0 end from t1;\
+select a+60, case b when c then 1 else 0 end from t1;\
+select a+70, case c when b then 1 else 0 end from t1;\
+\
+-- What happens when you multiply a NULL by zero?\
+select a+80, b*0 from t1;\
+select a+90, b*c from t1;\
+\
+-- What happens to NULL for other operators?\
+select a+100, b+c from t1;\
+\
+-- Test the treatment of aggregate operators\
+select count(*), count(b), sum(b), avg(b), min(b), max(b) from t1;\
+\
+-- Check the behavior of NULLs in WHERE clauses\
+select a+110 from t1 where b\&lt;10;\
+select a+120 from t1 where not b&gt;10;\
+select a+130 from t1 where b\&lt;10 OR c=1;\
+select a+140 from t1 where b\&lt;10 AND c=1;\
+select a+150 from t1 where not (b\&lt;10 AND c=1);\
+select a+160 from t1 where not (c=1 AND b\&lt;10);\
+\
+-- Check the behavior of NULLs in a DISTINCT query\
+select distinct b from t1;\
+\
+-- Check the behavior of NULLs in a UNION query\
+select b from t1 union select b from t1;\
+\
+-- Create a new table with a unique column.  Check to see if NULLs are considered\
+-- to be distinct.\
+create table t2(a int, b int unique);\
+insert into t2 values(1,1);\
+insert into t2 values(2,null);\
+insert into t2 values(3,null);\
+select * from t2;\
+\
+drop table t1;\
+drop table t2;\</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/nulinstr.html">
+          <span class="muted">Anterior</span>NUL Characters In Strings
+        </a>
+        <a class="pager-next" href="../guides/sqlite3changegroup_output.html">
+          <span class="muted">Siguiente</span>Obtain A Composite Changeset From A Changegroup
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

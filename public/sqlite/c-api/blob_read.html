@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Read Data From A BLOB Incrementally · SQLite</title>
+<meta name="description" content="Read Data From A BLOB Incrementally - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/c-api/blob_read.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Read Data From A BLOB Incrementally">
+<meta property="og:description" content="Read Data From A BLOB Incrementally - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Read Data From A BLOB Incrementally">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Read Data From A BLOB Incrementally",
+"url": "https://docs.raupulus.dev/sqlite/c-api/blob_read.html",  "description": "Read Data From A BLOB Incrementally - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              C Api
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../c-api/c_mutex_fast.html"
+>Mutex Types</a>
+              </li>
+              <li>
+                <a href="../c-api/mutex_held.html"
+>Mutex Verification Routines</a>
+              </li>
+              <li>
+                <a href="../c-api/mutex_alloc.html"
+>Mutexes</a>
+              </li>
+              <li>
+                <a href="../c-api/bind_parameter_name.html"
+>Name Of A Host Parameter</a>
+              </li>
+              <li>
+                <a href="../c-api/data_directory.html"
+>Name Of The Folder Holding Database Files</a>
+              </li>
+              <li>
+                <a href="../c-api/temp_directory.html"
+>Name Of The Folder Holding Temporary Files</a>
+              </li>
+              <li>
+                <a href="../c-api/column_count.html"
+>Number Of Columns In A Result Set</a>
+              </li>
+              <li>
+                <a href="../c-api/data_count.html"
+>Number of columns in a result set</a>
+              </li>
+              <li>
+                <a href="../c-api/bind_parameter_count.html"
+>Number Of SQL Parameters</a>
+              </li>
+              <li>
+                <a href="../c-api/aggregate_context.html"
+>Obtain Aggregate Function Context</a>
+              </li>
+              <li>
+                <a href="../c-api/uri_boolean.html"
+>Obtain Values For URI Parameters</a>
+              </li>
+              <li>
+                <a href="../c-api/value_blob.html"
+>Obtaining SQL Values</a>
+              </li>
+              <li>
+                <a href="../c-api/exec.html"
+>One-Step Query Execution Interface</a>
+              </li>
+              <li>
+                <a href="../c-api/backup_finish.html"
+>Online Backup API.</a>
+              </li>
+              <li>
+                <a href="../c-api/backup.html"
+>Online Backup Object</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_open.html"
+>Open A BLOB For Incremental I/O</a>
+              </li>
+              <li>
+                <a href="../c-api/open.html"
+>Opening A New Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/io_methods.html"
+>OS Interface File Virtual Methods Object</a>
+              </li>
+              <li>
+                <a href="../c-api/vfs.html"
+>OS Interface Object</a>
+              </li>
+              <li>
+                <a href="../c-api/file.html"
+>OS Interface Open File Handle</a>
+              </li>
+              <li>
+                <a href="../c-api/overload_function.html"
+>Overload A Function For A Virtual Table</a>
+              </li>
+              <li>
+                <a href="../c-api/c_prepare_dont_log.html"
+>Prepare Flags</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt.html"
+>Prepared Statement Object</a>
+              </li>
+              <li>
+                <a href="../c-api/c_scanstat_complex.html"
+>Prepared Statement Scan Status</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_scanstatus.html"
+>Prepared Statement Scan Status</a>
+              </li>
+              <li>
+                <a href="../c-api/c_scanstat_est.html"
+>Prepared Statement Scan Status Opcodes</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_status.html"
+>Prepared Statement Status</a>
+              </li>
+              <li>
+                <a href="../c-api/randomness.html"
+>Pseudo-Random Number Generator</a>
+              </li>
+              <li>
+                <a href="../c-api/progress_handler.html"
+>Query Progress Callbacks</a>
+              </li>
+              <li>
+                <a href="../c-api/stmt_isexplain.html"
+>Query The EXPLAIN Setting For A Prepared Statement</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_read.html"
+class="is-current" aria-current="page">Read Data From A BLOB Incrementally</a>
+              </li>
+              <li>
+                <a href="../c-api/snapshot_get.html"
+>Record A Database Snapshot</a>
+              </li>
+              <li>
+                <a href="../c-api/snapshot_recover.html"
+>Recover snapshots from a wal file</a>
+              </li>
+              <li>
+                <a href="../c-api/busy_handler.html"
+>Register A Callback To Handle SQLITE_BUSY Errors</a>
+              </li>
+              <li>
+                <a href="../c-api/create_module.html"
+>Register A Virtual Table Implementation</a>
+              </li>
+              <li>
+                <a href="../c-api/drop_modules.html"
+>Remove Unnecessary Virtual Table Implementations</a>
+              </li>
+              <li>
+                <a href="../c-api/value_encoding.html"
+>Report the internal text encoding state of an sqlite3_value object</a>
+              </li>
+              <li>
+                <a href="../c-api/reset.html"
+>Reset A Prepared Statement Object</a>
+              </li>
+              <li>
+                <a href="../c-api/clear_bindings.html"
+>Reset All Bindings On A Prepared Statement</a>
+              </li>
+              <li>
+                <a href="../c-api/reset_auto_extension.html"
+>Reset Automatic Extension Loading</a>
+              </li>
+              <li>
+                <a href="../c-api/c_abort.html"
+>Result Codes</a>
+              </li>
+              <li>
+                <a href="../c-api/column_blob.html"
+>Result Values From A Query</a>
+              </li>
+              <li>
+                <a href="../c-api/db_mutex.html"
+>Retrieve the mutex for a database connection</a>
+              </li>
+              <li>
+                <a href="../c-api/expanded_sql.html"
+>Retrieving Statement SQL</a>
+              </li>
+              <li>
+                <a href="../c-api/db_filename.html"
+>Return The Filename For A Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/db_name.html"
+>Return The Schema Name For A Database Connection</a>
+              </li>
+              <li>
+                <a href="../c-api/blob_bytes.html"
+>Return The Size Of An Open BLOB</a>
+              </li>
+              <li>
+                <a href="../c-api/compileoption_get.html"
+>Run-Time Library Compilation Options Diagnostics</a>
+              </li>
+              <li>
+                <a href="../c-api/libversion.html"
+>Run-Time Library Version Numbers</a>
+              </li>
+              <li>
+                <a href="../c-api/c_limit_attached.html"
+>Run-Time Limit Categories</a>
+              </li>
+              <li>
+                <a href="../c-api/limit.html"
+>Run-time Limits</a>
+              </li>
+              <li>
+                <a href="../c-api/serialize.html"
+>Serialize a database</a>
+              </li>
+              <li>
+                <a href="../c-api/busy_timeout.html"
+>Set A Busy Timeout</a>
+              </li>
+              <li>
+                <a href="../c-api/set_errmsg.html"
+>Set Error Code And Message</a>
+              </li>
+              <li>
+                <a href="../c-api/set_last_insert_rowid.html"
+>Set the Last Insert Rowid value.</a>
+              </li>
+              <li>
+                <a href="../c-api/setlk_timeout.html"
+>Set the Setlk Timeout</a>
+              </li>
+              <li>
+                <a href="../c-api/result_blob.html"
+>Setting The Result Of An SQL Function</a>
+              </li>
+              <li>
+                <a href="../c-api/result_subtype.html"
+>Setting The Subtype Of An SQL Function</a>
+              </li>
+              <li>
+                <a href="../c-api/column_database_name.html"
+>Source Of Data In A Query Result</a>
+              </li>
+              <li>
+                <a href="../c-api/context.html"
+>SQL Function Context Object</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../guides/fasterthanfs.html">Guides</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Read Data From A BLOB Incrementally</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/c3ref/blob_read.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+
+      <div class="doc-body">
+        <blockquote>
+<p>\
+int sqlite3_blob_read(sqlite3_blob *, void *Z, int N, int iOffset);\</p>
+</blockquote>
+<p>This function is used to read data from an open <a href="../c3ref/blob.html">BLOB handle</a> into a caller-supplied buffer. N bytes of data are copied into buffer Z from the open BLOB, starting at offset iOffset.</p>
+<p>If offset iOffset is less than N bytes from the end of the BLOB, <a href="../rescode.html#error">SQLITE_ERROR</a> is returned and no data is read. If N or iOffset is less than zero, <a href="../rescode.html#error">SQLITE_ERROR</a> is returned and no data is read. The size of the blob (and hence the maximum value of N+iOffset) can be determined using the <a href="../c3ref/blob_bytes.html">sqlite3_blob_bytes()</a> interface.</p>
+<p>An attempt to read from an expired <a href="../c3ref/blob.html">BLOB handle</a> fails with an error code of <a href="../rescode.html#abort">SQLITE_ABORT</a>.</p>
+<p>On success, sqlite3_blob_read() returns SQLITE_OK. Otherwise, an <a href="../rescode.html">error code</a> or an <a href="../rescode.html#extrc">extended error code</a> is returned.</p>
+<p>This routine only works on a <a href="../c3ref/blob.html">BLOB handle</a> which has been created by a prior successful call to <a href="../c3ref/blob_open.html">sqlite3_blob_open()</a> and which has not been closed by <a href="../c3ref/blob_close.html">sqlite3_blob_close()</a>. Passing any other pointer in to this routine results in undefined and probably undesirable behavior.</p>
+<p>See also: <a href="../c3ref/blob_write.html">sqlite3_blob_write()</a>.</p>
+<p>See also lists of <a href="../c3ref/objlist.html">Objects</a>, <a href="../c3ref/constlist.html">Constants</a>, and <a href="../c3ref/funclist.html">Functions</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../c-api/stmt_isexplain.html">
+          <span class="muted">Anterior</span>Query The EXPLAIN Setting For A Prepared Statement
+        </a>
+        <a class="pager-next" href="../c-api/snapshot_get.html">
+          <span class="muted">Siguiente</span>Record A Database Snapshot
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

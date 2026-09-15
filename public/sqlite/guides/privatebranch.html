@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maintaining Private Branches Of SQLite · SQLite</title>
+<meta name="description" content="Maintaining Private Branches Of SQLite - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/sqlite/guides/privatebranch.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Maintaining Private Branches Of SQLite">
+<meta property="og:description" content="Maintaining Private Branches Of SQLite - Documentación técnica offline de SQLite. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Maintaining Private Branches Of SQLite">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../_assets/icon.svg">
+<link rel="manifest" href="../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../_assets/style.css">
+<link rel="stylesheet" href="../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Maintaining Private Branches Of SQLite",
+"url": "https://docs.raupulus.dev/sqlite/guides/privatebranch.html",  "description": "Maintaining Private Branches Of SQLite - Documentación técnica de SQLite en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../index.html">SQLite</a>
+<span class="badge">3.53.4</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="sqlite" data-index="../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en SQLite…"
+         aria-label="Buscar en SQLite" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de SQLite
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de SQLite">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../c-api/int64.html">C Api</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Guides
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../guides/fullsql.html"
+>Full-Featured SQL</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_changeset.html"
+>Generate A Changeset From A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_patchset.html"
+>Generate A Patchset From A Session Object</a>
+              </li>
+              <li>
+                <a href="../guides/gencol.html"
+>Generated Columns</a>
+              </li>
+              <li>
+                <a href="../guides/hirely.html"
+>High Reliability</a>
+              </li>
+              <li>
+                <a href="../guides/debugging.html"
+>Hints for Debugging SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/chronology.html"
+>History Of SQLite Releases</a>
+              </li>
+              <li>
+                <a href="../guides/testing.html"
+>How SQLite Is Tested</a>
+              </li>
+              <li>
+                <a href="../guides/howitworks.html"
+>How SQLite Works</a>
+              </li>
+              <li>
+                <a href="../guides/howtocompile.html"
+>How To Compile SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/howtocorrupt.html"
+>How To Corrupt An SQLite Database File</a>
+              </li>
+              <li>
+                <a href="../guides/getthecode.html"
+>How To Download Canonical SQLite Source Code</a>
+              </li>
+              <li>
+                <a href="../guides/limits.html"
+>Implementation Limits For SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/imposter.html"
+>Imposter Tables</a>
+              </li>
+              <li>
+                <a href="../guides/inmemorydb.html"
+>In-Memory Databases</a>
+              </li>
+              <li>
+                <a href="../guides/expridx.html"
+>Indexes On Expressions</a>
+              </li>
+              <li>
+                <a href="../guides/intern-v-extern-blob.html"
+>Internal Versus External BLOBs</a>
+              </li>
+              <li>
+                <a href="../guides/intro.html"
+>Introduction</a>
+              </li>
+              <li>
+                <a href="../guides/invalidutf.html"
+>Invalid UTF Policy</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_invert.html"
+>Invert A Changeset</a>
+              </li>
+              <li>
+                <a href="../guides/isolation.html"
+>Isolation In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/hp1.html"
+>Javascript Required</a>
+              </li>
+              <li>
+                <a href="../guides/doc_keyword_crossref.html"
+>Keyword Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/constlist.html"
+>List Of SQLite Constants</a>
+              </li>
+              <li>
+                <a href="../guides/funclist.html"
+>List Of SQLite Functions</a>
+              </li>
+              <li>
+                <a href="../guides/objlist.html"
+>List Of SQLite Objects</a>
+              </li>
+              <li>
+                <a href="../guides/vtablist.html"
+>List Of Virtual Tables</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_diff.html"
+>Load The Difference Between Tables Into A Session</a>
+              </li>
+              <li>
+                <a href="../guides/locrsf.html"
+>LoC Recommended Storage Format</a>
+              </li>
+              <li>
+                <a href="../guides/lts.html"
+>Long Term Support</a>
+              </li>
+              <li>
+                <a href="../guides/privatebranch.html"
+class="is-current" aria-current="page">Maintaining Private Branches Of SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/np1queryprob.html"
+>Many Small Queries Are Efficient In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/cpu.html"
+>Measuring and Reducing CPU Usage in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/mmap.html"
+>Memory-Mapped I/O</a>
+              </li>
+              <li>
+                <a href="../guides/mostdeployed.html"
+>Most Widely Deployed SQL Database Engine</a>
+              </li>
+              <li>
+                <a href="../guides/mingw.html"
+>No Title</a>
+              </li>
+              <li>
+                <a href="../guides/nulinstr.html"
+>NUL Characters In Strings</a>
+              </li>
+              <li>
+                <a href="../guides/nulls.html"
+>NULL Handling in SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changegroup_output.html"
+>Obtain A Composite Changeset From A Changegroup</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_conflict.html"
+>Obtain Conflicting Row Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_new.html"
+>Obtain new.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_old.html"
+>Obtain old.* Values From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_op.html"
+>Obtain The Current Operation From A Changeset Iterator</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3changeset_pk.html"
+>Obtain The Primary Key Definition Of A Table</a>
+              </li>
+              <li>
+                <a href="../guides/c_changegroup_config_patchset.html"
+>Options for sqlite3changegroup_config().</a>
+              </li>
+              <li>
+                <a href="../guides/c_session_objconfig_rowid.html"
+>Options for sqlite3session_object_config</a>
+              </li>
+              <li>
+                <a href="../guides/doc_pagelink_crossref.html"
+>Pagelink Crossreference</a>
+              </li>
+              <li>
+                <a href="../guides/partialindex.html"
+>Partial Indexes</a>
+              </li>
+              <li>
+                <a href="../guides/bindptr.html"
+>Pointer Passing Interfaces</a>
+              </li>
+              <li>
+                <a href="../guides/psow.html"
+>Powersafe Overwrite</a>
+              </li>
+              <li>
+                <a href="../guides/pressrelease-20071212.html"
+>Pressrelease 20071212</a>
+              </li>
+              <li>
+                <a href="../guides/profile.html"
+>Profiling SQL Queries</a>
+              </li>
+              <li>
+                <a href="../guides/qmplan.html"
+>Quality Management</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3session_memory_used.html"
+>Query for the amount of heap memory used by a session object.</a>
+              </li>
+              <li>
+                <a href="../guides/lang.html"
+>Query Language Understood by SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/queryplanner.html"
+>Query Planning</a>
+              </li>
+              <li>
+                <a href="../guides/climode.html"
+>Query Result Formatting In The CLI</a>
+              </li>
+              <li>
+                <a href="../guides/quirks.html"
+>Quirks, Caveats, and Gotchas In SQLite</a>
+              </li>
+              <li>
+                <a href="../guides/sqlite3rebaser_rebase.html"
+>Rebase a changeset</a>
+              </li>
+              <li>
+                <a href="../guides/rebaser.html"
+>Rebasing changesets</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../sql-language/lang_altertable.html">Sql Language</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../syntax/syntax.html">Syntax</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../tools-extensions/capi3ref.html">Tools Extensions</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../index.html">Ver los 837 documentos de SQLite</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Maintaining Private Branches Of SQLite</h1>
+
+      <p class="doc-meta">
+<span class="badge">3.53.4</span>          <a href="https://www.sqlite.org/privatebranch.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia Blessing</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../bundles/sqlite.md" download="sqlite.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de SQLite en un solo archivo Markdown">Bundle .md (21.8 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#31-obtain-the-software">3.1.  Obtain The Software#</a></li>
+              <li class="lvl-2"><a href="#32-create-a-project-repository">3.2.  Create A Project Repository#</a></li>
+              <li class="lvl-2"><a href="#33-installing-the-sqlite-baseline-in-fossil">3.3.  Installing The SQLite Baseline In Fossil#</a></li>
+              <li class="lvl-2"><a href="#34-creating-the-private-branch">3.4.  Creating The Private Branch#</a></li>
+              <li class="lvl-2"><a href="#35-adding-customizations-to-the-code-in-the-private-branch">3.5.  Adding Customizations To The Code In The Private Branch#</a></li>
+              <li class="lvl-2"><a href="#36-incorporating-new-public-sqlite-releases">3.6.  Incorporating New Public SQLite Releases#</a></li>
+              <li class="lvl-2"><a href="#37-merging-public-sqlite-updates-into-the-private-branch">3.7.  Merging Public SQLite Updates Into The Private Branch#</a></li>
+              <li class="lvl-2"><a href="#38-further-updates">3.8.  Further Updates#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h1 id="1-introduction">1.  Introduction<a class="headerlink" href="#1-introduction" title="Permanent link">#</a></h1>
+<p>SQLite is designed to meet most developer's needs without any changes or customization. When changes are needed, they can normally be accomplished using start-time <a href="c3ref/config.html">(1)</a> or runtime <a href="c3ref/db_config.html">(2)</a> <a href="c3ref/limit.html">(3)</a> <a href="c3ref/vfs_find.html">(4)</a> configuration methods or via <a href="compile.html">compile-time options</a>. It is very rare that an application developer will need to edit the SQLite source code in order to incorporate SQLite into a product.</p>
+<p>We call custom modifications to the SQLite source code that are held for the use of a single application a "private branch". When a private branch becomes necessary, the application developer must take on the task of keeping the private branch in synchronization with the public SQLite sources. This is tedious. It can also be tricky, since while the SQLite file format and published interfaces are very stable, the internal implementation of SQLite changes quite rapidly. Hundreds or thousands of lines of code might change for any given SQLite point release.</p>
+<p>This article outlines one possible method for keeping a private branch of SQLite in sync with the public SQLite source code. There are many ways of maintaining a private branch, of course. Nobody is compelled to use the method described here. This article is not trying to impose a particular procedure on maintainers of private branches. The point of this article is to offer an example of one process for maintaining a private branch which can be used as a template for designing processes best suited for the circumstances of each individual project.</p>
+<p><img src="images/private_branch.gif" data-align="right" /></p>
+<h1 id="2-the-basic-idea">2.  The Basic Idea<a class="headerlink" href="#2-the-basic-idea" title="Permanent link">#</a></h1>
+<p>We propose to use the <a href="http://www.fossil-scm.org" rel="noopener" target="_blank">fossil software configuration management</a> system to set up two branches. One branch (the "public branch" or "trunk") contains the published SQLite sources and the other branch is the private branch which contains the code that is customized for the project. Whenever a new public release of SQLite is made, that release is added to the public branch and then the changes are merged into the private branch.</p>
+<p>This document proposes to use <a href="http://www.fossil-scm.org/" rel="noopener" target="_blank">fossil</a>, but any other distributed software configuration management system such as <a href="http://www.monotone.ca/" rel="noopener" target="_blank">monotone</a> or <a href="http://www.selenic.com/mercurial/wiki/" rel="noopener" target="_blank">mercurial</a> (a.k.a. "hg"), or <a href="http://www.git-scm.org/" rel="noopener" target="_blank">git</a> could serve just as well. The concept will be the same, though the specifics of the procedure will vary.</p>
+<p>The diagram at the right illustrates the concept. One begins with a standard SQLite release. For the sake of example, suppose that one intends to create a private branch off of SQLite version 3.6.15. In the diagram this is version (1). The maintainer makes an exact copy of the baseline SQLite into the branch space, shown as version (2). Note that (1) and (2) are exactly the same. Then the maintainer applies the private changes to version (2) resulting in version (3). In other words, version (3) is SQLite version 3.6.15 plus edits.</p>
+<p>Later, SQLite version 3.6.16 is released, as shown by circle (4) in the diagram. At the point, the private branch maintainer does a merge which takes all of the changes going from (1) to (4) and applies those changes to (3). The result is version (5), which is SQLite 3.6.16 plus edits.</p>
+<p>There might be merge conflicts. In other words, it might be that the changes from (2) to (3) are incompatible with the changes from (1) to (4). In that case, the maintainer will have to manually resolve the conflicts. Hopefully conflicts will not come up that often. Conflicts are less likely to occur when the private edits are kept to a minimum.</p>
+<p>The cycle above can be repeated many times. The diagram shows a third SQLite release, 3.6.17 in circle (6). The private branch maintainer can do another merge in order to incorporate the changes moving from (4) to (6) into the private branch, resulting in version (7).</p>
+<h1 id="3-the-procedure">3.  The Procedure<a class="headerlink" href="#3-the-procedure" title="Permanent link">#</a></h1>
+<p>The remainder of this document will guide the reader through the steps needed to maintain a private branch. The general idea is the same as outlined above. This section merely provides more detail.</p>
+<p>We emphasize again that these steps are not intended to be the only acceptable method for maintaining a private branch. This approach is one of many. Use this document as a baseline for preparing project-specific procedures. Do not be afraid to experiment.</p>
+<h2 id="31-obtain-the-software">3.1.  Obtain The Software<a class="headerlink" href="#31-obtain-the-software" title="Permanent link">#</a></h2>
+<p><a href="http://www.fossil-scm.org/" rel="noopener" target="_blank">Fossil</a> is a computer program that must be installed on your machine before you use it. Fortunately, installing fossil is very easy. Fossil is a single "*.exe" file that you simply download and run. To uninstall fossil, simply delete the exe file. <a href="http://www.fossil-scm.org/index.html/doc/tip/www/quickstart.wiki" rel="noopener" target="_blank">Detailed instructions</a> for installing and getting started with fossil are available on the <a href="http://www.fossil-scm.org" rel="noopener" target="_blank">fossil website</a>.</p>
+<h2 id="32-create-a-project-repository">3.2.  Create A Project Repository<a class="headerlink" href="#32-create-a-project-repository" title="Permanent link">#</a></h2>
+<p>Create a fossil repository to host the private branch using the following command:</p>
+<blockquote>
+<p>\
+fossil new private-project.fossil\</p>
+</blockquote>
+<p>You can call your project anything you like. The "<code>.fossil</code>" suffix is optional. For this document, we will continue to call the project "<code>private-project.fossil</code>". Note that <code>private-project.fossil</code> is an ordinary disk file (actually an SQLite database) that will contain your complete project history. You can make a backup of the project simply by making a copy of that one file.</p>
+<p>If you want to configure the new project, type:</p>
+<blockquote>
+<p>\
+fossil ui private-project.fossil\</p>
+</blockquote>
+<p>The "ui" command will cause fossil to run a miniature built-in webserver and to launch your web-browser pointing at that webserver. You can use your web-browser to configure your project in various ways. See the instructions on the fossil website for additional information.</p>
+<p>Once the project repository is created, create an open checkout of the project by moving to the directory where you want to keep all of the project source code and typing:</p>
+<blockquote>
+<p>\
+fossil open private-project.fossil\</p>
+</blockquote>
+<p>You can have multiple checkouts of the same project if you want. And you can "clone" the repository to different machines so that multiple developers can use it. See the fossil website for further information.</p>
+<h2 id="33-installing-the-sqlite-baseline-in-fossil">3.3.  Installing The SQLite Baseline In Fossil<a class="headerlink" href="#33-installing-the-sqlite-baseline-in-fossil" title="Permanent link">#</a></h2>
+<p>The repository created in the previous step is initially empty. The next step is to load the baseline SQLite release - circle (1) in the diagram above.</p>
+<p>Begin by obtaining a copy of SQLite in whatever form you use it. The public SQLite you obtain should be as close to your private edited copy as possible. If your project uses the SQLite amalgamation, then get a copy of the amalgamation. If you use the preprocessed separate source files, get those instead. Put all the source files in the checkout directory created in the previous step.</p>
+<p>The source code in public SQLite releases uses unix line endings (ASCII code 10: "newline" only, NL) and spaces instead of tabs. If you will be changing the line ending to windows-style line endings (ASCII codes 13, 10: "carriage-return" and "newline"; CR-NL) or if you will be changing space indents into tab indents, <strong>make that change now</strong> before you check in the baseline. The merging process will only work well if the differences between the public and the private branches are minimal. If every single line of the source file is changed in the private branch because you changed from NL to CR-NL line endings, then the merge steps will not work correctly.</p>
+<p>Let us assume that you are using the amalgamation source code. Add the baseline to your project as follows:</p>
+<blockquote>
+<p>\
+fossil add sqlite3.c sqlite3.h\</p>
+</blockquote>
+<p>If you are using separate source files, name all of the source files instead of just the two amalgamation source files. Once this is done, commit your changes as follows:</p>
+<blockquote>
+<p>\
+fossil commit\</p>
+</blockquote>
+<p>You will be prompted for a check-in comment. Say whatever you like. After the commit completes, your baseline will be part of the repository. The following command, if you like, to see this on the "timeline":</p>
+<blockquote>
+<p>\
+fossil ui\</p>
+</blockquote>
+<p>That last command is the same "ui" command that we ran before. It starts a mini-webserver running and points your web browser at it. But this time we didn't have to specify the repository file because we are located inside a checkout and so fossil can figure out the repository for itself. If you want to type in the repository filename as the second argument, you can. But it is optional.</p>
+<p>If you do not want to use your web browser to view the new check-in, you can get some information from the command-line using commands like these:</p>
+<blockquote>
+<p>\
+fossil timeline\
+fossil info\
+fossil status\</p>
+</blockquote>
+<h2 id="34-creating-the-private-branch">3.4.  Creating The Private Branch<a class="headerlink" href="#34-creating-the-private-branch" title="Permanent link">#</a></h2>
+<p>The previous step created circle (1) in the diagram above. This step will create circle (2). Run the following command:</p>
+<blockquote>
+<p>\
+fossil branch new private trunk -bgcolor "#add8e8"\</p>
+</blockquote>
+<p>This command will create a new branch named "private" (you can use a different name if you like) and assign it a background color of light blue ("#add8e8"). You can omit the background color if you want, though having a distinct background does make it easier to tell the branch from the "trunk" (the public branch) on timeline displays. You can change the background color of the private branch or of the public branch (the "trunk") using the web interface if you like.</p>
+<p>The command above created the new branch. But your checkout is still on the trunk - a fact you can see by running the command:</p>
+<blockquote>
+<p>\
+fossil info\</p>
+</blockquote>
+<p>To change your check-out to the private branch, type:</p>
+<blockquote>
+<p>\
+fossil update private\</p>
+</blockquote>
+<p>You can run the "info" command again to verify that you are on the private branch. To go back to the public branch, type:</p>
+<blockquote>
+<p>\
+fossil update trunk\</p>
+</blockquote>
+<p>Normally, fossil will modify all the files in your checkout when switching between the private and the public branches. But at this point, the files are identical in both branches so no modifications need to be made.</p>
+<h2 id="35-adding-customizations-to-the-code-in-the-private-branch">3.5.  Adding Customizations To The Code In The Private Branch<a class="headerlink" href="#35-adding-customizations-to-the-code-in-the-private-branch" title="Permanent link">#</a></h2>
+<p>Now it is time to make the private, custom modifications to SQLite which are the whole point of this exercise. Switch to the private branch (if you are not already there) using the "<code>fossil update private</code>" command, then bring up the source files in your text editor and make whatever changes you want to make. Once you have finished making changes, commit those changes using this command:</p>
+<blockquote>
+<p>\
+fossil commit\</p>
+</blockquote>
+<p>You will be prompted once again to enter a commit describing your changes. Then the commit will occur. The commit creates a new checkin in the repository that corresponds to circle (3) in the diagram above.</p>
+<p>Now that the public and private branches are different, you can run the "<code>fossil update trunk</code>" and "<code>fossil update private</code>" commands and see that fossil really does change the files in the checkout as you switch back and forth between branches.</p>
+<p>Note that in the diagram above, we showed the private edits as a single commit. This was for clarity of presentation only. There is nothing to stop you from doing dozens or hundreds of separate tiny changes and committing each separately. In fact, making many small changes is the preferred way to work. The only reason for doing all the changes in a single commit is that it makes the diagram easier to draw.</p>
+<h2 id="36-incorporating-new-public-sqlite-releases">3.6.  Incorporating New Public SQLite Releases<a class="headerlink" href="#36-incorporating-new-public-sqlite-releases" title="Permanent link">#</a></h2>
+<p>Suppose that after a while (about a month, usually) a new version of SQLite is released: 3.6.16. You will want to incorporate this new public version of SQLite into your repository in the public branch (the trunk). To do this, first change your repository over to the trunk:</p>
+<blockquote>
+<p>\
+fossil update trunk\</p>
+</blockquote>
+<p>Then download the new version of the SQLite sources and overwrite the files that are in the checkout.</p>
+<p>If you made NL to CR-NL line ending changes or space to tab indentation changes in the original baseline, make the same changes to the new source file.</p>
+<p>Once everything is ready, run the "<code>fossil commit</code>" command to check in the changes. This creates circle (4) in the diagram above.</p>
+<h2 id="37-merging-public-sqlite-updates-into-the-private-branch">3.7.  Merging Public SQLite Updates Into The Private Branch<a class="headerlink" href="#37-merging-public-sqlite-updates-into-the-private-branch" title="Permanent link">#</a></h2>
+<p>The next step is to move the changes in the public branch over into the private branch. In other words, we want to create circle (5) in the diagram above. Begin by changing to the private branch using "<code>fossil update private</code>". Then type this command:</p>
+<blockquote>
+<p>\
+fossil merge trunk\</p>
+</blockquote>
+<p>The "merge" command attempts to apply all the changes between circles (1) and (4) to the files in the local checkout. Note that circle (5) has not been created yet. You will need to run the "commit" to create circle (5).</p>
+<p>It might be that there are conflicts in the merge. Conflicts occur when the same line of code was changed in different ways between circles (1) and (4) versus circles (2) and (3). The merge command will announce any conflicts and will include both versions of the conflicting lines in the output. You will need to bring up the files that contain conflicts and manually resolve the conflicts.</p>
+<p>After resolving conflicts, many users like to compile and test the new version before committing it to the repository. Or you can commit first and test later. Either way, run the "<code>fossil commit</code>" command to check-in the circle (5) version.</p>
+<h2 id="38-further-updates">3.8.  Further Updates<a class="headerlink" href="#38-further-updates" title="Permanent link">#</a></h2>
+<p>As new versions of SQLite are released, repeat steps 3.6 and 3.7 to add changes in the new release to the private branch. Additional private changes can be made on the private branch in between releases if desired.</p>
+<h1 id="4-variations">4.  Variations<a class="headerlink" href="#4-variations" title="Permanent link">#</a></h1>
+<p>Since this document was first written, the canonical SQLite source code has been moved from the venerable CVS system into a Fossil repository at <a href="https://sqlite.org/src" rel="noopener" target="_blank">https://sqlite.org/src</a>. This means that if you are working with canonical SQLite source code (as opposed to the <a href="amalgamation.html">amalgamation</a> source code files, sqlite3.c and sqlite3.h) then you can create a private repository simply by cloning the official repository:</p>
+<blockquote>
+<p>\
+fossil clone https://sqlite.org/src private-project.fossil\</p>
+</blockquote>
+<p>This command both creates the new repository and populates it with all the latest SQLite code. You can then create a private branch as described in section 3.4.</p>
+<p>When the private repository is created by cloning, incorporating new public SQLite releases becomes much easier too. To pull in all of the latest changes from the public SQLite repository, simply move into the open check-out and do:</p>
+<blockquote>
+<p>\
+fossil update\</p>
+</blockquote>
+<p>Then continue to merge the changes in "trunk" with your "private" changes as described in section 3.7.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../guides/lts.html">
+          <span class="muted">Anterior</span>Long Term Support
+        </a>
+        <a class="pager-next" href="../guides/np1queryprob.html">
+          <span class="muted">Siguiente</span>Many Small Queries Are Efficient In SQLite
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../_assets/app.js"></script>
+</body>
+</html>

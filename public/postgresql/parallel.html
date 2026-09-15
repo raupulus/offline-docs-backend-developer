@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parallel Query · PostgreSQL</title>
+<meta name="description" content="Parallel Query - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/postgresql/parallel.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Parallel Query">
+<meta property="og:description" content="Parallel Query - Documentación técnica offline de PostgreSQL. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Parallel Query">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../_assets/icon.svg">
+<link rel="manifest" href="../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../_assets/style.css">
+<link rel="stylesheet" href="../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Parallel Query",
+"url": "https://docs.raupulus.dev/postgresql/parallel.html",  "description": "Parallel Query - Documentación técnica de PostgreSQL en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="./index.html">PostgreSQL</a>
+<span class="badge">REL_17_STABLE</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="postgresql" data-index="./_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en PostgreSQL…"
+         aria-label="Buscar en PostgreSQL" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de PostgreSQL
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de PostgreSQL">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="./ref/abort.html">Ref</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Postgresql
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="./glossary.html"
+>Glossary</a>
+              </li>
+              <li>
+                <a href="./hash.html"
+>Hash Indexes</a>
+              </li>
+              <li>
+                <a href="./high-availability.html"
+>High Availability, Load Balancing, and Replication</a>
+              </li>
+              <li>
+                <a href="./planstats.html"
+>How the Planner Uses Statistics</a>
+              </li>
+              <li>
+                <a href="./hstore.html"
+>hstore — hstore key/value datatype</a>
+              </li>
+              <li>
+                <a href="./indexam.html"
+>Index Access Method Interface Definition</a>
+              </li>
+              <li>
+                <a href="./indices.html"
+>Indexes</a>
+              </li>
+              <li>
+                <a href="./install-binaries.html"
+>Installation from Binaries</a>
+              </li>
+              <li>
+                <a href="./installation.html"
+>Installation from Source Code</a>
+              </li>
+              <li>
+                <a href="./intagg.html"
+>intagg — integer aggregator and enumerator</a>
+              </li>
+              <li>
+                <a href="./intarray.html"
+>intarray — manipulate arrays of integers</a>
+              </li>
+              <li>
+                <a href="./xindex.html"
+>Interfacing Extensions to Indexes</a>
+              </li>
+              <li>
+                <a href="./isn.html"
+>isn — data types for international standard numbers (ISBN, EAN, UPC, etc.)</a>
+              </li>
+              <li>
+                <a href="./json.html"
+>JSON Types</a>
+              </li>
+              <li>
+                <a href="./jit.html"
+>Just-in-Time Compilation (JIT)</a>
+              </li>
+              <li>
+                <a href="./lobj.html"
+>Large Objects</a>
+              </li>
+              <li>
+                <a href="./legal.html"
+>Legal Notice</a>
+              </li>
+              <li>
+                <a href="./libpq.html"
+>libpq — C Library</a>
+              </li>
+              <li>
+                <a href="./lo.html"
+>lo — manage large objects</a>
+              </li>
+              <li>
+                <a href="./charset.html"
+>Localization</a>
+              </li>
+              <li>
+                <a href="./logicaldecoding.html"
+>Logical Decoding</a>
+              </li>
+              <li>
+                <a href="./logical-replication.html"
+>Logical Replication</a>
+              </li>
+              <li>
+                <a href="./ltree.html"
+>ltree — hierarchical tree-like data type</a>
+              </li>
+              <li>
+                <a href="./manage-ag.html"
+>Managing Databases</a>
+              </li>
+              <li>
+                <a href="./monitoring.html"
+>Monitoring Database Activity</a>
+              </li>
+              <li>
+                <a href="./nls.html"
+>Native Language Support</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete.html"
+>Obsolete or Renamed Features</a>
+              </li>
+              <li>
+                <a href="./oid2name.html"
+>oid2name</a>
+              </li>
+              <li>
+                <a href="./arch-dev.html"
+>Overview of PostgreSQL Internals</a>
+              </li>
+              <li>
+                <a href="./pageinspect.html"
+>pageinspect — low-level inspection of database pages</a>
+              </li>
+              <li>
+                <a href="./parallel.html"
+class="is-current" aria-current="page">Parallel Query</a>
+              </li>
+              <li>
+                <a href="./passwordcheck.html"
+>passwordcheck — verify password strength</a>
+              </li>
+              <li>
+                <a href="./perform.html"
+>Performance Tips</a>
+              </li>
+              <li>
+                <a href="./pgbuffercache.html"
+>pg_buffercache — inspect PostgreSQL buffer cache state</a>
+              </li>
+              <li>
+                <a href="./pgfreespacemap.html"
+>pg_freespacemap — examine the free space map</a>
+              </li>
+              <li>
+                <a href="./pgprewarm.html"
+>pg_prewarm — preload relation data into buffer caches</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgreceivexlog.html"
+>pg_receivexlog renamed to pg_receivewal</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgresetxlog.html"
+>pg_resetxlog renamed to pg_resetwal</a>
+              </li>
+              <li>
+                <a href="./pgstatstatements.html"
+>pg_stat_statements — track statistics of SQL planning and execution</a>
+              </li>
+              <li>
+                <a href="./pgsurgery.html"
+>pg_surgery — perform low-level surgery on relation data</a>
+              </li>
+              <li>
+                <a href="./pgtrgm.html"
+>pg_trgm — support for similarity of text using trigram matching</a>
+              </li>
+              <li>
+                <a href="./pgvisibility.html"
+>pg_visibility — visibility map information and utilities</a>
+              </li>
+              <li>
+                <a href="./pgwalinspect.html"
+>pg_walinspect — low-level WAL inspection</a>
+              </li>
+              <li>
+                <a href="./appendix-obsolete-pgxlogdump.html"
+>pg_xlogdump renamed to pg_waldump</a>
+              </li>
+              <li>
+                <a href="./pgcrypto.html"
+>pgcrypto — cryptographic functions</a>
+              </li>
+              <li>
+                <a href="./pgrowlocks.html"
+>pgrowlocks — show a table&#39;s row locking information</a>
+              </li>
+              <li>
+                <a href="./pgstattuple.html"
+>pgstattuple — obtain tuple-level statistics</a>
+              </li>
+              <li>
+                <a href="./plperl.html"
+>PL/Perl — Perl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpgsql.html"
+>PL/pgSQL — SQL Procedural Language</a>
+              </li>
+              <li>
+                <a href="./plpython.html"
+>PL/Python — Python Procedural Language</a>
+              </li>
+              <li>
+                <a href="./pltcl.html"
+>PL/Tcl — Tcl Procedural Language</a>
+              </li>
+              <li>
+                <a href="./postgres-fdw.html"
+>postgres_fdw — access data stored in external PostgreSQL servers</a>
+              </li>
+              <li>
+                <a href="./postgres.html"
+>PostgreSQL &amp;version; Documentation</a>
+              </li>
+              <li>
+                <a href="./sources.html"
+>PostgreSQL Coding Conventions</a>
+              </li>
+              <li>
+                <a href="./errcodes.html"
+>PostgreSQL Error Codes</a>
+              </li>
+              <li>
+                <a href="./limits.html"
+>PostgreSQL Limits</a>
+              </li>
+              <li>
+                <a href="./intro.html"
+>Preface</a>
+              </li>
+              <li>
+                <a href="./xplang.html"
+>Procedural Languages</a>
+              </li>
+              <li>
+                <a href="./queries.html"
+>Queries</a>
+              </li>
+              <li>
+                <a href="./rangetypes.html"
+>Range Types</a>
+              </li>
+          </ul>
+      </div>
+
+      <p class="nav-more">
+        <a href="./index.html">Ver los 384 documentos de PostgreSQL</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Parallel Query</h1>
+
+      <p class="doc-meta">
+<span class="badge">REL_17_STABLE</span>          <a href="https://www.postgresql.org/docs/17/parallel-query.html" target="_blank" rel="noopener">Ver versión oficial en línea</a>
+<span class="muted">Licencia PostgreSQL</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../bundles/postgresql.md" download="postgresql.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de PostgreSQL en un solo archivo Markdown">Bundle .md (7.3 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#parallel-query">Parallel Query#</a></li>
+              <li class="lvl-2"><a href="#how-parallel-query-works">How Parallel Query Works#</a></li>
+              <li class="lvl-2"><a href="#when-can-parallel-query-be-used">When Can Parallel Query Be Used?#</a></li>
+              <li class="lvl-2"><a href="#parallel-plans">Parallel Plans#</a></li>
+              <li class="lvl-3"><a href="#parallel-scans">Parallel Scans#</a></li>
+              <li class="lvl-3"><a href="#parallel-joins">Parallel Joins#</a></li>
+              <li class="lvl-3"><a href="#parallel-aggregation">Parallel Aggregation#</a></li>
+              <li class="lvl-3"><a href="#parallel-append">Parallel Append#</a></li>
+              <li class="lvl-3"><a href="#parallel-plan-tips">Parallel Plan Tips#</a></li>
+              <li class="lvl-2"><a href="#parallel-safety">Parallel Safety#</a></li>
+              <li class="lvl-3"><a href="#parallel-labeling-for-functions-and-aggregates">Parallel Labeling for Functions and Aggregates#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="parallel-query">Parallel Query<a class="headerlink" href="#parallel-query" title="Permanent link">#</a></h2>
+<p>parallel query</p>
+<p>PostgreSQL can devise query plans that can leverage multiple CPUs in order to answer queries faster. This feature is known as parallel query. Many queries cannot benefit from parallel query, either due to limitations of the current implementation or because there is no imaginable query plan that is any faster than the serial query plan. However, for queries that can benefit, the speedup from parallel query is often very significant. Many queries can run more than twice as fast when using parallel query, and some queries can run four times faster or even more. Queries that touch a large amount of data but return only a few rows to the user will typically benefit most. This chapter explains some details of how parallel query works and in which situations it can be used so that users who wish to make use of it can understand what to expect.</p>
+<h2 id="how-parallel-query-works">How Parallel Query Works<a class="headerlink" href="#how-parallel-query-works" title="Permanent link">#</a></h2>
+<p>When the optimizer determines that parallel query is the fastest execution strategy for a particular query, it will create a query plan that includes a Gather or Gather Merge node. Here is a simple example:</p>
+<div class="codehilite"><pre><span></span><code>EXPLAIN SELECT * FROM pgbench_accounts WHERE filler LIKE &#39;%x%&#39;;
+                                     QUERY PLAN
+-------------------------------------------------------------------​------------------
+ Gather  (cost=1000.00..217018.43 rows=1 width=97)
+   Workers Planned: 2
+   -&gt;  Parallel Seq Scan on pgbench_accounts  (cost=0.00..216018.33 rows=1 width=97)
+         Filter: (filler ~~ &#39;%x%&#39;::text)
+(4 rows)
+</code></pre></div>
+
+<p>In all cases, the <code>Gather</code> or <code>Gather Merge</code> node will have exactly one child plan, which is the portion of the plan that will be executed in parallel. If the <code>Gather</code> or <code>Gather Merge</code> node is at the very top of the plan tree, then the entire query will execute in parallel. If it is somewhere else in the plan tree, then only the portion of the plan below it will run in parallel. In the example above, the query accesses only one table, so there is only one plan node other than the <code>Gather</code> node itself; since that plan node is a child of the <code>Gather</code> node, it will run in parallel.</p>
+<p><a href="#using-explain">Using EXPLAIN</a>, you can see the number of workers chosen by the planner. When the <code>Gather</code> node is reached during query execution, the process that is implementing the user's session will request a number of <a href="#bgworker">background worker processes</a> equal to the number of workers chosen by the planner. The number of background workers that the planner will consider using is limited to at most <a href="#guc-max-parallel-workers-per-gather">???</a>. The total number of background workers that can exist at any one time is limited by both <a href="#guc-max-worker-processes">???</a> and <a href="#guc-max-parallel-workers">???</a>. Therefore, it is possible for a parallel query to run with fewer workers than planned, or even with no workers at all. The optimal plan may depend on the number of workers that are available, so this can result in poor query performance. If this occurrence is frequent, consider increasing <code>max_worker_processes</code> and <code>max_parallel_workers</code> so that more workers can be run simultaneously or alternatively reducing <code>max_parallel_workers_per_gather</code> so that the planner requests fewer workers.</p>
+<p>Every background worker process that is successfully started for a given parallel query will execute the parallel portion of the plan. The leader will also execute that portion of the plan, but it has an additional responsibility: it must also read all of the tuples generated by the workers. When the parallel portion of the plan generates only a small number of tuples, the leader will often behave very much like an additional worker, speeding up query execution. Conversely, when the parallel portion of the plan generates a large number of tuples, the leader may be almost entirely occupied with reading the tuples generated by the workers and performing any further processing steps that are required by plan nodes above the level of the <code>Gather</code> node or <code>Gather Merge</code> node. In such cases, the leader will do very little of the work of executing the parallel portion of the plan.</p>
+<p>When the node at the top of the parallel portion of the plan is <code>Gather Merge</code> rather than <code>Gather</code>, it indicates that each process executing the parallel portion of the plan is producing tuples in sorted order, and that the leader is performing an order-preserving merge. In contrast, <code>Gather</code> reads tuples from the workers in whatever order is convenient, destroying any sort order that may have existed.</p>
+<h2 id="when-can-parallel-query-be-used">When Can Parallel Query Be Used?<a class="headerlink" href="#when-can-parallel-query-be-used" title="Permanent link">#</a></h2>
+<p>There are several settings that can cause the query planner not to generate a parallel query plan under any circumstances. In order for any parallel query plans whatsoever to be generated, the following settings must be configured as indicated.</p>
+<ul>
+<li><a href="#guc-max-parallel-workers-per-gather">???</a> must be set to a value that is greater than zero. This is a special case of the more general principle that no more workers should be used than the number configured via <code>max_parallel_workers_per_gather</code>.</li>
+</ul>
+<p>In addition, the system must not be running in single-user mode. Since the entire database system is running as a single process in this situation, no background workers will be available.</p>
+<p>Even when it is in general possible for parallel query plans to be generated, the planner will not generate them for a given query if any of the following are true:</p>
+<ul>
+<li>
+<p>The query writes any data or locks any database rows. If a query contains a data-modifying operation either at the top level or within a CTE, no parallel plans for that query will be generated. As an exception, the following commands, which create a new table and populate it, can use a parallel plan for the underlying <code>SELECT</code> part of the query:</p>
+</li>
+<li>
+<p><code>CREATE TABLE ... AS</code></p>
+</li>
+<li>
+<p><code>SELECT INTO</code></p>
+</li>
+<li>
+<p><code>CREATE MATERIALIZED VIEW</code></p>
+</li>
+<li>
+<p><code>REFRESH MATERIALIZED VIEW</code></p>
+</li>
+<li>
+<p>The query might be suspended during execution. In any situation in which the system thinks that partial or incremental execution might occur, no parallel plan is generated. For example, a cursor created using <a href="#sql-declare">DECLARE CURSOR</a> will never use a parallel plan. Similarly, a PL/pgSQL loop of the form <code>FOR x IN query LOOP .. END LOOP</code> will never use a parallel plan, because the parallel query system is unable to verify that the code in the loop is safe to execute while parallel query is active.</p>
+</li>
+<li>
+<p>The query uses any function marked <code>PARALLEL UNSAFE</code>. Most system-defined functions are <code>PARALLEL SAFE</code>, but user-defined functions are marked <code>PARALLEL UNSAFE</code> by default. See the discussion of <a href="#parallel-safety">Parallel Safety</a>.</p>
+</li>
+<li>
+<p>The query is running inside of another query that is already parallel. For example, if a function called by a parallel query issues an SQL query itself, that query will never use a parallel plan. This is a limitation of the current implementation, but it may not be desirable to remove this limitation, since it could result in a single query using a very large number of processes.</p>
+</li>
+</ul>
+<p>Even when a parallel query plan is generated for a particular query, there are several circumstances under which it will be impossible to execute that plan in parallel at execution time. If this occurs, the leader will execute the portion of the plan below the <code>Gather</code> node entirely by itself, almost as if the <code>Gather</code> node were not present. This will happen if any of the following conditions are met:</p>
+<ul>
+<li>
+<p>No background workers can be obtained because of the limitation that the total number of background workers cannot exceed <a href="#guc-max-worker-processes">???</a>.</p>
+</li>
+<li>
+<p>No background workers can be obtained because of the limitation that the total number of background workers launched for purposes of parallel query cannot exceed <a href="#guc-max-parallel-workers">???</a>.</p>
+</li>
+<li>
+<p>The client sends an Execute message with a non-zero fetch count. See the discussion of the <a href="#protocol-flow-ext-query">extended query protocol</a>. Since <a href="#libpq">libpq</a> currently provides no way to send such a message, this can only occur when using a client that does not rely on libpq. If this is a frequent occurrence, it may be a good idea to set <a href="#guc-max-parallel-workers-per-gather">???</a> to zero in sessions where it is likely, so as to avoid generating query plans that may be suboptimal when run serially.</p>
+</li>
+</ul>
+<h2 id="parallel-plans">Parallel Plans<a class="headerlink" href="#parallel-plans" title="Permanent link">#</a></h2>
+<p>Because each worker executes the parallel portion of the plan to completion, it is not possible to simply take an ordinary query plan and run it using multiple workers. Each worker would produce a full copy of the output result set, so the query would not run any faster than normal but would produce incorrect results. Instead, the parallel portion of the plan must be what is known internally to the query optimizer as a partial plan; that is, it must be constructed so that each process that executes the plan will generate only a subset of the output rows in such a way that each required output row is guaranteed to be generated by exactly one of the cooperating processes. Generally, this means that the scan on the driving table of the query must be a parallel-aware scan.</p>
+<h3 id="parallel-scans">Parallel Scans<a class="headerlink" href="#parallel-scans" title="Permanent link">#</a></h3>
+<p>The following types of parallel-aware table scans are currently supported.</p>
+<ul>
+<li>
+<p>In a <em>parallel sequential scan</em>, the table's blocks will be divided into ranges and shared among the cooperating processes. Each worker process will complete the scanning of its given range of blocks before requesting an additional range of blocks.</p>
+</li>
+<li>
+<p>In a <em>parallel bitmap heap scan</em>, one process is chosen as the leader. That process performs a scan of one or more indexes and builds a bitmap indicating which table blocks need to be visited. These blocks are then divided among the cooperating processes as in a parallel sequential scan. In other words, the heap scan is performed in parallel, but the underlying index scan is not.</p>
+</li>
+<li>
+<p>In a <em>parallel index scan</em> or <em>parallel index-only scan</em>, the cooperating processes take turns reading data from the index. Currently, parallel index scans are supported only for btree indexes. Each process will claim a single index block and will scan and return all tuples referenced by that block; other processes can at the same time be returning tuples from a different index block. The results of a parallel btree scan are returned in sorted order within each worker process.</p>
+</li>
+</ul>
+<p>Other scan types, such as scans of non-btree indexes, may support parallel scans in the future.</p>
+<h3 id="parallel-joins">Parallel Joins<a class="headerlink" href="#parallel-joins" title="Permanent link">#</a></h3>
+<p>Just as in a non-parallel plan, the driving table may be joined to one or more other tables using a nested loop, hash join, or merge join. The inner side of the join may be any kind of non-parallel plan that is otherwise supported by the planner provided that it is safe to run within a parallel worker. Depending on the join type, the inner side may also be a parallel plan.</p>
+<ul>
+<li>
+<p>In a <em>nested loop join</em>, the inner side is always non-parallel. Although it is executed in full, this is efficient if the inner side is an index scan, because the outer tuples and thus the loops that look up values in the index are divided over the cooperating processes.</p>
+</li>
+<li>
+<p>In a <em>merge join</em>, the inner side is always a non-parallel plan and therefore executed in full. This may be inefficient, especially if a sort must be performed, because the work and resulting data are duplicated in every cooperating process.</p>
+</li>
+<li>
+<p>In a <em>hash join</em> (without the "parallel" prefix), the inner side is executed in full by every cooperating process to build identical copies of the hash table. This may be inefficient if the hash table is large or the plan is expensive. In a <em>parallel hash join</em>, the inner side is a <em>parallel hash</em> that divides the work of building a shared hash table over the cooperating processes.</p>
+</li>
+</ul>
+<h3 id="parallel-aggregation">Parallel Aggregation<a class="headerlink" href="#parallel-aggregation" title="Permanent link">#</a></h3>
+<p>PostgreSQL supports parallel aggregation by aggregating in two stages. First, each process participating in the parallel portion of the query performs an aggregation step, producing a partial result for each group of which that process is aware. This is reflected in the plan as a <code>Partial Aggregate</code> node. Second, the partial results are transferred to the leader via <code>Gather</code> or <code>Gather Merge</code>. Finally, the leader re-aggregates the results across all workers in order to produce the final result. This is reflected in the plan as a <code>Finalize Aggregate</code> node.</p>
+<p>Because the <code>Finalize Aggregate</code> node runs on the leader process, queries that produce a relatively large number of groups in comparison to the number of input rows will appear less favorable to the query planner. For example, in the worst-case scenario the number of groups seen by the <code>Finalize Aggregate</code> node could be as many as the number of input rows that were seen by all worker processes in the <code>Partial Aggregate</code> stage. For such cases, there is clearly going to be no performance benefit to using parallel aggregation. The query planner takes this into account during the planning process and is unlikely to choose parallel aggregate in this scenario.</p>
+<p>Parallel aggregation is not supported in all situations. Each aggregate must be <a href="#parallel-safety">safe</a> for parallelism and must have a combine function. If the aggregate has a transition state of type <code>internal</code>, it must have serialization and deserialization functions. See <a href="#sql-createaggregate">???</a> for more details. Parallel aggregation is not supported if any aggregate function call contains <code>DISTINCT</code> or <code>ORDER BY</code> clause and is also not supported for ordered set aggregates or when the query involves <code>GROUPING SETS</code>. It can only be used when all joins involved in the query are also part of the parallel portion of the plan.</p>
+<h3 id="parallel-append">Parallel Append<a class="headerlink" href="#parallel-append" title="Permanent link">#</a></h3>
+<p>Whenever PostgreSQL needs to combine rows from multiple sources into a single result set, it uses an <code>Append</code> or <code>MergeAppend</code> plan node. This commonly happens when implementing <code>UNION ALL</code> or when scanning a partitioned table. Such nodes can be used in parallel plans just as they can in any other plan. However, in a parallel plan, the planner may instead use a <code>Parallel Append</code> node.</p>
+<p>When an <code>Append</code> node is used in a parallel plan, each process will execute the child plans in the order in which they appear, so that all participating processes cooperate to execute the first child plan until it is complete and then move to the second plan at around the same time. When a <code>Parallel Append</code> is used instead, the executor will instead spread out the participating processes as evenly as possible across its child plans, so that multiple child plans are executed simultaneously. This avoids contention, and also avoids paying the startup cost of a child plan in those processes that never execute it.</p>
+<p>Also, unlike a regular <code>Append</code> node, which can only have partial children when used within a parallel plan, a <code>Parallel Append</code> node can have both partial and non-partial child plans. Non-partial children will be scanned by only a single process, since scanning them more than once would produce duplicate results. Plans that involve appending multiple results sets can therefore achieve coarse-grained parallelism even when efficient partial plans are not available. For example, consider a query against a partitioned table that can only be implemented efficiently by using an index that does not support parallel scans. The planner might choose a <code>Parallel Append</code> of regular <code>Index Scan</code> plans; each individual index scan would have to be executed to completion by a single process, but different scans could be performed at the same time by different processes.</p>
+<p><a href="#guc-enable-parallel-append">???</a> can be used to disable this feature.</p>
+<h3 id="parallel-plan-tips">Parallel Plan Tips<a class="headerlink" href="#parallel-plan-tips" title="Permanent link">#</a></h3>
+<p>If a query that is expected to do so does not produce a parallel plan, you can try reducing <a href="#guc-parallel-setup-cost">???</a> or <a href="#guc-parallel-tuple-cost">???</a>. Of course, this plan may turn out to be slower than the serial plan that the planner preferred, but this will not always be the case. If you don't get a parallel plan even with very small values of these settings (e.g., after setting them both to zero), there may be some reason why the query planner is unable to generate a parallel plan for your query. See <a href="#when-can-parallel-query-be-used">When Can Parallel Query Be Used?</a> and <a href="#parallel-safety">Parallel Safety</a> for information on why this may be the case.</p>
+<p>When executing a parallel plan, you can use <code>EXPLAIN (ANALYZE, VERBOSE)</code> to display per-worker statistics for each plan node. This may be useful in determining whether the work is being evenly distributed between all plan nodes and more generally in understanding the performance characteristics of the plan.</p>
+<h2 id="parallel-safety">Parallel Safety<a class="headerlink" href="#parallel-safety" title="Permanent link">#</a></h2>
+<p>The planner classifies operations involved in a query as either parallel safe, parallel restricted, or parallel unsafe. A parallel safe operation is one that does not conflict with the use of parallel query. A parallel restricted operation is one that cannot be performed in a parallel worker, but that can be performed in the leader while parallel query is in use. Therefore, parallel restricted operations can never occur below a <code>Gather</code> or <code>Gather Merge</code> node, but can occur elsewhere in a plan that contains such a node. A parallel unsafe operation is one that cannot be performed while parallel query is in use, not even in the leader. When a query contains anything that is parallel unsafe, parallel query is completely disabled for that query.</p>
+<p>The following operations are always parallel restricted:</p>
+<ul>
+<li>
+<p>Scans of common table expressions (CTEs).</p>
+</li>
+<li>
+<p>Scans of temporary tables.</p>
+</li>
+<li>
+<p>Scans of foreign tables, unless the foreign data wrapper has an <code>IsForeignScanParallelSafe</code> API that indicates otherwise.</p>
+</li>
+<li>
+<p>Plan nodes that reference a correlated <code>SubPlan</code>.</p>
+</li>
+</ul>
+<h3 id="parallel-labeling-for-functions-and-aggregates">Parallel Labeling for Functions and Aggregates<a class="headerlink" href="#parallel-labeling-for-functions-and-aggregates" title="Permanent link">#</a></h3>
+<p>The planner cannot automatically determine whether a user-defined function or aggregate is parallel safe, parallel restricted, or parallel unsafe, because this would require predicting every operation that the function could possibly perform. In general, this is equivalent to the Halting Problem and therefore impossible. Even for simple functions where it could conceivably be done, we do not try, since this would be expensive and error-prone. Instead, all user-defined functions are assumed to be parallel unsafe unless otherwise marked. When using <a href="#sql-createfunction">???</a> or <a href="#sql-alterfunction">???</a>, markings can be set by specifying <code>PARALLEL SAFE</code>, <code>PARALLEL RESTRICTED</code>, or <code>PARALLEL UNSAFE</code> as appropriate. When using <a href="#sql-createaggregate">???</a>, the <code>PARALLEL</code> option can be specified with <code>SAFE</code>, <code>RESTRICTED</code>, or <code>UNSAFE</code> as the corresponding value.</p>
+<p>Functions and aggregates must be marked <code>PARALLEL UNSAFE</code> if they write to the database, change the transaction state (other than by using a subtransaction for error recovery), access sequences, or make persistent changes to settings. Similarly, functions must be marked <code>PARALLEL RESTRICTED</code> if they access temporary tables, client connection state, cursors, prepared statements, or miscellaneous backend-local state that the system cannot synchronize across workers. For example, <code>setseed</code> and <code>random</code> are parallel restricted for this last reason.</p>
+<p>In general, if a function is labeled as being safe when it is restricted or unsafe, or if it is labeled as being restricted when it is in fact unsafe, it may throw errors or produce wrong answers when used in a parallel query. C-language functions could in theory exhibit totally undefined behavior if mislabeled, since there is no way for the system to protect itself against arbitrary C code, but in most likely cases the result will be no worse than for any other function. If in doubt, it is probably best to label functions as <code>UNSAFE</code>.</p>
+<p>If a function executed within a parallel worker acquires locks that are not held by the leader, for example by querying a table not referenced in the query, those locks will be released at worker exit, not end of transaction. If you write a function that does this, and this behavior difference is important to you, mark such functions as <code>PARALLEL RESTRICTED</code> to ensure that they execute only in the leader.</p>
+<p>Note that the query planner does not consider deferring the evaluation of parallel-restricted functions or aggregates involved in the query in order to obtain a superior plan. So, for example, if a <code>WHERE</code> clause applied to a particular table is parallel restricted, the query planner will not consider performing a scan of that table in the parallel portion of a plan. In some cases, it would be possible (and perhaps even efficient) to include the scan of that table in the parallel portion of the query and defer the evaluation of the <code>WHERE</code> clause so that it happens above the <code>Gather</code> node. However, the planner does not do this.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="./pageinspect.html">
+          <span class="muted">Anterior</span>pageinspect — low-level inspection of database pages
+        </a>
+        <a class="pager-next" href="./passwordcheck.html">
+          <span class="muted">Siguiente</span>passwordcheck — verify password strength
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../licenses.html">Licencias y Atribución</a> ·
+    <a href="../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../_assets/app.js"></script>
+</body>
+</html>

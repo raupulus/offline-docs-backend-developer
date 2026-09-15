@@ -16,15 +16,23 @@ Todas las fuentes han sido verificadas contra sus repositorios oficiales y térm
 |---|---|---|---|
 | **Bash** | Free Software Foundation, Inc. (Chet Ramey, Brian Fox) | [GNU Bash Manual](https://www.gnu.org/software/bash/manual/) | [GFDL-1.3](https://www.gnu.org/licenses/fdl-1.3.html) |
 | **Composer** | Nils Adermann, Jordi Boggiano y colaboradores de Composer | [composer/composer](https://github.com/composer/composer) | [MIT](https://opensource.org/licenses/MIT) |
+| **Debian** | Osamu Aoki y colaboradores del Debian Documentation Project | [debian-reference](https://www.debian.org/doc/manuals/debian-reference/) | [GPL-2.0-or-later](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) |
+| **Docker** | Docker, Inc. y colaboradores de Docker Docs | [docker/docs](https://github.com/docker/docs) | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | **Filament** | Dan Harrin y colaboradores de Filament | [filamentphp/filament](https://github.com/filamentphp/filament) | [MIT](https://opensource.org/licenses/MIT) |
+| **Git** | Linus Torvalds, Junio C Hamano y colaboradores de Git | [git/git](https://github.com/git/git) | [GPL-2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) |
 | **JavaScript** | Individual Mozilla Contributors (MDN Web Docs) | [mdn/content](https://github.com/mdn/content) | [CC-BY-SA-2.5](https://creativecommons.org/licenses/by-sa/2.5/) |
 | **Laravel** | Taylor Otwell | [laravel/docs](https://github.com/laravel/docs) | [MIT](https://opensource.org/licenses/MIT) |
+| **llama.cpp** | Georgi Gerganov y colaboradores de llama.cpp | [ggml-org/llama.cpp](https://github.com/ggml-org/llama.cpp) | [MIT](https://opensource.org/licenses/MIT) |
+| **MicroPython (Pico)** | Damien P. George y colaboradores de MicroPython | [micropython/micropython](https://github.com/micropython/micropython) | [MIT](https://opensource.org/licenses/MIT) |
 | **Node.js** | Joyent, Inc., OpenJS Foundation y colaboradores de Node.js | [nodejs/node](https://github.com/nodejs/node) | [MIT](https://opensource.org/licenses/MIT) |
 | **npm** | npm, Inc. y colaboradores de npm / GitHub | [npm/cli](https://github.com/npm/cli) | [Artistic-2.0](https://opensource.org/licenses/Artistic-2.0) |
 | **Nuxt** | Nuxt Team (Alexandre Chopin, Sébastien Chopin y colaboradores) | [nuxt/nuxt](https://github.com/nuxt/nuxt) | [MIT](https://opensource.org/licenses/MIT) |
 | **PHP** | 1997-2026 The PHP Documentation Group | [php.net/manual](https://www.php.net/manual/es/) / [php/doc-es](https://github.com/php/doc-es) | [CC-BY-3.0](https://creativecommons.org/licenses/by/3.0/) |
 | **pnpm** | Zoltan Kochan y colaboradores de pnpm | [pnpm/pnpm.io](https://github.com/pnpm/pnpm.io) | [MIT](https://opensource.org/licenses/MIT) |
+| **PostgreSQL** | 1996-2026 The PostgreSQL Global Development Group | [postgresql.org/docs](https://www.postgresql.org/docs/) | [PostgreSQL License](https://www.postgresql.org/about/licence/) |
 | **Python** | Python Software Foundation | [docs.python.org](https://docs.python.org/3/) | [PSF License v2](https://docs.python.org/3/license.html) (ejemplos bajo [0BSD](https://opensource.org/licenses/0BSD)) |
+| **SQLite** | D. Richard Hipp y colaboradores de SQLite | [sqlite.org](https://www.sqlite.org/docs.html) | [Blessing (Dominio Público)](https://www.sqlite.org/copyright.html) |
+| **Tailwind CSS** | Tailwind Labs Inc. (Adam Wathan y colaboradores) | [tailwindlabs/tailwindcss.com](https://github.com/tailwindlabs/tailwindcss.com) | [MIT](https://opensource.org/licenses/MIT) |
 | **Vue 3** | Evan You y colaboradores de Vue | [vuejs/docs](https://github.com/vuejs/docs) | [MIT](https://opensource.org/licenses/MIT) |
 
 ---
@@ -32,7 +40,7 @@ Todas las fuentes han sido verificadas contra sus repositorios oficiales y térm
 ## Términos de las Licencias Principales
 
 ### Licencia MIT
-Aplica a: Laravel, Filament, Composer, Node.js, Nuxt, pnpm y Vue 3.
+Aplica a: Laravel, Filament, Composer, Node.js, Nuxt, pnpm, Vue 3, llama.cpp, MicroPython y Tailwind CSS.
 
 ```text
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,6 +61,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+### Apache License 2.0
+Aplica a: Docker (Docker Docs).
+Distribuido bajo [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+### GNU General Public License v2 (GPL-2.0 / GPL-2.0-or-later)
+Aplica a: Git (GPL-2.0) y Debian Reference (GPL-2.0-or-later).
+El código fuente y documentación se distribuyen conforme a los términos de la [GNU General Public License Version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
+
+### PostgreSQL License
+Aplica a: PostgreSQL.
+La documentación de PostgreSQL se distribuye bajo la licencia permisiva [PostgreSQL License](https://www.postgresql.org/about/licence/), similar a BSD/MIT.
+
+### SQLite Blessing (Dominio Público)
+Aplica a: SQLite.
+Todo el código y documentación de SQLite están dedicados al dominio público bajo el *SQLite Blessing*:
+> *"May you do good and not evil. May you find forgiveness for yourself and forgive others. May you share freely, never taking more than you give."*
 
 ### Creative Commons (CC-BY-SA 2.5 y CC-BY 3.0)
 - **JavaScript (MDN Content):** El contenido de MDN Web Docs se distribuye bajo [Creative Commons Attribution-ShareAlike 2.5 Generic (CC-BY-SA-2.5)](https://creativecommons.org/licenses/by-sa/2.5/). Cualquier redistribución de esta sección preserva la atribución a los colaboradores de Mozilla y la obligación de compartir bajo los mismos términos.

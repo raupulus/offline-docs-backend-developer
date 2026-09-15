@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tips · Docker</title>
+<meta name="description" content="Tips - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/engine/security/rootless/tips.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Tips">
+<meta property="og:description" content="Tips - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tips">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Tips",
+"url": "https://docs.raupulus.dev/docker/engine/security/rootless/tips.html",  "description": "Tips - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Engine
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../engine/release-notes/17.10.html"
+>Docker Engine 17.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.11.html"
+>Docker Engine 17.11 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/17.12.html"
+>Docker Engine 17.12 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.01.html"
+>Docker Engine 18.01 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.02.html"
+>Docker Engine 18.02 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.03.html"
+>Docker Engine 18.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.04.html"
+>Docker Engine 18.04 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.05.html"
+>Docker Engine 18.05 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.06.html"
+>Docker Engine 18.06 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/18.09.html"
+>Docker Engine 18.09 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/19.03.html"
+>Docker Engine 19.03 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/20.10.html"
+>Docker Engine 20.10 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/23.0.html"
+>Docker Engine 23.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/24.0.html"
+>Docker Engine 24.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/25.0.html"
+>Docker Engine 25.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.0.html"
+>Docker Engine 26.0 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/26.1.html"
+>Docker Engine 26.1 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/27.html"
+>Docker Engine version 27 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/28.html"
+>Docker Engine version 28 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/29.html"
+>Docker Engine version 29 release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/index.html"
+>Release notes</a>
+              </li>
+              <li>
+                <a href="../../../engine/release-notes/prior-releases.html"
+>Docker Engine prior releases</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/index.html"
+>Docker Engine security</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/antivirus.html"
+>Antivirus software and Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/apparmor.html"
+>AppArmor security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/certificates.html"
+>Verify repository client with certificates</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/https/readme.html"
+>Readme</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/non-events.html"
+>Docker security non-events</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/protect-access.html"
+>Protect the Docker daemon socket</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/index.html"
+>Rootless mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/tips.html"
+class="is-current" aria-current="page">Tips</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/troubleshoot.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/rootless/uid-gid-mapping.html"
+>UID/GID mapping</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/seccomp.html"
+>Seccomp security profiles for Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/index.html"
+>Content trust in Docker</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/deploying-notary.html"
+>Deploy Notary Server with Compose</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-automation.html"
+>Automation with content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-delegation.html"
+>Delegations for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-key-mng.html"
+>Manage keys for content trust</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/trust/trust-sandbox.html"
+>Play in a content trust sandbox</a>
+              </li>
+              <li>
+                <a href="../../../engine/security/userns-remap.html"
+>Isolate containers with a user namespace</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/index.html"
+>Storage</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/bind-mounts.html"
+>Bind mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/containerd.html"
+>containerd image store with Docker Engine</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/index.html"
+>Storage drivers</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/aufs-driver.html"
+>AUFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/btrfs-driver.html"
+>BTRFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/device-mapper-driver.html"
+>Device Mapper storage driver (deprecated)</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/overlayfs-driver.html"
+>OverlayFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/select-storage-driver.html"
+>Select a storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/vfs-driver.html"
+>VFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/windowsfilter-driver.html"
+>windowsfilter storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/drivers/zfs-driver.html"
+>ZFS storage driver</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/image-mounts.html"
+>Image mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/tmpfs.html"
+>tmpfs mounts</a>
+              </li>
+              <li>
+                <a href="../../../engine/storage/volumes.html"
+>Volumes</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/index.html"
+>Swarm mode</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/admin-guide.html"
+>Administer and maintain a swarm of Docker Engines</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/configs.html"
+>Store configuration data using Docker Configs</a>
+              </li>
+              <li>
+                <a href="../../../engine/swarm/how-swarm-mode-works/index.html"
+>How swarm works</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Tips</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#advanced-usage">Advanced usage#</a></li>
+              <li class="lvl-3"><a href="#daemon">Daemon#</a></li>
+              <li class="lvl-3"><a href="#client">Client#</a></li>
+              <li class="lvl-2"><a href="#best-practices">Best practices#</a></li>
+              <li class="lvl-3"><a href="#rootless-docker-in-docker">Rootless Docker in Docker#</a></li>
+              <li class="lvl-3"><a href="#expose-docker-api-socket-through-tcp">Expose Docker API socket through TCP#</a></li>
+              <li class="lvl-3"><a href="#expose-docker-api-socket-through-ssh">Expose Docker API socket through SSH#</a></li>
+              <li class="lvl-3"><a href="#routing-ping-packets">Routing ping packets#</a></li>
+              <li class="lvl-3"><a href="#exposing-privileged-ports">Exposing privileged ports#</a></li>
+              <li class="lvl-3"><a href="#limiting-resources">Limiting resources#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <h2 id="advanced-usage">Advanced usage<a class="headerlink" href="#advanced-usage" title="Permanent link">#</a></h2>
+<h3 id="daemon">Daemon<a class="headerlink" href="#daemon" title="Permanent link">#</a></h3>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="With systemd (Highly recommended)" &gt;}}</p>
+<p>The systemd unit file is installed as  <code>~/.config/systemd/user/docker.service</code>.</p>
+<p>Use <code>systemctl --user</code> to manage the lifecycle of the daemon:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>systemctl<span class="w"> </span>--user<span class="w"> </span>start<span class="w"> </span>docker
+</code></pre></div>
+
+<p>To launch the daemon on system startup, enable the systemd service and lingering:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>systemctl<span class="w"> </span>--user<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>docker
+<span class="gp">$ </span>sudo<span class="w"> </span>loginctl<span class="w"> </span>enable-linger<span class="w"> </span><span class="k">$(</span>whoami<span class="k">)</span>
+</code></pre></div>
+
+<p>Starting Rootless Docker as a systemd-wide service (<code>/etc/systemd/system/docker.service</code>)
+is not supported, even with the <code>User=</code> directive.</p>
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Without systemd" &gt;}}</p>
+<p>To run the daemon directly without systemd, you need to run <code>dockerd-rootless.sh</code> instead of <code>dockerd</code>.</p>
+<p>The following environment variables must be set:
+- <code>$HOME</code>: the home directory
+- <code>$XDG_RUNTIME_DIR</code>: an ephemeral directory that is only accessible by the expected user, e,g, <code>~/.docker/run</code>.
+  The directory should be removed on every host shutdown.
+  The directory can be on tmpfs, however, should not be under <code>/tmp</code>.
+  Locating this directory under <code>/tmp</code> might be vulnerable to TOCTOU attack.</p>
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>It's important to note that with directory paths:</p>
+<ul>
+<li>The socket path is set to <code>$XDG_RUNTIME_DIR/docker.sock</code> by default.
+  <code>$XDG_RUNTIME_DIR</code> is typically set to <code>/run/user/$UID</code>.</li>
+<li>The data dir is set to <code>~/.local/share/docker</code> by default.
+  The data dir should not be on NFS.</li>
+<li>The daemon config dir is set to <code>~/.config/docker</code> by default.
+  This directory is different from <code>~/.docker</code> that is used by the client.</li>
+</ul>
+<h3 id="client">Client<a class="headerlink" href="#client" title="Permanent link">#</a></h3>
+<p>Since Docker Engine v23.0, <code>dockerd-rootless-setuptool.sh install</code> automatically configures
+the <code>docker</code> CLI to use the <code>rootless</code> context.</p>
+<p>Prior to Docker Engine v23.0, a user had to specify either the socket path or the CLI context explicitly.</p>
+<p>To specify the socket path using <code>$DOCKER_HOST</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_HOST</span><span class="o">=</span>unix://<span class="nv">$XDG_RUNTIME_DIR</span>/docker.sock
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span>nginx
+</code></pre></div>
+
+<p>To specify the CLI context using <code>docker context</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>context<span class="w"> </span>use<span class="w"> </span>rootless
+<span class="go">rootless</span>
+<span class="go">Current context is now &quot;rootless&quot;</span>
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span>nginx
+</code></pre></div>
+
+<h2 id="best-practices">Best practices<a class="headerlink" href="#best-practices" title="Permanent link">#</a></h2>
+<h3 id="rootless-docker-in-docker">Rootless Docker in Docker<a class="headerlink" href="#rootless-docker-in-docker" title="Permanent link">#</a></h3>
+<p>To run Rootless Docker inside "rootful" Docker, use the <code>docker:&lt;version&gt;-dind-rootless</code>
+image instead of <code>docker:&lt;version&gt;-dind</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>dind-rootless<span class="w"> </span>--privileged<span class="w"> </span>docker:25.0-dind-rootless
+</code></pre></div>
+
+<p>The <code>docker:&lt;version&gt;-dind-rootless</code> image runs as a non-root user (UID 1000).
+However, <code>--privileged</code> is required for disabling seccomp, AppArmor, and mount
+masks.</p>
+<h3 id="expose-docker-api-socket-through-tcp">Expose Docker API socket through TCP<a class="headerlink" href="#expose-docker-api-socket-through-tcp" title="Permanent link">#</a></h3>
+<p>To expose the Docker API socket through TCP, you need to launch <code>dockerd-rootless.sh</code>
+with <code>DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS="-p 0.0.0.0:2376:2376/tcp"</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nv">DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS</span><span class="o">=</span><span class="s2">&quot;-p 0.0.0.0:2376:2376/tcp&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>dockerd-rootless.sh<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span>tcp://0.0.0.0:2376<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tlsverify<span class="w"> </span>--tlscacert<span class="o">=</span>ca.pem<span class="w"> </span>--tlscert<span class="o">=</span>cert.pem<span class="w"> </span>--tlskey<span class="o">=</span>key.pem
+</code></pre></div>
+
+<h3 id="expose-docker-api-socket-through-ssh">Expose Docker API socket through SSH<a class="headerlink" href="#expose-docker-api-socket-through-ssh" title="Permanent link">#</a></h3>
+<p>To expose the Docker API socket through SSH, you need to make sure <code>$DOCKER_HOST</code>
+is set on the remote host.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ssh<span class="w"> </span>-l<span class="w"> </span>&lt;REMOTEUSER&gt;<span class="w"> </span>&lt;REMOTEHOST&gt;<span class="w"> </span><span class="s1">&#39;echo $DOCKER_HOST&#39;</span>
+<span class="go">unix:///run/user/1001/docker.sock</span>
+<span class="gp">$ </span>docker<span class="w"> </span>-H<span class="w"> </span>ssh://&lt;REMOTEUSER&gt;@&lt;REMOTEHOST&gt;<span class="w"> </span>run<span class="w"> </span>...
+</code></pre></div>
+
+<h3 id="routing-ping-packets">Routing ping packets<a class="headerlink" href="#routing-ping-packets" title="Permanent link">#</a></h3>
+<p>On some distributions, <code>ping</code> does not work by default.</p>
+<p>Add <code>net.ipv4.ping_group_range = 0   2147483647</code> to <code>/etc/sysctl.conf</code> (or
+<code>/etc/sysctl.d</code>) and run <code>sudo sysctl --system</code> to allow using <code>ping</code>.</p>
+<h3 id="exposing-privileged-ports">Exposing privileged ports<a class="headerlink" href="#exposing-privileged-ports" title="Permanent link">#</a></h3>
+<p>To expose privileged ports (&lt; 1024), set <code>CAP_NET_BIND_SERVICE</code> on <code>rootlesskit</code> binary and restart the daemon.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>setcap<span class="w"> </span><span class="nv">cap_net_bind_service</span><span class="o">=</span>ep<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>rootlesskit<span class="k">)</span>
+<span class="gp">$ </span>systemctl<span class="w"> </span>--user<span class="w"> </span>restart<span class="w"> </span>docker
+</code></pre></div>
+
+<p>Or add <code>net.ipv4.ip_unprivileged_port_start=0</code> to <code>/etc/sysctl.conf</code> (or
+<code>/etc/sysctl.d</code>) and run <code>sudo sysctl --system</code>.</p>
+<h3 id="limiting-resources">Limiting resources<a class="headerlink" href="#limiting-resources" title="Permanent link">#</a></h3>
+<p>Limiting resources with cgroup-related <code>docker run</code> flags such as <code>--cpus</code>, <code>--memory</code>, <code>--pids-limit</code>
+is supported only when running with cgroup v2 and systemd.
+See <a href="../../containers/runmetrics.html">Changing cgroup version</a> to enable cgroup v2.</p>
+<p>If <code>docker info</code> shows <code>none</code> as <code>Cgroup Driver</code>, the conditions are not satisfied.
+When these conditions are not satisfied, rootless mode ignores the cgroup-related <code>docker run</code> flags.
+See <a href="#limiting-resources-without-cgroup">Limiting resources without cgroup</a> for workarounds.</p>
+<p>If <code>docker info</code> shows <code>systemd</code> as <code>Cgroup Driver</code>, the conditions are satisfied.
+However, typically, only <code>memory</code> and <code>pids</code> controllers are delegated to non-root users by default.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>/sys/fs/cgroup/user.slice/user-<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>.slice/user@<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>.service/cgroup.controllers
+<span class="go">memory pids</span>
+</code></pre></div>
+
+<p>To allow delegation of all controllers, change the systemd configuration:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/systemd/system/user@.service.d
+</code></pre></div>
+
+<p>Create <code>/etc/systemd/system/user@.service.d/delegate.conf</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[Service]</span>
+<span class="na">Delegate</span><span class="o">=</span><span class="s">cpu cpuset io memory pids</span>
+</code></pre></div>
+
+<p>Then reload systemd:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>Delegating <code>cpuset</code> requires systemd 244 or later.</p>
+</blockquote>
+<h4 id="limiting-resources-without-cgroup">Limiting resources without cgroup<a class="headerlink" href="#limiting-resources-without-cgroup" title="Permanent link">#</a></h4>
+<p>Even when cgroup is not available, you can still use the traditional <code>ulimit</code> and <a href="https://github.com/opsengine/cpulimit" rel="noopener" target="_blank"><code>cpulimit</code></a>,
+though they work in process-granularity rather than in container-granularity,
+and can be arbitrarily disabled by the container process.</p>
+<p>For example:</p>
+<ul>
+<li>To limit CPU usage to 0.5 cores (similar to <code>docker run --cpus 0.5</code>):
+  <code>docker run &lt;IMAGE&gt; cpulimit --limit=50 --include-children &lt;COMMAND&gt;</code></li>
+<li>
+<p>To limit max VSZ to 64MiB (similar to <code>docker run --memory 64m</code>):
+  <code>docker run &lt;IMAGE&gt; sh -c "ulimit -v 65536; &lt;COMMAND&gt;"</code></p>
+</li>
+<li>
+<p>To limit max number of processes to 100 per namespaced UID 2000
+  (similar to <code>docker run --pids-limit=100</code>):
+  <code>docker run --user 2000 --ulimit nproc=100 &lt;IMAGE&gt; &lt;COMMAND&gt;</code></p>
+</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../engine/security/rootless/index.html">
+          <span class="muted">Anterior</span>Rootless mode
+        </a>
+        <a class="pager-next" href="../../../engine/security/rootless/troubleshoot.html">
+          <span class="muted">Siguiente</span>Troubleshooting
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

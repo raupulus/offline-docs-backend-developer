@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isolation layers · Docker</title>
+<meta name="description" content="Isolation layers - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/ai/sandboxes/security/isolation.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Isolation layers">
+<meta property="og:description" content="Isolation layers - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Isolation layers">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Isolation layers",
+"url": "https://docs.raupulus.dev/docker/ai/sandboxes/security/isolation.html",  "description": "Isolation layers - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Ai
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../ai/sandboxes/agents/droid.html"
+>Droid</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/gemini.html"
+>Gemini</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/kiro.html"
+>Kiro</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/opencode.html"
+>OpenCode</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/agents/shell.html"
+>Shell</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/architecture.html"
+>Architecture</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/index.html"
+>Configure Docker Sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/credentials.html"
+>Manage credentials</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/environment-files.html"
+>Sandbox environment files</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/gpu-passthrough.html"
+>Enable NVIDIA GPU passthrough</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/registry-mirror.html"
+>Configure a registry mirror</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/configuration/upstream-proxy.html"
+>Configure an upstream proxy</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/index.html"
+>Customizing sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/build-an-agent.html"
+>Build your own agent kit</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/kit-examples.html"
+>Kit examples</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/kit-reference.html"
+>Kit spec reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/kits.html"
+>Kits</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/customize/templates.html"
+>Templates</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/faq.html"
+>FAQ</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/get-started.html"
+>Get started with Docker Sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/index.html"
+>Governance</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/index.html"
+>Access controls</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/filesystem.html"
+>Filesystem access policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/local.html"
+>Local policy</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/mcp.html"
+>MCP access policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/network.html"
+>Network access policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/access-controls/organization.html"
+>Organization policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/index.html"
+>AI Governance Audit Logs</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/configure.html"
+>Configure audit delivery</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/local.html"
+>Local audit logs</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/record-reference.html"
+>Audit record reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/siem.html"
+>SIEM forwarding</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/audit/view-export.html"
+>View and export audit events</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/concepts.html"
+>Policy concepts</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/monitor-and-enforce/index.html"
+>Monitor and enforce</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/monitor-and-enforce/monitoring.html"
+>Monitoring policies</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/monitor-and-enforce/sign-in-enforcement.html"
+>Sign-in enforcement</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/reference/index.html"
+>Reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/reference/api.html"
+>AI Governance API</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/governance/reference/mcp-policy.html"
+>MCP policy reference</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/install.html"
+>Install Docker Sandboxes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/index.html"
+>Editor and app integrations</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/chatgpt.html"
+>Connect ChatGPT to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/claude-desktop.html"
+>Connect Claude Desktop to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/cursor.html"
+>Connect Cursor to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/t3-code.html"
+>Connect T3 Code to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/integrations/vscode.html"
+>Connect VS Code to a sandbox</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/mcp-gateway.html"
+>MCP gateway</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/release-notes.html"
+>Docker Sandboxes release notes</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/security/index.html"
+>Security model</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/security/defaults.html"
+>Default security posture</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/security/isolation.html"
+class="is-current" aria-current="page">Isolation layers</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/troubleshooting.html"
+>Troubleshooting</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/usage.html"
+>Usage</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/index.html"
+>Workflow patterns</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/agent-skills.html"
+>Share agent skills</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/authentication.html"
+>Authenticate command-line tools</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/automation.html"
+>Run sandboxes in CI</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/development.html"
+>Develop and test locally</a>
+              </li>
+              <li>
+                <a href="../../../ai/sandboxes/workflows/git.html"
+>Use Git with sandboxes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Isolation layers</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#hypervisor-isolation">Hypervisor isolation#</a></li>
+              <li class="lvl-2"><a href="#network-isolation">Network isolation#</a></li>
+              <li class="lvl-2"><a href="#docker-engine-isolation">Docker Engine isolation#</a></li>
+              <li class="lvl-2"><a href="#workspace-isolation">Workspace isolation#</a></li>
+              <li class="lvl-3"><a href="#mountless">Mountless#</a></li>
+              <li class="lvl-3"><a href="#direct-mount">Direct mount#</a></li>
+              <li class="lvl-3"><a href="#clone-mode">Clone mode#</a></li>
+              <li class="lvl-2"><a href="#credential-isolation">Credential isolation#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>AI coding agents need to execute code, install packages, and run tools on
+your behalf. Docker Sandboxes run each agent in its own microVM. Five
+isolation layers protect your host: hypervisor, network, Docker Engine,
+workspace, and credential proxy.</p>
+<h2 id="hypervisor-isolation">Hypervisor isolation<a class="headerlink" href="#hypervisor-isolation" title="Permanent link">#</a></h2>
+<p>Every sandbox runs inside a lightweight microVM with its own Linux kernel.
+Unlike containers, which share the host kernel, a sandbox VM cannot access host
+processes, files, or resources outside its defined boundaries.</p>
+<ul>
+<li><strong>Process isolation:</strong> separate kernel per sandbox; processes inside the VM
+  are invisible to your host and to other sandboxes</li>
+<li><strong>Filesystem isolation:</strong> a host workspace is shared when you pass a
+  workspace path or use <code>sbx run</code>, which defaults to the current directory.
+  For supported agents that haven't opted out, the dedicated
+  <a href="../workflows/agent-skills.html">shared skills store</a> is also shared with the
+  host. The rest of the VM filesystem persists across restarts but is removed
+  when you delete the sandbox. Symlinks pointing outside the workspace scope
+  are not followed.</li>
+<li><strong>Full cleanup:</strong> when you remove a sandbox with <code>sbx rm</code>, the VM and
+  everything inside it is deleted</li>
+</ul>
+<p>The agent runs as a non-root user with sudo privileges inside the VM. The
+hypervisor boundary is the isolation control, not in-VM privilege separation.</p>
+<p>Processes in a local sandbox can write text to your host clipboard, but can't
+read existing clipboard text. Host clipboard image reads are a separate,
+opt-in feature. After running untrusted code, check clipboard contents before
+pasting them on the host.</p>
+<h2 id="network-isolation">Network isolation<a class="headerlink" href="#network-isolation" title="Permanent link">#</a></h2>
+<p>Each sandbox has its own isolated network. Sandboxes cannot communicate
+directly with each other or share a network with your host. To reach a service
+running on the host through a policy-controlled connection, see
+<a href="../workflows/development.html#accessing-host-services-from-a-sandbox">Accessing host services from a sandbox</a>.</p>
+<p>All outbound TCP traffic passes through a proxy on your host that enforces the
+<a href="../governance/access-controls/network.html">network access policy</a>. The sandbox
+routes traffic through either a forward proxy or a transparent proxy depending
+on the client's configuration. Both enforce the network policy. Only the
+forward proxy <a href="../configuration/credentials.html">injects credentials</a> for AI services.</p>
+<p>Direct external UDP and ICMP are blocked at the network layer. DNS queries use
+the sandbox's internal resolver, which enforces network policy. TCP connections
+are allowed only when a policy rule matches the destination.</p>
+<p>For the default set of allowed domains, see
+<a href="defaults.html">Default security posture</a>. To forward allowed traffic through a
+corporate or upstream proxy, see
+<a href="../configuration/upstream-proxy.html">Configure an upstream proxy</a>.</p>
+<h2 id="docker-engine-isolation">Docker Engine isolation<a class="headerlink" href="#docker-engine-isolation" title="Permanent link">#</a></h2>
+<p>Agents often need to build images, run containers, and use Docker Compose.
+Mounting your host Docker socket into a container would give the agent full
+access to your environment.</p>
+<p>Docker Sandboxes avoid this by running a separate <a href="../../../engine/index.html">Docker
+Engine</a> inside the sandbox environment, isolated from
+your host. When the agent runs <code>docker build</code> or <code>docker compose up</code>, those
+commands execute against that engine. The agent has no path to your host Docker
+daemon.</p>
+<p>This Docker Engine boundary applies to processes running inside the sandbox VM.
+It doesn't apply to local stdio MCP servers registered through the
+<a href="../mcp-gateway.html">MCP gateway</a>. Those servers run on the host, outside the
+sandbox VM. If a local MCP server starts a Docker container, it uses Docker on
+the host.</p>
+<p>Each sandbox VM runs its own Docker Engine. The agent runs inside the VM,
+alongside that engine, and drives it to create containers, all within the
+VM:</p>
+<div class="codehilite"><pre><span></span><code>flowchart TB
+  subgraph host[&quot;Host system&quot;]
+    subgraph hostd[&quot;Host Docker daemon&quot;]
+      hc[&quot;Your containers and images&quot;]
+    end
+    subgraph vm[&quot;Sandbox (microVM)&quot;]
+      a[&quot;Agent&quot;]
+      subgraph e[&quot;Sandbox Docker engine&quot;]
+        c[&quot;Containers created by agent&quot;]
+      end
+      a --&gt;|&quot;docker build / compose up&quot;| e
+    end
+  end
+  style host fill:#3b82f622,stroke:#3b82f6
+</code></pre></div>
+
+<h2 id="workspace-isolation">Workspace isolation<a class="headerlink" href="#workspace-isolation" title="Permanent link">#</a></h2>
+<p>When you create a sandbox, choose how the agent receives a workspace:</p>
+<ul>
+<li><strong>Mountless</strong> (no path to <code>sbx create</code>): the sandbox doesn't receive a host
+  workspace. The agent works in the sandbox's own filesystem.</li>
+<li><strong>Direct mount</strong> (a path such as <code>.</code>): the agent has read-write access to
+  your working tree. There is no boundary between the agent's edits and your
+  host filesystem.</li>
+<li><strong>Clone mode</strong> (<code>--clone</code> and a Git path): your repository is mounted
+  read-only into the VM and the agent works on a private clone inside the VM.
+  The agent's edits never reach your host until you fetch them.</li>
+</ul>
+<p>See <a href="../workflows/git.html">Git workflows</a> for direct-mount and clone-mode
+workflows.</p>
+<h3 id="mountless">Mountless<a class="headerlink" href="#mountless" title="Permanent link">#</a></h3>
+<p>Omit the workspace path from <code>sbx create</code> to create a mountless sandbox, then
+attach by name:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sbx<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>scratch<span class="w"> </span>claude
+<span class="gp">$ </span>sbx<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>scratch
+</code></pre></div>
+
+<p>The agent uses the sandbox template's default working directory.
+Docker-provided agent templates use <code>/home/agent/workspace</code>. If the template
+doesn't define a usable absolute working directory, the daemon uses that path.
+Files there stay within the sandbox, persist across stops and restarts, and are
+deleted when you remove the sandbox. A mountless sandbox doesn't expose a host
+project directory, but separately configured host resources such as the shared
+skills store can still be mounted.</p>
+<h3 id="direct-mount">Direct mount<a class="headerlink" href="#direct-mount" title="Permanent link">#</a></h3>
+<p>Pass a workspace path to share it into the VM as a read-write mount. The agent
+and the host see the same files, and changes the agent makes appear on your
+host as soon as they're written. <code>sbx run</code> mounts the current directory when
+you don't pass a path:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sbx<span class="w"> </span>run<span class="w"> </span>claude
+</code></pre></div>
+
+<p>Direct mounts enforce access by path. If a workspace file is a hard link to a
+file outside the workspace, the agent can read and modify the underlying file
+through the workspace path. Changes affect every hard link to that file,
+including links outside the authorized workspace. Filesystem access policies
+do not block this access because they evaluate the workspace path rather than
+other paths to the same file. <a href="#clone-mode">Clone mode</a> prevents writes through
+the primary workspace by mounting the host repository read-only.</p>
+<p>Direct mount gives the agent broad write access to your workspace. The agent
+can create, modify, or delete workspace files, including:</p>
+<ul>
+<li>Source code and configuration files</li>
+<li>Build files (<code>Makefile</code>, <code>package.json</code>, <code>Cargo.toml</code>)</li>
+<li>Git hooks (<code>.git/hooks/</code>)</li>
+<li>CI configuration (<code>.github/workflows/</code>, <code>.gitlab-ci.yml</code>)</li>
+<li>IDE configuration (<code>.vscode/tasks.json</code>, <code>.idea/</code> run configurations)</li>
+<li>AI project configuration and settings (<code>.claude/</code>, <code>.codex/</code>, <code>.gemini/</code>)</li>
+<li>Hidden files, shell scripts, and executables</li>
+</ul>
+<p>Some of these files execute code when you trigger normal development
+actions — committing, pushing, building, or opening the project in an IDE.
+Review them after any agent session before performing those actions:</p>
+<ul>
+<li>Git hooks (<code>.git/hooks/</code>) run on commit, push, and other Git actions.
+  These are inside <code>.git/</code> and don't appear in <code>git diff</code> output —
+  check them separately with <code>ls -la .git/hooks/</code>.</li>
+<li>CI configuration (<code>.github/workflows/</code>, <code>.gitlab-ci.yml</code>) runs on
+  push.</li>
+<li>Build files (<code>Makefile</code>, <code>package.json</code> scripts, <code>Cargo.toml</code>) run
+  during build or install steps.</li>
+<li>IDE configuration (<code>.vscode/tasks.json</code>, <code>.idea/</code>) can run tasks
+  when you open the project.</li>
+<li>AI project configuration and settings (<code>.claude/settings.json</code>, <code>.codex/config.toml</code>,
+  <code>.gemini/settings.json</code>) can define hooks and startup commands that
+  execute automatically.</li>
+</ul>
+<h4 id="sandbox-environment-files">Sandbox environment files<a class="headerlink" href="#sandbox-environment-files" title="Permanent link">#</a></h4>
+<p>Sandbox environment files can declare lifecycle and credential commands that
+run on the host with your privileges. Before running these commands, <code>sbx</code>
+shows them in an environment plan and asks for approval. Review the plan before
+you approve host commands.</p>
+<p>For file placement and read-only protection, see
+<a href="../configuration/environment-files.html#workspace">Sandbox environment files</a>.</p>
+<blockquote>
+<p>[!WARNING]
+Treat sandbox-modified workspace files the same way you would treat a pull
+request from an untrusted contributor: review before you trust them on
+your host.</p>
+</blockquote>
+<h3 id="clone-mode">Clone mode<a class="headerlink" href="#clone-mode" title="Permanent link">#</a></h3>
+<p>When you start a sandbox with <a href="../usage.html#clone-mode"><code>--clone</code></a>, the agent
+never works directly against your host repository. Even with full root
+inside the VM, it cannot modify your <code>.git</code> directory, your working tree,
+or any tracked file on your host.</p>
+<blockquote>
+<p>[!IMPORTANT]
+Clone mode protects your host repository from modification, <strong>not from
+inspection</strong>. Your repository is still mounted read-only into the sandbox,
+including untracked files and files excluded by <code>.gitignore</code>. Files such as
+<code>.env</code> remain readable by the agent. Store secrets outside your working
+directory or use <a href="#credential-isolation">credential isolation</a> instead.</p>
+</blockquote>
+<div class="codehilite"><pre><span></span><code>flowchart LR
+  subgraph host[&quot;Host repository (untouched)&quot;]
+    direction TB
+    repo[&quot;.git/ + working tree&quot;]
+    remote[&quot;remote sandbox-&amp;lt;name&amp;gt;&quot;]
+  end
+  subgraph vm[&quot;Sandbox VM&quot;]
+    direction TB
+    mount[&quot;/run/sandbox/source&lt;br/&gt;(read-only bind mount)&quot;]
+    clone[&quot;private clone (RW)&lt;br/&gt;agent edits here&quot;]
+    daemon[&quot;git-daemon&quot;]
+  end
+  repo --&gt;|&quot;read-only bind mount&quot;| mount
+  mount --&gt;|&quot;git clone&quot;| clone
+  clone --&gt; daemon
+  daemon --&gt;|&quot;git fetch&quot;| remote
+</code></pre></div>
+
+<p>How the boundary is enforced:</p>
+<ul>
+<li>Your repository's Git root is mounted at <code>/run/sandbox/source</code> as
+  read-only. The mount covers your entire working directory, including
+  untracked files and files excluded by <code>.gitignore</code>. Nothing the agent
+  does inside the VM can write back through that mount, but all files
+  under the Git root are readable inside the sandbox. This includes
+  credential files not tracked by Git, such as <code>.env</code>.</li>
+<li>The agent works on a private clone that lives inside the sandbox. The
+  clone has its own index, its own refs, and its own working tree. Writes
+  to the clone never reach your host.</li>
+<li>The sandbox publishes the clone over a Git daemon bound to localhost on
+  the host. The CLI wires it up as a <code>sandbox-&lt;sandbox-name&gt;</code> Git remote on
+  your host repository. Fetching from that remote uses the same trust
+  model as fetching from any third-party remote — nothing is integrated
+  until you explicitly merge or check out the fetched refs.</li>
+</ul>
+<p>The practical guarantees:</p>
+<ul>
+<li>The agent cannot modify any tracked file or any byte under <code>.git/</code> on
+  your host. A compromised or buggy agent cannot drop a
+  <code>.git/hooks/pre-commit</code>, alter <code>.github/workflows/</code>, or sneak changes
+  into your working tree.</li>
+<li>Concurrent <code>git</code> commands on the host and inside the sandbox cannot
+  race on a shared <code>.git/index</code> or shared refs — there is no shared
+  writable Git state.</li>
+<li>Credentials, signing keys, and any settings in your repository's
+  <code>.git/config</code> stay on the host. The agent's clone has its own
+  independent configuration.</li>
+</ul>
+<p>Use clone mode whenever you want a strong boundary between the agent's
+Git activity and your host repository — for example when running an
+unfamiliar agent, running multiple agents on the same repository at once,
+or keeping your working tree clean while the agent works.</p>
+<h2 id="credential-isolation">Credential isolation<a class="headerlink" href="#credential-isolation" title="Permanent link">#</a></h2>
+<p>Most agents need API keys for their model provider. Rather than passing keys
+into the sandbox, the host-side proxy intercepts outbound API requests and
+injects authentication headers before forwarding each request.</p>
+<p>Credential values are never stored inside the VM. They are not available as
+environment variables or files inside the sandbox unless you explicitly set
+them. This means a compromised sandbox cannot read API keys from the local
+environment.</p>
+<p>SSH agent forwarding is enabled by default. Private keys stay on the host, but
+any process inside the sandbox can ask the forwarded agent to authenticate or
+sign data. Docker Sandboxes forwards only sockets it recognizes as SSH agents.
+A sandbox receives no SSH agent when forwarding is disabled, the configuration
+is unavailable, or the selected socket can't be used.</p>
+<p>For how to store and manage credentials, see <a href="../configuration/credentials.html">Credentials</a>.</p>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../ai/sandboxes/security/defaults.html">
+          <span class="muted">Anterior</span>Default security posture
+        </a>
+        <a class="pager-next" href="../../../ai/sandboxes/troubleshooting.html">
+          <span class="muted">Siguiente</span>Troubleshooting
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../_assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configure Docker socket exceptions and advanced settings · Docker</title>
+<meta name="description" content="Configure Docker socket exceptions and advanced settings - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/enterprise/security/hardened-desktop/enhanced-container-isolation/config.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Configure Docker socket exceptions and advanced settings">
+<meta property="og:description" content="Configure Docker socket exceptions and advanced settings - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Configure Docker socket exceptions and advanced settings">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../../../_assets/icon.svg">
+<link rel="manifest" href="../../../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../../../_assets/style.css">
+<link rel="stylesheet" href="../../../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Configure Docker socket exceptions and advanced settings",
+"url": "https://docs.raupulus.dev/docker/enterprise/security/hardened-desktop/enhanced-container-isolation/config.html",  "description": "Configure Docker socket exceptions and advanced settings - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../build/index.html">Build</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Enterprise
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/index.html"
+>Deploy Docker Desktop</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/dev-box.html"
+>Dev box</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/faq.html"
+>Enterprise deployment FAQs</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/ms-store.html"
+>Install Docker Desktop from the Microsoft Store on Windows</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/msi-install-and-configure.html"
+>MSI installer</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/pkg-install-and-configure.html"
+>PKG installer</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/use-intune.html"
+>Deploy with Intune</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/enterprise-deployment/use-jamf-pro.html"
+>Deploy with Jamf Pro</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/index.html"
+>Security for enterprises</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/enforce-sign-in/index.html"
+>Enforce sign-in for Docker Desktop</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/enforce-sign-in/methods.html"
+>Configure sign-in enforcement</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/index.html"
+>Hardened Docker Desktop</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/air-gapped-containers.html"
+>Air-gapped containers</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/enhanced-container-isolation/index.html"
+>Enhanced Container Isolation</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/enhanced-container-isolation/config.html"
+class="is-current" aria-current="page">Configure Docker socket exceptions and advanced settings</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/enhanced-container-isolation/enable-eci.html"
+>Enable Enhanced Container Isolation</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/enhanced-container-isolation/faq.html"
+>Enhanced Container Isolation FAQs</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/enhanced-container-isolation/limitations.html"
+>Enhanced Container Isolation limitations</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/image-access-management.html"
+>Image Access Management</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/namespace-access.html"
+>Namespace access control</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/registry-access-management.html"
+>Registry Access Management</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/settings-management/index.html"
+>Settings Management</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/settings-management/compliance-reporting.html"
+>Desktop settings reporting</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/settings-management/configure-admin-console.html"
+>Configure Settings Management in Docker Home</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/settings-management/configure-json-file.html"
+>Configure Settings Management with a JSON file</a>
+              </li>
+              <li>
+                <a href="../../../../enterprise/security/hardened-desktop/settings-management/settings-reference.html"
+>Settings reference</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../../../index.html">Docker</a>
+          </h2>
+      </div>
+
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Configure Docker socket exceptions and advanced settings</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#docker-socket-mount-permissions">Docker socket mount permissions#</a></li>
+              <li class="lvl-2"><a href="#configure-socket-exceptions">Configure socket exceptions#</a></li>
+              <li class="lvl-2"><a href="#image-allowlist-configuration">Image allowlist configuration#</a></li>
+              <li class="lvl-3"><a href="#image-reference-formats">Image reference formats#</a></li>
+              <li class="lvl-3"><a href="#example-configurations">Example configurations#</a></li>
+              <li class="lvl-3"><a href="#security-validation">Security validation#</a></li>
+              <li class="lvl-2"><a href="#derived-images-support">Derived images support#</a></li>
+              <li class="lvl-3"><a href="#enable-derived-images">Enable derived images#</a></li>
+              <li class="lvl-3"><a href="#derived-images-requirements">Derived images requirements#</a></li>
+              <li class="lvl-2"><a href="#command-restrictions">Command restrictions#</a></li>
+              <li class="lvl-3"><a href="#deny-list-recommended">Deny list (recommended)#</a></li>
+              <li class="lvl-3"><a href="#allow-list">Allow list#</a></li>
+              <li class="lvl-3"><a href="#command-wildcards">Command wildcards#</a></li>
+              <li class="lvl-3"><a href="#command-blocking-example">Command blocking example#</a></li>
+              <li class="lvl-2"><a href="#common-configuration-examples">Common configuration examples#</a></li>
+              <li class="lvl-3"><a href="#testcontainers-setup">Testcontainers setup#</a></li>
+              <li class="lvl-3"><a href="#cicd-pipeline-tools">CI/CD pipeline tools#</a></li>
+              <li class="lvl-3"><a href="#development-environments">Development environments#</a></li>
+              <li class="lvl-2"><a href="#security-recommendations">Security recommendations#</a></li>
+              <li class="lvl-3"><a href="#image-allowlist-best-practices">Image allowlist best practices#</a></li>
+              <li class="lvl-3"><a href="#command-restrictions_1">Command restrictions#</a></li>
+              <li class="lvl-3"><a href="#monitoring-and-maintenance">Monitoring and maintenance#</a></li>
+              <li class="lvl-2"><a href="#next-steps">Next steps#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>{{&lt; summary-bar feature_name="Hardened Docker Desktop" &gt;}}</p>
+<p>This page shows you how to configure Docker socket exceptions and other advanced settings for Enhanced Container Isolation (ECI). These configurations enable trusted tools like Testcontainers to work with ECI while maintaining security.</p>
+<h2 id="docker-socket-mount-permissions">Docker socket mount permissions<a class="headerlink" href="#docker-socket-mount-permissions" title="Permanent link">#</a></h2>
+<p>By default, Enhanced Container Isolation blocks containers from mounting the Docker socket to prevent malicious access to Docker Engine. However, some tools require Docker socket access.</p>
+<p>Common scenarios requiring Docker socket access include:</p>
+<ul>
+<li>Testing frameworks: Testcontainers, which manages test containers</li>
+<li>Build tools: Paketo buildpacks that create ephemeral build containers</li>
+<li>CI/CD tools: Tools that manage containers as part of deployment pipelines</li>
+<li>Development utilities: Docker CLI containers for container management</li>
+</ul>
+<h2 id="configure-socket-exceptions">Configure socket exceptions<a class="headerlink" href="#configure-socket-exceptions" title="Permanent link">#</a></h2>
+<p>Configure Docker socket exceptions using Settings Management:</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="Docker Home" &gt;}}</p>
+<ol>
+<li>Sign in to <a href="https://app.docker.com" rel="noopener" target="_blank">Docker Home</a> and select your organization from the top-left account drop-down.</li>
+<li>Select <strong>Docker Desktop</strong>, then <strong>Settings Management</strong>.</li>
+<li><a href="../settings-management/configure-admin-console.html">Create or edit a setting policy</a>.</li>
+<li>Find <strong>Enhanced Container Isolation</strong> settings.</li>
+<li>Configure <strong>Docker socket access control</strong> with your trusted images and
+command restrictions.</li>
+</ol>
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="JSON file" &gt;}}</p>
+<p>Create an <a href="../settings-management/configure-json-file.html"><code>admin-settings.json</code> file</a> and add:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;configurationFileVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;enhancedContainerIsolation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;locked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;dockerSocketMount&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;imageList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">&quot;docker.io/localstack/localstack:*&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;docker.io/testcontainers/ryuk:*&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;docker:cli&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;allowDerivedImages&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;commandList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deny&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;push&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;build&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<h2 id="image-allowlist-configuration">Image allowlist configuration<a class="headerlink" href="#image-allowlist-configuration" title="Permanent link">#</a></h2>
+<p>The <code>imageList</code> defines which container images can mount the Docker socket.</p>
+<h3 id="image-reference-formats">Image reference formats<a class="headerlink" href="#image-reference-formats" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Format</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>&lt;image_name&gt;[:&lt;tag&gt;]</code></td>
+<td style="text-align: left;">Name of the image, with optional tag. If the tag is omitted, the <code>:latest</code> tag is used. If the tag is the wildcard <code>*</code>, then it means "any tag for that image."</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&lt;image_name&gt;@&lt;digest&gt;</code></td>
+<td style="text-align: left;">Name of the image, with a specific repository digest (e.g., as reported by <code>docker buildx imagetools inspect &lt;image&gt;</code>). This means only the image that matches that name and digest is allowed.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-configurations">Example configurations<a class="headerlink" href="#example-configurations" title="Permanent link">#</a></h3>
+<p>Basic allowlist for testing tools:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;imageList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;docker.io/testcontainers/ryuk:*&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;docker:cli&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;alpine:latest&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Wildcard allowlist (Docker Desktop 4.36 and later):</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;imageList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<blockquote>
+<p>[!WARNING]</p>
+<p>Using <code>"*"</code> allows all containers to mount the Docker socket, which reduces security. Only use this when explicitly listing allowed images isn't feasible.</p>
+</blockquote>
+<h3 id="security-validation">Security validation<a class="headerlink" href="#security-validation" title="Permanent link">#</a></h3>
+<p>Docker Desktop validates allowed images by:</p>
+<ol>
+<li>Downloading image digests from registries for allowed images</li>
+<li>Comparing container image digests against the allowlist when containers start</li>
+<li>Blocking containers whose digests don't match allowed images</li>
+</ol>
+<p>This prevents bypassing restrictions by re-tagging unauthorized images:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>tag<span class="w"> </span>malicious-image<span class="w"> </span>docker:cli
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span>docker:cli
+<span class="gp"># </span>This<span class="w"> </span>fails<span class="w"> </span>because<span class="w"> </span>the<span class="w"> </span>digest<span class="w"> </span>doesn<span class="err">&#39;</span>t<span class="w"> </span>match<span class="w"> </span>the<span class="w"> </span>real<span class="w"> </span>docker:cli<span class="w"> </span>image
+</code></pre></div>
+
+<h2 id="derived-images-support">Derived images support<a class="headerlink" href="#derived-images-support" title="Permanent link">#</a></h2>
+<p>For tools like Paketo buildpacks that create ephemeral local images, you can
+allow images derived from trusted base images.</p>
+<h3 id="enable-derived-images">Enable derived images<a class="headerlink" href="#enable-derived-images" title="Permanent link">#</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;imageList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;paketobuildpacks/builder:base&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;allowDerivedImages&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>When <code>allowDerivedImages</code> is true, local images built from allowed base images (using <code>FROM</code> in Dockerfile) also gain Docker socket access.</p>
+<h3 id="derived-images-requirements">Derived images requirements<a class="headerlink" href="#derived-images-requirements" title="Permanent link">#</a></h3>
+<ul>
+<li>Local images only: Derived images must not exist in remote registries</li>
+<li>Base image available: The parent image must be pulled locally first</li>
+<li>Performance impact: Adds up to 1 second to container startup for validation</li>
+<li>Version compatibility: Full wildcard support requires Docker Desktop 4.36+</li>
+</ul>
+<h2 id="command-restrictions">Command restrictions<a class="headerlink" href="#command-restrictions" title="Permanent link">#</a></h2>
+<h3 id="deny-list-recommended">Deny list (recommended)<a class="headerlink" href="#deny-list-recommended" title="Permanent link">#</a></h3>
+<p>Blocks specified commands while allowing all others:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;commandList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deny&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;push&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;build&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;image*&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="allow-list">Allow list<a class="headerlink" href="#allow-list" title="Permanent link">#</a></h3>
+<p>Only allows specified commands while blocking all others:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;commandList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;allow&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;ps&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;container*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;volume*&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="command-wildcards">Command wildcards<a class="headerlink" href="#command-wildcards" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Wildcard</th>
+<th style="text-align: left;">Blocks/allows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>"container\*"</code></td>
+<td style="text-align: left;">All "docker container ..." commands</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"image\*"</code></td>
+<td style="text-align: left;">All "docker image ..." commands</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"volume\*"</code></td>
+<td style="text-align: left;">All "docker volume ..." commands</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"network\*"</code></td>
+<td style="text-align: left;">All "docker network ..." commands</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"build\*"</code></td>
+<td style="text-align: left;">All "docker build ..." commands</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"system\*"</code></td>
+<td style="text-align: left;">All "docker system ..." commands</td>
+</tr>
+</tbody>
+</table>
+<h3 id="command-blocking-example">Command blocking example<a class="headerlink" href="#command-blocking-example" title="Permanent link">#</a></h3>
+<p>When a blocked command is executed:</p>
+<div class="codehilite"><pre><span></span><code><span class="go">/ # docker push myimage</span>
+<span class="go">Error response from daemon: enhanced container isolation: docker command &quot;/v1.43/images/myimage/push?tag=latest&quot; is blocked; if you wish to allow it, configure the docker socket command list in the Docker Desktop settings.</span>
+</code></pre></div>
+
+<h2 id="common-configuration-examples">Common configuration examples<a class="headerlink" href="#common-configuration-examples" title="Permanent link">#</a></h2>
+<h3 id="testcontainers-setup">Testcontainers setup<a class="headerlink" href="#testcontainers-setup" title="Permanent link">#</a></h3>
+<p>For Java/Python testing with Testcontainers:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;dockerSocketMount&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;imageList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;docker.io/testcontainers/ryuk:*&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;testcontainers/*:*&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;commandList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deny&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;push&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;build&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="cicd-pipeline-tools">CI/CD pipeline tools<a class="headerlink" href="#cicd-pipeline-tools" title="Permanent link">#</a></h3>
+<p>For controlled CI/CD container management:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;dockerSocketMount&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;imageList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;docker:cli&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;your-registry.com/ci-tools/*:*&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;commandList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;allow&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;ps&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;container*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;image*&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="development-environments">Development environments<a class="headerlink" href="#development-environments" title="Permanent link">#</a></h3>
+<p>For local development with Docker-in-Docker:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;dockerSocketMount&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;imageList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;docker:dind&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;docker:cli&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;commandList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deny&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;system*&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="security-recommendations">Security recommendations<a class="headerlink" href="#security-recommendations" title="Permanent link">#</a></h2>
+<h3 id="image-allowlist-best-practices">Image allowlist best practices<a class="headerlink" href="#image-allowlist-best-practices" title="Permanent link">#</a></h3>
+<ul>
+<li>Be restrictive: Only allow images you absolutely trust and need</li>
+<li>Use wildcards carefully: Tag wildcards (<code>*</code>) are convenient but less secure than specific tags</li>
+<li>Regular reviews: Periodically review and update your allowlist</li>
+<li>Digest pinning: Use digest references for maximum security in critical environments</li>
+</ul>
+<h3 id="command-restrictions_1">Command restrictions<a class="headerlink" href="#command-restrictions_1" title="Permanent link">#</a></h3>
+<ul>
+<li>Default to deny: Start with a deny list blocking dangerous commands like <code>push</code> and <code>build</code></li>
+<li>Principle of least privilege: Only allow commands your tools actually need</li>
+<li>Monitor usage: Track which commands are being blocked to refine your configuration</li>
+</ul>
+<h3 id="monitoring-and-maintenance">Monitoring and maintenance<a class="headerlink" href="#monitoring-and-maintenance" title="Permanent link">#</a></h3>
+<ul>
+<li>Regular validation: Test your configuration after Docker Desktop updates, as image digests may change.</li>
+<li>Handle digest mismatches: If allowed images are unexpectedly blocked:
+    <code>console
+    $ docker image rm &lt;image&gt;
+    $ docker pull &lt;image&gt;</code></li>
+</ul>
+<p>This resolves digest mismatches when upstream images are updated.</p>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<ul>
+<li>Review <a href="limitations.html">Enhanced Container Isolation limitations</a>.</li>
+<li>Review <a href="faq.html">Enhanced Container Isolation FAQs</a>.</li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../../../enterprise/security/hardened-desktop/enhanced-container-isolation/index.html">
+          <span class="muted">Anterior</span>Enhanced Container Isolation
+        </a>
+        <a class="pager-next" href="../../../../enterprise/security/hardened-desktop/enhanced-container-isolation/enable-eci.html">
+          <span class="muted">Siguiente</span>Enable Enhanced Container Isolation
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../../../_assets/app.js"></script>
+</body>
+</html>

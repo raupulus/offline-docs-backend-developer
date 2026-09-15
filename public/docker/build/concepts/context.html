@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build context · Docker</title>
+<meta name="description" content="Build context - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta name="author" content="Raúl Caro Pastorino">
+<link rel="canonical" href="https://docs.raupulus.dev/docker/build/concepts/context.html"><meta property="og:site_name" content="Documentación offline">
+<meta property="og:title" content="Build context">
+<meta property="og:description" content="Build context - Documentación técnica offline de Docker. Consulta rápida sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../../_assets/icon.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Build context">
+<meta name="twitter:description" content="Espejo offline de documentación técnica oficial para backend developers.">
+<meta name="twitter:image" content="../../../_assets/icon.svg">
+<link rel="icon" type="image/svg+xml" href="../../../_assets/icon.svg">
+<link rel="apple-touch-icon" href="../../../_assets/icon.svg">
+<link rel="manifest" href="../../../manifest.json">
+<link rel="alternate" type="application/rss+xml" title="Documentación offline - RSS" href="../../../feed.xml">
+<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../../../_assets/style.css">
+<link rel="stylesheet" href="../../../_assets/code.css">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('docs-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Build context",
+"url": "https://docs.raupulus.dev/docker/build/concepts/context.html",  "description": "Build context - Documentación técnica de Docker en modo offline.",
+  "inLanguage": "es",
+  "author": {
+    "@type": "Person",
+    "name": "Raúl Caro Pastorino",
+    "url": "https://raupulus.dev",
+    "sameAs": [
+      "https://gitlab.com/raupulus",
+      "https://github.com/raupulus"
+    ]
+  }
+}
+</script>
+</head>
+<body class="has-sidebar">
+
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="topbar">
+  <a class="brand" href="../../../index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Documentación offline</span>
+  </a>
+
+<span class="topbar-tech">
+  <a href="../../index.html">Docker</a>
+<span class="badge">main</span></span>
+
+  <div class="topbar-actions">
+<div class="search" data-search data-tech="docker" data-index="../../_search-index.js">
+  <input type="search" class="search-input" placeholder="Buscar en Docker…"
+         aria-label="Buscar en Docker" aria-keyshortcuts="/ Control+K Meta+K"
+         autocomplete="off" spellcheck="false">
+  <kbd class="search-hint">/ ó ⌘K</kbd>
+  <div class="search-results" hidden></div>
+</div>
+    <a href="https://raupulus.dev" class="topbar-author" target="_blank" rel="noopener"
+       title="Sitio web de Raúl Caro Pastorino (@raupulus)">
+      <span>por</span> <strong>@raupulus</strong>
+    </a>
+    <button type="button" class="theme-toggle" data-theme-toggle
+            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">
+      <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+      <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</header>
+
+<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false">
+  Índice de Docker
+</button>
+
+<div class="layout">
+  <nav class="sidebar" data-nav aria-label="Navegación de Docker">
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../accounts/index.html">Accounts</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../agentic-platform/index.html">Agentic Platform</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../ai/compose/index.html">Ai</a>
+          </h2>
+      </div>
+      <div class="nav-section is-open">
+          <h2 class="nav-section-title">
+              Build
+          </h2>
+          <ul class="nav-list">
+              <li>
+                <a href="../../build/cache/backends/azblob.html"
+>Azure Blob Storage cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/gha.html"
+>GitHub Actions cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/inline.html"
+>Inline cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/local.html"
+>Local cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/registry.html"
+>Registry cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/backends/s3.html"
+>Amazon S3 cache</a>
+              </li>
+              <li>
+                <a href="../../build/cache/garbage-collection.html"
+>Build garbage collection</a>
+              </li>
+              <li>
+                <a href="../../build/cache/invalidation.html"
+>Build cache invalidation</a>
+              </li>
+              <li>
+                <a href="../../build/cache/optimize.html"
+>Optimize cache usage in builds</a>
+              </li>
+              <li>
+                <a href="../../build/checks.html"
+>Checking your build configuration</a>
+              </li>
+              <li>
+                <a href="../../build/ci/index.html"
+>Continuous integration with Docker</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/index.html"
+>Docker Build GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/annotations.html"
+>Add image annotations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/attestations.html"
+>Add SBOM and provenance attestations with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/build-summary.html"
+>GitHub Actions build summary</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/cache.html"
+>Cache management with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/checks.html"
+>Validating build configuration with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/configure-builder.html"
+>Configuring your GitHub Actions builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/copy-image-registries.html"
+>Copy image between registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/export-docker.html"
+>Export to Docker with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/index.html"
+>Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/architecture.html"
+>Docker GitHub Builder architecture</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/bake.html"
+>Bake with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/github-builder/build.html"
+>Build with Docker GitHub Builder</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/local-registry.html"
+>Local registry with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/manage-tags-labels.html"
+>Manage tags and labels with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/multi-platform.html"
+>Multi-platform image with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/named-contexts.html"
+>Named contexts with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/push-multi-registries.html"
+>Push to multiple registries with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/reproducible-builds.html"
+>Reproducible builds with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/secrets.html"
+>Using secrets with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/share-image-jobs.html"
+>Share built image between jobs with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/test-before-push.html"
+>Test before push with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/ci/github-actions/update-dockerhub-desc.html"
+>Update Docker Hub description with GitHub Actions</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/index.html"
+>Core concepts</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/context.html"
+class="is-current" aria-current="page">Build context</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/dockerfile.html"
+>Dockerfile overview</a>
+              </li>
+              <li>
+                <a href="../../build/concepts/overview.html"
+>Docker Build Overview</a>
+              </li>
+              <li>
+                <a href="../../build/debug/index.html"
+>Debugging</a>
+              </li>
+              <li>
+                <a href="../../build/debug/opentelemetry.html"
+>OpenTelemetry support</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/index.html"
+>Exporters overview</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/image-registry.html"
+>Image and registry exporters</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/local-tar.html"
+>Local and tar exporters</a>
+              </li>
+              <li>
+                <a href="../../build/exporters/oci-docker.html"
+>OCI and Docker exporters</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/index.html"
+>Metadata</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/annotations.html"
+>Annotations</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/attestations/index.html"
+>Build attestations</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/attestations/sbom.html"
+>SBOM attestations</a>
+              </li>
+              <li>
+                <a href="../../build/metadata/attestations/slsa-provenance.html"
+>Provenance attestations</a>
+              </li>
+              <li>
+                <a href="../../build/policies/index.html"
+>Validating build inputs with policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/built-ins.html"
+>Built-in functions</a>
+              </li>
+              <li>
+                <a href="../../build/policies/debugging.html"
+>Debugging build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/examples.html"
+>Policy templates and examples</a>
+              </li>
+              <li>
+                <a href="../../build/policies/inputs.html"
+>Input reference</a>
+              </li>
+              <li>
+                <a href="../../build/policies/intro.html"
+>Introduction to build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/testing.html"
+>Test build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/usage.html"
+>Using build policies</a>
+              </li>
+              <li>
+                <a href="../../build/policies/validate-git.html"
+>Validating Git repositories</a>
+              </li>
+              <li>
+                <a href="../../build/policies/validate-images.html"
+>Validating image inputs</a>
+              </li>
+              <li>
+                <a href="../../build/release-notes.html"
+>Release notes</a>
+              </li>
+          </ul>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../build-cloud/index.html">Build Cloud</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../compose/index.html">Compose</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../desktop/index.html">Desktop</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../dhi/index.html">Dhi</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../docker-hub/index.html">Docker Hub</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../engine/index.html">Engine</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../enterprise/enterprise-deployment/index.html">Enterprise</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../extensions/index.html">Extensions</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../faqs/index.html">Faqs</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../offload/index.html">Offload</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../reference/index.html">Reference</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../scout/index.html">Scout</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../security/index.html">Security</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../subscription-billing/index.html">Subscription Billing</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../support/index.html">Support</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../unassociated-machines/index.html">Unassociated Machines</a>
+          </h2>
+      </div>
+      <div class="nav-section">
+          <h2 class="nav-section-title">
+              <a href="../../index.html">Docker</a>
+          </h2>
+      </div>
+
+      <p class="nav-more">
+        <a href="../../index.html">Ver los 905 documentos de Docker</a>
+      </p>
+  </nav>
+
+  <main id="contenido" class="content">
+    <article class="doc">
+      <h1 class="doc-title">Build context</h1>
+
+      <p class="doc-meta">
+<span class="badge">main</span>          <a href="https://docs.docker.com/" target="_blank" rel="noopener">Documentación oficial</a>
+<span class="muted">Licencia Apache-2.0</span><span class="muted">Descargado el 2026-09-15</span>        <a href="../../../bundles/docker.md" download="docker.md" target="_blank" class="doc-meta-bundle" title="Descargar toda la documentación de Docker en un solo archivo Markdown">Bundle .md (6.1 MB) ↓</a>
+      </p>
+
+        <details class="doc-toc">
+          <summary>En esta página</summary>
+          <ul>
+              <li class="lvl-2"><a href="#what-is-a-build-context">What is a build context?#</a></li>
+              <li class="lvl-3"><a href="#filesystem-contexts">Filesystem contexts#</a></li>
+              <li class="lvl-3"><a href="#text-file-contexts">Text file contexts#</a></li>
+              <li class="lvl-2"><a href="#local-context">Local context#</a></li>
+              <li class="lvl-3"><a href="#local-directories">Local directories#</a></li>
+              <li class="lvl-3"><a href="#local-context-with-dockerfile-from-stdin">Local context with Dockerfile from stdin#</a></li>
+              <li class="lvl-3"><a href="#local-tarballs">Local tarballs#</a></li>
+              <li class="lvl-2"><a href="#remote-context">Remote context#</a></li>
+              <li class="lvl-3"><a href="#git-repositories">Git repositories#</a></li>
+              <li class="lvl-3"><a href="#remote-context-with-dockerfile-from-stdin">Remote context with Dockerfile from stdin#</a></li>
+              <li class="lvl-3"><a href="#remote-tarballs">Remote tarballs#</a></li>
+              <li class="lvl-2"><a href="#empty-context">Empty context#</a></li>
+              <li class="lvl-3"><a href="#how-to-build-without-a-context">How to build without a context#</a></li>
+              <li class="lvl-2"><a href="#dockerignore-files">.dockerignore files#</a></li>
+              <li class="lvl-3"><a href="#filename-and-location">Filename and location#</a></li>
+              <li class="lvl-3"><a href="#syntax">Syntax#</a></li>
+              <li class="lvl-2"><a href="#named-contexts">Named contexts#</a></li>
+              <li class="lvl-3"><a href="#using-named-contexts-in-a-dockerfile">Using named contexts in a Dockerfile#</a></li>
+              <li class="lvl-3"><a href="#use-cases-for-named-contexts">Use cases for named contexts#</a></li>
+              <li class="lvl-3"><a href="#named-contexts-with-bake">Named contexts with Bake#</a></li>
+              <li class="lvl-3"><a href="#further-reading">Further reading#</a></li>
+          </ul>
+        </details>
+
+      <div class="doc-body">
+        <p>The <code>docker build</code> and <code>docker buildx build</code> commands build Docker images from
+a <a href="dockerfile.html">Dockerfile</a> and a context.</p>
+<h2 id="what-is-a-build-context">What is a build context?<a class="headerlink" href="#what-is-a-build-context" title="Permanent link">#</a></h2>
+<p>The build context is the set of files that your build can access.
+The positional argument that you pass to the build command specifies the
+context that you want to use for the build:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>PATH<span class="w"> </span><span class="p">|</span><span class="w"> </span>URL<span class="w"> </span><span class="p">|</span><span class="w"> </span>-
+<span class="go">                         ^^^^^^^^^^^^^^</span>
+</code></pre></div>
+
+<p>You can pass any of the following inputs as the context for a build:</p>
+<ul>
+<li>The relative or absolute path to a local directory</li>
+<li>A remote URL of a Git repository, tarball, or plain-text file</li>
+<li>A plain-text file or tarball piped to the <code>docker build</code> command through standard input</li>
+</ul>
+<h3 id="filesystem-contexts">Filesystem contexts<a class="headerlink" href="#filesystem-contexts" title="Permanent link">#</a></h3>
+<p>When your build context is a local directory, a remote Git repository, or a tar
+file, then that becomes the set of files that the builder can access during the
+build. Build instructions such as <code>COPY</code> and <code>ADD</code> can refer to any of the
+files and directories in the context.</p>
+<p>A filesystem build context is processed recursively:</p>
+<ul>
+<li>When you specify a local directory or a tarball, all subdirectories are included</li>
+<li>When you specify a remote Git repository, the repository and all submodules are included</li>
+</ul>
+<p>For more information about the different types of filesystem contexts that you
+can use with your builds, see:</p>
+<ul>
+<li><a href="#local-context">Local files</a></li>
+<li><a href="#git-repositories">Git repositories</a></li>
+<li><a href="#remote-tarballs">Remote tarballs</a></li>
+</ul>
+<h3 id="text-file-contexts">Text file contexts<a class="headerlink" href="#text-file-contexts" title="Permanent link">#</a></h3>
+<p>When your build context is a plain-text file, the builder interprets the file
+as a Dockerfile. With this approach, the build doesn't use a filesystem context.</p>
+<p>For more information, see <a href="#empty-context">empty build context</a>.</p>
+<h2 id="local-context">Local context<a class="headerlink" href="#local-context" title="Permanent link">#</a></h2>
+<p>To use a local build context, you can specify a relative or absolute filepath
+to the <code>docker build</code> command. The following example shows a build command that
+uses the current directory (<code>.</code>) as a build context:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>.
+<span class="go">...</span>
+<span class="gp">#</span><span class="m">16</span><span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>build<span class="w"> </span>context
+<span class="gp">#</span><span class="m">16</span><span class="w"> </span>sha256:23ca2f94460dcbaf5b3c3edbaaa933281a4e0ea3d92fe295193e4df44dc68f85
+<span class="gp">#</span><span class="m">16</span><span class="w"> </span>transferring<span class="w"> </span>context:<span class="w"> </span><span class="m">13</span>.16MB<span class="w"> </span><span class="m">2</span>.2s<span class="w"> </span><span class="k">done</span>
+<span class="go">...</span>
+</code></pre></div>
+
+<p>This makes files and directories in the current working directory available to
+the builder. The builder loads the files it needs from the build context when
+needed.</p>
+<p>You can also use local tarballs as build context, by piping the tarball
+contents to the <code>docker build</code> command. See <a href="#local-tarballs">Tarballs</a>.</p>
+<h3 id="local-directories">Local directories<a class="headerlink" href="#local-directories" title="Permanent link">#</a></h3>
+<p>Consider the following directory structure:</p>
+<div class="codehilite"><pre><span></span><code>.
+├── index.ts
+├── src/
+├── Dockerfile
+├── package.json
+└── package-lock.json
+</code></pre></div>
+
+<p>Dockerfile instructions can reference and include these files in the build if
+you pass this directory as a context.</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">node:latest</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/src</span>
+<span class="k">COPY</span><span class="w"> </span>package.json<span class="w"> </span>package-lock.json<span class="w"> </span>.
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>ci
+<span class="k">COPY</span><span class="w"> </span>index.ts<span class="w"> </span>src<span class="w"> </span>.
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>.
+</code></pre></div>
+
+<h3 id="local-context-with-dockerfile-from-stdin">Local context with Dockerfile from stdin<a class="headerlink" href="#local-context-with-dockerfile-from-stdin" title="Permanent link">#</a></h3>
+<p>Use the following syntax to build an image using files on your local
+filesystem, while using a Dockerfile from stdin.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-f-<span class="w"> </span>&lt;PATH&gt;
+</code></pre></div>
+
+<p>The syntax uses the -f (or --file) option to specify the Dockerfile to use, and
+it uses a hyphen (-) as filename to instruct Docker to read the Dockerfile from
+stdin.</p>
+<p>The following example uses the current directory (.) as the build context, and
+builds an image using a Dockerfile passed through stdin using a here-document.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># create a directory to work in</span>
+mkdir<span class="w"> </span>example
+<span class="nb">cd</span><span class="w"> </span>example
+
+<span class="c1"># create an example file</span>
+touch<span class="w"> </span>somefile.txt
+
+<span class="c1"># build an image using the current directory as context</span>
+<span class="c1"># and a Dockerfile passed through stdin</span>
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>myimage:latest<span class="w"> </span>-f-<span class="w"> </span>.<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<span class="s">FROM busybox</span>
+<span class="s">COPY somefile.txt ./</span>
+<span class="s">RUN cat /somefile.txt</span>
+<span class="s">EOF</span>
+</code></pre></div>
+
+<h3 id="local-tarballs">Local tarballs<a class="headerlink" href="#local-tarballs" title="Permanent link">#</a></h3>
+<p>When you pipe a tarball to the build command, the build uses the contents of
+the tarball as a filesystem context.</p>
+<p>For example, given the following project directory:</p>
+<div class="codehilite"><pre><span></span><code>.
+├── Dockerfile
+├── Makefile
+├── README.md
+├── main.c
+├── scripts
+├── src
+└── test.Dockerfile
+</code></pre></div>
+
+<p>You can create a tarball of the directory and pipe it to the build for use as
+a context:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>tar<span class="w"> </span>czf<span class="w"> </span>foo.tar.gz<span class="w"> </span>*
+<span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-<span class="w"> </span>&lt;<span class="w"> </span>foo.tar.gz
+</code></pre></div>
+
+<p>The build resolves the Dockerfile from the tarball context. You can use the
+<code>--file</code> flag to specify the name and location of the Dockerfile relative to
+the root of the tarball. The following command builds using <code>test.Dockerfile</code>
+in the tarball:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>--file<span class="w"> </span>test.Dockerfile<span class="w"> </span>-<span class="w"> </span>&lt;<span class="w"> </span>foo.tar.gz
+</code></pre></div>
+
+<h2 id="remote-context">Remote context<a class="headerlink" href="#remote-context" title="Permanent link">#</a></h2>
+<p>You can specify the address of a remote Git repository, tarball, or plain-text
+file as your build context.</p>
+<ul>
+<li>For Git repositories, the builder automatically clones the repository. See
+  <a href="#git-repositories">Git repositories</a>.</li>
+<li>For tarballs, the builder downloads and extracts the contents of the tarball.
+  See <a href="#remote-tarballs">Tarballs</a>.</li>
+</ul>
+<p>If the remote tarball is a text file, the builder receives no <a href="#filesystem-contexts">filesystem
+context</a>, and instead assumes that the remote
+file is a Dockerfile. See <a href="#empty-context">Empty build context</a>.</p>
+<h3 id="git-repositories">Git repositories<a class="headerlink" href="#git-repositories" title="Permanent link">#</a></h3>
+<p>When you pass a URL pointing to the location of a Git repository as an argument
+to <code>docker build</code>, the builder uses the repository as the build context.</p>
+<p>The builder performs a shallow clone of the repository, downloading only
+the HEAD commit, not the entire history.</p>
+<p>The builder recursively clones the repository and any submodules it contains.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>https://github.com/user/myrepo.git
+</code></pre></div>
+
+<p>By default, the builder clones the latest commit on the default branch of the
+repository that you specify.</p>
+<h4 id="url-fragments">URL fragments<a class="headerlink" href="#url-fragments" title="Permanent link">#</a></h4>
+<p>You can append URL fragments to the Git repository address to make the builder
+clone a specific branch, tag, and subdirectory of a repository.</p>
+<p>The format of the URL fragment is <code>#ref:dir</code>, where:</p>
+<ul>
+<li><code>ref</code> is the name of the branch, tag, or commit hash</li>
+<li><code>dir</code> is a subdirectory inside the repository</li>
+</ul>
+<p>For example, the following command uses the <code>container</code> branch,
+and the <code>docker</code> subdirectory in that branch, as the build context:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>https://github.com/user/myrepo.git#container:docker
+</code></pre></div>
+
+<p>The following table represents all the valid suffixes with their build
+contexts:</p>
+<table>
+<thead>
+<tr>
+<th>Build Syntax Suffix</th>
+<th>Commit Used</th>
+<th>Build Context Used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>myrepo.git</code></td>
+<td><code>refs/heads/&lt;default branch&gt;</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git#mytag</code></td>
+<td><code>refs/tags/mytag</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git#mybranch</code></td>
+<td><code>refs/heads/mybranch</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git#pull/42/head</code></td>
+<td><code>refs/pull/42/head</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git#:myfolder</code></td>
+<td><code>refs/heads/&lt;default branch&gt;</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git#master:myfolder</code></td>
+<td><code>refs/heads/master</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git#mytag:myfolder</code></td>
+<td><code>refs/tags/mytag</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git#mybranch:myfolder</code></td>
+<td><code>refs/heads/mybranch</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+</tbody>
+</table>
+<p>When you use a commit hash as the <code>ref</code> in the URL fragment, use the full,
+40-character string SHA-1 hash of the commit. A short hash, for example a hash
+truncated to 7 characters, is not supported.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># ✅ The following works:</span>
+docker<span class="w"> </span>build<span class="w"> </span>github.com/docker/buildx#d4f088e689b41353d74f1a0bfcd6d7c0b213aed2
+<span class="c1"># ❌ The following doesn&#39;t work because the commit hash is truncated:</span>
+docker<span class="w"> </span>build<span class="w"> </span>github.com/docker/buildx#d4f088e
+</code></pre></div>
+
+<h4 id="url-queries">URL queries<a class="headerlink" href="#url-queries" title="Permanent link">#</a></h4>
+<p>{{&lt; summary-bar feature_name="Build URL Queries" &gt;}}</p>
+<p>URL queries are more structured and recommended over <a href="#url-fragments">URL fragments</a>:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>buildx<span class="w"> </span>build<span class="w"> </span><span class="s1">&#39;https://github.com/user/myrepo.git?branch=container&amp;subdir=docker&#39;</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>Build syntax suffix</th>
+<th>Commit used</th>
+<th>Build context used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>myrepo.git</code></td>
+<td><code>refs/heads/&lt;default branch&gt;</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git?tag=mytag</code></td>
+<td><code>refs/tags/mytag</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git?branch=mybranch</code></td>
+<td><code>refs/heads/mybranch</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git?ref=pull/42/head</code></td>
+<td><code>refs/pull/42/head</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git?subdir=myfolder</code></td>
+<td><code>refs/heads/&lt;default branch&gt;</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git?branch=master&amp;subdir=myfolder</code></td>
+<td><code>refs/heads/master</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git?tag=mytag&amp;subdir=myfolder</code></td>
+<td><code>refs/tags/mytag</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+<tr>
+<td><code>myrepo.git?branch=mybranch&amp;subdir=myfolder</code></td>
+<td><code>refs/heads/mybranch</code></td>
+<td><code>/myfolder</code></td>
+</tr>
+</tbody>
+</table>
+<p>A commit hash can be specified as a <code>checksum</code> (alias <code>commit</code>) query, along with
+<code>tag</code>, <code>branch</code>, or <code>ref</code> queries to verify that the reference resolves to the
+expected commit:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>buildx<span class="w"> </span>build<span class="w"> </span><span class="s1">&#39;https://github.com/moby/buildkit.git?tag=v0.21.1&amp;checksum=66735c67&#39;</span>
+</code></pre></div>
+
+<p>If it doesn't match, the build fails:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>buildx<span class="w"> </span>build<span class="w"> </span><span class="s1">&#39;https://github.com/user/myrepo.git?tag=v0.1.0&amp;commit=deadbeef&#39;</span>
+<span class="go">...</span>
+<span class="gp">#</span><span class="m">3</span><span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>git<span class="w"> </span><span class="nb">source</span><span class="w"> </span>https://github.com/user/myrepo.git?tag<span class="o">=</span>v0.1.0-rc1<span class="p">&amp;</span><span class="nv">commit</span><span class="o">=</span>deadbeef
+<span class="gp">#</span><span class="m">3</span><span class="w"> </span><span class="m">0</span>.484<span class="w"> </span>bb41e835b6c3523c7c45b248cf4b45e7f862bc42<span class="w">       </span>refs/tags/v0.1.0
+<span class="gp">#</span><span class="m">3</span><span class="w"> </span>ERROR:<span class="w"> </span>expected<span class="w"> </span>checksum<span class="w"> </span>to<span class="w"> </span>match<span class="w"> </span>deadbeef,<span class="w"> </span>got<span class="w"> </span>bb41e835b6c3523c7c45b248cf4b45e7f862bc42
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>Short commit hash is supported with <code>checksum</code> (alias <code>commit</code>) query but for
+<code>ref</code>, only the full hash of the commit is supported.</p>
+</blockquote>
+<h4 id="keep-git-directory">Keep <code>.git</code> directory<a class="headerlink" href="#keep-git-directory" title="Permanent link">#</a></h4>
+<p>By default, BuildKit doesn't keep the <code>.git</code> directory when using Git contexts.
+You can configure BuildKit to keep the directory by setting the
+<a href="dockerfile.html#buildkit-built-in-build-args"><code>BUILDKIT_CONTEXT_KEEP_GIT_DIR</code> build argument</a>.
+This can be useful to if you want to retrieve Git information during your build:</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">alpine</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/src</span>
+<span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">target</span><span class="o">=</span>.<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>make<span class="w"> </span><span class="nv">REVISION</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>rev-parse<span class="w"> </span>HEAD<span class="k">)</span><span class="w"> </span>build
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">BUILDKIT_CONTEXT_KEEP_GIT_DIR</span><span class="o">=</span><span class="m">1</span>
+<span class="go">  https://github.com/user/myrepo.git#main</span>
+</code></pre></div>
+
+<h4 id="private-repositories">Private repositories<a class="headerlink" href="#private-repositories" title="Permanent link">#</a></h4>
+<p>When you specify a Git context that's also a private repository, the builder
+needs you to provide the necessary authentication credentials. You can use
+either SSH or token-based authentication.</p>
+<p>Buildx automatically detects and uses SSH credentials if the Git context you
+specify is an SSH or Git address. By default, this uses <code>$SSH_AUTH_SOCK</code>.
+You can configure the SSH credentials to use with the
+<a href="/reference/cli/docker/buildx/build/#ssh"><code>--ssh</code> flag</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>buildx<span class="w"> </span>build<span class="w"> </span>--ssh<span class="w"> </span>default<span class="w"> </span>git@github.com:user/private.git
+</code></pre></div>
+
+<p>If you want to use token-based authentication instead, you can pass the token
+using the
+<a href="/reference/cli/docker/buildx/build/#secret"><code>--secret</code> flag</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span><span class="nv">GIT_AUTH_TOKEN</span><span class="o">=</span>&lt;token&gt;<span class="w"> </span>docker<span class="w"> </span>buildx<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret<span class="w"> </span><span class="nv">id</span><span class="o">=</span>GIT_AUTH_TOKEN<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>https://github.com/user/private.git
+</code></pre></div>
+
+<blockquote>
+<p>[!NOTE]</p>
+<p>Don't use <code>--build-arg</code> for secrets.</p>
+</blockquote>
+<h3 id="remote-context-with-dockerfile-from-stdin">Remote context with Dockerfile from stdin<a class="headerlink" href="#remote-context-with-dockerfile-from-stdin" title="Permanent link">#</a></h3>
+<p>Use the following syntax to build an image using files on your local
+filesystem, while using a Dockerfile from stdin.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-f-<span class="w"> </span>&lt;URL&gt;
+</code></pre></div>
+
+<p>The syntax uses the -f (or --file) option to specify the Dockerfile to use, and
+it uses a hyphen (-) as filename to instruct Docker to read the Dockerfile from
+stdin.</p>
+<p>This can be useful in situations where you want to build an image from a
+repository that doesn't contain a Dockerfile. Or if you want to build with a
+custom Dockerfile, without maintaining your own fork of the repository.</p>
+<p>The following example builds an image using a Dockerfile from stdin, and adds
+the <code>hello.c</code> file from the <a href="https://github.com/docker-library/hello-world" rel="noopener" target="_blank">hello-world</a>
+repository on GitHub.</p>
+<div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>myimage:latest<span class="w"> </span>-f-<span class="w"> </span>https://github.com/docker-library/hello-world.git<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<span class="s">FROM busybox</span>
+<span class="s">COPY hello.c ./</span>
+<span class="s">EOF</span>
+</code></pre></div>
+
+<h3 id="remote-tarballs">Remote tarballs<a class="headerlink" href="#remote-tarballs" title="Permanent link">#</a></h3>
+<p>If you pass the URL to a remote tarball, the URL itself is sent to the builder.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>http://server/context.tar.gz
+<span class="gp">#</span><span class="m">1</span><span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>remote<span class="w"> </span>build<span class="w"> </span>context
+<span class="gp">#</span><span class="m">1</span><span class="w"> </span>DONE<span class="w"> </span><span class="m">0</span>.2s
+
+<span class="gp">#</span><span class="m">2</span><span class="w"> </span>copy<span class="w"> </span>/context<span class="w"> </span>/
+<span class="gp">#</span><span class="m">2</span><span class="w"> </span>DONE<span class="w"> </span><span class="m">0</span>.1s
+<span class="go">...</span>
+</code></pre></div>
+
+<p>The download operation will be performed on the host where the BuildKit daemon
+is running. Note that if you're using a remote Docker context or a remote
+builder, that's not necessarily the same machine as where you issue the build
+command. BuildKit fetches the <code>context.tar.gz</code> and uses it as the build
+context. Tarball contexts must be tar archives conforming to the standard <code>tar</code>
+Unix format and can be compressed with any one of the <code>xz</code>, <code>bzip2</code>, <code>gzip</code> or
+<code>identity</code> (no compression) formats.</p>
+<h2 id="empty-context">Empty context<a class="headerlink" href="#empty-context" title="Permanent link">#</a></h2>
+<p>When you use a text file as the build context, the builder interprets the file
+as a Dockerfile. Using a text file as context means that the build has no
+filesystem context.</p>
+<p>You can build with an empty build context when your Dockerfile doesn't depend
+on any local files.</p>
+<h3 id="how-to-build-without-a-context">How to build without a context<a class="headerlink" href="#how-to-build-without-a-context" title="Permanent link">#</a></h3>
+<p>You can pass the text file using a standard input stream, or by pointing at the
+URL of a remote text file.</p>
+<p>{{&lt; tabs &gt;}}
+{{&lt; tab name="Unix pipe" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-<span class="w"> </span>&lt;<span class="w"> </span>Dockerfile
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="PowerShell" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">Get-Content</span> <span class="n">Dockerfile</span> <span class="p">|</span> <span class="n">docker</span> <span class="n">build</span> <span class="p">-</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Heredocs" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>myimage:latest<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<span class="s">FROM busybox</span>
+<span class="s">RUN echo &quot;hello world&quot;</span>
+<span class="s">EOF</span>
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; tab name="Remote file" &gt;}}</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>https://raw.githubusercontent.com/dvdksn/clockbox/main/Dockerfile
+</code></pre></div>
+
+<p>{{&lt; /tab &gt;}}
+{{&lt; /tabs &gt;}}</p>
+<p>When you build without a filesystem context, Dockerfile instructions such as
+<code>COPY</code> can't refer to local files:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>ls
+<span class="go">main.c</span>
+<span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-<span class="o">&lt;&lt;&lt;</span><span class="w"> </span><span class="s1">$&#39;FROM scratch\nCOPY main.c .&#39;</span>
+<span class="go">[+] Building 0.0s (4/4) FINISHED</span>
+<span class="go"> =&gt; [internal] load build definition from Dockerfile       0.0s</span>
+<span class="go"> =&gt; =&gt; transferring dockerfile: 64B                        0.0s</span>
+<span class="go"> =&gt; [internal] load .dockerignore                          0.0s</span>
+<span class="go"> =&gt; =&gt; transferring context: 2B                            0.0s</span>
+<span class="go"> =&gt; [internal] load build context                          0.0s</span>
+<span class="go"> =&gt; =&gt; transferring context: 2B                            0.0s</span>
+<span class="go"> =&gt; ERROR [1/1] COPY main.c .                              0.0s</span>
+<span class="go">------</span>
+<span class="go"> &gt; [1/1] COPY main.c .:</span>
+<span class="go">------</span>
+<span class="go">Dockerfile:2</span>
+<span class="go">--------------------</span>
+<span class="go">   1 |     FROM scratch</span>
+<span class="go">   2 | &gt;&gt;&gt; COPY main.c .</span>
+<span class="go">   3 |</span>
+<span class="go">--------------------</span>
+<span class="go">ERROR: failed to solve: failed to compute cache key: failed to calculate checksum of ref 7ab2bb61-0c28-432e-abf5-a4c3440bc6b6::4lgfpdf54n5uqxnv9v6ymg7ih: &quot;/main.c&quot;: not found</span>
+</code></pre></div>
+
+<h2 id="dockerignore-files">.dockerignore files<a class="headerlink" href="#dockerignore-files" title="Permanent link">#</a></h2>
+<p>You can use a <code>.dockerignore</code> file to exclude files or directories from the
+build context.</p>
+<div class="codehilite"><pre><span></span><code># .dockerignore
+node_modules
+bar
+</code></pre></div>
+
+<p>This helps avoid sending unwanted files and directories to the builder,
+improving build speed, especially when using a remote builder.</p>
+<h3 id="filename-and-location">Filename and location<a class="headerlink" href="#filename-and-location" title="Permanent link">#</a></h3>
+<p>When you run a build command, the build client looks for a file named
+<code>.dockerignore</code> in the root directory of the context. If this file exists, the
+files and directories that match patterns in the files are removed from the
+build context before it's sent to the builder.</p>
+<p>If you use multiple Dockerfiles, you can use different ignore-files for each
+Dockerfile. You do so using a special naming convention for the ignore-files.
+Place your ignore-file in the same directory as the Dockerfile, and prefix the
+ignore-file with the name of the Dockerfile, as shown in the following example.</p>
+<div class="codehilite"><pre><span></span><code>.
+├── index.ts
+├── src/
+├── docker
+│   ├── build.Dockerfile
+│   ├── build.Dockerfile.dockerignore
+│   ├── lint.Dockerfile
+│   ├── lint.Dockerfile.dockerignore
+│   ├── test.Dockerfile
+│   └── test.Dockerfile.dockerignore
+├── package.json
+└── package-lock.json
+</code></pre></div>
+
+<p>A Dockerfile-specific ignore-file takes precedence over the <code>.dockerignore</code>
+file at the root of the build context if both exist.</p>
+<h3 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">#</a></h3>
+<p>The <code>.dockerignore</code> file is a newline-separated list of patterns similar to the
+file globs of Unix shells. Leading and trailing slashes in ignore patterns are
+disregarded. The following patterns all exclude a file or directory named <code>bar</code>
+in the subdirectory <code>foo</code> under the root of the build context:</p>
+<ul>
+<li><code>/foo/bar/</code></li>
+<li><code>/foo/bar</code></li>
+<li><code>foo/bar/</code></li>
+<li><code>foo/bar</code></li>
+</ul>
+<p>If a line in <code>.dockerignore</code> file starts with <code>#</code> in column 1, then this line
+is considered as a comment and is ignored before interpreted by the CLI.</p>
+<div class="codehilite"><pre><span></span><code>#/this/is/a/comment
+</code></pre></div>
+
+<p>If you're interested in learning the precise details of the <code>.dockerignore</code>
+pattern matching logic, check out the
+<a href="https://github.com/moby/patternmatcher/tree/main/ignorefile" rel="noopener" target="_blank">moby/patternmatcher repository</a>
+on GitHub, which contains the source code.</p>
+<h4 id="matching">Matching<a class="headerlink" href="#matching" title="Permanent link">#</a></h4>
+<p>The following code snippet shows an example <code>.dockerignore</code> file.</p>
+<div class="codehilite"><pre><span></span><code># comment
+*/temp*
+*/*/temp*
+temp?
+</code></pre></div>
+
+<!-- vale off -->
+
+<p>This file causes the following build behavior:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code># comment</code></td>
+<td style="text-align: left;">Ignored.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>*/temp*</code></td>
+<td style="text-align: left;">Exclude files and directories whose names start with <code>temp</code> in any immediate subdirectory of the root. For example, the plain file <code>/somedir/temporary.txt</code> is excluded, as is the directory <code>/somedir/temp</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>*/*/temp*</code></td>
+<td style="text-align: left;">Exclude files and directories starting with <code>temp</code> from any subdirectory that is two levels below the root. For example, <code>/somedir/subdir/temporary.txt</code> is excluded.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>temp?</code></td>
+<td style="text-align: left;">Exclude files and directories in the root directory whose names are a one-character extension of <code>temp</code>. For example, <code>/tempa</code> and <code>/tempb</code> are excluded.</td>
+</tr>
+</tbody>
+</table>
+<!-- vale on -->
+
+<p>Matching is done using Go's
+<a href="https://golang.org/pkg/path/filepath#Match" rel="noopener" target="_blank"><code>filepath.Match</code> function</a> rules.
+A preprocessing step uses Go's
+<a href="https://golang.org/pkg/path/filepath/#Clean" rel="noopener" target="_blank"><code>filepath.Clean</code> function</a>
+to trim whitespace and remove <code>.</code> and <code>..</code>.
+Lines that are blank after preprocessing are ignored.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>For historical reasons, the pattern <code>.</code> is ignored.</p>
+</blockquote>
+<p>Beyond Go's <code>filepath.Match</code> rules, Docker also supports a special wildcard
+string <code>**</code> that matches any number of directories (including zero). For
+example, <code>**/*.go</code> excludes all files that end with <code>.go</code> found anywhere in the
+build context.</p>
+<p>You can use the <code>.dockerignore</code> file to exclude the <code>Dockerfile</code> and
+<code>.dockerignore</code> files. These files are still sent to the builder as they're
+needed for running the build. But you can't copy the files into the image using
+<code>ADD</code>, <code>COPY</code>, or bind mounts.</p>
+<h4 id="negating-matches">Negating matches<a class="headerlink" href="#negating-matches" title="Permanent link">#</a></h4>
+<p>You can prepend lines with a <code>!</code> (exclamation mark) to make exceptions to
+exclusions. The following is an example <code>.dockerignore</code> file that uses this
+mechanism:</p>
+<div class="codehilite"><pre><span></span><code>*.md
+!README.md
+</code></pre></div>
+
+<p>All markdown files right under the context directory <em>except</em> <code>README.md</code> are
+excluded from the context. Note that markdown files under subdirectories are
+still included.</p>
+<p>The placement of <code>!</code> exception rules influences the behavior: the last line of
+the <code>.dockerignore</code> that matches a particular file determines whether it's
+included or excluded. Consider the following example:</p>
+<div class="codehilite"><pre><span></span><code>*.md
+!README*.md
+README-secret.md
+</code></pre></div>
+
+<p>No markdown files are included in the context except README files other than
+<code>README-secret.md</code>.</p>
+<p>Now consider this example:</p>
+<div class="codehilite"><pre><span></span><code>*.md
+README-secret.md
+!README*.md
+</code></pre></div>
+
+<p>All of the README files are included. The middle line has no effect because
+<code>!README*.md</code> matches <code>README-secret.md</code> and comes last.</p>
+<h2 id="named-contexts">Named contexts<a class="headerlink" href="#named-contexts" title="Permanent link">#</a></h2>
+<p>In addition to the default build context (the positional argument to the
+<code>docker build</code> command), you can also pass additional named contexts to builds.</p>
+<p>Named contexts are specified using the <code>--build-context</code> flag, followed by a
+name-value pair. This lets you include files and directories from multiple
+sources during the build, while keeping them logically separated.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>--build-context<span class="w"> </span><span class="nv">docs</span><span class="o">=</span>./docs<span class="w"> </span>.
+</code></pre></div>
+
+<p>In this example:</p>
+<ul>
+<li>The named <code>docs</code> context points to the <code>./docs</code> directory.</li>
+<li>The default context (<code>.</code>) points to the current working directory.</li>
+</ul>
+<h3 id="using-named-contexts-in-a-dockerfile">Using named contexts in a Dockerfile<a class="headerlink" href="#using-named-contexts-in-a-dockerfile" title="Permanent link">#</a></h3>
+<p>Dockerfile instructions can reference named contexts as if they are stages in a
+multi-stage build.</p>
+<p>For example, the following Dockerfile:</p>
+<ol>
+<li>Uses a <code>COPY</code> instruction to copy files from the default context into the
+   current build stage.</li>
+<li>Bind mounts the files in a named context to process the files as part of the
+   build.</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">buildbase</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+
+<span class="c"># Copy all files from the default context into /app/src in the build container</span>
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>/app/src
+<span class="k">RUN</span><span class="w"> </span>make<span class="w"> </span>bin
+
+<span class="c"># Mount the files from the named &quot;docs&quot; context to build the documentation</span>
+<span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">from</span><span class="o">=</span>docs,target<span class="o">=</span>/app/docs<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>make<span class="w"> </span>manpages
+</code></pre></div>
+
+<h3 id="use-cases-for-named-contexts">Use cases for named contexts<a class="headerlink" href="#use-cases-for-named-contexts" title="Permanent link">#</a></h3>
+<p>Using named contexts allows for greater flexibility and efficiency when
+building Docker images. Here are some scenarios where using named contexts can
+be useful:</p>
+<h4 id="example-combine-local-and-remote-sources">Example: combine local and remote sources<a class="headerlink" href="#example-combine-local-and-remote-sources" title="Permanent link">#</a></h4>
+<p>You can define separate named contexts for different types of sources. For
+example, consider a project where the application source code is local, but the
+deployment scripts are stored in a Git repository:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>--build-context<span class="w"> </span><span class="nv">scripts</span><span class="o">=</span>https://github.com/user/deployment-scripts.git<span class="w"> </span>.
+</code></pre></div>
+
+<p>In the Dockerfile, you can use these contexts independently:</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">alpine:latest</span>
+
+<span class="c"># Copy application code from the main context</span>
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>/opt/app
+
+<span class="c"># Run deployment scripts using the remote &quot;scripts&quot; context</span>
+<span class="k">RUN</span><span class="w"> </span>--mount<span class="o">=</span><span class="nv">from</span><span class="o">=</span>scripts,target<span class="o">=</span>/scripts<span class="w"> </span>/scripts/main.sh
+</code></pre></div>
+
+<h4 id="example-dynamic-builds-with-custom-dependencies">Example: dynamic builds with custom dependencies<a class="headerlink" href="#example-dynamic-builds-with-custom-dependencies" title="Permanent link">#</a></h4>
+<p>In some scenarios, you might need to dynamically inject configuration files or
+dependencies into the build from external sources. Named contexts make this
+straightforward by allowing you to mount different configurations without
+modifying the default build context.</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>--build-context<span class="w"> </span><span class="nv">config</span><span class="o">=</span>./configs/prod<span class="w"> </span>.
+</code></pre></div>
+
+<p>Example Dockerfile:</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># syntax=docker/dockerfile:1</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">nginx:alpine</span>
+
+<span class="c"># Use the &quot;config&quot; context for environment-specific configurations</span>
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>config<span class="w"> </span>nginx.conf<span class="w"> </span>/etc/nginx/nginx.conf
+</code></pre></div>
+
+<h4 id="example-pin-or-override-images">Example: pin or override images<a class="headerlink" href="#example-pin-or-override-images" title="Permanent link">#</a></h4>
+<p>You can refer to named contexts in a Dockerfile the same way you can refer to
+an image. That means you can change an image reference in your Dockerfile by
+overriding it with a named context. For example, given the following
+Dockerfile:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">alpine:{{%</span><span class="w"> </span>param<span class="w"> </span>example_alpine_version<span class="w"> </span>%<span class="o">}}</span>
+</code></pre></div>
+
+<p>If you want to force image reference to resolve to a different version, without
+changing the Dockerfile, you can pass a context with the same name to the
+build. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="go">docker buildx build --build-context alpine:{{% param example_alpine_version %}}=docker-image://alpine:edge .</span>
+</code></pre></div>
+
+<p>The <code>docker-image://</code> prefix marks the context as an image reference. The
+reference can be a local image or an image in your registry.</p>
+<h3 id="named-contexts-with-bake">Named contexts with Bake<a class="headerlink" href="#named-contexts-with-bake" title="Permanent link">#</a></h3>
+<p><a href="../bake/index.html">Bake</a> is a tool built into <code>docker build</code> that
+lets you manage your build configuration with a configuration file. Bake fully
+supports named contexts.</p>
+<p>To define named contexts in a Bake file:</p>
+<p>```hcl {title=docker-bake.hcl}
+target "app" {
+  contexts = {
+    docs = "./docs"
+  }
+}</p>
+<div class="codehilite"><pre><span></span><code>This is equivalent to the following CLI invocation:
+
+```console
+$ docker build --build-context docs=./docs .
+</code></pre></div>
+
+<h4 id="linking-targets-with-named-contexts">Linking targets with named contexts<a class="headerlink" href="#linking-targets-with-named-contexts" title="Permanent link">#</a></h4>
+<p>In addition to making complex builds more manageable, Bake also provides
+additional features on top of what you can do with <code>docker build</code> on the CLI.
+You can use named contexts to create build pipelines, where one target depends
+on and builds on top of another. For example, consider a Docker build setup
+where you have two Dockerfiles:</p>
+<ul>
+<li><code>base.Dockerfile</code>: for building a base image</li>
+<li><code>app.Dockerfile</code>: for building an application image</li>
+</ul>
+<p>The <code>app.Dockerfile</code> uses the image produced by <code>base.Dockerfile</code> as it's base
+image:</p>
+<p>```dockerfile {title=app.Dockerfile}
+FROM mybaseimage</p>
+<div class="codehilite"><pre><span></span><code>Normally, you would have to build the base image first, and then either load it
+to Docker Engine&#39;s local image store or push it to a registry. With Bake, you
+can reference other targets directly, creating a dependency between the `app`
+target and the `base` target.
+
+```hcl {title=docker-bake.hcl}
+target &quot;base&quot; {
+  dockerfile = &quot;base.Dockerfile&quot;
+}
+
+target &quot;app&quot; {
+  dockerfile = &quot;app.Dockerfile&quot;
+  contexts = {
+    # the target: prefix indicates that &#39;base&#39; is a Bake target
+    mybaseimage = &quot;target:base&quot;
+  }
+}
+</code></pre></div>
+
+<p>With this configuration, references to <code>mybaseimage</code> in <code>app.Dockerfile</code> use
+the results from building the <code>base</code> target. Building the <code>app</code> target will
+also trigger a rebuild of <code>mybaseimage</code>, if necessary:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>buildx<span class="w"> </span>bake<span class="w"> </span>app
+</code></pre></div>
+
+<h3 id="further-reading">Further reading<a class="headerlink" href="#further-reading" title="Permanent link">#</a></h3>
+<p>For more information about working with named contexts, see:</p>
+<ul>
+<li><a href="/reference/cli/docker/buildx/build/#build-context"><code>--build-context</code> CLI reference</a></li>
+<li><a href="../bake/contexts.html">Using Bake with additional contexts</a></li>
+</ul>
+      </div>
+    </article>
+
+    <nav class="pager" aria-label="Navegación entre documentos">
+        <a class="pager-prev" href="../../build/concepts/index.html">
+          <span class="muted">Anterior</span>Core concepts
+        </a>
+        <a class="pager-next" href="../../build/concepts/dockerfile.html">
+          <span class="muted">Siguiente</span>Dockerfile overview
+        </a>
+    </nav>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Espejo <strong>no oficial</strong> e independiente de documentación técnica.
+    La referencia canónica siempre es el sitio oficial de cada tecnología.
+  </p>
+  <p class="muted">
+    Desarrollado y gestionado por <a href="https://raupulus.dev" target="_blank" rel="noopener">Raúl Caro Pastorino</a> ·
+    Cada tecnología conserva el copyright y la licencia de su autor original
+  </p>
+  <p class="muted">
+    <a href="../../../licenses.html">Licencias y Atribución</a> ·
+    <a href="../../../legal.html">Aviso Legal y Privacidad</a> ·
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer" target="_blank" rel="noopener">GitHub</a> ·
+    Descargar ZIP:
+    <a href="https://gitlab.com/raupulus/offline-docs-backend-developer/-/archive/main/offline-docs-backend-developer-main.zip" target="_blank" rel="noopener">GitLab</a> ·
+    <a href="https://github.com/raupulus/offline-docs-backend-developer/archive/refs/heads/main.zip" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="../../../feed.xml">RSS</a>
+  </p>
+</footer>
+
+<script src="../../../_assets/app.js"></script>
+</body>
+</html>
