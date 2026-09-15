@@ -3,7 +3,7 @@
    Estrategia de caché progresiva (PWA 100% estática y sin dependencias)
    ═══════════════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'docs-offline-v1';
+const CACHE_NAME = 'docs-offline-v2';
 
 // Recursos esenciales precacheados durante la instalación
 const CORE_ASSETS = [
@@ -50,6 +50,9 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
+  // No interceptar descargas de bundles (.md) para no saturar la caché del navegador
+  if (url.pathname.includes('/bundles/') || url.pathname.endsWith('.md')) return;
 
   // 1. Assets estáticos (_assets/): Cache First con fallback a red
   if (url.pathname.includes('/_assets/')) {
