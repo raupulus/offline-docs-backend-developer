@@ -7,12 +7,15 @@ colarse en una reconstrucción:
   * prefijos numéricos en directorios, no solo en ficheros
   * enlaces que se resuelven por slug y no por ruta (Docusaurus)
   * URLs externas terminadas en .md que no hay que tocar
+  * escape correcto de secuencias y entidades en JSON-LD estructurado
 
     python3 -m scripts.docsync.selftest
 """
 
 from __future__ import annotations
 
+import json
+import re
 import sys
 from pathlib import Path
 
@@ -166,6 +169,59 @@ def run_checks(c: Checker) -> None:
 
     front, body = split_front_matter("# Sin cabecera\n")
     c.eq("documento sin cabecera", (front, body.strip()), ({}, "# Sin cabecera"))
+
+    templates_dir = Path("scripts/templates")
+    if templates_dir.is_dir():
+        try:
+            from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+            Log.step("Plantillas y JSON-LD estructurado")
+            env = Environment(
+                loader=FileSystemLoader(str(templates_dir)),
+                autoescape=select_autoescape(["html"]),
+                trim_blocks=True,
+                lstrip_blocks=True,
+            )
+            env.filters["to_html"] = lambda p: p.replace(".md", ".html")
+
+            tricky_titles = [
+                r"wkhtmltox\PDF\Converter::add",
+                r"Character escape: \n, \u{...}",
+                r"\<script setup>",
+                'Fix "Docker.app is damaged" on macOS',
+            ]
+            page_tpl = env.get_template("page.html")
+            for title in tricky_titles:
+                rendered = page_tpl.render(
+                    page={"title": title, "path": "test.md", "section": ""},
+                    meta={"name": "TestTech", "id": "test"},
+                    toc=[],
+                    nav={"sections": []},
+                    content="<p>Test</p>",
+                    root="../..",
+                    tech_root="..",
+                    page_title=title,
+                    built_at="2026-10-09",
+                    canonical_url="https://docs.raupulus.dev/test.html",
+                )
+                m = re.search(
+                    r'<script\s+type=[\"\']application/ld\+json[\"\']>(.*?)</script>',
+                    rendered,
+                    re.DOTALL,
+                )
+                parsed = None
+                if m:
+                    try:
+                        parsed = json.loads(m.group(1).strip())
+                    except Exception:
+                        parsed = None
+                c.eq(
+                    f"JSON-LD válido para '{title}'",
+                    parsed is not None and parsed.get("name") == title,
+                    True,
+                )
+        except ImportError:
+            pass
 
 
 def main(argv: list[str] | None = None) -> int:
